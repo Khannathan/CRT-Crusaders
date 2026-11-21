@@ -61,15 +61,25 @@ export class SanctumScene extends Phaser.Scene {
     }
 
     // Prototype-only: wipe the save to replay the first-time flow.
-    const reset = this.add
-      .text(GAME_W - 16, GAME_H - 110, 'reset save', { fontFamily: FONT, fontSize: '14px', color: hex(PAL.armorShadow) })
-      .setOrigin(1, 0.5)
-      .setInteractive({ useHandCursor: true });
-    reset.on('pointerup', () => {
-      resetGame();
-      this.scene.restart();
-    });
+    makeButton(this, GAME_W - 96, GAME_H - 128, 168, 52, 'Reset save', () => this.confirmReset(), { fontSize: 18 });
 
     addTabBar(this, 'Sanctum');
+  }
+
+  private confirmReset() {
+    const layer = this.add.container(0, 0).setDepth(20);
+    const style = { fontFamily: FONT, color: hex(PAL.ivory), align: 'center' };
+    layer.add(this.add.rectangle(GAME_W / 2, GAME_H / 2, GAME_W, GAME_H, 0x000000, 0.94).setInteractive());
+    layer.add(
+      this.add
+        .text(GAME_W / 2, 360, 'Erase all progress?\n\nRecruits, Seals, Tithes and\ncrusade progress will be lost.', { ...style, fontSize: '22px' })
+        .setOrigin(0.5),
+    );
+    const yes = makeButton(this, GAME_W / 2, 520, 300, 76, 'Erase and start over', () => {
+      resetGame();
+      this.scene.restart();
+    }, { active: true });
+    const no = makeButton(this, GAME_W / 2, 620, 300, 76, 'Keep my progress', () => layer.destroy());
+    layer.add([yes.box, yes.text, no.box, no.text]);
   }
 }
