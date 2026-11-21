@@ -94,7 +94,7 @@ export class RosterScene extends Phaser.Scene {
       this.add.text(GAME_W / 2, 428, `${c.order} · age ${c.age}`, { ...style, fontSize: '16px', color: hex(PAL.steel) }).setOrigin(0.5),
       this.add.text(GAME_W / 2, 476, `Level ${have.level} / ${MAX_LEVEL}`, { ...style, fontSize: '22px', color: hex(PAL.amber) }).setOrigin(0.5),
       this.add
-        .text(GAME_W / 2, 516, `HP ${st.hp}   ATK ${st.atk}   DEF ${st.def}   SPD ${st.spd}`, { ...style, fontSize: '19px' })
+        .text(GAME_W / 2, 516, `HP ${st.hp}  ATK ${st.atk}  ARM ${st.armor}  SPD ${st.spd}  CRIT ${Math.round(st.crit * 100)}%`, { ...style, fontSize: '17px' })
         .setOrigin(0.5),
     ]);
     // Vow pips
@@ -108,8 +108,11 @@ export class RosterScene extends Phaser.Scene {
     }
     layer.add(pips);
     layer.add([
-      this.add.text(GAME_W / 2, 620, cls.summary, { ...style, fontSize: '18px' }).setOrigin(0.5),
-      this.add.text(GAME_W / 2, 690, `"${c.hook}"`, { ...style, fontSize: '16px', fontStyle: 'italic', color: hex(PAL.steel) }).setOrigin(0.5),
+      this.add.text(GAME_W / 2, 606, cls.summary, { ...style, fontSize: '18px' }).setOrigin(0.5),
+      ...(c.passive
+        ? [this.add.text(GAME_W / 2, 650, `${c.passive.name}: ${c.passive.desc}`, { ...style, fontSize: '16px', color: hex(PAL.violet) }).setOrigin(0.5)]
+        : []),
+      this.add.text(GAME_W / 2, 704, `"${c.hook}"`, { ...style, fontSize: '16px', fontStyle: 'italic', color: hex(PAL.steel) }).setOrigin(0.5),
     ]);
     const canLevel = !maxed && game.save.tithes >= cost;
     const lvl = makeButton(

@@ -47,7 +47,7 @@ const any: number[] = [];
 export const CLASS_SKILLS: Record<string, [SkillDef, SkillDef, SkillDef]> = {
   warsister: [
     { id: 'penitent-blow', name: 'Penitent Blow', desc: 'Heavy strike on rank 1-2. +40% while she is under half HP.', from: [1, 2], target: 'enemy', reach: [1, 2], mult: 1.25, lowHpBonus: 0.4 },
-    { id: 'blood-for-zeal', name: 'Blood for Zeal', desc: 'Lose 10% HP. +25 Zeal and +25% attack for 2 turns.', from: any, target: 'self', selfDmgPct: 0.1, zealGain: 25, empower: { pct: 0.25, turns: 2 } },
+    { id: 'blood-for-zeal', name: 'Blood for Zeal', desc: 'Lose 10% HP. +15 Zeal and +25% attack for 2 turns.', from: any, target: 'self', selfDmgPct: 0.1, zealGain: 15, empower: { pct: 0.25, turns: 2 } },
     { id: 'martyrs-fury', name: "Martyr's Fury", desc: 'RITE: strike every enemy.', from: any, target: 'allEnemies', mult: 1.3, rite: true },
   ],
   hierophant: [

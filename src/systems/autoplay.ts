@@ -24,12 +24,13 @@ export function autoChoose(b: Battle, actor: Unit): { skill: SkillDef; target?: 
 }
 
 /** Runs a battle to the end with autoChoose for the party. */
-export function autoBattle(b: Battle, maxTurns = 400): 'victory' | 'defeat' | 'stalled' {
+export function autoBattle(b: Battle, maxTurns = 400, onRite?: (round: number) => void): 'victory' | 'defeat' | 'stalled' {
   for (let i = 0; i < maxTurns; i++) {
     const t = b.nextTurn();
     if (t.outcome) return t.outcome;
     const actor = t.actor!;
     const choice = actor.side === 'party' ? autoChoose(b, actor) : b.enemyChoose(actor);
+    if (choice.skill.rite) onRite?.(b.round);
     b.act(actor, choice.skill, choice.target);
   }
   return 'stalled';
