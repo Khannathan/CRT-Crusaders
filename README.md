@@ -15,7 +15,7 @@ Every push to `main` deploys to GitHub Pages (Settings → Pages → Source: **G
 
 ## Adding portraits
 
-Drop a square PNG named by roster id into `src/assets/portraits/`, for example `CC-W001.png`. A `.png` replaces a `.webp` of the same name, so the starter art from the UI preview (`CC-W001.webp` and so on) is overridden just by adding a PNG.
+Drop a square PNG named by roster id into `src/assets/portraits/`, for example `CC-W001.png`. A `.png` replaces a `.webp` of the same name.
 
 - 128 × 128 native (256 or 320 square also works), head and upper torso, eyes about 40% from the top, a few pixels of margin.
 - Plain dark charcoal background (`#121116`); transparency is optional.
