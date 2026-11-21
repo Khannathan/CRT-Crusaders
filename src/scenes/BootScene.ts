@@ -62,7 +62,7 @@ export class BootScene extends Phaser.Scene {
       const key = enemyKey(e.id);
       if (this.textures.exists(key)) this.setFilter(key);
     }
-    for (const key of ['bg-hall', 'bg-altar']) if (this.textures.exists(key)) this.setFilter(key);
+    for (const key of this.textures.getTextureKeys()) if (key.startsWith('bg-')) this.setFilter(key); // any backdrop, e.g. bg-sunken-belfry
     makeEffectTextures(this);
     makeEnemyTextures(this);
     makeIconTextures(this);
