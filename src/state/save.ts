@@ -1,4 +1,5 @@
 import { starterGear, type GearItem } from '../systems/gear';
+import type { VigilState } from '../systems/vigil';
 
 /** Everything the player owns, stored on the device. */
 export interface OwnedCrusader {
@@ -31,6 +32,8 @@ export interface SaveData {
   /** Every piece of gear owned; `on` says who wears it. */
   gear?: GearItem[];
   nextGearId?: number;
+  /** The idle Vigil: who keeps watch where, and since when. */
+  vigil?: VigilState;
   /** Last party, in rank order, to pre-fill the muster screen. */
   lastParty: string[];
 }
