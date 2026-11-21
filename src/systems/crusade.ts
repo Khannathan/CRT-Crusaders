@@ -216,14 +216,14 @@ export function maxHpOf(save: SaveData, run: RunState, id: string) {
 }
 
 /** Builds a battle for the current room from the run's party and HP. */
-export function makeBattle(save: SaveData, run: RunState, encounter: string, rng?: Rng): Battle {
+export function makeBattle(save: SaveData, run: RunState, encounter: string, rng?: Rng, scale?: number): Battle {
   const relics = relicsOf(run);
   const atkPct = relics.reduce((s, r) => s + (r.atkPct ?? 0), 0);
   const zeal = relics.reduce((s, r) => s + (r.startZeal ?? 0), 0) + (run.blessZeal ?? 0);
   const armorPct = relics.reduce((s, r) => s + (r.armorPct ?? 0), 0);
   // Heresy shortens the candle by a round every second tier.
   const vigil = Math.max(2, VIGIL_DEFAULT + relics.reduce((s, r) => s + (r.vigilBonus ?? 0), 0) - (run.curseVigil ?? 0) - Math.floor(run.heresy / 2));
-  const enemyScale = 1 + HERESY_ENEMY * run.heresy;
+  const enemyScale = scale ?? 1 + HERESY_ENEMY * run.heresy;
 
   let rank = 0;
   const party: Unit[] = [];
@@ -257,11 +257,11 @@ export function makeBattle(save: SaveData, run: RunState, encounter: string, rng
  * A one-off fight outside a crypt run (Vigil, Trials, Tower, Inquisition): the
  * given Sisters at full health against one encounter, at a Heresy-like tier.
  */
-export function skirmish(save: SaveData, party: string[], encounter: string, tier = 0, rng?: Rng, crypt: CryptDef = OSSUARY): Battle {
+export function skirmish(save: SaveData, party: string[], encounter: string, tier = 0, rng?: Rng, crypt: CryptDef = OSSUARY, scale?: number): Battle {
   const ids = party.filter((id) => save.owned[id]).slice(0, MAX_PARTY);
   const run: RunState = { crypt, map: [], party: ids, hp: {}, floor: 0, at: 0, path: [], resolved: false, relics: [], tithes: 0, seals: 0, heresy: tier, loot: [] };
   for (const id of ids) run.hp[id] = maxHpOf(save, run, id);
-  return makeBattle(save, run, encounter, rng);
+  return makeBattle(save, run, encounter, rng, scale);
 }
 
 /** The node being played, if it is not finished yet. */
