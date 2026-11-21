@@ -148,11 +148,25 @@ export function addHeading(scene: Phaser.Scene, title: string, y: number, sub?: 
   return bottom;
 }
 
-/** One of the preview's 12x12 pixel icons (ui-<name>.png), scaled in whole steps and tinted. */
+/**
+ * A menu icon (ui-<name>.png). The preview's 12x12 white icons are tinted;
+ * bigger, full-colour replacements (e.g. a 32x32 ui-tithe.png) are drawn as made.
+ */
 export function addIcon(scene: Phaser.Scene, x: number, y: number, name: string, size = 24, tint: number = PAL.amber) {
   const key = `ui-${name}`;
   if (!scene.textures.exists(key)) return scene.add.rectangle(x, y, size * 0.6, size * 0.6, tint).setAngle(45);
-  return scene.add.image(x, y, key).setDisplaySize(size, size).setTint(tint);
+  const img = scene.add.image(x, y, key).setDisplaySize(size, size);
+  return isTintIcon(scene, key) ? img.setTint(tint) : img;
+}
+
+/** True for the small white icons that take a tint; false for full-colour art. */
+export function isTintIcon(scene: Phaser.Scene, key: string) {
+  return scene.textures.get(key).getSourceImage().width <= 12;
+}
+
+/** Art from src/assets/ui (skill-<id>, relic-<id>, class-<id>, ...) at a square size, or null when missing. */
+export function addArt(scene: Phaser.Scene, key: string, x: number, y: number, size: number) {
+  return scene.textures.exists(key) ? scene.add.image(x, y, key).setDisplaySize(size, size) : null;
 }
 
 /** Small pixel-font tag with a dark fill and a coloured edge, like the preview's rarity badges. */

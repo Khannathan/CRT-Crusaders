@@ -19,9 +19,15 @@ export function addCurrencyBar(scene: Phaser.Scene) {
     scene.add.rectangle(GAME_W / 2, h - 0.5, GAME_W, 1, PAL.armorShadow).setDepth(5);
   }
 
-  addIcon(scene, 28, mid, 'sigil', 30, PAL.amber).setDepth(5);
-  scene.add.text(50, mid - 9, 'CRT', { fontFamily: HUD_FONT, fontSize: '12px', color: '#d79e6f' }).setOrigin(0, 0.5).setDepth(5);
-  scene.add.text(50, mid + 7, 'CRUSADERS', { fontFamily: DISPLAY_FONT, fontStyle: 'bold', fontSize: '13px', color: hex(PAL.amber) }).setOrigin(0, 0.5).setDepth(5);
+  // logo.png (the title art, about 97 x 50) replaces the crest and the drawn title
+  if (scene.textures.exists('logo')) {
+    const logo = scene.add.image(12, mid, 'logo').setOrigin(0, 0.5).setDepth(5);
+    if (logo.height > h - 6) logo.setScale((h - 6) / logo.height);
+  } else {
+    addIcon(scene, 28, mid, 'sigil', 30, PAL.amber).setDepth(5);
+    scene.add.text(50, mid - 9, 'CRT', { fontFamily: HUD_FONT, fontSize: '12px', color: '#d79e6f' }).setOrigin(0, 0.5).setDepth(5);
+    scene.add.text(50, mid + 7, 'CRUSADERS', { fontFamily: DISPLAY_FONT, fontStyle: 'bold', fontSize: '13px', color: hex(PAL.amber) }).setOrigin(0, 0.5).setDepth(5);
+  }
 
   /** A framed chip; layout(value, right) sizes it and pins its right edge. Returns its left edge. */
   const chip = (icon: string, tint: number, label: string) => {

@@ -14,7 +14,7 @@ export function modeScreen(scene: Phaser.Scene, title: string, sub: string, back
   addScreenGlow(scene);
   const refresh = addCurrencyBar(scene);
   const top = addHeading(scene, title, CURRENCY_BAR_H + 10, sub);
-  makeButton(scene, GAME_W - PAD - 44, CURRENCY_BAR_H + 34, 88, 40, 'Back', () => scene.scene.start(back), { fontSize: 16 });
+  makeButton(scene, GAME_W - PAD - 44, CURRENCY_BAR_H + 34, 88, 40, 'Back', () => scene.scene.start(back, {}), { fontSize: 16 });
   addTabBar(scene, 'Sanctum');
   return { top: top + 12, refresh };
 }
