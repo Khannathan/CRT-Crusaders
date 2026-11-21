@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import { GAME_W, PAL } from '../config';
 import type { SaveData } from '../state/save';
+import { matinsReady } from '../systems/matins';
 import { anyClaimable } from '../systems/tasks';
 import { makeButton } from './button';
 import { PAD } from './theme';
@@ -17,7 +18,10 @@ export interface RiteEntry {
   ready?: (save: SaveData) => boolean;
 }
 
-export const RITES: RiteEntry[] = [{ label: 'Penance', scene: 'Penance', icon: 'book', ready: (s) => anyClaimable(s) }];
+export const RITES: RiteEntry[] = [
+  { label: 'Penance', scene: 'Penance', icon: 'book', ready: (s) => anyClaimable(s) },
+  { label: 'Matins', scene: 'Matins', icon: 'flame', ready: (s) => matinsReady(s) },
+];
 
 /** Draws the grid from `top`; returns its bottom edge. */
 export function drawRites(scene: Phaser.Scene, save: SaveData, top: number): number {
