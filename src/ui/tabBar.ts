@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import { FONT, GAME_H, GAME_W, PAL, hex } from '../config';
+import { nine, stretch } from './skin';
 import { addIcon } from './theme';
 
 export const TAB_BAR_H = 88;
@@ -14,10 +15,13 @@ const TABS = [
 /** Bottom navigation, in thumb reach: pixel icon over label, gold edge on the current tab. */
 export function addTabBar(scene: Phaser.Scene, current: string) {
   const top = GAME_H - TAB_BAR_H;
-  const g = scene.add.graphics().setDepth(5);
-  // rail gradient (#20161c -> #151016) and top hairline
-  for (let i = 0; i < 8; i++) g.fillStyle(i < 3 ? 0x1d151b : 0x161117).fillRect(0, top + (i * TAB_BAR_H) / 8, GAME_W, TAB_BAR_H / 8 + 1);
-  g.fillStyle(PAL.armorShadow).fillRect(0, top, GAME_W, 1);
+  // ui-tabbar.png (540 x 88) replaces the drawn rail
+  if (!stretch(scene, 'ui-tabbar', GAME_W / 2, top + TAB_BAR_H / 2, GAME_W, TAB_BAR_H)?.setDepth(5)) {
+    const g = scene.add.graphics().setDepth(5);
+    // rail gradient (#20161c -> #151016) and top hairline
+    for (let i = 0; i < 8; i++) g.fillStyle(i < 3 ? 0x1d151b : 0x161117).fillRect(0, top + (i * TAB_BAR_H) / 8, GAME_W, TAB_BAR_H / 8 + 1);
+    g.fillStyle(PAL.armorShadow).fillRect(0, top, GAME_W, 1);
+  }
 
   const w = GAME_W / TABS.length;
   TABS.forEach((t, i) => {
@@ -27,7 +31,11 @@ export function addTabBar(scene: Phaser.Scene, current: string) {
     const bw = w - 8;
     const bh = TAB_BAR_H - 14;
     const box = scene.add.rectangle(cx, cy, bw, bh, on ? 0x3a1d29 : 0x000000, on ? 1 : 0.001).setDepth(5);
-    if (on) {
+    const skin = on ? nine(scene, 'ui-tab-active', cx, cy, bw, bh) : null;
+    if (skin) {
+      skin.setDepth(5);
+      box.setFillStyle(0x000000, 0.001);
+    } else if (on) {
       box.setStrokeStyle(1, 0x694041);
       scene.add.rectangle(cx, cy - bh / 2 + 1, bw, 3, PAL.goldEdge).setDepth(5);
     }

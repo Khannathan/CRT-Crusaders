@@ -11,7 +11,7 @@ import { makeButton } from '../ui/button';
 import { CURRENCY_BAR_H, addCurrencyBar } from '../ui/currencyBar';
 import { portraitKey } from '../ui/placeholderPortrait';
 import { TAB_BAR_H, addTabBar } from '../ui/tabBar';
-import { PAD, addBackdrop, addBadge, addFrame, addHeading, addScreenGlow, text } from '../ui/theme';
+import { PAD, addBackdrop, addBadge, addFrame, addHeading, addPanel, addScreenGlow, text } from '../ui/theme';
 
 /** The Sealed Altar: rates, pity counter, and the pull buttons. */
 export class RecruitScene extends Phaser.Scene {
@@ -80,7 +80,7 @@ export class RecruitScene extends Phaser.Scene {
     const pw = GAME_W - PAD * 2;
     let y = by + bh / 2 + 10;
     const poolH = 112;
-    this.add.rectangle(GAME_W / 2, y + poolH / 2, pw, poolH, PAL.deepShadow).setStrokeStyle(1, PAL.armorShadow);
+    addPanel(this, GAME_W / 2 - pw / 2, y, pw, poolH);
     const target = CRUSADERS.find((c) => c.id === banner.target)!;
     this.add
       .text(px + 16, y + 12, s.urGuaranteed ? `Next UR is ${target.name.split(' ')[0]}, sworn.` : `A UR here is ${target.name.split(' ')[0]} half the time,`, text.body(19, PAL.ivory))
@@ -93,7 +93,7 @@ export class RecruitScene extends Phaser.Scene {
     // Offer panel
     y += poolH + 8;
     const offerH = GAME_H - TAB_BAR_H - 10 - y;
-    this.add.rectangle(GAME_W / 2, y + offerH / 2, pw, offerH, PAL.deepShadow).setStrokeStyle(1, PAL.armorShadow);
+    addPanel(this, GAME_W / 2 - pw / 2, y, pw, offerH);
     this.add.text(px + 16, y + 8, 'Ten oaths always bring an SR or better.', text.body(18, PAL.muted));
     const btnY = y + offerH - 50;
     const half = (pw - 32 - 10) / 2;

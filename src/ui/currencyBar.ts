@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import { DISPLAY_FONT, FONT, GAME_W, HUD_FONT, PAL, hex } from '../config';
 import { game } from '../state/game';
+import { nine, stretch } from './skin';
 import { addIcon } from './theme';
 
 export const CURRENCY_BAR_H = 56;
@@ -12,8 +13,11 @@ export const CURRENCY_BAR_H = 56;
 export function addCurrencyBar(scene: Phaser.Scene) {
   const h = CURRENCY_BAR_H;
   const mid = h / 2;
-  scene.add.rectangle(GAME_W / 2, mid, GAME_W, h, 0x18121a).setDepth(5);
-  scene.add.rectangle(GAME_W / 2, h - 0.5, GAME_W, 1, PAL.armorShadow).setDepth(5);
+  // ui-topbar.png (540 x 56) replaces the drawn bar
+  if (!stretch(scene, 'ui-topbar', GAME_W / 2, mid, GAME_W, h)?.setDepth(5)) {
+    scene.add.rectangle(GAME_W / 2, mid, GAME_W, h, 0x18121a).setDepth(5);
+    scene.add.rectangle(GAME_W / 2, h - 0.5, GAME_W, 1, PAL.armorShadow).setDepth(5);
+  }
 
   addIcon(scene, 28, mid, 'sigil', 30, PAL.amber).setDepth(5);
   scene.add.text(50, mid - 9, 'CRT', { fontFamily: HUD_FONT, fontSize: '12px', color: '#d79e6f' }).setOrigin(0, 0.5).setDepth(5);
@@ -21,7 +25,9 @@ export function addCurrencyBar(scene: Phaser.Scene) {
 
   /** A framed chip; layout(value, right) sizes it and pins its right edge. Returns its left edge. */
   const chip = (icon: string, tint: number, label: string) => {
-    const bg = scene.add.rectangle(0, mid, 10, 38, 0x221820).setOrigin(1, 0.5).setStrokeStyle(1, 0x4b3538).setDepth(5);
+    // ui-chip.png skins the framed chip behind each currency
+    const skin = nine(scene, 'ui-chip', 0, mid, 40, 38)?.setOrigin(1, 0.5).setDepth(5);
+    const bg = skin ?? scene.add.rectangle(0, mid, 10, 38, 0x221820).setOrigin(1, 0.5).setStrokeStyle(1, 0x4b3538).setDepth(5);
     const ic = addIcon(scene, 0, mid, icon, 18, tint).setDepth(5);
     const num = scene.add.text(0, mid + 1, '', { fontFamily: HUD_FONT, fontSize: '16px', color: hex(PAL.ivory) }).setOrigin(0, 0.5).setDepth(5);
     const name = scene.add.text(0, mid, label, { fontFamily: FONT, fontSize: '18px', color: '#cab4a8' }).setOrigin(0, 0.5).setDepth(5);

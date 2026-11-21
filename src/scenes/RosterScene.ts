@@ -30,6 +30,7 @@ import { MAX_LEVEL, levelUpCost, sisterStats, vowCost } from '../systems/stats';
 import { makeButton } from '../ui/button';
 import { CURRENCY_BAR_H, addCurrencyBar } from '../ui/currencyBar';
 import { portraitKey } from '../ui/placeholderPortrait';
+import { nine } from '../ui/skin';
 import { addTabBar } from '../ui/tabBar';
 import { PAD, addBackdrop, addBadge, addFrame, addHeading, addIcon, addScreenGlow, text } from '../ui/theme';
 
@@ -77,7 +78,10 @@ export class RosterScene extends Phaser.Scene {
       const x = left + cw / 2;
       const have = owned[c.id];
       const tint = RARITY_COLOR[c.rarity];
-      const card = this.add.rectangle(x, topY + ch / 2, cw, ch, have ? 0x1e1620 : 0x151017).setStrokeStyle(1, PAL.armorShadow);
+      // ui-card.png skins the card behind each Sister (the portrait covers its top)
+      if (!nine(this, 'ui-card', x, topY + ch / 2, cw, ch)) {
+        this.add.rectangle(x, topY + ch / 2, cw, ch, have ? 0x1e1620 : 0x151017).setStrokeStyle(1, PAL.armorShadow);
+      }
       if (have) {
         addBackdrop(this, portraitKey(c.id), x, topY + ph / 2, cw, ph, { fade: 0, focusY: 0.3 });
         this.add.rectangle(x, topY + ph, cw, 1, tint);
@@ -97,10 +101,9 @@ export class RosterScene extends Phaser.Scene {
         this.add.text(left + 8, topY + ph + 5, 'Unknown', { ...text.body(19, PAL.muted), fontStyle: '600' });
         this.add.text(left + 8, topY + ph + 28, 'UNSWORN', text.hud(12, PAL.steel));
       }
-      card.setInteractive({ useHandCursor: true });
-      this.children.bringToTop(card);
-      card.setFillStyle(0x000000, 0.001);
-      card.on('pointerup', () => this.showDetail(c));
+      // tap target on top of the whole card
+      const hit = this.add.rectangle(x, topY + ch / 2, cw, ch, 0x000000, 0.001).setInteractive({ useHandCursor: true });
+      hit.on('pointerup', () => this.showDetail(c));
     });
 
     addTabBar(this, 'Roster');

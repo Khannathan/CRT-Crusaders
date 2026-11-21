@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import { DISPLAY_FONT, FONT, GAME_W, HUD_FONT, PAL, hex } from '../config';
+import { nine } from './skin';
 
 /**
  * Shared look from the UI preview: gold-edged frames with corner ticks, painted
@@ -45,12 +46,26 @@ export function addFrame(
   h: number,
   opts: { fill?: number; fillAlpha?: number; edge?: number; ticks?: boolean; tick?: number } = {},
 ): Obj[] {
+  // Skins: ui-panel.png for filled boxes (dialogs), ui-frame.png (clear centre) for frames over art.
+  const skinned = nine(scene, opts.fill !== undefined ? 'ui-panel' : 'ui-frame', x, y, w, h);
+  if (skinned) return [skinned];
   const parts: Obj[] = [];
   if (opts.fill !== undefined) parts.push(scene.add.rectangle(x, y, w, h, opts.fill, opts.fillAlpha ?? 1));
   parts.push(scene.add.rectangle(x, y, w, h).setStrokeStyle(1, opts.edge ?? PAL.goldEdge));
   parts.push(scene.add.rectangle(x, y, w - 4, h - 4).setStrokeStyle(2, PAL.bg, 0.9));
   if (opts.ticks !== false) parts.push(cornerTicks(scene, x, y, w - 10, h - 10, opts.tick ?? 13));
   return parts;
+}
+
+/**
+ * A plain content panel (the dark boxes holding text and buttons). Skinned by
+ * ui-panel.png when present. (x, y) is the top-left corner.
+ */
+export function addPanel(scene: Phaser.Scene, x: number, y: number, w: number, h: number): Obj {
+  return (
+    nine(scene, 'ui-panel', x + w / 2, y + h / 2, w, h) ??
+    scene.add.rectangle(x + w / 2, y + h / 2, w, h, PAL.deepShadow).setStrokeStyle(1, PAL.armorShadow)
+  );
 }
 
 /** The little gold L-shapes in each corner of the preview's frames. */
@@ -118,8 +133,13 @@ export function fade(scene: Phaser.Scene, x: number, y: number, w: number, h: nu
 export function addHeading(scene: Phaser.Scene, title: string, y: number, sub?: string) {
   const t = scene.add.text(PAD, y, title, text.display(34, PAL.ivory)).setOrigin(0, 0).setShadow(0, 2, '#000000', 10, false, true);
   const lineY = y + t.height + 6;
-  const g = scene.add.graphics();
-  for (let i = 0; i < 53; i++) g.fillStyle(PAL.goldEdge, 1 - i / 53).fillRect(PAD + i, lineY, 1, 1);
+  if (scene.textures.exists('ui-divider')) {
+    // ui-divider.png: the flourish under each screen title, drawn at its own size
+    scene.add.image(PAD, lineY, 'ui-divider').setOrigin(0, 0.5);
+  } else {
+    const g = scene.add.graphics();
+    for (let i = 0; i < 53; i++) g.fillStyle(PAL.goldEdge, 1 - i / 53).fillRect(PAD + i, lineY, 1, 1);
+  }
   let bottom = lineY + 4;
   if (sub) {
     const s = scene.add.text(PAD, lineY + 10, sub, text.body(18, PAL.muted)).setWordWrapWidth(GAME_W - PAD * 2);
@@ -138,10 +158,12 @@ export function addIcon(scene: Phaser.Scene, x: number, y: number, name: string,
 /** Small pixel-font tag with a dark fill and a coloured edge, like the preview's rarity badges. */
 export function addBadge(scene: Phaser.Scene, x: number, y: number, label: string, color: number, size = 14) {
   const t = scene.add.text(x + 6, y + 4, label, text.hud(size, color)).setOrigin(0, 0);
-  const box = scene.add
-    .rectangle(x, y, t.width + 12, t.height + 8, 0x110b13, 0.92)
-    .setOrigin(0, 0)
-    .setStrokeStyle(1, color);
+  const bw = t.width + 12;
+  const bh = t.height + 8;
+  // ui-badge.png is tinted with the rarity colour, so draw it in white/greys
+  const box =
+    nine(scene, 'ui-badge', x + bw / 2, y + bh / 2, bw, bh)?.setTint(color) ??
+    scene.add.rectangle(x, y, bw, bh, 0x110b13, 0.92).setOrigin(0, 0).setStrokeStyle(1, color);
   scene.children.bringToTop(t);
   return [box, t] as const;
 }
