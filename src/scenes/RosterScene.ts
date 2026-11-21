@@ -31,7 +31,7 @@ import { makeButton } from '../ui/button';
 import { CURRENCY_BAR_H, addCurrencyBar } from '../ui/currencyBar';
 import { portraitKey } from '../ui/placeholderPortrait';
 import { nine } from '../ui/skin';
-import { addTabBar } from '../ui/tabBar';
+import { TAB_BAR_H, addTabBar } from '../ui/tabBar';
 import { PAD, addBackdrop, addBadge, addFrame, addHeading, addIcon, addScreenGlow, text } from '../ui/theme';
 
 type Tab = 'oath' | 'skills' | 'gear';
@@ -40,6 +40,10 @@ type Tab = 'oath' | 'skills' | 'gear';
 export class RosterScene extends Phaser.Scene {
   private openId?: string;
   private tab: Tab = 'oath';
+  /** Kept across restarts so levelling up a Sister doesn't jump the list back to the top. */
+  private static scrollY = 0;
+  private dragged = false;
+  private detailOpen = false;
 
   constructor() {
     super('Roster');
@@ -72,6 +76,7 @@ export class RosterScene extends Phaser.Scene {
     const ch = ph + 46;
     const y0 = top + 12;
     const party = new Set(game.save.lastParty);
+    const firstCard = this.children.list.length;
     sorted.forEach((c, i) => {
       const left = PAD + (i % cols) * (cw + gap);
       const topY = y0 + Math.floor(i / cols) * (ch + gap);
@@ -103,7 +108,65 @@ export class RosterScene extends Phaser.Scene {
       }
       // tap target on top of the whole card
       const hit = this.add.rectangle(x, topY + ch / 2, cw, ch, 0x000000, 0.001).setInteractive({ useHandCursor: true });
-      hit.on('pointerup', () => this.showDetail(c));
+      hit.on('pointerup', (p: Phaser.Input.Pointer) => {
+        // A drag scrolls the list; only a tap inside the visible window opens her page.
+        if (this.dragged || p.y < viewTop || p.y > viewBottom || this.detailOpen) return;
+        this.showDetail(c);
+      });
+    });
+
+    // Scrolling: everything the grid drew moves in one container, masked to the window
+    // between the heading and the tab bar. Drag (touch or mouse) or the mouse wheel.
+    const viewTop = y0 - 6;
+    const viewBottom = GAME_H - TAB_BAR_H;
+    const grid = this.add.container(0, 0);
+    grid.add(this.children.list.slice(firstCard, this.children.list.length - 1));
+    const rows = Math.ceil(sorted.length / cols);
+    const contentBottom = y0 + rows * (ch + gap) + 12;
+    const minY = Math.min(0, viewBottom - contentBottom);
+    const maskShape = this.make.graphics({}, false).fillRect(0, viewTop, GAME_W, viewBottom - viewTop);
+    grid.setMask(maskShape.createGeometryMask());
+    const setScroll = (y: number) => {
+      RosterScene.scrollY = Phaser.Math.Clamp(y, minY, 0);
+      grid.y = RosterScene.scrollY;
+    };
+    setScroll(RosterScene.scrollY);
+    let startY = 0;
+    let startScroll = 0;
+    let down = false;
+    let velocity = 0;
+    let lastY = 0;
+    this.dragged = false;
+    this.input.on('pointerdown', (p: Phaser.Input.Pointer) => {
+      if (this.detailOpen || p.y < viewTop || p.y > viewBottom) return;
+      down = true;
+      this.dragged = false;
+      startY = lastY = p.y;
+      startScroll = grid.y;
+      velocity = 0;
+    });
+    this.input.on('pointermove', (p: Phaser.Input.Pointer) => {
+      if (!down || !p.isDown) return;
+      if (Math.abs(p.y - startY) > 8) this.dragged = true;
+      if (this.dragged) setScroll(startScroll + (p.y - startY));
+      velocity = p.y - lastY;
+      lastY = p.y;
+    });
+    const release = () => {
+      if (!down) return;
+      down = false;
+      // a little momentum after a flick
+      if (this.dragged && Math.abs(velocity) > 2) {
+        const target = { v: velocity };
+        this.tweens.add({ targets: target, v: 0, duration: 500, ease: 'Cubic.easeOut', onUpdate: () => setScroll(grid.y + target.v) });
+      }
+      // let this tap's pointerup handlers see `dragged` before it resets
+      this.time.delayedCall(0, () => (this.dragged = false));
+    };
+    this.input.on('pointerup', release);
+    this.input.on('pointerupoutside', release);
+    this.input.on('wheel', (_p: Phaser.Input.Pointer, _o: unknown, _dx: number, dy: number) => {
+      if (!this.detailOpen) setScroll(grid.y - dy);
     });
 
     addTabBar(this, 'Roster');
@@ -119,6 +182,8 @@ export class RosterScene extends Phaser.Scene {
 
   private showDetail(c: CrusaderDef, tab: Tab = 'oath') {
     const layer = this.add.container(0, 0).setDepth(10);
+    this.detailOpen = true;
+    layer.once('destroy', () => (this.detailOpen = false));
     const have = game.save.owned[c.id];
     const cls = CLASSES[c.classId];
     const style = { fontFamily: FONT, color: hex(PAL.ivory), align: 'center', wordWrap: { width: GAME_W - 80 } };
