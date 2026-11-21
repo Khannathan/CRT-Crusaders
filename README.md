@@ -50,10 +50,14 @@ Enemies with tricks: the Warden shields allies, the Mourning Priest heals them, 
 
 Crypts live in `src/systems/crusade.ts` (`CRYPTS`), line-ups in `src/data/enemies.ts` (`ENCOUNTERS`), events in `src/data/events.ts`. Crypt card art: `src/assets/ui/bg-<crypt id>.webp` (falls back to `bg-hall`). Map icons: `node-fight`, `node-elite`, `node-event`, `node-shrine`, `node-reliquary`, `node-boss` (48 × 48), plus the intent icon `icon-buff`.
 
+Order art: `src/assets/ui/banner-<order id>.webp` is the banner backdrop on the Sealed Altar (falls back to `bg-altar`), and `sigil-<order id>.png` (64 × 64) replaces the drawn Order sigil. Order ids: `iron-vigil`, `ashen-mercy`, `veiled-tribunal`, `sepulcher-watch`, `candle-choir`, `thorn-covenant`, `drowned-litany`, `glass-confession`, `red-pilgrimage`, `hollow-bell`.
+
 ## Reasons to keep going
 
 - **Heresy tiers:** after clearing a crypt, pick Heresy I to V on its card (‹ ›). Each tier gives enemies +25% HP and attack, adds +30% rewards, and every second tier takes a round off the Vigil candle. Each tier opens after the one before it is cleared, and each first clear pays 3 Seals. Tuning is in `crusade.ts` (`HERESY_*`).
-- **Order bonuses:** two crusaders of the same order in a party turn on a bonus (`src/data/orders.ts`), shown on the Muster screen and on each crusader's Roster card. Glass Confession has a second tier at three.
+- **Orders:** 50 Sisters across 10 Orders (`src/data/orders.ts`), five per Order with two URs each. Two Sisters of the same Order in a party turn on a bonus, and three turn on a stronger one, shown on the Muster screen and each Sister's Roster card.
+- **Order banners:** the Sealed Altar runs one banner per Order (‹ › to switch). Tap one of the Order's two URs to target it. A UR pull is the target half the time, and the next UR after a miss is always the target. Half of SSR pulls come from the banner's Order. Rules are in `src/systems/gacha.ts`.
+- **Passives:** SSR and UR Sisters carry a passive (lifesteal, thorns, bulwark, martyr, plague and more), listed in `src/data/crusaders.ts` and run in `src/systems/combat.ts`.
 - **Vow upgrades:** duplicate pulls upgrade skills at Vow 2 (first skill), Vow 4 (second skill) and Vow 5 (the Rite), for +25% effect and one less turn of cooldown. An upgraded skill shows a + on its name.
 
 ## Layout

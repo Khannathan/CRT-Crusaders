@@ -137,7 +137,7 @@ export class RosterScene extends Phaser.Scene {
     // What the next duplicates unlock, and what her order brings to a party
     const skills = CLASS_SKILLS[c.classId];
     const perks = VOW_UPGRADES.map(([v, i]) => `${have.vow >= v ? '✓ ' : ''}Vow ${v}: ${skills[i].name}+`).join('  ·  ');
-    const order = ORDERS[c.order]?.[0];
+    const order = ORDERS[c.order]?.tiers[0];
     layer.add([
       this.add.text(GAME_W / 2, 586, perks, { ...style, fontSize: '15px', color: hex(PAL.amber), wordWrap: { width: GAME_W - 70 } }).setOrigin(0.5),
       ...(order ? [this.add.text(GAME_W / 2, 624, `With another ${c.order}: ${order.desc}`, { ...style, fontSize: '15px', color: hex(PAL.muted) }).setOrigin(0.5)] : []),

@@ -94,3 +94,33 @@ export function makeNodeTextures(scene: Phaser.Scene) {
     g.fillStyle(PAL.bg).fillCircle(20, 21, 3).fillCircle(28, 21, 3).fillRect(20, 31, 2, 4).fillRect(23, 31, 2, 4).fillRect(26, 31, 2, 4);
   });
 }
+
+export const sigilKey = (orderId: string) => `sigil-${orderId}`;
+
+/** Stand-in Order sigils (64 x 64): a ring in the Order's colours around a simple glyph. */
+export function makeSigilTextures(scene: Phaser.Scene, orders: { id: string; color: number; accent: number }[]) {
+  const glyphs: ((g: Phaser.GameObjects.Graphics) => void)[] = [
+    (g) => g.fillRect(28, 14, 8, 36).fillRect(18, 22, 28, 7), // iron cross
+    (g) => g.fillTriangle(32, 14, 18, 46, 46, 46).fillStyle(PAL.bg).fillTriangle(32, 26, 25, 42, 39, 42), // ash flame
+    (g) => g.fillEllipse(32, 32, 34, 18).fillStyle(PAL.bg).fillCircle(32, 32, 6), // veiled eye
+    (g) => g.fillCircle(32, 28, 13).fillRect(25, 36, 14, 10).fillStyle(PAL.bg).fillCircle(27, 27, 3).fillCircle(37, 27, 3), // skull
+    (g) => g.fillRect(29, 26, 6, 22).fillTriangle(32, 12, 27, 26, 37, 26), // candle
+    (g) => g.fillTriangle(16, 46, 32, 14, 24, 46).fillTriangle(48, 46, 32, 14, 40, 46).fillRect(18, 30, 28, 4), // thorns
+    (g) => g.fillRect(16, 24, 32, 4).fillRect(16, 32, 32, 4).fillRect(16, 40, 32, 4), // waves
+    (g) => g.fillRect(20, 14, 24, 36).fillStyle(PAL.bg).fillRect(24, 18, 16, 28), // mirror
+    (g) => g.fillTriangle(32, 14, 22, 36, 42, 36).fillCircle(32, 38, 10), // blood drop
+    (g) => g.fillTriangle(32, 14, 18, 44, 46, 44).fillRect(16, 44, 32, 4).fillCircle(32, 50, 3), // bell
+  ];
+  orders.forEach((o, i) => {
+    const key = sigilKey(o.id);
+    if (scene.textures.exists(key)) return;
+    const g = scene.make.graphics({}, false);
+    g.fillStyle(o.accent).fillCircle(32, 32, 31);
+    g.fillStyle(PAL.bg).fillCircle(32, 32, 27);
+    g.lineStyle(2, o.color).strokeCircle(32, 32, 24);
+    g.fillStyle(o.color);
+    glyphs[i % glyphs.length](g);
+    g.generateTexture(key, 64, 64);
+    g.destroy();
+  });
+}

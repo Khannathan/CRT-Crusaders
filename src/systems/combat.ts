@@ -244,6 +244,15 @@ export class Battle {
         }
         this.checkPhase(actor, events);
       }
+      if (actor.passive?.kind === 'healAura') {
+        for (const a of this.alive(actor.side)) {
+          const real = Math.min(a.maxHp - a.hp, Math.round(a.maxHp * (actor.passive.value ?? 0)));
+          if (real > 0) {
+            a.hp += real;
+            events.push({ type: 'heal', uid: a.uid, amount: real });
+          }
+        }
+      }
       if (st.weaken && --st.weaken.turns <= 0) st.weaken = undefined;
       if (st.empower && --st.empower.turns <= 0) st.empower = undefined;
       if (st.accused && --st.accused <= 0) st.accused = undefined;
@@ -363,7 +372,8 @@ export class Battle {
         events.push({ type: 'shield', uid: t.uid, amount });
       }
       if (skill.poison) {
-        const dmg = Math.max(1, Math.round(this.attackOf(actor) * skill.poison.mult));
+        const plague = actor.passive?.kind === 'plague' ? 1 + (actor.passive.value ?? 0) : 1;
+        const dmg = Math.max(1, Math.round(this.attackOf(actor) * skill.poison.mult * plague));
         const old = skill.stackPoison ? t.status.poison : undefined;
         t.status.poison = old ? { dmg: old.dmg + dmg, turns: Math.max(old.turns, skill.poison.turns) } : { dmg, turns: skill.poison.turns };
         events.push({ type: 'status', uid: t.uid, label: actor.side === 'party' && actor.classId === 'censer' ? 'Burning' : 'Poisoned' });
@@ -519,7 +529,7 @@ export class Battle {
       if (!planned && valid.length && valid.every((u) => u.status.taunt)) targets = [valid[0]];
     }
     const front = targets[0];
-    const estimate = skill.mult && front ? Math.round(damageAfterArmor(this.attackOf(actor) * skill.mult, front.armor)) : 0;
+    const estimate = skill.mult && front ? Math.round(damageAfterArmor(this.attackOf(actor) * skill.mult, front.armor) * this.guardOf(front)) : 0;
     const kind: IntentKind = skill.windup ? 'charge' : skill.target === 'allEnemies' ? 'aoe' : skill.weaken || skill.poison ? 'debuff' : 'attack';
     return { kind, skill, targets, estimate, charging };
   }
@@ -554,9 +564,10 @@ export class Battle {
     if (t.status.accused) raw *= ACCUSED_MULT * (1 + (skill.bonusIfAccused ?? 0));
     if (t.status.weaken && skill.bonusIfWeak) raw *= 1 + skill.bonusIfWeak;
     if (skill.execute && t.hp < t.maxHp * EXECUTE_AT) raw *= 1 + skill.execute;
+    if (actor.passive?.kind === 'executioner' && t.hp < t.maxHp / 2) raw *= 1 + (actor.passive.value ?? 0);
     const crit = (t.status.accused && actor.passive?.kind === 'critOnAccused') || this.rng() < actor.crit;
     if (crit) raw *= CRIT_MULT;
-    let dmg = Math.max(1, Math.round(damageAfterArmor(raw, t.armor) * this.vary()));
+    let dmg = Math.max(1, Math.round(damageAfterArmor(raw, t.armor) * this.vary() * this.guardOf(t)));
     let blocked = 0;
     if (t.status.shield) {
       blocked = Math.min(t.status.shield, dmg);
@@ -572,8 +583,28 @@ export class Battle {
     t.hp -= dmg;
     events.push({ type: 'damage', uid: t.uid, amount: dmg, blocked, crit });
     if (t.side === 'party' && actor.side === 'enemy') this.hurtZeal(t, dmg, events);
-    if (t.hp <= 0) this.kill(t, events);
-    else this.checkPhase(t, events);
+    if (dmg > 0 && actor.passive?.kind === 'lifesteal' && actor.hp > 0) {
+      const real = Math.min(actor.maxHp - actor.hp, Math.round(dmg * (actor.passive.value ?? 0)));
+      if (real > 0) {
+        actor.hp += real;
+        events.push({ type: 'heal', uid: actor.uid, amount: real });
+      }
+    }
+    if (dmg > 0 && t.passive?.kind === 'thorns' && actor !== t && actor.hp > 0) {
+      events.push({ type: 'status', uid: t.uid, label: t.passive.name });
+      this.pierce(actor, Math.round(dmg * (t.passive.value ?? 0)), events);
+    }
+    if (t.hp <= 0) {
+      this.kill(t, events);
+      if (actor.side === 'party' && actor.passive?.kind === 'zealOnKill') this.addZeal(actor.passive.value ?? 0, events, actor.passive.name);
+    } else this.checkPhase(t, events);
+  }
+
+  /** Damage multiplier from a living Sister's bulwark passive. */
+  private guardOf(t: Unit) {
+    if (t.side !== 'party') return 1;
+    const g = this.alive('party').find((u) => u.passive?.kind === 'bulwark');
+    return g ? 1 - (g.passive!.value ?? 0) : 1;
   }
 
   /** Expected damage of a skill on one target, before shields and luck. Used by Auto and target previews. */
@@ -585,6 +616,7 @@ export class Battle {
       if (t.status.accused) raw *= ACCUSED_MULT * (1 + (skill.bonusIfAccused ?? 0));
       if (t.status.weaken && skill.bonusIfWeak) raw *= 1 + skill.bonusIfWeak;
       if (skill.execute && t.hp < t.maxHp * EXECUTE_AT) raw *= 1 + skill.execute;
+      if (actor.passive?.kind === 'executioner' && t.hp < t.maxHp / 2) raw *= 1 + (actor.passive.value ?? 0);
       const critChance = t.status.accused && actor.passive?.kind === 'critOnAccused' ? 1 : actor.crit;
       raw *= 1 + critChance * (CRIT_MULT - 1);
       total += damageAfterArmor(raw, t.armor);
@@ -621,6 +653,11 @@ export class Battle {
     events.push({ type: 'death', uid: u.uid });
     this.queue = this.queue.filter((id) => id !== u.uid);
     this.compact(u.side);
+    if (u.side === 'party' && u.passive?.kind === 'martyr' && this.alive('party').length) {
+      events.push({ type: 'text', text: `${u.name}'s sacrifice sets her Sisters ablaze!` });
+      this.addZeal(u.passive.value ?? 0, events, u.passive.name);
+      for (const a of this.alive('party')) a.status.empower = { pct: 0.25, turns: 2 };
+    }
     const burst = u.side === 'enemy' ? ENEMIES[u.ref].burst : undefined;
     if (burst) {
       events.push({ type: 'text', text: `${u.name} bursts!` });

@@ -1,7 +1,10 @@
 import Phaser from 'phaser';
 import { FONT, GAME_H, GAME_W, PAL, hex } from '../config';
 import { RARITY_COLOR } from '../data/classes';
+import { CLASSES } from '../data/classes';
 import { CRUSADERS } from '../data/crusaders';
+import { ORDERS, ORDER_LIST } from '../data/orders';
+import { sigilKey } from '../ui/icons';
 import { commit, game } from '../state/game';
 import { COST_ONE, COST_TEN, PITY_LIMIT, RARITY_ORDER, RATES, canPull, pull, type PullKind } from '../systems/gacha';
 import { makeButton } from '../ui/button';
@@ -22,46 +25,77 @@ export class RecruitScene extends Phaser.Scene {
     const s = game.save;
     const top = addHeading(this, 'The Sealed Altar', CURRENCY_BAR_H + 16);
 
-    // Banner: the three highest-rarity crusaders before the altar, the best in the middle
+    // Order banner: pick an Order with ‹ ›, then tap one of its two URs to target her.
+    const banner = this.currentBanner();
+    const ord = ORDERS[banner.order];
+    const urs = CRUSADERS.filter((c) => c.order === ord.name && c.rarity === 'UR');
     const bw = GAME_W - PAD * 2;
-    const bh = 370;
-    const by = top + 14 + bh / 2;
-    addBackdrop(this, 'bg-altar', GAME_W / 2, by, bw, bh, { fade: 0.2, focusY: 0.35 });
-    addFrame(this, GAME_W / 2, by, bw, bh);
-    const featured = [...CRUSADERS].sort((a, b) => RARITY_ORDER.indexOf(b.rarity) - RARITY_ORDER.indexOf(a.rarity)).slice(0, 3);
-    const order = [featured[1], featured[0], featured[2]];
-    [0, 2, 1].forEach((i) => {
-      const c = order[i];
-      const big = i === 1; // drawn last so it overlaps its neighbours
-      const size = big ? 230 : 140;
-      const x = GAME_W / 2 + (i - 1) * 168;
-      const y = by + (big ? 0 : 20);
-      const tint = RARITY_COLOR[c.rarity];
-      this.add.rectangle(x, y, size + 12, size + 12, big ? 0x241720 : 0x170f1b);
-      this.add.image(x, y, portraitKey(c.id)).setDisplaySize(size, size);
-      this.add.rectangle(x, y, size, size).setStrokeStyle(1, tint);
-      addBadge(this, x - size / 2 + 6, y + size / 2 - 30, c.rarity, tint, 13);
+    const bh = 430;
+    const by = top + 12 + bh / 2;
+    const bTop = by - bh / 2;
+    const art = this.textures.exists(`banner-${ord.id}`) ? `banner-${ord.id}` : 'bg-altar';
+    addBackdrop(this, art, GAME_W / 2, by, bw, bh, { fade: 0.55, fadeColor: 0x140b12, focusY: 0.35 });
+    this.add.rectangle(GAME_W / 2, by, bw, bh, ord.color, 0.12);
+    addFrame(this, GAME_W / 2, by, bw, bh, { edge: ord.color });
+    const i = ORDER_LIST.indexOf(ord);
+    const step = (d: number) => {
+      const next = ORDER_LIST[(i + d + ORDER_LIST.length) % ORDER_LIST.length];
+      s.banner = { order: next.name, target: CRUSADERS.find((c) => c.order === next.name && c.rarity === 'UR')!.id };
+      commit();
+      this.scene.restart();
+    };
+    makeButton(this, PAD + 34, bTop + 46, 48, 56, '‹', () => step(-1), { fontSize: 26 });
+    makeButton(this, GAME_W - PAD - 34, bTop + 46, 48, 56, '›', () => step(1), { fontSize: 26 });
+    this.add.image(GAME_W / 2, bTop + 34, sigilKey(ord.id)).setDisplaySize(44, 44);
+    this.add.text(GAME_W / 2, bTop + 72, ord.name.toUpperCase(), text.display(22, 0xfff1d6)).setOrigin(0.5).setShadow(0, 2, '#000000', 8, false, true);
+    this.add
+      .text(GAME_W / 2, bTop + 100, `"${ord.creed}"`, { ...text.body(17, 0xe1cabf), fontStyle: 'italic', align: 'center', wordWrap: { width: bw - 120 } })
+      .setOrigin(0.5, 0);
+    this.add.text(GAME_W / 2, bTop + 140, `BANNER ${i + 1} / ${ORDER_LIST.length}`, text.hud(12, PAL.muted)).setOrigin(0.5);
+
+    const size = 168;
+    urs.forEach((c, k) => {
+      const x = GAME_W / 2 + (k === 0 ? -1 : 1) * 104;
+      const y = bTop + 168 + size / 2;
+      const chosen = c.id === banner.target;
+      if (chosen) {
+        const glow = this.add.rectangle(x, y, size + 16, size + 16).setStrokeStyle(4, PAL.amber);
+        this.tweens.add({ targets: glow, alpha: 0.35, duration: 700, yoyo: true, repeat: -1 });
+      }
+      this.add.rectangle(x, y, size + 8, size + 8, 0x170f1b).setStrokeStyle(1, RARITY_COLOR.UR);
+      const img = this.add.image(x, y, portraitKey(c.id)).setDisplaySize(size, size).setInteractive({ useHandCursor: true });
+      if (!chosen) img.setAlpha(0.6);
+      img.on('pointerup', () => {
+        s.banner = { order: ord.name, target: c.id };
+        commit();
+        this.scene.restart();
+      });
+      addBadge(this, x - size / 2 + 4, y - size / 2 + 4, chosen ? 'TARGET' : 'UR', chosen ? PAL.amber : RARITY_COLOR.UR, 12);
+      this.add.text(x, y + size / 2 + 14, c.name, { ...text.body(18, chosen ? 0xfff1d6 : PAL.muted), fontStyle: '600' }).setOrigin(0.5);
+      this.add.text(x, y + size / 2 + 34, (c.title ?? CLASSES[c.classId].name).toUpperCase(), text.hud(11, PAL.muted)).setOrigin(0.5);
     });
 
-    // Pool panel
+    // Banner rules and pity
     const px = PAD;
     const pw = GAME_W - PAD * 2;
-    let y = by + bh / 2 + 12;
-    const poolH = 132;
+    let y = by + bh / 2 + 10;
+    const poolH = 112;
     this.add.rectangle(GAME_W / 2, y + poolH / 2, pw, poolH, PAL.deepShadow).setStrokeStyle(1, PAL.armorShadow);
-    this.add.text(px + 16, y + 12, 'Those who may answer', text.body(25, PAL.ivory)).setFontStyle('600');
+    const target = CRUSADERS.find((c) => c.id === banner.target)!;
+    this.add
+      .text(px + 16, y + 12, s.urGuaranteed ? `Next UR is ${target.name.split(' ')[0]}, sworn.` : `A UR here is ${target.name.split(' ')[0]} half the time,`, text.body(19, PAL.ivory))
+      .setFontStyle('600');
+    this.add.text(px + 16, y + 38, s.urGuaranteed ? 'The last UR strayed. The next one will not.' : 'and always after one that strays.', text.body(18, PAL.muted));
     const toPity = PITY_LIMIT - s.pity;
-    this.add.text(px + 16, y + 46, 'Any Sister may answer the call.', text.body(19, PAL.muted));
-    this.add.text(px + 16, y + 70, `SSR or better within ${toPity} pull${toPity === 1 ? '' : 's'}.`, text.body(19, PAL.amber)).setFontStyle('600');
-    makeButton(this, GAME_W - PAD - 16 - 75, y + 84, 150, 46, 'View rates', () => this.showRates(), { fontSize: 18, icon: 'book' });
+    this.add.text(px + 16, y + 70, `SSR or better within ${toPity} pull${toPity === 1 ? '' : 's'}.`, text.body(18, PAL.amber)).setFontStyle('600');
+    makeButton(this, GAME_W - PAD - 16 - 70, y + 80, 140, 44, 'View rates', () => this.showRates(), { fontSize: 17, icon: 'book' });
 
     // Offer panel
-    y += poolH + 10;
-    const offerH = GAME_H - TAB_BAR_H - 12 - y;
+    y += poolH + 8;
+    const offerH = GAME_H - TAB_BAR_H - 10 - y;
     this.add.rectangle(GAME_W / 2, y + offerH / 2, pw, offerH, PAL.deepShadow).setStrokeStyle(1, PAL.armorShadow);
-    this.add.text(px + 16, y + 10, 'Offer Wax Seals', text.body(25, PAL.ivory)).setFontStyle('600');
-    this.add.text(px + 16, y + 42, 'Ten oaths always bring an SR or better.', text.body(18, PAL.muted));
-    const btnY = y + offerH - 58;
+    this.add.text(px + 16, y + 8, 'Ten oaths always bring an SR or better.', text.body(18, PAL.muted));
+    const btnY = y + offerH - 50;
     const half = (pw - 32 - 10) / 2;
     const freeTen = !s.freeTenUsed;
     makeButton(this, px + 16 + half / 2, btnY, half, 84, `Recruit ×1\n${COST_ONE} Seal`, () => this.doPull('one'), {
@@ -79,6 +113,16 @@ export class RecruitScene extends Phaser.Scene {
     );
 
     addTabBar(this, 'Recruit');
+  }
+
+  /** The saved banner, or the first Order's first UR. */
+  private currentBanner() {
+    const s = game.save;
+    if (!s.banner || !ORDERS[s.banner.order] || !CRUSADERS.some((c) => c.id === s.banner!.target && c.order === s.banner!.order)) {
+      const first = ORDER_LIST[0];
+      s.banner = { order: first.name, target: CRUSADERS.find((c) => c.order === first.name && c.rarity === 'UR')!.id };
+    }
+    return s.banner;
   }
 
   private doPull(kind: PullKind) {
@@ -106,7 +150,7 @@ export class RecruitScene extends Phaser.Scene {
       .text(
         GAME_W / 2,
         560,
-        `Within a rarity, each Sister is equally likely.\n×10 always includes an SR or better.\nThe ${PITY_LIMIT}th pull without an SSR or UR gives one.\nDuplicates add a Vow rank (max 5), then pay Tithes.`,
+        `On an Order banner, a UR is the targeted Sister half\nthe time, and always after a UR that strays.\nHalf of SSRs come from the banner's Order.\n×10 always includes an SR or better.\nThe ${PITY_LIMIT}th pull without an SSR or UR gives one.\nDuplicates add a Vow rank (max 5), then pay Tithes.`,
         { ...style, fontSize: '17px', color: hex(PAL.steel), align: 'center', lineSpacing: 8 },
       )
       .setOrigin(0.5);
