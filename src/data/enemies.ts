@@ -55,7 +55,7 @@ export const ENEMIES: Record<string, EnemyDef> = {
     ],
     phase2: {
       atPct: 0.5,
-      text: 'The Choir rises from the water, singing louder!',
+      text: 'The Choir rises from the black water, its drowned hymn swelling!',
       atkPct: 0.15,
       skills: [
         { id: 'hymn-of-drowning', name: 'Hymn of Drowning', desc: '', from: any, target: 'allEnemies', mult: 0.6 },
@@ -91,7 +91,7 @@ export const ENEMIES: Record<string, EnemyDef> = {
   lurker: {
     id: 'lurker', name: 'Undertow Lurker', hp: 70, atk: 15, armor: 20, spd: 12, color: 0x2f4f5a, shape: 'lurker',
     skills: [
-      { id: 'drag-under', name: 'Drag Under', desc: 'Drags a back-rank crusader to the front.', from: any, target: 'enemy', reach: [3, 4], mult: 0.8, pull: true, aim: 'back', weight: 1.3 },
+      { id: 'drag-under', name: 'Drag Under', desc: 'Drags a back-rank Sister into the front line.', from: any, target: 'enemy', reach: [3, 4], mult: 0.8, pull: true, aim: 'back', weight: 1.3 },
       { id: 'undertow-bite', name: 'Undertow Bite', desc: '', from: any, target: 'enemy', reach: [1, 2], mult: 1.0 },
     ],
   },
@@ -109,7 +109,7 @@ export const ENEMIES: Record<string, EnemyDef> = {
   nun: {
     id: 'nun', name: 'Plague Nun', hp: 65, atk: 13, armor: 18, spd: 9, color: 0x5b6b3c, shape: 'nun',
     skills: [
-      { id: 'pestilent-psalm', name: 'Pestilent Psalm', desc: 'Poisons every crusader.', from: any, target: 'allEnemies', mult: 0.2, poison: { mult: 0.35, turns: 3 } },
+      { id: 'pestilent-psalm', name: 'Pestilent Psalm', desc: 'Poisons every Sister.', from: any, target: 'allEnemies', mult: 0.2, poison: { mult: 0.35, turns: 3 } },
       { id: 'rot-touch', name: 'Rot Touch', desc: '', from: any, target: 'enemy', mult: 0.8 },
     ],
   },

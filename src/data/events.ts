@@ -37,8 +37,8 @@ export const EVENTS: Record<string, EventDef> = {
     title: 'A Drowned Altar',
     text: 'Black water laps at an altar still warm with candle wax.',
     options: [
-      { label: 'Pray', hint: 'Heal everyone 25%.', outcome: { text: 'A calm settles over the party.', heal: 0.25 } },
-      { label: 'Bleed on it', hint: 'Lose 15% HP. Next fight starts with +50 Zeal.', outcome: { text: 'The altar drinks. Your blood sings.', hurt: 0.15, blessZeal: 50 } },
+      { label: 'Pray', hint: 'Heal everyone 25%.', outcome: { text: 'The Mother\'s silence falls over you. Wounds close.', heal: 0.25 } },
+      { label: 'Bleed on it', hint: 'Lose 15% HP. Next fight starts with +50 Zeal.', outcome: { text: 'The altar drinks deep. Your blood sings hymns.', hurt: 0.15, blessZeal: 50 } },
     ],
   },
   'sealed-coffer': {
@@ -47,7 +47,7 @@ export const EVENTS: Record<string, EventDef> = {
     text: 'An iron coffer, chained and stamped with an unfamiliar order.',
     options: [
       { label: 'Force it open', hint: 'Lose 10% HP. Take a relic.', outcome: { text: 'The chains bite, but the lid gives.', hurt: 0.1, relic: true } },
-      { label: 'Leave it', hint: 'Nothing happens.', outcome: { text: 'Some seals are best left unbroken.' } },
+      { label: 'Leave it', hint: 'Nothing happens.', outcome: { text: 'Some seals were set by better women than you.' } },
     ],
   },
   'tithe-box': {
@@ -55,14 +55,14 @@ export const EVENTS: Record<string, EventDef> = {
     title: 'The Tithe Box',
     text: "A poor box, overflowing. The dead won't miss it. Probably.",
     options: [
-      { label: 'Take the coins', hint: '+80 Tithes. The next Vigil candle is 3 rounds shorter.', outcome: { text: 'Somewhere, a candle gutters.', tithes: 80, curseVigil: 3 } },
-      { label: 'Leave it', hint: 'Nothing happens.', outcome: { text: 'You walk on with clean hands.' } },
+      { label: 'Take the coins', hint: '+80 Tithes. The next Vigil candle is 3 rounds shorter.', outcome: { text: 'Somewhere above, a votive candle gutters out.', tithes: 80, curseVigil: 3 } },
+      { label: 'Leave it', hint: 'Nothing happens.', outcome: { text: 'You walk on, hands clean, purse light.' } },
     ],
   },
   'whispering-bones': {
     id: 'whispering-bones',
     title: 'Whispering Bones',
-    text: 'A heap of skulls murmurs the names of the faithful.',
+    text: 'A heap of martyrs\' skulls murmurs the names of the faithful.',
     options: [
       { label: 'Listen closely', hint: '50%: +2 Seals. Otherwise lose 20% HP.', chance: 0.5, outcome: { text: 'They whisper where the old seals lie.', seals: 2 }, fail: { text: 'The whispers turn to screams.', hurt: 0.2 } },
       { label: 'Walk on', hint: 'Nothing happens.', outcome: { text: 'The murmuring follows you a while.' } },
@@ -71,9 +71,9 @@ export const EVENTS: Record<string, EventDef> = {
   'lost-penitent': {
     id: 'lost-penitent',
     title: 'A Lost Penitent',
-    text: 'A pilgrim kneels in the dark, too weak to stand.',
+    text: 'A flagellant kneels in the dark, too weak to rise.',
     options: [
-      { label: 'Share your water', hint: 'Lose 5% HP. Heal 15% and +20 Zeal next fight.', outcome: { text: 'She blesses each of you by name.', hurt: 0.05, heal: 0.15, blessZeal: 20 } },
+      { label: 'Share your water', hint: 'Lose 5% HP. Heal 15% and +20 Zeal next fight.', outcome: { text: 'She traces the sign of the Wound on each brow.', hurt: 0.05, heal: 0.15, blessZeal: 20 } },
       { label: 'Ask the way', hint: '+40 Tithes.', outcome: { text: 'She points to a hidden purse in the wall.', tithes: 40 } },
     ],
   },

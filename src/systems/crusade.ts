@@ -40,7 +40,7 @@ export interface CryptDef {
 export const OSSUARY: CryptDef = {
   id: 'drowned-ossuary',
   name: 'The Drowned Ossuary',
-  blurb: 'A flooded charnel house beneath a ruined abbey.',
+  blurb: 'A flooded charnel house. The drowned still sing.',
   floors: 5,
   early: ['ossuary-1', 'ossuary-2'],
   late: ['ossuary-3', 'ossuary-4', 'ossuary-5'],
@@ -53,7 +53,7 @@ export const OSSUARY: CryptDef = {
 export const BELFRY: CryptDef = {
   id: 'sunken-belfry',
   name: 'The Sunken Belfry',
-  blurb: 'A bell tower swallowed by the marsh. Something still rings it.',
+  blurb: 'A belfry in the marsh, still ringing for vespers.',
   floors: 6,
   early: ['belfry-1', 'belfry-2'],
   late: ['belfry-3', 'belfry-4', 'belfry-5'],

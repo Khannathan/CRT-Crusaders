@@ -138,12 +138,12 @@ export class RevealScene extends Phaser.Scene {
         flicker.remove();
         noise.destroy();
         this.busy = false;
-        this.hint.setText(this.index < this.results.length - 1 ? 'Tap for the next recruit' : 'Tap to continue');
+        this.hint.setText(this.index < this.results.length - 1 ? 'Tap for the next Sister' : 'Tap to continue');
       },
     });
 
     const style = { fontFamily: FONT, color: hex(PAL.ivory), align: 'center' };
-    const tag = r.isNew ? 'NEW RECRUIT' : r.tithes ? `Vows full: +${r.tithes} Tithes` : `Vow ${ROMAN[r.vow]}`;
+    const tag = r.isNew ? 'NEWLY SWORN' : r.tithes ? `Vows full: +${r.tithes} Tithes` : `Vow ${ROMAN[r.vow]}`;
     const texts = [
       this.add.text(0, SIZE / 2 + 44, c.name, { ...style, fontSize: '30px' }).setOrigin(0.5),
       this.add.text(0, SIZE / 2 + 82, `${c.rarity} · ${CLASSES[c.classId].name}`, { ...style, fontSize: '19px', color: hex(color) }).setOrigin(0.5),
@@ -161,7 +161,7 @@ export class RevealScene extends Phaser.Scene {
     this.children.removeAll(true);
     this.tweens.killAll();
     this.time.removeAllEvents();
-    this.add.text(GAME_W / 2, 56, 'Recruited', { fontFamily: FONT, fontSize: '32px', color: hex(PAL.amber) }).setOrigin(0.5);
+    this.add.text(GAME_W / 2, 56, 'Sworn', { fontFamily: FONT, fontSize: '32px', color: hex(PAL.amber) }).setOrigin(0.5);
 
     const cols = 3;
     const cellW = 160;

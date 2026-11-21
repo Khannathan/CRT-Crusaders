@@ -34,9 +34,9 @@ export class SanctumScene extends Phaser.Scene {
       addBackdrop(this, 'bg-altar', fx, fy, fw, fh, { alpha: 0.75, fade: 0.7 });
       addFrame(this, fx, fy, fw, fh);
       this.add
-        .text(PAD + 24, bottom - 190, 'The Sanctum stands empty.', text.display(26, 0xfff1d6))
+        .text(PAD + 24, bottom - 190, 'The Sanctum stands empty. No Sister keeps the vigil.', text.display(26, 0xfff1d6))
         .setShadow(0, 2, '#000000', 9, false, true);
-      this.add.text(PAD + 24, bottom - 146, 'Your first ten recruits await\nat the Sealed Altar.', { ...text.body(20, 0xd8c2bc), fontStyle: 'italic' });
+      this.add.text(PAD + 24, bottom - 146, 'Your first ten Sisters await\nat the Sealed Altar.', { ...text.body(20, 0xd8c2bc), fontStyle: 'italic' });
       makeButton(this, PAD + 24 + 130, bottom - 56, 260, 64, 'Go to the altar', () => this.scene.start('Recruit'), { active: true, icon: 'seal' });
     } else {
       const featured = [...owned].sort((a, b) => RARITY_ORDER.indexOf(b.rarity) - RARITY_ORDER.indexOf(a.rarity))[0];
@@ -54,7 +54,7 @@ export class SanctumScene extends Phaser.Scene {
       addFrame(this, fx, fy, fw, fh);
 
       const tagY = fy - fh / 2 + 20;
-      const tag = this.add.text(PAD + 44, tagY + 5, 'Featured Crusader', text.hud(14, PAL.ivory));
+      const tag = this.add.text(PAD + 44, tagY + 5, 'Sister of Note', text.hud(14, PAL.ivory));
       this.add.rectangle(PAD + 18, tagY, tag.width + 40, tag.height + 10, 0x1e121c, 0.93).setOrigin(0, 0).setStrokeStyle(1, 0x715044);
       this.children.bringToTop(tag);
       addIcon(this, PAD + 32, tagY + 5 + tag.height / 2, 'sigil', 14, PAL.amber);
@@ -71,7 +71,7 @@ export class SanctumScene extends Phaser.Scene {
         fontStyle: 'italic',
         wordWrap: { width: fw - 60 },
       });
-      makeButton(this, PAD + 22 + 95, bottom - 40, 190, 50, 'View crusader', () => this.scene.start('Roster'), {
+      makeButton(this, PAD + 22 + 95, bottom - 40, 190, 50, 'View Sister', () => this.scene.start('Roster'), {
         active: true,
         fontSize: 19,
         icon: 'book',
@@ -117,10 +117,10 @@ export class SanctumScene extends Phaser.Scene {
     layer.add(addFrame(this, GAME_W / 2, 480, GAME_W - 40, 440, { fill: 0x241925 }));
     layer.add(
       this.add
-        .text(GAME_W / 2, 360, 'Erase all progress?\n\nRecruits, Seals, Tithes and\ncrusade progress will be lost.', { ...style, fontSize: '22px' })
+        .text(GAME_W / 2, 360, 'Burn the records?\n\nSisters, Seals, Tithes and every\ncrusade will be forgotten.', { ...style, fontSize: '22px' })
         .setOrigin(0.5),
     );
-    const yes = makeButton(this, GAME_W / 2, 520, 300, 76, 'Erase and start over', () => {
+    const yes = makeButton(this, GAME_W / 2, 520, 300, 76, 'Burn it all', () => {
       resetGame();
       this.scene.restart();
     }, { active: true });

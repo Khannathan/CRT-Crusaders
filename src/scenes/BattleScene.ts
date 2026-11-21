@@ -110,7 +110,7 @@ export class BattleScene extends Phaser.Scene {
 
     for (const u of this.battle.units) this.makeCard(u);
     this.refresh();
-    this.logText.setText('The dark stirs...');
+    this.logText.setText('The dark stirs. Steel yourselves, Sisters.');
     this.time.delayedCall(600, () => this.step());
   }
 
@@ -151,7 +151,7 @@ export class BattleScene extends Phaser.Scene {
     absorbBattle(run, this.battle);
     this.mode = 'busy';
     this.clearSkills();
-    this.logText.setText(outcome === 'victory' ? 'Victory.' : 'Your party has fallen.');
+    this.logText.setText(outcome === 'victory' ? 'The heretics are purged.' : 'Your Sisters have fallen. The dark takes its tithe.');
     this.time.delayedCall(1200, () => {
       if (outcome === 'victory') {
         winRoom(run, game.save);
@@ -288,9 +288,9 @@ export class BattleScene extends Phaser.Scene {
   private explain(u: Unit) {
     const view = this.battle.intentOf(u);
     if (!view || this.mode === 'busy') return;
-    const who = view.targets.length === 1 ? view.targets[0].name : 'your whole party';
+    const who = view.targets.length === 1 ? view.targets[0].name : 'all your Sisters';
     let text: string;
-    if (view.kind === 'summon') text = `${u.name} will call another foe into the line.`;
+    if (view.kind === 'summon') text = `${u.name} will call another abomination into the line.`;
     else if (view.kind === 'buff') text = `${u.name} will use ${view.skill.name}: ${view.skill.desc || 'it strengthens its side.'}`;
     else if (view.kind === 'charge' && !view.charging) text = `${u.name} will start charging ${view.skill.name}: about ${view.estimate} to each of you the turn after. Delay it to break the charge.`;
     else text = `${u.name} will use ${view.skill.name} on ${who} for about ${view.estimate}${view.skill.target === 'allEnemies' ? ' each' : ''}.`;
@@ -298,7 +298,7 @@ export class BattleScene extends Phaser.Scene {
     if (view.skill.poison) text += ' It also Poisons.';
     if (view.skill.zealDrain) text += ` It steals ${view.skill.zealDrain} Zeal.`;
     if (view.skill.pull) text += ' It drags its target to the front rank.';
-    if (ENEMIES[u.ref].burst) text += ' When it dies, it bursts and hits your whole party.';
+    if (ENEMIES[u.ref].burst) text += ' When it dies, it bursts over all your Sisters.';
     if (u.armor >= 120) text += ' Its armor is thick: poison and burns ignore armor.';
     if (view.kind === 'attack' || view.kind === 'debuff') text += ' A Taunt pulls it away, and Shift can move out of its reach.';
     this.descText.setText(text);
@@ -390,7 +390,7 @@ export class BattleScene extends Phaser.Scene {
     const b = this.battle;
     this.zealFill.width = (400 * b.zeal) / ZEAL_MAX;
     this.zealFill.setFillStyle(b.zeal >= ZEAL_MAX ? PAL.amber : PAL.bronze);
-    this.zealText.setText(b.zeal >= ZEAL_MAX ? 'ZEAL FULL: a Rite is ready' : `Zeal ${b.zeal} / ${ZEAL_MAX}`);
+    this.zealText.setText(b.zeal >= ZEAL_MAX ? 'ZEAL ABLAZE: a Rite is ready' : `Zeal ${b.zeal} / ${ZEAL_MAX}`);
     this.roundText.setText(`Round ${Math.max(1, b.round)}`);
 
     // Vigil candle: shrinks each round; once out, enemies grow stronger

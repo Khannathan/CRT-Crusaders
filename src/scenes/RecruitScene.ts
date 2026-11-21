@@ -49,9 +49,9 @@ export class RecruitScene extends Phaser.Scene {
     let y = by + bh / 2 + 12;
     const poolH = 132;
     this.add.rectangle(GAME_W / 2, y + poolH / 2, pw, poolH, PAL.deepShadow).setStrokeStyle(1, PAL.armorShadow);
-    this.add.text(px + 16, y + 12, 'Recruitment pool', text.body(25, PAL.ivory)).setFontStyle('600');
+    this.add.text(px + 16, y + 12, 'Those who may answer', text.body(25, PAL.ivory)).setFontStyle('600');
     const toPity = PITY_LIMIT - s.pity;
-    this.add.text(px + 16, y + 46, 'Every recruit can appear.', text.body(19, PAL.muted));
+    this.add.text(px + 16, y + 46, 'Any Sister may answer the call.', text.body(19, PAL.muted));
     this.add.text(px + 16, y + 70, `SSR or better within ${toPity} pull${toPity === 1 ? '' : 's'}.`, text.body(19, PAL.amber)).setFontStyle('600');
     makeButton(this, GAME_W - PAD - 16 - 75, y + 84, 150, 46, 'View rates', () => this.showRates(), { fontSize: 18, icon: 'book' });
 
@@ -60,7 +60,7 @@ export class RecruitScene extends Phaser.Scene {
     const offerH = GAME_H - TAB_BAR_H - 12 - y;
     this.add.rectangle(GAME_W / 2, y + offerH / 2, pw, offerH, PAL.deepShadow).setStrokeStyle(1, PAL.armorShadow);
     this.add.text(px + 16, y + 10, 'Offer Wax Seals', text.body(25, PAL.ivory)).setFontStyle('600');
-    this.add.text(px + 16, y + 42, 'Recruit ×10 always includes SR or better.', text.body(18, PAL.muted));
+    this.add.text(px + 16, y + 42, 'Ten oaths always bring an SR or better.', text.body(18, PAL.muted));
     const btnY = y + offerH - 58;
     const half = (pw - 32 - 10) / 2;
     const freeTen = !s.freeTenUsed;
@@ -106,7 +106,7 @@ export class RecruitScene extends Phaser.Scene {
       .text(
         GAME_W / 2,
         560,
-        `Within a rarity, each recruit is equally likely.\n×10 always includes an SR or better.\nThe ${PITY_LIMIT}th pull without an SSR or UR gives one.\nDuplicates add a Vow rank (max 5), then pay Tithes.`,
+        `Within a rarity, each Sister is equally likely.\n×10 always includes an SR or better.\nThe ${PITY_LIMIT}th pull without an SSR or UR gives one.\nDuplicates add a Vow rank (max 5), then pay Tithes.`,
         { ...style, fontSize: '17px', color: hex(PAL.steel), align: 'center', lineSpacing: 8 },
       )
       .setOrigin(0.5);

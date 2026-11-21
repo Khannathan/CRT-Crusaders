@@ -72,7 +72,7 @@ export class RosterScene extends Phaser.Scene {
         addIcon(this, x, topY + ph / 2, 'lock', 30, 0x967b8e);
         this.add.rectangle(x, topY + ph, cw, 1, PAL.armorShadow);
         this.add.text(left + 8, topY + ph + 5, 'Unknown', { ...text.body(19, PAL.muted), fontStyle: '600' });
-        this.add.text(left + 8, topY + ph + 28, 'UNDISCOVERED', text.hud(12, PAL.steel));
+        this.add.text(left + 8, topY + ph + 28, 'UNSWORN', text.hud(12, PAL.steel));
       }
       card.setInteractive({ useHandCursor: true });
       this.children.bringToTop(card);
@@ -104,9 +104,9 @@ export class RosterScene extends Phaser.Scene {
     if (!have) {
       img.setTint(0x111111);
       layer.add([
-        this.add.text(GAME_W / 2, 370, 'Not yet recruited', { ...style, fontSize: '26px' }).setOrigin(0.5),
+        this.add.text(GAME_W / 2, 370, 'Not yet sworn', { ...style, fontSize: '26px' }).setOrigin(0.5),
         this.add.text(GAME_W / 2, 410, `${c.rarity} · ${cls.name}`, { ...style, fontSize: '18px', color: hex(PAL.steel) }).setOrigin(0.5),
-        this.add.text(GAME_W / 2, 470, 'Find her at the Sealed Altar.', { ...style, fontSize: '18px', color: hex(PAL.steel) }).setOrigin(0.5),
+        this.add.text(GAME_W / 2, 470, 'Her seal waits unbroken at the Altar.', { ...style, fontSize: '18px', color: hex(PAL.steel) }).setOrigin(0.5),
         ...close.all,
       ]);
       return;
