@@ -9,6 +9,7 @@ import { BALANCE_VERSION, Battle, ZEAL_MAX, skillsFor, type BattleEvent, type Un
 import { absorbBattle, currentRoom, finishRun, makeBattle, winRoom } from '../systems/crusade';
 import { newSeed, seeded } from '../systems/rng';
 import { enemyKey } from '../ui/enemyArt';
+import { intentIconKey } from '../ui/icons';
 import { portraitKey } from '../ui/placeholderPortrait';
 
 const CARD = 128;
@@ -26,6 +27,11 @@ interface Card {
   shieldFill: Phaser.GameObjects.Rectangle;
   hpText: Phaser.GameObjects.Text;
   tags: Phaser.GameObjects.Text;
+  /** Enemies: icon and words for the next move. */
+  intentIcon?: Phaser.GameObjects.Image;
+  intentText?: Phaser.GameObjects.Text;
+  /** Party: how much damage is coming at this crusader. */
+  threat?: Phaser.GameObjects.Text;
 }
 
 type Mode = 'busy' | 'skill' | 'target';
@@ -77,7 +83,8 @@ export class BattleScene extends Phaser.Scene {
     this.add.text(GAME_W - 52, 24, 'Vigil', { ...style, fontSize: '14px', color: hex(PAL.steel) }).setOrigin(1, 0.5);
 
     for (let i = 0; i < 4; i++) {
-      this.add.text(slotX(i + 1), ENEMY_Y - 84, ROMAN[i], { ...style, fontSize: '14px', color: hex(PAL.armorShadow) }).setOrigin(0.5);
+      // Enemy rank numerals sit in the card corner, leaving the space above for intents.
+      this.add.text(slotX(i + 1) - CARD / 2 + 4, ENEMY_Y - CARD / 2 + 2, ROMAN[i], { ...style, fontSize: '14px', color: hex(PAL.steel) }).setDepth(5);
       this.add.text(slotX(i + 1), PARTY_Y - 84, ROMAN[i], { ...style, fontSize: '14px', color: hex(PAL.armorShadow) }).setOrigin(0.5);
     }
 
@@ -213,6 +220,21 @@ export class BattleScene extends Phaser.Scene {
     this.perform(s, u);
   }
 
+  /** Tapping an enemy outside targeting spells out its next move. */
+  private explain(u: Unit) {
+    const view = this.battle.intentOf(u);
+    if (!view || this.mode === 'busy') return;
+    const who = view.targets.length === 1 ? view.targets[0].name : 'your whole party';
+    let text: string;
+    if (view.kind === 'summon') text = `${u.name} will call another foe into the line.`;
+    else if (view.kind === 'charge' && !view.charging) text = `${u.name} will start charging ${view.skill.name}: about ${view.estimate} to each of you the turn after. Delay it to break the charge.`;
+    else text = `${u.name} will use ${view.skill.name} on ${who} for about ${view.estimate}${view.skill.target === 'allEnemies' ? ' each' : ''}.`;
+    if (view.skill.weaken) text += ' It also Weakens.';
+    if (view.skill.poison) text += ' It also Poisons.';
+    if (view.kind === 'attack' || view.kind === 'debuff') text += ' A Taunt pulls it away, and Shift can move out of its reach.';
+    this.descText.setText(text);
+  }
+
   private clearSkills() {
     this.skillButtons.forEach((o) => o.destroy());
     this.skillButtons = [];
@@ -238,8 +260,22 @@ export class BattleScene extends Phaser.Scene {
     const y = party ? PARTY_Y : ENEMY_Y;
     const box = this.add.container(slotX(u.rank), y, [glow, frame, img, hpBg, hpFill, shieldFill, hpText, tags]);
     box.setSize(CARD, CARD).setInteractive({ useHandCursor: true });
-    box.on('pointerup', () => this.pickTarget(u));
-    this.cards.set(u.uid, { box, frame, glow, img, hpFill, shieldFill, hpText, tags });
+    box.on('pointerup', () => (this.mode === 'target' ? this.pickTarget(u) : this.explain(u)));
+    const card: Card = { box, frame, glow, img, hpFill, shieldFill, hpText, tags };
+    if (party) {
+      card.threat = this.add
+        .text(0, -CARD / 2 + 3, '', { fontFamily: FONT, fontSize: '15px', color: hex(PAL.ivory), backgroundColor: '#652b3b', padding: { x: 5, y: 2 } })
+        .setOrigin(0.5, 0);
+      box.add(card.threat);
+    } else {
+      // Intent sits above the card: what this enemy will do on its next turn.
+      card.intentIcon = this.add.image(-CARD / 2 + 12, -CARD / 2 - 42, intentIconKey('attack')).setDisplaySize(24, 24);
+      card.intentText = this.add
+        .text(-CARD / 2 + 28, -CARD / 2 - 28, '', { fontFamily: FONT, fontSize: '15px', color: hex(PAL.ivory), lineSpacing: -2, wordWrap: { width: CARD - 26 } })
+        .setOrigin(0, 1); // grows upward when a long name wraps
+      box.add([card.intentIcon, card.intentText]);
+    }
+    this.cards.set(u.uid, card);
   }
 
   /** Redraws every card, the turn strip, Zeal and the candle. */
@@ -261,6 +297,7 @@ export class BattleScene extends Phaser.Scene {
         st.accused && 'Accused',
         st.taunt && 'Taunt',
         st.empower && 'Empowered',
+        st.charging && 'Charging',
       ].filter(Boolean);
       c.tags.setText(tags.join(' · '));
       const active = this.actor?.uid === u.uid && !dead;
@@ -272,6 +309,8 @@ export class BattleScene extends Phaser.Scene {
         this.tweens.add({ targets: c.glow, alpha: 0.35, duration: 500, yoyo: true, repeat: -1 });
       }
     }
+
+    this.drawIntents();
 
     const b = this.battle;
     this.zealFill.width = (400 * b.zeal) / ZEAL_MAX;
@@ -302,12 +341,50 @@ export class BattleScene extends Phaser.Scene {
     });
   }
 
+  /** Enemy intents above each enemy, and the damage each crusader is about to take. */
+  private drawIntents() {
+    const incoming = new Map<string, number>();
+    for (const u of this.battle.units) {
+      const c = this.cards.get(u.uid);
+      if (!c?.intentText || !c.intentIcon) continue;
+      const view = this.battle.intentOf(u);
+      c.intentIcon.setVisible(!!view);
+      if (!view) {
+        c.intentText.setText('');
+        continue;
+      }
+      c.intentIcon.setTexture(intentIconKey(view.charging ? 'charge' : view.kind)).setDisplaySize(24, 24);
+      const who = view.targets.length === 1 ? view.targets[0].name : '';
+      let line: string;
+      if (view.kind === 'summon') line = 'Summons help';
+      else if (view.charging) line = `${view.estimate} to all, next turn!`;
+      else if (view.kind === 'charge') line = 'Starts charging';
+      else if (view.targets.length > 1 || view.skill.target === 'allEnemies') line = `${view.estimate} to all`;
+      else line = who ? `${view.estimate} → ${who}` : `${view.estimate}`;
+      c.intentText.setText(`${view.skill.name}\n${line}`);
+      c.intentText.setColor(hex(view.charging ? PAL.amber : view.kind === 'aoe' ? 0xd65f5f : PAL.ivory));
+      // Wind-ups only hurt on the turn they fire.
+      if (view.kind !== 'charge' || view.charging) {
+        for (const t of view.targets) incoming.set(t.uid, (incoming.get(t.uid) ?? 0) + view.estimate);
+      }
+    }
+    for (const u of this.battle.units) {
+      const c = this.cards.get(u.uid);
+      if (!c?.threat) continue;
+      const raw = incoming.get(u.uid) ?? 0;
+      const dmg = Math.max(0, raw - (u.status.shield ?? 0));
+      c.threat.setVisible(raw > 0 && u.hp > 0);
+      c.threat.setText(dmg === 0 ? 'Blocked' : `${dmg >= u.hp ? 'LETHAL ' : ''}-${dmg}`);
+      c.threat.setBackgroundColor(dmg === 0 ? '#383845' : dmg >= u.hp ? '#a03030' : '#652b3b');
+    }
+  }
+
   /** Plays battle events one after another, then calls done. */
   private play(events: BattleEvent[], done: () => void) {
     let delay = 0;
     for (const e of events) {
       this.time.delayedCall(delay, () => this.show(e));
-      delay += e.type === 'text' ? 250 : e.type === 'zeal' || e.type === 'move' ? 0 : 220;
+      delay += e.type === 'text' ? 250 : e.type === 'phase' ? 700 : e.type === 'zeal' || e.type === 'move' || e.type === 'intent' ? 0 : 220;
     }
     this.time.delayedCall(delay + 250, () => {
       this.refresh();
@@ -361,6 +438,18 @@ export class BattleScene extends Phaser.Scene {
         this.refresh();
         break;
       }
+      case 'phase': {
+        this.logText.setText(e.text);
+        this.cameras.main.shake(350, 0.012);
+        const c = this.cards.get(e.uid);
+        if (c) {
+          c.img.setTint(0xff4444);
+          this.time.delayedCall(500, () => c.img.clearTint());
+        }
+        this.refresh();
+        break;
+      }
+      case 'intent':
       case 'move':
       case 'zeal':
         this.refresh();

@@ -39,6 +39,12 @@ export interface SkillDef {
   rite?: boolean;
   /** Enemy-only: calls this enemy type into the last free rank. */
   summon?: string;
+  /** Enemy-only: how the AI picks a single target. Default: usually the most hurt. */
+  aim?: 'weakest' | 'strongest' | 'back' | 'front' | 'random';
+  /** Enemy-only: spends a turn charging first. Foresight (delay) interrupts the charge. */
+  windup?: boolean;
+  /** Enemy-only: relative chance the AI plans this skill. Default 1. */
+  weight?: number;
 }
 
 const any: number[] = [];

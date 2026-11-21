@@ -13,6 +13,27 @@ export interface Status {
   taunt?: number;
   shield?: number;
   delayed?: boolean;
+  /** Enemy is winding up its planned skill; it fires next turn unless delayed. */
+  charging?: boolean;
+}
+
+/** What an enemy will do on its next turn, shown to the player in advance. */
+export interface Intent {
+  skillId: string;
+  targetUid?: string;
+}
+
+export type IntentKind = 'attack' | 'aoe' | 'debuff' | 'summon' | 'charge';
+
+export interface IntentView {
+  kind: IntentKind;
+  skill: SkillDef;
+  /** Party units this move will land on (empty for summons). */
+  targets: Unit[];
+  /** Expected damage per target before crits, Accused and shields. */
+  estimate: number;
+  /** True while the enemy is charging: the hit comes on its following turn. */
+  charging: boolean;
 }
 
 export interface Unit {
@@ -35,6 +56,12 @@ export interface Unit {
   passive?: PassiveDef;
   /** Set once an Unbroken passive has saved this unit. */
   spentUnbroken?: boolean;
+  /** Enemies: the move planned for their next turn. */
+  intent?: Intent;
+  /** Enemies: the skill used last turn, to avoid repeating big moves. */
+  lastSkill?: string;
+  /** Bosses: 2 once the second phase has begun. */
+  phase?: number;
 }
 
 export type BattleEvent =
@@ -46,6 +73,8 @@ export type BattleEvent =
   | { type: 'summon'; uid: string }
   | { type: 'move'; uid: string }
   | { type: 'zeal'; amount: number; reason: string }
+  | { type: 'intent' }
+  | { type: 'phase'; uid: string; text: string }
   | { type: 'text'; text: string };
 
 export interface TurnStart {
@@ -55,7 +84,7 @@ export interface TurnStart {
 }
 
 /** Bump when combat numbers change, so logged runs can be compared fairly. */
-export const BALANCE_VERSION = '0.2';
+export const BALANCE_VERSION = '0.3';
 
 export const ZEAL_MAX = 100;
 export const VIGIL_DEFAULT = 8;
@@ -77,7 +106,10 @@ const HURT_STEP = 0.05;
 export const ZEAL_HURT_CAP = 8;
 
 export function skillsFor(u: Unit): SkillDef[] {
-  if (u.side === 'enemy') return ENEMIES[u.ref].skills;
+  if (u.side === 'enemy') {
+    const d = ENEMIES[u.ref];
+    return u.phase === 2 && d.phase2 ? d.phase2.skills : d.skills;
+  }
   return [...CLASS_SKILLS[u.classId!], SHIFT_SKILL];
 }
 
@@ -102,6 +134,7 @@ export class Battle {
     this.vigil = opts.vigil ?? VIGIL_DEFAULT;
     const passiveZeal = party.reduce((s, u) => s + (u.passive?.kind === 'startZeal' ? u.passive.value ?? 0 : 0), 0);
     this.zeal = Math.min(ZEAL_MAX, (opts.zeal ?? 0) + passiveZeal);
+    for (const e of enemies) this.planIntent(e);
   }
 
   alive(side?: Side) {
@@ -171,6 +204,7 @@ export class Battle {
           this.kill(actor, events);
           continue;
         }
+        this.checkPhase(actor, events);
       }
       if (st.weaken && --st.weaken.turns <= 0) st.weaken = undefined;
       if (st.empower && --st.empower.turns <= 0) st.empower = undefined;
@@ -211,6 +245,27 @@ export class Battle {
 
   /** Resolves a skill. `target` is ignored for group and self skills. */
   act(actor: Unit, skill: SkillDef, target?: Unit): BattleEvent[] {
+    if (actor.side === 'enemy' && skill.windup && !actor.status.charging) {
+      actor.status.charging = true;
+      actor.intent = { skillId: skill.id };
+      this.log.push(`${actor.name} charges ${skill.name}`);
+      return [
+        { type: 'text', text: `${actor.name} begins ${skill.name}! Delay it to break the charge.` },
+        { type: 'status', uid: actor.uid, label: 'Charging' },
+        { type: 'intent' },
+      ];
+    }
+    const events = this.resolve(actor, skill, target);
+    if (actor.side === 'enemy') {
+      actor.status.charging = false;
+      actor.lastSkill = skill.id;
+      if (actor.hp > 0) this.planIntent(actor);
+      events.push({ type: 'intent' });
+    }
+    return events;
+  }
+
+  private resolve(actor: Unit, skill: SkillDef, target?: Unit): BattleEvent[] {
     const events: BattleEvent[] = [{ type: 'text', text: `${actor.name}: ${skill.name}` }];
     const single = skill.target === 'enemy' || skill.target === 'ally';
     this.log.push(`${actor.name} uses ${skill.name}${single && target ? ` on ${target.name}` : ''}`);
@@ -282,6 +337,13 @@ export class Battle {
           this.queue.push(t.uid);
         } else t.status.delayed = true;
         events.push({ type: 'status', uid: t.uid, label: 'Delayed' });
+        if (t.status.charging) {
+          t.status.charging = false;
+          this.log.push(`  ${t.name}'s charge is broken`);
+          events.push({ type: 'status', uid: t.uid, label: 'Charge broken!' });
+          this.planIntent(t, t.intent?.skillId);
+          events.push({ type: 'intent' });
+        }
       }
     }
 
@@ -302,18 +364,88 @@ export class Battle {
     return events;
   }
 
-  /** Simple enemy AI: a random usable skill, aimed at the weakest or a random target. */
+  /**
+   * The enemy's move this turn: its planned intent, re-aimed only if the
+   * planned target is gone, out of reach, or a taunt now forces the issue.
+   */
   enemyChoose(actor: Unit): { skill: SkillDef; target?: Unit } {
-    const usable = skillsFor(actor).filter((s) => this.canUse(actor, s));
-    let skill = usable[Math.floor(this.rng() * usable.length)];
-    // The boss calls for help only now and then.
-    if (skill.summon && this.rng() < 0.6) skill = usable.find((s) => !s.summon) ?? skill;
-    const targets = this.validTargets(actor, skill);
-    let target = targets[Math.floor(this.rng() * targets.length)];
-    if (skill.target === 'enemy' && this.rng() < 0.6) {
-      target = [...targets].sort((a, b) => a.hp / a.maxHp - b.hp / b.maxHp)[0];
+    if (!actor.intent) this.planIntent(actor);
+    const skills = skillsFor(actor);
+    let skill = skills.find((s) => s.id === actor.intent?.skillId);
+    if (!skill || !this.canUse(actor, skill)) {
+      this.planIntent(actor);
+      skill = skills.find((s) => s.id === actor.intent!.skillId)!;
     }
-    return { skill, target };
+    const targets = this.validTargets(actor, skill);
+    const planned = targets.find((u) => u.uid === actor.intent?.targetUid);
+    return { skill, target: planned ?? this.aim(skill, targets) };
+  }
+
+  /** Chooses and stores the enemy's next move. `avoid` is skipped when there is another option. */
+  planIntent(actor: Unit, avoid?: string) {
+    const usable = skillsFor(actor).filter((s) => this.canUse(actor, s));
+    if (!usable.length) {
+      actor.intent = undefined;
+      return;
+    }
+    // Big moves (summons, wind-ups) never come twice in a row.
+    let pool = usable.filter((s) => s.id !== avoid && !((s.summon || s.windup) && s.id === actor.lastSkill));
+    if (!pool.length) pool = usable;
+    const total = pool.reduce((n, s) => n + (s.weight ?? 1), 0);
+    let roll = this.rng() * total;
+    let skill = pool[pool.length - 1];
+    for (const s of pool) {
+      roll -= s.weight ?? 1;
+      if (roll < 0) {
+        skill = s;
+        break;
+      }
+    }
+    const single = skill.target === 'enemy' || skill.target === 'ally';
+    const target = single ? this.aim(skill, this.validTargets(actor, skill)) : undefined;
+    actor.intent = { skillId: skill.id, targetUid: target?.uid };
+  }
+
+  private aim(skill: SkillDef, targets: Unit[]): Unit | undefined {
+    if (!targets.length) return undefined;
+    const pick = () => targets[Math.floor(this.rng() * targets.length)];
+    const by = (f: (u: Unit) => number) => [...targets].sort((a, b) => f(a) - f(b))[0];
+    switch (skill.aim) {
+      case 'random':
+        return pick();
+      case 'weakest':
+        return by((u) => u.hp / u.maxHp);
+      case 'strongest':
+        return by((u) => -u.atk);
+      case 'back':
+        return by((u) => -u.rank);
+      case 'front':
+        return by((u) => u.rank);
+      default:
+        return this.rng() < 0.6 ? by((u) => u.hp / u.maxHp) : pick();
+    }
+  }
+
+  /** What each living enemy is about to do, for the battle screen. */
+  intentOf(actor: Unit): IntentView | undefined {
+    if (actor.hp <= 0 || !actor.intent) return undefined;
+    const skill = skillsFor(actor).find((s) => s.id === actor.intent!.skillId);
+    if (!skill) return undefined;
+    const charging = !!actor.status.charging;
+    if (skill.summon) return { kind: 'summon', skill, targets: [], estimate: 0, charging };
+    let targets: Unit[];
+    if (skill.target === 'allEnemies') targets = this.alive('party');
+    else {
+      const valid = this.validTargets(actor, skill);
+      const planned = valid.find((u) => u.uid === actor.intent!.targetUid);
+      targets = planned ? [planned] : valid.length === 1 ? valid : [];
+      // A taunt pulls the hit onto the taunter.
+      if (!planned && valid.length && valid.every((u) => u.status.taunt)) targets = [valid[0]];
+    }
+    const front = targets[0];
+    const estimate = skill.mult && front ? Math.round(damageAfterArmor(this.attackOf(actor) * skill.mult, front.armor)) : 0;
+    const kind: IntentKind = skill.windup ? 'charge' : skill.target === 'allEnemies' ? 'aoe' : skill.weaken || skill.poison ? 'debuff' : 'attack';
+    return { kind, skill, targets, estimate, charging };
   }
 
   private attackOf(u: Unit) {
@@ -363,6 +495,20 @@ export class Battle {
     events.push({ type: 'damage', uid: t.uid, amount: dmg, blocked, crit });
     if (t.side === 'party' && actor.side === 'enemy') this.hurtZeal(t, dmg, events);
     if (t.hp <= 0) this.kill(t, events);
+    else this.checkPhase(t, events);
+  }
+
+  /** A boss below its threshold enters its second phase: harsher skills and a fresh plan. */
+  private checkPhase(u: Unit, events: BattleEvent[]) {
+    const p2 = u.side === 'enemy' ? ENEMIES[u.ref].phase2 : undefined;
+    if (!p2 || u.phase === 2 || u.hp > u.maxHp * p2.atPct) return;
+    u.phase = 2;
+    u.atk = Math.round(u.atk * (1 + p2.atkPct));
+    u.status.charging = false;
+    this.log.push(`  ${u.name} enters phase 2`);
+    events.push({ type: 'phase', uid: u.uid, text: p2.text });
+    this.planIntent(u);
+    events.push({ type: 'intent' });
   }
 
   private kill(u: Unit, events: BattleEvent[]) {
@@ -394,6 +540,7 @@ export class Battle {
     if (line.length >= 4) return;
     const u = makeEnemy(type, `summon-${++this.summons}`, line.length + 1);
     this.units.push(u);
+    this.planIntent(u);
     events.push({ type: 'summon', uid: u.uid });
   }
 

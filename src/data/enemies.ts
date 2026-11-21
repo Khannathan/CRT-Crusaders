@@ -14,6 +14,8 @@ export interface EnemyDef {
   color: number;
   shape: 'husk' | 'hood' | 'bell' | 'hound' | 'wisp' | 'choir';
   skills: SkillDef[];
+  /** Bosses: below this share of HP, swap to a harsher skill set. */
+  phase2?: { atPct: number; text: string; atkPct: number; skills: SkillDef[] };
 }
 
 const any: number[] = [];
@@ -21,13 +23,13 @@ const any: number[] = [];
 export const ENEMIES: Record<string, EnemyDef> = {
   husk: {
     id: 'husk', name: 'Penitent Husk', hp: 105, atk: 13, armor: 56, spd: 5, color: 0x72717b, shape: 'husk',
-    skills: [{ id: 'crush', name: 'Crush', desc: '', from: any, target: 'enemy', reach: [1, 2], mult: 1.0 }],
+    skills: [{ id: 'crush', name: 'Crush', desc: '', from: any, target: 'enemy', reach: [1, 2], mult: 1.0, aim: 'front' }],
   },
   acolyte: {
     id: 'acolyte', name: 'Drowned Acolyte', hp: 70, atk: 15, armor: 24, spd: 8, color: 0x4f6170, shape: 'hood',
     skills: [
       { id: 'waterlogged-strike', name: 'Waterlogged Strike', desc: '', from: any, target: 'enemy', reach: [1, 2], mult: 1.0 },
-      { id: 'brine-curse', name: 'Brine Curse', desc: '', from: any, target: 'enemy', mult: 0.5, weaken: { pct: 0.2, turns: 2 } },
+      { id: 'brine-curse', name: 'Brine Curse', desc: '', from: any, target: 'enemy', mult: 0.5, weaken: { pct: 0.2, turns: 2 }, aim: 'strongest' },
     ],
   },
   ringer: {
@@ -36,19 +38,30 @@ export const ENEMIES: Record<string, EnemyDef> = {
   },
   hound: {
     id: 'hound', name: 'Ossuary Hound', hp: 65, atk: 17, armor: 24, spd: 13, color: 0xc6baa4, shape: 'hound',
-    skills: [{ id: 'maul', name: 'Maul', desc: '', from: any, target: 'enemy', reach: [1, 2, 3], mult: 1.1 }],
+    skills: [{ id: 'maul', name: 'Maul', desc: '', from: any, target: 'enemy', reach: [1, 2, 3], mult: 1.1, aim: 'weakest' }],
   },
   wraith: {
     id: 'wraith', name: 'Censer Wraith', hp: 50, atk: 15, armor: 8, spd: 9, color: 0x9b78a3, shape: 'wisp',
-    skills: [{ id: 'grave-breath', name: 'Grave Breath', desc: '', from: any, target: 'enemy', mult: 0.6, poison: { mult: 0.45, turns: 3 } }],
+    skills: [{ id: 'grave-breath', name: 'Grave Breath', desc: '', from: any, target: 'enemy', mult: 0.6, poison: { mult: 0.45, turns: 3 }, aim: 'random' }],
   },
   choir: {
     id: 'choir', name: 'The Choir Below', hp: 530, atk: 20, armor: 48, spd: 10, boss: true, color: 0x652b3b, shape: 'choir',
     skills: [
       { id: 'hymn-of-drowning', name: 'Hymn of Drowning', desc: '', from: any, target: 'allEnemies', mult: 0.6 },
       { id: 'grasping-hands', name: 'Grasping Hands', desc: '', from: any, target: 'enemy', mult: 1.4, weaken: { pct: 0.25, turns: 2 } },
-      { id: 'call-the-drowned', name: 'Call the Drowned', desc: '', from: any, target: 'self', summon: 'acolyte' },
+      { id: 'call-the-drowned', name: 'Call the Drowned', desc: '', from: any, target: 'self', summon: 'acolyte', weight: 0.5 },
     ],
+    phase2: {
+      atPct: 0.5,
+      text: 'The Choir rises from the water, singing louder!',
+      atkPct: 0.15,
+      skills: [
+        { id: 'hymn-of-drowning', name: 'Hymn of Drowning', desc: '', from: any, target: 'allEnemies', mult: 0.6 },
+        { id: 'grasping-hands', name: 'Grasping Hands', desc: '', from: any, target: 'enemy', mult: 1.4, weaken: { pct: 0.25, turns: 2 }, aim: 'back' },
+        { id: 'requiem', name: 'Requiem', desc: '', from: any, target: 'allEnemies', mult: 1.1, windup: true, weight: 1.2 },
+        { id: 'call-the-drowned', name: 'Call the Drowned', desc: '', from: any, target: 'self', summon: 'acolyte', weight: 0.4 },
+      ],
+    },
   },
 };
 
