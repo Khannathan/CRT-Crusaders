@@ -201,10 +201,10 @@ export class Battle {
     if (this.round > 1) {
       if (this.vigil > 0) {
         this.vigil -= 1;
-        if (this.vigil === 0) events.push({ type: 'text', text: 'The Vigil candle gutters out. The dark grows bolder.' });
+        if (this.vigil === 0) events.push({ type: 'text', text: 'The Vigil candle gutters out. Pray harder, Sisters.' });
       } else {
         this.rage += 1;
-        events.push({ type: 'text', text: 'In the dark, the enemy grows stronger.' });
+        events.push({ type: 'text', text: 'The candle is dead. The heretics grow bolder.' });
       }
     }
     const order = this.alive().sort((a, b) => {

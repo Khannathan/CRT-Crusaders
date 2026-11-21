@@ -26,7 +26,7 @@ export class CrusadeScene extends Phaser.Scene {
 
     // Resume a run left mid-way (e.g. after switching tabs)
     if (current.run) {
-      makeButton(this, GAME_W / 2, top + 90, 360, 80, 'Return to the crypt', () => this.scene.start('Crypt'), { active: true, icon: 'blade' });
+      makeButton(this, GAME_W / 2, top + 90, 360, 80, 'Return to the dark', () => this.scene.start('Crypt'), { active: true, icon: 'blade' });
       addTabBar(this, 'Crusade');
       return;
     }
@@ -74,7 +74,7 @@ export class CrusadeScene extends Phaser.Scene {
         cardBottom - 38,
         220,
         54,
-        !open ? 'Locked' : ready.length ? 'Muster' : 'No one is ready',
+        !open ? 'Locked' : ready.length ? 'Muster' : 'None can march',
         () => {
           current.cryptId = crypt.id;
           this.scene.start('Muster');
@@ -96,13 +96,13 @@ export class CrusadeScene extends Phaser.Scene {
       bottom = cardBottom;
     });
     if (!Object.keys(s.owned).length) {
-      this.add.text(GAME_W / 2, bottom + 30, 'Recruit crusaders at the Sealed Altar first.', { ...style, fontSize: '18px', color: hex(PAL.muted) }).setOrigin(0.5);
+      this.add.text(GAME_W / 2, bottom + 30, 'Swear in Sisters at the Sealed Altar first.', { ...style, fontSize: '18px', color: hex(PAL.muted) }).setOrigin(0.5);
     }
 
     const resting = CRUSADERS.filter((c) => s.owned[c.id]?.recovering);
     if (resting.length) {
-      this.add.text(PAD, bottom + 18, 'Recovering', text.display(20, PAL.ivory));
-      this.add.text(GAME_W - PAD, bottom + 26, 'SITS OUT ONE CRUSADE', text.hud(12, PAL.muted)).setOrigin(1, 0);
+      this.add.text(PAD, bottom + 18, 'Infirmary', text.display(20, PAL.ivory));
+      this.add.text(GAME_W - PAD, bottom + 26, 'MENDING FOR ONE CRUSADE', text.hud(12, PAL.muted)).setOrigin(1, 0);
       resting.slice(0, 2).forEach((c, i) => {
         const y = bottom + 84 + i * 64;
         this.add.image(PAD + 28, y, portraitKey(c.id)).setDisplaySize(56, 56);
@@ -115,7 +115,7 @@ export class CrusadeScene extends Phaser.Scene {
           y,
           160,
           52,
-          `Revive · ${cost}`,
+          `Absolve · ${cost}`,
           () => {
             if (revive(s, c.id)) {
               commit();

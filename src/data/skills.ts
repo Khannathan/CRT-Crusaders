@@ -102,7 +102,7 @@ export const CLASS_SKILLS: Record<string, [SkillDef, SkillDef, SkillDef, SkillDe
   oracle: [
     { id: 'ash-bolt', name: 'Ash Bolt', desc: 'Heavy occult damage on any rank.', from: [3, 4], target: 'enemy', mult: 1.45 },
     { id: 'foresight', name: 'Foresight', desc: 'Hit any enemy and push its turn to the end. Breaks a charge. Cooldown 2.', from: any, target: 'enemy', mult: 0.5, delay: true, cooldown: 2 },
-    { id: 'grim-augury', name: 'Grim Augury', desc: 'Grant an ally +30% attack for 2 turns and the party 10 Zeal. Cooldown 3.', from: any, target: 'ally', empower: { pct: 0.3, turns: 2 }, empowerTarget: true, zealGain: 10, cooldown: 3 },
+    { id: 'grim-augury', name: 'Grim Augury', desc: 'Grant an ally +30% attack for 2 turns and your Sisters 10 Zeal. Cooldown 3.', from: any, target: 'ally', empower: { pct: 0.3, turns: 2 }, empowerTarget: true, zealGain: 10, cooldown: 3 },
     { id: 'omen-of-ash', name: 'Omen of Ash', desc: 'RITE: heavy damage on every enemy.', from: any, target: 'allEnemies', mult: 1.6, rite: true },
   ],
 };

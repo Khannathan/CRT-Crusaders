@@ -1,12 +1,12 @@
 import type { ClassDef, Rarity } from './types';
 
 export const CLASSES: Record<string, ClassDef> = {
-  warsister: { id: 'warsister', name: 'Penitent War-Sister', role: 'Vanguard', summary: 'Hits hard by hurting herself; stronger as her health drops.' },
-  hierophant: { id: 'hierophant', name: 'Reliquary Hierophant', role: 'Vanguard', summary: 'Shields allies and draws enemy attacks.' },
-  inquisitor: { id: 'inquisitor', name: 'Inquisitor', role: 'Striker', summary: 'Marks a target as Accused so the party hits it harder.' },
-  confessor: { id: 'confessor', name: 'Plague Confessor', role: 'Mender', summary: 'Heals one ally; poisons enemies over time.' },
-  censer: { id: 'censer', name: 'Censer Priestess', role: 'Mystic', summary: 'Incense smoke weakens every enemy and burns them a little.' },
-  oracle: { id: 'oracle', name: 'Ash Oracle', role: 'Mystic', summary: "Foresight delays an enemy's turn; heavy occult damage." },
+  warsister: { id: 'warsister', name: 'Penitent War-Sister', role: 'Vanguard', summary: 'Scourges her own flesh for power. The nearer to death, the harder she strikes.' },
+  hierophant: { id: 'hierophant', name: 'Reliquary Hierophant', role: 'Vanguard', summary: 'Bears the reliquary as a shield and calls the enemy\'s wrath upon herself.' },
+  inquisitor: { id: 'inquisitor', name: 'Inquisitor', role: 'Striker', summary: 'Names the heretic. The Accused suffer more from every blow.' },
+  confessor: { id: 'confessor', name: 'Plague Confessor', role: 'Mender', summary: 'Mends the faithful and rots the unrepentant.' },
+  censer: { id: 'censer', name: 'Censer Priestess', role: 'Mystic', summary: 'Holy smoke chokes, burns and weakens every foe.' },
+  oracle: { id: 'oracle', name: 'Ash Oracle', role: 'Mystic', summary: "Reads doom in the ashes. She delays fate and strikes from afar." },
 };
 
 /** Base-stat multiplier per rarity (design doc: +0/10/25/40%). */

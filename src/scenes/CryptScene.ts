@@ -34,7 +34,7 @@ const MAP_BOTTOM = 500;
 const KIND_NAME: Record<NodeKind, string> = {
   fight: 'Fight',
   elite: 'Elite fight',
-  event: 'Unknown',
+  event: 'Temptation',
   shrine: 'Shrine',
   reliquary: 'Reliquary',
   boss: 'Boss',
@@ -78,7 +78,7 @@ export class CryptScene extends Phaser.Scene {
     else if (node?.kind === 'event') this.showEvent(node);
     else if (node?.kind === 'reliquary') this.showRelics();
     else if (node?.encounter) this.scene.start('Battle');
-    else this.prompt(choices(run).length ? 'Choose your path. Tap a glowing room.' : '');
+    else this.prompt(choices(run).length ? 'Choose your path through the dark.' : '');
   }
 
   private nodePos(floor: number, i: number) {
@@ -147,15 +147,15 @@ export class CryptScene extends Phaser.Scene {
       case 'fight':
         return `${foes(node.encounter!)}. +${Math.round(REWARDS.fightTithes * m)} Tithes.`;
       case 'elite':
-        return `${foes(node.encounter!)}. Tough. Win a relic, +${REWARDS.eliteSeals} Seal.`;
+        return `${foes(node.encounter!)}. A greater horror. Its death yields a relic, +${REWARDS.eliteSeals} Seal.`;
       case 'boss':
-        return `${current.run!.crypt.bossName}. Win to clear the crypt.`;
+        return `${current.run!.crypt.bossName}. Destroy it and the crypt is purified.`;
       case 'event':
-        return 'Something waits in the dark. A choice, not a fight.';
+        return 'Something waits in the dark. A temptation, not a fight.';
       case 'shrine':
-        return `Rest: heal everyone ${REWARDS.shrineHealPct * 100}% HP.`;
+        return `Kneel and pray: every Sister heals ${REWARDS.shrineHealPct * 100}%.`;
       case 'reliquary':
-        return 'Choose one relic to carry for this crusade.';
+        return 'Claim one holy relic for this crusade.';
     }
   }
 

@@ -32,7 +32,7 @@ export class MusterScene extends Phaser.Scene {
     this.add.text(GAME_W / 2, 36, 'MUSTER', text.display(30, PAL.ivory)).setOrigin(0.5);
     makeButton(this, 60, 36, 96, 48, 'Back', () => this.scene.start('Crusade'), { fontSize: 18 });
     this.add
-      .text(GAME_W / 2, 80, 'Rank I is the front line. Tap to add or remove.', text.body(18, PAL.muted))
+      .text(GAME_W / 2, 80, 'Rank I bleeds first. Tap a Sister to call or dismiss her.', text.body(18, PAL.muted))
       .setOrigin(0.5);
 
     // Party slots
@@ -61,7 +61,7 @@ export class MusterScene extends Phaser.Scene {
     // Order bonuses this party turns on
     const bonuses = orderBonuses(this.party.map((id) => CRUSADERS.find((c) => c.id === id)!.order));
     this.add
-      .text(GAME_W / 2, 304, bonuses.length ? bonuses.map((b) => `${b.name}: ${b.desc}`).join('\n') : 'Two of one order together unlock a bonus.', {
+      .text(GAME_W / 2, 304, bonuses.length ? bonuses.map((b) => `${b.name}: ${b.desc}`).join('\n') : 'Two Sisters of one Order kneel together for its blessing.', {
         ...text.body(bonuses.length ? 16 : 15, bonuses.length ? PAL.amber : PAL.muted),
         align: 'center',
       })
@@ -100,7 +100,7 @@ export class MusterScene extends Phaser.Scene {
       GAME_H - 60,
       236,
       80,
-      'Begin crusade',
+      'March into the dark',
       () => {
         const crypt = CRYPTS.find((c) => c.id === current.cryptId) ?? CRYPTS[0];
         current.run = startRun(game.save, this.party, crypt, Math.random, current.heresy?.[crypt.id] ?? 0);
