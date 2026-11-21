@@ -62,6 +62,8 @@ export interface Unit {
   lastSkill?: string;
   /** Bosses: 2 once the second phase has begun. */
   phase?: number;
+  /** Own turns left before each skill can be used again. */
+  cooldowns?: Record<string, number>;
 }
 
 export type BattleEvent =
@@ -84,7 +86,9 @@ export interface TurnStart {
 }
 
 /** Bump when combat numbers change, so logged runs can be compared fairly. */
-export const BALANCE_VERSION = '0.3';
+export const BALANCE_VERSION = '0.4';
+/** Execute skills hit harder below this share of max HP. */
+export const EXECUTE_AT = 0.3;
 
 export const ZEAL_MAX = 100;
 export const VIGIL_DEFAULT = 8;
@@ -216,6 +220,7 @@ export class Battle {
   }
 
   canUse(actor: Unit, skill: SkillDef): boolean {
+    if ((actor.cooldowns?.[skill.id] ?? 0) > 0) return false;
     if (skill.rite && this.zeal < ZEAL_MAX) return false;
     if (skill.from.length && !skill.from.includes(actor.rank)) return false;
     if (skill.summon && this.alive('enemy').length >= 4) return false;
@@ -267,6 +272,10 @@ export class Battle {
 
   private resolve(actor: Unit, skill: SkillDef, target?: Unit): BattleEvent[] {
     const events: BattleEvent[] = [{ type: 'text', text: `${actor.name}: ${skill.name}` }];
+    // Each action ticks the actor's cooldowns down, then starts this skill's.
+    const cds = (actor.cooldowns ??= {});
+    for (const id of Object.keys(cds)) if (cds[id] > 0) cds[id] -= 1;
+    if (skill.cooldown) cds[skill.id] = skill.cooldown;
     const single = skill.target === 'enemy' || skill.target === 'ally';
     this.log.push(`${actor.name} uses ${skill.name}${single && target ? ` on ${target.name}` : ''}`);
     if (skill.rite) this.addZeal(-ZEAL_MAX, events, 'Rite');
@@ -319,8 +328,28 @@ export class Battle {
       }
       if (skill.poison) {
         const dmg = Math.max(1, Math.round(this.attackOf(actor) * skill.poison.mult));
-        t.status.poison = { dmg, turns: skill.poison.turns };
+        const old = skill.stackPoison ? t.status.poison : undefined;
+        t.status.poison = old ? { dmg: old.dmg + dmg, turns: Math.max(old.turns, skill.poison.turns) } : { dmg, turns: skill.poison.turns };
         events.push({ type: 'status', uid: t.uid, label: actor.side === 'party' && actor.classId === 'censer' ? 'Burning' : 'Poisoned' });
+      }
+      if (skill.detonate && t.status.poison) {
+        const p = t.status.poison;
+        t.status.poison = undefined;
+        events.push({ type: 'status', uid: t.uid, label: 'Ignited!' });
+        this.pierce(t, Math.round(p.dmg * p.turns * skill.detonate), events);
+        if (t.hp <= 0) continue;
+      }
+      if (skill.spreadPoison && t.status.poison) {
+        for (const o of this.alive(t.side)) {
+          if (o === t) continue;
+          const p = t.status.poison;
+          o.status.poison = o.status.poison ? { dmg: o.status.poison.dmg + p.dmg, turns: Math.max(o.status.poison.turns, p.turns) } : { ...p };
+          events.push({ type: 'status', uid: o.uid, label: 'Infected' });
+        }
+      }
+      if (skill.empower && skill.empowerTarget) {
+        t.status.empower = { ...skill.empower };
+        events.push({ type: 'status', uid: t.uid, label: 'Empowered' });
       }
       if (skill.weaken) {
         t.status.weaken = { ...skill.weaken };
@@ -351,7 +380,7 @@ export class Battle {
       actor.status.taunt = skill.taunt;
       events.push({ type: 'status', uid: actor.uid, label: 'Taunting' });
     }
-    if (skill.empower) {
+    if (skill.empower && !skill.empowerTarget) {
       actor.status.empower = { ...skill.empower };
       events.push({ type: 'status', uid: actor.uid, label: 'Empowered' });
     }
@@ -476,6 +505,8 @@ export class Battle {
     let raw = this.attackOf(actor) * skill.mult!;
     if (skill.lowHpBonus && actor.hp < actor.maxHp / 2) raw *= 1 + skill.lowHpBonus;
     if (t.status.accused) raw *= ACCUSED_MULT * (1 + (skill.bonusIfAccused ?? 0));
+    if (t.status.weaken && skill.bonusIfWeak) raw *= 1 + skill.bonusIfWeak;
+    if (skill.execute && t.hp < t.maxHp * EXECUTE_AT) raw *= 1 + skill.execute;
     const crit = (t.status.accused && actor.passive?.kind === 'critOnAccused') || this.rng() < actor.crit;
     if (crit) raw *= CRIT_MULT;
     let dmg = Math.max(1, Math.round(damageAfterArmor(raw, t.armor) * this.vary()));
@@ -494,6 +525,32 @@ export class Battle {
     t.hp -= dmg;
     events.push({ type: 'damage', uid: t.uid, amount: dmg, blocked, crit });
     if (t.side === 'party' && actor.side === 'enemy') this.hurtZeal(t, dmg, events);
+    if (t.hp <= 0) this.kill(t, events);
+    else this.checkPhase(t, events);
+  }
+
+  /** Expected damage of a skill on one target, before shields and luck. Used by Auto and target previews. */
+  preview(actor: Unit, skill: SkillDef, t: Unit): number {
+    let total = 0;
+    if (skill.mult) {
+      let raw = this.attackOf(actor) * skill.mult;
+      if (skill.lowHpBonus && actor.hp < actor.maxHp / 2) raw *= 1 + skill.lowHpBonus;
+      if (t.status.accused) raw *= ACCUSED_MULT * (1 + (skill.bonusIfAccused ?? 0));
+      if (t.status.weaken && skill.bonusIfWeak) raw *= 1 + skill.bonusIfWeak;
+      if (skill.execute && t.hp < t.maxHp * EXECUTE_AT) raw *= 1 + skill.execute;
+      const critChance = t.status.accused && actor.passive?.kind === 'critOnAccused' ? 1 : actor.crit;
+      raw *= 1 + critChance * (CRIT_MULT - 1);
+      total += damageAfterArmor(raw, t.armor);
+    }
+    if (skill.detonate && t.status.poison) total += t.status.poison.dmg * t.status.poison.turns * skill.detonate;
+    return Math.round(total);
+  }
+
+  /** Damage that ignores armor and shields (detonated poison). */
+  private pierce(t: Unit, amount: number, events: BattleEvent[]) {
+    const dmg = Math.min(t.hp, Math.max(1, amount));
+    t.hp -= dmg;
+    events.push({ type: 'damage', uid: t.uid, amount: dmg, blocked: 0 });
     if (t.hp <= 0) this.kill(t, events);
     else this.checkPhase(t, events);
   }
@@ -554,9 +611,12 @@ export class Battle {
   }
 }
 
+/** Enemy HP and attack scale, tuned with balance.test.ts against the Auto player. */
+export const ENEMY_TUNE = 1.15;
 export function makeEnemy(type: string, uid: string, rank: number): Unit {
   const d = ENEMIES[type];
-  return { uid, side: 'enemy', name: d.name, ref: type, rank, maxHp: d.hp, hp: d.hp, atk: d.atk, armor: d.armor, spd: d.spd, crit: d.crit ?? 0.05, status: {}, boss: d.boss };
+  const hp = Math.round(d.hp * ENEMY_TUNE);
+  return { uid, side: 'enemy', name: d.name, ref: type, rank, maxHp: hp, hp, atk: Math.round(d.atk * ENEMY_TUNE), armor: d.armor, spd: d.spd, crit: d.crit ?? 0.05, status: {}, boss: d.boss };
 }
 
 /** Damage after armor: raw / (1 + armor / ARMOR_K). 100 armor halves a hit. */

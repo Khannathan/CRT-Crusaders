@@ -6,6 +6,7 @@ import { absorbBattle, currentRoom, finishRun, makeBattle, shrine, startRun, win
 import { seeded } from './rng';
 
 /**
+ * Played by autoChoose, the same player as the in-game Auto button.
  * Balance targets (see research/Epic_Seven_Balance_Deep_Dive.md):
  * - a fresh all-R level-1 party is a real challenge for a simple auto-player,
  * - a modestly levelled party (5) clears reliably, a mature one (10) almost always,
