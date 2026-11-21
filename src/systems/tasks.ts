@@ -19,7 +19,8 @@ export type TaskEvent =
   | 'vigilClaim'
   | 'dailyDone'
   | 'trialWon'
-  | 'towerFloor';
+  | 'towerFloor'
+  | 'inquisitionWon';
 
 export interface TaskDef {
   id: string;

@@ -164,6 +164,8 @@ export class Battle {
   private hurtFrac = 0;
   private hurtZealThisRound = 0;
   private enemyScale: number;
+  /** Multiplies healing the party receives (an Inquisition edict halves it). */
+  partyHeal = 1;
 
   constructor(party: Unit[], enemies: Unit[], opts: { rng?: Rng; vigil?: number; zeal?: number; enemyScale?: number } = {}) {
     this.enemyScale = opts.enemyScale ?? 1;
@@ -173,6 +175,10 @@ export class Battle {
     const passiveZeal = party.reduce((s, u) => s + (u.passive?.kind === 'startZeal' ? u.passive.value ?? 0 : 0), 0);
     this.zeal = Math.min(ZEAL_MAX, (opts.zeal ?? 0) + passiveZeal);
     for (const e of enemies) this.planIntent(e);
+  }
+
+  private healOf(u: Unit) {
+    return u.side === 'party' ? this.partyHeal : 1;
   }
 
   alive(side?: Side) {
@@ -246,7 +252,7 @@ export class Battle {
       }
       if (actor.passive?.kind === 'healAura') {
         for (const a of this.alive(actor.side)) {
-          const real = Math.min(a.maxHp - a.hp, Math.round(a.maxHp * (actor.passive.value ?? 0)));
+          const real = Math.min(a.maxHp - a.hp, Math.round(a.maxHp * (actor.passive.value ?? 0) * this.healOf(a)));
           if (real > 0) {
             a.hp += real;
             events.push({ type: 'heal', uid: a.uid, amount: real });
@@ -355,7 +361,7 @@ export class Battle {
       }
       if (t.hp <= 0) continue;
       if (skill.heal || skill.healPct) {
-        const amount = Math.round(skill.heal ? actor.atk * skill.heal * this.vary() : t.maxHp * skill.healPct!);
+        const amount = Math.round((skill.heal ? actor.atk * skill.heal * this.vary() : t.maxHp * skill.healPct!) * this.healOf(t));
         const real = Math.min(amount, t.maxHp - t.hp);
         t.hp += real;
         if (real >= t.maxHp * 0.05) support = true;
@@ -584,7 +590,7 @@ export class Battle {
     events.push({ type: 'damage', uid: t.uid, amount: dmg, blocked, crit });
     if (t.side === 'party' && actor.side === 'enemy') this.hurtZeal(t, dmg, events);
     if (dmg > 0 && actor.passive?.kind === 'lifesteal' && actor.hp > 0) {
-      const real = Math.min(actor.maxHp - actor.hp, Math.round(dmg * (actor.passive.value ?? 0)));
+      const real = Math.min(actor.maxHp - actor.hp, Math.round(dmg * (actor.passive.value ?? 0) * this.healOf(actor)));
       if (real > 0) {
         actor.hp += real;
         events.push({ type: 'heal', uid: actor.uid, amount: real });
