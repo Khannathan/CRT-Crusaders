@@ -22,6 +22,7 @@ export function autoChoose(b: Battle, actor: Unit): Choice {
   for (const e of foes) {
     const v = b.intentOf(e);
     if (!v) continue;
+    if (v.kind === 'buff' || v.kind === 'summon') continue;
     if (v.targets.length > 1) groupThreat = true;
     for (const t of v.targets) incoming.set(t, (incoming.get(t) ?? 0) + v.estimate);
   }
@@ -88,6 +89,8 @@ export function autoChoose(b: Battle, actor: Unit): Choice {
       if (s.spreadPoison && t.status.poison) v += t.status.poison.dmg * t.status.poison.turns * (foes.length - 1) * 0.8;
       if (s.delay) v += t.status.charging ? 40 : 0;
       if (t.boss) v *= 1.1;
+      // Healers and shielders are worth focusing.
+      if (skillsFor(t).some((x) => x.target === 'ally')) v *= 1.25;
       if (group) groupScore += v;
       else consider(s, t, v);
     }

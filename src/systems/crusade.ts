@@ -1,35 +1,76 @@
 import { CLASSES } from '../data/classes';
 import { CRUSADERS } from '../data/crusaders';
 import { ENCOUNTERS } from '../data/enemies';
+import { EVENTS, type EventOutcome } from '../data/events';
 import { RELICS, type RelicDef } from '../data/relics';
 import type { SaveData } from '../state/save';
 import { Battle, VIGIL_DEFAULT, makeEnemy, type Unit } from './combat';
 import type { Rng } from './gacha';
 import { levelUpCost, statsFor } from './stats';
 
-export type Room =
-  | { kind: 'fight'; encounter: string }
-  | { kind: 'choice' }
-  | { kind: 'boss'; encounter: string };
+export type NodeKind = 'fight' | 'elite' | 'event' | 'shrine' | 'reliquary' | 'boss';
+
+/** One stop on the crypt map. `next` lists reachable node indices on the floor above. */
+export interface MapNode {
+  kind: NodeKind;
+  encounter?: string;
+  event?: string;
+  next: number[];
+}
 
 export interface CryptDef {
   id: string;
   name: string;
-  rooms: Room[];
+  blurb: string;
+  /** Floors before the boss. */
+  floors: number;
+  /** Fight pools: the first two floors draw from `early`, later ones from `late`. */
+  early: string[];
+  late: string[];
+  elites: string[];
+  boss: string;
+  bossName: string;
+  /** Reward multiplier for harder crypts. */
+  rewardMult: number;
+  /** Crypt id that must be cleared first. */
+  unlockAfter?: string;
 }
 
 export const OSSUARY: CryptDef = {
   id: 'drowned-ossuary',
   name: 'The Drowned Ossuary',
-  rooms: [{ kind: 'fight', encounter: 'ossuary-1' }, { kind: 'choice' }, { kind: 'fight', encounter: 'ossuary-2' }, { kind: 'boss', encounter: 'choir' }],
+  blurb: 'A flooded charnel house beneath a ruined abbey.',
+  floors: 5,
+  early: ['ossuary-1', 'ossuary-2'],
+  late: ['ossuary-3', 'ossuary-4', 'ossuary-5'],
+  elites: ['ossuary-elite-1', 'ossuary-elite-2'],
+  boss: 'choir',
+  bossName: 'The Choir Below',
+  rewardMult: 1,
 };
 
-export type ChoiceKind = 'fight' | 'shrine' | 'reliquary';
+export const BELFRY: CryptDef = {
+  id: 'sunken-belfry',
+  name: 'The Sunken Belfry',
+  blurb: 'A bell tower swallowed by the marsh. Something still rings it.',
+  floors: 6,
+  early: ['belfry-1', 'belfry-2'],
+  late: ['belfry-3', 'belfry-4', 'belfry-5'],
+  elites: ['belfry-elite-1', 'belfry-elite-2'],
+  boss: 'abbess',
+  bossName: 'The Hollow Abbess',
+  rewardMult: 1.6,
+  unlockAfter: 'drowned-ossuary',
+};
+
+export const CRYPTS: CryptDef[] = [OSSUARY, BELFRY];
+
+export const cryptUnlocked = (save: SaveData, c: CryptDef) => !c.unlockAfter || save.cleared.includes(c.unlockAfter);
 
 export const REWARDS = {
-  fightTithes: 60,
-  sideFightTithes: 100,
-  sideFightSeals: 1,
+  fightTithes: 45,
+  eliteTithes: 90,
+  eliteSeals: 1,
   bossTithes: 150,
   bossSeals: 2,
   completeSeals: 3,
@@ -41,15 +82,82 @@ export const REWARDS = {
 
 export interface RunState {
   crypt: CryptDef;
+  map: MapNode[][];
   /** Crusader ids in rank order (rank 1 first). */
   party: string[];
   hp: Record<string, number>;
-  roomIndex: number;
+  /** Floor of the current or last node; -1 before the first step. */
+  floor: number;
+  /** Index of that node on its floor. */
+  at: number;
+  /** Node index chosen on each floor so far. */
+  path: number[];
+  /** True once the current node is done. */
+  resolved: boolean;
   relics: string[];
   tithes: number;
   seals: number;
-  /** Set when the middle room's choice was a fight. */
-  sideFight?: boolean;
+  /** A relic choice is waiting (after an elite or an event). */
+  pendingRelic?: boolean;
+  /** Extra Zeal for the next fight only. */
+  blessZeal?: number;
+  /** Shorter Vigil for the next fight only. */
+  curseVigil?: number;
+}
+
+/**
+ * Builds a branching map: 2-3 choices per floor, fights first, an elite floor
+ * in the middle, a rest floor (shrine or reliquary) before the boss.
+ */
+export function generateMap(crypt: CryptDef, rng: Rng = Math.random): MapNode[][] {
+  const pick = <T>(xs: T[]) => xs[Math.floor(rng() * xs.length)];
+  const events = Object.keys(EVENTS);
+  const map: MapNode[][] = [];
+  const eliteFloor = Math.floor(crypt.floors / 2) + (crypt.floors > 5 ? 1 : 0);
+  for (let f = 0; f < crypt.floors; f++) {
+    const width = f === 0 ? 2 : 2 + Math.floor(rng() * 2);
+    const floor: MapNode[] = [];
+    for (let i = 0; i < width; i++) {
+      let kind: NodeKind;
+      if (f === 0) kind = 'fight';
+      else if (f === crypt.floors - 1) kind = i === 0 ? 'shrine' : i === 1 ? 'reliquary' : 'event';
+      else if (f === eliteFloor) kind = i === 0 ? 'elite' : pick(['fight', 'event', 'fight']);
+      else kind = pick(['fight', 'fight', 'fight', 'event', 'event', 'shrine', 'reliquary', ...(f > 1 ? ['elite' as const] : [])]);
+      const node: MapNode = { kind, next: [] };
+      if (kind === 'fight') node.encounter = pick(f < 2 ? crypt.early : crypt.late);
+      if (kind === 'elite') node.encounter = pick(crypt.elites);
+      if (kind === 'event') node.event = pick(events);
+      floor.push(node);
+    }
+    // Shuffle so the elite, shrine and so on are not always on the left.
+    for (let i = floor.length - 1; i > 0; i--) {
+      const j = Math.floor(rng() * (i + 1));
+      [floor[i], floor[j]] = [floor[j], floor[i]];
+    }
+    map.push(floor);
+  }
+  map.push([{ kind: 'boss', encounter: crypt.boss, next: [] }]);
+
+  // Paths: each node reaches the nearest node(s) above; every node is reachable.
+  for (let f = 0; f < map.length - 1; f++) {
+    const here = map[f];
+    const up = map[f + 1];
+    const pos = (i: number, n: number) => (n === 1 ? 0.5 : i / (n - 1));
+    here.forEach((node, i) => {
+      const p = pos(i, here.length);
+      const near = up.map((_, j) => j).sort((a, b) => Math.abs(pos(a, up.length) - p) - Math.abs(pos(b, up.length) - p));
+      node.next = [near[0]];
+      if (near.length > 1 && rng() < 0.55) node.next.push(near[1]);
+    });
+    up.forEach((_, j) => {
+      if (here.some((n) => n.next.includes(j))) return;
+      const p = pos(j, up.length);
+      const from = here.map((_, i) => i).sort((a, b) => Math.abs(pos(a, here.length) - p) - Math.abs(pos(b, here.length) - p))[0];
+      here[from].next.push(j);
+    });
+    here.forEach((n) => n.next.sort((a, b) => a - b));
+  }
+  return map;
 }
 
 export const MAX_PARTY = 4;
@@ -61,9 +169,9 @@ export function canMuster(save: SaveData, id: string) {
 
 export const reviveCost = (level: number) => Math.round(levelUpCost(level) * 0.6);
 
-export function startRun(save: SaveData, party: string[], crypt: CryptDef = OSSUARY): RunState {
+export function startRun(save: SaveData, party: string[], crypt: CryptDef = OSSUARY, rng: Rng = Math.random): RunState {
   const ids = party.filter((id) => canMuster(save, id)).slice(0, MAX_PARTY);
-  const run: RunState = { crypt, party: ids, hp: {}, roomIndex: 0, relics: [], tithes: 0, seals: 0 };
+  const run: RunState = { crypt, map: generateMap(crypt, rng), party: ids, hp: {}, path: [], floor: -1, at: 0, resolved: true, relics: [], tithes: 0, seals: 0 };
   for (const id of ids) run.hp[id] = maxHpOf(save, run, id);
   save.lastParty = ids;
   return run;
@@ -83,8 +191,8 @@ export function maxHpOf(save: SaveData, run: RunState, id: string) {
 export function makeBattle(save: SaveData, run: RunState, encounter: string, rng?: Rng): Battle {
   const relics = relicsOf(run);
   const atkPct = relics.reduce((s, r) => s + (r.atkPct ?? 0), 0);
-  const zeal = relics.reduce((s, r) => s + (r.startZeal ?? 0), 0);
-  const vigil = VIGIL_DEFAULT + relics.reduce((s, r) => s + (r.vigilBonus ?? 0), 0);
+  const zeal = relics.reduce((s, r) => s + (r.startZeal ?? 0), 0) + (run.blessZeal ?? 0);
+  const vigil = Math.max(2, VIGIL_DEFAULT + relics.reduce((s, r) => s + (r.vigilBonus ?? 0), 0) - (run.curseVigil ?? 0));
 
   let rank = 0;
   const party: Unit[] = [];
@@ -103,7 +211,7 @@ export function makeBattle(save: SaveData, run: RunState, encounter: string, rng
       hp: run.hp[id],
       atk: Math.round(st.atk * (1 + atkPct)),
       armor: st.armor,
-      crit: st.crit,
+      crit: st.crit + relics.reduce((n, r) => n + (r.critAdd ?? 0), 0),
       passive: c.passive,
       spd: st.spd,
       status: {},
@@ -113,8 +221,31 @@ export function makeBattle(save: SaveData, run: RunState, encounter: string, rng
   return new Battle(party, enemies, { rng, vigil, zeal });
 }
 
-export function currentRoom(run: RunState): Room | undefined {
-  return run.crypt.rooms[run.roomIndex];
+/** The node being played, if it is not finished yet. */
+export function currentNode(run: RunState): MapNode | undefined {
+  return run.floor >= 0 && !run.resolved ? run.map[run.floor][run.at] : undefined;
+}
+
+/** Node indices on the next floor the party may step to. */
+export function choices(run: RunState): number[] {
+  if (!run.resolved || run.pendingRelic) return [];
+  if (run.floor < 0) return run.map[0].map((_, i) => i);
+  if (run.floor >= run.map.length - 1) return [];
+  return run.map[run.floor][run.at].next;
+}
+
+export function enterNode(run: RunState, index: number): MapNode {
+  if (!choices(run).includes(index)) throw new Error('not reachable');
+  run.floor += 1;
+  run.at = index;
+  run.path.push(index);
+  run.resolved = false;
+  return run.map[run.floor][index];
+}
+
+/** True once the boss is beaten. */
+export function cryptCleared(run: RunState) {
+  return run.floor === run.map.length - 1 && run.resolved;
 }
 
 /** Copies HP and rank order back from a finished battle. */
@@ -124,30 +255,63 @@ export function absorbBattle(run: RunState, battle: Battle) {
   const living = party.filter((u) => u.hp > 0).sort((a, b) => a.rank - b.rank).map((u) => u.ref);
   const fallen = run.party.filter((id) => run.hp[id] <= 0);
   run.party = [...living, ...fallen];
+  // One-fight blessings and curses are spent.
+  run.blessZeal = undefined;
+  run.curseVigil = undefined;
 }
 
-/** Rewards a won room and moves to the next. */
-export function winRoom(run: RunState) {
-  const room = currentRoom(run)!;
-  if (room.kind === 'boss') {
-    run.tithes += REWARDS.bossTithes;
+/** Rewards a won fight and marks the node done. */
+export function winRoom(run: RunState, save?: SaveData) {
+  const node = currentNode(run)!;
+  const fightHeal = relicsOf(run).reduce((n, r) => n + (r.fightHeal ?? 0), 0);
+  if (save && fightHeal) healAll(save, run, fightHeal);
+  const m = run.crypt.rewardMult;
+  if (node.kind === 'boss') {
+    run.tithes += Math.round(REWARDS.bossTithes * m);
     run.seals += REWARDS.bossSeals;
-  } else if (room.kind === 'choice' && run.sideFight) {
-    run.tithes += REWARDS.sideFightTithes;
-    run.seals += REWARDS.sideFightSeals;
+  } else if (node.kind === 'elite') {
+    run.tithes += Math.round(REWARDS.eliteTithes * m);
+    run.seals += REWARDS.eliteSeals;
+    run.pendingRelic = relicOffer(run).length > 0;
   } else {
-    run.tithes += REWARDS.fightTithes;
+    run.tithes += Math.round(REWARDS.fightTithes * m);
   }
-  run.roomIndex += 1;
+  run.resolved = true;
 }
 
-export function shrine(save: SaveData, run: RunState) {
+function healAll(save: SaveData, run: RunState, pct: number) {
   for (const id of run.party) {
     if (run.hp[id] <= 0) continue;
     const max = maxHpOf(save, run, id);
-    run.hp[id] = Math.min(max, run.hp[id] + Math.round(max * REWARDS.shrineHealPct));
+    run.hp[id] = Math.min(max, run.hp[id] + Math.round(max * pct));
   }
-  run.roomIndex += 1;
+}
+
+export function shrine(save: SaveData, run: RunState) {
+  healAll(save, run, REWARDS.shrineHealPct);
+  run.resolved = true;
+}
+
+/** Plays an event choice. Returns the outcome that happened, for the message. */
+export function chooseEvent(save: SaveData, run: RunState, optionIndex: number, rng: Rng = Math.random): EventOutcome {
+  const node = currentNode(run)!;
+  const opt = EVENTS[node.event!].options[optionIndex];
+  const out = opt.chance === undefined || rng() < opt.chance ? opt.outcome : opt.fail ?? opt.outcome;
+  if (out.hurt) {
+    for (const id of run.party) {
+      if (run.hp[id] <= 0) continue;
+      // Events wound but never kill.
+      run.hp[id] = Math.max(1, run.hp[id] - Math.round(maxHpOf(save, run, id) * out.hurt));
+    }
+  }
+  if (out.heal) healAll(save, run, out.heal);
+  if (out.tithes) run.tithes += out.tithes;
+  if (out.seals) run.seals += out.seals;
+  if (out.blessZeal) run.blessZeal = (run.blessZeal ?? 0) + out.blessZeal;
+  if (out.curseVigil) run.curseVigil = (run.curseVigil ?? 0) + out.curseVigil;
+  if (out.relic && relicOffer(run).length) run.pendingRelic = true;
+  run.resolved = true;
+  return out;
 }
 
 /** Three relics not yet held, in random order. */
@@ -166,7 +330,8 @@ export function takeRelic(save: SaveData, run: RunState, relicId: string) {
   run.relics.push(relicId);
   // Extra max HP arrives as healing too, so the bonus is felt at once.
   for (const id of run.party) if (run.hp[id] > 0) run.hp[id] += maxHpOf(save, run, id) - before[id];
-  run.roomIndex += 1;
+  run.pendingRelic = false;
+  run.resolved = true;
 }
 
 export interface RunResult {

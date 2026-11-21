@@ -4,7 +4,7 @@ import { CRUSADERS } from '../data/crusaders';
 import { makeEffectTextures } from '../ui/effects';
 import { ENEMIES } from '../data/enemies';
 import { enemyKey, makeEnemyTextures } from '../ui/enemyArt';
-import { makeIconTextures } from '../ui/icons';
+import { makeIconTextures, makeNodeTextures } from '../ui/icons';
 import { makePlaceholderPortrait, portraitKey } from '../ui/placeholderPortrait';
 
 /**
@@ -66,6 +66,7 @@ export class BootScene extends Phaser.Scene {
     makeEffectTextures(this);
     makeEnemyTextures(this);
     makeIconTextures(this);
+    makeNodeTextures(this);
     this.scene.start('Sanctum');
   }
 

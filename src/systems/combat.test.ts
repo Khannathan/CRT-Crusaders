@@ -243,3 +243,34 @@ describe('balance formulas', () => {
     expect(m.hp).toBe(0);
   });
 });
+
+describe('new enemy tricks', () => {
+  it('Drag Under pulls a back-rank crusader to the front', () => {
+    const a = crusader('a', 'hierophant', 1);
+    const b2 = crusader('b', 'warsister', 2);
+    const c = crusader('c', 'oracle', 3);
+    const b = new Battle([a, b2, c], [makeEnemy('lurker', 'e0', 1)], { rng: () => 0.5 });
+    b.act(b.get('e0'), ENEMIES.lurker.skills[0], c);
+    expect([a, b2, c].map((u) => u.rank)).toEqual([2, 3, 1]);
+  });
+
+  it('a Bloated Pilgrim bursts over the whole party when it dies', () => {
+    const w = crusader('w', 'warsister', 1, { atk: 999 });
+    const o = crusader('o', 'oracle', 2);
+    const b = new Battle([w, o], [makeEnemy('pilgrim', 'e0', 1), makeEnemy('husk', 'e1', 2)], { rng: () => 0.5 });
+    b.act(w, CLASS_SKILLS.warsister[0], b.get('e0'));
+    expect(w.hp).toBeLessThan(100);
+    expect(o.hp).toBeLessThan(100);
+  });
+
+  it('the Candle Thief steals Zeal, and priests only heal the hurt', () => {
+    const a = crusader('a', 'hierophant', 1);
+    const b = new Battle([a], [makeEnemy('thief', 'e0', 1), makeEnemy('priest', 'e1', 2)], { rng: () => 0.5, zeal: 50 });
+    b.act(b.get('e0'), ENEMIES.thief.skills[0], a);
+    expect(b.zeal).toBeLessThan(50);
+    const heal = ENEMIES.priest.skills[0];
+    expect(b.canUse(b.get('e1'), heal)).toBe(false);
+    b.get('e0').hp = 10;
+    expect(b.canUse(b.get('e1'), heal)).toBe(true);
+  });
+});
