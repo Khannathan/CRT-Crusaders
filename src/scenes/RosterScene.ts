@@ -2,6 +2,9 @@ import Phaser from 'phaser';
 import { FONT, GAME_H, GAME_W, PAL, hex } from '../config';
 import { CLASSES, RARITY_COLOR } from '../data/classes';
 import { CRUSADERS } from '../data/crusaders';
+import { ORDERS } from '../data/orders';
+import { CLASS_SKILLS } from '../data/skills';
+import { VOW_UPGRADES } from '../systems/combat';
 import type { CrusaderDef } from '../data/types';
 import { commit, game } from '../state/game';
 import { MAX_VOW, RARITY_ORDER } from '../systems/gacha';
@@ -131,12 +134,20 @@ export class RosterScene extends Phaser.Scene {
       );
     }
     layer.add(pips);
+    // What the next duplicates unlock, and what her order brings to a party
+    const skills = CLASS_SKILLS[c.classId];
+    const perks = VOW_UPGRADES.map(([v, i]) => `${have.vow >= v ? '✓ ' : ''}Vow ${v}: ${skills[i].name}+`).join('  ·  ');
+    const order = ORDERS[c.order]?.[0];
     layer.add([
-      this.add.text(GAME_W / 2, 606, cls.summary, { ...style, fontSize: '18px' }).setOrigin(0.5),
+      this.add.text(GAME_W / 2, 586, perks, { ...style, fontSize: '15px', color: hex(PAL.amber), wordWrap: { width: GAME_W - 70 } }).setOrigin(0.5),
+      ...(order ? [this.add.text(GAME_W / 2, 624, `With another ${c.order}: ${order.desc}`, { ...style, fontSize: '15px', color: hex(PAL.muted) }).setOrigin(0.5)] : []),
+    ]);
+    layer.add([
+      this.add.text(GAME_W / 2, 656, cls.summary, { ...style, fontSize: '18px' }).setOrigin(0.5),
       ...(c.passive
-        ? [this.add.text(GAME_W / 2, 650, `${c.passive.name}: ${c.passive.desc}`, { ...style, fontSize: '16px', color: hex(PAL.violet) }).setOrigin(0.5)]
+        ? [this.add.text(GAME_W / 2, 684, `${c.passive.name}: ${c.passive.desc}`, { ...style, fontSize: '16px', color: hex(PAL.violet) }).setOrigin(0.5)]
         : []),
-      this.add.text(GAME_W / 2, 704, `"${c.hook}"`, { ...style, fontSize: '16px', fontStyle: 'italic', color: hex(PAL.steel) }).setOrigin(0.5),
+      this.add.text(GAME_W / 2, 718, `"${c.hook}"`, { ...style, fontSize: '16px', fontStyle: 'italic', color: hex(PAL.steel) }).setOrigin(0.5),
     ]);
     const canLevel = !maxed && game.save.tithes >= cost;
     const lvl = makeButton(

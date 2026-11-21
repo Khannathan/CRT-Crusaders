@@ -9,6 +9,7 @@ import { commit, game } from '../state/game';
 import { current } from '../state/run';
 import {
   REWARDS,
+  ROMAN,
   chooseEvent,
   choices,
   cryptCleared,
@@ -17,6 +18,7 @@ import {
   finishRun,
   maxHpOf,
   relicOffer,
+  rewardMult,
   shrine,
   takeRelic,
   type MapNode,
@@ -61,7 +63,7 @@ export class CryptScene extends Phaser.Scene {
     this.info = [];
     addScreenGlow(this);
     const style = { fontFamily: FONT, color: hex(PAL.ivory), align: 'center' };
-    this.add.text(GAME_W / 2, 30, run.crypt.name.toUpperCase(), txt.display(24, PAL.ivory)).setOrigin(0.5);
+    this.add.text(GAME_W / 2, 30, run.crypt.name.toUpperCase() + (run.heresy ? `  ·  HERESY ${ROMAN[run.heresy - 1]}` : ''), txt.display(run.heresy ? 20 : 24, run.heresy ? 0xe58a8a : PAL.ivory)).setOrigin(0.5);
     this.add
       .text(GAME_W / 2, 62, `Earned so far: ${run.tithes} Tithes · ${run.seals} Seals`, { ...style, fontSize: '18px', color: hex(PAL.muted) })
       .setOrigin(0.5);
@@ -139,7 +141,7 @@ export class CryptScene extends Phaser.Scene {
   }
 
   private describe(node: MapNode): string {
-    const m = current.run!.crypt.rewardMult;
+    const m = rewardMult(current.run!);
     const foes = (enc: string) => ENCOUNTERS[enc].map((t) => ENEMIES[t].name).join(', ');
     switch (node.kind) {
       case 'fight':

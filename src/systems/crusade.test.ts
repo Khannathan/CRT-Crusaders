@@ -1,6 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import { newSave } from '../state/save';
-import { BELFRY, CRYPTS, OSSUARY, choices, chooseEvent, cryptUnlocked, enterNode, generateMap, startRun } from './crusade';
+import { orderBonuses } from '../data/orders';
+import { CLASS_SKILLS } from '../data/skills';
+import { skillsFor } from './combat';
+import { BELFRY, CRYPTS, OSSUARY, choices, chooseEvent, cryptUnlocked, enterNode, finishRun, generateMap, heresyAvailable, makeBattle, maxHpOf, startRun } from './crusade';
 import { seeded } from './rng';
 
 describe('crypt maps', () => {
@@ -42,5 +45,47 @@ describe('crypt maps', () => {
     expect(cryptUnlocked(save, BELFRY)).toBe(false);
     save.cleared.push(OSSUARY.id);
     expect(cryptUnlocked(save, BELFRY)).toBe(true);
+  });
+});
+
+describe('reasons to keep going', () => {
+  it('two crusaders of one order turn on its bonus', () => {
+    const save = newSave();
+    // Aveline and Mariel are both Sepulcher Watch: +10% max HP
+    for (const id of ['CC-W013', 'CC-W022', 'CC-W001']) save.owned[id] = { level: 1, vow: 0 };
+    const solo = startRun(save, ['CC-W013', 'CC-W001']);
+    const pair = startRun(save, ['CC-W013', 'CC-W022']);
+    expect(maxHpOf(save, pair, 'CC-W013')).toBe(Math.round(maxHpOf(save, solo, 'CC-W013') * 1.1));
+    expect(orderBonuses(['Glass Confession', 'Glass Confession', 'Glass Confession']).length).toBe(2);
+  });
+
+  it('Vows upgrade skills at ranks 2, 4 and 5', () => {
+    const save = newSave();
+    save.owned['CC-W001'] = { level: 1, vow: 2 };
+    const run = startRun(save, ['CC-W001']);
+    const unit = makeBattle(save, run, 'ossuary-1').units.find((u) => u.side === 'party')!;
+    const skills = skillsFor(unit);
+    expect(skills[0].name).toBe('Accuse+');
+    expect(skills[0].mult).toBeCloseTo(CLASS_SKILLS.inquisitor[0].mult! * 1.25);
+    expect(skills[1].name).toBe("Duelist's Thrust");
+  });
+
+  it('Heresy unlocks one tier at a time, makes enemies tougher and pays Seals once', () => {
+    const save = newSave();
+    save.owned['CC-W013'] = { level: 1, vow: 0 };
+    expect(heresyAvailable(save, OSSUARY)).toBe(0);
+    save.cleared.push(OSSUARY.id);
+    expect(heresyAvailable(save, OSSUARY)).toBe(1);
+    const run = startRun(save, ['CC-W013'], OSSUARY, seeded(1), 1);
+    const base = makeBattle(save, startRun(save, ['CC-W013']), 'ossuary-1').units.find((u) => u.side === 'enemy')!;
+    const hard = makeBattle(save, run, 'ossuary-1').units.find((u) => u.side === 'enemy')!;
+    expect(hard.maxHp).toBeGreaterThan(base.maxHp * 1.2);
+    run.floor = run.map.length - 1;
+    const first = finishRun(save, run, 'victory');
+    expect(first.heresyCleared).toBe(1);
+    expect(heresyAvailable(save, OSSUARY)).toBe(2);
+    const again = finishRun(save, { ...run }, 'victory');
+    expect(again.heresyCleared).toBeUndefined();
+    expect(again.seals).toBeLessThan(first.seals);
   });
 });

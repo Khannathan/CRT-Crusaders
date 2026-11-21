@@ -62,6 +62,8 @@ export interface Unit {
   lastSkill?: string;
   /** Bosses: 2 once the second phase has begun. */
   phase?: number;
+  /** Crusaders: Vow rank, which upgrades skills (see VOW_UPGRADES). */
+  vow?: number;
   /** Own turns left before each skill can be used again. */
   cooldowns?: Record<string, number>;
 }
@@ -86,7 +88,7 @@ export interface TurnStart {
 }
 
 /** Bump when combat numbers change, so logged runs can be compared fairly. */
-export const BALANCE_VERSION = '0.5';
+export const BALANCE_VERSION = '0.6';
 /** Execute skills hit harder below this share of max HP. */
 export const EXECUTE_AT = 0.3;
 
@@ -114,7 +116,37 @@ export function skillsFor(u: Unit): SkillDef[] {
     const d = ENEMIES[u.ref];
     return u.phase === 2 && d.phase2 ? d.phase2.skills : d.skills;
   }
-  return [...CLASS_SKILLS[u.classId!], SHIFT_SKILL];
+  const vow = u.vow ?? 0;
+  return [...CLASS_SKILLS[u.classId!].map((s, i) => (VOW_UPGRADES.some(([v, idx]) => idx === i && vow >= v) ? upgraded(s) : s)), SHIFT_SKILL];
+}
+
+/** [vow rank, skill index]: duplicate pulls upgrade a skill at these Vow ranks (index 3 is the Rite). */
+export const VOW_UPGRADES: [number, number][] = [
+  [2, 0],
+  [4, 1],
+  [5, 3],
+];
+
+const upgradeCache = new Map<string, SkillDef>();
+/** A Vow-upgraded skill: +25% effect, one turn less cooldown, and a + on its name. */
+export function upgraded(s: SkillDef): SkillDef {
+  const hit = upgradeCache.get(s.id);
+  if (hit) return hit;
+  const up = (n?: number) => (n === undefined ? undefined : Math.round(n * 1.25 * 100) / 100);
+  const u: SkillDef = {
+    ...s,
+    id: s.id,
+    name: `${s.name}+`,
+    desc: `${s.desc} (Vow: +25% effect${s.cooldown ? ', -1 cooldown' : ''}.)`,
+    mult: up(s.mult),
+    heal: up(s.heal),
+    healPct: up(s.healPct),
+    shieldPct: up(s.shieldPct),
+    poison: s.poison && { ...s.poison, mult: up(s.poison.mult)! },
+    cooldown: s.cooldown ? s.cooldown - 1 : undefined,
+  };
+  upgradeCache.set(s.id, u);
+  return u;
 }
 
 export class Battle {
@@ -131,8 +163,10 @@ export class Battle {
   private summons = 0;
   private hurtFrac = 0;
   private hurtZealThisRound = 0;
+  private enemyScale: number;
 
-  constructor(party: Unit[], enemies: Unit[], opts: { rng?: Rng; vigil?: number; zeal?: number } = {}) {
+  constructor(party: Unit[], enemies: Unit[], opts: { rng?: Rng; vigil?: number; zeal?: number; enemyScale?: number } = {}) {
+    this.enemyScale = opts.enemyScale ?? 1;
     this.units = [...party, ...enemies];
     this.rng = opts.rng ?? Math.random;
     this.vigil = opts.vigil ?? VIGIL_DEFAULT;
@@ -614,7 +648,7 @@ export class Battle {
   private summon(type: string, events: BattleEvent[]) {
     const line = this.alive('enemy');
     if (line.length >= 4) return;
-    const u = makeEnemy(type, `summon-${++this.summons}`, line.length + 1);
+    const u = makeEnemy(type, `summon-${++this.summons}`, line.length + 1, this.enemyScale);
     this.units.push(u);
     this.planIntent(u);
     events.push({ type: 'summon', uid: u.uid });
@@ -632,10 +666,10 @@ export class Battle {
 
 /** Enemy HP and attack scale, tuned with balance.test.ts against the Auto player. */
 export const ENEMY_TUNE = 1.18;
-export function makeEnemy(type: string, uid: string, rank: number): Unit {
+export function makeEnemy(type: string, uid: string, rank: number, scale = 1): Unit {
   const d = ENEMIES[type];
-  const hp = Math.round(d.hp * ENEMY_TUNE);
-  return { uid, side: 'enemy', name: d.name, ref: type, rank, maxHp: hp, hp, atk: Math.round(d.atk * ENEMY_TUNE), armor: d.armor, spd: d.spd, crit: d.crit ?? 0.05, status: {}, boss: d.boss };
+  const hp = Math.round(d.hp * ENEMY_TUNE * scale);
+  return { uid, side: 'enemy', name: d.name, ref: type, rank, maxHp: hp, hp, atk: Math.round(d.atk * ENEMY_TUNE * scale), armor: d.armor, spd: d.spd, crit: d.crit ?? 0.05, status: {}, boss: d.boss };
 }
 
 /** Damage after armor: raw / (1 + armor / ARMOR_K). 100 armor halves a hit. */

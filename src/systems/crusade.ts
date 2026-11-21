@@ -2,6 +2,7 @@ import { CLASSES } from '../data/classes';
 import { CRUSADERS } from '../data/crusaders';
 import { ENCOUNTERS } from '../data/enemies';
 import { EVENTS, type EventOutcome } from '../data/events';
+import { orderBonuses } from '../data/orders';
 import { RELICS, type RelicDef } from '../data/relics';
 import type { SaveData } from '../state/save';
 import { Battle, VIGIL_DEFAULT, makeEnemy, type Unit } from './combat';
@@ -99,6 +100,8 @@ export interface RunState {
   seals: number;
   /** A relic choice is waiting (after an elite or an event). */
   pendingRelic?: boolean;
+  /** Heresy tier: 0 is the base crypt, each tier is harder and pays more. */
+  heresy: number;
   /** Extra Zeal for the next fight only. */
   blessZeal?: number;
   /** Shorter Vigil for the next fight only. */
@@ -169,17 +172,36 @@ export function canMuster(save: SaveData, id: string) {
 
 export const reviveCost = (level: number) => Math.round(levelUpCost(level) * 0.6);
 
-export function startRun(save: SaveData, party: string[], crypt: CryptDef = OSSUARY, rng: Rng = Math.random): RunState {
+export function startRun(save: SaveData, party: string[], crypt: CryptDef = OSSUARY, rng: Rng = Math.random, heresy = 0): RunState {
   const ids = party.filter((id) => canMuster(save, id)).slice(0, MAX_PARTY);
-  const run: RunState = { crypt, map: generateMap(crypt, rng), party: ids, hp: {}, path: [], floor: -1, at: 0, resolved: true, relics: [], tithes: 0, seals: 0 };
+  const run: RunState = { crypt, map: generateMap(crypt, rng), party: ids, hp: {}, path: [], floor: -1, at: 0, resolved: true, heresy, relics: [], tithes: 0, seals: 0 };
   for (const id of ids) run.hp[id] = maxHpOf(save, run, id);
   save.lastParty = ids;
   return run;
 }
 
+/** Everything that modifies the party this run: relics plus Order bonuses. */
 function relicsOf(run: RunState): RelicDef[] {
-  return run.relics.map((id) => RELICS.find((r) => r.id === id)!).filter(Boolean);
+  const relics = run.relics.map((id) => RELICS.find((r) => r.id === id)!).filter(Boolean);
+  const orders = run.party.map((id) => CRUSADERS.find((c) => c.id === id)?.order ?? '');
+  return [...relics, ...orderBonuses(orders)];
 }
+
+export const MAX_HERESY = 5;
+export const ROMAN = ['I', 'II', 'III', 'IV', 'V'];
+/** Enemy HP and attack per Heresy tier. */
+export const HERESY_ENEMY = 0.25;
+/** Reward bonus per Heresy tier. */
+export const HERESY_REWARD = 0.3;
+export const HERESY_FIRST_CLEAR_SEALS = 3;
+
+/** Highest Heresy tier the player may pick for a crypt: one past the best cleared. */
+export function heresyAvailable(save: SaveData, crypt: CryptDef): number {
+  if (!save.cleared.includes(crypt.id)) return 0;
+  return Math.min(MAX_HERESY, (save.heresy?.[crypt.id] ?? 0) + 1);
+}
+
+export const rewardMult = (run: RunState) => run.crypt.rewardMult * (1 + HERESY_REWARD * run.heresy);
 
 export function maxHpOf(save: SaveData, run: RunState, id: string) {
   const c = CRUSADERS.find((x) => x.id === id)!;
@@ -192,7 +214,10 @@ export function makeBattle(save: SaveData, run: RunState, encounter: string, rng
   const relics = relicsOf(run);
   const atkPct = relics.reduce((s, r) => s + (r.atkPct ?? 0), 0);
   const zeal = relics.reduce((s, r) => s + (r.startZeal ?? 0), 0) + (run.blessZeal ?? 0);
-  const vigil = Math.max(2, VIGIL_DEFAULT + relics.reduce((s, r) => s + (r.vigilBonus ?? 0), 0) - (run.curseVigil ?? 0));
+  const armorPct = relics.reduce((s, r) => s + (r.armorPct ?? 0), 0);
+  // Heresy shortens the candle by a round every second tier.
+  const vigil = Math.max(2, VIGIL_DEFAULT + relics.reduce((s, r) => s + (r.vigilBonus ?? 0), 0) - (run.curseVigil ?? 0) - Math.floor(run.heresy / 2));
+  const enemyScale = 1 + HERESY_ENEMY * run.heresy;
 
   let rank = 0;
   const party: Unit[] = [];
@@ -210,15 +235,16 @@ export function makeBattle(save: SaveData, run: RunState, encounter: string, rng
       maxHp: maxHpOf(save, run, id),
       hp: run.hp[id],
       atk: Math.round(st.atk * (1 + atkPct)),
-      armor: st.armor,
+      armor: Math.round(st.armor * (1 + armorPct)),
+      vow: save.owned[id].vow,
       crit: st.crit + relics.reduce((n, r) => n + (r.critAdd ?? 0), 0),
       passive: c.passive,
       spd: st.spd,
       status: {},
     });
   }
-  const enemies = ENCOUNTERS[encounter].map((type, i) => makeEnemy(type, `e${i}`, i + 1));
-  return new Battle(party, enemies, { rng, vigil, zeal });
+  const enemies = ENCOUNTERS[encounter].map((type, i) => makeEnemy(type, `e${i}`, i + 1, enemyScale));
+  return new Battle(party, enemies, { rng, vigil, zeal, enemyScale });
 }
 
 /** The node being played, if it is not finished yet. */
@@ -265,7 +291,7 @@ export function winRoom(run: RunState, save?: SaveData) {
   const node = currentNode(run)!;
   const fightHeal = relicsOf(run).reduce((n, r) => n + (r.fightHeal ?? 0), 0);
   if (save && fightHeal) healAll(save, run, fightHeal);
-  const m = run.crypt.rewardMult;
+  const m = rewardMult(run);
   if (node.kind === 'boss') {
     run.tithes += Math.round(REWARDS.bossTithes * m);
     run.seals += REWARDS.bossSeals;
@@ -339,6 +365,8 @@ export interface RunResult {
   tithes: number;
   seals: number;
   firstClear: boolean;
+  /** Heresy tier just cleared for the first time, if any. */
+  heresyCleared?: number;
   fallen: string[];
 }
 
@@ -347,12 +375,19 @@ export function finishRun(save: SaveData, run: RunState, outcome: RunResult['out
   let tithes = run.tithes;
   let seals = run.seals;
   let firstClear = false;
+  let heresyCleared: number | undefined;
   if (outcome === 'victory') {
     seals += REWARDS.completeSeals;
     if (!save.cleared.includes(run.crypt.id)) {
       firstClear = true;
       seals += REWARDS.firstClearSeals;
       save.cleared.push(run.crypt.id);
+    }
+    const best = (save.heresy ??= {})[run.crypt.id] ?? 0;
+    if (run.heresy > best) {
+      save.heresy[run.crypt.id] = run.heresy;
+      seals += HERESY_FIRST_CLEAR_SEALS;
+      heresyCleared = run.heresy;
     }
   } else if (outcome === 'defeat') {
     tithes = Math.round(tithes * REWARDS.defeatKeep);
@@ -367,7 +402,7 @@ export function finishRun(save: SaveData, run: RunState, outcome: RunResult['out
 
   save.tithes += tithes;
   save.seals += seals;
-  return { outcome, tithes, seals, firstClear, fallen };
+  return { outcome, tithes, seals, firstClear, heresyCleared, fallen };
 }
 
 export function revive(save: SaveData, id: string): boolean {

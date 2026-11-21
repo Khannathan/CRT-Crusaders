@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
 import { FONT, GAME_H, GAME_W, PAL, hex } from '../config';
 import { CRUSADERS } from '../data/crusaders';
-import type { RunResult } from '../systems/crusade';
+import { HERESY_FIRST_CLEAR_SEALS, MAX_HERESY, ROMAN, type RunResult } from '../systems/crusade';
 import { makeButton } from '../ui/button';
 import { portraitKey } from '../ui/placeholderPortrait';
 
@@ -29,7 +29,8 @@ export class ResultsScene extends Phaser.Scene {
     this.add.text(GAME_W / 2, 250, `+${r.tithes} Tithes`, { ...style, fontSize: '28px' }).setOrigin(0.5);
     this.add.text(GAME_W / 2, 300, `+${r.seals} Wax Seals`, { ...style, fontSize: '28px' }).setOrigin(0.5);
     const notes: string[] = [];
-    if (r.firstClear) notes.push('First clear bonus included!');
+    if (r.firstClear) notes.push('First clear bonus included! Heresy I is now open for this crypt.');
+    if (r.heresyCleared) notes.push(`Heresy ${ROMAN[r.heresyCleared - 1]} cleared for the first time: +${HERESY_FIRST_CLEAR_SEALS} Seals.${r.heresyCleared < MAX_HERESY ? ` Heresy ${ROMAN[r.heresyCleared]} is open.` : ''}`);
     if (r.outcome === 'defeat') notes.push('Half your Tithes were lost in the dark, and no Seals were kept.');
     if (r.outcome === 'retreat') notes.push('You kept your Tithes. Seals come from clearing the crypt.');
     this.add.text(GAME_W / 2, 360, notes.join('\n'), { ...style, fontSize: '17px', color: hex(PAL.steel), wordWrap: { width: GAME_W - 60 } }).setOrigin(0.5, 0);
