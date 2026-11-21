@@ -1,3 +1,4 @@
+import { BOND_XP, addBond } from './bonds';
 import { CRUSADERS } from '../data/crusaders';
 import type { CrusaderDef } from '../data/types';
 import type { SaveData } from '../state/save';
@@ -99,6 +100,7 @@ export function claimVigil(save: SaveData, now: number, rng: Rng = Math.random):
   const melted = claimGear(save, gear);
   save.tithes += p.tithes;
   save.seals += p.seals;
+  addBond(save, v.party, Math.floor(p.hours * BOND_XP.vigilHour));
   v.since = now;
   if (p.tithes > 0) track(save, 'vigilClaim', 1, now);
   return { tithes: p.tithes, seals: p.seals, gear, melted };

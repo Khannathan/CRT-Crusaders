@@ -1,3 +1,4 @@
+import { BOND_XP, addBond } from './bonds';
 import { CLASSES } from '../data/classes';
 import { CRUSADERS } from '../data/crusaders';
 import { ENCOUNTERS } from '../data/enemies';
@@ -326,6 +327,7 @@ export function winRoom(run: RunState, save?: SaveData, rng: Rng = Math.random) 
   }
   run.resolved = true;
   if (save) {
+    addBond(save, run.party.filter((id) => (run.hp[id] ?? 0) > 0), node.kind === 'boss' ? BOND_XP.boss : node.kind === 'elite' ? BOND_XP.elite : BOND_XP.fight);
     track(save, 'fightWon');
     if (node.kind === 'elite') track(save, 'eliteWon');
     if (node.kind === 'boss') track(save, 'bossWon');

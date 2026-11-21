@@ -4,6 +4,7 @@ import type { SaveData } from '../state/save';
 import { matinsReady } from '../systems/matins';
 import { ROMAN_RANK, unlocked } from '../systems/rank';
 import { anyClaimable } from '../systems/tasks';
+import { anyUnheard } from '../systems/bonds';
 import { entriesLeft } from '../systems/trials';
 import { makeButton } from './button';
 import { PAD } from './theme';
@@ -26,6 +27,7 @@ export const RITES: RiteEntry[] = [
   { label: 'Matins', scene: 'Matins', icon: 'flame', rank: 1, ready: (s) => matinsReady(s) },
   { label: 'Penance', scene: 'Penance', icon: 'book', rank: 2, ready: (s) => anyClaimable(s) },
   { label: 'Trials', scene: 'Trials', icon: 'shield', rank: 3, ready: (s) => entriesLeft(s) > 0 },
+  { label: 'Confession', scene: 'Confession', icon: 'book', rank: 5, ready: (s) => anyUnheard(s) },
   { label: 'Bell Tower', scene: 'Tower', icon: 'sanctum', rank: 6 },
   { label: 'Inquisition', scene: 'Inquisition', icon: 'blade', rank: 8 },
 ];
