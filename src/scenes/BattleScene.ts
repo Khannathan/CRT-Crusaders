@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import { bondBattle } from '../systems/bonds';
 import { FONT, GAME_W, PAL, hex } from '../config';
 import { RARITY_COLOR } from '../data/classes';
 import { CRUSADERS } from '../data/crusaders';
@@ -163,6 +164,7 @@ export class BattleScene extends Phaser.Scene {
       this.logText.setText(outcome === 'victory' ? 'The trial is passed.' : 'Your Sisters fall back, bloodied but alive.');
       this.time.delayedCall(1200, () => {
         current.challenge = undefined;
+        bondBattle(game.save, this.battle);
         const next = challenge.finish(outcome, this.battle);
         commit();
         this.scene.start(next.scene, next.data);

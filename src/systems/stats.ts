@@ -1,3 +1,4 @@
+import { bondMult } from './bonds';
 import { RARITY_MULT } from '../data/classes';
 import type { CrusaderDef } from '../data/types';
 import type { OwnedCrusader, SaveData } from '../state/save';
@@ -43,7 +44,11 @@ export function statsFor(c: CrusaderDef, owned: OwnedCrusader, gear: GearItem[] 
 }
 
 /** Stats with her equipped gear. */
-export const sisterStats = (save: SaveData, c: CrusaderDef) => statsFor(c, save.owned[c.id], equipped(save, c.id));
+export function sisterStats(save: SaveData, c: CrusaderDef): Stats {
+  const st = statsFor(c, save.owned[c.id], equipped(save, c.id));
+  const m = bondMult(save, c.id);
+  return m === 1 ? st : { ...st, hp: Math.round(st.hp * m), atk: Math.round(st.atk * m) };
+}
 
 /** Tithes to take the next Vow. */
 export const vowCost = (vow: number) => 150 * (vow + 1);
