@@ -53,11 +53,11 @@ function pickNode(save: SaveData, run: RunState): number {
   return [...open].sort((a, b) => rank(a) - rank(b))[0];
 }
 
-function playCrypt(seed: number, level: number, crypt: CryptDef = OSSUARY) {
+function playCrypt(seed: number, level: number, crypt: CryptDef = OSSUARY, heresy = 0) {
   const save = newSave();
   for (const id of STARTER) save.owned[id] = { level, vow: 0 };
   const rng = seeded(seed);
-  const run = startRun(save, STARTER, crypt, rng);
+  const run = startRun(save, STARTER, crypt, rng, heresy);
   let firstRite: number | undefined;
   while (!cryptCleared(run)) {
     const node = enterNode(run, pickNode(save, run));
@@ -78,17 +78,17 @@ function playCrypt(seed: number, level: number, crypt: CryptDef = OSSUARY) {
   return { outcome: finishRun(save, run, 'victory').outcome, firstRite };
 }
 
-function sample(level: number, crypt: CryptDef = OSSUARY) {
+function sample(level: number, crypt: CryptDef = OSSUARY, heresy = 0) {
   let wins = 0;
   const rites: number[] = [];
   for (let i = 0; i < N; i++) {
-    const r = playCrypt(1000 + i, level, crypt);
+    const r = playCrypt(1000 + i, level, crypt, heresy);
     if (r.outcome === 'victory') wins++;
     if (r.firstRite !== undefined) rites.push(r.firstRite);
   }
   rites.sort((a, b) => a - b);
   const median = rites[Math.floor(rites.length / 2)];
-  console.log(`[balance ${BALANCE_VERSION}] ${crypt.id} level ${level}: win ${((wins / N) * 100).toFixed(1)}%, boss first Rite median round ${median}`);
+  console.log(`[balance ${BALANCE_VERSION}] ${crypt.id}${heresy ? ` heresy ${heresy}` : ''} level ${level}: win ${((wins / N) * 100).toFixed(1)}%, boss first Rite median round ${median}`);
   return { rate: wins / N, median };
 }
 
@@ -116,5 +116,12 @@ describe(`crypt balance ${BALANCE_VERSION} (auto player, ${N} seeded runs)`, () 
     expect(mid.rate).toBeGreaterThan(0.45);
     expect(mid.rate).toBeLessThan(0.9);
     expect(sample(12, BELFRY).rate).toBeGreaterThan(0.9);
+  });
+
+  it('Heresy tiers ask for more levels', () => {
+    const h3 = sample(10, OSSUARY, 3).rate;
+    expect(h3).toBeGreaterThan(0.3);
+    expect(h3).toBeLessThan(0.95);
+    expect(sample(20, OSSUARY, 5).rate).toBeGreaterThan(0.8);
   });
 });

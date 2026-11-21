@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 import { GAME_H, GAME_W, PAL } from '../config';
 import { CLASSES, RARITY_COLOR } from '../data/classes';
 import { CRUSADERS } from '../data/crusaders';
+import { orderBonuses } from '../data/orders';
 import { commit, game } from '../state/game';
 import { current } from '../state/run';
 import { CRYPTS, MAX_PARTY, canMuster, startRun, suggestParty } from '../systems/crusade';
@@ -57,7 +58,16 @@ export class MusterScene extends Phaser.Scene {
     }
 
     // Pool of owned crusaders
-    this.add.rectangle(GAME_W / 2, 326, GAME_W - 32, 1, PAL.armorShadow);
+    // Order bonuses this party turns on
+    const bonuses = orderBonuses(this.party.map((id) => CRUSADERS.find((c) => c.id === id)!.order));
+    this.add
+      .text(GAME_W / 2, 304, bonuses.length ? bonuses.map((b) => `${b.name}: ${b.desc}`).join('\n') : 'Two of one order together unlock a bonus.', {
+        ...text.body(bonuses.length ? 16 : 15, bonuses.length ? PAL.amber : PAL.muted),
+        align: 'center',
+      })
+      .setOrigin(0.5, 0)
+      .setLineSpacing(-2);
+    this.add.rectangle(GAME_W / 2, 344, GAME_W - 32, 1, PAL.armorShadow);
     const owned = CRUSADERS.filter((c) => game.save.owned[c.id]);
     owned.forEach((c, i) => {
       const x = 8 + 64 + (i % 4) * 132;
@@ -92,7 +102,8 @@ export class MusterScene extends Phaser.Scene {
       80,
       'Begin crusade',
       () => {
-        current.run = startRun(game.save, this.party, CRYPTS.find((c) => c.id === current.cryptId) ?? CRYPTS[0]);
+        const crypt = CRYPTS.find((c) => c.id === current.cryptId) ?? CRYPTS[0];
+        current.run = startRun(game.save, this.party, crypt, Math.random, current.heresy?.[crypt.id] ?? 0);
         commit();
         this.scene.start('Crypt');
       },

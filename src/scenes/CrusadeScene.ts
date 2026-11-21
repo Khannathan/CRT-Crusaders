@@ -4,7 +4,7 @@ import { RARITY_COLOR } from '../data/classes';
 import { CRUSADERS } from '../data/crusaders';
 import { commit, game } from '../state/game';
 import { current } from '../state/run';
-import { CRYPTS, REWARDS, canMuster, cryptUnlocked, reviveCost, revive } from '../systems/crusade';
+import { CRYPTS, HERESY_ENEMY, HERESY_REWARD, REWARDS, ROMAN, canMuster, cryptUnlocked, heresyAvailable, reviveCost, revive } from '../systems/crusade';
 import { makeButton } from '../ui/button';
 import { CURRENCY_BAR_H, addCurrencyBar } from '../ui/currencyBar';
 import { portraitKey } from '../ui/placeholderPortrait';
@@ -55,7 +55,16 @@ export class CrusadeScene extends Phaser.Scene {
         wordWrap: { width: hw - 36 },
       });
       const prior = CRYPTS.find((c) => c.id === crypt.unlockAfter);
-      const note = !open ? `Clear ${prior?.name} to open` : cleared ? 'Cleared' : `First clear +${REWARDS.firstClearSeals} Wax Seals`;
+      const maxTier = heresyAvailable(s, crypt);
+      const tier = Math.min(maxTier, (current.heresy ??= {})[crypt.id] ?? 0);
+      const best = s.heresy?.[crypt.id] ?? 0;
+      const note = !open
+        ? `Clear ${prior?.name} to open`
+        : tier
+          ? `Heresy ${ROMAN[tier - 1]}: foes +${Math.round(HERESY_ENEMY * tier * 100)}%, rewards +${Math.round(HERESY_REWARD * tier * 100)}%`
+          : cleared
+            ? `Cleared${best ? `  ·  best Heresy ${ROMAN[best - 1]}` : ''}`
+            : `First clear +${REWARDS.firstClearSeals} Wax Seals`;
       const chip = this.add.text(tx + 8, cardBottom - 96, note, text.hud(13, open ? PAL.amber : PAL.muted));
       this.add.rectangle(tx, cardBottom - 102, chip.width + 16, chip.height + 12, 0x211420).setOrigin(0, 0).setStrokeStyle(1, 0x674347);
       this.children.bringToTop(chip);
@@ -72,6 +81,18 @@ export class CrusadeScene extends Phaser.Scene {
         },
         { active: open && ready.length > 0, disabled: !open || !ready.length, icon: open ? 'shield' : 'lock', fontSize: 20 },
       );
+      // Heresy picker: harder tiers open one at a time after a clear.
+      if (maxTier > 0) {
+        const set = (t: number) => {
+          current.heresy![crypt.id] = Math.max(0, Math.min(maxTier, t));
+          this.scene.restart();
+        };
+        const cx = GAME_W - PAD - 112;
+        makeButton(this, cx - 76, cardBottom - 38, 44, 54, '‹', () => set(tier - 1), { disabled: tier === 0, fontSize: 24 });
+        makeButton(this, cx + 76, cardBottom - 38, 44, 54, '›', () => set(tier + 1), { disabled: tier >= maxTier, fontSize: 24 });
+        this.add.text(cx, cardBottom - 48, tier ? `HERESY ${ROMAN[tier - 1]}` : 'NORMAL', text.hud(14, tier ? 0xe58a8a : PAL.ivory)).setOrigin(0.5);
+        this.add.text(cx, cardBottom - 26, `up to ${ROMAN[maxTier - 1]}`, text.hud(12, PAL.muted)).setOrigin(0.5);
+      }
       bottom = cardBottom;
     });
     if (!Object.keys(s.owned).length) {

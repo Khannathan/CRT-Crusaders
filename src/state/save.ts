@@ -18,6 +18,8 @@ export interface SaveData {
   owned: Record<string, OwnedCrusader>;
   /** Crypt ids cleared at least once (first-clear bonus). */
   cleared: string[];
+  /** Highest Heresy tier cleared per crypt id (0 = the base crypt). */
+  heresy?: Record<string, number>;
   /** Last party, in rank order, to pre-fill the muster screen. */
   lastParty: string[];
 }

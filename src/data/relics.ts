@@ -6,6 +6,8 @@ export interface RelicDef {
   hpPct?: number;
   startZeal?: number;
   vigilBonus?: number;
+  /** Party armor bonus. */
+  armorPct?: number;
   /** Added to every crusader's crit chance. */
   critAdd?: number;
   /** Heals the party this share of max HP after each won fight. */

@@ -50,6 +50,12 @@ Enemies with tricks: the Warden shields allies, the Mourning Priest heals them, 
 
 Crypts live in `src/systems/crusade.ts` (`CRYPTS`), line-ups in `src/data/enemies.ts` (`ENCOUNTERS`), events in `src/data/events.ts`. Crypt card art: `src/assets/ui/bg-<crypt id>.webp` (falls back to `bg-hall`). Map icons: `node-fight`, `node-elite`, `node-event`, `node-shrine`, `node-reliquary`, `node-boss` (48 × 48), plus the intent icon `icon-buff`.
 
+## Reasons to keep going
+
+- **Heresy tiers:** after clearing a crypt, pick Heresy I to V on its card (‹ ›). Each tier gives enemies +25% HP and attack, adds +30% rewards, and every second tier takes a round off the Vigil candle. Each tier opens after the one before it is cleared, and each first clear pays 3 Seals. Tuning is in `crusade.ts` (`HERESY_*`).
+- **Order bonuses:** two crusaders of the same order in a party turn on a bonus (`src/data/orders.ts`), shown on the Muster screen and on each crusader's Roster card. Glass Confession has a second tier at three.
+- **Vow upgrades:** duplicate pulls upgrade skills at Vow 2 (first skill), Vow 4 (second skill) and Vow 5 (the Rite), for +25% effect and one less turn of cooldown. An upgraded skill shows a + on its name.
+
 ## Layout
 
 - `src/config.ts` — design resolution (540 × 960) and palette anchors from the art guide.
