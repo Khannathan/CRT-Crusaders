@@ -8,7 +8,19 @@ export interface ClassDef {
   summary: string;
 }
 
-export type PassiveKind = 'unbroken' | 'critOnAccused' | 'startZeal';
+export type PassiveKind =
+  | 'unbroken'
+  | 'critOnAccused'
+  | 'startZeal'
+  | 'lifesteal'
+  | 'executioner'
+  | 'bulwark'
+  | 'thorns'
+  | 'zealOnKill'
+  | 'healAura'
+  | 'plague'
+  | 'martyr'
+  | 'swift';
 
 /** SSR and UR crusaders carry one passive. */
 export interface PassiveDef {
@@ -23,6 +35,8 @@ export interface CrusaderDef {
   id: string;
   name: string;
   classId: string;
+  /** Her title from the roster (e.g. "Witchfire Deacon"); she fights as `classId`. */
+  title?: string;
   rarity: Rarity;
   order: string;
   age: number;

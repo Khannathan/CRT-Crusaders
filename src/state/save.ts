@@ -18,6 +18,10 @@ export interface SaveData {
   owned: Record<string, OwnedCrusader>;
   /** Crypt ids cleared at least once (first-clear bonus). */
   cleared: string[];
+  /** Order banner chosen at the Sealed Altar, and the UR it targets. */
+  banner?: { order: string; target: string };
+  /** True after a banner UR was not the target: the next banner UR will be. */
+  urGuaranteed?: boolean;
   /** Highest Heresy tier cleared per crypt id (0 = the base crypt). */
   heresy?: Record<string, number>;
   /** Last party, in rank order, to pre-fill the muster screen. */

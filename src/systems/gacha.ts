@@ -37,9 +37,34 @@ export function rollRarity(rng: Rng, floor: Rarity = 'R'): Rarity {
   return allowed[allowed.length - 1];
 }
 
-function pickCrusader(rng: Rng, rarity: Rarity): CrusaderDef {
+/** Share of banner URs that are the targeted Sister (the rest are any other UR). */
+export const TARGET_SHARE = 0.5;
+/** Share of banner SSRs drawn from the banner's Order. */
+export const ORDER_SSR_SHARE = 0.5;
+
+const pickFrom = (rng: Rng, pool: CrusaderDef[]) => pool[Math.floor(rng() * pool.length)];
+
+/**
+ * Picks the Sister for a rolled rarity. On an Order banner, a UR is the target
+ * half the time and always after a miss; an SSR comes from the Order half the time.
+ */
+function pickCrusader(save: SaveData, rng: Rng, rarity: Rarity): CrusaderDef {
   const pool = CRUSADERS.filter((c) => c.rarity === rarity);
-  return pool[Math.floor(rng() * pool.length)];
+  const banner = save.banner;
+  const target = banner && CRUSADERS.find((c) => c.id === banner.target && c.order === banner.order && c.rarity === 'UR');
+  if (rarity === 'UR' && target) {
+    if (save.urGuaranteed || rng() < TARGET_SHARE) {
+      save.urGuaranteed = false;
+      return target;
+    }
+    save.urGuaranteed = true;
+    return pickFrom(rng, pool.filter((c) => c.id !== target.id));
+  }
+  if (rarity === 'SSR' && banner) {
+    const orderPool = pool.filter((c) => c.order === banner.order);
+    if (orderPool.length && rng() < ORDER_SSR_SHARE) return pickFrom(rng, orderPool);
+  }
+  return pickFrom(rng, pool);
 }
 
 /** One pull: applies pity, adds the crusader (or a Vow) to the save. Does not spend Seals. */
@@ -50,7 +75,7 @@ function pullOnce(save: SaveData, rng: Rng, floor: Rarity): PullResult {
   const rarity = rollRarity(rng, rank(pityFloor) > rank(floor) ? pityFloor : floor);
   if (rank(rarity) >= rank('SSR')) save.pity = 0;
 
-  const crusader = pickCrusader(rng, rarity);
+  const crusader = pickCrusader(save, rng, rarity);
   const owned = save.owned[crusader.id];
   if (!owned) {
     save.owned[crusader.id] = { level: 1, vow: 0 };

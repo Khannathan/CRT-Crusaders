@@ -274,3 +274,41 @@ describe('new enemy tricks', () => {
     expect(b.canUse(b.get('e1'), heal)).toBe(true);
   });
 });
+
+describe('Sister passives', () => {
+  const p = (kind: string, value?: number) => ({ name: kind, desc: '', kind: kind as never, value });
+
+  it('lifesteal heals, thorns bite back, bulwark shields the line', () => {
+    const w = crusader('w', 'warsister', 1, { hp: 50, passive: p('lifesteal', 0.5) });
+    const e = makeEnemy('husk', 'e0', 1);
+    e.armor = 0;
+    const b = new Battle([w], [e], { rng: () => 0.5 });
+    b.act(w, CLASS_SKILLS.warsister[0], e);
+    expect(w.hp).toBeGreaterThan(50);
+
+    const h = crusader('h', 'hierophant', 1, { passive: p('thorns', 0.5) });
+    const e2 = makeEnemy('husk', 'e1', 1);
+    const b2 = new Battle([h], [e2], { rng: () => 0.5 });
+    b2.act(e2, ENEMIES.husk.skills[0], h);
+    expect(e2.hp).toBeLessThan(e2.maxHp);
+
+    const hit = (guard: boolean) => {
+      const t = crusader('t', 'oracle', 1);
+      const g = crusader('g', 'hierophant', 2, guard ? { passive: p('bulwark', 0.5) } : {});
+      const foe = makeEnemy('husk', 'e2', 1);
+      new Battle([t, g], [foe], { rng: () => 0.5 }).act(foe, ENEMIES.husk.skills[0], t);
+      return 100 - t.hp;
+    };
+    expect(hit(true)).toBeLessThan(hit(false) * 0.6);
+  });
+
+  it("a martyr's death fires up her Sisters", () => {
+    const m = crusader('m', 'confessor', 1, { hp: 1, passive: p('martyr', 30) });
+    const o = crusader('o', 'oracle', 2);
+    const e = makeEnemy('husk', 'e0', 1);
+    const b = new Battle([m, o], [e], { rng: () => 0.5 });
+    b.act(e, ENEMIES.husk.skills[0], m);
+    expect(b.zeal).toBeGreaterThanOrEqual(30);
+    expect(o.status.empower).toBeTruthy();
+  });
+});

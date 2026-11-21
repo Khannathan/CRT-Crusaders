@@ -1,5 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { newSave } from '../state/save';
+import { CRUSADERS } from '../data/crusaders';
+import { ORDER_LIST } from '../data/orders';
 import { MAX_VOW, OVERFLOW_TITHES, PITY_LIMIT, canPull, pull, rollRarity } from './gacha';
 
 /** Deterministic RNG (mulberry32). */
@@ -69,5 +71,42 @@ describe('gacha', () => {
     const over = pull(save, 'one', alwaysLow)[0];
     expect(over.tithes).toBe(OVERFLOW_TITHES);
     expect(save.tithes).toBe(tithesBefore + OVERFLOW_TITHES);
+  });
+});
+
+describe('Order banners', () => {
+  it('a banner UR is the target half the time, and always after a miss', () => {
+    const save = newSave();
+    save.seals = 1e6;
+    save.freeTenUsed = true;
+    save.banner = { order: 'Hollow Bell', target: 'CC-W019' };
+    const rng = seeded(9);
+    let urs = 0;
+    let hits = 0;
+    let lastMissed = false;
+    for (let i = 0; i < 4000; i++) {
+      for (const r of pull(save, 'ten', rng)) {
+        if (r.crusader.rarity !== 'UR') continue;
+        urs++;
+        const hit = r.crusader.id === 'CC-W019';
+        if (lastMissed) expect(hit).toBe(true);
+        if (hit) hits++;
+        lastMissed = !hit;
+      }
+    }
+    expect(urs).toBeGreaterThan(300);
+    // 50/50 with a guarantee after a loss: about two thirds of URs are the target
+    expect(hits / urs).toBeGreaterThan(0.6);
+    expect(hits / urs).toBeLessThan(0.73);
+  });
+
+  it('every Order has two URs to target and five Sisters', () => {
+    for (const o of ORDER_LIST) {
+      const sisters = CRUSADERS.filter((c) => c.order === o.name);
+      expect(sisters).toHaveLength(5);
+      expect(sisters.filter((c) => c.rarity === 'UR')).toHaveLength(2);
+    }
+    expect(CRUSADERS).toHaveLength(50);
+    expect(new Set(CRUSADERS.map((c) => c.id)).size).toBe(50);
   });
 });

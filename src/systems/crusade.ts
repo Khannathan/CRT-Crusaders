@@ -239,7 +239,7 @@ export function makeBattle(save: SaveData, run: RunState, encounter: string, rng
       vow: save.owned[id].vow,
       crit: st.crit + relics.reduce((n, r) => n + (r.critAdd ?? 0), 0),
       passive: c.passive,
-      spd: st.spd,
+      spd: st.spd + (c.passive?.kind === 'swift' ? c.passive.value ?? 0 : 0),
       status: {},
     });
   }
