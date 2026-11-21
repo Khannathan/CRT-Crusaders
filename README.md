@@ -69,6 +69,7 @@ Order art: `src/assets/ui/banner-<order id>.webp` is the banner backdrop on the 
 Side modes and daily duties sit under **The Rites** on the Sanctum (`src/ui/rites.ts`). A gold dot means something is waiting to be claimed.
 
 - **Penance:** five Daily Penance tasks (reset at local midnight) and six weekly Litany tasks (reset on Monday). Each finished task adds Devotion, and the Devotion bar pays Seals and Tithes at three marks. Tasks count from the game's own systems (`track()` in `src/systems/tasks.ts`), so Auto and the Vigil count too.
+- **Matins:** a 28-candle login calendar (`src/systems/matins.ts`). One candle a day; a missed day waits and never resets the count. Candle 28 gives a Vow token to a Sister you pick, then the calendar starts over.
 
 ## The Vigil (idle)
 

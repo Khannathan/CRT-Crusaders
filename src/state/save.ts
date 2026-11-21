@@ -1,4 +1,5 @@
 import { starterGear, type GearItem } from '../systems/gear';
+import type { MatinsState } from '../systems/matins';
 import type { TaskState } from '../systems/tasks';
 import type { VigilState } from '../systems/vigil';
 
@@ -37,6 +38,8 @@ export interface SaveData {
   vigil?: VigilState;
   /** Daily Penance and weekly Litany progress. */
   tasks?: TaskState;
+  /** Matins login calendar. */
+  matins?: MatinsState;
   /** Last party, in rank order, to pre-fill the muster screen. */
   lastParty: string[];
 }
