@@ -2,7 +2,9 @@ import Phaser from 'phaser';
 import { FONT, GAME_H, GAME_W, PAL, hex } from '../config';
 import { CLASSES, RARITY_COLOR } from '../data/classes';
 import { CRUSADERS } from '../data/crusaders';
+import { applyCrt } from '../fx/crt';
 import { game, resetGame } from '../state/game';
+import { saveSettings, settings } from '../state/settings';
 import { RARITY_ORDER } from '../systems/gacha';
 import { makeButton } from '../ui/button';
 import { CURRENCY_BAR_H, addCurrencyBar } from '../ui/currencyBar';
@@ -61,6 +63,7 @@ export class SanctumScene extends Phaser.Scene {
     }
 
     // Prototype-only: wipe the save to replay the first-time flow.
+    makeButton(this, 96, GAME_H - 128, 168, 52, 'Settings', () => this.showSettings(), { fontSize: 18 });
     makeButton(this, GAME_W - 96, GAME_H - 128, 168, 52, 'Reset save', () => this.confirmReset(), { fontSize: 18 });
 
     addTabBar(this, 'Sanctum');
@@ -81,5 +84,54 @@ export class SanctumScene extends Phaser.Scene {
     }, { active: true });
     const no = makeButton(this, GAME_W / 2, 620, 300, 76, 'Keep my progress', () => layer.destroy());
     layer.add([yes.box, yes.text, no.box, no.text]);
+  }
+
+  private showSettings() {
+    const layer = this.add.container(0, 0).setDepth(20);
+    const style = { fontFamily: FONT, color: hex(PAL.ivory), align: 'center' };
+    const draw = () => {
+      layer.removeAll(true);
+      layer.add(this.add.rectangle(GAME_W / 2, GAME_H / 2, GAME_W, GAME_H, 0x000000, 0.9).setInteractive());
+      layer.add(this.add.text(GAME_W / 2, 200, 'Settings', { ...style, fontSize: '30px', color: hex(PAL.amber) }).setOrigin(0.5));
+      layer.add(this.add.text(GAME_W / 2, 280, 'CRT screen effect', { ...style, fontSize: '22px' }).setOrigin(0.5));
+      const toggle = (on: boolean) => () => {
+        settings.crt = on;
+        saveSettings();
+        applyCrt(this);
+        draw();
+      };
+      for (const [i, on] of [true, false].entries()) {
+        const b = makeButton(this, GAME_W / 2 + (i ? 90 : -90), 340, 160, 64, on ? 'On' : 'Off', toggle(on), { active: settings.crt === on });
+        layer.add([b.box, b.text]);
+      }
+      layer.add(this.add.text(GAME_W / 2, 430, 'Strength', { ...style, fontSize: '22px', color: hex(settings.crt ? PAL.ivory : PAL.steel) }).setOrigin(0.5));
+      const levels: [string, number][] = [['Subtle', 0.35], ['Standard', 0.6], ['Heavy', 1]];
+      levels.forEach(([label, v], i) => {
+        const b = makeButton(
+          this,
+          GAME_W / 2 + (i - 1) * 168,
+          490,
+          156,
+          64,
+          label,
+          () => {
+            settings.crtStrength = v;
+            saveSettings();
+            applyCrt(this);
+            draw();
+          },
+          { active: settings.crt && settings.crtStrength === v, disabled: !settings.crt, fontSize: 19 },
+        );
+        layer.add([b.box, b.text]);
+      });
+      layer.add(
+        this.add
+          .text(GAME_W / 2, 590, 'Scanlines, colour bleed and screen curve.\nPortrait art is never changed underneath.', { ...style, fontSize: '16px', color: hex(PAL.steel) })
+          .setOrigin(0.5),
+      );
+      const close = makeButton(this, GAME_W / 2, 720, 240, 72, 'Done', () => layer.destroy());
+      layer.add([close.box, close.text]);
+    };
+    draw();
   }
 }

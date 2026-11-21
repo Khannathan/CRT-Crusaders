@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import { GAME_H, GAME_W, PAL } from './config';
+import { installCrt } from './fx/crt';
 import { BattleScene } from './scenes/BattleScene';
 import { BootScene } from './scenes/BootScene';
 import { CrusadeScene } from './scenes/CrusadeScene';
@@ -35,6 +36,8 @@ const game = new Phaser.Game({
     ResultsScene,
   ],
 });
+
+game.events.once(Phaser.Core.Events.READY, () => installCrt(game));
 
 // Lets automated play-tests see which screen is showing.
 (window as unknown as { __crt: Phaser.Game }).__crt = game;
