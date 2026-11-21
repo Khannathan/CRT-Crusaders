@@ -1,6 +1,7 @@
 import type { Rarity } from '../data/types';
 import type { SaveData } from '../state/save';
 import type { Rng } from './gacha';
+import { track } from './tasks';
 
 /**
  * Gear: three slots per Sister. Each piece has a rarity, a main stat that grows
@@ -95,6 +96,7 @@ export function enhance(save: SaveData, item: GearItem, rng: Rng = Math.random):
   if (item.level >= MAX_GEAR_LEVEL || save.tithes < cost) return false;
   save.tithes -= cost;
   item.level += 1;
+  track(save, 'enhance');
   if (SUB_UPGRADE_LEVELS.includes(item.level) && item.subs.length) {
     const sub = pick(rng, item.subs);
     sub.value = round(sub.stat, sub.value + SUB_BASE[sub.stat]);

@@ -11,6 +11,7 @@ import { ResultsScene } from './scenes/ResultsScene';
 import { RevealScene } from './scenes/RevealScene';
 import { RosterScene } from './scenes/RosterScene';
 import { SanctumScene } from './scenes/SanctumScene';
+import { PenanceScene } from './scenes/PenanceScene';
 import './fonts.css';
 
 /**
@@ -42,6 +43,7 @@ function start() {
     scene: [
       BootScene,
       SanctumScene,
+      PenanceScene,
       RecruitScene,
       RevealScene,
       RosterScene,

@@ -27,6 +27,7 @@ import {
   type GearSlot,
 } from '../systems/gear';
 import { MAX_LEVEL, levelUpCost, sisterStats, vowCost } from '../systems/stats';
+import { track } from '../systems/tasks';
 import { makeButton } from '../ui/button';
 import { CURRENCY_BAR_H, addCurrencyBar } from '../ui/currencyBar';
 import { portraitKey } from '../ui/placeholderPortrait';
@@ -288,6 +289,7 @@ export class RosterScene extends Phaser.Scene {
       () => {
         save.tithes -= cost;
         have.level += 1;
+        track(save, 'levelUp');
         commit();
         this.reopen(c, 'oath');
       },

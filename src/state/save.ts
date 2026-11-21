@@ -1,4 +1,5 @@
 import { starterGear, type GearItem } from '../systems/gear';
+import type { TaskState } from '../systems/tasks';
 import type { VigilState } from '../systems/vigil';
 
 /** Everything the player owns, stored on the device. */
@@ -34,6 +35,8 @@ export interface SaveData {
   nextGearId?: number;
   /** The idle Vigil: who keeps watch where, and since when. */
   vigil?: VigilState;
+  /** Daily Penance and weekly Litany progress. */
+  tasks?: TaskState;
   /** Last party, in rank order, to pre-fill the muster screen. */
   lastParty: string[];
 }

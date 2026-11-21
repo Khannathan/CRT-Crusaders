@@ -13,6 +13,7 @@ import { enemyKey } from '../ui/enemyArt';
 import { makeButton } from '../ui/button';
 import { CURRENCY_BAR_H, addCurrencyBar } from '../ui/currencyBar';
 import { portraitKey } from '../ui/placeholderPortrait';
+import { drawRites } from '../ui/rites';
 import { addTabBar } from '../ui/tabBar';
 import { PAD, addBackdrop, addFrame, addHeading, addScreenGlow, text } from '../ui/theme';
 
@@ -48,23 +49,12 @@ export class SanctumScene extends Phaser.Scene {
       this.drawVigil(fx, fy, fw, fh);
     }
 
-    // Two destination cards, as in the preview
-    const dh = owned.length ? 140 : 150;
-    const dw = (fw - 12) / 2;
-    const dy = bottom + 14 + dh / 2;
-    const dest = (x: number, art: string, eyebrow: string, title: string, label: string, to: string) => {
-      addBackdrop(this, art, x, dy, dw, dh, { alpha: 0.85, fade: 0.85, fadeColor: 0x140e16 });
-      addFrame(this, x, dy, dw, dh, { edge: PAL.armorShadow, ticks: false });
-      this.add.text(x - dw / 2 + 12, dy - dh / 2 + 12, eyebrow, text.hud(12, PAL.amber));
-      this.add.text(x - dw / 2 + 12, dy - dh / 2 + 30, title, { ...text.display(17, PAL.ivory), wordWrap: { width: dw - 20 } });
-      makeButton(this, x - dw / 2 + 12 + 70, dy + dh / 2 - 30, 140, 42, label, () => this.scene.start(to), { fontSize: 18 });
-    };
-    const firstClear = !game.save.cleared.length;
-    dest(PAD + dw / 2, 'bg-hall', 'CRUSADE', 'The Drowned\nOssuary', firstClear ? 'Begin' : 'View crusade', 'Crusade');
-    dest(GAME_W - PAD - dw / 2, 'bg-altar', 'RECRUITMENT', 'The Sealed\nAltar', 'Visit altar', 'Recruit');
+    // The Rites: side modes and daily duties.
+    this.add.text(PAD, bottom + 12, 'THE RITES', text.hud(13, PAL.amber));
+    const ritesBottom = drawRites(this, game.save, bottom + 32);
 
     // Prototype-only: settings, and wiping the save to replay the first-time flow.
-    const linkY = dy + dh / 2 + 34;
+    const linkY = ritesBottom + 30;
     this.textLink(PAD + 4, linkY, 'Settings', () => this.showSettings());
     this.textLink(GAME_W - PAD - 4, linkY, 'Reset save', () => this.confirmReset(), 1);
 

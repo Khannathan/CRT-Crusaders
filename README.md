@@ -64,6 +64,12 @@ Order art: `src/assets/ui/banner-<order id>.webp` is the banner backdrop on the 
 - **Skills page:** the Skills tab lists her three skills and Rite with ranks, cooldowns and Vow upgrades, plus her passive.
 - **Gear:** three slots (Blade, Habit, Rosary). Each piece has a rarity (R to UR), a main stat and up to three substats. Enhance to +10 with Tithes (substats grow at +3, +6 and +9), or melt spare pieces for Tithes. Fights sometimes drop gear, elites always drop one and bosses two, with better odds in harder crypts and Heresy. Gear found is lost on defeat. Rules are in `src/systems/gear.ts`.
 
+## The Rites (Sanctum)
+
+Side modes and daily duties sit under **The Rites** on the Sanctum (`src/ui/rites.ts`). A gold dot means something is waiting to be claimed.
+
+- **Penance:** five Daily Penance tasks (reset at local midnight) and six weekly Litany tasks (reset on Monday). Each finished task adds Devotion, and the Devotion bar pays Seals and Tithes at three marks. Tasks count from the game's own systems (`track()` in `src/systems/tasks.ts`), so Auto and the Vigil count too.
+
 ## The Vigil (idle)
 
 The Sanctum shows the Vigil: up to four Sisters fighting the chosen crypt's horrors on a loop, played by the Auto player. While the game is open or closed, the Vigil gathers Tithes, gear and Seals, up to 12 hours before it must be claimed. Stronger Sisters gather more (20% to 150% of the base rate), and the Belfry pays more once it is unlocked. Use ‹ › to change crypt and **Sisters** to change the watch; both claim first so nothing is lost. Rates are in `src/systems/vigil.ts` (`VIGIL_RATES`, `VIGIL_CAP_HOURS`).

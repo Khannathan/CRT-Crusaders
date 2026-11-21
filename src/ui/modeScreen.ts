@@ -1,0 +1,35 @@
+import Phaser from 'phaser';
+import { GAME_W, PAL } from '../config';
+import { makeButton } from './button';
+import { CURRENCY_BAR_H, addCurrencyBar } from './currencyBar';
+import { addTabBar } from './tabBar';
+import { PAD, addHeading, addScreenGlow } from './theme';
+
+/**
+ * The shared frame for a Rite screen: glow, currency bar, heading with a line
+ * of flavour, a back arrow to the Sanctum, and the tab bar. Returns the y where
+ * content may start and the currency bar's refresh.
+ */
+export function modeScreen(scene: Phaser.Scene, title: string, sub: string, back = 'Sanctum') {
+  addScreenGlow(scene);
+  const refresh = addCurrencyBar(scene);
+  const top = addHeading(scene, title, CURRENCY_BAR_H + 10, sub);
+  makeButton(scene, GAME_W - PAD - 44, CURRENCY_BAR_H + 34, 88, 40, 'Back', () => scene.scene.start(back), { fontSize: 16 });
+  addTabBar(scene, 'Sanctum');
+  return { top: top + 12, refresh };
+}
+
+/** "5h 12m" until a time. */
+export function untilText(ms: number) {
+  const m = Math.max(0, Math.round(ms / 60000));
+  if (m >= 60 * 24) return `${Math.floor(m / 1440)}d ${Math.floor((m % 1440) / 60)}h`;
+  return `${Math.floor(m / 60)}h ${String(m % 60).padStart(2, '0')}m`;
+}
+
+/** A thin progress bar from `left` at `y`. */
+export function progressBar(scene: Phaser.Scene, left: number, y: number, w: number, share: number, color: number = PAL.amber, h = 8) {
+  const back = scene.add.rectangle(left, y, w, h, PAL.deepShadow).setOrigin(0, 0.5);
+  const fill = scene.add.rectangle(left, y, Math.max(1, w * Math.min(1, share)), h, color).setOrigin(0, 0.5);
+  return [back, fill] as const;
+}
+
