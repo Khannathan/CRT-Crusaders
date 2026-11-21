@@ -33,6 +33,7 @@ export class ResultsScene extends Phaser.Scene {
       this.add.text(GAME_W / 2, 344, `Gear claimed: ${names}`, { ...style, fontSize: '17px', color: hex(PAL.amber), wordWrap: { width: GAME_W - 60 } }).setOrigin(0.5, 0);
     }
     const notes: string[] = [];
+    if (r.pilgrimage) notes.push(`Pilgrimage blessing included: +${r.pilgrimage.seals} Seals, +${r.pilgrimage.tithes} Tithes. ${r.pilgrimage.left} blessed clear${r.pilgrimage.left === 1 ? '' : 's'} left this week.`);
     if (r.melted) notes.push(`The armory is full: spare gear melted for +${r.melted} Tithes.`);
     if (r.firstClear) notes.push('First clear bonus included! Heresy I is now open for this crypt.');
     if (r.heresyCleared) notes.push(`Heresy ${ROMAN[r.heresyCleared - 1]} cleared for the first time: +${HERESY_FIRST_CLEAR_SEALS} Seals.${r.heresyCleared < MAX_HERESY ? ` Heresy ${ROMAN[r.heresyCleared]} is open.` : ''}`);
