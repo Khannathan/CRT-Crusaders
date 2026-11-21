@@ -7,7 +7,8 @@ import { RELICS, type RelicDef } from '../data/relics';
 import type { SaveData } from '../state/save';
 import { Battle, VIGIL_DEFAULT, makeEnemy, type Unit } from './combat';
 import type { Rng } from './gacha';
-import { levelUpCost, statsFor } from './stats';
+import { claimGear, makeGear, rollGearRarity, type GearItem } from './gear';
+import { levelUpCost, sisterStats } from './stats';
 
 export type NodeKind = 'fight' | 'elite' | 'event' | 'shrine' | 'reliquary' | 'boss';
 
@@ -78,6 +79,8 @@ export const REWARDS = {
   firstClearSeals: 5,
   /** Share of Tithes kept after a defeat. */
   defeatKeep: 0.5,
+  /** Chance an ordinary fight drops a piece of gear (elites drop one, bosses two). */
+  fightGearChance: 0.35,
   shrineHealPct: 0.4,
 };
 
@@ -102,6 +105,8 @@ export interface RunState {
   pendingRelic?: boolean;
   /** Heresy tier: 0 is the base crypt, each tier is harder and pays more. */
   heresy: number;
+  /** Gear found so far, claimed when the run ends (lost on defeat). */
+  loot: GearItem[];
   /** Extra Zeal for the next fight only. */
   blessZeal?: number;
   /** Shorter Vigil for the next fight only. */
@@ -174,7 +179,7 @@ export const reviveCost = (level: number) => Math.round(levelUpCost(level) * 0.6
 
 export function startRun(save: SaveData, party: string[], crypt: CryptDef = OSSUARY, rng: Rng = Math.random, heresy = 0): RunState {
   const ids = party.filter((id) => canMuster(save, id)).slice(0, MAX_PARTY);
-  const run: RunState = { crypt, map: generateMap(crypt, rng), party: ids, hp: {}, path: [], floor: -1, at: 0, resolved: true, heresy, relics: [], tithes: 0, seals: 0 };
+  const run: RunState = { crypt, map: generateMap(crypt, rng), party: ids, hp: {}, path: [], floor: -1, at: 0, resolved: true, heresy, relics: [], tithes: 0, seals: 0, loot: [] };
   for (const id of ids) run.hp[id] = maxHpOf(save, run, id);
   save.lastParty = ids;
   return run;
@@ -206,7 +211,7 @@ export const rewardMult = (run: RunState) => run.crypt.rewardMult * (1 + HERESY_
 export function maxHpOf(save: SaveData, run: RunState, id: string) {
   const c = CRUSADERS.find((x) => x.id === id)!;
   const hpPct = relicsOf(run).reduce((s, r) => s + (r.hpPct ?? 0), 0);
-  return Math.round(statsFor(c, save.owned[id]).hp * (1 + hpPct));
+  return Math.round(sisterStats(save, c).hp * (1 + hpPct));
 }
 
 /** Builds a battle for the current room from the run's party and HP. */
@@ -224,7 +229,7 @@ export function makeBattle(save: SaveData, run: RunState, encounter: string, rng
   for (const id of run.party) {
     if (run.hp[id] <= 0) continue;
     const c = CRUSADERS.find((x) => x.id === id)!;
-    const st = statsFor(c, save.owned[id]);
+    const st = sisterStats(save, c);
     party.push({
       uid: id,
       side: 'party',
@@ -287,8 +292,13 @@ export function absorbBattle(run: RunState, battle: Battle) {
 }
 
 /** Rewards a won fight and marks the node done. */
-export function winRoom(run: RunState, save?: SaveData) {
+export function winRoom(run: RunState, save?: SaveData, rng: Rng = Math.random) {
   const node = currentNode(run)!;
+  // Gear: better odds deeper in, in harder crypts and at higher Heresy.
+  const luck = Math.min(0.3, 0.03 * run.heresy + (run.crypt.rewardMult - 1) * 0.1 + (node.kind === 'boss' ? 0.12 : node.kind === 'elite' ? 0.06 : 0));
+  const drops = node.kind === 'boss' ? 2 : node.kind === 'elite' ? 1 : rng() < REWARDS.fightGearChance ? 1 : 0;
+  (run.loot ??= []);
+  for (let i = 0; i < drops; i++) run.loot.push(makeGear(rng, rollGearRarity(rng, luck)));
   const fightHeal = relicsOf(run).reduce((n, r) => n + (r.fightHeal ?? 0), 0);
   if (save && fightHeal) healAll(save, run, fightHeal);
   const m = rewardMult(run);
@@ -368,6 +378,10 @@ export interface RunResult {
   /** Heresy tier just cleared for the first time, if any. */
   heresyCleared?: number;
   fallen: string[];
+  /** Gear brought home (none on defeat). */
+  gear: GearItem[];
+  /** Tithes from gear melted because the armory was full. */
+  melted: number;
 }
 
 /** Ends the run: pays out, marks the fallen as recovering, and lets others recover. */
@@ -400,9 +414,11 @@ export function finishRun(save: SaveData, run: RunState, outcome: RunResult['out
   const fallen = run.party.filter((id) => run.hp[id] <= 0);
   for (const id of fallen) save.owned[id].recovering = 1;
 
+  const gear = outcome === 'defeat' ? [] : run.loot ?? [];
+  const melted = claimGear(save, gear);
   save.tithes += tithes;
   save.seals += seals;
-  return { outcome, tithes, seals, firstClear, heresyCleared, fallen };
+  return { outcome, tithes, seals, firstClear, heresyCleared, fallen, gear, melted };
 }
 
 export function revive(save: SaveData, id: string): boolean {
@@ -419,7 +435,7 @@ export function revive(save: SaveData, id: string): boolean {
 export function suggestParty(save: SaveData): string[] {
   const order = { Vanguard: 0, Striker: 1, Mystic: 2, Mender: 3 } as const;
   const ready = CRUSADERS.filter((c) => canMuster(save, c.id));
-  const byStrength = [...ready].sort((a, b) => statsFor(b, save.owned[b.id]).atk - statsFor(a, save.owned[a.id]).atk);
+  const byStrength = [...ready].sort((a, b) => sisterStats(save, b).atk - sisterStats(save, a).atk);
   // one of each role first, then the strongest of the rest
   const picked: typeof ready = [];
   for (const role of Object.keys(order) as (keyof typeof order)[]) {

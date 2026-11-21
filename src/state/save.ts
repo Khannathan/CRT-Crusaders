@@ -1,8 +1,13 @@
+import { starterGear, type GearItem } from '../systems/gear';
+import type { VigilState } from '../systems/vigil';
+
 /** Everything the player owns, stored on the device. */
 export interface OwnedCrusader {
   level: number;
-  /** Duplicate copies absorbed, 0-5. */
+  /** Vows taken, 0-5. Each one spends a Vow token. */
   vow: number;
+  /** Vow tokens: duplicate pulls of her, waiting for Take Vow. */
+  tokens?: number;
   /** Crusades left to sit out after falling (0 = ready). Tithes can revive early. */
   recovering?: number;
 }
@@ -24,6 +29,11 @@ export interface SaveData {
   urGuaranteed?: boolean;
   /** Highest Heresy tier cleared per crypt id (0 = the base crypt). */
   heresy?: Record<string, number>;
+  /** Every piece of gear owned; `on` says who wears it. */
+  gear?: GearItem[];
+  nextGearId?: number;
+  /** The idle Vigil: who keeps watch where, and since when. */
+  vigil?: VigilState;
   /** Last party, in rank order, to pre-fill the muster screen. */
   lastParty: string[];
 }
@@ -35,7 +45,7 @@ const KEY = 'crt-crusaders.save.v1';
  * lets you try the altar beyond the free first 10-pull.
  */
 export function newSave(): SaveData {
-  return { version: 1, seals: 30, tithes: 500, pity: 0, totalPulls: 0, freeTenUsed: false, owned: {}, cleared: [], lastParty: [] };
+  return { version: 1, seals: 30, tithes: 500, pity: 0, totalPulls: 0, freeTenUsed: false, owned: {}, cleared: [], lastParty: [], gear: starterGear() };
 }
 
 export function loadSave(): SaveData {
@@ -43,7 +53,7 @@ export function loadSave(): SaveData {
     const raw = localStorage.getItem(KEY);
     if (raw) {
       const data = JSON.parse(raw) as SaveData;
-      if (data && data.version === 1) return { ...newSave(), ...data };
+      if (data && data.version === 1) return { ...newSave(), ...data, gear: data.gear ?? starterGear() };
     }
   } catch {
     // storage blocked or corrupt: start fresh

@@ -28,21 +28,26 @@ export class ResultsScene extends Phaser.Scene {
 
     this.add.text(GAME_W / 2, 250, `+${r.tithes} Tithes`, { ...style, fontSize: '28px' }).setOrigin(0.5);
     this.add.text(GAME_W / 2, 300, `+${r.seals} Wax Seals`, { ...style, fontSize: '28px' }).setOrigin(0.5);
+    if (r.gear.length) {
+      const names = r.gear.map((g) => `${g.name} (${g.rarity})`).join(', ');
+      this.add.text(GAME_W / 2, 344, `Gear claimed: ${names}`, { ...style, fontSize: '17px', color: hex(PAL.amber), wordWrap: { width: GAME_W - 60 } }).setOrigin(0.5, 0);
+    }
     const notes: string[] = [];
+    if (r.melted) notes.push(`The armory is full: spare gear melted for +${r.melted} Tithes.`);
     if (r.firstClear) notes.push('First clear bonus included! Heresy I is now open for this crypt.');
     if (r.heresyCleared) notes.push(`Heresy ${ROMAN[r.heresyCleared - 1]} cleared for the first time: +${HERESY_FIRST_CLEAR_SEALS} Seals.${r.heresyCleared < MAX_HERESY ? ` Heresy ${ROMAN[r.heresyCleared]} is open.` : ''}`);
-    if (r.outcome === 'defeat') notes.push('Half your Tithes were lost to the dark. No Seal survived.');
+    if (r.outcome === 'defeat') notes.push('Half your Tithes were lost to the dark. No Seal survived, and the crypt keeps the gear you found.');
     if (r.outcome === 'retreat') notes.push('You kept your Tithes. Seals are earned only by purifying the crypt.');
-    this.add.text(GAME_W / 2, 360, notes.join('\n'), { ...style, fontSize: '17px', color: hex(PAL.steel), wordWrap: { width: GAME_W - 60 } }).setOrigin(0.5, 0);
+    this.add.text(GAME_W / 2, r.gear.length ? 410 : 360, notes.join('\n'), { ...style, fontSize: '17px', color: hex(PAL.steel), wordWrap: { width: GAME_W - 60 } }).setOrigin(0.5, 0);
 
     if (r.fallen.length) {
       this.add
-        .text(GAME_W / 2, 470, 'The fallen mend in the Infirmary for one crusade,\nor can be absolved early with Tithes.', { ...style, fontSize: '17px', color: hex(PAL.steel) })
+        .text(GAME_W / 2, 520, 'The fallen mend in the Infirmary for one crusade,\nor can be absolved early with Tithes.', { ...style, fontSize: '17px', color: hex(PAL.steel) })
         .setOrigin(0.5);
       r.fallen.forEach((id, i) => {
         const x = GAME_W / 2 + (i - (r.fallen.length - 1) / 2) * 132;
-        this.add.image(x, 590, portraitKey(id)).setDisplaySize(128, 128).setTint(0x555555);
-        this.add.text(x, 670, CRUSADERS.find((c) => c.id === id)!.name.split(' ')[0], { ...style, fontSize: '15px' }).setOrigin(0.5);
+        this.add.image(x, 640, portraitKey(id)).setDisplaySize(128, 128).setTint(0x555555);
+        this.add.text(x, 720, CRUSADERS.find((c) => c.id === id)!.name.split(' ')[0], { ...style, fontSize: '15px' }).setOrigin(0.5);
       });
     }
 

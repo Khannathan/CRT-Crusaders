@@ -17,8 +17,10 @@ export type Rng = () => number;
 export interface PullResult {
   crusader: CrusaderDef;
   isNew: boolean;
-  /** Vow rank after this pull (0 for a new recruit). */
+  /** Her Vow rank (0 for a new recruit). */
   vow: number;
+  /** Vow tokens she now holds, waiting for Take Vow. */
+  tokens: number;
   /** Tithes granted because Vows were already maxed. */
   tithes: number;
 }
@@ -67,7 +69,7 @@ function pickCrusader(save: SaveData, rng: Rng, rarity: Rarity): CrusaderDef {
   return pickFrom(rng, pool);
 }
 
-/** One pull: applies pity, adds the crusader (or a Vow) to the save. Does not spend Seals. */
+/** One pull: applies pity, adds the Sister (or a Vow token) to the save. Does not spend Seals. */
 function pullOnce(save: SaveData, rng: Rng, floor: Rarity): PullResult {
   save.pity += 1;
   save.totalPulls += 1;
@@ -79,14 +81,16 @@ function pullOnce(save: SaveData, rng: Rng, floor: Rarity): PullResult {
   const owned = save.owned[crusader.id];
   if (!owned) {
     save.owned[crusader.id] = { level: 1, vow: 0 };
-    return { crusader, isNew: true, vow: 0, tithes: 0 };
+    return { crusader, isNew: true, vow: 0, tithes: 0, tokens: 0 };
   }
-  if (owned.vow < MAX_VOW) {
-    owned.vow += 1;
-    return { crusader, isNew: false, vow: owned.vow, tithes: 0 };
+  // A duplicate becomes a Vow token, until tokens plus Vows taken reach MAX_VOW.
+  const tokens = owned.tokens ?? 0;
+  if (owned.vow + tokens < MAX_VOW) {
+    owned.tokens = tokens + 1;
+    return { crusader, isNew: false, vow: owned.vow, tithes: 0, tokens: owned.tokens };
   }
   save.tithes += OVERFLOW_TITHES;
-  return { crusader, isNew: false, vow: owned.vow, tithes: OVERFLOW_TITHES };
+  return { crusader, isNew: false, vow: owned.vow, tithes: OVERFLOW_TITHES, tokens };
 }
 
 export type PullKind = 'one' | 'ten';
@@ -115,4 +119,14 @@ export function pull(save: SaveData, kind: PullKind, rng: Rng = Math.random): Pu
     results.push(pullOnce(save, rng, needSR ? 'SR' : 'R'));
   }
   return results;
+}
+
+/** Take Vow: merges one duplicate (a Vow token) into her for good, at a Tithe cost. */
+export function takeVow(save: SaveData, id: string, cost: number): boolean {
+  const o = save.owned[id];
+  if (!o || !o.tokens || o.vow >= MAX_VOW || save.tithes < cost) return false;
+  save.tithes -= cost;
+  o.tokens -= 1;
+  o.vow += 1;
+  return true;
 }

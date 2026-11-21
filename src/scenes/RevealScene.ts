@@ -6,7 +6,6 @@ import { makeButton } from '../ui/button';
 import { NOISE_FRAMES, WAX_COLOR, noiseKey, sealKey } from '../ui/effects';
 import { portraitKey } from '../ui/placeholderPortrait';
 
-const ROMAN = ['', 'I', 'II', 'III', 'IV', 'V'];
 const CY = 400;
 const SIZE = 256;
 
@@ -143,7 +142,7 @@ export class RevealScene extends Phaser.Scene {
     });
 
     const style = { fontFamily: FONT, color: hex(PAL.ivory), align: 'center' };
-    const tag = r.isNew ? 'NEWLY SWORN' : r.tithes ? `Vows full: +${r.tithes} Tithes` : `Vow ${ROMAN[r.vow]}`;
+    const tag = r.isNew ? 'NEWLY SWORN' : r.tithes ? `Vows full: +${r.tithes} Tithes` : 'Vow token: take it in the Roster';
     const texts = [
       this.add.text(0, SIZE / 2 + 44, c.name, { ...style, fontSize: '30px' }).setOrigin(0.5),
       this.add.text(0, SIZE / 2 + 82, `${c.rarity} · ${CLASSES[c.classId].name}`, { ...style, fontSize: '19px', color: hex(color) }).setOrigin(0.5),
@@ -177,7 +176,7 @@ export class RevealScene extends Phaser.Scene {
       const color = RARITY_COLOR[r.crusader.rarity];
       this.add.rectangle(x, y, 136, 136).setStrokeStyle(4, color);
       this.add.image(x, y, portraitKey(r.crusader.id)).setDisplaySize(128, 128);
-      const label = r.isNew ? 'NEW' : r.tithes ? `+${r.tithes} T` : `Vow ${ROMAN[r.vow]}`;
+      const label = r.isNew ? 'NEW' : r.tithes ? `+${r.tithes} T` : 'VOW TOKEN';
       this.add
         .text(x, y + 82, `${r.crusader.rarity} · ${label}`, { fontFamily: FONT, fontSize: '15px', color: hex(r.isNew ? PAL.amber : PAL.steel) })
         .setOrigin(0.5);
