@@ -49,7 +49,7 @@ describe('combat', () => {
   it('shields absorb damage and the Rite spends all Zeal', () => {
     const h = crusader('h', 'hierophant', 1);
     const b = new Battle([h], [makeEnemy('husk', 'e0', 1)], { rng: () => 0.5, zeal: ZEAL_MAX });
-    b.act(h, CLASS_SKILLS.hierophant[2]);
+    b.act(h, CLASS_SKILLS.hierophant[3]);
     expect(h.status.shield).toBe(35);
     expect(b.zeal).toBe(0);
     b.act(b.get('e0'), ENEMIES.husk.skills[0], h);
@@ -125,6 +125,75 @@ describe('enemy telegraphs', () => {
     b.act(boss, requiem);
     b.act(boss, requiem);
     expect(o.hp).toBeLessThan(1000);
+  });
+});
+
+describe('skills and combos', () => {
+  const foe = (uid: string, rank: number) => {
+    const e = makeEnemy('husk', uid, rank);
+    e.armor = 0;
+    e.maxHp = e.hp = 1000;
+    return e;
+  };
+
+  it("cooldowns lock a skill for that many of the user's own turns", () => {
+    const h = crusader('h', 'hierophant', 1);
+    const b = new Battle([h], [foe('e0', 1)], { rng: () => 0.5 });
+    const [bash, sanctuary] = CLASS_SKILLS.hierophant;
+    b.act(h, sanctuary, h);
+    expect(b.canUse(h, sanctuary)).toBe(false);
+    b.act(h, bash, b.get('e0'));
+    expect(b.canUse(h, sanctuary)).toBe(true);
+  });
+
+  it('burns and poisons stack, Fan the Flames ignites them all at once', () => {
+    const c = crusader('c', 'censer', 2);
+    const p = crusader('p', 'confessor', 3);
+    const e = foe('e0', 1);
+    const b = new Battle([c, p], [e], { rng: () => 0.5 });
+    b.act(c, CLASS_SKILLS.censer[1], e);
+    const burn = e.status.poison!.dmg;
+    b.act(p, CLASS_SKILLS.confessor[1], e);
+    expect(e.status.poison!.dmg).toBeGreaterThan(burn);
+    const { dmg, turns } = e.status.poison!;
+    const before = e.hp;
+    b.act(c, CLASS_SKILLS.censer[2], e);
+    expect(e.status.poison).toBeUndefined();
+    expect(before - e.hp).toBeGreaterThanOrEqual(Math.round(dmg * turns * 1.5));
+  });
+
+  it('Contagion spreads a poison to every other enemy', () => {
+    const p = crusader('p', 'confessor', 3);
+    const b = new Battle([p], [foe('e0', 1), foe('e1', 2), foe('e2', 3)], { rng: () => 0.5 });
+    b.act(p, CLASS_SKILLS.confessor[1], b.get('e0'));
+    b.act(p, CLASS_SKILLS.confessor[2], b.get('e0'));
+    expect(b.get('e1').status.poison).toBeTruthy();
+    expect(b.get('e2').status.poison).toBeTruthy();
+  });
+
+  it("Flagellant's Charge hits the Weakened harder, Sentence finishes the wounded", () => {
+    const w = crusader('w', 'warsister', 1);
+    const e0 = foe('e0', 1);
+    const e1 = foe('e1', 2);
+    e1.status.weaken = { pct: 0.25, turns: 2 };
+    const b = new Battle([w], [e0, e1], { rng: () => 0.5 });
+    const charge = CLASS_SKILLS.warsister[2];
+    expect(b.preview(w, charge, e1)).toBeGreaterThan(b.preview(w, charge, e0) * 1.5);
+    const i = crusader('i', 'inquisitor', 1);
+    const sentence = CLASS_SKILLS.inquisitor[2];
+    const healthy = b.preview(i, sentence, e0);
+    e0.hp = 200;
+    expect(b.preview(i, sentence, e0)).toBeGreaterThan(healthy * 1.9);
+  });
+
+  it('Grim Augury empowers the chosen ally, not the oracle', () => {
+    const o = crusader('o', 'oracle', 3);
+    const w = crusader('w', 'warsister', 1);
+    const b = new Battle([w, o], [foe('e0', 1)], { rng: () => 0.5 });
+    b.act(o, CLASS_SKILLS.oracle[2], w);
+    expect(w.status.empower).toBeTruthy();
+    expect(o.status.empower).toBeUndefined();
+    expect(b.zeal).toBe(10);
   });
 });
 

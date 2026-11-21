@@ -32,6 +32,10 @@ Every built-in drawing can be replaced by dropping a PNG into a folder; nothing 
 
 Each enemy shows its next move above its card: the skill, the expected damage and who it will hit. Your crusaders show the damage heading their way (red when it would be lethal, grey when a shield blocks it). Tap an enemy to read its plan in full. A Taunt pulls single-target attacks away, Shift can step out of reach, and Foresight's delay breaks a boss's wind-up. The Choir Below changes phase at half HP and starts charging Requiem, a two-turn group attack.
 
+Each class has three skills and a Rite. Stronger skills have cooldowns, shown on the button. Combos: the Censer's smoke Weakens, which the War-Sister's Charge punishes; Censer burns and Confessor poisons stack, Contagion spreads them, and Fan the Flames ignites the whole stack at once; Accuse sets up the Inquisitor, whose Sentence finishes anything under 30% HP. While choosing a target, each glowing card shows the expected damage, KILL or COMBO.
+
+**Auto** and **Speed 2x** sit at the top of the battle screen and are remembered on the device. Auto uses the same player as the balance tests (`src/systems/autoplay.ts`), and `ENEMY_TUNE` in `combat.ts` scales enemy HP and attack against it.
+
 ## Layout
 
 - `src/config.ts` — design resolution (540 × 960) and palette anchors from the art guide.

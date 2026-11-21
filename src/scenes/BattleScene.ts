@@ -4,6 +4,9 @@ import { RARITY_COLOR } from '../data/classes';
 import { CRUSADERS } from '../data/crusaders';
 import type { SkillDef } from '../data/skills';
 import { commit, game } from '../state/game';
+import { saveSettings, settings } from '../state/settings';
+import { autoChoose } from '../systems/autoplay';
+import { makeButton } from '../ui/button';
 import { current } from '../state/run';
 import { BALANCE_VERSION, Battle, ZEAL_MAX, skillsFor, type BattleEvent, type Unit } from '../systems/combat';
 import { absorbBattle, currentRoom, finishRun, makeBattle, winRoom } from '../systems/crusade';
@@ -32,6 +35,8 @@ interface Card {
   intentText?: Phaser.GameObjects.Text;
   /** Party: how much damage is coming at this crusader. */
   threat?: Phaser.GameObjects.Text;
+  /** Expected damage while choosing a target. */
+  preview: Phaser.GameObjects.Text;
 }
 
 type Mode = 'busy' | 'skill' | 'target';
@@ -52,6 +57,7 @@ export class BattleScene extends Phaser.Scene {
   private candle!: Phaser.GameObjects.Graphics;
   private strip: Phaser.GameObjects.GameObject[] = [];
   private vigilMax = 8;
+  private toggles: Phaser.GameObjects.GameObject[] = [];
 
   constructor() {
     super('Battle');
@@ -79,6 +85,8 @@ export class BattleScene extends Phaser.Scene {
     this.cameras.main.setBackgroundColor(0x0e0d11);
     const style = { fontFamily: FONT, color: hex(PAL.ivory) };
     this.roundText = this.add.text(16, 24, '', { ...style, fontSize: '18px', color: hex(PAL.steel) }).setOrigin(0, 0.5);
+    this.applySpeed();
+    this.drawToggles();
     this.candle = this.add.graphics();
     this.add.text(GAME_W - 52, 24, 'Vigil', { ...style, fontSize: '14px', color: hex(PAL.steel) }).setOrigin(1, 0.5);
 
@@ -122,7 +130,8 @@ export class BattleScene extends Phaser.Scene {
         this.mode = 'skill';
         this.chosen = undefined;
         this.logText.setText(`${this.actor.name}'s turn`);
-        this.showSkills();
+        if (settings.autoBattle) this.time.delayedCall(350, () => this.autoAct());
+        else this.showSkills();
       }
     });
   }
@@ -158,15 +167,51 @@ export class BattleScene extends Phaser.Scene {
 
   // ---------- input ----------
 
+  /** Auto and speed switches along the top. */
+  private drawToggles() {
+    this.toggles.forEach((o) => o.destroy());
+    const auto = makeButton(this, 236, 24, 92, 40, settings.autoBattle ? 'Auto: On' : 'Auto', () => this.toggleAuto(), { active: settings.autoBattle, fontSize: 17 });
+    const speed = makeButton(this, 340, 24, 92, 40, settings.battleSpeed === 2 ? 'Speed 2x' : 'Speed 1x', () => this.toggleSpeed(), { active: settings.battleSpeed === 2, fontSize: 17 });
+    this.toggles = [auto.box, auto.text, speed.box, speed.text];
+  }
+
+  private toggleAuto() {
+    settings.autoBattle = !settings.autoBattle;
+    saveSettings();
+    this.drawToggles();
+    // Switching on mid-turn takes over at once.
+    if (settings.autoBattle && (this.mode === 'skill' || this.mode === 'target')) this.autoAct();
+    else if (!settings.autoBattle && this.mode === 'skill' && this.actor?.side === 'party' && !this.skillButtons.length) this.showSkills();
+  }
+
+  private toggleSpeed() {
+    settings.battleSpeed = settings.battleSpeed === 2 ? 1 : 2;
+    saveSettings();
+    this.applySpeed();
+    this.drawToggles();
+  }
+
+  private applySpeed() {
+    this.time.timeScale = settings.battleSpeed;
+    this.tweens.timeScale = settings.battleSpeed;
+  }
+
+  private autoAct() {
+    if (!settings.autoBattle || this.mode === 'busy' || this.actor?.side !== 'party') return;
+    const c = autoChoose(this.battle, this.actor);
+    this.refresh();
+    this.perform(c.skill, c.target);
+  }
+
   private showSkills() {
     this.clearSkills();
     const actor = this.actor!;
     const skills = skillsFor(actor);
-    // order: skill 1, skill 2, Shift, Rite
-    const order = [skills[0], skills[1], skills[3], skills[2]];
-    const w = 128;
+    // order: three skills, Shift, Rite
+    const order = [skills[0], skills[1], skills[2], skills[4], skills[3]];
+    const w = 102;
     order.forEach((s, i) => {
-      const x = 8 + w / 2 + i * (w + 4);
+      const x = 9 + w / 2 + i * (w + 3);
       const y = 862;
       const usable = this.battle.canUse(actor, s);
       const selected = this.chosen === s;
@@ -175,10 +220,11 @@ export class BattleScene extends Phaser.Scene {
         .rectangle(x, y, w, 120, selected ? color : PAL.deepShadow)
         .setStrokeStyle(2, usable ? color : PAL.armorShadow)
         .setAlpha(usable ? 1 : 0.4);
+      const cd = actor.cooldowns?.[s.id] ?? 0;
       const label = this.add
-        .text(x, y, s.rite ? `RITE\n${s.name}` : s.name, {
+        .text(x, y, s.rite ? `RITE\n${s.name}` : cd > 0 ? `${s.name}\n(ready in ${cd})` : s.name, {
           fontFamily: FONT,
-          fontSize: '17px',
+          fontSize: '16px',
           color: hex(selected ? PAL.bg : PAL.ivory),
           align: 'center',
           wordWrap: { width: w - 12 },
@@ -195,7 +241,8 @@ export class BattleScene extends Phaser.Scene {
     if (this.mode === 'busy') return;
     const actor = this.actor!;
     if (!usable) {
-      const why = s.rite && this.battle.zeal < ZEAL_MAX ? 'Needs a full Zeal meter.' : s.from.length ? `Usable from rank ${s.from.map((r) => ROMAN[r - 1]).join(', ')}.` : 'No target in reach.';
+      const cd = actor.cooldowns?.[s.id] ?? 0;
+      const why = cd > 0 ? `Cooling down: ready in ${cd} turn${cd > 1 ? 's' : ''}.` : s.rite && this.battle.zeal < ZEAL_MAX ? 'Needs a full Zeal meter.' : s.from.length ? `Usable from rank ${s.from.map((r) => ROMAN[r - 1]).join(', ')}.` : 'No target in reach.';
       this.descText.setText(`${s.name}: ${s.desc}\n${why}`);
       return;
     }
@@ -218,6 +265,22 @@ export class BattleScene extends Phaser.Scene {
     const s = this.chosen;
     if (!this.battle.validTargets(this.actor!, s).includes(u)) return;
     this.perform(s, u);
+  }
+
+  /** Expected damage and combo callouts on a glowing target. */
+  private previewText(t: Unit): string {
+    const s = this.chosen;
+    const actor = this.actor;
+    if (!s || !actor || t.side === actor.side) return '';
+    const dmg = this.battle.preview(actor, s, t);
+    if (!dmg) return s.spreadPoison && t.status.poison ? 'SPREAD' : '';
+    const combo =
+      (s.bonusIfWeak && t.status.weaken) ||
+      (s.bonusIfAccused && t.status.accused) ||
+      (s.execute && t.hp < t.maxHp * 0.3) ||
+      (s.detonate && t.status.poison) ||
+      (s.spreadPoison && t.status.poison);
+    return `${dmg >= t.hp ? 'KILL' : `~${dmg}`}${combo ? '\nCOMBO' : ''}`;
   }
 
   /** Tapping an enemy outside targeting spells out its next move. */
@@ -261,7 +324,11 @@ export class BattleScene extends Phaser.Scene {
     const box = this.add.container(slotX(u.rank), y, [glow, frame, img, hpBg, hpFill, shieldFill, hpText, tags]);
     box.setSize(CARD, CARD).setInteractive({ useHandCursor: true });
     box.on('pointerup', () => (this.mode === 'target' ? this.pickTarget(u) : this.explain(u)));
-    const card: Card = { box, frame, glow, img, hpFill, shieldFill, hpText, tags };
+    const preview = this.add
+      .text(0, 0, '', { fontFamily: FONT, fontSize: '22px', color: hex(PAL.amber), stroke: '#000000', strokeThickness: 5, align: 'center' })
+      .setOrigin(0.5);
+    box.add(preview);
+    const card: Card = { box, frame, glow, img, hpFill, shieldFill, hpText, tags, preview };
     if (party) {
       card.threat = this.add
         .text(0, -CARD / 2 + 3, '', { fontFamily: FONT, fontSize: '15px', color: hex(PAL.ivory), backgroundColor: '#652b3b', padding: { x: 5, y: 2 } })
@@ -303,6 +370,7 @@ export class BattleScene extends Phaser.Scene {
       const active = this.actor?.uid === u.uid && !dead;
       c.frame.setStrokeStyle(active ? 5 : 3, active ? PAL.ivory : u.side === 'party' ? RARITY_COLOR[CRUSADERS.find((x) => x.id === u.ref)!.rarity] : u.boss ? PAL.oxblood : PAL.armorShadow);
       c.glow.setVisible(highlight.includes(u));
+      c.preview.setText(highlight.includes(u) ? this.previewText(u) : '');
       if (highlight.includes(u)) {
         this.tweens.killTweensOf(c.glow);
         c.glow.setAlpha(1);
