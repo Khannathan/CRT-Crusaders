@@ -1,0 +1,26 @@
+/* Fonts from the UI preview. Swap a file in src/assets/fonts to change one. */
+@font-face {
+  font-family: 'Cinzel Decorative';
+  src: url('./assets/fonts/CinzelDecorative-Bold.woff2') format('woff2');
+  font-weight: 700;
+  font-display: block;
+}
+@font-face {
+  font-family: 'Crimson Pro';
+  src: url('./assets/fonts/CrimsonPro.woff2') format('woff2');
+  font-weight: 200 900;
+  font-display: block;
+}
+@font-face {
+  font-family: 'Crimson Pro';
+  src: url('./assets/fonts/CrimsonPro-Italic.woff2') format('woff2');
+  font-weight: 200 900;
+  font-style: italic;
+  font-display: block;
+}
+@font-face {
+  font-family: 'Vigil Pixel';
+  src: url('./assets/fonts/VigilPixel.woff2') format('woff2');
+  font-weight: 400;
+  font-display: block;
+}

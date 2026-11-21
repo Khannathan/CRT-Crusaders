@@ -36,6 +36,7 @@ export class RevealScene extends Phaser.Scene {
     if (this.results.length > 1) {
       const skip = makeButton(this, GAME_W - 80, 32, 120, 48, 'Skip', () => this.showSummary(), { fontSize: 18 });
       skip.box.setDepth(10);
+      skip.inner.setDepth(10);
       skip.text.setDepth(11);
     }
     this.hint = this.add

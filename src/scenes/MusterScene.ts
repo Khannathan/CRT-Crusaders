@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import { FONT, GAME_H, GAME_W, PAL, hex } from '../config';
+import { GAME_H, GAME_W, PAL } from '../config';
 import { CLASSES, RARITY_COLOR } from '../data/classes';
 import { CRUSADERS } from '../data/crusaders';
 import { commit, game } from '../state/game';
@@ -7,6 +7,7 @@ import { current } from '../state/run';
 import { MAX_PARTY, canMuster, startRun, suggestParty } from '../systems/crusade';
 import { makeButton } from '../ui/button';
 import { portraitKey } from '../ui/placeholderPortrait';
+import { addIcon, addScreenGlow, text } from '../ui/theme';
 
 const ROMAN = ['I', 'II', 'III', 'IV'];
 
@@ -26,44 +27,44 @@ export class MusterScene extends Phaser.Scene {
 
   create() {
     this.children.removeAll(true);
-    this.cameras.main.setBackgroundColor(PAL.bg);
-    const style = { fontFamily: FONT, color: hex(PAL.ivory), align: 'center' };
-    this.add.text(GAME_W / 2, 36, 'Muster', { ...style, fontSize: '30px', color: hex(PAL.amber) }).setOrigin(0.5);
+    addScreenGlow(this);
+    this.add.text(GAME_W / 2, 36, 'MUSTER', text.display(30, PAL.ivory)).setOrigin(0.5);
     makeButton(this, 60, 36, 96, 48, 'Back', () => this.scene.start('Crusade'), { fontSize: 18 });
     this.add
-      .text(GAME_W / 2, 78, 'Rank I is the front line. Tap to add or remove.', { ...style, fontSize: '15px', color: hex(PAL.steel) })
+      .text(GAME_W / 2, 80, 'Rank I is the front line. Tap to add or remove.', text.body(18, PAL.muted))
       .setOrigin(0.5);
 
     // Party slots
     const slotY = 190;
     for (let i = 0; i < MAX_PARTY; i++) {
       const x = 8 + 64 + i * 132;
-      this.add.text(x, slotY - 84, ROMAN[i], { ...style, fontSize: '18px', color: hex(PAL.steel) }).setOrigin(0.5);
+      this.add.text(x, slotY - 84, `RANK ${ROMAN[i]}`, text.hud(13, 0xdebd9f)).setOrigin(0.5);
       const id = this.party[i];
       if (!id) {
-        this.add.rectangle(x, slotY, 128, 128, PAL.deepShadow).setStrokeStyle(2, PAL.armorShadow);
+        this.add.rectangle(x, slotY, 128, 128, 0x180f19).setStrokeStyle(1, 0x624658);
+        addIcon(this, x, slotY, 'shield', 28, 0xa38494);
         continue;
       }
       const c = CRUSADERS.find((x) => x.id === id)!;
-      this.add.rectangle(x, slotY, 134, 134).setStrokeStyle(3, RARITY_COLOR[c.rarity]);
+      this.add.rectangle(x, slotY, 134, 134, 0x170f1b).setStrokeStyle(1, RARITY_COLOR[c.rarity]);
       const img = this.add.image(x, slotY, portraitKey(id)).setDisplaySize(128, 128).setInteractive({ useHandCursor: true });
       img.on('pointerup', () => {
         this.party = this.party.filter((p) => p !== id);
         this.create();
       });
-      this.add.text(x, slotY + 80, c.name.split(' ')[0], { ...style, fontSize: '15px' }).setOrigin(0.5);
-      this.add.text(x, slotY + 98, CLASSES[c.classId].role, { ...style, fontSize: '13px', color: hex(PAL.steel) }).setOrigin(0.5);
+      this.add.text(x, slotY + 82, c.name.split(' ')[0], { ...text.body(18), fontStyle: '600' }).setOrigin(0.5);
+      this.add.text(x, slotY + 102, CLASSES[c.classId].role.toUpperCase(), text.hud(12, PAL.muted)).setOrigin(0.5);
     }
 
     // Pool of owned crusaders
-    this.add.rectangle(GAME_W / 2, 326, GAME_W - 32, 2, PAL.armorShadow);
+    this.add.rectangle(GAME_W / 2, 326, GAME_W - 32, 1, PAL.armorShadow);
     const owned = CRUSADERS.filter((c) => game.save.owned[c.id]);
     owned.forEach((c, i) => {
       const x = 8 + 64 + (i % 4) * 132;
       const y = 410 + Math.floor(i / 4) * 172;
       const inParty = this.party.includes(c.id);
       const ready = canMuster(game.save, c.id);
-      this.add.rectangle(x, y, 134, 134).setStrokeStyle(3, ready ? RARITY_COLOR[c.rarity] : PAL.armorShadow);
+      this.add.rectangle(x, y, 134, 134, 0x170f1b).setStrokeStyle(1, ready ? RARITY_COLOR[c.rarity] : PAL.armorShadow);
       const img = this.add.image(x, y, portraitKey(c.id)).setDisplaySize(128, 128);
       if (inParty || !ready) img.setAlpha(0.3);
       if (ready && !inParty) {
@@ -75,8 +76,8 @@ export class MusterScene extends Phaser.Scene {
         });
       }
       const sub = !ready ? 'Recovering' : `${CLASSES[c.classId].role} · Lv ${game.save.owned[c.id].level}`;
-      this.add.text(x, y + 74, c.name.split(' ')[0], { ...style, fontSize: '14px' }).setOrigin(0.5);
-      this.add.text(x, y + 90, sub, { ...style, fontSize: '12px', color: hex(PAL.steel) }).setOrigin(0.5);
+      this.add.text(x, y + 76, c.name.split(' ')[0], { ...text.body(17), fontStyle: '600' }).setOrigin(0.5);
+      this.add.text(x, y + 95, sub, text.body(14, PAL.muted)).setOrigin(0.5);
     });
 
     makeButton(this, GAME_W / 2 - 128, GAME_H - 60, 236, 80, 'Suggest', () => {
