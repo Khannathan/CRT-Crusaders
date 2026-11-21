@@ -2,6 +2,7 @@ import { starterGear, type GearItem } from '../systems/gear';
 import type { PilgrimageState } from '../systems/crusade';
 import type { MatinsState } from '../systems/matins';
 import type { RankState } from '../systems/rank';
+import type { TrialState } from '../systems/trials';
 import type { TaskState } from '../systems/tasks';
 import type { VigilState } from '../systems/vigil';
 
@@ -46,6 +47,8 @@ export interface SaveData {
   pilgrimage?: PilgrimageState;
   /** Rank of Faith: account Faith and gifts claimed. */
   rank?: RankState;
+  /** Relic Trials: entries used today and best stars. */
+  trials?: TrialState;
   /** Last party, in rank order, to pre-fill the muster screen. */
   lastParty: string[];
 }
