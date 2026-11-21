@@ -3,6 +3,7 @@ import type { PilgrimageState } from '../systems/crusade';
 import type { MatinsState } from '../systems/matins';
 import type { RankState } from '../systems/rank';
 import type { TowerState } from '../systems/tower';
+import type { InquisitionState } from '../systems/inquisition';
 import type { TrialState } from '../systems/trials';
 import type { TaskState } from '../systems/tasks';
 import type { VigilState } from '../systems/vigil';
@@ -52,6 +53,8 @@ export interface SaveData {
   trials?: TrialState;
   /** The Bell Tower: highest floor cleared. */
   tower?: TowerState;
+  /** The Inquisition: this rotation's Brands, Sisters used and rewards paid. */
+  inquisition?: InquisitionState;
   /** Last party, in rank order, to pre-fill the muster screen. */
   lastParty: string[];
 }

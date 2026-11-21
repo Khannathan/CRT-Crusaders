@@ -27,6 +27,7 @@ export const RITES: RiteEntry[] = [
   { label: 'Penance', scene: 'Penance', icon: 'book', rank: 2, ready: (s) => anyClaimable(s) },
   { label: 'Trials', scene: 'Trials', icon: 'shield', rank: 3, ready: (s) => entriesLeft(s) > 0 },
   { label: 'Bell Tower', scene: 'Tower', icon: 'sanctum', rank: 6 },
+  { label: 'Inquisition', scene: 'Inquisition', icon: 'blade', rank: 8 },
 ];
 
 /** Draws the grid from `top`; returns its bottom edge. */

@@ -16,6 +16,7 @@ import { MatinsScene } from './scenes/MatinsScene';
 import { RankScene } from './scenes/RankScene';
 import { TrialsScene } from './scenes/TrialsScene';
 import { TowerScene } from './scenes/TowerScene';
+import { InquisitionScene } from './scenes/InquisitionScene';
 import './fonts.css';
 
 /**
@@ -52,6 +53,7 @@ function start() {
       RankScene,
       TrialsScene,
       TowerScene,
+      InquisitionScene,
       RecruitScene,
       RevealScene,
       RosterScene,
