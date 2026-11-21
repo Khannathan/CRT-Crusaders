@@ -2,6 +2,7 @@ import { starterGear, type GearItem } from '../systems/gear';
 import type { PilgrimageState } from '../systems/crusade';
 import type { MatinsState } from '../systems/matins';
 import type { RankState } from '../systems/rank';
+import type { TowerState } from '../systems/tower';
 import type { TrialState } from '../systems/trials';
 import type { TaskState } from '../systems/tasks';
 import type { VigilState } from '../systems/vigil';
@@ -49,6 +50,8 @@ export interface SaveData {
   rank?: RankState;
   /** Relic Trials: entries used today and best stars. */
   trials?: TrialState;
+  /** The Bell Tower: highest floor cleared. */
+  tower?: TowerState;
   /** Last party, in rank order, to pre-fill the muster screen. */
   lastParty: string[];
 }
