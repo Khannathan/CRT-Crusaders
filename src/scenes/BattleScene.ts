@@ -8,6 +8,7 @@ import { commit, game } from '../state/game';
 import { saveSettings, settings } from '../state/settings';
 import { autoChoose } from '../systems/autoplay';
 import { makeButton } from '../ui/button';
+import { addArt } from '../ui/theme';
 import { Bar, candleFrames, nine } from '../ui/skin';
 import { current } from '../state/run';
 import { BALANCE_VERSION, Battle, ZEAL_MAX, skillsFor, type BattleEvent, type Unit } from '../systems/combat';
@@ -251,10 +252,16 @@ export class BattleScene extends Phaser.Scene {
         this.skillButtons.push(skin);
       }
       const cd = actor.cooldowns?.[s.id] ?? 0;
+      // skill-<id>.png (32 x 32) sits above the name when present
+      const icon = addArt(this, `skill-${s.id}`, x, y - 30, 32);
+      if (icon) {
+        icon.setAlpha(usable ? 1 : 0.4);
+        this.skillButtons.push(icon);
+      }
       const label = this.add
-        .text(x, y, s.rite ? `RITE\n${s.name}` : cd > 0 ? `${s.name}\n(ready in ${cd})` : s.name, {
+        .text(x, icon ? y + 20 : y, s.rite ? `RITE\n${s.name}` : cd > 0 ? `${s.name}\n(ready in ${cd})` : s.name, {
           fontFamily: FONT,
-          fontSize: '18px',
+          fontSize: icon ? '16px' : '18px',
           color: hex(selected && s.rite && !skin ? PAL.bg : PAL.ivory),
           align: 'center',
           wordWrap: { width: w - 12 },

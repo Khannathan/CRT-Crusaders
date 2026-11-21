@@ -85,7 +85,9 @@ export function makeButton(
     const s = Math.round(size * 0.85);
     const gap = 9;
     const total = s + gap + text.width;
-    icon = scene.add.image(x - total / 2 + s / 2, text.y, `ui-${opts.icon}`).setDisplaySize(s, s).setTint(PAL.amber).setAlpha(alpha);
+    icon = scene.add.image(x - total / 2 + s / 2, text.y, `ui-${opts.icon}`).setDisplaySize(s, s).setAlpha(alpha);
+    // the 12x12 white icons take the gold tint; full-colour art is drawn as made
+    if (icon.frame.source.width <= 12) icon.setTint(PAL.amber);
     text.setX(x - total / 2 + s + gap + text.width / 2);
     parts.push(icon);
   }
