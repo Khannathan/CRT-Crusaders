@@ -6,7 +6,7 @@ import { commit, game, resetGame } from '../state/game';
 import { saveSettings, settings } from '../state/settings';
 import { autoChoose } from '../systems/autoplay';
 import type { BattleEvent, Unit } from '../systems/combat';
-import { makeBattle, maxHpOf, type RunState } from '../systems/crusade';
+import { skirmish } from '../systems/crusade';
 import { RARITY_ORDER } from '../systems/gacha';
 import { VIGIL_CAP_HOURS, VIGIL_SIZE, claimVigil, cryptOf, ensureVigil, setVigil, vigilCrypts, vigilPending, vigilRates, type VigilClaim, type VigilState } from '../systems/vigil';
 import { enemyKey } from '../ui/enemyArt';
@@ -152,10 +152,8 @@ export class SanctumScene extends Phaser.Scene {
       this.skirmish.push(this.add.text(left + fw / 2, top + 160, 'No Sister keeps this vigil.\nTap Sisters to post a watch.', { ...text.body(19, PAL.muted), align: 'center' }).setOrigin(0.5));
       return;
     }
-    const run = { crypt, map: [], party, hp: {}, floor: 0, at: 0, path: [], resolved: false, relics: [], tithes: 0, seals: 0, heresy: 0, loot: [] } as RunState;
-    for (const id of party) run.hp[id] = maxHpOf(save, run, id);
     const pool = [...crypt.early, ...crypt.late];
-    const battle = makeBattle(save, run, pool[Math.floor(Math.random() * pool.length)]);
+    const battle = skirmish(save, party, pool[Math.floor(Math.random() * pool.length)], 0, undefined, crypt);
 
     const views = new Map<string, { img: Phaser.GameObjects.Image; bar: Phaser.GameObjects.Rectangle; x: number; y: number }>();
     const size = 62;

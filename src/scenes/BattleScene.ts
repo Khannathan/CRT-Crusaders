@@ -72,15 +72,16 @@ export class BattleScene extends Phaser.Scene {
 
   create() {
     const run = current.run;
+    const challenge = current.challenge;
     const node = run && currentNode(run);
-    if (!run || !node?.encounter) {
+    if (!challenge && (!run || !node?.encounter)) {
       this.scene.start('Crypt');
       return;
     }
-    const encounter = node.encounter;
+    const encounter = challenge ? challenge.label : node!.encounter!;
     // Seeded so a reported fight can be replayed exactly (see window.__crtLastBattle).
     const seed = newSeed();
-    this.battle = makeBattle(game.save, run, encounter, seeded(seed));
+    this.battle = challenge ? challenge.make(seeded(seed)) : makeBattle(game.save, run!, encounter, seeded(seed));
     (window as unknown as Record<string, unknown>).__crtLastBattle = { balance: BALANCE_VERSION, encounter, seed, log: this.battle.log };
     this.vigilMax = this.battle.vigil;
     this.cards.clear();
@@ -118,7 +119,7 @@ export class BattleScene extends Phaser.Scene {
 
     for (const u of this.battle.units) this.makeCard(u);
     this.refresh();
-    this.logText.setText('The dark stirs. Steel yourselves, Sisters.');
+    this.logText.setText(challenge ? challenge.label : 'The dark stirs. Steel yourselves, Sisters.');
     this.time.delayedCall(600, () => this.step());
   }
 
@@ -155,6 +156,19 @@ export class BattleScene extends Phaser.Scene {
   }
 
   private end(outcome: 'victory' | 'defeat') {
+    const challenge = current.challenge;
+    if (challenge) {
+      this.mode = 'busy';
+      this.clearSkills();
+      this.logText.setText(outcome === 'victory' ? 'The trial is passed.' : 'Your Sisters fall back, bloodied but alive.');
+      this.time.delayedCall(1200, () => {
+        current.challenge = undefined;
+        const next = challenge.finish(outcome, this.battle);
+        commit();
+        this.scene.start(next.scene, next.data);
+      });
+      return;
+    }
     const run = current.run!;
     absorbBattle(run, this.battle);
     this.mode = 'busy';

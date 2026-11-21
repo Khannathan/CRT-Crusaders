@@ -4,6 +4,7 @@ import type { SaveData } from '../state/save';
 import { matinsReady } from '../systems/matins';
 import { ROMAN_RANK, unlocked } from '../systems/rank';
 import { anyClaimable } from '../systems/tasks';
+import { entriesLeft } from '../systems/trials';
 import { makeButton } from './button';
 import { PAD } from './theme';
 
@@ -24,6 +25,7 @@ export interface RiteEntry {
 export const RITES: RiteEntry[] = [
   { label: 'Matins', scene: 'Matins', icon: 'flame', rank: 1, ready: (s) => matinsReady(s) },
   { label: 'Penance', scene: 'Penance', icon: 'book', rank: 2, ready: (s) => anyClaimable(s) },
+  { label: 'Trials', scene: 'Trials', icon: 'shield', rank: 3, ready: (s) => entriesLeft(s) > 0 },
 ];
 
 /** Draws the grid from `top`; returns its bottom edge. */
