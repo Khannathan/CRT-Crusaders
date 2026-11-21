@@ -1,0 +1,61 @@
+import Phaser from 'phaser';
+import { PAL } from '../config';
+import { ENEMIES } from '../data/enemies';
+
+export const enemyKey = (type: string) => `enemy-${type}`;
+
+/**
+ * 128x128 stand-in enemy portraits: flat stepped shapes on charcoal, one
+ * silhouette per enemy type, until real enemy art exists.
+ */
+export function makeEnemyTextures(scene: Phaser.Scene) {
+  for (const e of Object.values(ENEMIES)) {
+    const key = enemyKey(e.id);
+    if (scene.textures.exists(key)) continue;
+    const g = scene.make.graphics({}, false);
+    const dark = Phaser.Display.Color.ValueToColor(e.color).darken(35).color;
+    g.fillStyle(PAL.bg).fillRect(0, 0, 128, 128);
+    g.fillStyle(PAL.deepShadow).fillRect(4, 4, 120, 120);
+    g.fillStyle(e.color);
+    switch (e.shape) {
+      case 'husk':
+        g.fillEllipse(64, 84, 96, 70);
+        g.fillStyle(dark).fillCircle(64, 46, 22);
+        g.fillStyle(PAL.amber).fillRect(54, 42, 6, 4).fillRect(68, 42, 6, 4);
+        break;
+      case 'hood':
+        g.fillTriangle(64, 14, 22, 120, 106, 120);
+        g.fillStyle(PAL.bg).fillEllipse(64, 56, 30, 36);
+        g.fillStyle(0x7f9bb0).fillRect(54, 52, 5, 5).fillRect(69, 52, 5, 5).fillRect(50, 92, 3, 22).fillRect(76, 98, 3, 16);
+        break;
+      case 'bell':
+        g.fillRect(58, 12, 12, 16);
+        g.fillTriangle(64, 22, 26, 104, 102, 104);
+        g.fillStyle(dark).fillRect(20, 102, 88, 10);
+        g.fillStyle(PAL.ivory).fillCircle(64, 116, 8);
+        break;
+      case 'hound':
+        g.fillTriangle(16, 70, 100, 40, 100, 100);
+        g.fillStyle(dark).fillTriangle(70, 36, 84, 14, 90, 44);
+        g.fillStyle(PAL.oxblood).fillRect(20, 72, 34, 6);
+        g.fillStyle(PAL.bg).fillRect(30, 62, 6, 4);
+        g.fillStyle(PAL.ivory).fillRect(22, 78, 4, 6).fillRect(34, 78, 4, 6).fillRect(46, 78, 4, 6);
+        break;
+      case 'wisp':
+        g.fillCircle(64, 52, 28).fillTriangle(40, 60, 88, 60, 64, 120);
+        g.fillStyle(PAL.bg).fillRect(52, 46, 8, 10).fillRect(68, 46, 8, 10).fillRect(58, 64, 12, 6);
+        g.fillStyle(PAL.bronze).fillCircle(98, 92, 10);
+        break;
+      case 'choir':
+        g.fillRect(10, 30, 108, 94);
+        g.fillStyle(dark);
+        for (const [x, y] of [[34, 58], [64, 46], [94, 58], [46, 92], [82, 92]]) {
+          g.fillStyle(PAL.ivory).fillEllipse(x, y, 22, 28);
+          g.fillStyle(PAL.bg).fillRect(x - 6, y - 4, 4, 4).fillRect(x + 2, y - 4, 4, 4).fillEllipse(x, y + 7, 6, 8);
+        }
+        break;
+    }
+    g.generateTexture(key, 128, 128);
+    g.destroy();
+  }
+}

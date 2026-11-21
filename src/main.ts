@@ -1,13 +1,17 @@
 import Phaser from 'phaser';
 import { GAME_H, GAME_W, PAL } from './config';
+import { BattleScene } from './scenes/BattleScene';
 import { BootScene } from './scenes/BootScene';
+import { CrusadeScene } from './scenes/CrusadeScene';
+import { CryptScene } from './scenes/CryptScene';
+import { MusterScene } from './scenes/MusterScene';
 import { RecruitScene } from './scenes/RecruitScene';
+import { ResultsScene } from './scenes/ResultsScene';
 import { RevealScene } from './scenes/RevealScene';
-import { ComingSoonScene } from './scenes/ComingSoonScene';
 import { RosterScene } from './scenes/RosterScene';
 import { SanctumScene } from './scenes/SanctumScene';
 
-new Phaser.Game({
+const game = new Phaser.Game({
   type: Phaser.AUTO, // WebGL, falling back to canvas
   parent: 'game',
   backgroundColor: PAL.bg,
@@ -21,9 +25,16 @@ new Phaser.Game({
   scene: [
     BootScene,
     SanctumScene,
-    RosterScene,
     RecruitScene,
     RevealScene,
-    new ComingSoonScene('Crusade', 'The crypts open in step 3: party muster, turn-based fights and rewards.'),
+    RosterScene,
+    CrusadeScene,
+    MusterScene,
+    CryptScene,
+    BattleScene,
+    ResultsScene,
   ],
 });
+
+// Lets automated play-tests see which screen is showing.
+(window as unknown as { __crt: Phaser.Game }).__crt = game;
