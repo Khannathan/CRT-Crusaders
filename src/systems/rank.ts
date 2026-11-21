@@ -105,6 +105,7 @@ export const UNLOCKS: Unlock[] = [
   { rank: 1, name: 'Matins', desc: 'A candle each dawn, and gifts that never reset.' },
   { rank: 2, name: 'Penance', desc: 'Daily and weekly devotions that pay in wax.' },
   { rank: 3, name: 'Relic Trials', desc: 'A daily spoil: gear, Tithes or Seals. Sweep what you have mastered.' },
+  { rank: 4, name: 'Repeat crusades', desc: 'Send your Sisters back through a cleared crypt on Auto, several times over.' },
 ];
 
 export const unlocked = (save: SaveData, rank: number) => rankInfo(save).rank >= rank;

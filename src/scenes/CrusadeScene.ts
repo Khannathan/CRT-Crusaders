@@ -1,15 +1,21 @@
 import Phaser from 'phaser';
-import { FONT, GAME_W, PAL, hex } from '../config';
+import { FONT, GAME_H, GAME_W, PAL, hex } from '../config';
 import { RARITY_COLOR } from '../data/classes';
 import { CRUSADERS } from '../data/crusaders';
 import { commit, game } from '../state/game';
 import { current } from '../state/run';
-import { PILGRIMAGE_BONUS, PILGRIMAGE_CLEARS, pilgrimageLeft, CRYPTS, HERESY_ENEMY, HERESY_REWARD, REWARDS, ROMAN, canMuster, cryptUnlocked, heresyAvailable, reviveCost, revive } from '../systems/crusade';
+import { PILGRIMAGE_BONUS, PILGRIMAGE_CLEARS, pilgrimageLeft, CRYPTS, HERESY_ENEMY, HERESY_REWARD, REWARDS, ROMAN, canMuster, cryptUnlocked, heresyAvailable, reviveCost, revive, suggestParty, type CryptDef } from '../systems/crusade';
+import { canRepeat, repeatRuns } from '../systems/autorun';
+import { ROMAN_RANK, unlocked } from '../systems/rank';
+import { pickParty } from '../ui/partyPicker';
 import { makeButton } from '../ui/button';
 import { CURRENCY_BAR_H, addCurrencyBar } from '../ui/currencyBar';
 import { portraitKey } from '../ui/placeholderPortrait';
 import { addTabBar } from '../ui/tabBar';
 import { PAD, addBackdrop, addFrame, addHeading, addScreenGlow, text } from '../ui/theme';
+
+/** Rank of Faith needed to repeat a cleared crypt on Auto. */
+const REPEAT_RANK = 4;
 
 /** Crusade tab: the crypt on offer, and crusaders recovering from a fall. */
 export class CrusadeScene extends Phaser.Scene {
@@ -100,6 +106,15 @@ export class CrusadeScene extends Phaser.Scene {
         this.add.text(cx, cardBottom - 48, tier ? `HERESY ${ROMAN[tier - 1]}` : 'NORMAL', text.hud(14, tier ? 0xe58a8a : PAL.ivory)).setOrigin(0.5);
         this.add.text(cx, cardBottom - 26, `up to ${ROMAN[maxTier - 1]}`, text.hud(12, PAL.muted)).setOrigin(0.5);
       }
+      // Repeat: a cleared crypt (at this tier) can be replayed on Auto from Rank IV.
+      if (open && canRepeat(s, crypt, tier)) {
+        const ok = unlocked(s, REPEAT_RANK);
+        makeButton(this, GAME_W - PAD - 70, cardBottom - 196, 116, 42, ok ? 'Repeat' : `Rank ${ROMAN_RANK(REPEAT_RANK)}`, () => this.repeat(crypt, tier), {
+          fontSize: 16,
+          icon: ok ? 'swap' : 'lock',
+          disabled: !ok || !ready.length,
+        });
+      }
       bottom = cardBottom;
     });
     if (!Object.keys(s.owned).length) {
@@ -135,5 +150,77 @@ export class CrusadeScene extends Phaser.Scene {
     }
 
     addTabBar(this, 'Crusade');
+  }
+
+  /** Repeat a cleared crypt on Auto: pick how many runs, then show what came back. */
+  private repeat(crypt: CryptDef, heresy: number) {
+    const s = game.save;
+    const layer = this.add.container(0, 0).setDepth(30);
+    let party = (s.lastParty.length ? s.lastParty : suggestParty(s)).filter((id) => canMuster(s, id));
+    const draw = () => {
+      layer.removeAll(true);
+      layer.add(this.add.rectangle(GAME_W / 2, GAME_H / 2, GAME_W, GAME_H, 0x09060b, 0.94).setInteractive());
+      layer.add(addFrame(this, GAME_W / 2, GAME_H / 2, GAME_W - 24, 640, { fill: 0x241925 }));
+      const y0 = GAME_H / 2 - 300;
+      layer.add(this.add.text(GAME_W / 2, y0 + 30, 'REPEAT THE CRUSADE', text.display(22, PAL.ivory)).setOrigin(0.5));
+      layer.add(
+        this.add
+          .text(GAME_W / 2, y0 + 64, `${crypt.name}${heresy ? `, Heresy ${ROMAN[heresy - 1]}` : ''}. Your Sisters march on Auto: real fights, real spoils, real wounds. They stop at the first defeat.`, {
+            ...text.body(16, PAL.muted),
+            align: 'center',
+            wordWrap: { width: GAME_W - 80 },
+          })
+          .setOrigin(0.5, 0),
+      );
+      party.forEach((id, i) => {
+        const x = GAME_W / 2 + (i - (party.length - 1) / 2) * 104;
+        layer.add(this.add.image(x, y0 + 190, portraitKey(id)).setDisplaySize(92, 92));
+        layer.add(this.add.rectangle(x, y0 + 190, 96, 96).setStrokeStyle(2, RARITY_COLOR[CRUSADERS.find((c) => c.id === id)!.rarity]));
+      });
+      layer.add(
+        makeButton(this, GAME_W / 2, y0 + 270, 200, 44, 'Change Sisters', () =>
+          pickParty(this, s, { title: 'Who marches?', sub: 'Tap in rank order; the first stands in front.', initial: party, allow: (c) => canMuster(s, c.id), why: 'Wounded Sisters cannot march.', confirm: 'These four' }, (ids) => {
+            party = ids;
+            draw();
+          }),
+        { fontSize: 16 }).all,
+      );
+      [1, 3, 5].forEach((n, i) => {
+        const b = makeButton(this, GAME_W / 2 + (i - 1) * 150, y0 + 370, 136, 64, `${n} run${n > 1 ? 's' : ''}`, () => this.runRepeat(layer, crypt, heresy, party, n), {
+          active: true,
+          disabled: !party.length,
+          fontSize: 19,
+        });
+        layer.add(b.all);
+      });
+      layer.add(makeButton(this, GAME_W / 2, y0 + 560, 220, 56, 'Back', () => layer.destroy(), { fontSize: 18 }).all);
+    };
+    draw();
+  }
+
+  private runRepeat(layer: Phaser.GameObjects.Container, crypt: CryptDef, heresy: number, party: string[], times: number) {
+    const s = game.save;
+    const results = repeatRuns(s, party, crypt, heresy, times);
+    commit();
+    layer.removeAll(true);
+    layer.add(this.add.rectangle(GAME_W / 2, GAME_H / 2, GAME_W, GAME_H, 0x09060b, 0.94).setInteractive());
+    layer.add(addFrame(this, GAME_W / 2, GAME_H / 2, GAME_W - 24, 700, { fill: 0x241925 }));
+    const y0 = GAME_H / 2 - 330;
+    const wins = results.filter((r) => r.outcome === 'victory').length;
+    layer.add(this.add.text(GAME_W / 2, y0 + 30, `${wins} OF ${results.length} PURIFIED`, text.display(22, wins === results.length ? PAL.amber : 0xe58a8a)).setOrigin(0.5));
+    const lines = results.map((r, i) => {
+      const gear = r.gear.length ? `, ${r.gear.length} gear` : '';
+      const fallen = r.fallen.length ? `, ${r.fallen.length} fell` : '';
+      return `${i + 1}. ${r.outcome === 'victory' ? 'Purified' : 'Driven back'}: +${r.tithes} Tithes, +${r.seals} Seals${gear}${fallen}`;
+    });
+    if (results.length < times && results.every((r) => r.outcome === 'victory')) lines.push('No Sister was left able to march.');
+    layer.add(this.add.text(PAD + 20, y0 + 70, lines.join('\n'), { ...text.body(17, PAL.ivory), lineSpacing: 6, wordWrap: { width: GAME_W - 80 } }));
+    const t = results.reduce((a, r) => ({ tithes: a.tithes + r.tithes, seals: a.seals + r.seals, gear: a.gear + r.gear.length }), { tithes: 0, seals: 0, gear: 0 });
+    layer.add(
+      this.add
+        .text(GAME_W / 2, y0 + 520, `In all: +${t.tithes} Tithes, +${t.seals} Seals, ${t.gear} gear`, { ...text.body(19, PAL.amber), align: 'center', wordWrap: { width: GAME_W - 80 } })
+        .setOrigin(0.5),
+    );
+    layer.add(makeButton(this, GAME_W / 2, y0 + 610, 220, 56, 'Done', () => this.scene.restart(), { active: true, fontSize: 18 }).all);
   }
 }
