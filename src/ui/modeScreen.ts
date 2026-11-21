@@ -1,9 +1,9 @@
 import Phaser from 'phaser';
-import { GAME_W, PAL } from '../config';
+import { GAME_H, GAME_W, PAL } from '../config';
 import { makeButton } from './button';
 import { CURRENCY_BAR_H, addCurrencyBar } from './currencyBar';
 import { addTabBar } from './tabBar';
-import { PAD, addHeading, addScreenGlow } from './theme';
+import { PAD, addHeading, addScreenGlow, text } from './theme';
 
 /**
  * The shared frame for a Rite screen: glow, currency bar, heading with a line
@@ -14,7 +14,7 @@ export function modeScreen(scene: Phaser.Scene, title: string, sub: string, back
   addScreenGlow(scene);
   const refresh = addCurrencyBar(scene);
   const top = addHeading(scene, title, CURRENCY_BAR_H + 10, sub);
-  makeButton(scene, GAME_W - PAD - 44, CURRENCY_BAR_H + 34, 88, 40, 'Back', () => scene.scene.start(back), { fontSize: 16 });
+  makeButton(scene, GAME_W - PAD - 44, CURRENCY_BAR_H + 34, 88, 40, 'Back', () => scene.scene.start(back, {}), { fontSize: 16 });
   addTabBar(scene, 'Sanctum');
   return { top: top + 12, refresh };
 }
@@ -33,3 +33,10 @@ export function progressBar(scene: Phaser.Scene, left: number, y: number, w: num
   return [back, fill] as const;
 }
 
+
+/** A framed notice over the lower screen that fades after a few seconds. */
+export function toast(scene: Phaser.Scene, msg: string, y = GAME_H - 190) {
+  const t = scene.add.text(GAME_W / 2, y, msg, { ...text.body(19, PAL.ivory), align: 'center', wordWrap: { width: GAME_W - 80 } }).setOrigin(0.5).setDepth(31);
+  const bg = scene.add.rectangle(GAME_W / 2, y, t.width + 40, t.height + 26, 0x1b121c, 0.97).setStrokeStyle(1, PAL.amber).setDepth(30);
+  scene.tweens.add({ targets: [t, bg], alpha: 0, delay: 3200, duration: 700, onComplete: () => (t.destroy(), bg.destroy()) });
+}

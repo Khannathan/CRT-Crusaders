@@ -4,6 +4,7 @@ import type { SaveData } from '../state/save';
 import { matinsReady } from '../systems/matins';
 import { ROMAN_RANK, unlocked } from '../systems/rank';
 import { anyClaimable } from '../systems/tasks';
+import { entriesLeft } from '../systems/trials';
 import { makeButton } from './button';
 import { PAD } from './theme';
 
@@ -24,6 +25,7 @@ export interface RiteEntry {
 export const RITES: RiteEntry[] = [
   { label: 'Matins', scene: 'Matins', icon: 'flame', rank: 1, ready: (s) => matinsReady(s) },
   { label: 'Penance', scene: 'Penance', icon: 'book', rank: 2, ready: (s) => anyClaimable(s) },
+  { label: 'Trials', scene: 'Trials', icon: 'shield', rank: 3, ready: (s) => entriesLeft(s) > 0 },
 ];
 
 /** Draws the grid from `top`; returns its bottom edge. */
@@ -39,7 +41,7 @@ export function drawRites(scene: Phaser.Scene, save: SaveData, top: number): num
       makeButton(scene, x, y, w, h, `${r.label}\nRANK ${ROMAN_RANK(r.rank)}`, () => scene.scene.start('Rank'), { fontSize: 17, icon: 'lock', disabled: true });
       return;
     }
-    makeButton(scene, x, y, w, h, r.label, () => scene.scene.start(r.scene), { fontSize: 18, icon: r.icon });
+    makeButton(scene, x, y, w, h, r.label, () => scene.scene.start(r.scene, {}), { fontSize: 18, icon: r.icon });
     if (r.ready?.(save)) {
       scene.add.circle(x + w / 2 - 10, y - h / 2 + 10, 6, PAL.amber).setStrokeStyle(2, 0x1b121c);
     }

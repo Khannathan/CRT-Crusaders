@@ -72,6 +72,7 @@ Side modes and daily duties sit under **The Rites** on the Sanctum (`src/ui/rite
 - **Rank of Faith:** an account level (Rank button, top right of the Sanctum). Every tracked deed earns Faith (`RANK_XP` in `src/systems/rank.ts`). Ranks open Rites one at a time (`UNLOCKS`, and `rank` on each Rite) and each rank leaves a gift of Seals and Tithes to claim. Older saves start with Faith for the progress they already have.
 
 - **Penance:** five Daily Penance tasks (reset at local midnight) and six weekly Litany tasks (reset on Monday). Each finished task adds Devotion, and the Devotion bar pays Seals and Tithes at three marks. Tasks count from the game's own systems (`track()` in `src/systems/tasks.ts`), so Auto and the Vigil count too.
+- **Relic Trials** (Rank III): one trial a weekday (Mon Blade gear, Tue Habit, Wed Rosary, Thu Tithes, Fri Seals; weekends open all), five tiers each. Three victories a day across all trials; a loss spends nothing. Stars: 1 for a win, 2 if no Sister falls, 3 if also by round 6. Three stars on a tier unlocks Sweep. Rules in `src/systems/trials.ts`. Side-mode fights use the Battle screen through `current.challenge` (`src/state/run.ts`).
 - **Matins:** a 28-candle login calendar (`src/systems/matins.ts`). One candle a day; a missed day waits and never resets the count. Candle 28 gives a Vow token to a Sister you pick, then the calendar starts over.
 
 ## The Vigil (idle)

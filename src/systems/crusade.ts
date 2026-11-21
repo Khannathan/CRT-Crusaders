@@ -253,6 +253,17 @@ export function makeBattle(save: SaveData, run: RunState, encounter: string, rng
   return new Battle(party, enemies, { rng, vigil, zeal, enemyScale });
 }
 
+/**
+ * A one-off fight outside a crypt run (Vigil, Trials, Tower, Inquisition): the
+ * given Sisters at full health against one encounter, at a Heresy-like tier.
+ */
+export function skirmish(save: SaveData, party: string[], encounter: string, tier = 0, rng?: Rng, crypt: CryptDef = OSSUARY): Battle {
+  const ids = party.filter((id) => save.owned[id]).slice(0, MAX_PARTY);
+  const run: RunState = { crypt, map: [], party: ids, hp: {}, floor: 0, at: 0, path: [], resolved: false, relics: [], tithes: 0, seals: 0, heresy: tier, loot: [] };
+  for (const id of ids) run.hp[id] = maxHpOf(save, run, id);
+  return makeBattle(save, run, encounter, rng);
+}
+
 /** The node being played, if it is not finished yet. */
 export function currentNode(run: RunState): MapNode | undefined {
   return run.floor >= 0 && !run.resolved ? run.map[run.floor][run.at] : undefined;
