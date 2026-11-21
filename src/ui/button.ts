@@ -9,6 +9,11 @@ export interface ButtonOpts {
   fontSize?: number;
   /** Optional pixel icon (ui-<name>) drawn left of the label. */
   icon?: string;
+  /**
+   * Skin family, e.g. 'ui-subtab': uses ui-subtab.png, or ui-subtab-active.png when
+   * active (each with an optional -pressed). Falls back to the normal button skins.
+   */
+  skin?: string;
 }
 
 /**
@@ -33,8 +38,9 @@ export function makeButton(
     .setStrokeStyle(opts.active ? 2 : 1, opts.active ? PAL.goldEdge : PAL.buttonEdge)
     .setAlpha(alpha);
   // Skinned (ui-button*.png in src/assets/ui): the art is drawn and the box only takes taps.
-  const skinKey: SkinKey = opts.active ? 'ui-button-primary' : 'ui-button';
-  const pressKey: SkinKey = opts.active ? 'ui-button-primary-pressed' : 'ui-button-pressed';
+  const family = opts.skin && hasSkin(scene, opts.active ? `${opts.skin}-active` : opts.skin) ? opts.skin : undefined;
+  const skinKey: SkinKey = family ? (opts.active ? `${family}-active` : family) : opts.active ? 'ui-button-primary' : 'ui-button';
+  const pressKey: SkinKey = `${skinKey}-pressed`;
   const skin = nine(scene, skinKey, x, y, w, h);
   const skinDown = skin && hasSkin(scene, pressKey) ? nine(scene, pressKey, x, y, w, h)!.setVisible(false) : null;
   if (skin) {

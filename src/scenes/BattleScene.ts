@@ -8,6 +8,7 @@ import { commit, game } from '../state/game';
 import { saveSettings, settings } from '../state/settings';
 import { autoChoose } from '../systems/autoplay';
 import { makeButton } from '../ui/button';
+import { Bar, candleFrames, nine } from '../ui/skin';
 import { current } from '../state/run';
 import { BALANCE_VERSION, Battle, ZEAL_MAX, skillsFor, type BattleEvent, type Unit } from '../systems/combat';
 import { absorbBattle, currentNode, finishRun, makeBattle, winRoom } from '../systems/crusade';
@@ -25,9 +26,11 @@ const slotX = (rank: number) => 8 + CARD / 2 + (rank - 1) * (CARD + 4);
 interface Card {
   box: Phaser.GameObjects.Container;
   frame: Phaser.GameObjects.Rectangle;
+  /** ui-unit-frame.png drawn over the portrait and tinted, when present. */
+  skinFrame?: Phaser.GameObjects.NineSlice;
   glow: Phaser.GameObjects.Rectangle;
   img: Phaser.GameObjects.Image;
-  hpFill: Phaser.GameObjects.Rectangle;
+  hp: Bar;
   shieldFill: Phaser.GameObjects.Rectangle;
   hpText: Phaser.GameObjects.Text;
   tags: Phaser.GameObjects.Text;
@@ -52,10 +55,12 @@ export class BattleScene extends Phaser.Scene {
   private skillButtons: Phaser.GameObjects.GameObject[] = [];
   private logText!: Phaser.GameObjects.Text;
   private descText!: Phaser.GameObjects.Text;
-  private zealFill!: Phaser.GameObjects.Rectangle;
+  private zealBar!: Bar;
   private zealText!: Phaser.GameObjects.Text;
   private roundText!: Phaser.GameObjects.Text;
   private candle!: Phaser.GameObjects.Graphics;
+  private candleSprite?: Phaser.GameObjects.Image;
+  private candleFrames = 0;
   private strip: Phaser.GameObjects.GameObject[] = [];
   private vigilMax = 8;
   private toggles: Phaser.GameObjects.GameObject[] = [];
@@ -89,6 +94,8 @@ export class BattleScene extends Phaser.Scene {
     this.applySpeed();
     this.drawToggles();
     this.candle = this.add.graphics();
+    this.candleFrames = candleFrames(this);
+    if (this.candleFrames) this.candleSprite = this.add.image(GAME_W - 33, 25, 'ui-vigil-candle', 0);
     this.add.text(GAME_W - 52, 24, 'Vigil', { ...style, fontSize: '17px', color: hex(PAL.steel) }).setOrigin(1, 0.5);
 
     for (let i = 0; i < 4; i++) {
@@ -100,8 +107,8 @@ export class BattleScene extends Phaser.Scene {
     this.logText = this.add
       .text(GAME_W / 2, 405, '', { ...style, fontSize: '22px', align: 'center', wordWrap: { width: GAME_W - 40 } })
       .setOrigin(0.5);
-    this.add.rectangle(GAME_W / 2, 455, 404, 18, PAL.deepShadow).setStrokeStyle(2, PAL.armorShadow);
-    this.zealFill = this.add.rectangle(GAME_W / 2 - 200, 455, 0, 14, PAL.amber).setOrigin(0, 0.5);
+    if (!this.textures.exists('ui-bar-frame')) this.add.rectangle(GAME_W / 2, 455, 404, 18, PAL.deepShadow).setStrokeStyle(2, PAL.armorShadow);
+    this.zealBar = new Bar(this, GAME_W / 2 - 200, 455, 400, 14, 'ui-bar-zeal', PAL.amber, PAL.deepShadow);
     this.zealText = this.add.text(GAME_W / 2, 478, '', { ...style, fontSize: '16px', color: hex(PAL.steel) }).setOrigin(0.5);
 
     this.descText = this.add
@@ -221,12 +228,20 @@ export class BattleScene extends Phaser.Scene {
         .rectangle(x, y, w, 120, selected ? color : PAL.deepShadow)
         .setStrokeStyle(2, usable ? color : PAL.armorShadow)
         .setAlpha(usable ? 1 : 0.4);
+      // ui-skill / ui-skill-selected / ui-skill-rite .png, when present
+      const skinKey = selected ? 'ui-skill-selected' : s.rite ? 'ui-skill-rite' : 'ui-skill';
+      const skin = nine(this, skinKey, x, y, w, 120);
+      if (skin) {
+        box.setFillStyle(0x000000, 0.001).setStrokeStyle().setAlpha(1);
+        skin.setAlpha(usable ? 1 : 0.4);
+        this.skillButtons.push(skin);
+      }
       const cd = actor.cooldowns?.[s.id] ?? 0;
       const label = this.add
         .text(x, y, s.rite ? `RITE\n${s.name}` : cd > 0 ? `${s.name}\n(ready in ${cd})` : s.name, {
           fontFamily: FONT,
           fontSize: '18px',
-          color: hex(selected && s.rite ? PAL.bg : PAL.ivory),
+          color: hex(selected && s.rite && !skin ? PAL.bg : PAL.ivory),
           align: 'center',
           wordWrap: { width: w - 12 },
         })
@@ -319,22 +334,24 @@ export class BattleScene extends Phaser.Scene {
     const glow = this.add.rectangle(0, 0, CARD + 14, CARD + 14).setStrokeStyle(5, PAL.amber).setVisible(false);
     const frame = this.add.rectangle(0, 0, CARD + 6, CARD + 6, 0x000000).setStrokeStyle(3, border);
     const img = this.add.image(0, 0, key).setDisplaySize(CARD, CARD);
-    const hpBg = this.add.rectangle(-CARD / 2, CARD / 2 + 12, CARD, 10, PAL.deepShadow).setOrigin(0, 0.5);
-    const hpFill = this.add.rectangle(-CARD / 2, CARD / 2 + 12, CARD, 10, party ? 0x7a9a5a : PAL.oxblood).setOrigin(0, 0.5);
+    // ui-unit-frame.png (tinted per rarity) over the portrait, when present
+    const skinFrame = nine(this, 'ui-unit-frame', 0, 0, CARD + 6, CARD + 6) ?? undefined;
+    if (skinFrame) frame.setStrokeStyle();
+    const hp = new Bar(this, -CARD / 2, CARD / 2 + 12, CARD, 10, party ? 'ui-bar-hp' : 'ui-bar-hp-enemy', party ? 0x7a9a5a : PAL.oxblood);
     const shieldFill = this.add.rectangle(-CARD / 2, CARD / 2 + 12, 0, 4, PAL.ivory).setOrigin(0, 0.5);
     const hpText = this.add.text(0, CARD / 2 + 28, '', { fontFamily: FONT, fontSize: '17px', color: hex(PAL.ivory) }).setOrigin(0.5);
     const tags = this.add
       .text(0, CARD / 2 + 46, '', { fontFamily: FONT, fontSize: '15px', color: hex(PAL.violet), align: 'center' })
       .setOrigin(0.5);
     const y = party ? PARTY_Y : ENEMY_Y;
-    const box = this.add.container(slotX(u.rank), y, [glow, frame, img, hpBg, hpFill, shieldFill, hpText, tags]);
+    const box = this.add.container(slotX(u.rank), y, [glow, frame, img, ...(skinFrame ? [skinFrame] : []), ...hp.parts, shieldFill, hpText, tags]);
     box.setSize(CARD, CARD).setInteractive({ useHandCursor: true });
     box.on('pointerup', () => (this.mode === 'target' ? this.pickTarget(u) : this.explain(u)));
     const preview = this.add
       .text(0, 0, '', { fontFamily: FONT, fontSize: '26px', color: hex(PAL.amber), stroke: '#000000', strokeThickness: 5, align: 'center' })
       .setOrigin(0.5);
     box.add(preview);
-    const card: Card = { box, frame, glow, img, hpFill, shieldFill, hpText, tags, preview };
+    const card: Card = { box, frame, skinFrame, glow, img, hp, shieldFill, hpText, tags, preview };
     if (party) {
       card.threat = this.add
         .text(0, -CARD / 2 + 3, '', { fontFamily: FONT, fontSize: '18px', color: hex(PAL.ivory), backgroundColor: '#652b3b', padding: { x: 5, y: 2 } })
@@ -360,7 +377,7 @@ export class BattleScene extends Phaser.Scene {
       if (dead) c.box.disableInteractive();
       const tx = slotX(u.rank);
       if (!dead && c.box.x !== tx) this.tweens.add({ targets: c.box, x: tx, duration: 250 });
-      c.hpFill.width = (CARD * u.hp) / u.maxHp;
+      c.hp.set(u.hp / u.maxHp);
       c.shieldFill.width = Math.min(CARD, (CARD * (u.status.shield ?? 0)) / u.maxHp);
       c.hpText.setText(`${u.hp}/${u.maxHp}`);
       const st = u.status;
@@ -375,7 +392,9 @@ export class BattleScene extends Phaser.Scene {
       ].filter(Boolean);
       c.tags.setText(tags.join(' · '));
       const active = this.actor?.uid === u.uid && !dead;
-      c.frame.setStrokeStyle(active ? 5 : 3, active ? PAL.ivory : u.side === 'party' ? RARITY_COLOR[CRUSADERS.find((x) => x.id === u.ref)!.rarity] : u.boss ? PAL.oxblood : PAL.armorShadow);
+      const edge = active ? PAL.ivory : u.side === 'party' ? RARITY_COLOR[CRUSADERS.find((x) => x.id === u.ref)!.rarity] : u.boss ? PAL.oxblood : PAL.armorShadow;
+      if (c.skinFrame) c.skinFrame.setTint(edge);
+      else c.frame.setStrokeStyle(active ? 5 : 3, edge);
       c.glow.setVisible(highlight.includes(u));
       c.preview.setText(highlight.includes(u) ? this.previewText(u) : '');
       if (highlight.includes(u)) {
@@ -388,19 +407,17 @@ export class BattleScene extends Phaser.Scene {
     this.drawIntents();
 
     const b = this.battle;
-    this.zealFill.width = (400 * b.zeal) / ZEAL_MAX;
-    this.zealFill.setFillStyle(b.zeal >= ZEAL_MAX ? PAL.amber : PAL.bronze);
+    this.zealBar.set(b.zeal / ZEAL_MAX, b.zeal >= ZEAL_MAX ? PAL.amber : PAL.bronze);
     this.zealText.setText(b.zeal >= ZEAL_MAX ? 'ZEAL ABLAZE: a Rite is ready' : `Zeal ${b.zeal} / ${ZEAL_MAX}`);
     this.roundText.setText(`Round ${Math.max(1, b.round)}`);
 
     // Vigil candle: shrinks each round; once out, enemies grow stronger
-    const g = this.candle.clear();
-    const h = 34;
     const left = Math.max(0, b.vigil) / this.vigilMax;
-    g.fillStyle(PAL.deepShadow).fillRect(GAME_W - 40, 8, 14, h);
-    g.fillStyle(PAL.ivory).fillRect(GAME_W - 40, 8 + h * (1 - left), 14, h * left);
-    if (b.vigil > 0) g.fillStyle(PAL.amber).fillTriangle(GAME_W - 33, 8 + h * (1 - left) - 12, GAME_W - 38, 8 + h * (1 - left) - 2, GAME_W - 28, 8 + h * (1 - left) - 2);
-    else g.fillStyle(PAL.oxblood).fillRect(GAME_W - 46, 46, 26, 4);
+    if (this.candleSprite) {
+      // ui-vigil-candle.png: a strip of frames, full to snuffed
+      const n = this.candleFrames;
+      this.candleSprite.setFrame(b.vigil > 0 ? Math.min(n - 2, Math.floor((1 - left) * (n - 1))) : n - 1);
+    } else this.drawCandle(left, b.vigil > 0);
 
     // Turn strip: who acts now and next
     this.strip.forEach((o) => o.destroy());
@@ -413,7 +430,24 @@ export class BattleScene extends Phaser.Scene {
       const fr = this.add.rectangle(x, 70, 54, 54, 0x000000).setStrokeStyle(i === 0 ? 3 : 1, u.side === 'party' ? PAL.bronze : PAL.oxblood);
       const im = this.add.image(x, 70, key).setDisplaySize(48, 48).setAlpha(i === 0 ? 1 : 0.75);
       this.strip.push(fr, im);
+      // ui-turn-frame.png over each face in the strip, when present
+      const tf = nine(this, 'ui-turn-frame', x, 70, 54, 54);
+      if (tf) {
+        fr.setStrokeStyle();
+        if (i > 0) tf.setAlpha(0.75);
+        this.strip.push(tf);
+      }
     });
+  }
+
+  /** The drawn candle, used when there is no ui-vigil-candle.png. */
+  private drawCandle(left: number, lit: boolean) {
+    const g = this.candle.clear();
+    const h = 34;
+    g.fillStyle(PAL.deepShadow).fillRect(GAME_W - 40, 8, 14, h);
+    g.fillStyle(PAL.ivory).fillRect(GAME_W - 40, 8 + h * (1 - left), 14, h * left);
+    if (lit) g.fillStyle(PAL.amber).fillTriangle(GAME_W - 33, 8 + h * (1 - left) - 12, GAME_W - 38, 8 + h * (1 - left) - 2, GAME_W - 28, 8 + h * (1 - left) - 2);
+    else g.fillStyle(PAL.oxblood).fillRect(GAME_W - 46, 46, 26, 4);
   }
 
   /** Enemy intents above each enemy, and the damage each crusader is about to take. */
