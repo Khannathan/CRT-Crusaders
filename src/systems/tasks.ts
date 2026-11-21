@@ -1,4 +1,5 @@
 import type { SaveData } from '../state/save';
+import { gainFaith } from './rank';
 
 /**
  * Daily Penance and weekly Litany: small tasks that fill a Devotion bar. Each
@@ -117,6 +118,7 @@ export function devotion(save: SaveData, p: Period, now = Date.now()) {
 
 /** Counts something the player did toward every task that listens for it. */
 export function track(save: SaveData, event: TaskEvent, n = 1, now = Date.now()) {
+  gainFaith(save, event, n);
   const st = tasksOf(save, now);
   const dailyWasDone = devotion(save, 'daily', now) >= maxDevotion('daily');
   for (const p of ['daily', 'weekly'] as Period[]) {

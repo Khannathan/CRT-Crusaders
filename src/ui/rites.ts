@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 import { GAME_W, PAL } from '../config';
 import type { SaveData } from '../state/save';
 import { matinsReady } from '../systems/matins';
+import { ROMAN_RANK, unlocked } from '../systems/rank';
 import { anyClaimable } from '../systems/tasks';
 import { makeButton } from './button';
 import { PAD } from './theme';
@@ -14,13 +15,15 @@ export interface RiteEntry {
   label: string;
   scene: string;
   icon: string;
+  /** Rank of Faith needed (see UNLOCKS in rank.ts). */
+  rank: number;
   /** Something is waiting to be claimed. */
   ready?: (save: SaveData) => boolean;
 }
 
 export const RITES: RiteEntry[] = [
-  { label: 'Penance', scene: 'Penance', icon: 'book', ready: (s) => anyClaimable(s) },
-  { label: 'Matins', scene: 'Matins', icon: 'flame', ready: (s) => matinsReady(s) },
+  { label: 'Matins', scene: 'Matins', icon: 'flame', rank: 1, ready: (s) => matinsReady(s) },
+  { label: 'Penance', scene: 'Penance', icon: 'book', rank: 2, ready: (s) => anyClaimable(s) },
 ];
 
 /** Draws the grid from `top`; returns its bottom edge. */
@@ -32,6 +35,10 @@ export function drawRites(scene: Phaser.Scene, save: SaveData, top: number): num
   RITES.forEach((r, i) => {
     const x = PAD + w / 2 + (i % cols) * (w + gap);
     const y = top + h / 2 + Math.floor(i / cols) * (h + gap);
+    if (!unlocked(save, r.rank)) {
+      makeButton(scene, x, y, w, h, `${r.label}\nRANK ${ROMAN_RANK(r.rank)}`, () => scene.scene.start('Rank'), { fontSize: 17, icon: 'lock', disabled: true });
+      return;
+    }
     makeButton(scene, x, y, w, h, r.label, () => scene.scene.start(r.scene), { fontSize: 18, icon: r.icon });
     if (r.ready?.(save)) {
       scene.add.circle(x + w / 2 - 10, y - h / 2 + 10, 6, PAL.amber).setStrokeStyle(2, 0x1b121c);
