@@ -1,6 +1,7 @@
 import { CRUSADERS } from '../data/crusaders';
 import type { CrusaderDef, Rarity } from '../data/types';
 import type { SaveData } from '../state/save';
+import { track } from './tasks';
 
 export const RATES: Record<Rarity, number> = { R: 0.6, SR: 0.3, SSR: 0.085, UR: 0.015 };
 export const RARITY_ORDER: Rarity[] = ['R', 'SR', 'SSR', 'UR'];
@@ -108,11 +109,13 @@ export function pull(save: SaveData, kind: PullKind, rng: Rng = Math.random): Pu
   if (!canPull(save, kind)) return [];
   if (kind === 'one') {
     save.seals -= COST_ONE;
+    track(save, 'pull');
     return [pullOnce(save, rng, 'R')];
   }
   if (!save.freeTenUsed) save.freeTenUsed = true;
   else save.seals -= COST_TEN;
 
+  track(save, 'pull', 10);
   const results: PullResult[] = [];
   for (let i = 0; i < 10; i++) {
     const needSR = i === 9 && results.every((r) => r.crusader.rarity === 'R');
@@ -128,5 +131,6 @@ export function takeVow(save: SaveData, id: string, cost: number): boolean {
   save.tithes -= cost;
   o.tokens -= 1;
   o.vow += 1;
+  track(save, 'takeVow');
   return true;
 }

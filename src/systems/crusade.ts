@@ -9,6 +9,7 @@ import { Battle, VIGIL_DEFAULT, makeEnemy, type Unit } from './combat';
 import type { Rng } from './gacha';
 import { claimGear, makeGear, rollGearRarity, type GearItem } from './gear';
 import { levelUpCost, sisterStats } from './stats';
+import { track } from './tasks';
 
 export type NodeKind = 'fight' | 'elite' | 'event' | 'shrine' | 'reliquary' | 'boss';
 
@@ -313,6 +314,11 @@ export function winRoom(run: RunState, save?: SaveData, rng: Rng = Math.random) 
     run.tithes += Math.round(REWARDS.fightTithes * m);
   }
   run.resolved = true;
+  if (save) {
+    track(save, 'fightWon');
+    if (node.kind === 'elite') track(save, 'eliteWon');
+    if (node.kind === 'boss') track(save, 'bossWon');
+  }
 }
 
 function healAll(save: SaveData, run: RunState, pct: number) {
@@ -391,6 +397,7 @@ export function finishRun(save: SaveData, run: RunState, outcome: RunResult['out
   let firstClear = false;
   let heresyCleared: number | undefined;
   if (outcome === 'victory') {
+    track(save, 'cryptCleared');
     seals += REWARDS.completeSeals;
     if (!save.cleared.includes(run.crypt.id)) {
       firstClear = true;

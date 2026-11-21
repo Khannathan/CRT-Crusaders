@@ -5,6 +5,7 @@ import { CRYPTS, cryptUnlocked, suggestParty, type CryptDef } from './crusade';
 import type { Rng } from './gacha';
 import { claimGear, makeGear, rollGearRarity, type GearItem } from './gear';
 import { sisterStats, statsFor, type Stats } from './stats';
+import { track } from './tasks';
 
 /**
  * Vigils: the idle side of the game. A party of up to four Sisters keeps watch
@@ -99,6 +100,7 @@ export function claimVigil(save: SaveData, now: number, rng: Rng = Math.random):
   save.tithes += p.tithes;
   save.seals += p.seals;
   v.since = now;
+  if (p.tithes > 0) track(save, 'vigilClaim', 1, now);
   return { tithes: p.tithes, seals: p.seals, gear, melted };
 }
 
