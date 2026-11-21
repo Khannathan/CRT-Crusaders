@@ -30,9 +30,13 @@ export class CrusadeScene extends Phaser.Scene {
     const style = { fontFamily: FONT, color: hex(PAL.ivory), align: 'center' };
     const top = addHeading(this, 'Crusade', CURRENCY_BAR_H + 16);
     const left = pilgrimageLeft(s);
-    this.add
+    const pil = this.add
       .text(GAME_W - PAD, top - 30, `PILGRIMAGE ${left}/${PILGRIMAGE_CLEARS}`, text.hud(14, left ? PAL.amber : PAL.steel))
       .setOrigin(1, 1);
+    // ui-badge-blessed.png before the Pilgrimage count, faded once the week's blessed clears are spent
+    if (this.textures.exists('ui-badge-blessed')) {
+      this.add.image(pil.x - pil.width - 14, pil.y - pil.height / 2, 'ui-badge-blessed').setDisplaySize(22, 22).setAlpha(left ? 1 : 0.35);
+    }
     this.add
       .text(GAME_W - PAD, top - 8, left ? `NEXT ${left} CLEARS +${PILGRIMAGE_BONUS.seals} SEALS EACH` : 'RENEWS MONDAY', text.hud(11, PAL.muted))
       .setOrigin(1, 1);
@@ -59,6 +63,8 @@ export class CrusadeScene extends Phaser.Scene {
       const backdrop = addBackdrop(this, art, GAME_W / 2, hy, hw, hh, { fade: 0.85, fadeColor: 0x180d17, focusY: crypt === CRYPTS[0] ? 0.3 : 0.7 });
       if (!open) backdrop.forEach((o) => (o as unknown as Phaser.GameObjects.Components.AlphaSingle).setAlpha?.(0.35));
       addFrame(this, GAME_W / 2, hy, hw, hh);
+      // the blessed-clear badge on each open crypt while blessed clears are left this week
+      if (open && left && this.textures.exists('ui-badge-blessed')) this.add.image(PAD + hw - 26, hy - hh / 2 + 26, 'ui-badge-blessed').setDisplaySize(32, 32);
       this.add
         .text(tx, cardBottom - 212, crypt.name.toUpperCase(), { ...text.display(24, open ? 0xfff1d6 : PAL.muted), wordWrap: { width: hw - 36 } })
         .setShadow(0, 2, '#000000', 9, false, true);

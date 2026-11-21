@@ -8,6 +8,17 @@ import { modeScreen } from '../ui/modeScreen';
 import { portraitKey } from '../ui/placeholderPortrait';
 import { PAD, addFrame, text } from '../ui/theme';
 
+/** Adds the three 32-wide frames of ui-matins-candle.png once; returns how many (0 when missing). */
+function matinsCandleFrames(scene: Phaser.Scene) {
+  const key = 'ui-matins-candle';
+  if (!scene.textures.exists(key)) return 0;
+  const tex = scene.textures.get(key);
+  const img = tex.getSourceImage();
+  const fw = Math.max(1, Math.round(img.width / 3));
+  if (!tex.has('0')) for (let i = 0; i < 3; i++) tex.add(i, 0, i * fw, 0, fw, img.height);
+  return 3;
+}
+
 /** Matins: 28 candles, one lit per day. A missed day waits; nothing is lost. */
 export class MatinsScene extends Phaser.Scene {
   private notice?: string;
@@ -29,6 +40,7 @@ export class MatinsScene extends Phaser.Scene {
     const gap = 6;
     const cw = (GAME_W - PAD * 2 - gap * (cols - 1)) / cols;
     const ch = 100;
+    const candleFrames = matinsCandleFrames(this);
     for (let i = 0; i < MATINS_DAYS; i++) {
       const x = PAD + cw / 2 + (i % cols) * (cw + gap);
       const y = top + 10 + ch / 2 + Math.floor(i / cols) * (ch + gap);
@@ -38,13 +50,26 @@ export class MatinsScene extends Phaser.Scene {
       const r = MATINS[i];
       this.add.rectangle(x, y, cw, ch, today ? 0x2c1a24 : 0x1b131d).setStrokeStyle(today ? 2 : 1, today ? PAL.amber : big ? PAL.bronze : PAL.armorShadow);
       this.add.text(x, y - ch / 2 + 6, `${i + 1}`, text.hud(12, today ? PAL.amber : PAL.steel)).setOrigin(0.5, 0);
-      // a candle: wax, wick, and a flame once lit
-      const wax = lit ? 0xd8c6a8 : 0x5b4a4e;
-      this.add.rectangle(x, y + 2, 12, 26, wax).setOrigin(0.5, 0);
-      this.add.rectangle(x, y + 2, 2, 4, 0x2a1e1e).setOrigin(0.5, 1);
-      if (lit || today) {
-        const flame = this.add.ellipse(x, y - 6, 9, 15, lit ? PAL.amber : 0xffd27a).setAlpha(lit ? 1 : 0.5);
-        if (today) this.tweens.add({ targets: flame, alpha: 1, scaleY: 1.2, duration: 500, yoyo: true, repeat: -1 });
+      const last = i === MATINS_DAYS - 1;
+      if (last && this.textures.exists('ui-matins-final')) {
+        // ui-matins-final.png: the grand last candle, darkened until lit
+        const c = this.add.image(x, y - 8, 'ui-matins-final').setDisplaySize(24, 48);
+        if (!lit) c.setTint(today ? 0xbbbbbb : 0x555555);
+        if (today) this.tweens.add({ targets: c, alpha: 0.7, duration: 600, yoyo: true, repeat: -1 });
+      } else if (candleFrames > 0) {
+        // ui-matins-candle.png: frames unlit, ready to light, lit
+        const c = this.add.image(x, y - 8, 'ui-matins-candle', lit ? 2 : today ? 1 : 0).setDisplaySize(24, 48);
+        if (!lit && !today) c.setTint(0x777077); // unlit days sit back in the dark
+        if (today) this.tweens.add({ targets: c, alpha: 0.7, duration: 600, yoyo: true, repeat: -1 });
+      } else {
+        // a drawn candle: wax, wick, and a flame once lit
+        const wax = lit ? 0xd8c6a8 : 0x5b4a4e;
+        this.add.rectangle(x, y + 2, 12, 26, wax).setOrigin(0.5, 0);
+        this.add.rectangle(x, y + 2, 2, 4, 0x2a1e1e).setOrigin(0.5, 1);
+        if (lit || today) {
+          const flame = this.add.ellipse(x, y - 6, 9, 15, lit ? PAL.amber : 0xffd27a).setAlpha(lit ? 1 : 0.5);
+          if (today) this.tweens.add({ targets: flame, alpha: 1, scaleY: 1.2, duration: 500, yoyo: true, repeat: -1 });
+        }
       }
       this.add
         .text(x, y + ch / 2 - 6, matinsText(r), { ...text.body(12, r.vowToken ? PAL.amber : lit ? PAL.muted : PAL.ivory), align: 'center', wordWrap: { width: cw - 4 } })

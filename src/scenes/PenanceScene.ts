@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 import { GAME_W, PAL } from '../config';
 import { commit, game } from '../state/game';
 import { MARKS, TASKS, claimMark, claimable, devotion, maxDevotion, rewardText, tasksOf, type Period } from '../systems/tasks';
+import { Bar } from '../ui/skin';
 import { makeButton } from '../ui/button';
 import { modeScreen, progressBar, untilText } from '../ui/modeScreen';
 import { PAD, addFrame, text } from '../ui/theme';
@@ -39,7 +40,9 @@ export class PenanceScene extends Phaser.Scene {
     const dev = devotion(save, this.period, now);
     const max = maxDevotion(this.period);
     const by = top + 92;
-    this.add.text(PAD, by - 26, `DEVOTION ${dev} / ${max}`, text.hud(14, PAL.amber));
+    // ui-devotion.png before the Devotion count when present
+    const devIcon = this.textures.exists('ui-devotion') ? this.add.image(PAD + 9, by - 18, 'ui-devotion').setDisplaySize(18, 18) : null;
+    this.add.text(PAD + (devIcon ? 24 : 0), by - 26, `DEVOTION ${dev} / ${max}`, text.hud(14, PAL.amber));
     const next = new Date(now);
     if (this.period === 'daily') next.setHours(24, 0, 0, 0);
     else {
@@ -48,7 +51,9 @@ export class PenanceScene extends Phaser.Scene {
     }
     this.add.text(GAME_W - PAD, by - 26, `RENEWS IN ${untilText(next.getTime() - now).toUpperCase()}`, text.hud(12, PAL.steel)).setOrigin(1, 0);
     const bw = GAME_W - PAD * 2;
-    progressBar(this, PAD, by, bw, dev / max, PAL.amber, 10);
+    // ui-bar-devotion.png fills the meter when present (with the ui-bar-frame skin)
+    if (this.textures.exists('ui-bar-devotion')) new Bar(this, PAD, by, bw, 10, 'ui-bar-devotion', PAL.amber).set(dev / max);
+    else progressBar(this, PAD, by, bw, dev / max, PAL.amber, 10);
     const marks = MARKS[this.period];
     const mw = (bw - 20) / 3;
     marks.forEach((m, i) => {
@@ -59,8 +64,13 @@ export class PenanceScene extends Phaser.Scene {
       const got = st.claimed.includes(m.at);
       const ready = dev >= m.at && !got;
       addFrame(this, cx, cy, mw, 96, { fill: ready ? 0x2c1a24 : 0x1b131d, edge: ready ? PAL.amber : PAL.armorShadow, ticks: ready });
-      this.add.text(cx, cy - 32, `AT ${m.at}`, text.hud(12, ready ? PAL.amber : PAL.steel)).setOrigin(0.5);
-      this.add.text(cx, cy - 10, rewardText(m.reward), { ...text.body(16, PAL.ivory), align: 'center', wordWrap: { width: mw - 12 } }).setOrigin(0.5);
+      // ui-mark / ui-mark-ready / ui-mark-claimed .png: a reliquary box on the left of the mark when present
+      const markKey = got ? 'ui-mark-claimed' : ready ? 'ui-mark-ready' : 'ui-mark';
+      const box = this.textures.exists(markKey) ? this.add.image(cx - mw / 2 + 26, cy - 14, markKey).setDisplaySize(40, 40) : null;
+      const tx = box ? cx + 18 : cx;
+      const tw = box ? mw - 56 : mw - 12;
+      this.add.text(tx, cy - 32, `AT ${m.at}`, text.hud(12, ready ? PAL.amber : PAL.steel)).setOrigin(0.5);
+      this.add.text(tx, cy - 10, rewardText(m.reward), { ...text.body(box ? 14 : 16, PAL.ivory), align: 'center', wordWrap: { width: tw } }).setOrigin(0.5);
       if (got) this.add.text(cx, cy + 28, 'CLAIMED', text.hud(12, PAL.muted)).setOrigin(0.5);
       else
         makeButton(this, cx, cy + 28, mw - 20, 32, 'Claim', () => {
