@@ -27,7 +27,7 @@ import {
 import { makeButton } from '../ui/button';
 import { nodeIconKey } from '../ui/icons';
 import { portraitKey } from '../ui/placeholderPortrait';
-import { addScreenGlow, text as txt } from '../ui/theme';
+import { addArt, addScreenGlow, text as txt } from '../ui/theme';
 
 const MAP_TOP = 112;
 const MAP_BOTTOM = 500;
@@ -230,12 +230,19 @@ export class CryptScene extends Phaser.Scene {
     const layer = this.overlay();
     layer.add(this.add.text(GAME_W / 2, 200, 'THE RELIQUARY OFFERS', txt.display(24, PAL.ivory)).setOrigin(0.5));
     offer.forEach((r, i) => {
-      const b = makeButton(this, GAME_W / 2, 320 + i * 130, GAME_W - 80, 110, `${r.name}\n${r.desc}`, () => {
+      const y = 320 + i * 130;
+      const b = makeButton(this, GAME_W / 2, y, GAME_W - 80, 110, `${r.name}\n${r.desc}`, () => {
         takeRelic(game.save, run, r.id);
         commit();
         this.scene.restart();
       }, { fontSize: 21 });
       layer.add(b.all);
+      // relic-<id>.png (48 x 48) on the left of its button when present; the words move right to make room
+      const icon = addArt(this, `relic-${r.id}`, 40 + 44, y, 48);
+      if (icon) {
+        for (const o of [b.text, ...b.extra]) if (o instanceof Phaser.GameObjects.Text) o.setX(o.x + 30);
+        layer.add(icon);
+      }
     });
   }
 
@@ -244,11 +251,15 @@ export class CryptScene extends Phaser.Scene {
     const ev = EVENTS[node.event!];
     const layer = this.overlay();
     const style = { fontFamily: FONT, color: hex(PAL.ivory), align: 'center', wordWrap: { width: GAME_W - 60 } };
-    layer.add(this.add.text(GAME_W / 2, 170, ev.title.toUpperCase(), { ...txt.display(26, PAL.ivory), align: 'center', wordWrap: { width: GAME_W - 60 } }).setOrigin(0.5));
-    layer.add(this.add.text(GAME_W / 2, 250, ev.text, { ...style, fontSize: '22px', lineSpacing: 4 }).setOrigin(0.5));
+    // event-<id>.png (480 x 320) as a picture above the title when present; everything below moves down
+    const art = this.textures.exists(`event-${ev.id}`) ? this.add.image(GAME_W / 2, 170, `event-${ev.id}`).setDisplaySize(330, 220) : null;
+    const dy = art ? 145 : 0;
+    if (art) layer.add([art, this.add.rectangle(GAME_W / 2, 170, 332, 222).setStrokeStyle(1, PAL.amber, 0.6)]);
+    layer.add(this.add.text(GAME_W / 2, 170 + dy, ev.title.toUpperCase(), { ...txt.display(26, PAL.ivory), align: 'center', wordWrap: { width: GAME_W - 60 } }).setOrigin(0.5));
+    layer.add(this.add.text(GAME_W / 2, (art ? 230 : 250) + dy, ev.text, { ...style, fontSize: '22px', lineSpacing: 4 }).setOrigin(0.5));
     const buttons: Phaser.GameObjects.GameObject[] = [];
     ev.options.forEach((o, i) => {
-      const b = makeButton(this, GAME_W / 2, 400 + i * 140, GAME_W - 80, 116, `${o.label}\n${o.hint}`, () => {
+      const b = makeButton(this, GAME_W / 2, (art ? 470 : 400) + i * (art ? 128 : 140), GAME_W - 80, 116, `${o.label}\n${o.hint}`, () => {
         const out = chooseEvent(game.save, run, i);
         commit();
         buttons.forEach((x) => x.destroy());

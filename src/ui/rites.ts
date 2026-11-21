@@ -42,7 +42,7 @@ export function drawRites(scene: Phaser.Scene, save: SaveData, top: number): num
       makeButton(scene, x, y, w, h, `${r.label}\nRANK ${ROMAN_RANK(r.rank)}`, () => scene.scene.start('Rank'), { fontSize: 17, icon: 'lock', disabled: true });
       return;
     }
-    makeButton(scene, x, y, w, h, r.label, () => scene.scene.start(r.scene), { fontSize: 18, icon: r.icon });
+    makeButton(scene, x, y, w, h, r.label, () => scene.scene.start(r.scene, {}), { fontSize: 18, icon: r.icon });
     if (r.ready?.(save)) {
       scene.add.circle(x + w / 2 - 10, y - h / 2 + 10, 6, PAL.amber).setStrokeStyle(2, 0x1b121c);
     }
