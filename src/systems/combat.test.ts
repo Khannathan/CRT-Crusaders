@@ -74,6 +74,59 @@ describe('combat', () => {
   });
 });
 
+describe('enemy telegraphs', () => {
+  it('every enemy shows its next move, and then does exactly that', () => {
+    const a = crusader('a', 'hierophant', 1);
+    const c = crusader('c', 'oracle', 2, { hp: 30 });
+    const b = new Battle([a, c], [makeEnemy('hound', 'e0', 1)], { rng: seeded(3) });
+    const view = b.intentOf(b.get('e0'))!;
+    expect(view.kind).toBe('attack');
+    expect(view.targets.map((u) => u.uid)).toEqual(['c']); // hounds go for the most hurt
+    expect(view.estimate).toBeGreaterThan(0);
+    expect(b.enemyChoose(b.get('e0')).target?.uid).toBe('c');
+  });
+
+  it('a taunt redirects a planned attack', () => {
+    const a = crusader('a', 'hierophant', 1);
+    const c = crusader('c', 'oracle', 2, { hp: 30 });
+    const b = new Battle([a, c], [makeEnemy('hound', 'e0', 1)], { rng: seeded(3) });
+    a.status.taunt = 2;
+    expect(b.intentOf(b.get('e0'))!.targets.map((u) => u.uid)).toEqual(['a']);
+    expect(b.enemyChoose(b.get('e0')).target?.uid).toBe('a');
+  });
+
+  it('the boss enters a second phase at half HP and re-plans', () => {
+    const w = crusader('w', 'warsister', 1, { atk: 300 });
+    const boss = makeEnemy('choir', 'e0', 1);
+    boss.armor = 0;
+    const b = new Battle([w], [boss], { rng: () => 0.5 });
+    const atk = boss.atk;
+    const ev = b.act(w, CLASS_SKILLS.warsister[0], boss);
+    expect(ev.some((e) => e.type === 'phase')).toBe(true);
+    expect(boss.phase).toBe(2);
+    expect(boss.atk).toBeGreaterThan(atk);
+    expect(ENEMIES.choir.phase2!.skills.map((s) => s.id)).toContain(boss.intent!.skillId);
+  });
+
+  it('a wind-up spends a turn charging, and Foresight breaks it', () => {
+    const o = crusader('o', 'oracle', 1, { maxHp: 1000, hp: 1000 });
+    const boss = makeEnemy('choir', 'e0', 1);
+    boss.phase = 2;
+    const b = new Battle([o], [boss], { rng: () => 0.5 });
+    const requiem = ENEMIES.choir.phase2!.skills.find((s) => s.windup)!;
+    b.act(boss, requiem);
+    expect(boss.status.charging).toBe(true);
+    expect(o.hp).toBe(1000);
+    expect(b.intentOf(boss)!.charging).toBe(true);
+    b.act(o, CLASS_SKILLS.oracle[1], boss);
+    expect(boss.status.charging).toBe(false);
+    expect(boss.intent!.skillId).not.toBe('requiem');
+    // uninterrupted, the second turn lands the blow
+    b.act(boss, requiem);
+    b.act(boss, requiem);
+    expect(o.hp).toBeLessThan(1000);
+  });
+});
 
 describe('balance formulas', () => {
   it('armor divides damage: 100 armor halves a hit', () => {

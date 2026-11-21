@@ -21,6 +21,17 @@ Drop a square PNG named by roster id into `src/assets/portraits/`, for example `
 - Plain dark charcoal background (`#121116`); transparency is optional.
 - Commit it and the next build picks it up; crusaders without a file show a placeholder.
 
+## Adding enemy and UI art
+
+Every built-in drawing can be replaced by dropping a PNG into a folder; nothing else needs to change.
+
+- **Enemies:** `src/assets/enemies/<enemy id>.png`, square, 128 × 128 like portraits. Ids are in `src/data/enemies.ts`: `husk`, `acolyte`, `ringer`, `hound`, `wraith`, `choir`.
+- **UI pieces:** `src/assets/ui/<name>.png`. The file name picks what it replaces. Battle intent icons (24 × 24): `icon-attack`, `icon-aoe`, `icon-debuff`, `icon-summon`, `icon-charge`.
+
+## How a fight reads
+
+Each enemy shows its next move above its card: the skill, the expected damage and who it will hit. Your crusaders show the damage heading their way (red when it would be lethal, grey when a shield blocks it). Tap an enemy to read its plan in full. A Taunt pulls single-target attacks away, Shift can step out of reach, and Foresight's delay breaks a boss's wind-up. The Choir Below changes phase at half HP and starts charging Requiem, a two-turn group attack.
+
 ## Layout
 
 - `src/config.ts` — design resolution (540 × 960) and palette anchors from the art guide.

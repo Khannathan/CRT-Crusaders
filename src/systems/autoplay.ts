@@ -11,6 +11,10 @@ export function autoChoose(b: Battle, actor: Unit): { skill: SkillDef; target?: 
   const hurt = [...allies].sort((a, c) => a.hp / a.maxHp - c.hp / c.maxHp)[0];
   const rite = skills.find((s) => s.rite);
   if (rite && b.zeal >= ZEAL_MAX) return { skill: rite, target: b.validTargets(actor, rite)[0] };
+  // Read the telegraphs: break a wind-up, and shield ahead of a group attack.
+  const charging = b.alive('enemy').find((e) => e.status.charging);
+  const delay = skills.find((s) => s.delay && !s.rite);
+  if (charging && delay && b.validTargets(actor, delay).includes(charging)) return { skill: delay, target: charging };
   const heal = skills.find((s) => s.heal || s.shieldPct);
   if (heal && hurt.hp / hurt.maxHp < 0.6) return { skill: heal, target: heal.target === 'ally' ? hurt : actor };
   const attacks = skills.filter((s) => s.mult && !s.rite).sort((a, c) => (c.mult ?? 0) - (a.mult ?? 0));
