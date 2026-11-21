@@ -33,7 +33,7 @@ import { CURRENCY_BAR_H, addCurrencyBar } from '../ui/currencyBar';
 import { portraitKey } from '../ui/placeholderPortrait';
 import { nine } from '../ui/skin';
 import { TAB_BAR_H, addTabBar } from '../ui/tabBar';
-import { PAD, addBackdrop, addBadge, addFrame, addHeading, addIcon, addScreenGlow, text } from '../ui/theme';
+import { PAD, addArt, addBackdrop, addBadge, addFrame, addHeading, addIcon, addScreenGlow, text } from '../ui/theme';
 
 type Tab = 'oath' | 'skills' | 'gear';
 
@@ -98,6 +98,8 @@ export class RosterScene extends Phaser.Scene {
         }
         this.add.text(left + 8, topY + ph + 5, c.name.split(' ')[0], { ...text.body(19, PAL.ivory), fontStyle: '600' });
         this.add.text(left + 8, topY + ph + 28, `LV ${have.level}${have.vow ? `  VOW ${have.vow}` : ''}`, text.hud(12, PAL.muted));
+        // class-<id>.png beside the name when present
+        addArt(this, `class-${c.classId}`, left + cw - 18, topY + ph + 23, 24);
         if (have.tokens) addBadge(this, left + cw - 40, topY + ph - 26, `+${have.tokens}`, PAL.amber, 12);
       } else {
         const g = this.add.graphics();
@@ -195,6 +197,11 @@ export class RosterScene extends Phaser.Scene {
     const frame = this.add.rectangle(GAME_W / 2, py, size + 10, size + 10, 0x150e17).setStrokeStyle(1, have ? RARITY_COLOR[c.rarity] : PAL.armorShadow);
     const img = this.add.image(GAME_W / 2, py, portraitKey(c.id)).setDisplaySize(size, size);
     layer.add([shade, ...panel, frame, img]);
+    // class-<id>.png (48 x 48) on the portrait's lower-right corner when present
+    const ex = GAME_W / 2 + size / 2 - 26;
+    const ey = py + size / 2 - 26;
+    const emblem = have ? addArt(this, `class-${c.classId}`, ex, ey, 48) : null;
+    if (emblem) layer.add([this.add.circle(ex, ey, 28, 0x150e17).setStrokeStyle(1, RARITY_COLOR[c.rarity]), emblem]);
 
     const close = makeButton(this, GAME_W / 2, GAME_H - 62, 220, 60, 'Close', () => layer.destroy(), { fontSize: 19 });
 
@@ -330,10 +337,13 @@ export class RosterScene extends Phaser.Scene {
         ...(s.cooldown ? [`COOLDOWN ${isUp ? s.cooldown - 1 : s.cooldown}`] : []),
         ...(up ? [isUp ? 'VOW UPGRADED +25%' : `VOW ${up[0]}: +25%`] : []),
       ].join(' · ');
-      const name = this.add.text(left, y, `${s.name}${isUp ? '+' : ''}`, { ...text.body(21, s.rite ? PAL.amber : PAL.ivory), fontStyle: '600' });
-      const t = this.add.text(left, y + 28, tag, text.hud(12, isUp ? PAL.amber : PAL.steel));
+      // skill-<id>.png (32 x 32) to the left of the name when present
+      const icon = addArt(this, `skill-${s.id}`, left + 16, y + 18, 32);
+      const tx = icon ? left + 44 : left;
+      const name = this.add.text(tx, y, `${s.name}${isUp ? '+' : ''}`, { ...text.body(21, s.rite ? PAL.amber : PAL.ivory), fontStyle: '600' });
+      const t = this.add.text(tx, y + 28, tag, text.hud(12, isUp ? PAL.amber : PAL.steel));
       const d = this.add.text(left, y + 46, s.desc, { ...text.body(16, PAL.muted), wordWrap: { width } });
-      layer.add([name, t, d]);
+      layer.add([...(icon ? [icon] : []), name, t, d]);
       y += 52 + d.height + 14;
     });
     if (c.passive) {
