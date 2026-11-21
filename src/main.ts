@@ -11,33 +11,52 @@ import { ResultsScene } from './scenes/ResultsScene';
 import { RevealScene } from './scenes/RevealScene';
 import { RosterScene } from './scenes/RosterScene';
 import { SanctumScene } from './scenes/SanctumScene';
+import './fonts.css';
 
-const game = new Phaser.Game({
-  type: Phaser.AUTO, // WebGL, falling back to canvas
-  parent: 'game',
-  backgroundColor: PAL.bg,
-  pixelArt: true,
-  scale: {
-    mode: Phaser.Scale.FIT,
-    autoCenter: Phaser.Scale.CENTER_BOTH,
-    width: GAME_W,
-    height: GAME_H,
-  },
-  scene: [
-    BootScene,
-    SanctumScene,
-    RecruitScene,
-    RevealScene,
-    RosterScene,
-    CrusadeScene,
-    MusterScene,
-    CryptScene,
-    BattleScene,
-    ResultsScene,
-  ],
-});
+/**
+ * Phaser draws text onto canvases, so web fonts must be loaded before any scene
+ * writes text. Gives up after 3 seconds and falls back to Georgia/monospace.
+ */
+async function loadFonts() {
+  const faces = ['700 20px "Cinzel Decorative"', '400 20px "Crimson Pro"', 'italic 400 20px "Crimson Pro"', '400 20px "Vigil Pixel"'];
+  const timeout = new Promise((r) => setTimeout(r, 3000));
+  try {
+    await Promise.race([Promise.all(faces.map((f) => document.fonts.load(f))), timeout]);
+  } catch {
+    // font loading unsupported: fallbacks are fine
+  }
+}
 
-game.events.once(Phaser.Core.Events.READY, () => installCrt(game));
+function start() {
+  const game = new Phaser.Game({
+    type: Phaser.AUTO, // WebGL, falling back to canvas
+    parent: 'game',
+    backgroundColor: PAL.bg,
+    pixelArt: true,
+    scale: {
+      mode: Phaser.Scale.FIT,
+      autoCenter: Phaser.Scale.CENTER_BOTH,
+      width: GAME_W,
+      height: GAME_H,
+    },
+    scene: [
+      BootScene,
+      SanctumScene,
+      RecruitScene,
+      RevealScene,
+      RosterScene,
+      CrusadeScene,
+      MusterScene,
+      CryptScene,
+      BattleScene,
+      ResultsScene,
+    ],
+  });
 
-// Lets automated play-tests see which screen is showing.
-(window as unknown as { __crt: Phaser.Game }).__crt = game;
+  game.events.once(Phaser.Core.Events.READY, () => installCrt(game));
+
+  // Lets automated play-tests see which screen is showing.
+  (window as unknown as { __crt: Phaser.Game }).__crt = game;
+}
+
+void loadFonts().then(start);

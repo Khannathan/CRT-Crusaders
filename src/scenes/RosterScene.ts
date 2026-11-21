@@ -10,6 +10,7 @@ import { makeButton } from '../ui/button';
 import { CURRENCY_BAR_H, addCurrencyBar } from '../ui/currencyBar';
 import { portraitKey } from '../ui/placeholderPortrait';
 import { addTabBar } from '../ui/tabBar';
+import { PAD, addBackdrop, addBadge, addFrame, addHeading, addIcon, addScreenGlow, text } from '../ui/theme';
 
 /** Every crusader: recruited ones first (highest rarity first), the rest as silhouettes. */
 export class RosterScene extends Phaser.Scene {
@@ -24,11 +25,12 @@ export class RosterScene extends Phaser.Scene {
   }
 
   create() {
-    this.cameras.main.setBackgroundColor(PAL.bg);
+    addScreenGlow(this);
     addCurrencyBar(this);
     const owned = game.save.owned;
     const count = Object.keys(owned).length;
-    this.add.text(GAME_W / 2, CURRENCY_BAR_H + 34, `Roster  ${count} / ${CRUSADERS.length}`, { fontFamily: FONT, fontSize: '28px', color: hex(PAL.amber) }).setOrigin(0.5);
+    const top = addHeading(this, 'Roster', CURRENCY_BAR_H + 10);
+    this.add.text(GAME_W - PAD, top - 8, `${count} / ${CRUSADERS.length}`, text.hud(16, PAL.muted)).setOrigin(1, 1);
 
     const sorted = [...CRUSADERS].sort(
       (a, b) =>
@@ -36,21 +38,43 @@ export class RosterScene extends Phaser.Scene {
         RARITY_ORDER.indexOf(b.rarity) - RARITY_ORDER.indexOf(a.rarity),
     );
 
+    // Cards as in the preview: portrait, rarity badge, name and level underneath.
     const cols = 3;
-    const cell = 160;
-    const x0 = (GAME_W - cols * cell) / 2 + cell / 2;
-    const y0 = CURRENCY_BAR_H + 70 + 72;
+    const gap = 9;
+    const cw = (GAME_W - PAD * 2 - gap * (cols - 1)) / cols;
+    const ph = 128;
+    const ch = ph + 46;
+    const y0 = top + 12;
+    const party = new Set(game.save.lastParty);
     sorted.forEach((c, i) => {
-      const x = x0 + (i % cols) * cell;
-      const y = y0 + Math.floor(i / cols) * 178;
+      const left = PAD + (i % cols) * (cw + gap);
+      const topY = y0 + Math.floor(i / cols) * (ch + gap);
+      const x = left + cw / 2;
       const have = owned[c.id];
-      this.add.rectangle(x, y, 136, 136).setStrokeStyle(4, have ? RARITY_COLOR[c.rarity] : PAL.armorShadow);
-      // whole-number (1x) scale keeps pixels crisp
-      const img = this.add.image(x, y, portraitKey(c.id)).setDisplaySize(128, 128).setInteractive({ useHandCursor: true });
-      if (!have) img.setTint(0x111111);
-      img.on('pointerup', () => this.showDetail(c));
-      const label = have ? `${c.name.split(' ')[0]}  Lv ${have.level}` : '?';
-      this.add.text(x, y + 82, label, { fontFamily: FONT, fontSize: '16px', color: hex(have ? PAL.ivory : PAL.steel) }).setOrigin(0.5);
+      const tint = RARITY_COLOR[c.rarity];
+      const card = this.add.rectangle(x, topY + ch / 2, cw, ch, have ? 0x1e1620 : 0x151017).setStrokeStyle(1, PAL.armorShadow);
+      if (have) {
+        addBackdrop(this, portraitKey(c.id), x, topY + ph / 2, cw, ph, { fade: 0, focusY: 0.3 });
+        this.add.rectangle(x, topY + ph, cw, 1, tint);
+        addBadge(this, left + 4, topY + 4, c.rarity, tint, 12);
+        if (party.has(c.id)) {
+          this.add.rectangle(left + cw - 4, topY + 4, 22, 22, 0x170e15).setOrigin(1, 0).setStrokeStyle(1, 0x695045);
+          addIcon(this, left + cw - 15, topY + 15, 'shield', 14, PAL.amber);
+        }
+        this.add.text(left + 8, topY + ph + 5, c.name.split(' ')[0], { ...text.body(19, PAL.ivory), fontStyle: '600' });
+        this.add.text(left + 8, topY + ph + 28, `LV ${have.level}${have.vow ? `  VOW ${have.vow}` : ''}`, text.hud(12, PAL.muted));
+      } else {
+        const g = this.add.graphics();
+        for (let r = 8; r > 0; r--) g.fillStyle(0x291c2b, 0.16).fillCircle(x, topY + ph / 2, (r / 8) * 80);
+        addIcon(this, x, topY + ph / 2, 'lock', 30, 0x967b8e);
+        this.add.rectangle(x, topY + ph, cw, 1, PAL.armorShadow);
+        this.add.text(left + 8, topY + ph + 5, 'Unknown', { ...text.body(19, PAL.muted), fontStyle: '600' });
+        this.add.text(left + 8, topY + ph + 28, 'UNDISCOVERED', text.hud(12, PAL.steel));
+      }
+      card.setInteractive({ useHandCursor: true });
+      this.children.bringToTop(card);
+      card.setFillStyle(0x000000, 0.001);
+      card.on('pointerup', () => this.showDetail(c));
     });
 
     addTabBar(this, 'Roster');
@@ -64,12 +88,13 @@ export class RosterScene extends Phaser.Scene {
     const have = game.save.owned[c.id];
     const cls = CLASSES[c.classId];
     const style = { fontFamily: FONT, color: hex(PAL.ivory), align: 'center', wordWrap: { width: GAME_W - 80 } };
-    const shade = this.add.rectangle(GAME_W / 2, GAME_H / 2, GAME_W, GAME_H, 0x000000, 0.95).setInteractive();
+    const shade = this.add.rectangle(GAME_W / 2, GAME_H / 2, GAME_W, GAME_H, 0x09060b, 0.9).setInteractive();
+    const panel = addFrame(this, GAME_W / 2, GAME_H / 2, GAME_W - 24, GAME_H - 40, { fill: 0x241925 });
     const size = 256;
     const py = 200;
-    const frame = this.add.rectangle(GAME_W / 2, py, size + 12, size + 12).setStrokeStyle(6, have ? RARITY_COLOR[c.rarity] : PAL.armorShadow);
+    const frame = this.add.rectangle(GAME_W / 2, py, size + 10, size + 10, 0x150e17).setStrokeStyle(1, have ? RARITY_COLOR[c.rarity] : PAL.armorShadow);
     const img = this.add.image(GAME_W / 2, py, portraitKey(c.id)).setDisplaySize(size, size);
-    layer.add([shade, frame, img]);
+    layer.add([shade, ...panel, frame, img]);
 
     const close = makeButton(this, GAME_W / 2, GAME_H - 70, 240, 72, 'Close', () => layer.destroy());
 
@@ -79,8 +104,7 @@ export class RosterScene extends Phaser.Scene {
         this.add.text(GAME_W / 2, 370, 'Not yet recruited', { ...style, fontSize: '26px' }).setOrigin(0.5),
         this.add.text(GAME_W / 2, 410, `${c.rarity} · ${cls.name}`, { ...style, fontSize: '18px', color: hex(PAL.steel) }).setOrigin(0.5),
         this.add.text(GAME_W / 2, 470, 'Find her at the Sealed Altar.', { ...style, fontSize: '18px', color: hex(PAL.steel) }).setOrigin(0.5),
-        close.box,
-        close.text,
+        ...close.all,
       ]);
       return;
     }
@@ -89,7 +113,7 @@ export class RosterScene extends Phaser.Scene {
     const cost = levelUpCost(have.level);
     const maxed = have.level >= MAX_LEVEL;
     layer.add([
-      this.add.text(GAME_W / 2, 362, c.name, { ...style, fontSize: '28px' }).setOrigin(0.5),
+      this.add.text(GAME_W / 2, 362, c.name.toUpperCase(), { ...style, ...text.display(26, 0xfff1d6) }).setOrigin(0.5),
       this.add.text(GAME_W / 2, 398, `${c.rarity} · ${cls.name} · ${cls.role}`, { ...style, fontSize: '18px', color: hex(RARITY_COLOR[c.rarity]) }).setOrigin(0.5),
       this.add.text(GAME_W / 2, 428, `${c.order} · age ${c.age}`, { ...style, fontSize: '16px', color: hex(PAL.steel) }).setOrigin(0.5),
       this.add.text(GAME_W / 2, 476, `Level ${have.level} / ${MAX_LEVEL}`, { ...style, fontSize: '22px', color: hex(PAL.amber) }).setOrigin(0.5),
@@ -131,6 +155,6 @@ export class RosterScene extends Phaser.Scene {
       },
       { disabled: !canLevel, active: canLevel, fontSize: 20 },
     );
-    layer.add([lvl.box, lvl.text, close.box, close.text]);
+    layer.add([...lvl.all, ...close.all]);
   }
 }

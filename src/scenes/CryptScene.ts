@@ -108,7 +108,7 @@ export class CryptScene extends Phaser.Scene {
         takeRelic(game.save, run, r.id);
         this.scene.restart();
       }, { fontSize: 19 });
-      layer.add([b.box, b.text]);
+      layer.add(b.all);
     });
   }
 

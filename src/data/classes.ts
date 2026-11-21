@@ -12,10 +12,10 @@ export const CLASSES: Record<string, ClassDef> = {
 /** Base-stat multiplier per rarity (design doc: +0/10/25/40%). */
 export const RARITY_MULT: Record<Rarity, number> = { R: 1, SR: 1.1, SSR: 1.25, UR: 1.4 };
 
-/** Frame colour per rarity, drawn as a separate UI layer over portraits. */
+/** Frame colour per rarity, drawn as a separate UI layer over portraits (UI preview colours). */
 export const RARITY_COLOR: Record<Rarity, number> = {
-  R: 0x72717b, // steel
-  SR: 0x8b6848, // bronze
-  SSR: 0xd6a15f, // amber
-  UR: 0x9b78a3, // violet
+  R: 0xb6adb9, // pale steel
+  SR: 0xc5a4d5, // violet
+  SSR: 0xefbc79, // gold
+  UR: 0xe19cc4, // rose
 };

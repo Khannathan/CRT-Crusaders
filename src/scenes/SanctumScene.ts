@@ -10,6 +10,7 @@ import { makeButton } from '../ui/button';
 import { CURRENCY_BAR_H, addCurrencyBar } from '../ui/currencyBar';
 import { portraitKey } from '../ui/placeholderPortrait';
 import { addTabBar } from '../ui/tabBar';
+import { PAD, addBackdrop, addBadge, addFrame, addHeading, addIcon, addScreenGlow, fade, text } from '../ui/theme';
 
 /** Home screen: currencies, your best crusader, and the tab bar. */
 export class SanctumScene extends Phaser.Scene {
@@ -18,61 +19,102 @@ export class SanctumScene extends Phaser.Scene {
   }
 
   create() {
-    this.cameras.main.setBackgroundColor(PAL.bg);
+    addScreenGlow(this);
     addCurrencyBar(this);
-    this.add.text(GAME_W / 2, CURRENCY_BAR_H + 48, 'CRT CRUSADERS', { fontFamily: FONT, fontSize: '40px', color: hex(PAL.amber) }).setOrigin(0.5);
-    this.add.text(GAME_W / 2, CURRENCY_BAR_H + 90, 'The Sanctum', { fontFamily: FONT, fontSize: '20px', color: hex(PAL.steel) }).setOrigin(0.5);
+    const top = addHeading(this, 'The Sanctum', CURRENCY_BAR_H + 16);
 
     const owned = CRUSADERS.filter((c) => game.save.owned[c.id]);
-    const cy = 400;
-    const size = 384; // 128 x 3: whole-number scaling keeps pixels crisp
+    const fw = GAME_W - PAD * 2;
+    const fh = 420;
+    const fx = GAME_W / 2;
+    const fy = top + 14 + fh / 2;
+    const bottom = fy + fh / 2;
 
     if (!owned.length) {
-      this.add.rectangle(GAME_W / 2, cy, size + 12, size + 12).setStrokeStyle(6, PAL.armorShadow);
+      addBackdrop(this, 'bg-altar', fx, fy, fw, fh, { alpha: 0.75, fade: 0.7 });
+      addFrame(this, fx, fy, fw, fh);
       this.add
-        .text(GAME_W / 2, cy, 'The Sanctum stands empty.\n\nYour first ten recruits\nawait at the Sealed Altar.', {
-          fontFamily: FONT,
-          fontSize: '22px',
-          color: hex(PAL.steel),
-          align: 'center',
-        })
-        .setOrigin(0.5);
-      makeButton(this, GAME_W / 2, cy + size / 2 + 80, 300, 80, 'Go to the altar', () => this.scene.start('Recruit'), { active: true });
+        .text(PAD + 24, bottom - 190, 'The Sanctum stands empty.', text.display(26, 0xfff1d6))
+        .setShadow(0, 2, '#000000', 9, false, true);
+      this.add.text(PAD + 24, bottom - 146, 'Your first ten recruits await\nat the Sealed Altar.', { ...text.body(20, 0xd8c2bc), fontStyle: 'italic' });
+      makeButton(this, PAD + 24 + 130, bottom - 56, 260, 64, 'Go to the altar', () => this.scene.start('Recruit'), { active: true, icon: 'seal' });
     } else {
       const featured = [...owned].sort((a, b) => RARITY_ORDER.indexOf(b.rarity) - RARITY_ORDER.indexOf(a.rarity))[0];
-      this.add.rectangle(GAME_W / 2, cy, size + 12, size + 12).setStrokeStyle(6, RARITY_COLOR[featured.rarity]);
-      this.add.image(GAME_W / 2, cy, portraitKey(featured.id)).setDisplaySize(size, size);
-      this.add.text(GAME_W / 2, cy + size / 2 + 40, featured.name, { fontFamily: FONT, fontSize: '28px', color: hex(PAL.ivory) }).setOrigin(0.5);
+      const tint = RARITY_COLOR[featured.rarity];
+      addBackdrop(this, 'bg-hall', fx, fy, fw, fh, { alpha: 0.5, fade: 0 });
+      // portrait fills the right of the card, faded into the hall on its left and bottom
+      const ps = fh;
+      this.add.image(GAME_W - PAD - ps / 2, fy, portraitKey(featured.id)).setDisplaySize(ps, ps);
+      const g = this.add.graphics();
+      const fadeW = 170;
+      const left = GAME_W - PAD - ps;
+      g.fillStyle(0x1d121c).fillRect(PAD, fy - fh / 2, left - PAD, fh);
+      for (let i = 0; i < fadeW; i += 2) g.fillStyle(0x1d121c, 1 - i / fadeW).fillRect(left + i, fy - fh / 2, 2, fh);
+      fade(this, fx, fy, fw, fh, 0.62, 0x150c15);
+      addFrame(this, fx, fy, fw, fh);
+
+      const tagY = fy - fh / 2 + 20;
+      const tag = this.add.text(PAD + 44, tagY + 5, 'Featured Crusader', text.hud(14, PAL.ivory));
+      this.add.rectangle(PAD + 18, tagY, tag.width + 40, tag.height + 10, 0x1e121c, 0.93).setOrigin(0, 0).setStrokeStyle(1, 0x715044);
+      this.children.bringToTop(tag);
+      addIcon(this, PAD + 32, tagY + 5 + tag.height / 2, 'sigil', 14, PAL.amber);
+
+      const cls = CLASSES[featured.classId].name;
+      const nameY = bottom - 170;
+      addBadge(this, PAD + 22, nameY - 40, featured.rarity, tint, 14);
+      this.add.text(PAD + 22 + 50, nameY - 38, cls, text.body(20, PAL.amber));
       this.add
-        .text(GAME_W / 2, cy + size / 2 + 76, `${featured.rarity} · ${CLASSES[featured.classId].name}`, {
-          fontFamily: FONT,
-          fontSize: '18px',
-          color: hex(RARITY_COLOR[featured.rarity]),
-        })
-        .setOrigin(0.5);
-      this.add
-        .text(GAME_W / 2, cy + size / 2 + 126, `"${featured.hook}"`, {
-          fontFamily: FONT,
-          fontSize: '17px',
-          fontStyle: 'italic',
-          color: hex(PAL.steel),
-          align: 'center',
-          wordWrap: { width: GAME_W - 80 },
-        })
-        .setOrigin(0.5);
+        .text(PAD + 22, nameY, featured.name.toUpperCase(), { ...text.display(30, 0xfff1d6), wordWrap: { width: fw - 40 } })
+        .setShadow(0, 2, '#000000', 9, false, true);
+      this.add.text(PAD + 22, nameY + 44, `\u201c${featured.hook}\u201d`, {
+        ...text.body(19, 0xd8c2bc),
+        fontStyle: 'italic',
+        wordWrap: { width: fw - 60 },
+      });
+      makeButton(this, PAD + 22 + 95, bottom - 40, 190, 50, 'View crusader', () => this.scene.start('Roster'), {
+        active: true,
+        fontSize: 19,
+        icon: 'book',
+      });
     }
 
-    // Prototype-only: wipe the save to replay the first-time flow.
-    makeButton(this, 96, GAME_H - 128, 168, 52, 'Settings', () => this.showSettings(), { fontSize: 18 });
-    makeButton(this, GAME_W - 96, GAME_H - 128, 168, 52, 'Reset save', () => this.confirmReset(), { fontSize: 18 });
+    // Two destination cards, as in the preview
+    const dh = 150;
+    const dw = (fw - 12) / 2;
+    const dy = bottom + 14 + dh / 2;
+    const dest = (x: number, art: string, eyebrow: string, title: string, label: string, to: string) => {
+      addBackdrop(this, art, x, dy, dw, dh, { alpha: 0.85, fade: 0.85, fadeColor: 0x140e16 });
+      addFrame(this, x, dy, dw, dh, { edge: PAL.armorShadow, ticks: false });
+      this.add.text(x - dw / 2 + 12, dy - dh / 2 + 12, eyebrow, text.hud(12, PAL.amber));
+      this.add.text(x - dw / 2 + 12, dy - dh / 2 + 30, title, { ...text.display(17, PAL.ivory), wordWrap: { width: dw - 20 } });
+      makeButton(this, x - dw / 2 + 12 + 70, dy + dh / 2 - 30, 140, 42, label, () => this.scene.start(to), { fontSize: 18 });
+    };
+    const firstClear = !game.save.cleared.length;
+    dest(PAD + dw / 2, 'bg-hall', 'CRUSADE', 'The Drowned\nOssuary', firstClear ? 'Begin' : 'View crusade', 'Crusade');
+    dest(GAME_W - PAD - dw / 2, 'bg-altar', 'RECRUITMENT', 'The Sealed\nAltar', 'Visit altar', 'Recruit');
+
+    // Prototype-only: settings, and wiping the save to replay the first-time flow.
+    const linkY = dy + dh / 2 + 34;
+    this.textLink(PAD + 4, linkY, 'Settings', () => this.showSettings());
+    this.textLink(GAME_W - PAD - 4, linkY, 'Reset save', () => this.confirmReset(), 1);
 
     addTabBar(this, 'Sanctum');
+  }
+
+  /** The preview's underlined gold text button. */
+  private textLink(x: number, y: number, label: string, onTap: () => void, originX = 0) {
+    const t = this.add.text(x, y, label, text.body(20, PAL.amber)).setOrigin(originX, 0.5);
+    const line = this.add.rectangle(t.x - t.width * originX, y + 13, t.width, 1, 0x926642).setOrigin(0, 0.5);
+    t.setInteractive({ useHandCursor: true, hitArea: new Phaser.Geom.Rectangle(-10, -14, t.width + 20, t.height + 28), hitAreaCallback: Phaser.Geom.Rectangle.Contains });
+    t.on('pointerup', onTap);
+    return [t, line];
   }
 
   private confirmReset() {
     const layer = this.add.container(0, 0).setDepth(20);
     const style = { fontFamily: FONT, color: hex(PAL.ivory), align: 'center' };
-    layer.add(this.add.rectangle(GAME_W / 2, GAME_H / 2, GAME_W, GAME_H, 0x000000, 0.94).setInteractive());
+    layer.add(this.add.rectangle(GAME_W / 2, GAME_H / 2, GAME_W, GAME_H, 0x09060b, 0.9).setInteractive());
+    layer.add(addFrame(this, GAME_W / 2, 480, GAME_W - 40, 440, { fill: 0x241925 }));
     layer.add(
       this.add
         .text(GAME_W / 2, 360, 'Erase all progress?\n\nRecruits, Seals, Tithes and\ncrusade progress will be lost.', { ...style, fontSize: '22px' })
@@ -83,7 +125,7 @@ export class SanctumScene extends Phaser.Scene {
       this.scene.restart();
     }, { active: true });
     const no = makeButton(this, GAME_W / 2, 620, 300, 76, 'Keep my progress', () => layer.destroy());
-    layer.add([yes.box, yes.text, no.box, no.text]);
+    layer.add([...yes.all, ...no.all]);
   }
 
   private showSettings() {
@@ -91,8 +133,9 @@ export class SanctumScene extends Phaser.Scene {
     const style = { fontFamily: FONT, color: hex(PAL.ivory), align: 'center' };
     const draw = () => {
       layer.removeAll(true);
-      layer.add(this.add.rectangle(GAME_W / 2, GAME_H / 2, GAME_W, GAME_H, 0x000000, 0.9).setInteractive());
-      layer.add(this.add.text(GAME_W / 2, 200, 'Settings', { ...style, fontSize: '30px', color: hex(PAL.amber) }).setOrigin(0.5));
+      layer.add(this.add.rectangle(GAME_W / 2, GAME_H / 2, GAME_W, GAME_H, 0x09060b, 0.88).setInteractive());
+      layer.add(addFrame(this, GAME_W / 2, 460, GAME_W - 40, 640, { fill: 0x241925 }));
+      layer.add(this.add.text(GAME_W / 2, 200, 'Settings', text.display(30, PAL.amber)).setOrigin(0.5));
       layer.add(this.add.text(GAME_W / 2, 280, 'CRT screen effect', { ...style, fontSize: '22px' }).setOrigin(0.5));
       const toggle = (on: boolean) => () => {
         settings.crt = on;
@@ -102,7 +145,7 @@ export class SanctumScene extends Phaser.Scene {
       };
       for (const [i, on] of [true, false].entries()) {
         const b = makeButton(this, GAME_W / 2 + (i ? 90 : -90), 340, 160, 64, on ? 'On' : 'Off', toggle(on), { active: settings.crt === on });
-        layer.add([b.box, b.text]);
+        layer.add(b.all);
       }
       layer.add(this.add.text(GAME_W / 2, 430, 'Strength', { ...style, fontSize: '22px', color: hex(settings.crt ? PAL.ivory : PAL.steel) }).setOrigin(0.5));
       const levels: [string, number][] = [['Subtle', 0.35], ['Standard', 0.6], ['Heavy', 1]];
@@ -122,7 +165,7 @@ export class SanctumScene extends Phaser.Scene {
           },
           { active: settings.crt && settings.crtStrength === v, disabled: !settings.crt, fontSize: 19 },
         );
-        layer.add([b.box, b.text]);
+        layer.add(b.all);
       });
       layer.add(
         this.add
@@ -130,7 +173,7 @@ export class SanctumScene extends Phaser.Scene {
           .setOrigin(0.5),
       );
       const close = makeButton(this, GAME_W / 2, 720, 240, 72, 'Done', () => layer.destroy());
-      layer.add([close.box, close.text]);
+      layer.add(close.all);
     };
     draw();
   }
