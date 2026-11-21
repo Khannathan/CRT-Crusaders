@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import { FONT, HUD_FONT, PAL, hex } from '../config';
+import { type SkinKey, hasSkin, nine } from './skin';
 
 export interface ButtonOpts {
   /** Primary style: wine fill with a gold edge. */
@@ -8,6 +9,11 @@ export interface ButtonOpts {
   fontSize?: number;
   /** Optional pixel icon (ui-<name>) drawn left of the label. */
   icon?: string;
+  /**
+   * Skin family, e.g. 'ui-subtab': uses ui-subtab.png, or ui-subtab-active.png when
+   * active (each with an optional -pressed). Falls back to the normal button skins.
+   */
+  skin?: string;
 }
 
 /**
@@ -31,8 +37,26 @@ export function makeButton(
     .rectangle(x, y, w, h, fill)
     .setStrokeStyle(opts.active ? 2 : 1, opts.active ? PAL.goldEdge : PAL.buttonEdge)
     .setAlpha(alpha);
+  // Skinned (ui-button*.png in src/assets/ui): the art is drawn and the box only takes taps.
+  const family = opts.skin && hasSkin(scene, opts.active ? `${opts.skin}-active` : opts.skin) ? opts.skin : undefined;
+  const skinKey: SkinKey = family ? (opts.active ? `${family}-active` : family) : opts.active ? 'ui-button-primary' : 'ui-button';
+  const pressKey: SkinKey = `${skinKey}-pressed`;
+  const skin = nine(scene, skinKey, x, y, w, h);
+  const skinDown = skin && hasSkin(scene, pressKey) ? nine(scene, pressKey, x, y, w, h)!.setVisible(false) : null;
+  if (skin) {
+    box.setFillStyle(0x000000, 0.001).setStrokeStyle();
+    skin.setAlpha(alpha);
+  }
   // inner wine line on primary buttons, like the preview's inset shadow
-  const inner = scene.add.rectangle(x, y, w - 6, h - 6).setStrokeStyle(2, opts.active ? 0x491e2b : fill).setAlpha(alpha);
+  const inner = skin ?? scene.add.rectangle(x, y, w - 6, h - 6).setStrokeStyle(2, opts.active ? 0x491e2b : fill).setAlpha(alpha);
+  const pressed = (down: boolean) => {
+    if (!skin) return box.setFillStyle(down ? press : fill);
+    if (skinDown) {
+      skinDown.setVisible(down);
+      skin.setVisible(!down);
+    } else if (down) skin.setTint(0xbbbbbb);
+    else skin.clearTint();
+  };
 
   // Exactly two lines: big label + small gold sub-line. Anything else stays one block.
   const lines = label.split('\n');
@@ -42,7 +66,7 @@ export function makeButton(
     .text(0, 0, main, { fontFamily: FONT, fontSize: `${size}px`, fontStyle: '600', color: hex(opts.active ? 0xffe9c9 : PAL.ivory), align: 'center' })
     .setOrigin(0.5)
     .setAlpha(alpha);
-  const parts: Phaser.GameObjects.GameObject[] = [];
+  const parts: Phaser.GameObjects.GameObject[] = skinDown ? [skinDown] : [];
   let subText: Phaser.GameObjects.Text | undefined;
   if (sub) {
     subText = scene.add
@@ -68,10 +92,10 @@ export function makeButton(
 
   if (!opts.disabled) {
     box.setInteractive({ useHandCursor: true });
-    box.on('pointerdown', () => box.setFillStyle(press));
-    box.on('pointerout', () => box.setFillStyle(fill));
+    box.on('pointerdown', () => pressed(true));
+    box.on('pointerout', () => pressed(false));
     box.on('pointerup', () => {
-      box.setFillStyle(fill);
+      pressed(false);
       onTap();
     });
   }

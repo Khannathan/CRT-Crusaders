@@ -30,6 +30,7 @@ import { MAX_LEVEL, levelUpCost, sisterStats, vowCost } from '../systems/stats';
 import { makeButton } from '../ui/button';
 import { CURRENCY_BAR_H, addCurrencyBar } from '../ui/currencyBar';
 import { portraitKey } from '../ui/placeholderPortrait';
+import { nine } from '../ui/skin';
 import { addTabBar } from '../ui/tabBar';
 import { PAD, addBackdrop, addBadge, addFrame, addHeading, addIcon, addScreenGlow, text } from '../ui/theme';
 
@@ -77,7 +78,10 @@ export class RosterScene extends Phaser.Scene {
       const x = left + cw / 2;
       const have = owned[c.id];
       const tint = RARITY_COLOR[c.rarity];
-      const card = this.add.rectangle(x, topY + ch / 2, cw, ch, have ? 0x1e1620 : 0x151017).setStrokeStyle(1, PAL.armorShadow);
+      // ui-card.png skins the card behind each Sister (the portrait covers its top)
+      if (!nine(this, 'ui-card', x, topY + ch / 2, cw, ch)) {
+        this.add.rectangle(x, topY + ch / 2, cw, ch, have ? 0x1e1620 : 0x151017).setStrokeStyle(1, PAL.armorShadow);
+      }
       if (have) {
         addBackdrop(this, portraitKey(c.id), x, topY + ph / 2, cw, ph, { fade: 0, focusY: 0.3 });
         this.add.rectangle(x, topY + ph, cw, 1, tint);
@@ -97,10 +101,9 @@ export class RosterScene extends Phaser.Scene {
         this.add.text(left + 8, topY + ph + 5, 'Unknown', { ...text.body(19, PAL.muted), fontStyle: '600' });
         this.add.text(left + 8, topY + ph + 28, 'UNSWORN', text.hud(12, PAL.steel));
       }
-      card.setInteractive({ useHandCursor: true });
-      this.children.bringToTop(card);
-      card.setFillStyle(0x000000, 0.001);
-      card.on('pointerup', () => this.showDetail(c));
+      // tap target on top of the whole card
+      const hit = this.add.rectangle(x, topY + ch / 2, cw, ch, 0x000000, 0.001).setInteractive({ useHandCursor: true });
+      hit.on('pointerup', () => this.showDetail(c));
     });
 
     addTabBar(this, 'Roster');
@@ -152,7 +155,7 @@ export class RosterScene extends Phaser.Scene {
     ];
     const tw = (GAME_W - 60) / 3;
     tabs.forEach(([id, label], i) => {
-      const b = makeButton(this, 30 + tw / 2 + i * tw, 346, tw - 8, 46, label, () => id !== tab && this.reopen(c, id), { active: id === tab, fontSize: 18 });
+      const b = makeButton(this, 30 + tw / 2 + i * tw, 346, tw - 8, 46, label, () => id !== tab && this.reopen(c, id), { active: id === tab, fontSize: 18, skin: 'ui-subtab' });
       layer.add(b.all);
     });
 
@@ -179,7 +182,16 @@ export class RosterScene extends Phaser.Scene {
     for (let v = 0; v < MAX_VOW; v++) {
       const taken = v < have.vow;
       const ready = !taken && v < have.vow + tokens;
-      layer.add(this.add.circle(GAME_W / 2 - 50 + v * 40, 484, 12, taken ? PAL.oxblood : PAL.deepShadow).setStrokeStyle(2, taken || ready ? PAL.amber : PAL.armorShadow));
+      const px = GAME_W / 2 - 50 + v * 40;
+      // ui-pip.png (empty) and ui-pip-full.png (taken), shown at 24 x 24, when present
+      const pipKey = taken ? 'ui-pip-full' : 'ui-pip';
+      if (this.textures.exists(pipKey)) {
+        const pip = this.add.image(px, 484, pipKey).setDisplaySize(24, 24);
+        if (ready) pip.setTint(PAL.amber);
+        layer.add(pip);
+      } else {
+        layer.add(this.add.circle(px, 484, 12, taken ? PAL.oxblood : PAL.deepShadow).setStrokeStyle(2, taken || ready ? PAL.amber : PAL.armorShadow));
+      }
       if (ready) this.tweens.add({ targets: layer.list[layer.list.length - 1], alpha: 0.4, duration: 600, yoyo: true, repeat: -1 });
     }
     const tokenLine = tokens
@@ -275,7 +287,9 @@ export class RosterScene extends Phaser.Scene {
       const y = 438 + i * 122;
       const item = worn.find((g) => g.slot === slot);
       const edge = item ? RARITY_COLOR[item.rarity] : PAL.armorShadow;
-      layer.add(this.add.rectangle(GAME_W / 2, y, bw, 112, 0x1b131d).setStrokeStyle(1, edge));
+      // ui-gear-slot.png (9-slice row, tinted by the worn piece's rarity) when present
+      const row = nine(this, 'ui-gear-slot', GAME_W / 2, y, bw, 112);
+      layer.add(row ? row.setTint(item ? edge : 0xffffff) : this.add.rectangle(GAME_W / 2, y, bw, 112, 0x1b131d).setStrokeStyle(1, edge));
       layer.add(this.add.text(left, y - 46, `${SLOT_NAME[slot].toUpperCase()} · ${SLOT_HINT[slot].toUpperCase()}`, text.hud(12, PAL.steel)));
       if (item) {
         layer.add([

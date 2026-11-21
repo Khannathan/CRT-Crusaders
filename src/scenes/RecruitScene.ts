@@ -11,7 +11,7 @@ import { makeButton } from '../ui/button';
 import { CURRENCY_BAR_H, addCurrencyBar } from '../ui/currencyBar';
 import { portraitKey } from '../ui/placeholderPortrait';
 import { TAB_BAR_H, addTabBar } from '../ui/tabBar';
-import { PAD, addBackdrop, addBadge, addFrame, addHeading, addScreenGlow, text } from '../ui/theme';
+import { PAD, addBackdrop, addBadge, addFrame, addHeading, addPanel, addScreenGlow, text } from '../ui/theme';
 
 /** The Sealed Altar: rates, pity counter, and the pull buttons. */
 export class RecruitScene extends Phaser.Scene {
@@ -44,8 +44,14 @@ export class RecruitScene extends Phaser.Scene {
       commit();
       this.scene.restart();
     };
-    makeButton(this, PAD + 34, bTop + 46, 48, 56, '‹', () => step(-1), { fontSize: 26 });
-    makeButton(this, GAME_W - PAD - 34, bTop + 46, 48, 56, '›', () => step(1), { fontSize: 26 });
+    // ui-arrow.png (pointing right; flipped for left) replaces the ‹ › labels when present
+    const arrow = this.textures.exists('ui-arrow');
+    makeButton(this, PAD + 34, bTop + 46, 48, 56, arrow ? '' : '‹', () => step(-1), { fontSize: 26 });
+    makeButton(this, GAME_W - PAD - 34, bTop + 46, 48, 56, arrow ? '' : '›', () => step(1), { fontSize: 26 });
+    if (arrow) {
+      this.add.image(PAD + 34, bTop + 46, 'ui-arrow').setDisplaySize(24, 24).setFlipX(true);
+      this.add.image(GAME_W - PAD - 34, bTop + 46, 'ui-arrow').setDisplaySize(24, 24);
+    }
     this.add.image(GAME_W / 2, bTop + 34, sigilKey(ord.id)).setDisplaySize(44, 44);
     this.add.text(GAME_W / 2, bTop + 72, ord.name.toUpperCase(), text.display(22, 0xfff1d6)).setOrigin(0.5).setShadow(0, 2, '#000000', 8, false, true);
     this.add
@@ -80,7 +86,7 @@ export class RecruitScene extends Phaser.Scene {
     const pw = GAME_W - PAD * 2;
     let y = by + bh / 2 + 10;
     const poolH = 112;
-    this.add.rectangle(GAME_W / 2, y + poolH / 2, pw, poolH, PAL.deepShadow).setStrokeStyle(1, PAL.armorShadow);
+    addPanel(this, GAME_W / 2 - pw / 2, y, pw, poolH);
     const target = CRUSADERS.find((c) => c.id === banner.target)!;
     this.add
       .text(px + 16, y + 12, s.urGuaranteed ? `Next UR is ${target.name.split(' ')[0]}, sworn.` : `A UR here is ${target.name.split(' ')[0]} half the time,`, text.body(19, PAL.ivory))
@@ -93,7 +99,7 @@ export class RecruitScene extends Phaser.Scene {
     // Offer panel
     y += poolH + 8;
     const offerH = GAME_H - TAB_BAR_H - 10 - y;
-    this.add.rectangle(GAME_W / 2, y + offerH / 2, pw, offerH, PAL.deepShadow).setStrokeStyle(1, PAL.armorShadow);
+    addPanel(this, GAME_W / 2 - pw / 2, y, pw, offerH);
     this.add.text(px + 16, y + 8, 'Ten oaths always bring an SR or better.', text.body(18, PAL.muted));
     const btnY = y + offerH - 50;
     const half = (pw - 32 - 10) / 2;
