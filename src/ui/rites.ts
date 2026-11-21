@@ -38,12 +38,14 @@ export function drawRites(scene: Phaser.Scene, save: SaveData, top: number): num
     const x = PAD + w / 2 + (i % cols) * (w + gap);
     const y = top + h / 2 + Math.floor(i / cols) * (h + gap);
     if (!unlocked(save, r.rank)) {
-      makeButton(scene, x, y, w, h, `${r.label}\nRANK ${ROMAN_RANK(r.rank)}`, () => scene.scene.start('Rank'), { fontSize: 17, icon: 'lock', disabled: true });
+      makeButton(scene, x, y, w, h, `${r.label}\nRANK ${ROMAN_RANK(r.rank)}`, () => scene.scene.start('Rank'), { fontSize: 17, icon: 'lock', disabled: true, skin: 'ui-rite-tile' });
       return;
     }
-    makeButton(scene, x, y, w, h, r.label, () => scene.scene.start(r.scene, {}), { fontSize: 18, icon: r.icon });
+    // ui-rite-tile.png skins each tile; ui-ready-dot.png marks one with something to claim
+    makeButton(scene, x, y, w, h, r.label, () => scene.scene.start(r.scene, {}), { fontSize: 18, icon: r.icon, skin: 'ui-rite-tile' });
     if (r.ready?.(save)) {
-      scene.add.circle(x + w / 2 - 10, y - h / 2 + 10, 6, PAL.amber).setStrokeStyle(2, 0x1b121c);
+      if (scene.textures.exists('ui-ready-dot')) scene.add.image(x + w / 2 - 10, y - h / 2 + 10, 'ui-ready-dot').setDisplaySize(16, 16);
+      else scene.add.circle(x + w / 2 - 10, y - h / 2 + 10, 6, PAL.amber).setStrokeStyle(2, 0x1b121c);
     }
   });
   return top + Math.ceil(RITES.length / cols) * (h + gap) - gap;

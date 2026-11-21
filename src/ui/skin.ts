@@ -29,6 +29,8 @@ export const SKINS = {
   'ui-turn-frame': 8,
   'ui-bar-frame': 4,
   'ui-gear-slot': 14,
+  'ui-rite-tile': 16,
+  'ui-button-disabled': 16,
 } as Record<string, number>;
 
 export type SkinKey = string;

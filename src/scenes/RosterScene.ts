@@ -100,7 +100,11 @@ export class RosterScene extends Phaser.Scene {
         this.add.text(left + 8, topY + ph + 28, `LV ${have.level}${have.vow ? `  VOW ${have.vow}` : ''}`, text.hud(12, PAL.muted));
         // class-<id>.png beside the name when present
         addArt(this, `class-${c.classId}`, left + cw - 18, topY + ph + 23, 24);
-        if (have.tokens) addBadge(this, left + cw - 40, topY + ph - 26, `+${have.tokens}`, PAL.amber, 12);
+        if (have.tokens) {
+          addBadge(this, left + cw - 40, topY + ph - 26, `+${have.tokens}`, PAL.amber, 12);
+          // ui-vow.png beside the waiting-token count when present
+          addArt(this, 'ui-vow', left + cw - 52, topY + ph - 15, 20);
+        }
       } else {
         const g = this.add.graphics();
         for (let r = 8; r > 0; r--) g.fillStyle(0x291c2b, 0.16).fillCircle(x, topY + ph / 2, (r / 8) * 80);
@@ -276,7 +280,16 @@ export class RosterScene extends Phaser.Scene {
     const perks = VOW_UPGRADES.map(([v, i]) => `${have.vow >= v ? '✓ ' : ''}Vow ${v}: ${skills[i].name}+`).join('  ·  ');
     const order = ORDERS[c.order]?.tiers[0];
     layer.add([
-      this.add.text(GAME_W / 2, 516, tokenLine, { ...style, fontSize: '16px', color: hex(tokens ? PAL.amber : PAL.muted) }).setOrigin(0.5),
+      ...(() => {
+        const line = this.add.text(GAME_W / 2, 516, tokenLine, { ...style, fontSize: '16px', color: hex(tokens ? PAL.amber : PAL.muted) }).setOrigin(0.5);
+        // ui-vow.png before the line when tokens are waiting
+        const icon = tokens ? addArt(this, 'ui-vow', 0, 516, 20) : null;
+        if (icon) {
+          line.setX(GAME_W / 2 + 13);
+          icon.setX(line.x - line.width / 2 - 13);
+        }
+        return icon ? [icon, line] : [line];
+      })(),
       this.add.text(GAME_W / 2, 548, perks, { ...style, fontSize: '15px', color: hex(PAL.amber), wordWrap: { width: GAME_W - 70 } }).setOrigin(0.5),
       ...(order ? [this.add.text(GAME_W / 2, 590, `With another ${c.order}: ${order.desc}`, { ...style, fontSize: '15px', color: hex(PAL.muted) }).setOrigin(0.5)] : []),
       this.add.text(GAME_W / 2, 636, cls.summary, { ...style, fontSize: '18px' }).setOrigin(0.5),

@@ -39,13 +39,15 @@ export function makeButton(
     .setAlpha(alpha);
   // Skinned (ui-button*.png in src/assets/ui): the art is drawn and the box only takes taps.
   const family = opts.skin && hasSkin(scene, opts.active ? `${opts.skin}-active` : opts.skin) ? opts.skin : undefined;
-  const skinKey: SkinKey = family ? (opts.active ? `${family}-active` : family) : opts.active ? 'ui-button-primary' : 'ui-button';
+  // ui-button-disabled.png replaces the faded look on disabled buttons when present
+  const disabledSkin = opts.disabled && hasSkin(scene, 'ui-button-disabled');
+  const skinKey: SkinKey = disabledSkin ? 'ui-button-disabled' : family ? (opts.active ? `${family}-active` : family) : opts.active ? 'ui-button-primary' : 'ui-button';
   const pressKey: SkinKey = `${skinKey}-pressed`;
   const skin = nine(scene, skinKey, x, y, w, h);
   const skinDown = skin && hasSkin(scene, pressKey) ? nine(scene, pressKey, x, y, w, h)!.setVisible(false) : null;
   if (skin) {
     box.setFillStyle(0x000000, 0.001).setStrokeStyle();
-    skin.setAlpha(alpha);
+    skin.setAlpha(disabledSkin ? 1 : alpha);
   }
   // inner wine line on primary buttons, like the preview's inset shadow
   const inner = skin ?? scene.add.rectangle(x, y, w - 6, h - 6).setStrokeStyle(2, opts.active ? 0x491e2b : fill).setAlpha(alpha);
