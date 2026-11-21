@@ -58,7 +58,9 @@ Order art: `src/assets/ui/banner-<order id>.webp` is the banner backdrop on the 
 - **Orders:** 50 Sisters across 10 Orders (`src/data/orders.ts`), five per Order with two URs each. Two Sisters of the same Order in a party turn on a bonus, and three turn on a stronger one, shown on the Muster screen and each Sister's Roster card.
 - **Order banners:** the Sealed Altar runs one banner per Order (‹ › to switch). Tap one of the Order's two URs to target it. A UR pull is the target half the time, and the next UR after a miss is always the target. Half of SSR pulls come from the banner's Order. Rules are in `src/systems/gacha.ts`.
 - **Passives:** SSR and UR Sisters carry a passive (lifesteal, thorns, bulwark, martyr, plague and more), listed in `src/data/crusaders.ts` and run in `src/systems/combat.ts`.
-- **Vow upgrades:** duplicate pulls upgrade skills at Vow 2 (first skill), Vow 4 (second skill) and Vow 5 (the Rite), for +25% effect and one less turn of cooldown. An upgraded skill shows a + on its name.
+- **Vows (merging copies):** a duplicate pull gives that Sister a Vow token. On her Roster page (Oath tab), **Take Vow** spends a token and Tithes for a permanent Vow: +5% stats each, and skill upgrades at Vow 2 (first skill), Vow 4 (second skill) and Vow 5 (the Rite) for +25% effect and one less turn of cooldown. Copies past five pay Tithes instead.
+- **Skills page:** the Skills tab lists her three skills and Rite with ranks, cooldowns and Vow upgrades, plus her passive.
+- **Gear:** three slots (Blade, Habit, Rosary). Each piece has a rarity (R to UR), a main stat and up to three substats. Enhance to +10 with Tithes (substats grow at +3, +6 and +9), or melt spare pieces for Tithes. Fights sometimes drop gear, elites always drop one and bosses two, with better odds in harder crypts and Heresy. Gear found is lost on defeat. Rules are in `src/systems/gear.ts`.
 
 ## Layout
 

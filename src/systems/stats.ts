@@ -1,6 +1,7 @@
 import { RARITY_MULT } from '../data/classes';
 import type { CrusaderDef } from '../data/types';
-import type { OwnedCrusader } from '../state/save';
+import type { OwnedCrusader, SaveData } from '../state/save';
+import { equipped, gearBonus, type GearItem } from './gear';
 
 export interface Stats {
   hp: number;
@@ -27,14 +28,22 @@ export const VOW_BONUS = 0.05;
 
 export const levelUpCost = (level: number) => 50 * level;
 
-export function statsFor(c: CrusaderDef, owned: OwnedCrusader): Stats {
+/** A Sister's stats from rarity, level, Vows and (optionally) the gear she wears. */
+export function statsFor(c: CrusaderDef, owned: OwnedCrusader, gear: GearItem[] = []): Stats {
   const base = CLASS_BASE[c.classId];
   const mult = RARITY_MULT[c.rarity] * (1 + 0.08 * (owned.level - 1)) * (1 + VOW_BONUS * owned.vow);
+  const g = gearBonus(gear);
   return {
-    hp: Math.round(base.hp * mult),
-    atk: Math.round(base.atk * mult),
-    armor: Math.round(base.armor * mult),
-    spd: base.spd, // speed is fixed per class so turn order stays readable
-    crit: base.crit,
+    hp: Math.round(base.hp * mult * (1 + g.hpPct)),
+    atk: Math.round(base.atk * mult * (1 + g.atkPct)),
+    armor: Math.round(base.armor * mult * (1 + g.armorPct)),
+    spd: base.spd + Math.round(g.spd), // class speed plus gear, so turn order stays readable
+    crit: Math.min(1, base.crit + g.crit),
   };
 }
+
+/** Stats with her equipped gear. */
+export const sisterStats = (save: SaveData, c: CrusaderDef) => statsFor(c, save.owned[c.id], equipped(save, c.id));
+
+/** Tithes to take the next Vow. */
+export const vowCost = (vow: number) => 150 * (vow + 1);
