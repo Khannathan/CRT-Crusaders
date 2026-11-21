@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 import { FONT, GAME_H, GAME_W, PAL, hex } from '../config';
 import { CRUSADERS } from '../data/crusaders';
 import { makeEffectTextures } from '../ui/effects';
+import { makeEnemyTextures } from '../ui/enemyArt';
 import { makePlaceholderPortrait, portraitKey } from '../ui/placeholderPortrait';
 
 /**
@@ -35,6 +36,7 @@ export class BootScene extends Phaser.Scene {
       else makePlaceholderPortrait(this, c);
     }
     makeEffectTextures(this);
+    makeEnemyTextures(this);
     this.scene.start('Sanctum');
   }
 }
