@@ -23,7 +23,7 @@ export interface Intent {
   targetUid?: string;
 }
 
-export type IntentKind = 'attack' | 'aoe' | 'debuff' | 'summon' | 'charge';
+export type IntentKind = 'attack' | 'aoe' | 'debuff' | 'summon' | 'charge' | 'buff';
 
 export interface IntentView {
   kind: IntentKind;
@@ -86,7 +86,7 @@ export interface TurnStart {
 }
 
 /** Bump when combat numbers change, so logged runs can be compared fairly. */
-export const BALANCE_VERSION = '0.4';
+export const BALANCE_VERSION = '0.5';
 /** Execute skills hit harder below this share of max HP. */
 export const EXECUTE_AT = 0.3;
 
@@ -224,6 +224,8 @@ export class Battle {
     if (skill.rite && this.zeal < ZEAL_MAX) return false;
     if (skill.from.length && !skill.from.includes(actor.rank)) return false;
     if (skill.summon && this.alive('enemy').length >= 4) return false;
+    // Enemy healers only mend when someone is actually hurt.
+    if (actor.side === 'enemy' && skill.heal && !this.alive(actor.side).some((u) => u.hp < u.maxHp * 0.85)) return false;
     return this.validTargets(actor, skill).length > 0;
   }
 
@@ -347,6 +349,11 @@ export class Battle {
           events.push({ type: 'status', uid: o.uid, label: 'Infected' });
         }
       }
+      if (skill.pull && t.rank > 1) {
+        for (const o of this.alive(t.side)) if (o.rank < t.rank) o.rank += 1;
+        t.rank = 1;
+        events.push({ type: 'status', uid: t.uid, label: 'Dragged forward' }, { type: 'move', uid: t.uid });
+      }
       if (skill.empower && skill.empowerTarget) {
         t.status.empower = { ...skill.empower };
         events.push({ type: 'status', uid: t.uid, label: 'Empowered' });
@@ -384,6 +391,7 @@ export class Battle {
       actor.status.empower = { ...skill.empower };
       events.push({ type: 'status', uid: actor.uid, label: 'Empowered' });
     }
+    if (actor.side === 'enemy' && skill.zealDrain) this.addZeal(-skill.zealDrain, events, skill.name);
     if (actor.side === 'party') {
       if (skill.zealGain) this.addZeal(skill.zealGain, events, skill.name);
       // One award per action (the larger one); Rites earn nothing.
@@ -462,6 +470,11 @@ export class Battle {
     if (!skill) return undefined;
     const charging = !!actor.status.charging;
     if (skill.summon) return { kind: 'summon', skill, targets: [], estimate: 0, charging };
+    if (skill.target === 'self' || skill.target === 'ally' || skill.target === 'allAllies') {
+      const friends = skill.target === 'self' ? [actor] : skill.target === 'allAllies' ? this.alive(actor.side) : this.validTargets(actor, skill).filter((u) => u.uid === actor.intent!.targetUid);
+      const amount = skill.heal ? this.attackOf(actor) * skill.heal : skill.shieldPct && friends[0] ? friends[0].maxHp * skill.shieldPct : 0;
+      return { kind: 'buff', skill, targets: friends, estimate: Math.round(amount), charging };
+    }
     let targets: Unit[];
     if (skill.target === 'allEnemies') targets = this.alive('party');
     else {
@@ -574,6 +587,12 @@ export class Battle {
     events.push({ type: 'death', uid: u.uid });
     this.queue = this.queue.filter((id) => id !== u.uid);
     this.compact(u.side);
+    const burst = u.side === 'enemy' ? ENEMIES[u.ref].burst : undefined;
+    if (burst) {
+      events.push({ type: 'text', text: `${u.name} bursts!` });
+      const blast: SkillDef = { id: 'burst', name: 'Burst', desc: '', from: [], target: 'allEnemies', mult: burst };
+      for (const t of this.alive('party')) this.hit(u, t, blast, events);
+    }
   }
 
   /** Living units close ranks toward the front. */
@@ -612,7 +631,7 @@ export class Battle {
 }
 
 /** Enemy HP and attack scale, tuned with balance.test.ts against the Auto player. */
-export const ENEMY_TUNE = 1.15;
+export const ENEMY_TUNE = 1.18;
 export function makeEnemy(type: string, uid: string, rank: number): Unit {
   const d = ENEMIES[type];
   const hp = Math.round(d.hp * ENEMY_TUNE);

@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 import { FONT, GAME_W, PAL, hex } from '../config';
 import { RARITY_COLOR } from '../data/classes';
 import { CRUSADERS } from '../data/crusaders';
+import { ENEMIES } from '../data/enemies';
 import type { SkillDef } from '../data/skills';
 import { commit, game } from '../state/game';
 import { saveSettings, settings } from '../state/settings';
@@ -9,7 +10,7 @@ import { autoChoose } from '../systems/autoplay';
 import { makeButton } from '../ui/button';
 import { current } from '../state/run';
 import { BALANCE_VERSION, Battle, ZEAL_MAX, skillsFor, type BattleEvent, type Unit } from '../systems/combat';
-import { absorbBattle, currentRoom, finishRun, makeBattle, winRoom } from '../systems/crusade';
+import { absorbBattle, currentNode, finishRun, makeBattle, winRoom } from '../systems/crusade';
 import { newSeed, seeded } from '../systems/rng';
 import { enemyKey } from '../ui/enemyArt';
 import { intentIconKey } from '../ui/icons';
@@ -65,12 +66,12 @@ export class BattleScene extends Phaser.Scene {
 
   create() {
     const run = current.run;
-    const room = run && currentRoom(run);
-    if (!run || !room || room.kind === 'choice' && !run.sideFight) {
+    const node = run && currentNode(run);
+    if (!run || !node?.encounter) {
       this.scene.start('Crypt');
       return;
     }
-    const encounter = room.kind === 'choice' ? 'ossuary-side' : room.encounter;
+    const encounter = node.encounter;
     // Seeded so a reported fight can be replayed exactly (see window.__crtLastBattle).
     const seed = newSeed();
     this.battle = makeBattle(game.save, run, encounter, seeded(seed));
@@ -84,27 +85,27 @@ export class BattleScene extends Phaser.Scene {
 
     this.cameras.main.setBackgroundColor(0x0e0d11);
     const style = { fontFamily: FONT, color: hex(PAL.ivory) };
-    this.roundText = this.add.text(16, 24, '', { ...style, fontSize: '18px', color: hex(PAL.steel) }).setOrigin(0, 0.5);
+    this.roundText = this.add.text(16, 24, '', { ...style, fontSize: '22px', color: hex(PAL.steel) }).setOrigin(0, 0.5);
     this.applySpeed();
     this.drawToggles();
     this.candle = this.add.graphics();
-    this.add.text(GAME_W - 52, 24, 'Vigil', { ...style, fontSize: '14px', color: hex(PAL.steel) }).setOrigin(1, 0.5);
+    this.add.text(GAME_W - 52, 24, 'Vigil', { ...style, fontSize: '17px', color: hex(PAL.steel) }).setOrigin(1, 0.5);
 
     for (let i = 0; i < 4; i++) {
       // Enemy rank numerals sit in the card corner, leaving the space above for intents.
-      this.add.text(slotX(i + 1) - CARD / 2 + 4, ENEMY_Y - CARD / 2 + 2, ROMAN[i], { ...style, fontSize: '14px', color: hex(PAL.steel) }).setDepth(5);
-      this.add.text(slotX(i + 1), PARTY_Y - 84, ROMAN[i], { ...style, fontSize: '14px', color: hex(PAL.armorShadow) }).setOrigin(0.5);
+      this.add.text(slotX(i + 1) - CARD / 2 + 4, ENEMY_Y - CARD / 2 + 2, ROMAN[i], { ...style, fontSize: '17px', color: hex(PAL.steel) }).setDepth(5);
+      this.add.text(slotX(i + 1), PARTY_Y - 84, ROMAN[i], { ...style, fontSize: '17px', color: hex(PAL.armorShadow) }).setOrigin(0.5);
     }
 
     this.logText = this.add
-      .text(GAME_W / 2, 405, '', { ...style, fontSize: '18px', align: 'center', wordWrap: { width: GAME_W - 40 } })
+      .text(GAME_W / 2, 405, '', { ...style, fontSize: '22px', align: 'center', wordWrap: { width: GAME_W - 40 } })
       .setOrigin(0.5);
     this.add.rectangle(GAME_W / 2, 455, 404, 18, PAL.deepShadow).setStrokeStyle(2, PAL.armorShadow);
     this.zealFill = this.add.rectangle(GAME_W / 2 - 200, 455, 0, 14, PAL.amber).setOrigin(0, 0.5);
-    this.zealText = this.add.text(GAME_W / 2, 478, '', { ...style, fontSize: '13px', color: hex(PAL.steel) }).setOrigin(0.5);
+    this.zealText = this.add.text(GAME_W / 2, 478, '', { ...style, fontSize: '16px', color: hex(PAL.steel) }).setOrigin(0.5);
 
     this.descText = this.add
-      .text(GAME_W / 2, 760, '', { ...style, fontSize: '16px', align: 'center', color: hex(PAL.steel), wordWrap: { width: GAME_W - 40 } })
+      .text(GAME_W / 2, 760, '', { ...style, fontSize: '19px', align: 'center', color: hex(PAL.steel), wordWrap: { width: GAME_W - 40 } })
       .setOrigin(0.5);
 
     for (const u of this.battle.units) this.makeCard(u);
@@ -153,7 +154,7 @@ export class BattleScene extends Phaser.Scene {
     this.logText.setText(outcome === 'victory' ? 'Victory.' : 'Your party has fallen.');
     this.time.delayedCall(1200, () => {
       if (outcome === 'victory') {
-        winRoom(run);
+        winRoom(run, game.save);
         commit();
         this.scene.start('Crypt');
       } else {
@@ -170,8 +171,8 @@ export class BattleScene extends Phaser.Scene {
   /** Auto and speed switches along the top. */
   private drawToggles() {
     this.toggles.forEach((o) => o.destroy());
-    const auto = makeButton(this, 236, 24, 92, 40, settings.autoBattle ? 'Auto: On' : 'Auto', () => this.toggleAuto(), { active: settings.autoBattle, fontSize: 17 });
-    const speed = makeButton(this, 340, 24, 92, 40, settings.battleSpeed === 2 ? 'Speed 2x' : 'Speed 1x', () => this.toggleSpeed(), { active: settings.battleSpeed === 2, fontSize: 17 });
+    const auto = makeButton(this, 236, 24, 92, 40, settings.autoBattle ? 'Auto: On' : 'Auto', () => this.toggleAuto(), { active: settings.autoBattle, fontSize: 19 });
+    const speed = makeButton(this, 340, 24, 92, 40, settings.battleSpeed === 2 ? 'Speed 2x' : 'Speed 1x', () => this.toggleSpeed(), { active: settings.battleSpeed === 2, fontSize: 19 });
     this.toggles = [auto.box, auto.text, speed.box, speed.text];
   }
 
@@ -224,8 +225,8 @@ export class BattleScene extends Phaser.Scene {
       const label = this.add
         .text(x, y, s.rite ? `RITE\n${s.name}` : cd > 0 ? `${s.name}\n(ready in ${cd})` : s.name, {
           fontFamily: FONT,
-          fontSize: '16px',
-          color: hex(selected ? PAL.bg : PAL.ivory),
+          fontSize: '18px',
+          color: hex(selected && s.rite ? PAL.bg : PAL.ivory),
           align: 'center',
           wordWrap: { width: w - 12 },
         })
@@ -290,10 +291,15 @@ export class BattleScene extends Phaser.Scene {
     const who = view.targets.length === 1 ? view.targets[0].name : 'your whole party';
     let text: string;
     if (view.kind === 'summon') text = `${u.name} will call another foe into the line.`;
+    else if (view.kind === 'buff') text = `${u.name} will use ${view.skill.name}: ${view.skill.desc || 'it strengthens its side.'}`;
     else if (view.kind === 'charge' && !view.charging) text = `${u.name} will start charging ${view.skill.name}: about ${view.estimate} to each of you the turn after. Delay it to break the charge.`;
     else text = `${u.name} will use ${view.skill.name} on ${who} for about ${view.estimate}${view.skill.target === 'allEnemies' ? ' each' : ''}.`;
     if (view.skill.weaken) text += ' It also Weakens.';
     if (view.skill.poison) text += ' It also Poisons.';
+    if (view.skill.zealDrain) text += ` It steals ${view.skill.zealDrain} Zeal.`;
+    if (view.skill.pull) text += ' It drags its target to the front rank.';
+    if (ENEMIES[u.ref].burst) text += ' When it dies, it bursts and hits your whole party.';
+    if (u.armor >= 120) text += ' Its armor is thick: poison and burns ignore armor.';
     if (view.kind === 'attack' || view.kind === 'debuff') text += ' A Taunt pulls it away, and Shift can move out of its reach.';
     this.descText.setText(text);
   }
@@ -316,29 +322,29 @@ export class BattleScene extends Phaser.Scene {
     const hpBg = this.add.rectangle(-CARD / 2, CARD / 2 + 12, CARD, 10, PAL.deepShadow).setOrigin(0, 0.5);
     const hpFill = this.add.rectangle(-CARD / 2, CARD / 2 + 12, CARD, 10, party ? 0x7a9a5a : PAL.oxblood).setOrigin(0, 0.5);
     const shieldFill = this.add.rectangle(-CARD / 2, CARD / 2 + 12, 0, 4, PAL.ivory).setOrigin(0, 0.5);
-    const hpText = this.add.text(0, CARD / 2 + 28, '', { fontFamily: FONT, fontSize: '14px', color: hex(PAL.ivory) }).setOrigin(0.5);
+    const hpText = this.add.text(0, CARD / 2 + 28, '', { fontFamily: FONT, fontSize: '17px', color: hex(PAL.ivory) }).setOrigin(0.5);
     const tags = this.add
-      .text(0, CARD / 2 + 46, '', { fontFamily: FONT, fontSize: '12px', color: hex(PAL.violet), align: 'center' })
+      .text(0, CARD / 2 + 46, '', { fontFamily: FONT, fontSize: '15px', color: hex(PAL.violet), align: 'center' })
       .setOrigin(0.5);
     const y = party ? PARTY_Y : ENEMY_Y;
     const box = this.add.container(slotX(u.rank), y, [glow, frame, img, hpBg, hpFill, shieldFill, hpText, tags]);
     box.setSize(CARD, CARD).setInteractive({ useHandCursor: true });
     box.on('pointerup', () => (this.mode === 'target' ? this.pickTarget(u) : this.explain(u)));
     const preview = this.add
-      .text(0, 0, '', { fontFamily: FONT, fontSize: '22px', color: hex(PAL.amber), stroke: '#000000', strokeThickness: 5, align: 'center' })
+      .text(0, 0, '', { fontFamily: FONT, fontSize: '26px', color: hex(PAL.amber), stroke: '#000000', strokeThickness: 5, align: 'center' })
       .setOrigin(0.5);
     box.add(preview);
     const card: Card = { box, frame, glow, img, hpFill, shieldFill, hpText, tags, preview };
     if (party) {
       card.threat = this.add
-        .text(0, -CARD / 2 + 3, '', { fontFamily: FONT, fontSize: '15px', color: hex(PAL.ivory), backgroundColor: '#652b3b', padding: { x: 5, y: 2 } })
+        .text(0, -CARD / 2 + 3, '', { fontFamily: FONT, fontSize: '18px', color: hex(PAL.ivory), backgroundColor: '#652b3b', padding: { x: 5, y: 2 } })
         .setOrigin(0.5, 0);
       box.add(card.threat);
     } else {
       // Intent sits above the card: what this enemy will do on its next turn.
       card.intentIcon = this.add.image(-CARD / 2 + 12, -CARD / 2 - 42, intentIconKey('attack')).setDisplaySize(24, 24);
       card.intentText = this.add
-        .text(-CARD / 2 + 28, -CARD / 2 - 28, '', { fontFamily: FONT, fontSize: '15px', color: hex(PAL.ivory), lineSpacing: -2, wordWrap: { width: CARD - 26 } })
+        .text(-CARD / 2 + 28, -CARD / 2 - 28, '', { fontFamily: FONT, fontSize: '17px', color: hex(PAL.ivory), lineSpacing: -2, wordWrap: { width: CARD - 26 } })
         .setOrigin(0, 1); // grows upward when a long name wraps
       box.add([card.intentIcon, card.intentText]);
     }
@@ -365,6 +371,7 @@ export class BattleScene extends Phaser.Scene {
         st.taunt && 'Taunt',
         st.empower && 'Empowered',
         st.charging && 'Charging',
+        u.side === 'enemy' && ENEMIES[u.ref].burst && 'Bursts',
       ].filter(Boolean);
       c.tags.setText(tags.join(' · '));
       const active = this.actor?.uid === u.uid && !dead;
@@ -399,7 +406,7 @@ export class BattleScene extends Phaser.Scene {
     this.strip.forEach((o) => o.destroy());
     this.strip = [];
     const order = [this.actor, ...b.upcoming()].filter((u): u is Unit => !!u && u.hp > 0).slice(0, 7);
-    this.strip.push(this.add.text(16, 70, 'Turn', { fontFamily: FONT, fontSize: '13px', color: hex(PAL.steel) }).setOrigin(0, 0.5));
+    this.strip.push(this.add.text(16, 70, 'Turn', { fontFamily: FONT, fontSize: '16px', color: hex(PAL.steel) }).setOrigin(0, 0.5));
     order.forEach((u, i) => {
       const x = 80 + i * 60;
       const key = u.side === 'party' ? portraitKey(u.ref) : enemyKey(u.ref);
@@ -425,6 +432,7 @@ export class BattleScene extends Phaser.Scene {
       const who = view.targets.length === 1 ? view.targets[0].name : '';
       let line: string;
       if (view.kind === 'summon') line = 'Summons help';
+      else if (view.kind === 'buff') line = view.skill.heal ? `Heals ${who || 'ally'} ${view.estimate}` : view.skill.shieldPct ? `Shields ${who || 'ally'}` : 'Grows stronger';
       else if (view.charging) line = `${view.estimate} to all, next turn!`;
       else if (view.kind === 'charge') line = 'Starts charging';
       else if (view.targets.length > 1 || view.skill.target === 'allEnemies') line = `${view.estimate} to all`;
@@ -432,7 +440,7 @@ export class BattleScene extends Phaser.Scene {
       c.intentText.setText(`${view.skill.name}\n${line}`);
       c.intentText.setColor(hex(view.charging ? PAL.amber : view.kind === 'aoe' ? 0xd65f5f : PAL.ivory));
       // Wind-ups only hurt on the turn they fire.
-      if (view.kind !== 'charge' || view.charging) {
+      if (view.kind !== 'buff' && (view.kind !== 'charge' || view.charging)) {
         for (const t of view.targets) incoming.set(t.uid, (incoming.get(t.uid) ?? 0) + view.estimate);
       }
     }
@@ -527,7 +535,7 @@ export class BattleScene extends Phaser.Scene {
 
   private float(target: Phaser.GameObjects.Container, text: string, color: number, offset = 0) {
     const t = this.add
-      .text(target.x, target.y - 20 + offset, text, { fontFamily: FONT, fontSize: '22px', color: hex(color), stroke: '#000000', strokeThickness: 4 })
+      .text(target.x, target.y - 20 + offset, text, { fontFamily: FONT, fontSize: '26px', color: hex(color), stroke: '#000000', strokeThickness: 4 })
       .setOrigin(0.5)
       .setDepth(30);
     this.tweens.add({ targets: t, y: t.y - 40, alpha: 0, duration: 900, ease: 'Quad.out', onComplete: () => t.destroy() });

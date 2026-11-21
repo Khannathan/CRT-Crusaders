@@ -57,6 +57,10 @@ export interface SkillDef {
   aim?: 'weakest' | 'strongest' | 'back' | 'front' | 'random';
   /** Enemy-only: spends a turn charging first. Foresight (delay) interrupts the charge. */
   windup?: boolean;
+  /** Enemy-only: drains this much party Zeal. */
+  zealDrain?: number;
+  /** Enemy-only: drags the target to rank 1. */
+  pull?: boolean;
   /** Enemy-only: relative chance the AI plans this skill. Default 1. */
   weight?: number;
 }

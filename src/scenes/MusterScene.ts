@@ -4,7 +4,7 @@ import { CLASSES, RARITY_COLOR } from '../data/classes';
 import { CRUSADERS } from '../data/crusaders';
 import { commit, game } from '../state/game';
 import { current } from '../state/run';
-import { MAX_PARTY, canMuster, startRun, suggestParty } from '../systems/crusade';
+import { CRYPTS, MAX_PARTY, canMuster, startRun, suggestParty } from '../systems/crusade';
 import { makeButton } from '../ui/button';
 import { portraitKey } from '../ui/placeholderPortrait';
 import { addIcon, addScreenGlow, text } from '../ui/theme';
@@ -92,7 +92,7 @@ export class MusterScene extends Phaser.Scene {
       80,
       'Begin crusade',
       () => {
-        current.run = startRun(game.save, this.party);
+        current.run = startRun(game.save, this.party, CRYPTS.find((c) => c.id === current.cryptId) ?? CRYPTS[0]);
         commit();
         this.scene.start('Crypt');
       },

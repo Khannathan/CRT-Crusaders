@@ -25,7 +25,7 @@ Drop a square PNG named by roster id into `src/assets/portraits/`, for example `
 
 Every built-in drawing can be replaced by dropping a PNG into a folder; nothing else needs to change.
 
-- **Enemies:** `src/assets/enemies/<enemy id>.png`, square, 128 × 128 like portraits. Ids are in `src/data/enemies.ts`: `husk`, `acolyte`, `ringer`, `hound`, `wraith`, `choir`.
+- **Enemies:** `src/assets/enemies/<enemy id>.png`, square, 128 × 128 like portraits. Ids are in `src/data/enemies.ts`: `husk`, `acolyte`, `ringer`, `hound`, `wraith`, `choir`, `warden`, `priest`, `golem`, `lurker`, `pilgrim`, `thief`, `nun`, `bishop`, `abbess`.
 - **UI pieces:** `src/assets/ui/<name>.png`. The file name picks what it replaces. Battle intent icons (24 × 24): `icon-attack`, `icon-aoe`, `icon-debuff`, `icon-summon`, `icon-charge`.
 - **Backdrops:** `bg-hall` (Sanctum and Crusade) and `bg-altar` (Recruit), any size around 840 × 560; they are cropped to fit.
 - **Menu icons:** 12 × 12 white-on-transparent PNGs, tinted in game: `ui-sigil`, `ui-sanctum`, `ui-seal`, `ui-tithe`, `ui-roster`, `ui-blade`, `ui-book`, `ui-lock`, `ui-shield`, `ui-flame`, `ui-swap`, `ui-close`.
@@ -38,6 +38,17 @@ Each enemy shows its next move above its card: the skill, the expected damage an
 Each class has three skills and a Rite. Stronger skills have cooldowns, shown on the button. Combos: the Censer's smoke Weakens, which the War-Sister's Charge punishes; Censer burns and Confessor poisons stack, Contagion spreads them, and Fan the Flames ignites the whole stack at once; Accuse sets up the Inquisitor, whose Sentence finishes anything under 30% HP. While choosing a target, each glowing card shows the expected damage, KILL or COMBO.
 
 **Auto** and **Speed 2x** sit at the top of the battle screen and are remembered on the device. Auto uses the same player as the balance tests (`src/systems/autoplay.ts`), and `ENEMY_TUNE` in `combat.ts` scales enemy HP and attack against it.
+
+## Crypts and the map
+
+Each crusade is a branching map, climbed from the bottom up: tap a glowing room, read what's inside (the enemies in a fight are listed), then Go. Rooms are fights, elite fights (tougher, pay a relic and a Seal), unknown events (a choice with stakes), shrines (heal) and reliquaries (pick a relic). The floor before the boss is always a rest. Maps are random each run.
+
+- **The Drowned Ossuary**: 5 floors, then the Choir Below.
+- **The Sunken Belfry**: opens after the Ossuary is cleared. 6 floors, harder enemies, 1.6x rewards, then the Hollow Abbess.
+
+Enemies with tricks: the Warden shields allies, the Mourning Priest heals them, the Reliquary Golem's armor shrugs off hits (poison and burns ignore armor), the Undertow Lurker drags a back-rank crusader to the front, the Bloated Pilgrim bursts when killed, the Candle Thief steals Zeal, the Plague Nun poisons everyone, and the Grave Bishop empowers itself and raises the dead.
+
+Crypts live in `src/systems/crusade.ts` (`CRYPTS`), line-ups in `src/data/enemies.ts` (`ENCOUNTERS`), events in `src/data/events.ts`. Crypt card art: `src/assets/ui/bg-<crypt id>.webp` (falls back to `bg-hall`). Map icons: `node-fight`, `node-elite`, `node-event`, `node-shrine`, `node-reliquary`, `node-boss` (48 × 48), plus the intent icon `icon-buff`.
 
 ## Layout
 
