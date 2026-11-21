@@ -13,6 +13,7 @@ import { enemyKey } from '../ui/enemyArt';
 import { makeButton } from '../ui/button';
 import { CURRENCY_BAR_H, addCurrencyBar } from '../ui/currencyBar';
 import { portraitKey } from '../ui/placeholderPortrait';
+import { ROMAN_RANK, giftsWaiting, rankInfo } from '../systems/rank';
 import { drawRites } from '../ui/rites';
 import { addTabBar } from '../ui/tabBar';
 import { PAD, addBackdrop, addFrame, addHeading, addScreenGlow, text } from '../ui/theme';
@@ -29,6 +30,10 @@ export class SanctumScene extends Phaser.Scene {
     addScreenGlow(this);
     this.refreshBar = addCurrencyBar(this);
     const top = addHeading(this, 'The Sanctum', CURRENCY_BAR_H + 16);
+    // Rank of Faith badge, top right; a dot when a rank gift waits.
+    const ri = rankInfo(game.save);
+    const rb = makeButton(this, GAME_W - PAD - 62, CURRENCY_BAR_H + 38, 124, 46, `Rank ${ROMAN_RANK(ri.rank)}`, () => this.scene.start('Rank'), { fontSize: 17, icon: 'sigil' });
+    if (giftsWaiting(game.save).length) this.add.circle(rb.box.x + 56, rb.box.y - 18, 6, PAL.amber).setStrokeStyle(2, 0x1b121c);
 
     const owned = CRUSADERS.filter((c) => game.save.owned[c.id]);
     const fw = GAME_W - PAD * 2;
