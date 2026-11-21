@@ -8,6 +8,7 @@ A gothic gacha game about warrior-zealot crusaders, built for phones in portrait
 npm install
 npm run dev      # open the printed URL; --host lets a phone on the same Wi-Fi connect
 npm run build    # type-checks and writes the playable build to dist/
+npm test         # gacha rules: rates, 10-pull guarantee, pity, duplicates
 ```
 
 Every push to `main` deploys to GitHub Pages (Settings → Pages → Source: **GitHub Actions** must be turned on once).
