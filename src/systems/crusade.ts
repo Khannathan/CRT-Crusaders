@@ -102,7 +102,9 @@ export function makeBattle(save: SaveData, run: RunState, encounter: string, rng
       maxHp: maxHpOf(save, run, id),
       hp: run.hp[id],
       atk: Math.round(st.atk * (1 + atkPct)),
-      def: st.def,
+      armor: st.armor,
+      crit: st.crit,
+      passive: c.passive,
       spd: st.spd,
       status: {},
     });

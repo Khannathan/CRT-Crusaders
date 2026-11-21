@@ -5,8 +5,9 @@ import { CRUSADERS } from '../data/crusaders';
 import type { SkillDef } from '../data/skills';
 import { commit, game } from '../state/game';
 import { current } from '../state/run';
-import { Battle, ZEAL_MAX, skillsFor, type BattleEvent, type Unit } from '../systems/combat';
+import { BALANCE_VERSION, Battle, ZEAL_MAX, skillsFor, type BattleEvent, type Unit } from '../systems/combat';
 import { absorbBattle, currentRoom, finishRun, makeBattle, winRoom } from '../systems/crusade';
+import { newSeed, seeded } from '../systems/rng';
 import { enemyKey } from '../ui/enemyArt';
 import { portraitKey } from '../ui/placeholderPortrait';
 
@@ -58,7 +59,10 @@ export class BattleScene extends Phaser.Scene {
       return;
     }
     const encounter = room.kind === 'choice' ? 'ossuary-side' : room.encounter;
-    this.battle = makeBattle(game.save, run, encounter);
+    // Seeded so a reported fight can be replayed exactly (see window.__crtLastBattle).
+    const seed = newSeed();
+    this.battle = makeBattle(game.save, run, encounter, seeded(seed));
+    (window as unknown as Record<string, unknown>).__crtLastBattle = { balance: BALANCE_VERSION, encounter, seed, log: this.battle.log };
     this.vigilMax = this.battle.vigil;
     this.cards.clear();
     this.mode = 'busy';
@@ -319,7 +323,7 @@ export class BattleScene extends Phaser.Scene {
       case 'damage': {
         const c = this.cards.get(e.uid);
         if (!c) break;
-        this.float(c.box, e.amount ? `-${e.amount}` : e.blocked ? 'Blocked' : '0', e.amount ? 0xd65f5f : PAL.ivory);
+        this.float(c.box, e.amount ? `${e.crit ? 'CRIT ' : ''}-${e.amount}` : e.blocked ? 'Blocked' : '0', e.crit ? PAL.amber : e.amount ? 0xd65f5f : PAL.ivory);
         if (e.blocked && e.amount) this.float(c.box, `(${e.blocked} blocked)`, PAL.ivory, 22);
         this.tweens.add({ targets: c.img, x: { from: -6, to: 6 }, duration: 40, yoyo: true, repeat: 2, onComplete: () => c.img.setX(0) });
         c.img.setTint(0xff6666);
