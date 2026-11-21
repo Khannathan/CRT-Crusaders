@@ -1,9 +1,10 @@
 import { describe, expect, it } from 'vitest';
 import { newSave } from '../state/save';
+import { CRUSADERS } from '../data/crusaders';
 import { orderBonuses } from '../data/orders';
 import { CLASS_SKILLS } from '../data/skills';
 import { skillsFor } from './combat';
-import { BELFRY, CRYPTS, OSSUARY, choices, chooseEvent, cryptUnlocked, enterNode, finishRun, generateMap, heresyAvailable, makeBattle, maxHpOf, startRun } from './crusade';
+import { BELFRY, CRYPTS, OSSUARY, choices, chooseEvent, cryptUnlocked, enterNode, finishRun, generateMap, heresyAvailable, makeBattle, maxHpOf, startRun, PILGRIMAGE_BONUS, PILGRIMAGE_CLEARS, pilgrimageLeft } from './crusade';
 import { seeded } from './rng';
 
 describe('crypt maps', () => {
@@ -87,5 +88,25 @@ describe('reasons to keep going', () => {
     const again = finishRun(save, { ...run }, 'victory');
     expect(again.heresyCleared).toBeUndefined();
     expect(again.seals).toBeLessThan(first.seals);
+  });
+});
+
+describe('weekly Pilgrimage', () => {
+  it('the first three victories each week pay a bonus; defeats and retreats do not use one', () => {
+    const save = newSave();
+    const id = CRUSADERS[0].id;
+    save.owned[id] = { level: 1, vow: 0 };
+    const run = () => startRun(save, [id], OSSUARY);
+    expect(pilgrimageLeft(save)).toBe(PILGRIMAGE_CLEARS);
+    expect(finishRun(save, run(), 'retreat').pilgrimage).toBeUndefined();
+    expect(finishRun(save, run(), 'defeat').pilgrimage).toBeUndefined();
+    for (let i = 1; i <= PILGRIMAGE_CLEARS; i++) {
+      const r = finishRun(save, run(), 'victory');
+      expect(r.pilgrimage?.seals).toBe(PILGRIMAGE_BONUS.seals);
+      expect(r.pilgrimage?.left).toBe(PILGRIMAGE_CLEARS - i);
+    }
+    expect(finishRun(save, run(), 'victory').pilgrimage).toBeUndefined();
+    // next week it renews
+    expect(pilgrimageLeft(save, Date.now() + 8 * 864e5)).toBe(PILGRIMAGE_CLEARS);
   });
 });
