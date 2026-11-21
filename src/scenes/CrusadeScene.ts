@@ -4,7 +4,7 @@ import { RARITY_COLOR } from '../data/classes';
 import { CRUSADERS } from '../data/crusaders';
 import { commit, game } from '../state/game';
 import { current } from '../state/run';
-import { CRYPTS, HERESY_ENEMY, HERESY_REWARD, REWARDS, ROMAN, canMuster, cryptUnlocked, heresyAvailable, reviveCost, revive } from '../systems/crusade';
+import { PILGRIMAGE_BONUS, PILGRIMAGE_CLEARS, pilgrimageLeft, CRYPTS, HERESY_ENEMY, HERESY_REWARD, REWARDS, ROMAN, canMuster, cryptUnlocked, heresyAvailable, reviveCost, revive } from '../systems/crusade';
 import { makeButton } from '../ui/button';
 import { CURRENCY_BAR_H, addCurrencyBar } from '../ui/currencyBar';
 import { portraitKey } from '../ui/placeholderPortrait';
@@ -23,6 +23,13 @@ export class CrusadeScene extends Phaser.Scene {
     const s = game.save;
     const style = { fontFamily: FONT, color: hex(PAL.ivory), align: 'center' };
     const top = addHeading(this, 'Crusade', CURRENCY_BAR_H + 16);
+    const left = pilgrimageLeft(s);
+    this.add
+      .text(GAME_W - PAD, top - 30, `PILGRIMAGE ${left}/${PILGRIMAGE_CLEARS}`, text.hud(14, left ? PAL.amber : PAL.steel))
+      .setOrigin(1, 1);
+    this.add
+      .text(GAME_W - PAD, top - 8, left ? `NEXT ${left} CLEARS +${PILGRIMAGE_BONUS.seals} SEALS EACH` : 'RENEWS MONDAY', text.hud(11, PAL.muted))
+      .setOrigin(1, 1);
 
     // Resume a run left mid-way (e.g. after switching tabs)
     if (current.run) {

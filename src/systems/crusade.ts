@@ -9,7 +9,7 @@ import { Battle, VIGIL_DEFAULT, makeEnemy, type Unit } from './combat';
 import type { Rng } from './gacha';
 import { claimGear, makeGear, rollGearRarity, type GearItem } from './gear';
 import { levelUpCost, sisterStats } from './stats';
-import { track } from './tasks';
+import { track, weekKey } from './tasks';
 
 export type NodeKind = 'fight' | 'elite' | 'event' | 'shrine' | 'reliquary' | 'boss';
 
@@ -376,6 +376,32 @@ export function takeRelic(save: SaveData, run: RunState, relicId: string) {
   run.resolved = true;
 }
 
+/**
+ * Weekly Pilgrimage: crypt runs are always free, and the first PILGRIMAGE_CLEARS
+ * victories each week (Monday reset) pay a blessed bonus on top.
+ */
+export const PILGRIMAGE_CLEARS = 3;
+export const PILGRIMAGE_BONUS = { seals: 4, tithes: 200 };
+
+export interface PilgrimageState {
+  week: string;
+  used: number;
+}
+
+/** Blessed clears left this week. */
+export function pilgrimageLeft(save: SaveData, now = Date.now()) {
+  const p = save.pilgrimage;
+  return p && p.week === weekKey(now) ? Math.max(0, PILGRIMAGE_CLEARS - p.used) : PILGRIMAGE_CLEARS;
+}
+
+/** Spends one blessed clear if any are left; returns the bonus paid. */
+function blessClear(save: SaveData, now = Date.now()) {
+  if (pilgrimageLeft(save, now) <= 0) return undefined;
+  const week = weekKey(now);
+  save.pilgrimage = { week, used: (save.pilgrimage?.week === week ? save.pilgrimage.used : 0) + 1 };
+  return { ...PILGRIMAGE_BONUS };
+}
+
 export interface RunResult {
   outcome: 'victory' | 'defeat' | 'retreat';
   tithes: number;
@@ -388,6 +414,8 @@ export interface RunResult {
   gear: GearItem[];
   /** Tithes from gear melted because the armory was full. */
   melted: number;
+  /** The weekly Pilgrimage bonus, if this victory was one of the week's blessed clears. */
+  pilgrimage?: { seals: number; tithes: number; left: number };
 }
 
 /** Ends the run: pays out, marks the fallen as recovering, and lets others recover. */
@@ -396,8 +424,15 @@ export function finishRun(save: SaveData, run: RunState, outcome: RunResult['out
   let seals = run.seals;
   let firstClear = false;
   let heresyCleared: number | undefined;
+  let pilgrimage: RunResult['pilgrimage'];
   if (outcome === 'victory') {
     track(save, 'cryptCleared');
+    const bonus = blessClear(save);
+    if (bonus) {
+      seals += bonus.seals;
+      tithes += bonus.tithes;
+      pilgrimage = { ...bonus, left: pilgrimageLeft(save) };
+    }
     seals += REWARDS.completeSeals;
     if (!save.cleared.includes(run.crypt.id)) {
       firstClear = true;
@@ -425,7 +460,7 @@ export function finishRun(save: SaveData, run: RunState, outcome: RunResult['out
   const melted = claimGear(save, gear);
   save.tithes += tithes;
   save.seals += seals;
-  return { outcome, tithes, seals, firstClear, heresyCleared, fallen, gear, melted };
+  return { outcome, tithes, seals, firstClear, heresyCleared, fallen, gear, melted, pilgrimage };
 }
 
 export function revive(save: SaveData, id: string): boolean {

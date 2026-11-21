@@ -56,6 +56,7 @@ Order art: `src/assets/ui/banner-<order id>.webp` is the banner backdrop on the 
 
 ## Reasons to keep going
 
+- **Weekly Pilgrimage:** crypt runs are always free. The first 3 victories each week (Monday reset) pay +4 Seals and +200 Tithes on top (`PILGRIMAGE_*` in `crusade.ts`), shown at the top of the Crusade screen.
 - **Heresy tiers:** after clearing a crypt, pick Heresy I to V on its card (‹ ›). Each tier gives enemies +25% HP and attack, adds +30% rewards, and every second tier takes a round off the Vigil candle. Each tier opens after the one before it is cleared, and each first clear pays 3 Seals. Tuning is in `crusade.ts` (`HERESY_*`).
 - **Orders:** 50 Sisters across 10 Orders (`src/data/orders.ts`), five per Order with two URs each. Two Sisters of the same Order in a party turn on a bonus, and three turn on a stronger one, shown on the Muster screen and each Sister's Roster card.
 - **Order banners:** the Sealed Altar runs one banner per Order (‹ › to switch). Tap one of the Order's two URs to target it. A UR pull is the target half the time, and the next UR after a miss is always the target. Half of SSR pulls come from the banner's Order. Rules are in `src/systems/gacha.ts`.

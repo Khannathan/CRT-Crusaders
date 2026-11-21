@@ -1,4 +1,5 @@
 import { starterGear, type GearItem } from '../systems/gear';
+import type { PilgrimageState } from '../systems/crusade';
 import type { MatinsState } from '../systems/matins';
 import type { TaskState } from '../systems/tasks';
 import type { VigilState } from '../systems/vigil';
@@ -40,6 +41,8 @@ export interface SaveData {
   tasks?: TaskState;
   /** Matins login calendar. */
   matins?: MatinsState;
+  /** Blessed crypt clears used this week. */
+  pilgrimage?: PilgrimageState;
   /** Last party, in rank order, to pre-fill the muster screen. */
   lastParty: string[];
 }
