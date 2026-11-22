@@ -1,12 +1,23 @@
-import { ENEMIES } from '../data/enemies';
-import { CLASS_SKILLS, SHIFT_SKILL, type SkillDef } from '../data/skills';
+import { AFFINITY, ENEMIES } from '../data/enemies';
+import { CLASS_SKILLS, SHIFT_SKILL, type DmgType, type SkillDef } from '../data/skills';
 import type { PassiveDef } from '../data/types';
 import type { Rng } from './gacha';
 
 export type Side = 'party' | 'enemy';
 
 export interface Status {
-  poison?: { dmg: number; turns: number };
+  /** Burn (Fire) or Poison (Blight): damage each turn, ignoring armor. */
+  poison?: { dmg: number; turns: number; kind?: 'burn' | 'poison' };
+  /** Bleeding (Steel): damage each turn, ignoring armor. */
+  bleed?: { dmg: number; turns: number };
+  /** Turns left to lose. */
+  stun?: number;
+  sunder?: { pct: number; turns: number };
+  hex?: { pct: number; turns: number };
+  /** Rounds left acting first. */
+  haste?: number;
+  regen?: { pct: number; turns: number };
+  ward?: { pct: number; turns: number };
   weaken?: { pct: number; turns: number };
   empower?: { pct: number; turns: number };
   accused?: number;
@@ -49,6 +60,10 @@ export interface Unit {
   hp: number;
   atk: number;
   armor: number;
+  /** Cuts Magic damage the way armor cuts Physical. */
+  mres: number;
+  /** The damage her hits deal unless a skill says otherwise. */
+  dmg?: DmgType;
   spd: number;
   crit: number;
   status: Status;
@@ -70,6 +85,10 @@ export interface Unit {
   cooldowns?: Record<string, number>;
   /** Crusaders: has taken this turn's free Step. */
   stepped?: boolean;
+  /** Crusaders: her Order, for Order weaknesses. */
+  order?: string;
+  /** Enemies: the Order whose Sisters it fears (they deal +25% and take -15% from it). */
+  bane?: string;
 }
 
 export type BattleEvent =
@@ -92,7 +111,7 @@ export interface TurnStart {
 }
 
 /** Bump when combat numbers change, so logged runs can be compared fairly. */
-export const BALANCE_VERSION = '0.7';
+export const BALANCE_VERSION = '0.8';
 /** Execute skills hit harder below this share of max HP. */
 export const EXECUTE_AT = 0.3;
 
@@ -101,6 +120,10 @@ export const VIGIL_DEFAULT = 8;
 /** Enemy attack bonus per round after the Vigil candle goes out. */
 export const RAGE_STEP = 0.15;
 const ACCUSED_MULT = 1.25;
+/** Sisters of an enemy's bane Order hit it this much harder and take this much less from it. */
+export const BANE_MULT = 1.25;
+export const BANE_GUARD = 0.85;
+
 export const CRIT_MULT = 1.5;
 /** Armor scale: damage is divided by (1 + armor / ARMOR_K). */
 export const ARMOR_K = 100;
@@ -143,6 +166,7 @@ export function leveled(s: SkillDef, lv: number): SkillDef {
     healPct: up(s.healPct),
     shieldPct: up(s.shieldPct),
     poison: s.poison && { ...s.poison, mult: up(s.poison.mult)! },
+    bleed: s.bleed && { ...s.bleed, mult: up(s.bleed.mult)! },
   };
   levelCache.set(key, out);
   return out;
@@ -171,6 +195,7 @@ export function upgraded(s: SkillDef): SkillDef {
     healPct: up(s.healPct),
     shieldPct: up(s.shieldPct),
     poison: s.poison && { ...s.poison, mult: up(s.poison.mult)! },
+    bleed: s.bleed && { ...s.bleed, mult: up(s.bleed.mult)! },
     cooldown: s.cooldown ? s.cooldown - 1 : undefined,
   };
   upgradeCache.set(s.id, u);
@@ -224,7 +249,7 @@ export class Battle {
     if (this.mods.openingBurn > 0 && party.length) {
       const avg = party.reduce((n, u) => n + u.atk, 0) / party.length;
       const dmg = Math.max(1, Math.round(avg * this.mods.openingBurn * (1 + this.mods.burnMult)));
-      for (const e of enemies) e.status.poison = { dmg, turns: 3 };
+      for (const e of enemies) e.status.poison = { dmg, turns: 3, kind: 'burn' };
     }
   }
 
@@ -283,11 +308,17 @@ export class Battle {
       const da = a.status.delayed ? 1 : 0;
       const db = b.status.delayed ? 1 : 0;
       if (da !== db) return da - db;
+      const ha = a.status.haste ? 1 : 0;
+      const hb = b.status.haste ? 1 : 0;
+      if (ha !== hb) return hb - ha;
       if (b.spd !== a.spd) return b.spd - a.spd;
       if (a.side !== b.side) return a.side === 'party' ? -1 : 1;
       return a.rank - b.rank;
     });
-    order.forEach((u) => (u.status.delayed = false));
+    order.forEach((u) => {
+      u.status.delayed = false;
+      if (u.status.haste && --u.status.haste <= 0) u.status.haste = undefined;
+    });
     this.queue = order.map((u) => u.uid);
   }
 
@@ -317,6 +348,26 @@ export class Battle {
         }
         this.checkPhase(actor, events);
       }
+      if (st.bleed) {
+        const dmg = Math.min(actor.hp, st.bleed.dmg);
+        actor.hp -= dmg;
+        events.push({ type: 'damage', uid: actor.uid, amount: dmg, blocked: 0 });
+        if (actor.side === 'party') this.hurtZeal(actor, dmg, events);
+        if (--st.bleed.turns <= 0) st.bleed = undefined;
+        if (actor.hp <= 0) {
+          this.kill(actor, events);
+          continue;
+        }
+        this.checkPhase(actor, events);
+      }
+      if (st.regen) {
+        const real = Math.min(actor.maxHp - actor.hp, Math.round(actor.maxHp * st.regen.pct * this.healOf(actor)));
+        if (real > 0) {
+          actor.hp += real;
+          events.push({ type: 'heal', uid: actor.uid, amount: real });
+        }
+        if (--st.regen.turns <= 0) st.regen = undefined;
+      }
       if (actor.passive?.kind === 'healAura') {
         for (const a of this.alive(actor.side)) {
           const real = Math.min(a.maxHp - a.hp, Math.round(a.maxHp * (actor.passive.value ?? 0) * this.healOf(a)));
@@ -330,6 +381,16 @@ export class Battle {
       if (st.empower && --st.empower.turns <= 0) st.empower = undefined;
       if (st.accused && --st.accused <= 0) st.accused = undefined;
       if (st.taunt && --st.taunt <= 0) st.taunt = undefined;
+      if (st.sunder && --st.sunder.turns <= 0) st.sunder = undefined;
+      if (st.hex && --st.hex.turns <= 0) st.hex = undefined;
+      if (st.ward && --st.ward.turns <= 0) st.ward = undefined;
+      if (st.stun) {
+        st.stun -= 1;
+        if (st.stun <= 0) st.stun = undefined;
+        this.log.push(`${actor.name} is stunned`);
+        events.push({ type: 'status', uid: actor.uid, label: 'Stunned' });
+        continue;
+      }
       return { actor, events };
     }
     return { events, outcome: this.outcome() };
@@ -434,8 +495,9 @@ export class Battle {
         if (real >= t.maxHp * 0.05) support = true;
         events.push({ type: 'heal', uid: t.uid, amount: real });
       }
-      if (skill.cleanse && t.status.poison) {
+      if (skill.cleanse && (t.status.poison || t.status.bleed)) {
         t.status.poison = undefined;
+        t.status.bleed = undefined;
         events.push({ type: 'status', uid: t.uid, label: 'Cured' });
       }
       if (skill.shieldPct) {
@@ -447,10 +509,11 @@ export class Battle {
       if (skill.poison) {
         const plague = actor.passive?.kind === 'plague' ? 1 + (actor.passive.value ?? 0) : 1;
         const burn = actor.side === 'party' ? 1 + this.mods.burnMult : 1;
-        const dmg = Math.max(1, Math.round(this.attackOf(actor) * skill.poison.mult * plague * burn));
+        const kind = actor.classId === 'censer' ? 'burn' : 'poison';
+        const dmg = Math.max(1, Math.round(this.attackOf(actor) * skill.poison.mult * plague * burn * baneMult(actor, t)));
         const old = skill.stackPoison ? t.status.poison : undefined;
-        t.status.poison = old ? { dmg: old.dmg + dmg, turns: Math.max(old.turns, skill.poison.turns) } : { dmg, turns: skill.poison.turns };
-        events.push({ type: 'status', uid: t.uid, label: actor.side === 'party' && actor.classId === 'censer' ? 'Burning' : 'Poisoned' });
+        t.status.poison = old ? { dmg: old.dmg + dmg, turns: Math.max(old.turns, skill.poison.turns), kind } : { dmg, turns: skill.poison.turns, kind };
+        events.push({ type: 'status', uid: t.uid, label: kind === 'burn' ? 'Burning' : 'Poisoned' });
       }
       if (skill.detonate && t.status.poison) {
         const p = t.status.poison;
@@ -480,6 +543,45 @@ export class Battle {
       if (skill.weaken) {
         t.status.weaken = { ...skill.weaken };
         events.push({ type: 'status', uid: t.uid, label: 'Weakened' });
+      }
+      if (skill.bleed) {
+        const dmg = Math.max(1, Math.round(this.attackOf(actor) * skill.bleed.mult * baneMult(actor, t)));
+        // Bleeding doesn't stack: a fresh wound replaces a weaker one.
+        const old = t.status.bleed;
+        t.status.bleed = { dmg: Math.max(dmg, old?.dmg ?? 0), turns: Math.max(old?.turns ?? 0, skill.bleed.turns) };
+        events.push({ type: 'status', uid: t.uid, label: 'Bleeding' });
+      }
+      if (skill.sunder) {
+        t.status.sunder = { ...skill.sunder };
+        events.push({ type: 'status', uid: t.uid, label: 'Sundered' });
+      }
+      if (skill.hex) {
+        t.status.hex = { ...skill.hex };
+        events.push({ type: 'status', uid: t.uid, label: 'Hexed' });
+      }
+      if (skill.stun) {
+        if (t.boss) events.push({ type: 'status', uid: t.uid, label: 'Resists stun' });
+        else {
+          t.status.stun = Math.max(t.status.stun ?? 0, skill.stun);
+          events.push({ type: 'status', uid: t.uid, label: 'Stunned' });
+          if (t.status.charging) {
+            t.status.charging = false;
+            this.planIntent(t, t.intent?.skillId);
+            events.push({ type: 'status', uid: t.uid, label: 'Charge broken!' }, { type: 'intent' });
+          }
+        }
+      }
+      if (skill.haste) {
+        t.status.haste = Math.max(t.status.haste ?? 0, skill.haste);
+        events.push({ type: 'status', uid: t.uid, label: 'Hasted' });
+      }
+      if (skill.regen) {
+        t.status.regen = { ...skill.regen };
+        events.push({ type: 'status', uid: t.uid, label: 'Regenerating' });
+      }
+      if (skill.ward) {
+        t.status.ward = { ...skill.ward };
+        events.push({ type: 'status', uid: t.uid, label: 'Warded' });
       }
       if (skill.accuse) {
         t.status.accused = skill.accuse;
@@ -608,7 +710,7 @@ export class Battle {
     }
     const front = targets[0];
     const estimate = skill.mult && front ? Math.round(damageAfterArmor(this.attackOf(actor) * skill.mult, front.armor) * this.guardOf(front)) : 0;
-    const kind: IntentKind = skill.windup ? 'charge' : skill.target === 'allEnemies' ? 'aoe' : skill.weaken || skill.poison ? 'debuff' : 'attack';
+    const kind: IntentKind = skill.windup ? 'charge' : skill.target === 'allEnemies' ? 'aoe' : skill.weaken || skill.poison || skill.bleed || skill.sunder || skill.hex || skill.stun ? 'debuff' : 'attack';
     return { kind, skill, targets, estimate, charging };
   }
 
@@ -637,7 +739,7 @@ export class Battle {
   }
 
   private hit(actor: Unit, t: Unit, skill: SkillDef, events: BattleEvent[]) {
-    let raw = this.attackOf(actor) * skill.mult! * this.relicMult(actor, skill);
+    let raw = this.attackOf(actor) * skill.mult! * this.relicMult(actor, skill) * baneMult(actor, t) * wardOf(t);
     if (skill.lowHpBonus && actor.hp < actor.maxHp / 2) raw *= 1 + skill.lowHpBonus;
     if (t.status.accused) raw *= ACCUSED_MULT * (1 + (skill.bonusIfAccused ?? 0));
     if (t.status.weaken && skill.bonusIfWeak) raw *= 1 + skill.bonusIfWeak;
@@ -645,7 +747,7 @@ export class Battle {
     if (actor.passive?.kind === 'executioner' && t.hp < t.maxHp / 2) raw *= 1 + (actor.passive.value ?? 0);
     const crit = (t.status.accused && actor.passive?.kind === 'critOnAccused') || this.rng() < actor.crit;
     if (crit) raw *= CRIT_MULT;
-    let dmg = Math.max(1, Math.round(damageAfterArmor(raw, t.armor) * this.vary() * this.guardOf(t)));
+    let dmg = Math.max(1, Math.round(damageAfterArmor(raw, defenceAgainst(t, dmgOf(actor, skill))) * this.vary() * this.guardOf(t)));
     let blocked = 0;
     if (t.status.shield) {
       blocked = Math.min(t.status.shield, dmg);
@@ -689,7 +791,7 @@ export class Battle {
   preview(actor: Unit, skill: SkillDef, t: Unit): number {
     let total = 0;
     if (skill.mult) {
-      let raw = this.attackOf(actor) * skill.mult * this.relicMult(actor, skill);
+      let raw = this.attackOf(actor) * skill.mult * this.relicMult(actor, skill) * baneMult(actor, t) * wardOf(t);
       if (skill.lowHpBonus && actor.hp < actor.maxHp / 2) raw *= 1 + skill.lowHpBonus;
       if (t.status.accused) raw *= ACCUSED_MULT * (1 + (skill.bonusIfAccused ?? 0));
       if (t.status.weaken && skill.bonusIfWeak) raw *= 1 + skill.bonusIfWeak;
@@ -697,7 +799,7 @@ export class Battle {
       if (actor.passive?.kind === 'executioner' && t.hp < t.maxHp / 2) raw *= 1 + (actor.passive.value ?? 0);
       const critChance = t.status.accused && actor.passive?.kind === 'critOnAccused' ? 1 : actor.crit;
       raw *= 1 + critChance * (CRIT_MULT - 1);
-      total += damageAfterArmor(raw, t.armor);
+      total += damageAfterArmor(raw, defenceAgainst(t, dmgOf(actor, skill)));
     }
     if (skill.detonate && t.status.poison) total += t.status.poison.dmg * t.status.poison.turns * skill.detonate * this.detonateOf(actor);
     return Math.round(total);
@@ -827,12 +929,34 @@ export class Battle {
 }
 
 /** Enemy HP and attack scale, tuned with balance.test.ts against the Auto player. */
-export const ENEMY_TUNE = 1.22;
+export const ENEMY_TUNE = 1.37;
 export function makeEnemy(type: string, uid: string, rank: number, scale = 1): Unit {
   const d = ENEMIES[type];
   const hp = Math.round(d.hp * ENEMY_TUNE * scale);
-  return { uid, side: 'enemy', name: d.name, ref: type, rank, maxHp: hp, hp, atk: Math.round(d.atk * ENEMY_TUNE * scale), armor: d.armor, spd: d.spd, crit: d.crit ?? 0.05, status: {}, boss: d.boss };
+  const a = AFFINITY[type] ?? {};
+  return { uid, side: 'enemy', name: d.name, ref: type, rank, maxHp: hp, hp, atk: Math.round(d.atk * ENEMY_TUNE * scale), armor: d.armor, mres: a.mres ?? d.armor, dmg: a.dmg ?? 'physical', spd: d.spd, crit: d.crit ?? 0.05, status: {}, boss: d.boss, bane: a.bane };
 }
+
+/** The damage a skill deals: its own type, else its user's tag (Physical by default). */
+export const dmgOf = (u: Unit, skill: SkillDef): DmgType => skill.dmg ?? u.dmg ?? 'physical';
+
+/**
+ * Order bane: Sisters of the Order an enemy fears hit it harder, and it hits
+ * them softer.
+ */
+export function baneMult(by: Unit | undefined, t: Unit): number {
+  if (by?.side === 'party' && by.order && t.bane === by.order) return BANE_MULT;
+  if (by?.side === 'enemy' && t.order && by.bane === t.order) return BANE_GUARD;
+  return 1;
+}
+
+/** The defence a hit meets: Armor (less Sunder) against Physical, Magic Resist (less Hex) against Magic. */
+export function defenceAgainst(t: Unit, type: DmgType) {
+  if (type === 'magic') return t.mres * (t.status.hex ? 1 - t.status.hex.pct : 1);
+  return t.armor * (t.status.sunder ? 1 - t.status.sunder.pct : 1);
+}
+
+const wardOf = (t: Unit) => (t.status.ward ? 1 - t.status.ward.pct : 1);
 
 /** Damage after armor: raw / (1 + armor / ARMOR_K). 100 armor halves a hit. */
 export function damageAfterArmor(raw: number, armor: number) {

@@ -4,10 +4,11 @@ import { RARITY_COLOR } from '../data/classes';
 import { CRUSADERS } from '../data/crusaders';
 import { commit, game } from '../state/game';
 import { current } from '../state/run';
-import { PILGRIMAGE_BONUS, PILGRIMAGE_CLEARS, pilgrimageLeft, CRYPTS, HERESY_ENEMY, HERESY_REWARD, REWARDS, ROMAN, canMuster, cryptRecommended, cryptUnlocked, cryptFloors, actsOf, heresyAvailable, reviveCost, revive, suggestParty, type CryptDef } from '../systems/crusade';
+import { PILGRIMAGE_BONUS, PILGRIMAGE_CLEARS, pilgrimageLeft, pilgrimageRenews, CRYPTS, HERESY_ENEMY, HERESY_REWARD, REWARDS, ROMAN, canMuster, cryptRecommended, cryptUnlocked, cryptFloors, actsOf, heresyAvailable, reviveCost, revive, suggestParty, type CryptDef } from '../systems/crusade';
 import { canRepeat, repeatRuns } from '../systems/autorun';
 import { ROMAN_RANK, unlocked } from '../systems/rank';
 import { pickParty } from '../ui/partyPicker';
+import { untilText } from '../ui/modeScreen';
 import { accountPower } from '../systems/power';
 import { addBags, bagEmpty, bagText } from '../systems/items';
 import { drawRecommended } from '../ui/recommended';
@@ -42,12 +43,12 @@ export class CrusadeScene extends Phaser.Scene {
     const pil = this.add
       .text(GAME_W - PAD, top + 18, `PILGRIMAGE ${left}/${PILGRIMAGE_CLEARS}`, text.hud(13, left ? PAL.amber : PAL.steel))
       .setOrigin(1, 1);
-    // ui-badge-blessed.png before the Pilgrimage count, faded once the week's blessed clears are spent
+    // ui-badge-blessed.png before the Pilgrimage count, faded once today's blessed clear is spent
     if (this.textures.exists('ui-badge-blessed')) {
       this.add.image(pil.x - pil.width - 12, pil.y - pil.height / 2, 'ui-badge-blessed').setDisplaySize(20, 20).setAlpha(left ? 1 : 0.35);
     }
     this.add
-      .text(GAME_W - PAD, top + 34, left ? `NEXT ${left} CLEARS +${PILGRIMAGE_BONUS.seals} SEALS EACH` : 'RENEWS MONDAY', text.hud(10, PAL.muted))
+      .text(GAME_W - PAD, top + 34, left ? `TODAY'S FIRST CLEAR +${PILGRIMAGE_BONUS.seals} SEALS` : `DAILY · RENEWS IN ${untilText(pilgrimageRenews() - Date.now()).toUpperCase()}`, text.hud(10, PAL.muted))
       .setOrigin(1, 1);
 
     // A Rite fight left from its Menu

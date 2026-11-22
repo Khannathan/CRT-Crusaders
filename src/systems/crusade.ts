@@ -1,6 +1,7 @@
 import { BOND_XP, addBond } from './bonds';
 import { GILT_FIRST_CLEAR, GILT_HERESY, earn } from './currency';
 import { CLASSES } from '../data/classes';
+import { dmgTagOf } from '../data/classes';
 import { CRUSADERS } from '../data/crusaders';
 import { ENCOUNTERS, ENEMIES } from '../data/enemies';
 import { EVENTS, type EventOutcome } from '../data/events';
@@ -15,7 +16,7 @@ import { addBags, give, roomDrops, type Bag } from './items';
 import { levelUpCost, sisterStats } from './stats';
 import { rankOf } from './rank';
 import { noteClear, type Beaten } from './records';
-import { track, weekKey } from './tasks';
+import { dayKey, track } from './tasks';
 import { skillVow } from './tiers';
 
 export type NodeKind = 'fight' | 'elite' | 'event' | 'shrine' | 'reliquary' | 'boss' | 'miracle';
@@ -415,10 +416,13 @@ export function makeBattle(save: SaveData, run: RunState, encounter: string, rng
       hp: run.hp[id],
       atk: Math.round(st.atk * (1 + atkPct)),
       armor: Math.round(st.armor * (1 + armorPct)),
+      mres: Math.round(st.mres * (1 + armorPct)),
+      dmg: dmgTagOf(c),
       vow: skillVow(save.owned[id]),
       skillLv: save.owned[id].skills,
       crit: st.crit + relics.reduce((n, r) => n + (r.critAdd ?? 0), 0),
       passive: c.passive,
+      order: c.order,
       spd: st.spd + (c.passive?.kind === 'swift' ? c.passive.value ?? 0 : 0),
       status: {},
     });
@@ -618,28 +622,38 @@ export function takeRelic(save: SaveData, run: RunState, relicId: string) {
 }
 
 /**
- * Weekly Pilgrimage: crypt runs are always free, and the first PILGRIMAGE_CLEARS
- * victories each week (Monday reset) pay a blessed bonus on top.
+ * Daily Pilgrimage: crypt runs are always free, and the first PILGRIMAGE_CLEARS
+ * victories each day (local midnight reset) pay a blessed bonus on top.
  */
-export const PILGRIMAGE_CLEARS = 3;
+export const PILGRIMAGE_CLEARS = 1;
 export const PILGRIMAGE_BONUS = { seals: 4, tithes: 200 };
 
 export interface PilgrimageState {
-  week: string;
+  /** Local day of the clears counted (older saves kept a week key here). */
+  day?: string;
+  week?: string;
   used: number;
 }
 
-/** Blessed clears left this week. */
+/** Blessed clears left today. */
 export function pilgrimageLeft(save: SaveData, now = Date.now()) {
   const p = save.pilgrimage;
-  return p && p.week === weekKey(now) ? Math.max(0, PILGRIMAGE_CLEARS - p.used) : PILGRIMAGE_CLEARS;
+  return p && p.day === dayKey(now) ? Math.max(0, PILGRIMAGE_CLEARS - p.used) : PILGRIMAGE_CLEARS;
+}
+
+/** When today's blessed clear renews: the next local midnight. */
+export function pilgrimageRenews(now = Date.now()) {
+  const d = new Date(now);
+  d.setHours(0, 0, 0, 0);
+  d.setDate(d.getDate() + 1);
+  return d.getTime();
 }
 
 /** Spends one blessed clear if any are left; returns the bonus paid. */
 function blessClear(save: SaveData, now = Date.now()) {
   if (pilgrimageLeft(save, now) <= 0) return undefined;
-  const week = weekKey(now);
-  save.pilgrimage = { week, used: (save.pilgrimage?.week === week ? save.pilgrimage.used : 0) + 1 };
+  const day = dayKey(now);
+  save.pilgrimage = { day, used: (save.pilgrimage?.day === day ? save.pilgrimage.used : 0) + 1 };
   return { ...PILGRIMAGE_BONUS };
 }
 

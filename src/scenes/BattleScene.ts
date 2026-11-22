@@ -10,6 +10,8 @@ import { game } from '../state/game';
 import { saveSettings, settings } from '../state/settings';
 import { autoChoose, autoStep } from '../systems/autoplay';
 import { makeButton } from '../ui/button';
+import { addOrderSigil } from '../ui/sisterCard';
+import { showDetail } from '../ui/glossary';
 import { addArt } from '../ui/theme';
 import { Bar, candleFrames, nine } from '../ui/skin';
 import { current } from '../state/run';
@@ -356,7 +358,22 @@ export class BattleScene extends Phaser.Scene {
         })
         .setOrigin(0.5)
         .setAlpha(usable ? 1 : 0.4);
-      box.setInteractive({ useHandCursor: true }).on('pointerup', () => this.pickSkill(s, usable));
+      // Tap picks the skill; hold opens its full description.
+      let held = false;
+      let timer: Phaser.Time.TimerEvent | undefined;
+      box.setInteractive({ useHandCursor: true });
+      box.on('pointerdown', () => {
+        held = false;
+        timer = this.time.delayedCall(420 * settings.battleSpeed, () => {
+          held = true;
+          showDetail(this, { title: s.name, color: s.rite ? PAL.amber : PAL.ivory, tags: s.rite ? 'RITE · FULL ZEAL' : step ? 'FREE · ONCE A TURN' : `SKILL${s.cooldown ? ` · COOLDOWN ${s.cooldown}` : ''}`, desc: s.desc }, 60);
+        });
+      });
+      box.on('pointerout', () => timer?.remove());
+      box.on('pointerup', () => {
+        timer?.remove();
+        if (!held) this.pickSkill(s, usable);
+      });
       this.skillButtons.push(box, label);
     });
     if (!this.chosen) this.descText.setText('Choose a skill');
@@ -460,10 +477,17 @@ export class BattleScene extends Phaser.Scene {
     else text = `${u.name} will use ${view.skill.name} on ${who} for about ${view.estimate}${view.skill.target === 'allEnemies' ? ' each' : ''}.`;
     if (view.skill.weaken) text += ' It also Weakens.';
     if (view.skill.poison) text += ' It also Poisons.';
+    if (view.skill.bleed) text += ' It leaves its target Bleeding.';
+    if (view.skill.sunder) text += ' It Sunders armor.';
+    if (view.skill.stun) text += ' It Stuns.';
     if (view.skill.zealDrain) text += ` It steals ${view.skill.zealDrain} Zeal.`;
     if (view.skill.pull) text += ' It drags its target to the front rank.';
     if (ENEMIES[u.ref].burst) text += ' When it dies, it bursts over all your Sisters.';
-    if (u.armor >= 120) text += ' Its armor is thick: poison and burns ignore armor.';
+    // Which defence is thin, and which Order it fears.
+    const thin = u.mres < u.armor * 0.6 ? 'Magic' : u.armor < u.mres * 0.6 ? 'Physical' : '';
+    text += ` ${thin ? `Weak to ${thin} damage.` : 'Armor and Magic Resist alike.'}`;
+    if (u.bane) text += ` Fears the ${u.bane}: her Sisters deal +25% to it.`;
+    text += ` It deals ${u.dmg === 'magic' ? 'Magic' : 'Physical'} damage.`;
     if (view.kind === 'attack' || view.kind === 'debuff') text += ' A Taunt pulls it away, and a free Step can move out of its reach.';
     this.descText.setText(text);
   }
@@ -515,6 +539,11 @@ export class BattleScene extends Phaser.Scene {
         .text(-CARD / 2 + 28, -CARD / 2 - 28, '', { fontFamily: FONT, fontSize: '17px', color: hex(PAL.ivory), lineSpacing: -2, wordWrap: { width: CARD - 26 } })
         .setOrigin(0, 1); // grows upward when a long name wraps
       box.add([card.intentIcon, card.intentText]);
+      // Its bane Order's sigil, and the damage it is weak to.
+      const sig = u.bane ? addOrderSigil(this, CARD / 2 - 16, -CARD / 2 + 16, u.bane, 22) : undefined;
+      if (sig) box.add(sig);
+      const thin = u.mres < u.armor * 0.6 ? 'MAG' : u.armor < u.mres * 0.6 ? 'PHY' : '';
+      if (thin) box.add(this.add.text(CARD / 2 - 4, -CARD / 2 + 30, `WEAK ${thin}`, { fontFamily: FONT, fontSize: '11px', color: hex(thin === 'MAG' ? 0x9ab8f0 : 0xd8b48a), backgroundColor: '#140d16', padding: { x: 3, y: 1 } }).setOrigin(1, 0));
     }
     if (u.hp <= 0) box.setAlpha(0);
     this.cards.set(u.uid, card);
@@ -535,8 +564,15 @@ export class BattleScene extends Phaser.Scene {
       c.hpText.setText(`${u.hp}/${u.maxHp}`);
       const st = u.status;
       const tags = [
-        st.poison && `${u.side === 'enemy' ? 'Afflicted' : 'Poisoned'} ${st.poison.turns}`,
+        st.poison && `${st.poison.kind === 'burn' ? 'Burn' : 'Poison'} ${st.poison.turns}`,
+        st.bleed && `Bleed ${st.bleed.turns}`,
+        st.stun && 'Stunned',
+        st.sunder && 'Sundered',
+        st.hex && 'Hexed',
         st.weaken && 'Weak',
+        st.haste && 'Haste',
+        st.regen && 'Regen',
+        st.ward && 'Ward',
         st.accused && 'Accused',
         st.taunt && 'Taunt',
         st.empower && 'Empowered',

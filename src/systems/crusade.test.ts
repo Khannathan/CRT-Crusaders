@@ -148,7 +148,7 @@ describe('reasons to keep going', () => {
   });
 });
 
-describe('weekly Pilgrimage', () => {
+describe('daily Pilgrimage', () => {
   it('the first three victories each week pay a bonus; defeats and retreats do not use one', () => {
     const save = newSave();
     const id = CRUSADERS[0].id;
@@ -164,7 +164,7 @@ describe('weekly Pilgrimage', () => {
     }
     expect(finishRun(save, run(), 'victory').pilgrimage).toBeUndefined();
     // next week it renews
-    expect(pilgrimageLeft(save, Date.now() + 8 * 864e5)).toBe(PILGRIMAGE_CLEARS);
+    expect(pilgrimageLeft(save, Date.now() + 864e5)).toBe(PILGRIMAGE_CLEARS);
   });
 });
 
@@ -234,5 +234,13 @@ describe('crypt variety', () => {
     for (let i = 0; i < 600; i++) if (generateMap(OSSUARY, seeded(i + 7)).flat().some((x) => x.kind === 'miracle')) n++;
     expect(n / 600).toBeGreaterThan(0.03);
     expect(n / 600).toBeLessThan(0.12);
+  });
+});
+
+describe('Pilgrimage renewal', () => {
+  it('renews at the next local midnight', async () => {
+    const { pilgrimageRenews } = await import('./crusade');
+    const sun = new Date(2026, 10, 22, 12).getTime();
+    expect(pilgrimageRenews(sun)).toBe(new Date(2026, 10, 23).getTime());
   });
 });

@@ -1,0 +1,168 @@
+import Phaser from 'phaser';
+import { FONT, GAME_H, GAME_W, PAL, hex } from '../config';
+import { BANE_GUARD, BANE_MULT, CRIT_MULT, EXECUTE_AT, ZEAL_MAX } from '../systems/combat';
+import { makeButton } from './button';
+import { addFrame, text } from './theme';
+
+/**
+ * Combat words, explained. Skill, passive and Rite descriptions highlight
+ * these; tapping one opens its entry. `match` lists the word forms that point
+ * to it (lower case).
+ */
+export interface Term {
+  title: string;
+  color: number;
+  text: string;
+  match: string[];
+}
+
+const BUFF = 0x8fd0a0;
+const DEBUFF = 0xe07a6a;
+const DOT = 0xd89a50;
+const TYPE = 0x9ab8f0;
+
+export const GLOSSARY: Record<string, Term> = {
+  bleed: { title: 'Bleed', color: DEBUFF, match: ['bleed', 'bleeding', 'bleeds'], text: 'Physical damage at the start of each of its turns, ignoring Armor. A fresh wound replaces a weaker one; it does not stack. Cured by cleansing.' },
+  burn: { title: 'Burn', color: DOT, match: ['burn', 'burns', 'burning', 'smouldering', 'ignite', 'ignited'], text: 'Magic fire damage at the start of each of its turns, ignoring Magic Resist. Censers set it; some skills stack more on top or detonate it all at once.' },
+  poison: { title: 'Poison', color: DOT, match: ['poison', 'poisons', 'poisoned'], text: 'Magic blight damage at the start of each of its turns, ignoring Magic Resist. It can stack and spread. Cured by cleansing.' },
+  stun: { title: 'Stun', color: DEBUFF, match: ['stun', 'stuns', 'stunned'], text: 'The target loses its next turn. A stun also breaks a charging attack. Bosses resist it.' },
+  sunder: { title: 'Sunder', color: DEBUFF, match: ['sunder', 'sunders', 'sundered'], text: 'Lowers the target\'s Armor, so Physical hits land harder.' },
+  hex: { title: 'Hex', color: DEBUFF, match: ['hex', 'hexed', 'hexes'], text: 'Lowers the target\'s Magic Resist, so Magic hits land harder.' },
+  weaken: { title: 'Weaken', color: DEBUFF, match: ['weaken', 'weakens', 'weakened', '-25% attack', '-40% attack'], text: 'The target deals less damage while it lasts.' },
+  accused: { title: 'Accused', color: DEBUFF, match: ['accused', 'accuse'], text: 'Takes +25% damage from every Sister. Inquisitor skills do even more to the Accused.' },
+  delay: { title: 'Delay', color: DEBUFF, match: ['delay', 'delayed', 'push its turn'], text: 'Pushes the target\'s turn to the end of the round (or the next one). Breaks a charging attack.' },
+  haste: { title: 'Haste', color: BUFF, match: ['haste', 'hasted'], text: 'Acts first at the start of the next round, ahead of everyone not Hasted.' },
+  regen: { title: 'Regenerate', color: BUFF, match: ['regenerate', 'regenerates', 'regen'], text: 'Heals a share of max HP at the start of each of her turns.' },
+  ward: { title: 'Ward', color: BUFF, match: ['ward', 'warded', 'wards'], text: 'Takes less damage from every hit while it lasts.' },
+  shield: { title: 'Shield', color: BUFF, match: ['shield', 'shields', 'shielded'], text: 'Absorbs damage before HP. A shield fades at the start of her next turn.' },
+  empower: { title: 'Empower', color: BUFF, match: ['empower', 'empowered', '+25% attack', '+30% attack'], text: 'Deals more damage while it lasts.' },
+  taunt: { title: 'Taunt', color: BUFF, match: ['taunt', 'taunts', 'draw enemy attacks'], text: 'Enemies that can reach her must attack her instead of her Sisters.' },
+  cleanse: { title: 'Cleanse', color: BUFF, match: ['cure', 'cures', 'cured'], text: 'Removes Poison, Burn and Bleed.' },
+  charge: { title: 'Charge', color: DEBUFF, match: ['charge', 'charging'], text: 'A foe winding up a great blow fires it on its next turn. Delay or Stun it to break the charge.' },
+  zeal: { title: 'Zeal', color: PAL.amber, match: ['zeal'], text: `The party's shared fury, up to ${ZEAL_MAX}. Attacks, support and wounds build it; at ${ZEAL_MAX} any Sister may spend it on her Rite.` },
+  rite: { title: 'Rite', color: PAL.amber, match: ['rite'], text: `A Sister's great act. It costs all ${ZEAL_MAX} Zeal.` },
+  physical: { title: 'Physical damage', color: 0xd8b48a, match: ['physical'], text: 'Cut by Armor. Bleed is Physical. Sunder lowers Armor.' },
+  magic: { title: 'Magic damage', color: TYPE, match: ['magic'], text: 'Cut by Magic Resist. Burn and Poison are Magic. Hex lowers Magic Resist.' },
+  armor: { title: 'Armor', color: 0xd8b48a, match: ['armor'], text: 'Cuts Physical damage: a hit is divided by 1 + Armor / 100, so 100 Armor halves it.' },
+  mres: { title: 'Magic Resist', color: TYPE, match: ['magic resist'], text: 'Cuts Magic damage the way Armor cuts Physical: 100 Magic Resist halves a Magic hit.' },
+  crit: { title: 'Critical hit', color: PAL.amber, match: ['crit', 'crits', 'critical'], text: `A critical hit deals ${CRIT_MULT}x damage.` },
+  execute: { title: 'Execute', color: DEBUFF, match: ['under 30% hp'], text: `Extra damage against a foe below ${Math.round(EXECUTE_AT * 100)}% HP.` },
+  bane: { title: 'Bane Order', color: PAL.amber, match: ['fears', 'bane'], text: `Every foe fears one Order. Sisters of that Order deal +${Math.round((BANE_MULT - 1) * 100)}% to it and take ${Math.round((1 - BANE_GUARD) * 100)}% less from it. Its sigil sits on its card.` },
+  cooldown: { title: 'Cooldown', color: PAL.steel, match: ['cooldown'], text: 'Her own turns to wait before using the skill again.' },
+};
+
+/** The glossary entry a word (or phrase) points to. */
+function termOf(word: string): string | undefined {
+  const w = word.toLowerCase().replace(/[.,:;!?()"]/g, '');
+  for (const [k, t] of Object.entries(GLOSSARY)) if (t.match.includes(w)) return k;
+  return undefined;
+}
+
+/** Glossary keys mentioned in a text, in order. */
+export function termsIn(desc: string): string[] {
+  const out: string[] = [];
+  for (const tok of tokens(desc)) {
+    const k = termOf(tok);
+    if (k && !out.includes(k)) out.push(k);
+  }
+  return out;
+}
+
+/** Words, with multi-word glossary phrases kept together. */
+function tokens(desc: string): string[] {
+  let s = desc;
+  const phrases = Object.values(GLOSSARY).flatMap((t) => t.match.filter((m) => m.includes(' ')));
+  for (const p of phrases) s = s.replace(new RegExp(p.replace(/[+%-]/g, (c) => `\\${c}`), 'gi'), (m) => m.replace(/ /g, ' '));
+  return s.split(/\s+/).filter(Boolean).map((t) => t.replace(/ /g, ' '));
+}
+
+/**
+ * Text laid out word by word inside `width`, with glossary words coloured and
+ * underlined; tapping one opens its entry. Returns the objects and the height.
+ */
+export function richText(scene: Phaser.Scene, x: number, y: number, desc: string, opts: { width: number; size?: number; color?: number; depth?: number }) {
+  const size = opts.size ?? 15;
+  const line = Math.round(size * 1.45);
+  const objs: Phaser.GameObjects.GameObject[] = [];
+  let cx = x;
+  let cy = y;
+  const space = size * 0.3;
+  for (const tok of tokens(desc)) {
+    const k = termOf(tok);
+    const t = scene.add.text(cx, cy, tok, { fontFamily: FONT, fontSize: `${size}px`, color: hex(k ? GLOSSARY[k].color : opts.color ?? PAL.muted), fontStyle: k ? '600' : '' });
+    if (opts.depth !== undefined) t.setDepth(opts.depth);
+    if (cx > x && cx + t.width > x + opts.width) {
+      cx = x;
+      cy += line;
+      t.setPosition(cx, cy);
+    }
+    objs.push(t);
+    if (k) {
+      const u = scene.add.rectangle(cx, cy + size + 3, t.width, 1, GLOSSARY[k].color, 0.7).setOrigin(0, 0.5);
+      if (opts.depth !== undefined) u.setDepth(opts.depth);
+      objs.push(u);
+      t.setInteractive({ useHandCursor: true }).on('pointerup', (p: Phaser.Input.Pointer) => {
+        if (p.getDistance() > 12) return; // a drag, not a tap
+        showTerm(scene, k, (opts.depth ?? 0) + 20);
+      });
+    }
+    cx += t.width + space;
+  }
+  return { objs, height: cy - y + line };
+}
+
+/** One glossary entry in a small card. */
+export function showTerm(scene: Phaser.Scene, key: string, depth = 80) {
+  const t = GLOSSARY[key];
+  if (!t) return;
+  const layer = scene.add.container(0, 0).setDepth(depth);
+  const shade = scene.add.rectangle(GAME_W / 2, GAME_H / 2, GAME_W, GAME_H, 0x09060b, 0.6).setInteractive();
+  shade.on('pointerup', () => layer.destroy());
+  const body = scene.add.text(GAME_W / 2, GAME_H / 2 + 6, t.text, { ...text.body(17, PAL.ivory), align: 'center', wordWrap: { width: GAME_W - 110 } }).setOrigin(0.5, 0);
+  const h = body.height + 110;
+  layer.add([shade, ...addFrame(scene, GAME_W / 2, GAME_H / 2 + h / 2 - 50, GAME_W - 60, h, { fill: 0x241925 })]);
+  layer.add(scene.add.text(GAME_W / 2, GAME_H / 2 - 22, t.title.toUpperCase(), text.display(22, t.color)).setOrigin(0.5));
+  layer.add(body);
+  layer.add(scene.add.text(GAME_W / 2, GAME_H / 2 + h - 72, 'Tap anywhere to close', text.body(13, PAL.steel)).setOrigin(0.5));
+}
+
+/**
+ * A skill, passive or Rite in full: its name, tags, the description with
+ * tappable effect words, extra facts, and each effect it uses explained.
+ */
+export function showDetail(scene: Phaser.Scene, d: { title: string; color?: number; tags: string; desc: string; facts?: string[] }, depth = 60) {
+  const layer = scene.add.container(0, 0).setDepth(depth);
+  layer.add(scene.add.rectangle(GAME_W / 2, GAME_H / 2, GAME_W, GAME_H, 0x09060b, 0.88).setInteractive());
+  const frame = addFrame(scene, GAME_W / 2, GAME_H / 2, GAME_W - 30, GAME_H - 120, { fill: 0x241925 });
+  layer.add(frame);
+  let y = 100;
+  layer.add(scene.add.text(GAME_W / 2, y, d.title, text.display(26, d.color ?? PAL.ivory)).setOrigin(0.5, 0));
+  y += 40;
+  layer.add(scene.add.text(GAME_W / 2, y, d.tags, { ...text.hud(12, PAL.steel), align: 'center', wordWrap: { width: GAME_W - 90 } }).setOrigin(0.5, 0));
+  y += 34;
+  const r = richText(scene, 48, y, d.desc, { width: GAME_W - 96, size: 18, color: PAL.ivory, depth });
+  layer.add(r.objs);
+  y += r.height + 12;
+  for (const f of d.facts ?? []) {
+    const t = scene.add.text(48, y, `·  ${f}`, { ...text.body(15, PAL.muted), wordWrap: { width: GAME_W - 96 } });
+    layer.add(t);
+    y += t.height + 6;
+  }
+  const terms = termsIn(d.desc);
+  if (terms.length) {
+    y += 10;
+    layer.add(scene.add.text(48, y, 'EFFECTS  ·  TAP A COLOURED WORD FOR MORE', text.hud(12, PAL.steel)));
+    y += 24;
+    for (const k of terms) {
+      if (y > GAME_H - 170) break;
+      const g = GLOSSARY[k];
+      layer.add(scene.add.text(48, y, g.title, { ...text.body(15, g.color), fontStyle: '600' }));
+      const t = scene.add.text(170, y, g.text, { ...text.body(14, PAL.muted), wordWrap: { width: GAME_W - 220 } });
+      layer.add(t);
+      y += Math.max(22, t.height) + 8;
+    }
+  }
+  const close = makeButton(scene, GAME_W / 2, GAME_H - 104, 220, 56, 'Done', () => layer.destroy(), { fontSize: 18 });
+  layer.add(close.all);
+  return layer;
+}
