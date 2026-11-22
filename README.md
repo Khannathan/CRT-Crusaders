@@ -56,6 +56,7 @@ Order art: `src/assets/ui/banner-<order id>.webp` is the banner backdrop on the 
 
 ## Reasons to keep going
 
+- **Leave and come back:** the tab bar stays on the crypt map, so you can visit the Roster or Sanctum mid-crusade and return from the Crusade tab. In a fight, **Menu** (top left) pauses on your turn and shows the tabs; the fight is kept exactly as it was until you return (Rite fights too, or abandon those for free).
 - **Repeat crusades** (Rank IV): a crypt cleared at the chosen Heresy tier shows **Repeat** on its card. Your Sisters replay it 1, 3 or 5 times on Auto (real fights, rewards and wounds), stopping at the first defeat. Logic in `src/systems/autorun.ts`, shared with the balance tests' path policy.
 - **The Bell Tower** (Rank VI): an endless climb of 60 floors that grow harder each step. Every 10th floor holds a boss, every 5th admits only one Order's Sisters, and every 8th only R and SR Sisters. Each floor pays once, on its first clear. Logic and tuning in `src/systems/tower.ts` (`floorDef`).
 - **The Inquisition** (Rank VIII): every two weeks a new Edict bends every fight (half healing, a short candle, iron-clad or hasted heretics) across three hard trials. Each trial earns 0-3 Brands (win, no one fallen, within 8 rounds); 3, 6 and 9 Brands pay Seals, Tithes and SSR+ gear once per rotation. A Sister who wins one trial must rest for the other two, and two featured Orders fight at +20% ATK and HP. Tuning in `src/systems/inquisition.ts`.

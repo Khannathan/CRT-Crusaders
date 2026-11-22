@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import { bondBattle } from '../systems/bonds';
-import { FONT, GAME_W, PAL, hex } from '../config';
+import { FONT, GAME_H, GAME_W, PAL, hex } from '../config';
+import { addTabBar } from '../ui/tabBar';
 import { RARITY_COLOR } from '../data/classes';
 import { CRUSADERS } from '../data/crusaders';
 import { ENEMIES } from '../data/enemies';
@@ -66,6 +67,8 @@ export class BattleScene extends Phaser.Scene {
   private strip: Phaser.GameObjects.GameObject[] = [];
   private vigilMax = 8;
   private toggles: Phaser.GameObjects.GameObject[] = [];
+  private pauseAsked = false;
+  private menuLayer?: Phaser.GameObjects.Container;
 
   constructor() {
     super('Battle');
@@ -80,11 +83,21 @@ export class BattleScene extends Phaser.Scene {
       return;
     }
     const encounter = challenge ? challenge.label : node!.encounter!;
-    // Seeded so a reported fight can be replayed exactly (see window.__crtLastBattle).
-    const seed = newSeed();
-    this.battle = challenge ? challenge.make(seeded(seed)) : makeBattle(game.save, run!, encounter, seeded(seed));
-    (window as unknown as Record<string, unknown>).__crtLastBattle = { balance: BALANCE_VERSION, encounter, seed, log: this.battle.log };
-    this.vigilMax = this.battle.vigil;
+    // A fight left from the Menu picks up where it stopped, if it is this same fight.
+    const p = current.paused;
+    const resume = p && (challenge ? p.challenge === challenge : !p.challenge && p.run === run && p.floor === run!.floor && p.at === run!.at) ? p : undefined;
+    if (resume) {
+      current.paused = undefined;
+      this.battle = resume.battle;
+    } else {
+      // Seeded so a reported fight can be replayed exactly (see window.__crtLastBattle).
+      const seed = newSeed();
+      this.battle = challenge ? challenge.make(seeded(seed)) : makeBattle(game.save, run!, encounter, seeded(seed));
+      (window as unknown as Record<string, unknown>).__crtLastBattle = { balance: BALANCE_VERSION, encounter, seed, log: this.battle.log };
+    }
+    this.pauseAsked = false;
+    this.menuLayer = undefined;
+    this.vigilMax = resume ? resume.vigilMax : this.battle.vigil;
     this.cards.clear();
     this.mode = 'busy';
     this.chosen = undefined;
@@ -120,8 +133,60 @@ export class BattleScene extends Phaser.Scene {
 
     for (const u of this.battle.units) this.makeCard(u);
     this.refresh();
-    this.logText.setText(challenge ? challenge.label : 'The dark stirs. Steel yourselves, Sisters.');
-    this.time.delayedCall(600, () => this.step());
+    if (resume) {
+      this.logText.setText('The fight resumes.');
+      this.time.delayedCall(400, () => this.resumeTurn(resume.actorUid));
+    } else {
+      this.logText.setText(challenge ? challenge.label : 'The dark stirs. Steel yourselves, Sisters.');
+      this.time.delayedCall(600, () => this.step());
+    }
+  }
+
+  // ---------- leaving mid-fight ----------
+
+  /** Menu: pauses on the player's turn (now, or the next one) and shows the tabs. */
+  private askMenu() {
+    if (this.menuLayer) return;
+    if (this.actor?.side === 'party' && (this.mode === 'skill' || this.mode === 'target')) return this.openMenu();
+    this.pauseAsked = true;
+    this.descText.setText('The fight will pause at your next turn.');
+  }
+
+  private openMenu() {
+    const actor = this.actor!;
+    current.paused = { battle: this.battle, actorUid: actor.uid, vigilMax: this.vigilMax, run: current.challenge ? undefined : current.run, floor: current.run?.floor, at: current.run?.at, challenge: current.challenge };
+    this.mode = 'busy';
+    this.clearSkills();
+    const style = { fontFamily: FONT, color: hex(PAL.ivory), align: 'center' };
+    const layer = this.add.container(0, 0).setDepth(30);
+    layer.add(this.add.rectangle(GAME_W / 2, GAME_H / 2, GAME_W, GAME_H, 0x09060b, 0.9).setInteractive());
+    layer.add(this.add.text(GAME_W / 2, 330, 'THE FIGHT WAITS', { ...style, fontSize: '30px', color: hex(PAL.amber) }).setOrigin(0.5));
+    layer.add(
+      this.add
+        .text(GAME_W / 2, 400, 'Your Sisters hold their ground until you return.\nCome back to it from the Crusade tab.', { ...style, fontSize: '19px', color: hex(PAL.muted), wordWrap: { width: GAME_W - 60 } })
+        .setOrigin(0.5),
+    );
+    const resume = makeButton(this, GAME_W / 2, 500, 260, 64, 'Resume the fight', () => {
+      layer.destroy();
+      tabs.forEach((o) => o.destroy());
+      this.menuLayer = undefined;
+      current.paused = undefined;
+      this.resumeTurn(actor.uid);
+    }, { active: true, icon: 'blade' });
+    layer.add(resume.all);
+    const tabs = addTabBar(this, '', 31);
+    this.menuLayer = layer;
+  }
+
+  /** Back to a party member's turn after a pause. */
+  private resumeTurn(uid: string) {
+    this.actor = this.battle.get(uid);
+    this.refresh();
+    this.mode = 'skill';
+    this.chosen = undefined;
+    this.logText.setText(`${this.actor.name}'s turn`);
+    if (settings.autoBattle) this.time.delayedCall(350, () => this.autoAct());
+    else this.showSkills();
   }
 
   // ---------- turn flow ----------
@@ -141,6 +206,10 @@ export class BattleScene extends Phaser.Scene {
         this.mode = 'skill';
         this.chosen = undefined;
         this.logText.setText(`${this.actor.name}'s turn`);
+        if (this.pauseAsked) {
+          this.pauseAsked = false;
+          return this.openMenu();
+        }
         if (settings.autoBattle) this.time.delayedCall(350, () => this.autoAct());
         else this.showSkills();
       }
@@ -197,7 +266,8 @@ export class BattleScene extends Phaser.Scene {
     this.toggles.forEach((o) => o.destroy());
     const auto = makeButton(this, 236, 24, 92, 40, settings.autoBattle ? 'Auto: On' : 'Auto', () => this.toggleAuto(), { active: settings.autoBattle, fontSize: 19 });
     const speed = makeButton(this, 340, 24, 92, 40, settings.battleSpeed === 2 ? 'Speed 2x' : 'Speed 1x', () => this.toggleSpeed(), { active: settings.battleSpeed === 2, fontSize: 19 });
-    this.toggles = [auto.box, auto.text, speed.box, speed.text];
+    const menu = makeButton(this, 150, 24, 70, 40, 'Menu', () => this.askMenu(), { fontSize: 19 });
+    this.toggles = [auto.box, auto.text, speed.box, speed.text, ...menu.all];
   }
 
   private toggleAuto() {

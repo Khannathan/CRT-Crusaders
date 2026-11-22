@@ -41,6 +41,19 @@ export class CrusadeScene extends Phaser.Scene {
       .text(GAME_W - PAD, top - 8, left ? `NEXT ${left} CLEARS +${PILGRIMAGE_BONUS.seals} SEALS EACH` : 'RENEWS MONDAY', text.hud(11, PAL.muted))
       .setOrigin(1, 1);
 
+    // A Rite fight left from its Menu
+    if (current.paused?.challenge && current.paused.challenge === current.challenge) {
+      this.add.text(GAME_W / 2, top + 40, current.challenge.label, { ...text.body(18, PAL.muted), align: 'center', wordWrap: { width: GAME_W - 60 } }).setOrigin(0.5);
+      makeButton(this, GAME_W / 2, top + 120, 360, 80, 'Return to the fight', () => this.scene.start('Battle'), { active: true, icon: 'blade' });
+      makeButton(this, GAME_W / 2, top + 220, 360, 56, 'Abandon it (costs nothing)', () => {
+        current.paused = undefined;
+        current.challenge = undefined;
+        this.scene.restart({});
+      }, { fontSize: 17 });
+      addTabBar(this, 'Crusade');
+      return;
+    }
+
     // Resume a run left mid-way (e.g. after switching tabs)
     if (current.run) {
       makeButton(this, GAME_W / 2, top + 90, 360, 80, 'Return to the dark', () => this.scene.start('Crypt'), { active: true, icon: 'blade' });
