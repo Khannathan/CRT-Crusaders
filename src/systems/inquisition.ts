@@ -6,6 +6,7 @@ import type { Battle } from './combat';
 import { BELFRY, skirmish } from './crusade';
 import type { Rng } from './gacha';
 import { claimGear, makeGear, rollGearRarity, type GearItem } from './gear';
+import { recommendedPower } from './power';
 import { track, weekKey } from './tasks';
 
 /**
@@ -148,6 +149,9 @@ export function inquisitionBattle(save: SaveData, party: string[], act: number, 
   }
   return b;
 }
+
+/** Recommended party power for an act, with the Edict's rule on the foes. */
+export const actRecommended = (save: SaveData, act: number, now = Date.now()) => recommendedPower(inquisitionBattle(save, [], act, undefined, now));
 
 export function applyEdict(b: Battle, id: EdictId) {
   if (id === 'famine') b.partyHeal = 0.5;

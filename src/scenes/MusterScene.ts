@@ -5,9 +5,10 @@ import { CRUSADERS } from '../data/crusaders';
 import { orderBonuses } from '../data/orders';
 import { commit, game } from '../state/game';
 import { current } from '../state/run';
-import { CRYPTS, MAX_PARTY, canMuster, startRun, suggestParty } from '../systems/crusade';
+import { CRYPTS, MAX_PARTY, canMuster, cryptRecommended, startRun, suggestParty } from '../systems/crusade';
 import { makeButton } from '../ui/button';
-import { formatPower, partyPower, sisterPower } from '../systems/power';
+import { formatPower, partyPower, powerVerdict, sisterPower } from '../systems/power';
+import { VERDICT_COLOR } from '../ui/recommended';
 import { portraitKey } from '../ui/placeholderPortrait';
 import { addIcon, addScreenGlow, text } from '../ui/theme';
 
@@ -37,9 +38,13 @@ export class MusterScene extends Phaser.Scene {
       .setOrigin(0.5);
 
     // Party power, top right
-    if (this.party.length) {
-      this.add.text(GAME_W - 16, 20, 'PARTY POWER', text.hud(11, PAL.steel)).setOrigin(1, 0);
-      this.add.text(GAME_W - 16, 36, formatPower(partyPower(game.save, this.party)), text.hud(16, PAL.amber)).setOrigin(1, 0);
+    {
+      const crypt = CRYPTS.find((c) => c.id === current.cryptId) ?? CRYPTS[0];
+      const rec = cryptRecommended(game.save, crypt, current.heresy?.[crypt.id] ?? 0);
+      const mine = partyPower(game.save, this.party);
+      this.add.text(GAME_W - 16, 14, 'PARTY POWER', text.hud(11, PAL.steel)).setOrigin(1, 0);
+      this.add.text(GAME_W - 16, 29, formatPower(mine), text.hud(16, VERDICT_COLOR[powerVerdict(mine, rec)])).setOrigin(1, 0);
+      this.add.text(GAME_W - 16, 50, `REC ${formatPower(rec)}`, text.hud(11, PAL.muted)).setOrigin(1, 0);
     }
 
     // Party slots

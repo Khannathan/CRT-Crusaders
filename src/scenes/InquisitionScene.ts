@@ -3,10 +3,12 @@ import { CRUSADERS } from '../data/crusaders';
 import { GAME_W, PAL } from '../config';
 import { game } from '../state/game';
 import { current } from '../state/run';
-import { BRAND_MARKS, FEATURED_BONUS, finishAct, foesOf, inquisitionBattle, inquisitionOf, markText, rotation, spentElsewhere, totalBrands } from '../systems/inquisition';
+import { BRAND_MARKS, actRecommended, FEATURED_BONUS, finishAct, foesOf, inquisitionBattle, inquisitionOf, markText, rotation, spentElsewhere, totalBrands } from '../systems/inquisition';
 import { makeButton } from '../ui/button';
 import { modeScreen, progressBar, toast, untilText } from '../ui/modeScreen';
 import { pickParty } from '../ui/partyPicker';
+import { accountPower } from '../systems/power';
+import { drawRecommended } from '../ui/recommended';
 import { PAD, addFrame, text } from '../ui/theme';
 import { drawStars } from './TrialsScene';
 
@@ -64,7 +66,9 @@ export class InquisitionScene extends Phaser.Scene {
       this.add.text(PAD + 16, y + 12, `${ACT_NUM[i]}. ${act.name}`, text.display(19, 0xfff1d6));
       drawStars(this, GAME_W - PAD - 70, y + 24, st.brands[i], 9);
       this.add.text(PAD + 16, y + 44, foesOf(act), { ...text.body(15, PAL.ivory), wordWrap: { width: bw - 32 } }).setCrop(0, 0, bw - 32, 22);
-      this.add.text(PAD + 16, y + 68, `Foes at ${Math.round(act.scale * 100)}% strength`, text.body(14, PAL.muted));
+      const at = this.add.text(PAD + 16, y + 68, `Foes at ${Math.round(act.scale * 100)}%`, text.body(14, PAL.muted));
+      const spent = spentElsewhere(save, i, now);
+      drawRecommended(this, at.x + at.width + 14, y + 71, actRecommended(save, i, now), accountPower(save, (c) => !spent.has(c.id)));
       this.add.text(PAD + 16, y + 92, used.length ? `Spent: ${used.map(first).join(', ')}` : 'No Sister spent yet', { ...text.body(14, used.length ? 0xe5a86a : PAL.steel), wordWrap: { width: bw - 190 } });
       makeButton(this, GAME_W - PAD - 82, y + h - 36, 140, 48, st.brands[i] ? 'Retry' : 'Judge', () => this.fight(i), { active: !st.brands[i], fontSize: 18, icon: 'blade' });
       y += h + 10;
@@ -88,6 +92,7 @@ export class InquisitionScene extends Phaser.Scene {
         allow: (c) => !spent.has(c.id),
         why: 'Spent on another trial',
         confirm: 'Judge',
+        rec: actRecommended(save, act),
       },
       (party) => {
         current.challenge = {

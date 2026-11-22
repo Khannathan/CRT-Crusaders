@@ -2,7 +2,7 @@ import { CRUSADERS } from '../data/crusaders';
 import type { CrusaderDef } from '../data/types';
 import type { SaveData } from '../state/save';
 import { CLASSES } from '../data/classes';
-import { CRIT_MULT, VOW_UPGRADES } from './combat';
+import { CRIT_MULT, VOW_UPGRADES, type Battle } from './combat';
 import { equipped, type GearItem } from './gear';
 import { statsFor, sisterStats, type Stats } from './stats';
 import { bondMult } from './bonds';
@@ -32,6 +32,14 @@ export const CP = {
   passive: 0.1,
   /** Sisters counted for account power (a full party). */
   accountTop: 4,
+  /**
+   * Recommended power is the foes' stat power times this. Tuned by auto-played
+   * fights: at 1.2 a party of that power wins most tries (the starter party
+   * meets the Ossuary at about level 4 or 5).
+   */
+  recommend: 1.2,
+  /** Below this share of the recommendation a fight is shown as dangerous. */
+  risky: 0.8,
 };
 
 export const offenseOf = (s: Stats) => s.atk * (1 + Math.min(1, s.crit) * (CRIT_MULT - 1)) * (s.spd / CP.speedBase);
@@ -81,9 +89,9 @@ export function gearSwapDelta(save: SaveData, c: CrusaderDef, item: GearItem) {
   return powerWith(save, c, swapped) - sisterPower(save, c);
 }
 
-/** Account power: the strongest full party. */
-export function accountPower(save: SaveData) {
-  return CRUSADERS.filter((c) => save.owned[c.id])
+/** Account power: the strongest full party (of the Sisters `allow` admits). */
+export function accountPower(save: SaveData, allow: (c: CrusaderDef) => boolean = () => true) {
+  return CRUSADERS.filter((c) => save.owned[c.id] && allow(c))
     .map((c) => sisterPower(save, c))
     .sort((a, b) => b - a)
     .slice(0, CP.accountTop)
@@ -93,3 +101,13 @@ export function accountPower(save: SaveData) {
 export const partyPower = (save: SaveData, party: string[]) => party.reduce((n, id) => n + (save.owned[id] ? sisterPowerById(save, id) : 0), 0);
 
 export const formatPower = (n: number) => n.toLocaleString('en-US');
+
+/** The foes' raw power in a built fight. */
+export const foePower = (b: Battle) => b.units.filter((u) => u.side === 'enemy').reduce((n, u) => n + statPower(u), 0);
+
+/** The party power a fight asks for, rounded to the nearest 100. */
+export const recommendedPower = (b: Battle) => Math.round((foePower(b) * CP.recommend) / 100) * 100;
+
+export type PowerVerdict = 'ready' | 'close' | 'danger';
+
+export const powerVerdict = (mine: number, rec: number): PowerVerdict => (mine >= rec ? 'ready' : mine >= rec * CP.risky ? 'close' : 'danger');

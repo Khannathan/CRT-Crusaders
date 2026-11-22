@@ -1,10 +1,13 @@
+import { BELFRY, OSSUARY, cryptRecommended } from './crusade';
+import { floorRecommended } from './tower';
+import { actRecommended } from './inquisition';
 import { describe, expect, it } from 'vitest';
 import { CRUSADERS } from '../data/crusaders';
 import { newSave } from '../state/save';
 import { equip, makeGear } from './gear';
 import { claimGear } from './gear';
 import { seeded } from './rng';
-import { accountPower, gearPower, gearSwapDelta, sisterPower } from './power';
+import { accountPower, gearPower, gearSwapDelta, partyPower, powerVerdict, sisterPower } from './power';
 
 const byRarity = (r: string, cls: string) => CRUSADERS.find((c) => c.rarity === r && c.classId === cls)!;
 
@@ -51,5 +54,20 @@ describe('Power', () => {
       .slice(0, 4)
       .reduce((a, b) => a + b, 0);
     expect(accountPower(save)).toBe(top4);
+  });
+
+  it('recommended power: the starter party meets the Ossuary by level 5, and harder fights ask more', () => {
+    const save = newSave();
+    const starter = ['CC-W013', 'CC-W052', 'CC-W001', 'CC-W022'];
+    for (const id of starter) save.owned[id] = { level: 5, vow: 0 };
+    const ossuary = cryptRecommended(save, OSSUARY);
+    expect(powerVerdict(partyPower(save, starter), ossuary)).toBe('ready');
+    for (const id of starter) save.owned[id] = { level: 1, vow: 0 };
+    expect(powerVerdict(partyPower(save, starter), ossuary)).not.toBe('ready');
+    expect(cryptRecommended(save, OSSUARY, 2)).toBeGreaterThan(ossuary);
+    expect(cryptRecommended(save, BELFRY)).toBeGreaterThan(ossuary);
+    expect(floorRecommended(save, 30)).toBeGreaterThan(floorRecommended(save, 1));
+    expect(actRecommended(save, 2)).toBeGreaterThan(0);
+    expect(ossuary % 100).toBe(0);
   });
 });

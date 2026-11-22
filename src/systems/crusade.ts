@@ -9,6 +9,7 @@ import type { SaveData } from '../state/save';
 import { Battle, VIGIL_DEFAULT, makeEnemy, type Unit } from './combat';
 import type { Rng } from './gacha';
 import { claimGear, makeGear, rollGearRarity, type GearItem } from './gear';
+import { recommendedPower } from './power';
 import { levelUpCost, sisterStats } from './stats';
 import { track, weekKey } from './tasks';
 
@@ -264,6 +265,9 @@ export function skirmish(save: SaveData, party: string[], encounter: string, tie
   for (const id of ids) run.hp[id] = maxHpOf(save, run, id);
   return makeBattle(save, run, encounter, rng, scale);
 }
+
+/** Recommended party power for a crypt at a Heresy tier: what its boss asks. */
+export const cryptRecommended = (save: SaveData, crypt: CryptDef, heresy = 0) => recommendedPower(skirmish(save, [], crypt.boss, heresy, undefined, crypt));
 
 /** The node being played, if it is not finished yet. */
 export function currentNode(run: RunState): MapNode | undefined {

@@ -5,8 +5,10 @@ import { CRUSADERS } from '../data/crusaders';
 import type { CrusaderDef } from '../data/types';
 import type { SaveData } from '../state/save';
 import { RARITY_ORDER } from '../systems/gacha';
+import { partyPower } from '../systems/power';
 import { makeButton } from './button';
 import { portraitKey } from './placeholderPortrait';
+import { drawRecommended } from './recommended';
 import { addFrame, text } from './theme';
 
 export interface PickOpts {
@@ -19,6 +21,8 @@ export interface PickOpts {
   allow?: (c: CrusaderDef) => boolean;
   why?: string;
   confirm: string;
+  /** Recommended party power, shown against the picked party's. */
+  rec?: number;
 }
 
 /**
@@ -65,6 +69,12 @@ export function pickParty(scene: Phaser.Scene, save: SaveData, opts: PickOpts, d
       layer.add(makeButton(scene, GAME_W / 2 - 90, GAME_H - 140, 60, 44, '‹', () => ((page = (page + pages - 1) % pages), draw()), { fontSize: 22 }).all);
       layer.add(scene.add.text(GAME_W / 2, GAME_H - 140, `${page + 1} / ${pages}`, text.hud(14, PAL.muted)).setOrigin(0.5));
       layer.add(makeButton(scene, GAME_W / 2 + 90, GAME_H - 140, 60, 44, '›', () => ((page = (page + 1) % pages), draw()), { fontSize: 22 }).all);
+    }
+    if (opts.rec) {
+      const parts = drawRecommended(scene, GAME_W / 2, GAME_H - 184, opts.rec, partyPower(save, picked), { size: 13, label: 'PARTY' });
+      const w = parts[1].x + parts[1].width - parts[0].x;
+      parts.forEach((p) => p.setX(p.x - w / 2));
+      layer.add(parts);
     }
     if (opts.why) layer.add(scene.add.text(GAME_W / 2, GAME_H - 104, opts.why, text.body(14, PAL.steel)).setOrigin(0.5));
     const go = makeButton(scene, GAME_W / 2 + 120, GAME_H - 62, 220, 60, opts.confirm, () => {
