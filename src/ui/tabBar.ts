@@ -26,6 +26,7 @@ export function tabOf(sceneKey: string): string {
   if (home === 'board') return 'Modes';
   if (home === 'cloister') return 'Cloister';
   if (home === 'sanctum' || sceneKey === 'Rank') return 'Sanctum';
+  if (sceneKey === 'PullHistory') return 'Recruit';
   return sceneKey;
 }
 

@@ -109,7 +109,18 @@ function pullOnce(save: SaveData, rng: Rng, floor: Rarity): PullResult {
   if (rank(rarity) >= rank('SSR')) save.pity = 0;
   if (rarity === 'UR') save.urPity = 0;
 
-  return grantSister(save, pickCrusader(save, rng, rarity));
+  const result = grantSister(save, pickCrusader(save, rng, rarity));
+  logPull(save, result);
+  return result;
+}
+
+/** How many recent pulls the history keeps. */
+export const PULL_LOG_MAX = 200;
+
+function logPull(save: SaveData, r: PullResult) {
+  const log = (save.pullLog ??= []);
+  log.push({ id: r.crusader.id, at: Date.now(), banner: save.banner?.order, isNew: r.isNew || undefined });
+  if (log.length > PULL_LOG_MAX) log.splice(0, log.length - PULL_LOG_MAX);
 }
 
 /** Adds a Sister, or a Vow token for a duplicate, or Tithes once her Vows are full. */
