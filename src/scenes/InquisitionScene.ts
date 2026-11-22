@@ -58,25 +58,30 @@ export class InquisitionScene extends Phaser.Scene {
       const x = PAD + (bw * m.at) / 9;
       const paid = st.paid.includes(m.at);
       this.add.rectangle(x - (i === 2 ? 2 : 0), y + 28, 4, 16, paid ? PAL.amber : PAL.steel);
-      const w = bw / 3 - 8;
-      this.add.text(PAD + (bw / 3) * i, y + 42, `${m.at}: ${markText(m)}${paid ? ' ✓' : ''}`, { ...text.body(13, paid ? PAL.amber : PAL.muted), wordWrap: { width: w } });
     });
-    y += 84;
+    // one full-width line per mark, so long rewards wrap instead of colliding
+    let my = y + 44;
+    for (const m of BRAND_MARKS) {
+      const paid = st.paid.includes(m.at);
+      const t = this.add.text(PAD, my, `${m.at} Brands${paid ? ' ✓' : ''}: ${markText(m)}`, { ...text.body(16, paid ? PAL.amber : PAL.muted), wordWrap: { width: bw } });
+      my += t.height + 2;
+    }
+    y = my + 8;
 
     // The three acts
     rot.acts.forEach((act, i) => {
-      const h = 140;
+      const h = 132;
       const used = st.used[i];
       addFrame(this, GAME_W / 2, y + h / 2, bw, h, { fill: 0x1e1520, edge: st.brands[i] === 3 ? PAL.amber : PAL.goldEdge });
       this.add.text(PAD + 16, y + 12, `${ACT_NUM[i]}. ${act.name}`, text.display(19, 0xfff1d6));
       drawStars(this, GAME_W - PAD - 70, y + 24, st.brands[i], 9);
       this.add.text(PAD + 16, y + 44, foesOf(act), { ...text.body(15, PAL.ivory), wordWrap: { width: bw - 32 } }).setCrop(0, 0, bw - 32, 22);
-      const at = this.add.text(PAD + 16, y + 68, `Foes at ${Math.round(act.scale * 100)}%`, text.body(14, PAL.muted));
       const spent = spentElsewhere(save, i, now);
-      drawRecommended(this, at.x + at.width + 14, y + 71, actRecommended(save, i, now), accountPower(save, (c) => !spent.has(c.id)));
-      this.add.text(PAD + 16, y + 92, used.length ? `Spent: ${used.map(first).join(', ')}` : 'No Sister spent yet', { ...text.body(14, used.length ? 0xe5a86a : PAL.steel), wordWrap: { width: bw - 190 } });
+      drawRecommended(this, PAD + 16, y + 72, actRecommended(save, i, now), accountPower(save, (c) => !spent.has(c.id)), { size: 14 });
+      const scale = `Foes at ${Math.round(act.scale * 100)}%`;
+      this.add.text(PAD + 16, y + 98, used.length ? `${scale} · Spent: ${used.map(first).join(', ')}` : `${scale} · no Sister spent`, { ...text.body(16, used.length ? 0xe5a86a : PAL.steel), wordWrap: { width: bw - 190 } });
       makeButton(this, GAME_W - PAD - 82, y + h - 36, 140, 48, st.brands[i] ? 'Retry' : 'Judge', () => this.fight(i), { active: !st.brands[i], fontSize: 18, icon: 'blade' });
-      y += h + 10;
+      y += h + 8;
     });
 
     if (this.notice) toast(this, this.notice);

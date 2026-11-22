@@ -109,5 +109,5 @@ describe('howls in battle', () => {
     // Everyone has the Cur; the best hound at its last level is worth having, not a win button.
     expect(shuck - cur).toBeLessThan(0.25);
     expect(wolf - cur).toBeLessThan(0.3);
-  });
+  }, 20_000); // 800 simulated fights: about 3 s alone, over 5 s on a busy CI runner
 });

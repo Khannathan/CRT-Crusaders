@@ -44,53 +44,63 @@ export class InventoryScene extends Phaser.Scene {
       ['SHARDS', `${shards}`, 'shards'],
       ['GEAR', `${save.gear?.length ?? 0}/${MAX_GEAR}`],
     ];
-    const cw = bw / cur.length;
+    // two rows of four: LABEL value, so every label has room at phone size
+    const cw = bw / 4;
     cur.forEach(([label, v, id], i) => {
-      const x = PAD + cw * i + cw / 2;
+      const x = PAD + cw * (i % 4) + cw / 2;
+      const ry = top + Math.floor(i / 4) * 24;
       // tap a currency to see where it comes from
-      if (id) tapForSources(this, this.add.zone(x, top + 18, cw - 4, 40), id);
-      this.add.text(x, top, label, text.hud(10, PAL.steel)).setOrigin(0.5, 0);
-      this.add.text(x, top + 16, v, text.hud(16, PAL.amber)).setOrigin(0.5, 0);
+      if (id) tapForSources(this, this.add.zone(x, ry + 10, cw - 4, 24), id);
+      const l = this.add.text(0, ry, label, text.hud(14, PAL.steel));
+      const n = this.add.text(0, ry, v, text.hud(14, PAL.amber));
+      const left = x - (l.width + 6 + n.width) / 2;
+      l.setX(left);
+      n.setX(left + l.width + 6);
     });
 
     // Materials, one row per family
-    let y = top + 50;
+    let y = top + 54;
     const cell = bw / 3;
-    const rowH = 92;
+    const rowH = 84;
     for (const f of FAMILIES) {
       this.add.text(PAD, y, f.name.toUpperCase(), text.hud(12, f.color));
       this.add.text(GAME_W - PAD, y, f.use, text.body(13, PAL.muted)).setOrigin(1, 0);
       itemIds(f.id).forEach((id, i) => {
         const cx = PAD + cell * i;
-        const cy = y + 52;
+        const cy = y + 50;
         const on = this.pick === id;
-        const hit = this.add.rectangle(cx + cell / 2, cy, cell - 6, 64, on ? 0x2a1d2b : 0x18111a).setStrokeStyle(1, on ? PAL.amber : PAL.armorShadow);
+        const hit = this.add.rectangle(cx + cell / 2, cy, cell - 6, 58, on ? 0x2a1d2b : 0x18111a).setStrokeStyle(1, on ? PAL.amber : PAL.armorShadow);
         hit.setInteractive({ useHandCursor: true }).on('pointerup', () => this.scene.restart({ pick: id }));
-        drawItemIcon(this, cx + 34, cy, id, 52);
+        drawItemIcon(this, cx + 30, cy, id, 50);
         const n = countOf(save, id);
-        this.add.text(cx + 66, cy - 20, itemDef(id).name, { ...text.body(13, n ? PAL.ivory : PAL.steel), wordWrap: { width: cell - 74 } }).setCrop(0, 0, cell - 74, 18);
-        this.add.text(cx + 66, cy + 2, `×${n}`, text.hud(16, n ? PAL.amber : PAL.steel));
+        // name may take two lines; the count sits on the icon like a stack badge
+        this.add.text(cx + 60, cy, itemDef(id).name, { ...text.body(16, n ? PAL.ivory : PAL.steel), wordWrap: { width: cell - 66 }, lineSpacing: -4 }).setOrigin(0, 0.5);
+        this.add.text(cx + 54, cy + 26, `×${n}`, { ...text.hud(14, n ? PAL.amber : PAL.steel), stroke: '#0b070c', strokeThickness: 4 }).setOrigin(1, 1);
       });
       y += rowH;
     }
 
     // The chosen material: what it is, and refining it
-    const panelTop = y + 4;
-    const panelH = GAME_H - TAB_BAR_H - panelTop - 12;
-    addFrame(this, GAME_W / 2, panelTop + panelH / 2, bw, panelH, { fill: 0x1e1520 });
     if (!this.pick) {
-      this.add.text(GAME_W / 2, panelTop + panelH / 2, `Tap a material to read it. ${REFINE} of a kind refine into one of the next.`, { ...text.body(16, PAL.muted), align: 'center', wordWrap: { width: bw - 40 } }).setOrigin(0.5);
+      const room = GAME_H - TAB_BAR_H - y;
+      this.add.text(GAME_W / 2, y + room / 2 - 4, `Tap a material to read it. ${REFINE} of a kind refine into one of the next.`, { ...text.body(16, PAL.muted), align: 'center', wordWrap: { width: bw - 20 } }).setOrigin(0.5);
     } else {
+      // a sheet over the lower rows, with room for the flavour text and both buttons; tap outside to close
+      const panelH = 210;
+      const panelTop = GAME_H - TAB_BAR_H - panelH - 10;
+      this.add.rectangle(GAME_W / 2, GAME_H / 2, GAME_W, GAME_H, 0x000000, 0.55).setInteractive().on('pointerup', () => this.scene.restart({}));
+      addFrame(this, GAME_W / 2, panelTop + panelH / 2, bw, panelH, { fill: 0x1e1520, edge: PAL.amber });
+      this.add.zone(GAME_W / 2, panelTop + panelH / 2, bw, panelH).setInteractive();
       const d = itemDef(this.pick);
       const n = countOf(save, this.pick);
-      this.add.text(PAD + 16, panelTop + 12, `${d.name}  ×${n}`, text.display(18, 0xfff1d6));
+      this.add.text(PAD + 16, panelTop + 12, `${d.name}  ×${n}`, { ...text.display(20, 0xfff1d6), wordWrap: { width: bw - 180 } });
       const pick = this.pick;
-      makeButton(this, GAME_W - PAD - 74, panelTop + 26, 128, 34, 'Where to get', () => showSources(this, pick), { fontSize: 13 });
-      this.add.text(PAD + 16, panelTop + 40, d.flavor, { ...text.body(15, PAL.muted), fontStyle: 'italic', wordWrap: { width: bw - 32 } });
+      makeButton(this, GAME_W - PAD - 78, panelTop + 28, 136, 40, 'Where to get', () => showSources(this, pick), { fontSize: 15 });
+      this.add.text(PAD + 16, panelTop + 56, d.flavor, { ...text.body(16, PAL.muted), fontStyle: 'italic', wordWrap: { width: bw - 32 } });
       if (d.tier < 3) {
         const next = itemDef(`${d.family}${d.tier + 1}` as ItemId);
         const most = Math.floor(n / REFINE);
-        const by = panelTop + panelH - 32;
+        const by = panelTop + panelH - 34;
         const go = (times: number) => () => {
           if (refine(save, this.pick!, times)) {
             commit();

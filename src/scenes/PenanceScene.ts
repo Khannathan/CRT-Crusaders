@@ -60,20 +60,19 @@ export class PenanceScene extends Phaser.Scene {
       const x = PAD + bw * (m.at / max);
       this.add.rectangle(x, by, 4, 18, dev >= m.at ? PAL.amber : PAL.armorShadow);
       const cx = PAD + mw / 2 + i * (mw + 10);
-      const cy = by + 74;
+      const cy = by + 90;
       const got = st.claimed.includes(m.at);
       const ready = dev >= m.at && !got;
-      addFrame(this, cx, cy, mw, 96, { fill: ready ? 0x2c1a24 : 0x1b131d, edge: ready ? PAL.amber : PAL.armorShadow, ticks: ready });
+      addFrame(this, cx, cy, mw, 128, { fill: ready ? 0x2c1a24 : 0x1b131d, edge: ready ? PAL.amber : PAL.armorShadow, ticks: ready });
       // ui-mark / ui-mark-ready / ui-mark-claimed .png: a reliquary box on the left of the mark when present
       const markKey = got ? 'ui-mark-claimed' : ready ? 'ui-mark-ready' : 'ui-mark';
-      const box = this.textures.exists(markKey) ? this.add.image(cx - mw / 2 + 26, cy - 14, markKey).setDisplaySize(40, 40) : null;
-      const tx = box ? cx + 18 : cx;
-      const tw = box ? mw - 56 : mw - 12;
-      this.add.text(tx, cy - 32, `AT ${m.at}`, text.hud(12, ready ? PAL.amber : PAL.steel)).setOrigin(0.5);
-      this.add.text(tx, cy - 10, rewardText(m.reward), { ...text.body(box ? 14 : 16, PAL.ivory), align: 'center', wordWrap: { width: tw } }).setOrigin(0.5);
-      if (got) this.add.text(cx, cy + 28, 'CLAIMED', text.hud(12, PAL.muted)).setOrigin(0.5);
+      const box = this.textures.exists(markKey) ? this.add.image(cx - 24, cy - 42, markKey).setDisplaySize(36, 36) : null;
+      // box and threshold on top, the reward gets the full width of the card below them
+      this.add.text(box ? cx + 2 : cx, cy - 42, `AT ${m.at}`, text.hud(14, ready ? PAL.amber : PAL.steel)).setOrigin(box ? 0 : 0.5, 0.5);
+      this.add.text(cx, cy, rewardText(m.reward), { ...text.body(15, PAL.ivory), align: 'center', wordWrap: { width: mw - 10 }, lineSpacing: -3 }).setOrigin(0.5);
+      if (got) this.add.text(cx, cy + 44, 'CLAIMED', text.hud(14, PAL.muted)).setOrigin(0.5);
       else
-        makeButton(this, cx, cy + 28, mw - 20, 32, 'Claim', () => {
+        makeButton(this, cx, cy + 44, mw - 20, 32, 'Claim', () => {
           if (claimMark(save, this.period, m.at)) {
             commit();
             refresh();
@@ -83,7 +82,7 @@ export class PenanceScene extends Phaser.Scene {
     });
 
     // Task list
-    let y = by + 152;
+    let y = by + 168;
     for (const t of TASKS[this.period]) {
       const have = st.progress[t.id] ?? 0;
       const done = have >= t.need;

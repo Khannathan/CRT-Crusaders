@@ -83,7 +83,7 @@ export class RecruitScene extends Phaser.Scene {
       holdForCard(this, img, c.id);
       addBadge(this, x - size / 2 + 4, y - size / 2 + 4, label, ur ? PAL.amber : RARITY_COLOR.SSR, ur ? 12 : 10);
       this.add.text(x, y + size / 2 + 14, ur ? c.name : c.name.split(' ')[0], { ...text.body(ur ? 18 : 15, ur ? 0xfff1d6 : PAL.ivory), fontStyle: '600' }).setOrigin(0.5);
-      this.add.text(x, y + size / 2 + 34, (c.title ?? CLASSES[c.classId].name).toUpperCase(), text.hud(ur ? 11 : 9, PAL.muted)).setOrigin(0.5);
+      this.add.text(x, y + size / 2 + 26, c.title ?? CLASSES[c.classId].name, { ...text.body(16, PAL.muted), align: 'center', wordWrap: { width: size + 50 }, lineSpacing: -4 }).setOrigin(0.5, 0);
     }
 
     // Banner rules and pity

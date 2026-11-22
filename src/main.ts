@@ -5,6 +5,7 @@ import { KennelScene } from './scenes/KennelScene';
 import { HuntScene } from './scenes/HuntScene';
 import { GAME_H, GAME_W, PAL } from './config';
 import { installCrt } from './fx/crt';
+import { installReadableText } from './ui/readable';
 import { music } from './audio/music';
 import { BattleScene } from './scenes/BattleScene';
 import { BootScene } from './scenes/BootScene';
@@ -49,6 +50,7 @@ async function loadFonts() {
 }
 
 function start() {
+  installReadableText();
   const game = new Phaser.Game({
     type: Phaser.AUTO, // WebGL, falling back to canvas
     parent: 'game',
