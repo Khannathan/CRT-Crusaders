@@ -3,7 +3,8 @@ import { FONT, GAME_H, GAME_W, PAL, hex } from '../config';
 import { CLASSES, RARITY_COLOR } from '../data/classes';
 import { CRUSADERS } from '../data/crusaders';
 import { formatPower, gearPower, gearSwapDelta, sisterPower } from '../systems/power';
-import { ORDERS } from '../data/orders';
+import { ORDERS, ORDER_LIST } from '../data/orders';
+import type { SaveData } from '../state/save';
 import { CLASS_SKILLS } from '../data/skills';
 import { VOW_UPGRADES } from '../systems/combat';
 import type { CrusaderDef } from '../data/types';
@@ -38,12 +39,52 @@ import { PAD, addArt, addBackdrop, addBadge, addFrame, addHeading, addIcon, addS
 
 type Tab = 'oath' | 'skills' | 'gear';
 
+export type SortKey = 'power' | 'level' | 'rarity' | 'class' | 'order' | 'name';
+const SORTS: { key: SortKey; label: string }[] = [
+  { key: 'power', label: 'Power' },
+  { key: 'level', label: 'Level' },
+  { key: 'rarity', label: 'Rarity' },
+  { key: 'class', label: 'Class' },
+  { key: 'order', label: 'Order' },
+  { key: 'name', label: 'Name' },
+];
+const CLASS_ORDER = Object.keys(CLASSES);
+
+/** Which Sisters the grid shows. Empty sets mean "any". */
+interface RosterFilter {
+  rarity: Set<string>;
+  classId: Set<string>;
+  order: Set<string>;
+  unsworn: boolean;
+}
+
+/** Sworn first, then by the chosen key (strongest, highest or A to Z first). */
+export function sortRoster(save: SaveData, list: CrusaderDef[], key: SortKey): CrusaderDef[] {
+  const owned = save.owned;
+  const pw = new Map(list.map((c) => [c.id, sisterPower(save, c)]));
+  const rar = (c: CrusaderDef) => RARITY_ORDER.indexOf(c.rarity);
+  const by: Record<SortKey, (a: CrusaderDef, b: CrusaderDef) => number> = {
+    power: (a, b) => pw.get(b.id)! - pw.get(a.id)!,
+    level: (a, b) => (owned[b.id]?.level ?? 0) - (owned[a.id]?.level ?? 0),
+    rarity: (a, b) => rar(b) - rar(a),
+    class: (a, b) => CLASS_ORDER.indexOf(a.classId) - CLASS_ORDER.indexOf(b.classId),
+    order: (a, b) => ORDER_LIST.findIndex((o) => o.name === a.order) - ORDER_LIST.findIndex((o) => o.name === b.order),
+    name: (a, b) => a.name.localeCompare(b.name),
+  };
+  return [...list].sort(
+    (a, b) => Number(!!owned[b.id]) - Number(!!owned[a.id]) || by[key](a, b) || rar(b) - rar(a) || pw.get(b.id)! - pw.get(a.id)! || a.name.localeCompare(b.name),
+  );
+}
+
 /** Every Sister: sworn ones first (highest rarity first), the rest as silhouettes. */
 export class RosterScene extends Phaser.Scene {
   private openId?: string;
   private tab: Tab = 'oath';
   /** Kept across restarts so levelling up a Sister doesn't jump the list back to the top. */
   private static scrollY = 0;
+  /** Sort and filter, kept while the game runs. */
+  private static sortKey: SortKey = 'power';
+  private static filter: RosterFilter = { rarity: new Set(), classId: new Set(), order: new Set(), unsworn: true };
   private dragged = false;
   private detailOpen = false;
 
@@ -64,11 +105,28 @@ export class RosterScene extends Phaser.Scene {
     const top = addHeading(this, 'Roster', CURRENCY_BAR_H + 10);
     this.add.text(GAME_W - PAD, top - 8, `${count} / ${CRUSADERS.length}`, text.hud(16, PAL.muted)).setOrigin(1, 1);
 
-    const sorted = [...CRUSADERS].sort(
-      (a, b) =>
-        Number(!!owned[b.id]) - Number(!!owned[a.id]) ||
-        RARITY_ORDER.indexOf(b.rarity) - RARITY_ORDER.indexOf(a.rarity),
+    const f = RosterScene.filter;
+    const shown = CRUSADERS.filter(
+      (c) =>
+        (f.unsworn || owned[c.id]) &&
+        (!f.rarity.size || f.rarity.has(c.rarity)) &&
+        (!f.classId.size || f.classId.has(c.classId)) &&
+        (!f.order.size || f.order.has(c.order)),
     );
+    const sorted = sortRoster(game.save, shown, RosterScene.sortKey);
+
+    // Sort (tap to cycle) and Filter
+    const nf = f.rarity.size + f.classId.size + f.order.size + (f.unsworn ? 0 : 1);
+    const cy = top + 22;
+    const sortLabel = SORTS.find((x) => x.key === RosterScene.sortKey)!.label;
+    makeButton(this, PAD + 100, cy, 200, 40, `Sort: ${sortLabel}`, () => {
+      const i = SORTS.findIndex((x) => x.key === RosterScene.sortKey);
+      RosterScene.sortKey = SORTS[(i + 1) % SORTS.length].key;
+      RosterScene.scrollY = 0;
+      this.scene.restart({});
+    }, { fontSize: 16 });
+    makeButton(this, PAD + 310, cy, 200, 40, nf ? `Filter (${nf})` : 'Filter', () => this.filterPanel(), { fontSize: 16, active: nf > 0 });
+    if (!sorted.length) this.add.text(GAME_W / 2, top + 140, 'No Sister matches these filters.', text.body(18, PAL.muted)).setOrigin(0.5);
 
     // Cards as in the preview: portrait, rarity badge, name and level underneath.
     const cols = 3;
@@ -76,7 +134,7 @@ export class RosterScene extends Phaser.Scene {
     const cw = (GAME_W - PAD * 2 - gap * (cols - 1)) / cols;
     const ph = 128;
     const ch = ph + 46;
-    const y0 = top + 12;
+    const y0 = top + 56;
     const party = new Set(game.save.lastParty);
     const firstCard = this.children.list.length;
     sorted.forEach((c, i) => {
@@ -184,6 +242,61 @@ export class RosterScene extends Phaser.Scene {
     if (reopen) this.showDetail(reopen, this.tab);
   }
 
+
+  /** Filter chips: rarity, class, Order, and whether to show unsworn Sisters. */
+  private filterPanel() {
+    const f = RosterScene.filter;
+    const layer = this.add.container(0, 0).setDepth(20);
+    this.detailOpen = true;
+    layer.once('destroy', () => (this.detailOpen = false));
+    const redraw = () => {
+      layer.removeAll(true);
+      layer.add(this.add.rectangle(GAME_W / 2, GAME_H / 2, GAME_W, GAME_H, 0x09060b, 0.94).setInteractive());
+      layer.add(addFrame(this, GAME_W / 2, GAME_H / 2, GAME_W - 24, GAME_H - 40, { fill: 0x241925 }));
+      layer.add(this.add.text(GAME_W / 2, 58, 'FILTER THE ROSTER', text.display(22, PAL.ivory)).setOrigin(0.5));
+      let y = 100;
+      const chip = (x: number, w: number, label: string, on: boolean, toggle: () => void) => {
+        const b = makeButton(this, x, y, w, 40, label, () => {
+          toggle();
+          redraw();
+        }, { active: on, fontSize: 15 });
+        layer.add(b.all);
+      };
+      const section = (title: string) => {
+        layer.add(this.add.text(PAD + 12, y, title, text.hud(12, PAL.amber)));
+        y += 42;
+      };
+      const flip = (set: Set<string>, v: string) => () => (set.has(v) ? set.delete(v) : set.add(v));
+      const row = (items: [string, string][], set: Set<string>, cols: number) => {
+        const w = (GAME_W - 56 - (cols - 1) * 8) / cols;
+        items.forEach(([v, label], i) => {
+          if (i && i % cols === 0) y += 48;
+          chip(28 + w / 2 + (i % cols) * (w + 8), w, label, set.has(v), flip(set, v));
+        });
+        y += 52;
+      };
+      section('RARITY');
+      row(RARITY_ORDER.slice().reverse().map((r) => [r, r]), f.rarity, 4);
+      section('CLASS');
+      row(CLASS_ORDER.map((id) => [id, CLASSES[id].name.split(' ').pop()!]), f.classId, 3);
+      section('ORDER');
+      row(ORDER_LIST.map((o) => [o.name, o.name]), f.order, 2);
+      chip(GAME_W / 2, GAME_W - 56, f.unsworn ? 'Showing unsworn Sisters' : 'Hiding unsworn Sisters', f.unsworn, () => (f.unsworn = !f.unsworn));
+      const clear = makeButton(this, GAME_W / 2 - 120, GAME_H - 62, 220, 60, 'Clear all', () => {
+        f.rarity.clear();
+        f.classId.clear();
+        f.order.clear();
+        f.unsworn = true;
+        redraw();
+      }, { fontSize: 19 });
+      const done = makeButton(this, GAME_W / 2 + 120, GAME_H - 62, 220, 60, 'Done', () => {
+        RosterScene.scrollY = 0;
+        this.scene.restart({});
+      }, { fontSize: 19, active: true });
+      layer.add([...clear.all, ...done.all]);
+    };
+    redraw();
+  }
 
   private reopen(c: CrusaderDef, tab: Tab) {
     this.scene.restart({ openId: c.id, tab });
