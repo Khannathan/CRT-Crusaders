@@ -3,10 +3,13 @@ import { ALMS_FOR_GEAR, earn } from './currency';
 import type { SaveData } from '../state/save';
 import type { Rng } from './gacha';
 import { track } from './tasks';
+import { bagText, hasAll, spend, type Bag } from './items';
 
 /**
  * Gear: three slots per Sister. Each piece has a rarity, a main stat that grows
- * when enhanced with Tithes, and 0-3 substats (one per rarity step above R).
+ * when enhanced (Tithes to +10, then Blessed Iron too, up to +15), 0-3
+ * substats (one per rarity step above R) that Blessed Iron can reroll, and a
+ * set: two or three pieces of one set on a Sister add a bonus.
  */
 export type GearSlot = 'blade' | 'habit' | 'rosary';
 export type GearStat = 'atkPct' | 'hpPct' | 'armorPct' | 'crit' | 'spd';
@@ -22,12 +25,14 @@ export interface GearItem {
   slot: GearSlot;
   rarity: Rarity;
   name: string;
-  /** Enhance level, 0 to MAX_GEAR_LEVEL. */
+  /** Enhance level, 0 to MAX_REFINE. */
   level: number;
   main: GearStat;
   subs: GearSub[];
   /** Sister id wearing it. */
   on?: string;
+  /** Older pieces and the starter set have none. */
+  set?: GearSetId;
 }
 
 export const GEAR_SLOTS: GearSlot[] = ['blade', 'habit', 'rosary'];
@@ -35,7 +40,14 @@ export const SLOT_NAME: Record<GearSlot, string> = { blade: 'Blade', habit: 'Hab
 export const SLOT_HINT: Record<GearSlot, string> = { blade: 'Attack', habit: 'HP or Armor', rosary: 'Crit, Speed or Attack' };
 export const STAT_NAME: Record<GearStat, string> = { atkPct: 'ATK', hpPct: 'HP', armorPct: 'ARM', crit: 'CRIT', spd: 'SPD' };
 
+/** Tithes alone take a piece this far. */
 export const MAX_GEAR_LEVEL = 10;
+/** Refinement past +10 needs Blessed Iron as well. */
+export const MAX_REFINE = 15;
+/** Iron for each level past +10: index 0 is the step to +11. */
+export const REFINE_IRON: Bag[] = [{ iron1: 10 }, { iron1: 15 }, { iron2: 4 }, { iron2: 6 }, { iron2: 6, iron3: 2 }];
+/** Rerolling a piece's substats. */
+export const REROLL_COST = { items: { iron2: 2 } as Bag, tithes: 300 };
 /** Pieces kept in the armory. Loot beyond this is melted down for Tithes. */
 export const MAX_GEAR = 60;
 
@@ -47,7 +59,7 @@ const MAIN_BASE: Record<GearStat, number> = { atkPct: 0.08, hpPct: 0.08, armorPc
 const SUB_BASE: Record<GearStat, number> = { atkPct: 0.03, hpPct: 0.03, armorPct: 0.04, crit: 0.03, spd: 1 };
 const MAIN_CHOICES: Record<GearSlot, GearStat[]> = { blade: ['atkPct'], habit: ['hpPct', 'armorPct'], rosary: ['crit', 'spd', 'atkPct'] };
 /** Enhancing to these levels improves a random substat. */
-export const SUB_UPGRADE_LEVELS = [3, 6, 9];
+export const SUB_UPGRADE_LEVELS = [3, 6, 9, 12, 15];
 
 const PREFIX: Record<Rarity, string[]> = {
   R: ['Worn', 'Pilgrim', 'Penitent', 'Tarnished'],
@@ -65,7 +77,7 @@ const pick = <T>(rng: Rng, xs: T[]) => xs[Math.floor(rng() * xs.length) % xs.len
 const round = (stat: GearStat, n: number) => (stat === 'spd' ? Math.round(n) : Math.round(n * 1000) / 1000);
 
 export function mainValue(item: Pick<GearItem, 'main' | 'rarity' | 'level'>): number {
-  return round(item.main, MAIN_BASE[item.main] * GEAR_RARITY_MULT[item.rarity] * (1 + 0.1 * item.level));
+  return round(item.main, MAIN_BASE[item.main] * GEAR_RARITY_MULT[item.rarity] * (1 + 0.1 * Math.min(item.level, MAX_GEAR_LEVEL) + 0.15 * Math.max(0, item.level - MAX_GEAR_LEVEL)));
 }
 
 export function makeGear(rng: Rng, rarity: Rarity, slot: GearSlot = pick(rng, GEAR_SLOTS)): GearItem {
@@ -76,7 +88,8 @@ export function makeGear(rng: Rng, rarity: Rarity, slot: GearSlot = pick(rng, GE
     const stat = pool.splice(Math.floor(rng() * pool.length) % pool.length, 1)[0];
     subs.push({ stat, value: SUB_BASE[stat] });
   }
-  return { uid: '', slot, rarity, name: `${pick(rng, PREFIX[rarity])} ${pick(rng, NOUN[slot])}`, level: 0, main, subs };
+  const name = `${pick(rng, PREFIX[rarity])} ${pick(rng, NOUN[slot])}`;
+  return { uid: '', slot, rarity, name, level: 0, main, subs, set: pick(rng, GEAR_SETS).id };
 }
 
 /** Rarity of a dropped piece. `luck` (0-1) shifts the odds upward: elites, bosses and Heresy add to it. */
@@ -91,11 +104,24 @@ export function rollGearRarity(rng: Rng, luck = 0): Rarity {
 export const enhanceCost = (item: GearItem) => Math.round(25 * (item.level + 1) * GEAR_RARITY_MULT[item.rarity]);
 export const salvageValue = (item: GearItem) => Math.round(15 * GEAR_RARITY_MULT[item.rarity] * (1 + item.level));
 
-/** Spends Tithes to raise a piece one level. Returns false if it can't. */
+/** Blessed Iron for the next level, past +10. */
+export const refineIron = (item: GearItem): Bag | undefined => (item.level >= MAX_GEAR_LEVEL ? REFINE_IRON[item.level - MAX_GEAR_LEVEL] : undefined);
+
+/** Why the piece cannot be enhanced now, or undefined. */
+export function enhanceBlock(save: SaveData, item: GearItem): string | undefined {
+  if (item.level >= MAX_REFINE) return 'Fully refined';
+  const iron = refineIron(item);
+  if (iron && !hasAll(save, iron)) return 'Not enough Blessed Iron';
+  if (save.tithes < enhanceCost(item)) return 'Not enough Tithes';
+  return undefined;
+}
+
+/** Spends Tithes (and Blessed Iron past +10) to raise a piece one level. Returns false if it can't. */
 export function enhance(save: SaveData, item: GearItem, rng: Rng = Math.random): boolean {
-  const cost = enhanceCost(item);
-  if (item.level >= MAX_GEAR_LEVEL || save.tithes < cost) return false;
-  save.tithes -= cost;
+  if (enhanceBlock(save, item)) return false;
+  const iron = refineIron(item);
+  if (iron) spend(save, iron);
+  save.tithes -= enhanceCost(item);
   item.level += 1;
   track(save, 'enhance');
   if (SUB_UPGRADE_LEVELS.includes(item.level) && item.subs.length) {
@@ -104,6 +130,32 @@ export function enhance(save: SaveData, item: GearItem, rng: Rng = Math.random):
   }
   return true;
 }
+
+export function rerollBlock(save: SaveData, item: GearItem): string | undefined {
+  if (!item.subs.length) return 'No substats';
+  if (!hasAll(save, REROLL_COST.items)) return 'Not enough Blessed Iron';
+  if (save.tithes < REROLL_COST.tithes) return 'Not enough Tithes';
+  return undefined;
+}
+
+/**
+ * New stats for every substat, keeping how many times each was rolled: a sub
+ * upgraded twice stays three rolls strong, of whatever stat it becomes.
+ */
+export function rerollSubs(save: SaveData, item: GearItem, rng: Rng = Math.random): boolean {
+  if (rerollBlock(save, item)) return false;
+  spend(save, REROLL_COST.items);
+  save.tithes -= REROLL_COST.tithes;
+  const pool = (Object.keys(SUB_BASE) as GearStat[]).filter((st) => st !== item.main);
+  item.subs = item.subs.map((sub) => {
+    const rolls = Math.max(1, Math.round(sub.value / SUB_BASE[sub.stat]));
+    const stat = pool.splice(Math.floor(rng() * pool.length) % pool.length, 1)[0];
+    return { stat, value: round(stat, SUB_BASE[stat] * rolls) };
+  });
+  return true;
+}
+
+export const ironText = (bag: Bag | undefined) => bagText(bag);
 
 export const gearOf = (save: SaveData) => (save.gear ??= []);
 export const equipped = (save: SaveData, sisterId: string) => gearOf(save).filter((g) => g.on === sisterId);
@@ -162,8 +214,46 @@ export function gearBonus(items: GearItem[]): GearBonus {
     b[g.main] += mainValue(g);
     for (const s of g.subs) b[s.stat] += s.value;
   }
+  for (const { set, count } of setsWorn(items)) {
+    const add = (bonus: Partial<GearBonus>) => (Object.entries(bonus) as [GearStat, number][]).forEach(([k, v]) => (b[k] += v));
+    if (count >= 2) add(set.two);
+    if (count >= 3) add(set.three);
+  }
   return b;
 }
+
+// ---- Sets ----------------------------------------------------------------
+
+export type GearSetId = 'flagellant' | 'cloister' | 'pilgrim' | 'inquisitor';
+
+export interface GearSet {
+  id: GearSetId;
+  name: string;
+  /** Two pieces worn. */
+  two: Partial<GearBonus>;
+  /** All three pieces worn, on top of the two-piece bonus. */
+  three: Partial<GearBonus>;
+  color: number;
+}
+
+export const GEAR_SETS: GearSet[] = [
+  { id: 'flagellant', name: 'Flagellant', two: { atkPct: 0.08 }, three: { crit: 0.1 }, color: 0xd36a5c },
+  { id: 'cloister', name: 'Cloister', two: { hpPct: 0.1 }, three: { armorPct: 0.15 }, color: 0x9aa7b4 },
+  { id: 'pilgrim', name: 'Pilgrim', two: { spd: 2 }, three: { atkPct: 0.06, hpPct: 0.06 }, color: 0x8fc07a },
+  { id: 'inquisitor', name: 'Inquisitor', two: { crit: 0.06 }, three: { atkPct: 0.12 }, color: 0xb592c8 },
+];
+
+export const gearSet = (id: GearSetId | undefined) => GEAR_SETS.find((x) => x.id === id);
+
+/** Sets among the pieces worn, with how many of each. */
+export function setsWorn(items: GearItem[]): { set: GearSet; count: number }[] {
+  return GEAR_SETS.map((set) => ({ set, count: items.filter((g) => g.set === set.id).length })).filter((x) => x.count > 0);
+}
+
+const bonusText = (b: Partial<GearBonus>) => (Object.entries(b) as [GearStat, number][]).map(([k, v]) => formatStat(k, v)).join(' ');
+
+/** "2: +8% ATK · 3: +10% CRIT". */
+export const setText = (set: GearSet) => `2: ${bonusText(set.two)} · 3: ${bonusText(set.three)}`;
 
 export const formatStat = (stat: GearStat, v: number) => (stat === 'spd' ? `+${Math.round(v)} ${STAT_NAME[stat]}` : `+${Math.round(v * 100)}% ${STAT_NAME[stat]}`);
 

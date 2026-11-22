@@ -13,10 +13,21 @@ import { MAX_VOW, RARITY_ORDER, takeVow } from '../systems/gacha';
 import {
   GEAR_SLOTS,
   MAX_GEAR_LEVEL,
+  MAX_REFINE,
+  REROLL_COST,
+  SUB_UPGRADE_LEVELS,
   SLOT_HINT,
   SLOT_NAME,
   enhance,
+  enhanceBlock,
   enhanceCost,
+  gearSet,
+  ironText,
+  refineIron,
+  rerollBlock,
+  rerollSubs,
+  setText,
+  setsWorn,
   equip,
   equipped,
   formatStat,
@@ -26,11 +37,13 @@ import {
   salvage,
   salvageValue,
   unequip,
+  type GearItem,
   type GearSlot,
 } from '../systems/gear';
 import { levelCap, levelUpCost, sisterStats, vowCost } from '../systems/stats';
 import { ascend, ascendBlock, costLine, nextAscension } from '../systems/ascension';
 import { ROMAN_RANK } from '../systems/rank';
+import { countOf, itemDef } from '../systems/items';
 import { MAX_SKILL_LEVEL, nextSkillStep, raiseSkill, skillBlock, skillLevels, stepText } from '../systems/skillLevels';
 import { track } from '../systems/tasks';
 import { makeButton } from '../ui/button';
@@ -545,23 +558,18 @@ export class RosterScene extends Phaser.Scene {
       // ui-gear-slot.png (9-slice row, tinted by the worn piece's rarity) when present
       const row = nine(this, 'ui-gear-slot', GAME_W / 2, y, bw, 112);
       layer.add(row ? row.setTint(item ? edge : 0xffffff) : this.add.rectangle(GAME_W / 2, y, bw, 112, 0x1b131d).setStrokeStyle(1, edge));
+      const set = gearSet(item?.set);
       layer.add(this.add.text(left, y - 46, `${SLOT_NAME[slot].toUpperCase()} · ${SLOT_HINT[slot].toUpperCase()}`, text.hud(12, PAL.steel)));
+      if (set) layer.add(this.add.text(GAME_W - 176, y - 46, `${set.name.toUpperCase()} SET`, text.hud(12, set.color)).setOrigin(1, 0));
       if (item) {
         layer.add([
           this.add.text(left, y - 28, `${item.name}${item.level ? ` +${item.level}` : ''}`, { ...text.body(20, RARITY_COLOR[item.rarity]), fontStyle: '600' }),
           this.add.text(left, y + 0, `${item.rarity} · ${formatStat(item.main, mainValue(item))} · +${formatPower(gearPower(save, c, item))} power`, text.body(16, PAL.ivory)),
           this.add.text(left, y + 22, item.subs.map((s) => formatStat(s.stat, s.value)).join('  ') || 'No substats', text.body(15, PAL.muted)),
         ]);
-        const maxed = item.level >= MAX_GEAR_LEVEL;
-        const cost = enhanceCost(item);
-        const can = !maxed && save.tithes >= cost;
-        const enh = makeButton(this, GAME_W - 104, y - 24, 128, 46, maxed ? 'Max' : `Enhance\n${cost} T`, () => {
-          if (enhance(save, item)) {
-            commit();
-            this.reopen(c, 'gear');
-          }
-        }, { disabled: !can, active: can, fontSize: 16 });
-        layer.add(enh.all);
+        const can = !enhanceBlock(save, item) || !rerollBlock(save, item);
+        const forge = makeButton(this, GAME_W - 104, y - 24, 128, 46, 'Forge', () => this.forge(c, item), { active: can, fontSize: 17 });
+        layer.add(forge.all);
       } else {
         layer.add(this.add.text(left, y - 18, 'Empty', text.body(20, PAL.steel)));
       }
@@ -570,15 +578,93 @@ export class RosterScene extends Phaser.Scene {
     });
     const b = gearBonus(worn);
     const parts = (Object.keys(b) as (keyof typeof b)[]).filter((k) => b[k] > 0).map((k) => formatStat(k, b[k]));
+    const sets = setsWorn(worn)
+      .filter((x) => x.count >= 2)
+      .map((x) => `${x.set.name} ×${x.count}`);
     layer.add(
       this.add
-        .text(GAME_W / 2, 812, parts.length ? `Gear: ${parts.join('  ')}` : 'Crusades yield gear. Elites and bosses always do.', {
+        .text(GAME_W / 2, 812, parts.length ? `Gear: ${parts.join('  ')}${sets.length ? `\nSets: ${sets.join(', ')}` : ''}` : 'Crusades yield gear. Elites and bosses always do.', {
           ...text.body(16, parts.length ? PAL.amber : PAL.muted),
           align: 'center',
           wordWrap: { width: GAME_W - 70 },
         })
         .setOrigin(0.5),
     );
+  }
+
+  /** The Forge: enhance a piece (Blessed Iron past +10), reroll its substats, read its set. */
+  private forge(c: CrusaderDef, item: GearItem) {
+    const save = game.save;
+    const layer = this.add.container(0, 0).setDepth(30);
+    layer.add(this.add.rectangle(GAME_W / 2, GAME_H / 2, GAME_W, GAME_H, 0x09060b, 0.96).setInteractive());
+    layer.add(addFrame(this, GAME_W / 2, GAME_H / 2, GAME_W - 24, GAME_H - 40, { fill: 0x241925 }));
+    const left = 48;
+    const width = GAME_W - 96;
+    const color = RARITY_COLOR[item.rarity];
+    layer.add([
+      this.add.text(GAME_W / 2, 64, 'THE FORGE', text.display(22, PAL.ivory)).setOrigin(0.5),
+      this.add.text(GAME_W / 2, 118, `${item.name}${item.level ? ` +${item.level}` : ''}`, { ...text.body(26, color), fontStyle: '600' }).setOrigin(0.5),
+      this.add.text(GAME_W / 2, 152, `${item.rarity} ${SLOT_NAME[item.slot]} · ${formatStat(item.main, mainValue(item))} · +${formatPower(gearPower(save, c, item))} power`, text.body(17, PAL.ivory)).setOrigin(0.5),
+    ]);
+    let y = 200;
+    const section = (title: string, body: string, tint: number = PAL.muted) => {
+      layer.add(this.add.rectangle(GAME_W / 2, y, width, 1, PAL.armorShadow));
+      layer.add(this.add.text(left, y + 12, title, text.hud(13, PAL.steel)));
+      const t = this.add.text(left, y + 34, body, { ...text.body(17, tint), wordWrap: { width } });
+      layer.add(t);
+      y += 46 + t.height + 12;
+    };
+    const set = gearSet(item.set);
+    section(
+      'SET',
+      set ? `${set.name}. Wear two or three ${set.name} pieces.\n${setText(set)}` : 'None. Pieces found from now on belong to a set.',
+      set ? set.color : PAL.muted,
+    );
+
+    // Enhance and refine
+    const maxed = item.level >= MAX_REFINE;
+    const iron = refineIron(item);
+    const next = { ...item, level: item.level + 1 };
+    section(
+      item.level >= MAX_GEAR_LEVEL ? `REFINE · +${item.level} OF +${MAX_REFINE}` : `ENHANCE · +${item.level} OF +${MAX_GEAR_LEVEL}, THEN REFINE TO +${MAX_REFINE}`,
+      maxed
+        ? 'Fully refined.'
+        : `+${next.level}: ${formatStat(item.main, mainValue(next))}${SUB_UPGRADE_LEVELS.includes(next.level) && item.subs.length ? ' and a random substat grows' : ''}.\nCost: ${enhanceCost(item)} Tithes${iron ? ` and ${ironText(iron)}` : ''}.`,
+      PAL.ivory,
+    );
+    const eb = enhanceBlock(save, item);
+    const enh = makeButton(this, GAME_W / 2, y + 10, 300, 52, maxed ? 'Fully refined' : eb ?? (item.level >= MAX_GEAR_LEVEL ? `Refine to +${next.level}` : `Enhance to +${next.level}`), () => {
+      if (enhance(save, item)) {
+        commit();
+        layer.destroy();
+        this.forge(c, item);
+      }
+    }, { disabled: !!eb, active: !eb, fontSize: 18 });
+    layer.add(enh.all);
+    y += 52;
+
+    // Reroll
+    section(
+      'SUBSTATS',
+      item.subs.length
+        ? `${item.subs.map((s) => formatStat(s.stat, s.value)).join('   ')}\nReroll gives each a new stat and keeps its strength. Cost: ${ironText(REROLL_COST.items)} and ${REROLL_COST.tithes} Tithes.`
+        : 'R pieces have no substats.',
+      PAL.ivory,
+    );
+    const rb = rerollBlock(save, item);
+    const reroll = makeButton(this, GAME_W / 2, y + 10, 300, 52, rb ?? 'Reroll substats', () => {
+      if (rerollSubs(save, item)) {
+        commit();
+        layer.destroy();
+        this.forge(c, item);
+      }
+    }, { disabled: !!rb, active: !rb, fontSize: 18 });
+    layer.add(reroll.all);
+
+    const own = (id: 'iron1' | 'iron2' | 'iron3') => `${countOf(save, id)} ${itemDef(id).name}`;
+    layer.add(this.add.text(GAME_W / 2, GAME_H - 118, `You hold ${own('iron1')}, ${own('iron2')}, ${own('iron3')} · ${save.tithes.toLocaleString('en-US')} Tithes`, { ...text.body(15, PAL.muted), align: 'center', wordWrap: { width } }).setOrigin(0.5));
+    const back = makeButton(this, GAME_W / 2, GAME_H - 62, 240, 60, 'Back', () => this.reopen(c, 'gear'), { fontSize: 19 });
+    layer.add(back.all);
   }
 
   /** Every piece for one slot: tap to put it on her, or melt spare pieces for Tithes. */
@@ -607,7 +693,7 @@ export class RosterScene extends Phaser.Scene {
         row,
         this.add.text(42, y - 32, `${g.name}${g.level ? ` +${g.level}` : ''}`, { ...text.body(19, RARITY_COLOR[g.rarity]), fontStyle: '600' }),
         this.add.text(42, y - 8, `${g.rarity} · ${formatStat(g.main, mainValue(g))}${g.subs.length ? '  ·  ' + g.subs.map((s) => formatStat(s.stat, s.value)).join('  ') : ''}`, text.body(15, PAL.ivory)),
-        this.add.text(42, y + 14, g.on === c.id ? 'Worn by her' : wearer ? `Worn by ${wearer}: tap to take it` : 'Tap to equip', text.hud(12, g.on === c.id ? PAL.amber : PAL.steel)),
+        this.add.text(42, y + 14, `${gearSet(g.set) ? `${gearSet(g.set)!.name.toUpperCase()} · ` : ''}${g.on === c.id ? 'Worn by her' : wearer ? `Worn by ${wearer}: tap to take it` : 'Tap to equip'}`, text.hud(12, g.on === c.id ? PAL.amber : PAL.steel)),
       ]);
       // What putting it on would do to her power
       if (g.on !== c.id) {

@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { CRUSADERS } from '../data/crusaders';
 import { newSave } from '../state/save';
 import { OSSUARY, enterNode, finishRun, startRun, winRoom } from './crusade';
-import { MAX_GEAR, MAX_GEAR_LEVEL, claimGear, enhance, equip, equipped, gearBonus, makeGear, mainValue, salvage } from './gear';
+import { GEAR_SETS, MAX_GEAR, MAX_GEAR_LEVEL, MAX_REFINE, REROLL_COST, claimGear, enhance, enhanceBlock, equip, equipped, gearBonus, makeGear, mainValue, rerollBlock, rerollSubs, salvage, type GearItem } from './gear';
 import { statsFor } from './stats';
 
 const seq = (xs: number[]) => {
@@ -77,5 +77,47 @@ describe('gear', () => {
       expect(save.gear!.length).toBe(before + (outcome === 'victory' ? 1 : 0));
       expect(res.gear.length).toBe(outcome === 'victory' ? 1 : 0);
     }
+  });
+});
+
+describe('the Forge', () => {
+  const piece = (): GearItem => ({ uid: 'x', slot: 'blade', rarity: 'SSR', name: 'Test', level: 10, main: 'atkPct', subs: [{ stat: 'crit', value: 0.06 }, { stat: 'spd', value: 1 }] });
+
+  it('refines past +10 only with Blessed Iron, up to +15', () => {
+    const save = newSave();
+    save.tithes = 100_000;
+    const item = piece();
+    expect(enhanceBlock(save, item)).toMatch(/Iron/);
+    save.items = { iron1: 25, iron2: 16, iron3: 2 };
+    const before = mainValue(item);
+    for (let i = 0; i < 8; i++) enhance(save, item, () => 0);
+    expect(item.level).toBe(MAX_REFINE);
+    expect(mainValue(item)).toBeGreaterThan(before);
+    expect(save.items).toEqual({ iron1: 0, iron2: 0, iron3: 0 });
+    expect(enhanceBlock(save, item)).toBe('Fully refined');
+  });
+
+  it('rerolls substats into new stats of the same strength', () => {
+    const save = newSave();
+    save.items = { iron2: 2 };
+    save.tithes = REROLL_COST.tithes;
+    const item = piece();
+    expect(rerollSubs(save, item, () => 0)).toBe(true);
+    expect(item.subs.map((s) => s.stat)).toEqual(['hpPct', 'armorPct']);
+    expect(item.subs[0].value).toBeCloseTo(0.06);
+    expect(item.subs[1].value).toBeCloseTo(0.04);
+    expect(rerollBlock(save, item)).toBeTruthy();
+  });
+
+  it('two and three pieces of a set add their bonuses', () => {
+    const set = GEAR_SETS[0];
+    const mk = (slot: GearItem['slot']): GearItem => ({ uid: slot, slot, rarity: 'R', name: '', level: 0, main: 'hpPct', subs: [], set: set.id });
+    const one = gearBonus([mk('blade')]);
+    const two = gearBonus([mk('blade'), mk('habit')]);
+    const three = gearBonus([mk('blade'), mk('habit'), mk('rosary')]);
+    expect(one.atkPct).toBe(0);
+    expect(two.atkPct).toBeCloseTo(set.two.atkPct!);
+    expect(three.crit).toBeCloseTo(set.three.crit!);
+    expect(makeGear(Math.random, 'SR').set).toBeDefined();
   });
 });
