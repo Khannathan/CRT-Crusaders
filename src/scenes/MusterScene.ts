@@ -7,6 +7,7 @@ import { commit, game } from '../state/game';
 import { current } from '../state/run';
 import { CRYPTS, MAX_PARTY, canMuster, startRun, suggestParty } from '../systems/crusade';
 import { makeButton } from '../ui/button';
+import { formatPower, partyPower, sisterPower } from '../systems/power';
 import { portraitKey } from '../ui/placeholderPortrait';
 import { addIcon, addScreenGlow, text } from '../ui/theme';
 
@@ -34,6 +35,12 @@ export class MusterScene extends Phaser.Scene {
     this.add
       .text(GAME_W / 2, 80, 'Rank I bleeds first. Tap a Sister to call or dismiss her.', text.body(18, PAL.muted))
       .setOrigin(0.5);
+
+    // Party power, top right
+    if (this.party.length) {
+      this.add.text(GAME_W - 16, 20, 'PARTY POWER', text.hud(11, PAL.steel)).setOrigin(1, 0);
+      this.add.text(GAME_W - 16, 36, formatPower(partyPower(game.save, this.party)), text.hud(16, PAL.amber)).setOrigin(1, 0);
+    }
 
     // Party slots
     const slotY = 190;
@@ -85,7 +92,7 @@ export class MusterScene extends Phaser.Scene {
           }
         });
       }
-      const sub = !ready ? 'Recovering' : `${CLASSES[c.classId].role} · Lv ${game.save.owned[c.id].level}`;
+      const sub = !ready ? 'Recovering' : `Lv ${game.save.owned[c.id].level} · ${formatPower(sisterPower(game.save, c))}`;
       this.add.text(x, y + 76, c.name.split(' ')[0], { ...text.body(17), fontStyle: '600' }).setOrigin(0.5);
       this.add.text(x, y + 95, sub, text.body(14, PAL.muted)).setOrigin(0.5);
     });
