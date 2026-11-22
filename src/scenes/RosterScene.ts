@@ -50,12 +50,12 @@ import {
   type GearSlot,
 } from '../systems/gear';
 import { levelCap, sisterStats } from '../systems/stats';
-import { UNCTIONS, UNCTION_EXP, expOf, expToNext, feed, feedPlan } from '../systems/exp';
+import { UNCTIONS, UNCTION_EXP, expOf, expToNext, feedPlan, usePlan, useUnction } from '../systems/exp';
 import { drawItemIcon } from '../ui/itemIcon';
 import { ascend, ascendBlock, costLine, nextAscension } from '../systems/ascension';
 import { SYMBOL_ASC, SYMBOL_MAX, WAKE_COST, WAKE_TITHES, raiseSymbol, symbolBlock, symbolName, symbolPerks, symbolStatMult, upgradeCost } from '../systems/symbols';
 import { ROMAN_RANK } from '../systems/rank';
-import { countOf, itemDef } from '../systems/items';
+import { countOf, itemDef, type ItemId } from '../systems/items';
 import { MAX_SKILL_LEVEL, nextSkillStep, raiseSkill, skillBlock, skillLevels, stepText } from '../systems/skillLevels';
 import { makeButton } from '../ui/button';
 import { CURRENCY_BAR_H, addCurrencyBar } from '../ui/currencyBar';
@@ -63,7 +63,7 @@ import { addSplash, hasSplash, loadFullBody, loadSplash, portraitKey } from '../
 import { SisterSprite } from '../ui/sisterSprite';
 import { nine } from '../ui/skin';
 import { addScrollArea } from '../ui/scroll';
-import { tapCost, tapForSources } from '../ui/sources';
+import { showSources, tapCost, tapForSources } from '../ui/sources';
 import { TAB_BAR_H, addTabBar } from '../ui/tabBar';
 import { PAD, addArt, addBackdrop, addBadge, addFrame, addHeading, addIcon, addScreenGlow, fade, text } from '../ui/theme';
 
@@ -92,6 +92,8 @@ const SHEET_Y = 544;
 export class RosterScene extends Phaser.Scene {
   private openId?: string;
   private tab: Tab = 'grow';
+  /** The Unction chosen on the Grow tab. */
+  private unction?: ItemId;
   /** The grid's Sisters in order, for swiping on her page. */
   private order: string[] = [];
   /** Kept across restarts so levelling up a Sister doesn't jump the list back to the top. */
@@ -513,37 +515,51 @@ export class RosterScene extends Phaser.Scene {
     layer.add(this.add.text(left, y + 16, atCap ? (into >= need ? 'EXP full: Ascend to keep growing' : `EXP ${into.toLocaleString('en-US')} / ${need.toLocaleString('en-US')} banked at her cap`) : `EXP ${into.toLocaleString('en-US')} / ${need.toLocaleString('en-US')}`, text.body(13, PAL.muted)));
     y += 40;
     if (!atCap) {
-      // Unction held: tap for sources.
-      const uw = bw / 3;
+      // Unction held: tap one to choose it, hold for where to get more.
+      const pick = this.unction && countOf(save, this.unction) ? this.unction : (UNCTIONS.find((u) => countOf(save, u) > 0) ?? UNCTIONS[0]);
+      this.unction = pick;
+      const uw = (bw - 16) / 3;
       UNCTIONS.forEach((u, i) => {
-        const x = left + i * uw;
-        layer.add(drawItemIcon(this, x + 20, y + 18, u, 36));
-        const t = tapForSources(this, this.add.text(x + 44, y + 4, `×${countOf(save, u)}\n${UNCTION_EXP[u].toLocaleString('en-US')} EXP`, text.body(13, countOf(save, u) ? PAL.ivory : PAL.steel)), u);
-        layer.add(t);
+        const x = left + i * (uw + 8);
+        const on = u === pick;
+        const held = countOf(save, u);
+        const box = this.add.rectangle(x, y, uw, 50, on ? 0x2e2030 : 0x1a121c).setOrigin(0, 0).setStrokeStyle(on ? 2 : 1, on ? PAL.amber : PAL.armorShadow);
+        layer.add(box);
+        layer.add(drawItemIcon(this, x + 24, y + 25, u, 36));
+        layer.add(this.add.text(x + 48, y + 7, `×${held}\n${UNCTION_EXP[u].toLocaleString('en-US')} EXP`, text.body(13, held ? PAL.ivory : PAL.steel)));
+        box.setInteractive({ useHandCursor: true }).on('pointerup', () => {
+          if (list.dragging) return;
+          if (!held) return void showSources(this, u);
+          this.unction = u;
+          this.reopen(c, 'grow');
+        });
       });
-      y += 46;
+      y += 60;
       const one = this.preview(c, (o) => (o.level += 1));
       layer.add(this.add.text(left, y, `Next level: ${this.diffText(now, one)}`, { ...text.body(15, PAL.ivory), wordWrap: { width: bw } }));
       y += 30;
-      const w = (bw - 16) / 3;
-      ([['+1', 1], ['+10', 10], ['Max', 999]] as const).forEach(([label, n], i) => {
-        const plan = feedPlan(save, c.id, n);
-        const can = plan.levels > 0;
-        const sub = can ? `${plan.tithes.toLocaleString('en-US')} Tithes` : plan.block === 'unction' ? 'Need Unction' : plan.block === 'tithes' ? 'Need Tithes' : 'At cap';
-        const b = makeButton(this, left + w / 2 + i * (w + 8), y + 30, w, 58, `${label}${can && n > 1 ? ` (${plan.levels})` : ''}\n${sub}`, () => {
+      const w = (bw - 24) / 4;
+      ([['Use 1', 1, false], ['Use 10', 10, false], ['+1 Level', 1, true], ['Use All', Infinity, false]] as const).forEach(([label, n, lv], i) => {
+        const plan = usePlan(save, c.id, pick, n, lv);
+        const can = plan.count > 0;
+        const sub = can ? (lv ? `${plan.count} used` : `${plan.tithes.toLocaleString('en-US')} T`) : plan.block === 'unction' ? 'Too few' : plan.block === 'tithes' ? 'Tithes' : 'Full';
+        const b = makeButton(this, left + w / 2 + i * (w + 8), y + 30, w, 58, `${label}${can && n === Infinity ? ` (${plan.count})` : ''}\n${sub}`, () => {
           if (list.dragging || !can) return;
-          if (feed(save, c.id, n)) {
+          if (useUnction(save, c.id, pick, n, lv) >= 0) {
             commit();
             this.reopen(c, 'grow');
           }
-        }, { disabled: !can, active: can && i === 0, fontSize: 14 });
+        }, { disabled: !can, active: can && i === 2, fontSize: 13 });
         layer.add(b.all);
       });
       y += 72;
-      const block = feedPlan(save, c.id, 1).block;
+      const block = usePlan(save, c.id, pick, 1).block;
       if (block) {
         layer.add(tapForSources(this, this.add.text(left, y, block === 'unction' ? 'Short of Unction: battles, the Vigil and the road give EXP too. Tap for sources ›' : 'Short of Tithes: tap to see where to get more ›', { ...text.body(14, PAL.amber), wordWrap: { width: bw } }), block === 'unction' ? 'unction1' : 'tithes'));
         y += 44;
+      } else {
+        layer.add(this.add.text(left, y, 'Each flask costs 1 Tithe per 10 EXP. Nothing spills past her cap.', { ...text.body(13, PAL.muted), wordWrap: { width: bw } }));
+        y += 28;
       }
     } else {
       const step = nextAscension(save, c.id);
