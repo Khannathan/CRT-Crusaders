@@ -27,6 +27,7 @@ import { ROMAN_RANK, giftsWaiting, rankInfo } from '../systems/rank';
 import { nextMilestone } from '../systems/powerGrowth';
 import { accountPower, formatPower } from '../systems/power';
 import { drawRites } from '../ui/rites';
+import { morningRounds, roundsReady, roundsTotal, type RoundsReport } from '../systems/rounds';
 import { addTabBar } from '../ui/tabBar';
 import { pickParty } from '../ui/partyPicker';
 import { PAD, addBackdrop, addFrame, addHeading, addScreenGlow, text } from '../ui/theme';
@@ -85,6 +86,15 @@ export class SanctumScene extends Phaser.Scene {
       below = drawAlmostThere(this, game.save, bottom + 28);
     }
     this.add.text(PAD, below + 10, 'DAILY RITES', text.hud(13, PAL.amber));
+    // Morning Rounds: every daily chore that needs no choice, in one tap.
+    if (owned.length) {
+      const ready = roundsReady(game.save);
+      makeButton(this, GAME_W - PAD - 84, below + 12, 168, 30, ready ? 'Collect all' : 'All collected', () => {
+        const r = morningRounds(game.save);
+        commit();
+        this.showRounds(r);
+      }, { fontSize: 15, active: ready, icon: 'flame' });
+    }
     const ritesBottom = drawRites(this, game.save, below + 28);
 
     // Prototype-only: settings, and wiping the save to replay the first-time flow.
@@ -285,6 +295,25 @@ export class SanctumScene extends Phaser.Scene {
     const bg = this.add.rectangle(GAME_W / 2, 150 + t.height / 2, t.width + 40, t.height + 28, 0x1b121c, 0.97).setStrokeStyle(1, PAL.amber);
     box.add([bg, t]);
     this.tweens.add({ targets: box, alpha: 0, delay: 2600, duration: 600, onComplete: () => box.destroy() });
+  }
+
+  /** What Morning Rounds did, what it gathered, and what still needs you. */
+  private showRounds(r: RoundsReport) {
+    const layer = this.add.container(0, 0).setDepth(30);
+    layer.add(this.add.rectangle(GAME_W / 2, GAME_H / 2, GAME_W, GAME_H, 0x09060b, 0.9).setInteractive());
+    const total = roundsTotal(r);
+    const lines = [
+      r.done.length ? r.done.map((d) => `✓ ${d}`).join('\n') : 'Nothing was waiting. Every rite is already kept.',
+      total ? `\nGathered: ${total}` : '',
+      r.left.length ? `\nStill yours to do:\n${r.left.map((d) => `· ${d}`).join('\n')}` : '',
+    ].filter(Boolean).join('\n');
+    const t = this.add.text(GAME_W / 2, 200, lines, { ...text.body(17, PAL.ivory), align: 'left', lineSpacing: 4, wordWrap: { width: GAME_W - 100 } }).setOrigin(0.5, 0);
+    const h = t.height + 120;
+    layer.add(addFrame(this, GAME_W / 2, 140 + h / 2, GAME_W - 40, h, { fill: 0x241925 }));
+    layer.add(this.add.text(GAME_W / 2, 166, 'MORNING ROUNDS', text.display(24, PAL.amber)).setOrigin(0.5));
+    layer.add(t);
+    const done = makeButton(this, GAME_W / 2, 140 + h + 44, 220, 56, 'Done', () => this.scene.restart());
+    layer.add(done.all);
   }
 
   /** Pick up to four Sisters for the Vigil. Changing the watch claims what was gathered. */
