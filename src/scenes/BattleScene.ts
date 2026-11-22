@@ -21,6 +21,7 @@ import { newSeed, seeded } from '../systems/rng';
 import { enemyKey } from '../ui/enemyArt';
 import { intentIconKey } from '../ui/icons';
 import { portraitKey } from '../ui/placeholderPortrait';
+import { SKILL_FX, auraFx, burstFx, fxForEnemy, makeFxTextures, type Fx } from '../ui/portraitFx';
 import { comboBurst, damageSize, hitStop, popNumber, riteCard, shake, staticDeath, whiteFlash } from '../ui/juice';
 
 const CARD = 128;
@@ -59,6 +60,9 @@ export class BattleScene extends Phaser.Scene {
   private mode: Mode = 'busy';
   /** A combo about to pay off on this target: burst on its first hit. */
   private combo?: { uid: string; label: string; color: number };
+  /** The acting skill's portrait effect, and who it has already marked this action. */
+  private fx?: Fx;
+  private fxHit = new Set<string>();
   private chosen?: SkillDef;
   private skillButtons: Phaser.GameObjects.GameObject[] = [];
   private logText!: Phaser.GameObjects.Text;
@@ -138,6 +142,7 @@ export class BattleScene extends Phaser.Scene {
       .text(GAME_W / 2, 760, '', { ...style, fontSize: '19px', align: 'center', color: hex(PAL.steel), wordWrap: { width: GAME_W - 40 } })
       .setOrigin(0.5);
 
+    makeFxTextures(this);
     for (const u of this.battle.units) this.makeCard(u);
     this.refresh();
     if (resume) {
@@ -231,7 +236,16 @@ export class BattleScene extends Phaser.Scene {
     this.combo = undefined;
     if (target && skill.detonate && target.status.poison) this.combo = { uid: target.uid, label: 'IGNITED!', color: 0xff8a3d };
     else if (target && skill.execute && target.hp < target.maxHp * EXECUTE_AT) this.combo = { uid: target.uid, label: 'SENTENCED!', color: 0xe04848 };
-    const go = () => this.play(this.battle.act(actor, skill, target), () => this.step());
+    // Each skill and enemy has its own effect: a cast around the actor, then a mark on each target.
+    this.fx = actor.side === 'party' ? SKILL_FX[skill.id] : fxForEnemy(actor.ref);
+    this.fxHit.clear();
+    const cast = this.cards.get(actor.uid);
+    if (this.fx && cast) burstFx(this, cast.box.x, cast.box.y, CARD * 0.8, { ...this.fx, power: (this.fx.power ?? 1) * 0.6 });
+    const go = () =>
+      this.play(this.battle.act(actor, skill, target), () => {
+        this.fx = undefined;
+        this.step();
+      });
     if (skill.rite && actor.side === 'party') riteCard(this, skill.name, actor.name, go);
     else go();
   }
@@ -459,6 +473,8 @@ export class BattleScene extends Phaser.Scene {
       .text(0, 0, '', { fontFamily: FONT, fontSize: '26px', color: hex(PAL.amber), stroke: '#000000', strokeThickness: 5, align: 'center' })
       .setOrigin(0.5);
     box.add(preview);
+    // Enemies carry their own idle aura behind the portrait.
+    if (!party) auraFx(this, box, CARD, fxForEnemy(u.ref), skinFrame ?? img);
     const card: Card = { box, frame, skinFrame, glow, img, hp, shieldFill, hpText, tags, preview };
     if (party) {
       card.threat = this.add
@@ -613,6 +629,13 @@ export class BattleScene extends Phaser.Scene {
   }
 
   private show(e: BattleEvent) {
+    if (this.fx && (e.type === 'damage' || e.type === 'heal' || e.type === 'shield' || e.type === 'status') && !this.fxHit.has(e.uid)) {
+      const c = this.cards.get(e.uid);
+      if (c) {
+        this.fxHit.add(e.uid);
+        burstFx(this, c.box.x, c.box.y, CARD, this.fx);
+      }
+    }
     switch (e.type) {
       case 'text':
         this.logText.setText(e.text);
