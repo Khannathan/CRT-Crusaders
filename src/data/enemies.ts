@@ -71,7 +71,7 @@ export const ENEMIES: Record<string, EnemyDef> = {
     id: 'warden', name: 'Ossuary Warden', hp: 120, atk: 11, armor: 70, spd: 6, color: 0x5d5a52, shape: 'warden',
     skills: [
       { id: 'bone-bulwark', name: 'Bone Bulwark', desc: 'Shields the most hurt ally.', from: any, target: 'ally', shieldPct: 0.3, aim: 'weakest', weight: 1.4 },
-      { id: 'shield-bash', name: 'Shield Bash', desc: '', from: any, target: 'enemy', reach: [1, 2], mult: 0.9, aim: 'front' },
+      { id: 'shield-bash', name: 'Shield Bash', desc: 'Knocks a Sister a rank back.', from: any, target: 'enemy', reach: [1, 2], mult: 0.9, aim: 'front', shove: 1 },
     ],
   },
   priest: {
@@ -84,7 +84,7 @@ export const ENEMIES: Record<string, EnemyDef> = {
   golem: {
     id: 'golem', name: 'Reliquary Golem', hp: 190, atk: 20, armor: 150, spd: 3, color: 0x8a7d63, shape: 'golem',
     skills: [
-      { id: 'grind', name: 'Grind', desc: '', from: any, target: 'enemy', reach: [1, 2], mult: 0.9, aim: 'front' },
+      { id: 'grind', name: 'Grind', desc: 'Knocks a Sister two ranks back.', from: any, target: 'enemy', reach: [1, 2], mult: 0.9, aim: 'front', shove: 2 },
       { id: 'reliquary-fall', name: 'Reliquary Fall', desc: 'A crushing blow after a turn of charging.', from: any, target: 'enemy', reach: [1, 2, 3], mult: 2.2, windup: true, aim: 'weakest' },
     ],
   },
@@ -117,7 +117,7 @@ export const ENEMIES: Record<string, EnemyDef> = {
     id: 'bishop', name: 'Grave Bishop', hp: 260, atk: 17, armor: 45, spd: 8, color: 0x4a2a3a, shape: 'bishop',
     skills: [
       { id: 'grave-blessing', name: 'Grave Blessing', desc: 'Empowers itself for 3 turns.', from: any, target: 'self', empower: { pct: 0.3, turns: 3 }, weight: 0.7 },
-      { id: 'crozier', name: 'Crozier', desc: '', from: any, target: 'enemy', mult: 1.2, aim: 'weakest' },
+      { id: 'crozier', name: 'Crozier', desc: 'Hooks a Sister and drags her to the front.', from: any, target: 'enemy', mult: 1.2, aim: 'weakest', pull: true },
       { id: 'raise-the-penitent', name: 'Raise the Penitent', desc: '', from: any, target: 'self', summon: 'husk', weight: 0.5 },
     ],
   },
@@ -125,7 +125,7 @@ export const ENEMIES: Record<string, EnemyDef> = {
     id: 'abbess', name: 'The Hollow Abbess', hp: 720, atk: 22, armor: 60, spd: 9, boss: true, color: 0x3a3048, shape: 'abbess',
     skills: [
       { id: 'toll-of-silence', name: 'Toll of Silence', desc: 'Hits everyone and steals Zeal.', from: any, target: 'allEnemies', mult: 0.55, zealDrain: 10 },
-      { id: 'excommunicate', name: 'Excommunicate', desc: '', from: any, target: 'enemy', mult: 1.5, aim: 'strongest' },
+      { id: 'excommunicate', name: 'Excommunicate', desc: 'Casts a Sister two ranks back.', from: any, target: 'enemy', mult: 1.5, aim: 'strongest', shove: 2 },
       { id: 'call-the-bloated', name: 'Call the Bloated', desc: '', from: any, target: 'self', summon: 'pilgrim', weight: 0.5 },
     ],
     phase2: {
@@ -134,7 +134,7 @@ export const ENEMIES: Record<string, EnemyDef> = {
       atkPct: 0.15,
       skills: [
         { id: 'toll-of-silence', name: 'Toll of Silence', desc: 'Hits everyone and steals Zeal.', from: any, target: 'allEnemies', mult: 0.55, zealDrain: 10 },
-        { id: 'excommunicate', name: 'Excommunicate', desc: '', from: any, target: 'enemy', mult: 1.5, aim: 'strongest' },
+        { id: 'excommunicate', name: 'Excommunicate', desc: 'Casts a Sister two ranks back.', from: any, target: 'enemy', mult: 1.5, aim: 'strongest', shove: 2 },
         { id: 'last-bell', name: 'The Last Bell', desc: '', from: any, target: 'allEnemies', mult: 1.2, windup: true, weight: 1.3 },
         { id: 'call-the-bloated', name: 'Call the Bloated', desc: '', from: any, target: 'self', summon: 'pilgrim', weight: 0.4 },
       ],

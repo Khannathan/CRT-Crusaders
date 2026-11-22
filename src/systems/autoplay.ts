@@ -101,12 +101,48 @@ export function autoChoose(b: Battle, actor: Unit): Choice {
   return { skill: other, target: b.validTargets(actor, other)[0] };
 }
 
+/** How many real (non-Rite, non-Step) skills these Sisters could use where they stand. */
+function usableCount(b: Battle, units: Unit[]) {
+  return units.reduce((n, u) => n + skillsFor(u).filter((s) => s.id !== 'shift' && !s.rite && b.canUse(u, s)).length, 0);
+}
+
+/**
+ * Auto's free Step: trade places with a neighbour when that leaves the pair with
+ * more usable skills (a Sister knocked out of her ranks walks back).
+ */
+export function autoStep(b: Battle, actor: Unit): Unit | undefined {
+  let best: Unit | undefined;
+  let bestGain = 0;
+  for (const o of b.stepTargets(actor)) {
+    const before = usableCount(b, [actor, o]);
+    [actor.rank, o.rank] = [o.rank, actor.rank];
+    const after = usableCount(b, [actor, o]);
+    [actor.rank, o.rank] = [o.rank, actor.rank];
+    // Never strand the actor herself.
+    const mine = usableCount(b, [actor]);
+    [actor.rank, o.rank] = [o.rank, actor.rank];
+    const mineAfter = usableCount(b, [actor]);
+    [actor.rank, o.rank] = [o.rank, actor.rank];
+    if (mineAfter === 0 && mine > 0) continue;
+    const gain = after - before + (mine === 0 && mineAfter > 0 ? 2 : 0);
+    if (gain > bestGain) {
+      bestGain = gain;
+      best = o;
+    }
+  }
+  return best;
+}
+
 /** Runs a battle to the end with autoChoose for the party. */
 export function autoBattle(b: Battle, maxTurns = 400, onRite?: (round: number) => void): 'victory' | 'defeat' | 'stalled' {
   for (let i = 0; i < maxTurns; i++) {
     const t = b.nextTurn();
     if (t.outcome) return t.outcome;
     const actor = t.actor!;
+    if (actor.side === 'party') {
+      const with_ = autoStep(b, actor);
+      if (with_) b.step(actor, with_);
+    }
     const choice = actor.side === 'party' ? autoChoose(b, actor) : b.enemyChoose(actor);
     if (choice.skill.rite) onRite?.(b.round);
     b.act(actor, choice.skill, choice.target);

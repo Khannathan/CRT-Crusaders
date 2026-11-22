@@ -59,8 +59,12 @@ export interface SkillDef {
   windup?: boolean;
   /** Enemy-only: drains this much party Zeal. */
   zealDrain?: number;
-  /** Enemy-only: drags the target to rank 1. */
+  /** Drags the target to rank 1. */
   pull?: boolean;
+  /** The user moves this many ranks after the skill: negative steps forward, positive steps back. */
+  move?: number;
+  /** Knocks the target this many ranks back. */
+  shove?: number;
   /** Enemy-only: relative chance the AI plans this skill. Default 1. */
   weight?: number;
 }
@@ -72,19 +76,19 @@ export const CLASS_SKILLS: Record<string, [SkillDef, SkillDef, SkillDef, SkillDe
   warsister: [
     { id: 'penitent-blow', name: 'Penitent Blow', desc: 'Heavy strike on rank 1-2. +40% while she is under half HP.', from: [1, 2], target: 'enemy', reach: [1, 2], mult: 1.25, lowHpBonus: 0.4 },
     { id: 'blood-for-zeal', name: 'Blood for Zeal', desc: 'Lose 10% HP. +15 Zeal and +25% attack for 2 turns. Cooldown 2.', from: any, target: 'self', selfDmgPct: 0.1, zealGain: 15, empower: { pct: 0.25, turns: 2 }, cooldown: 2 },
-    { id: 'flagellants-charge', name: "Flagellant's Charge", desc: 'Crash into rank 1-3. +60% against the Weakened. Cooldown 2.', from: [1, 2], target: 'enemy', reach: [1, 2, 3], mult: 1.35, bonusIfWeak: 0.6, cooldown: 2 },
+    { id: 'flagellants-charge', name: "Flagellant's Charge", desc: 'Crash into rank 1-3 and charge a rank forward. +60% against the Weakened. Cooldown 2.', from: [1, 2], target: 'enemy', reach: [1, 2, 3], mult: 1.35, bonusIfWeak: 0.6, cooldown: 2, move: -1 },
     { id: 'martyrs-fury', name: "Martyr's Fury", desc: 'RITE: strike every enemy.', from: any, target: 'allEnemies', mult: 1.3, rite: true },
   ],
   hierophant: [
-    { id: 'reliquary-bash', name: 'Reliquary Bash', desc: 'Strike rank 1-2 and draw enemy attacks for 2 turns.', from: [1, 2], target: 'enemy', reach: [1, 2], mult: 0.8, taunt: 2 },
+    { id: 'reliquary-bash', name: 'Reliquary Bash', desc: 'Strike rank 1-2, knock it a rank back, and draw enemy attacks for 2 turns.', from: [1, 2], target: 'enemy', reach: [1, 2], mult: 0.8, taunt: 2, shove: 1 },
     { id: 'sanctuary', name: 'Sanctuary', desc: 'Shield an ally for 30% of their max HP. Cooldown 1.', from: any, target: 'ally', shieldPct: 0.3, cooldown: 1 },
     { id: 'vigil-bell', name: 'Vigil Bell', desc: 'Shield every ally for 15% of max HP and cure poison. Cooldown 3.', from: any, target: 'allAllies', shieldPct: 0.15, cleanse: true, cooldown: 3 },
     { id: 'wall-of-saints', name: 'Wall of Saints', desc: 'RITE: shield every ally for 35% of max HP.', from: any, target: 'allAllies', shieldPct: 0.35, rite: true },
   ],
   inquisitor: [
     { id: 'accuse', name: 'Accuse', desc: 'Light hit on any rank. Accused takes +25% damage for 3 turns.', from: [1, 2, 3], target: 'enemy', mult: 0.6, accuse: 3 },
-    { id: 'duelists-thrust', name: "Duelist's Thrust", desc: 'Precise strike on rank 1-3. +50% against the Accused.', from: [1, 2], target: 'enemy', reach: [1, 2, 3], mult: 1.2, bonusIfAccused: 0.5 },
-    { id: 'sentence', name: 'Sentence', desc: 'Strike any rank. Double damage on a foe under 30% HP. Cooldown 2.', from: [1, 2, 3], target: 'enemy', mult: 1.0, execute: 1, cooldown: 2 },
+    { id: 'duelists-thrust', name: "Duelist's Thrust", desc: 'Lunge a rank forward into rank 1-3. +50% against the Accused.', from: [1, 2], target: 'enemy', reach: [1, 2, 3], mult: 1.2, bonusIfAccused: 0.5, move: -1 },
+    { id: 'sentence', name: 'Sentence', desc: 'Drag any foe to the front and strike it. Double damage under 30% HP. Cooldown 2.', from: [1, 2, 3], target: 'enemy', mult: 1.0, execute: 1, cooldown: 2, pull: true },
     { id: 'verdict', name: 'Verdict', desc: 'RITE: crushing blow on any enemy. Doubled against the Accused.', from: any, target: 'enemy', mult: 2.5, bonusIfAccused: 1, rite: true },
   ],
   confessor: [
@@ -94,18 +98,21 @@ export const CLASS_SKILLS: Record<string, [SkillDef, SkillDef, SkillDef, SkillDe
     { id: 'last-rites', name: 'Last Rites', desc: 'RITE: heal every ally 40% of max HP and cure poison.', from: any, target: 'allAllies', healPct: 0.4, cleanse: true, rite: true },
   ],
   censer: [
-    { id: 'incense-cloud', name: 'Incense Cloud', desc: 'Smoke every enemy: small damage, -25% attack for 2 turns.', from: [2, 3, 4], target: 'allEnemies', mult: 0.35, weaken: { pct: 0.25, turns: 2 } },
-    { id: 'burning-thurible', name: 'Burning Thurible', desc: 'Swing at rank 1-2 and set it smouldering for 2 turns. Stacks on poison.', from: [1, 2, 3], target: 'enemy', reach: [1, 2], mult: 0.9, poison: { mult: 0.45, turns: 2 }, stackPoison: true },
+    { id: 'incense-cloud', name: 'Incense Cloud', desc: 'Smoke every enemy and fall back a rank: small damage, -25% attack for 2 turns.', from: [2, 3, 4], target: 'allEnemies', mult: 0.35, weaken: { pct: 0.25, turns: 2 }, move: 1 },
+    { id: 'burning-thurible', name: 'Burning Thurible', desc: 'Step a rank forward, swing at rank 1-2 and set it smouldering for 2 turns. Stacks on poison.', from: [1, 2, 3], target: 'enemy', reach: [1, 2], mult: 0.9, poison: { mult: 0.45, turns: 2 }, stackPoison: true, move: -1 },
     { id: 'fan-the-flames', name: 'Fan the Flames', desc: 'Ignite all the poison or burn on one enemy at once, for 1.5x. Cooldown 2.', from: any, target: 'enemy', mult: 0.3, detonate: 1.5, cooldown: 2 },
     { id: 'choking-smoke', name: 'Choking Smoke', desc: 'RITE: damage every enemy, -40% attack for 3 turns.', from: any, target: 'allEnemies', mult: 0.8, weaken: { pct: 0.4, turns: 3 }, rite: true },
   ],
   oracle: [
-    { id: 'ash-bolt', name: 'Ash Bolt', desc: 'Heavy occult damage on any rank.', from: [3, 4], target: 'enemy', mult: 1.45 },
+    { id: 'ash-bolt', name: 'Ash Bolt', desc: 'Heavy occult damage on any rank. The recoil throws her a rank back.', from: [3, 4], target: 'enemy', mult: 1.45, move: 1 },
     { id: 'foresight', name: 'Foresight', desc: 'Hit any enemy and push its turn to the end. Breaks a charge. Cooldown 2.', from: any, target: 'enemy', mult: 0.5, delay: true, cooldown: 2 },
     { id: 'grim-augury', name: 'Grim Augury', desc: 'Grant an ally +30% attack for 2 turns and your Sisters 10 Zeal. Cooldown 3.', from: any, target: 'ally', empower: { pct: 0.3, turns: 2 }, empowerTarget: true, zealGain: 10, cooldown: 3 },
     { id: 'omen-of-ash', name: 'Omen of Ash', desc: 'RITE: heavy damage on every enemy.', from: any, target: 'allEnemies', mult: 1.6, rite: true },
   ],
 };
 
-/** Always available: swap places with the ally in front (or behind, from rank 1). */
-export const SHIFT_SKILL: SkillDef = { id: 'shift', name: 'Shift', desc: 'Swap with the Sister one rank ahead (rank I swaps back): reach the rank your skills need, or step out of reach.', from: any, target: 'self' };
+/**
+ * Step: once a turn, for free, swap places with the Sister next to you (in front
+ * or behind), then still act. It is not a skill turn; the battle screen handles it.
+ */
+export const SHIFT_SKILL: SkillDef = { id: 'shift', name: 'Step', desc: 'Free, once a turn: swap with the Sister beside you, then still act. Tap Step, then the Sister to trade places with.', from: any, target: 'self' };
