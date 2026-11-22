@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
 import { FONT, GAME_H, GAME_W, PAL, hex } from '../config';
 import { CLASSES, RARITY_COLOR } from '../data/classes';
-import { COST_ONE, COST_TEN, canPull, pull, type PullKind, type PullResult } from '../systems/gacha';
+import { COST_ONE, COST_TEN, RARITY_ORDER, canPull, pull, type PullKind, type PullResult } from '../systems/gacha';
 import { commit, game } from '../state/game';
 import { makeButton } from '../ui/button';
 import { NOISE_FRAMES, WAX_COLOR, noiseKey, sealKey } from '../ui/effects';
@@ -167,9 +167,12 @@ export class RevealScene extends Phaser.Scene {
     const cellW = 160;
     const cellH = 150;
     const x0 = (GAME_W - cols * cellW) / 2 + cellW / 2;
-    // a single result is centred
-    const n = this.results.length;
-    this.results.forEach((r, i) => {
+    // Rarest first: UR at the top left down to R at the bottom right (new Sisters first within a rarity).
+    const rank = (r: PullResult) => RARITY_ORDER.indexOf(r.crusader.rarity);
+    const sorted = [...this.results].sort((a, b) => rank(b) - rank(a) || Number(b.isNew) - Number(a.isNew));
+    // a short last row is centred
+    const n = sorted.length;
+    sorted.forEach((r, i) => {
       const rowCount = Math.min(cols, n - Math.floor(i / cols) * cols);
       const rowX0 = x0 + ((cols - rowCount) * cellW) / 2;
       const x = rowX0 + (i % cols) * cellW;
