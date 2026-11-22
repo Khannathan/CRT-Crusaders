@@ -1,9 +1,18 @@
 import { AFFINITY, ENEMIES } from '../data/enemies';
 import { CLASS_SKILLS, SHIFT_SKILL, type DmgType, type SkillDef } from '../data/skills';
 import type { PassiveDef } from '../data/types';
+import type { Howl } from '../data/hounds';
+import { howlShort } from './hounds';
 import type { Rng } from './gacha';
 
 export type Side = 'party' | 'enemy';
+
+/** A hound's howl as a battle sees it. */
+export interface HoundHowl {
+  name: string;
+  howlName: string;
+  howl: Howl;
+}
 
 export interface Status {
   /** Burn (Fire) or Poison (Blight): damage each turn, ignoring armor. */
@@ -235,9 +244,12 @@ export class Battle {
   partyHeal = 1;
   /** Crypt relic effects. */
   mods: BattleMods = { ...NO_MODS };
+  /** The party's hound: it howls at the start of every round. */
+  hound?: HoundHowl;
 
-  constructor(party: Unit[], enemies: Unit[], opts: { rng?: Rng; vigil?: number; zeal?: number; enemyScale?: number; mods?: Partial<BattleMods> } = {}) {
+  constructor(party: Unit[], enemies: Unit[], opts: { rng?: Rng; vigil?: number; zeal?: number; enemyScale?: number; mods?: Partial<BattleMods>; hound?: HoundHowl } = {}) {
     this.mods = { ...NO_MODS, ...opts.mods };
+    this.hound = opts.hound;
     this.enemyScale = opts.enemyScale ?? 1;
     this.units = [...party, ...enemies];
     this.rng = opts.rng ?? Math.random;
@@ -295,6 +307,7 @@ export class Battle {
     this.hurtZealThisRound = 0;
     this.log.push(`-- round ${this.round} (zeal ${this.zeal}, vigil ${this.vigil})`);
     if (this.mods.roundZeal > 0 && this.alive('party').length) this.addZeal(this.mods.roundZeal, events, 'relics');
+    this.howl(events);
     if (this.round > 1) {
       if (this.vigil > 0) {
         this.vigil -= 1;
@@ -320,6 +333,36 @@ export class Battle {
       if (u.status.haste && --u.status.haste <= 0) u.status.haste = undefined;
     });
     this.queue = order.map((u) => u.uid);
+  }
+
+  /** The hound's howl at the start of a round: Zeal, mending, a shield on the front Sister, and the foes' scent. */
+  private howl(events: BattleEvent[]) {
+    const h = this.hound?.howl;
+    const party = this.alive('party');
+    if (!h || !party.length) return;
+    events.push({ type: 'text', text: `${this.hound!.name}: ${this.hound!.howlName}! ${howlShort(h)}` });
+    this.log.push(`howl ${this.hound!.howlName}`);
+    if (h.zeal) this.addZeal(h.zeal, events, this.hound!.howlName);
+    if (h.mend) {
+      const u = [...party].sort((a, b) => a.hp / a.maxHp - b.hp / b.maxHp)[0];
+      const real = Math.min(u.maxHp - u.hp, Math.round(u.maxHp * h.mend * this.healOf(u)));
+      if (real > 0) {
+        u.hp += real;
+        events.push({ type: 'heal', uid: u.uid, amount: real });
+      }
+    }
+    if (h.shield) {
+      const front = party[0];
+      const amount = Math.round(front.maxHp * h.shield);
+      front.status.shield = Math.max(front.status.shield ?? 0, amount);
+      events.push({ type: 'shield', uid: front.uid, amount });
+    }
+    if (h.scent) {
+      for (const e of this.alive('enemy')) {
+        if ((e.status.sunder?.pct ?? 0) <= h.scent) e.status.sunder = { pct: h.scent, turns: Math.max(2, e.status.sunder?.turns ?? 0) };
+        if ((e.status.hex?.pct ?? 0) <= h.scent) e.status.hex = { pct: h.scent, turns: Math.max(2, e.status.hex?.turns ?? 0) };
+      }
+    }
   }
 
   /** Advances to the next living actor and applies its start-of-turn effects. */
@@ -719,6 +762,7 @@ export class Battle {
     if (u.status.weaken) atk *= 1 - u.status.weaken.pct;
     if (u.status.empower) atk *= 1 + u.status.empower.pct;
     if (u.side === 'enemy') atk *= 1 + RAGE_STEP * this.rage;
+    else atk *= 1 + (this.hound?.howl.atk ?? 0);
     return atk;
   }
 
@@ -784,7 +828,7 @@ export class Battle {
   private guardOf(t: Unit) {
     if (t.side !== 'party') return 1;
     const g = this.alive('party').find((u) => u.passive?.kind === 'bulwark');
-    return g ? 1 - (g.passive!.value ?? 0) : 1;
+    return (g ? 1 - (g.passive!.value ?? 0) : 1) * (1 - (this.hound?.howl.ward ?? 0));
   }
 
   /** Expected damage of a skill on one target, before shields and luck. Used by Auto and target previews. */

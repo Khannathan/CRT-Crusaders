@@ -12,7 +12,10 @@ import { autoChoose, autoStep } from '../systems/autoplay';
 import { makeButton } from '../ui/button';
 import { addOrderSigil } from '../ui/sisterCard';
 import { showDetail } from '../ui/glossary';
-import { addArt } from '../ui/theme';
+import { HOUNDS } from '../data/hounds';
+import { howlParts } from '../systems/hounds';
+import { houndFace } from '../ui/hound';
+import { addArt, text } from '../ui/theme';
 import { Bar, candleFrames, nine } from '../ui/skin';
 import { current } from '../state/run';
 import { BALANCE_VERSION, Battle, EXECUTE_AT, ZEAL_MAX, skillsFor, type BattleEvent, type Unit } from '../systems/combat';
@@ -73,6 +76,7 @@ export class BattleScene extends Phaser.Scene {
   private descText!: Phaser.GameObjects.Text;
   private zealBar!: Bar;
   private zealText!: Phaser.GameObjects.Text;
+  private houndImg?: Phaser.GameObjects.Image;
   private roundText!: Phaser.GameObjects.Text;
   private candle!: Phaser.GameObjects.Graphics;
   private candleSprite?: Phaser.GameObjects.Image;
@@ -150,6 +154,7 @@ export class BattleScene extends Phaser.Scene {
     if (!this.textures.exists('ui-bar-frame')) this.add.rectangle(GAME_W / 2, 455, 404, 18, PAL.deepShadow).setStrokeStyle(2, PAL.armorShadow);
     this.zealBar = new Bar(this, GAME_W / 2 - 200, 455, 400, 14, 'ui-bar-zeal', PAL.amber, PAL.deepShadow);
     this.zealText = this.add.text(GAME_W / 2, 478, '', { ...style, fontSize: '16px', color: hex(PAL.steel) }).setOrigin(0.5);
+    this.drawHound();
 
     this.descText = this.add
       .text(GAME_W / 2, 734, '', { ...style, fontSize: '18px', align: 'center', color: hex(PAL.steel), wordWrap: { width: GAME_W - 40 } })
@@ -691,6 +696,20 @@ export class BattleScene extends Phaser.Scene {
     });
   }
 
+  /** The party's hound beside the Zeal bar: it pulses as it howls; tap it for the howl. */
+  private drawHound() {
+    this.houndImg = undefined;
+    const h = this.battle.hound;
+    const def = h && HOUNDS.find((d) => d.name === h.name);
+    if (!h || !def) return;
+    const [, img] = houndFace(this, 36, 462, def, 46);
+    this.houndImg = img;
+    this.add.text(36, 490, 'HOUND', text.hud(9, PAL.steel)).setOrigin(0.5, 0);
+    img.setInteractive({ useHandCursor: true }).on('pointerup', () =>
+      showDetail(this, { title: def.name, color: RARITY_COLOR[def.rarity], tags: `${def.rarity} HOUND`, desc: `${h.howlName}, at the start of every round: ${howlParts(h.howl).join('; ')}.`, facts: ['Change hounds in the Kennel or under any party.'] }),
+    );
+  }
+
   private show(e: BattleEvent) {
     if (this.fx && (e.type === 'damage' || e.type === 'heal' || e.type === 'shield' || e.type === 'status') && !this.fxHit.has(e.uid)) {
       const c = this.cards.get(e.uid);
@@ -702,6 +721,9 @@ export class BattleScene extends Phaser.Scene {
     switch (e.type) {
       case 'text':
         this.logText.setText(e.text);
+        if (this.houndImg && this.battle.hound && e.text.startsWith(`${this.battle.hound.name}:`)) {
+          this.tweens.add({ targets: this.houndImg, scale: this.houndImg.scale * 1.25, yoyo: true, duration: 160 });
+        }
         break;
       case 'damage': {
         const c = this.cards.get(e.uid);

@@ -4,6 +4,7 @@ import { CLASSES, RARITY_COLOR } from '../data/classes';
 import { CRUSADERS } from '../data/crusaders';
 import { orderBonuses } from '../data/orders';
 import { drawOrderChips } from '../ui/orderBonus';
+import { drawHoundSlot } from '../ui/hound';
 import { commit, game } from '../state/game';
 import { current } from '../state/run';
 import { CRYPTS, MAX_PARTY, canMuster, cryptRecommended, startRun, suggestParty } from '../systems/crusade';
@@ -40,9 +41,11 @@ export class MusterScene extends Phaser.Scene {
     addScreenGlow(this);
     this.add.text(GAME_W / 2, 36, 'MUSTER', text.display(30, PAL.ivory)).setOrigin(0.5);
     makeButton(this, 60, 36, 96, 48, 'Back', () => this.scene.start('Crusade'), { fontSize: 18 });
-    this.add
-      .text(GAME_W / 2, 80, 'Rank I bleeds first. Tap a Sister to call or dismiss her.', text.body(18, PAL.muted))
-      .setOrigin(0.5);
+    // The hound that marches with them (tap to change).
+    drawHoundSlot(this, game.save, GAME_W / 2, 80, GAME_W - 32, 5, () => {
+      commit();
+      this.create();
+    }, true);
 
     // Party power, top right
     {
