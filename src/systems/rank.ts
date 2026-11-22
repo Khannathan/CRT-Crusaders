@@ -1,10 +1,11 @@
 import type { SaveData } from '../state/save';
+import { GILT_PER_RANK, earn } from './currency';
 import type { TaskEvent } from './tasks';
 
 /**
  * Rank of Faith: an account level fed by everything the player does. Ranks
  * open side modes one at a time, so a new player isn't flooded, and every
- * rank leaves a small gift to claim. Pays in Seals and Tithes only.
+ * rank leaves a small gift to claim: Seals, Tithes and Gilt.
  */
 export const RANK_XP: Record<TaskEvent, number> = {
   fightWon: 10,
@@ -70,9 +71,10 @@ export function gainFaith(save: SaveData, event: TaskEvent, n = 1) {
 export interface RankGift {
   seals: number;
   tithes: number;
+  gilt: number;
 }
 
-export const rankGift = (r: number): RankGift => ({ seals: 2 + Math.floor(r / 5), tithes: 100 * r });
+export const rankGift = (r: number): RankGift => ({ seals: 2 + Math.floor(r / 5), tithes: 100 * r, gilt: GILT_PER_RANK });
 
 /** Ranks reached whose gifts are still unclaimed. */
 export function giftsWaiting(save: SaveData): number[] {
@@ -83,12 +85,14 @@ export function giftsWaiting(save: SaveData): number[] {
 
 /** Claims every waiting gift at once. */
 export function claimGifts(save: SaveData): RankGift {
-  const total = { seals: 0, tithes: 0 };
+  const total = { seals: 0, tithes: 0, gilt: 0 };
   for (const r of giftsWaiting(save)) {
     const g = rankGift(r);
     total.seals += g.seals;
     total.tithes += g.tithes;
+    total.gilt += g.gilt;
   }
+  earn(save, total.gilt);
   save.seals += total.seals;
   save.tithes += total.tithes;
   rankOf(save).gifted = rankInfo(save).rank;

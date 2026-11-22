@@ -64,6 +64,12 @@ export interface SaveData {
   inquisition?: InquisitionState;
   /** Sister bonds: bond XP and confessions heard, by Sister id. */
   bonds?: Record<string, BondState>;
+  /** Gilt, the premium currency (starts at GILT_START). */
+  gilt?: number;
+  /** Alms, the shop currency. */
+  alms?: number;
+  /** Shop purchases and today's Almonry stock. */
+  shop?: import('../systems/shop').ShopState;
   /** Materials by item id (see systems/items.ts). */
   items?: import('../systems/items').Bag;
   /** Last party, in rank order, to pre-fill the muster screen. */

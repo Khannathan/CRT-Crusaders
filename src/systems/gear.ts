@@ -1,4 +1,5 @@
 import type { Rarity } from '../data/types';
+import { ALMS_FOR_GEAR, earn } from './currency';
 import type { SaveData } from '../state/save';
 import type { Rng } from './gacha';
 import { track } from './tasks';
@@ -125,8 +126,9 @@ export function salvage(save: SaveData, uid: string): number {
   const i = list.findIndex((g) => g.uid === uid);
   if (i < 0) return 0;
   const value = salvageValue(list[i]);
-  list.splice(i, 1);
+  const [piece] = list.splice(i, 1);
   save.tithes += value;
+  earn(save, 0, ALMS_FOR_GEAR[piece.rarity]);
   return value;
 }
 

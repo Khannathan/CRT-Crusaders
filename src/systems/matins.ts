@@ -1,4 +1,5 @@
 import { CRUSADERS } from '../data/crusaders';
+import { earn } from './currency';
 import type { Rarity } from '../data/types';
 import type { SaveData } from '../state/save';
 import { MAX_VOW, RARITY_ORDER, type Rng } from './gacha';
@@ -15,11 +16,12 @@ export interface MatinsReward {
   seals?: number;
   gear?: Rarity;
   vowToken?: boolean;
+  gilt?: number;
 }
 
 export const MATINS_DAYS = 28;
 
-const WEEK: MatinsReward[] = [{ tithes: 150 }, { seals: 1 }, { gear: 'SR' }, { tithes: 200 }, { seals: 1 }, { tithes: 250 }, { seals: 3 }];
+const WEEK: MatinsReward[] = [{ tithes: 150 }, { seals: 1 }, { gear: 'SR' }, { tithes: 200 }, { seals: 1 }, { tithes: 250 }, { seals: 3, gilt: 50 }];
 
 export const MATINS: MatinsReward[] = Array.from({ length: MATINS_DAYS }, (_, i) => {
   if (i === 13) return { gear: 'SSR' };
@@ -41,7 +43,7 @@ export const matinsOf = (save: SaveData): MatinsState => (save.matins ??= { lit:
 export const matinsReady = (save: SaveData, now = Date.now()) => matinsOf(save).last !== dayKey(now);
 
 export const matinsText = (r: MatinsReward) =>
-  r.vowToken ? 'Vow token' : r.gear ? `${r.gear} gear` : r.seals ? `${r.seals} Seal${r.seals > 1 ? 's' : ''}` : `${r.tithes} Tithes`;
+  (r.vowToken ? 'Vow token' : r.gear ? `${r.gear} gear` : r.seals ? `${r.seals} Seal${r.seals > 1 ? 's' : ''}` : `${r.tithes} Tithes`) + (r.gilt ? ` + ${r.gilt} Gilt` : '');
 
 /** Sisters who can still take a Vow token, best first. */
 export function vowCandidates(save: SaveData) {
@@ -79,6 +81,7 @@ export function lightCandle(save: SaveData, now = Date.now(), sisterId?: string,
   }
   save.tithes += reward.tithes ?? 0;
   save.seals += reward.seals ?? 0;
+  earn(save, reward.gilt ?? 0);
   if (reward.gear) {
     const before = save.gear?.length ?? 0;
     claimGear(save, [makeGear(rng, reward.gear)]);

@@ -3,6 +3,7 @@ import { GAME_H, GAME_W, PAL } from '../config';
 import { commit, game } from '../state/game';
 import { FAMILIES, REFINE, countOf, itemDef, itemIds, refine, type ItemId } from '../systems/items';
 import { MAX_GEAR } from '../systems/gear';
+import { almsOf, giltOf } from '../systems/currency';
 import { makeButton } from '../ui/button';
 import { drawItemIcon } from '../ui/itemIcon';
 import { modeScreen, toast } from '../ui/modeScreen';
@@ -32,10 +33,12 @@ export class InventoryScene extends Phaser.Scene {
     const tokens = Object.values(save.owned).reduce((n, o) => n + (o.tokens ?? 0), 0);
     const shards = Object.values(save.shards ?? {}).reduce((n, v) => n + v, 0);
     const cur: [string, string][] = [
-      ['WAX SEALS', `${save.seals}`],
+      ['GILT', `${giltOf(save)}`],
+      ['SEALS', `${save.seals}`],
       ['TITHES', save.tithes.toLocaleString('en-US')],
-      ['VOW TOKENS', `${tokens}`],
-      ['RELIC SHARDS', `${shards}`],
+      ['ALMS', `${almsOf(save)}`],
+      ['VOWS', `${tokens}`],
+      ['SHARDS', `${shards}`],
       ['GEAR', `${save.gear?.length ?? 0}/${MAX_GEAR}`],
     ];
     const cw = bw / cur.length;

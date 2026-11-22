@@ -1,13 +1,14 @@
 import Phaser from 'phaser';
 import { DISPLAY_FONT, FONT, GAME_W, HUD_FONT, PAL, hex } from '../config';
 import { game } from '../state/game';
+import { giltOf } from '../systems/currency';
 import { nine, stretch } from './skin';
 import { addIcon } from './theme';
 
 export const CURRENCY_BAR_H = 56;
 
 /**
- * The preview's status bar: sigil and title on the left, Seals and Tithes as
+ * The preview's status bar: sigil and title on the left, Gilt, Seals and Tithes as
  * framed chips on the right. Returns a refresh function.
  */
 export function addCurrencyBar(scene: Phaser.Scene) {
@@ -49,10 +50,12 @@ export function addCurrencyBar(scene: Phaser.Scene) {
     };
   };
   const tithes = chip('tithe', PAL.amber, 'Tithes');
-  const seals = chip('seal', 0xd87988, 'Wax Seals');
+  const seals = chip('seal', 0xd87988, 'Seals');
+  const gilt = chip('gilt', 0xf2d27a, 'Gilt');
   const refresh = () => {
     const left = tithes(game.save.tithes, GAME_W - 10);
-    seals(game.save.seals, left - 8);
+    const l2 = seals(game.save.seals, left - 6);
+    gilt(giltOf(game.save), l2 - 6);
   };
   refresh();
   return refresh;

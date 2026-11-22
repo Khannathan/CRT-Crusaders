@@ -35,6 +35,7 @@ export class ResultsScene extends Phaser.Scene {
     }
     const notes: string[] = [];
     if (!bagEmpty(r.items)) notes.push(`Materials: ${bagText(r.items)}`);
+    if (r.gilt) notes.push(`+${r.gilt} Gilt`);
     if (r.pilgrimage) notes.push(`Pilgrimage blessing included: +${r.pilgrimage.seals} Seals, +${r.pilgrimage.tithes} Tithes. ${r.pilgrimage.left} blessed clear${r.pilgrimage.left === 1 ? '' : 's'} left this week.`);
     if (r.melted) notes.push(`The armory is full: spare gear melted for +${r.melted} Tithes.`);
     if (r.firstClear) notes.push('First clear bonus included! Heresy I is now open for this crypt.');
