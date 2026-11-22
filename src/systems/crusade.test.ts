@@ -4,15 +4,70 @@ import { CRUSADERS } from '../data/crusaders';
 import { orderBonuses } from '../data/orders';
 import { CLASS_SKILLS } from '../data/skills';
 import { skillsFor } from './combat';
-import { BELFRY, CRYPTS, OSSUARY, choices, chooseEvent, cryptUnlocked, enterNode, finishRun, generateMap, heresyAvailable, makeBattle, maxHpOf, startRun, PILGRIMAGE_BONUS, PILGRIMAGE_CLEARS, pilgrimageLeft } from './crusade';
+import { winRoom, BELFRY, CRYPTS, RAMP, actsOf, cryptFloors, OSSUARY, choices, chooseEvent, cryptUnlocked, enterNode, finishRun, generateMap, heresyAvailable, makeBattle, maxHpOf, startRun, PILGRIMAGE_BONUS, PILGRIMAGE_CLEARS, pilgrimageLeft } from './crusade';
 import { seeded } from './rng';
+
+describe('the crypt ramp', () => {
+  it('18 crypts, each one step of the ramp, each unlocked by the one before', () => {
+    expect(CRYPTS.length).toBe(18);
+    expect(CRYPTS.map((c) => c.floors)).toEqual(RAMP);
+    CRYPTS.slice(1).forEach((c, i) => expect(c.unlockAfter).toBe(CRYPTS[i].id));
+  });
+
+  it('acts hold up to 10 floors', () => {
+    expect(actsOf(5)).toEqual([5]);
+    expect(actsOf(10)).toEqual([10]);
+    expect(actsOf(15)).toEqual([10, 5]);
+    expect(actsOf(30)).toEqual([10, 10, 10]);
+  });
+
+  it('Heresy climbs every crypt to 30 floors at the last tier', () => {
+    expect([0, 1, 2, 3, 4, 5].map((h) => cryptFloors(OSSUARY, h))).toEqual([5, 10, 15, 20, 25, 30]);
+    for (const c of CRYPTS) {
+      expect(cryptFloors(c, 0)).toBe(c.floors);
+      expect(cryptFloors(c, 5)).toBe(30);
+      for (let h = 1; h <= 5; h++) {
+        expect(cryptFloors(c, h)).toBeGreaterThanOrEqual(cryptFloors(c, h - 1));
+        expect(RAMP).toContain(cryptFloors(c, h));
+      }
+    }
+  });
+
+  it('each act ends in a boss; acts of 8 or more floors add a Warden midway', () => {
+    for (const floors of [5, 8, 10, 15, 18, 30]) {
+      const map = generateMap(OSSUARY, seeded(floors), floors);
+      const acts = actsOf(floors);
+      const bosses = map.filter((row) => row[0].kind === 'boss');
+      expect(bosses.filter((r) => r[0].warden).length).toBe(acts.filter((n) => n >= 8).length);
+      expect(bosses.filter((r) => r[0].actEnd).length).toBe(acts.length - 1);
+      expect(map[map.length - 1][0]).toMatchObject({ kind: 'boss', encounter: OSSUARY.boss, act: acts.length });
+      bosses.forEach((r) => expect(r.length).toBe(1));
+    }
+  });
+
+  it('felling an act boss opens a Sanctuary that heals before the next act', () => {
+    const save = newSave();
+    save.owned['CC-W013'] = { level: 1, vow: 0 };
+    const run = startRun(save, ['CC-W013'], OSSUARY, seeded(9), 2); // 15 floors: acts of 10 and 5
+    expect(run.map.length).toBe(17);
+    const end = run.map.findIndex((row) => row[0].actEnd);
+    expect(end).toBe(10);
+    run.floor = end;
+    run.at = 0;
+    run.resolved = false;
+    run.hp['CC-W013'] = 1;
+    winRoom(run, save);
+    expect(run.sanctuary).toBe(1);
+    expect(run.hp['CC-W013']).toBeGreaterThan(1);
+  });
+});
 
 describe('crypt maps', () => {
   it('every node can be reached, and the boss waits at the top', () => {
     for (const crypt of CRYPTS) {
       for (let seed = 1; seed < 60; seed++) {
         const map = generateMap(crypt, seeded(seed));
-        expect(map.length).toBe(crypt.floors + 1);
+        expect(map.length).toBe(crypt.floors + actsOf(crypt.floors).length); // a boss row ends each act
         expect(map[map.length - 1].map((n) => n.kind)).toEqual(['boss']);
         expect(map[0].every((n) => n.kind === 'fight')).toBe(true);
         expect(map.flat().some((n) => n.kind === 'elite')).toBe(true);

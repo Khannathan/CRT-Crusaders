@@ -4,7 +4,7 @@ import { RARITY_COLOR } from '../data/classes';
 import { CRUSADERS } from '../data/crusaders';
 import { commit, game } from '../state/game';
 import { current } from '../state/run';
-import { PILGRIMAGE_BONUS, PILGRIMAGE_CLEARS, pilgrimageLeft, CRYPTS, HERESY_ENEMY, HERESY_REWARD, REWARDS, ROMAN, canMuster, cryptRecommended, cryptUnlocked, heresyAvailable, reviveCost, revive, suggestParty, type CryptDef } from '../systems/crusade';
+import { PILGRIMAGE_BONUS, PILGRIMAGE_CLEARS, pilgrimageLeft, CRYPTS, HERESY_ENEMY, HERESY_REWARD, REWARDS, ROMAN, canMuster, cryptRecommended, cryptUnlocked, cryptFloors, actsOf, heresyAvailable, reviveCost, revive, suggestParty, type CryptDef } from '../systems/crusade';
 import { canRepeat, repeatRuns } from '../systems/autorun';
 import { ROMAN_RANK, unlocked } from '../systems/rank';
 import { pickParty } from '../ui/partyPicker';
@@ -14,7 +14,8 @@ import { drawRecommended } from '../ui/recommended';
 import { makeButton } from '../ui/button';
 import { CURRENCY_BAR_H, addCurrencyBar } from '../ui/currencyBar';
 import { portraitKey } from '../ui/placeholderPortrait';
-import { addTabBar } from '../ui/tabBar';
+import { addScrollArea } from '../ui/scroll';
+import { TAB_BAR_H, addTabBar } from '../ui/tabBar';
 import { PAD, addBackdrop, addFrame, addHeading, addScreenGlow, text } from '../ui/theme';
 
 /** Rank of Faith needed to repeat a cleared crypt on Auto. */
@@ -22,6 +23,9 @@ const REPEAT_RANK = 4;
 
 /** Crusade tab: the crypt on offer, and crusaders recovering from a fall. */
 export class CrusadeScene extends Phaser.Scene {
+  /** Where the crypt list was scrolled to, kept across visits. */
+  private static listY = 0;
+
   constructor() {
     super('Crusade');
   }
@@ -64,13 +68,25 @@ export class CrusadeScene extends Phaser.Scene {
       return;
     }
 
-    // One painted card per crypt. Art key bg-<crypt id> if present, else the hall.
+    // One painted card per crypt (the open ones and the next to open), in a scrolling list.
+    // Art key bg-<crypt id> if present, else the hall.
+    const listTop = top + 2;
+    const listBottom = GAME_H - TAB_BAR_H;
+    const list = addScrollArea(this, listTop, listBottom, { start: CrusadeScene.listY, onScroll: (y) => (CrusadeScene.listY = y) });
+    const before = this.children.list.length;
+    /** A button action that ignores the release of a scroll drag, or a tap outside the list. */
+    const tap = (fn: () => void) => () => {
+      const y = this.input.activePointer.y;
+      if (!list.dragging && y >= listTop && y <= listBottom) fn();
+    };
     const hw = GAME_W - PAD * 2;
     const hh = 236;
     const tx = PAD + 18;
     const ready = CRUSADERS.filter((c) => canMuster(s, c.id));
-    let bottom = top;
-    CRYPTS.forEach((crypt) => {
+    this.add.text(PAD, top + 8, 'Every fight pays Tithes, Pilgrimage or not.', text.body(16, PAL.muted));
+    let bottom = top + 24;
+    const shown = CRYPTS.filter((c, i) => cryptUnlocked(s, c) || i === 0 || cryptUnlocked(s, CRYPTS[i - 1]));
+    shown.forEach((crypt) => {
       const open = cryptUnlocked(s, crypt);
       const cleared = s.cleared.includes(crypt.id);
       const hy = bottom + 14 + hh / 2;
@@ -84,14 +100,16 @@ export class CrusadeScene extends Phaser.Scene {
       this.add
         .text(tx, cardBottom - 212, crypt.name.toUpperCase(), { ...text.display(24, open ? 0xfff1d6 : PAL.muted), wordWrap: { width: hw - 36 } })
         .setShadow(0, 2, '#000000', 9, false, true);
-      this.add.text(tx, cardBottom - 176, `${crypt.blurb}\n${crypt.floors} floors, then ${crypt.bossName}.`, {
+      const prior = CRYPTS.find((c) => c.id === crypt.unlockAfter);
+      const maxTier = heresyAvailable(s, crypt);
+      const tier = Math.min(maxTier, (current.heresy ??= {})[crypt.id] ?? 0);
+      const floors = cryptFloors(crypt, tier);
+      const acts = actsOf(floors).length;
+      this.add.text(tx, cardBottom - 176, `${crypt.blurb}\n${floors} floors${acts > 1 ? ` in ${acts} acts` : ''}, then ${crypt.bossName}.`, {
         ...text.body(17, open ? 0xe1cabf : PAL.muted),
         lineSpacing: 2,
         wordWrap: { width: hw - 36 },
       });
-      const prior = CRYPTS.find((c) => c.id === crypt.unlockAfter);
-      const maxTier = heresyAvailable(s, crypt);
-      const tier = Math.min(maxTier, (current.heresy ??= {})[crypt.id] ?? 0);
       const best = s.heresy?.[crypt.id] ?? 0;
       const note = !open
         ? `Clear ${prior?.name} to open`
@@ -111,10 +129,10 @@ export class CrusadeScene extends Phaser.Scene {
         220,
         54,
         !open ? 'Locked' : ready.length ? 'Muster' : 'None can march',
-        () => {
+        tap(() => {
           current.cryptId = crypt.id;
           this.scene.start('Muster');
-        },
+        }),
         { active: open && ready.length > 0, disabled: !open || !ready.length, icon: open ? 'shield' : 'lock', fontSize: 20 },
       );
       // Heresy picker: harder tiers open one at a time after a clear.
@@ -124,15 +142,15 @@ export class CrusadeScene extends Phaser.Scene {
           this.scene.restart();
         };
         const cx = GAME_W - PAD - 112;
-        makeButton(this, cx - 76, cardBottom - 38, 44, 54, '‹', () => set(tier - 1), { disabled: tier === 0, fontSize: 24 });
-        makeButton(this, cx + 76, cardBottom - 38, 44, 54, '›', () => set(tier + 1), { disabled: tier >= maxTier, fontSize: 24 });
+        makeButton(this, cx - 76, cardBottom - 38, 44, 54, '‹', tap(() => set(tier - 1)), { disabled: tier === 0, fontSize: 24 });
+        makeButton(this, cx + 76, cardBottom - 38, 44, 54, '›', tap(() => set(tier + 1)), { disabled: tier >= maxTier, fontSize: 24 });
         this.add.text(cx, cardBottom - 48, tier ? `HERESY ${ROMAN[tier - 1]}` : 'NORMAL', text.hud(14, tier ? 0xe58a8a : PAL.ivory)).setOrigin(0.5);
         this.add.text(cx, cardBottom - 26, `up to ${ROMAN[maxTier - 1]}`, text.hud(12, PAL.muted)).setOrigin(0.5);
       }
-      // Repeat: a cleared crypt (at this tier) can be replayed on Auto from Rank IV.
+      // Sweep: a cleared crypt (at this tier) can be replayed on Auto from Rank IV.
       if (open && canRepeat(s, crypt, tier)) {
         const ok = unlocked(s, REPEAT_RANK);
-        makeButton(this, GAME_W - PAD - 70, cardBottom - 196, 116, 42, ok ? 'Repeat' : `Rank ${ROMAN_RANK(REPEAT_RANK)}`, () => this.repeat(crypt, tier), {
+        makeButton(this, GAME_W - PAD - 70, cardBottom - 196, 116, 42, ok ? 'Sweep' : `Rank ${ROMAN_RANK(REPEAT_RANK)}`, tap(() => this.repeat(crypt, tier)), {
           fontSize: 16,
           icon: ok ? 'swap' : 'lock',
           disabled: !ok || !ready.length,
@@ -148,7 +166,7 @@ export class CrusadeScene extends Phaser.Scene {
     if (resting.length) {
       this.add.text(PAD, bottom + 18, 'Infirmary', text.display(20, PAL.ivory));
       this.add.text(GAME_W - PAD, bottom + 26, 'MENDING FOR ONE CRUSADE', text.hud(12, PAL.muted)).setOrigin(1, 0);
-      resting.slice(0, 2).forEach((c, i) => {
+      resting.forEach((c, i) => {
         const y = bottom + 84 + i * 64;
         this.add.image(PAD + 28, y, portraitKey(c.id)).setDisplaySize(56, 56);
         this.add.rectangle(PAD + 28, y, 56, 56).setStrokeStyle(1, RARITY_COLOR[c.rarity]);
@@ -161,16 +179,20 @@ export class CrusadeScene extends Phaser.Scene {
           160,
           52,
           `Absolve · ${cost}`,
-          () => {
+          tap(() => {
             if (revive(s, c.id)) {
               commit();
               this.scene.restart();
             }
-          },
+          }),
           { fontSize: 17, disabled: s.tithes < cost },
         );
       });
     }
+
+    const listBottomY = resting.length ? bottom + 84 + resting.length * 64 : bottom + 60;
+    list.content.add(this.children.list.slice(before));
+    list.fit(listBottomY);
 
     addTabBar(this, 'Crusade');
   }
@@ -185,7 +207,7 @@ export class CrusadeScene extends Phaser.Scene {
       layer.add(this.add.rectangle(GAME_W / 2, GAME_H / 2, GAME_W, GAME_H, 0x09060b, 0.94).setInteractive());
       layer.add(addFrame(this, GAME_W / 2, GAME_H / 2, GAME_W - 24, 640, { fill: 0x241925 }));
       const y0 = GAME_H / 2 - 300;
-      layer.add(this.add.text(GAME_W / 2, y0 + 30, 'REPEAT THE CRUSADE', text.display(22, PAL.ivory)).setOrigin(0.5));
+      layer.add(this.add.text(GAME_W / 2, y0 + 30, 'SWEEP THE CRYPT', text.display(22, PAL.ivory)).setOrigin(0.5));
       layer.add(
         this.add
           .text(GAME_W / 2, y0 + 64, `${crypt.name}${heresy ? `, Heresy ${ROMAN[heresy - 1]}` : ''}. Your Sisters march on Auto: real fights, real spoils, real wounds. They stop at the first defeat.`, {

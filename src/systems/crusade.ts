@@ -2,7 +2,7 @@ import { BOND_XP, addBond } from './bonds';
 import { GILT_FIRST_CLEAR, GILT_HERESY, earn } from './currency';
 import { CLASSES } from '../data/classes';
 import { CRUSADERS } from '../data/crusaders';
-import { ENCOUNTERS } from '../data/enemies';
+import { ENCOUNTERS, ENEMIES } from '../data/enemies';
 import { EVENTS, type EventOutcome } from '../data/events';
 import { orderBonuses } from '../data/orders';
 import { RELICS, type RelicDef } from '../data/relics';
@@ -23,6 +23,14 @@ export interface MapNode {
   encounter?: string;
   event?: string;
   next: number[];
+  /** Act (1-3) the node belongs to. */
+  act?: number;
+  /** A boss node's own name (Wardens and the bosses of earlier acts). */
+  name?: string;
+  /** A Warden: the lesser boss in the middle of a long act. */
+  warden?: boolean;
+  /** The boss that closes an act before the last: beating it opens a Sanctuary. */
+  actEnd?: boolean;
 }
 
 export interface CryptDef {
@@ -41,6 +49,45 @@ export interface CryptDef {
   rewardMult: number;
   /** Crypt id that must be cleared first. */
   unlockAfter?: string;
+  /** Enemy stat multiplier for deeper crypts (1 when absent). */
+  power?: number;
+  /** Name of the Warden met mid-act. */
+  wardenName?: string;
+  /** Names for the acts after the first ("The Flooded Nave", ...). */
+  actNames?: string[];
+}
+
+/**
+ * The floor ramp: each crypt is one step (5 to 10 floors in one act, then 15 to
+ * 20 in two, then 25 to 30 in three), and a crypt's Heresy tiers climb the same
+ * ramp from its own size so its last tier always reaches 30 floors.
+ */
+export const RAMP = [5, 6, 7, 8, 9, 10, 15, 16, 17, 18, 19, 20, 25, 26, 27, 28, 29, 30];
+export const MAX_FLOORS = 30;
+/** An act this long or longer also has a Warden halfway. */
+export const WARDEN_ACT = 8;
+/** Share of max HP each Sister gets back at a Sanctuary between acts. */
+export const SANCTUARY_HEAL = 0.4;
+/** Enemies grow this much stronger with each act. */
+export const ACT_ENEMY = 0.15;
+
+/** Floors split into acts: up to 10 in the first, then the rest in acts of up to 10. */
+export function actsOf(floors: number): number[] {
+  const out: number[] = [];
+  let left = floors;
+  while (left > 0) {
+    out.push(Math.min(10, left));
+    left -= 10;
+  }
+  return out;
+}
+
+/** Floors a crypt has at a Heresy tier: its own size at Normal, 30 at the last tier. */
+export function cryptFloors(crypt: CryptDef, heresy = 0): number {
+  const base = crypt.floors;
+  if (base >= MAX_FLOORS || heresy <= 0) return base;
+  const want = base + ((MAX_FLOORS - base) * Math.min(heresy, MAX_HERESY)) / MAX_HERESY;
+  return RAMP.reduce((best, f) => (f >= base && Math.abs(f - want) < Math.abs(best - want) ? f : best), base);
 }
 
 export const OSSUARY: CryptDef = {
@@ -53,6 +100,7 @@ export const OSSUARY: CryptDef = {
   elites: ['ossuary-elite-1', 'ossuary-elite-2'],
   boss: 'choir',
   bossName: 'The Choir Below',
+  wardenName: 'The Ossuary Keeper',
   rewardMult: 1,
 };
 
@@ -66,11 +114,51 @@ export const BELFRY: CryptDef = {
   elites: ['belfry-elite-1', 'belfry-elite-2'],
   boss: 'abbess',
   bossName: 'The Hollow Abbess',
+  wardenName: 'The Bell-Ringer',
   rewardMult: 1.6,
   unlockAfter: 'drowned-ossuary',
 };
 
-export const CRYPTS: CryptDef[] = [OSSUARY, BELFRY];
+/**
+ * The deeper crypts, one ramp step each. Until their own enemies and art
+ * arrive they reuse the Ossuary and Belfry hosts, made stronger by `power`.
+ * Names are placeholders.
+ */
+const DEEP: [string, string, string, string][] = [
+  ['weeping-cloister', 'The Weeping Cloister', 'Nuns who never stopped praying, long after they stopped breathing.', 'Sister Lament'],
+  ['ash-scriptorium', 'The Ash Scriptorium', 'The copyists burned with their books. The ink still moves.', 'The Unbound Scribe'],
+  ['hanging-chapel', 'The Hanging Chapel', 'A chapel slung beneath a bridge, swaying over black water.', 'The Hanged Deacon'],
+  ['bone-orchard', 'The Bone Orchard', 'An orchard planted in a plague pit. The fruit is pale.', 'The Gardener'],
+  ['salt-catacomb', 'The Salt Catacomb', 'Bodies packed in salt, waiting to be remembered.', 'The Salt Matron'],
+  ['flooded-nave', 'The Flooded Nave', 'A cathedral sunk to its rafters. The bells ring underwater.', 'The Drowned Verger'],
+  ['iron-oubliette', 'The Iron Oubliette', 'A prison for the unrepentant, and for what they became.', 'The Jailer'],
+  ['candle-maze', 'The Candle Maze', 'Ten thousand candles, and each one is a soul.', 'The Wick-Keeper'],
+  ['red-refectory', 'The Red Refectory', 'The brothers still sit down to dinner. Do not ask what is served.', 'The Cellarer'],
+  ['choir-loft', 'The Endless Choir Loft', 'A stair of pews that climbs into the dark, singing.', 'The Cantor'],
+  ['penitent-well', "The Penitent's Well", 'Pilgrims threw their sins down here. The sins climbed back.', 'The Well-Warden'],
+  ['thorned-sacristy', 'The Thorned Sacristy', 'Vestments of briar, chalices of rust, a priest of thorns.', 'The Thorn Priest'],
+  ['mirror-crypt', 'The Mirror Crypt', 'Every Sister who enters meets herself, and she is hungry.', 'The Reflection'],
+  ['plague-hospice', 'The Plague Hospice', 'The sick were walled in to save the city. The walls are thin now.', 'The Physician'],
+  ['abyssal-ossuary', 'The Abyssal Ossuary', 'Below the first Ossuary, older bones arranged in older prayers.', 'The Bone Choir'],
+  ['last-altar', 'The Last Altar', 'Where the heresy began. Where it will end.', 'The First Heretic'],
+];
+const DEEP_CRYPTS: CryptDef[] = DEEP.map(([id, name, blurb, warden], i) => {
+  const step = i + 2; // the Ossuary and the Belfry are steps 0 and 1
+  const like = i % 2 === 0 ? OSSUARY : BELFRY;
+  return {
+    ...like,
+    id,
+    name,
+    blurb,
+    floors: RAMP[step],
+    unlockAfter: i === 0 ? BELFRY.id : DEEP[i - 1][0],
+    power: Math.round(Math.pow(1.17, step - 1) * 100) / 100,
+    rewardMult: Math.round(BELFRY.rewardMult * Math.pow(1.15, step - 1) * 100) / 100,
+    wardenName: warden,
+  };
+});
+
+export const CRYPTS: CryptDef[] = [OSSUARY, BELFRY, ...DEEP_CRYPTS];
 
 export const cryptUnlocked = (save: SaveData, c: CryptDef) => !c.unlockAfter || save.cleared.includes(c.unlockAfter);
 
@@ -118,40 +206,63 @@ export interface RunState {
   blessZeal?: number;
   /** Shorter Vigil for the next fight only. */
   curseVigil?: number;
+  /** Set to the act just finished while the party rests at a Sanctuary. */
+  sanctuary?: number;
 }
 
+/** Boss encounters an earlier act may end on (the crypt's own boss closes the last act). */
+const ACT_BOSSES = ['choir', 'abbess'];
+
 /**
- * Builds a branching map: 2-3 choices per floor, fights first, an elite floor
- * in the middle, a rest floor (shrine or reliquary) before the boss.
+ * Builds a branching map in acts: 2-3 choices per floor, fights first, an
+ * elite floor in each act, a rest floor before each act's boss, and a Warden
+ * halfway through an act of 8 or more floors.
  */
-export function generateMap(crypt: CryptDef, rng: Rng = Math.random): MapNode[][] {
+export function generateMap(crypt: CryptDef, rng: Rng = Math.random, floors = crypt.floors): MapNode[][] {
   const pick = <T>(xs: T[]) => xs[Math.floor(rng() * xs.length)];
   const events = Object.keys(EVENTS);
   const map: MapNode[][] = [];
-  const eliteFloor = Math.floor(crypt.floors / 2) + (crypt.floors > 5 ? 1 : 0);
-  for (let f = 0; f < crypt.floors; f++) {
-    const width = f === 0 ? 2 : 2 + Math.floor(rng() * 2);
-    const floor: MapNode[] = [];
-    for (let i = 0; i < width; i++) {
-      let kind: NodeKind;
-      if (f === 0) kind = 'fight';
-      else if (f === crypt.floors - 1) kind = i === 0 ? 'shrine' : i === 1 ? 'reliquary' : 'event';
-      else if (f === eliteFloor) kind = i === 0 ? 'elite' : pick(['fight', 'event', 'fight']);
-      else kind = pick(['fight', 'fight', 'fight', 'event', 'event', 'shrine', 'reliquary', ...(f > 1 ? ['elite' as const] : [])]);
-      const node: MapNode = { kind, next: [] };
-      if (kind === 'fight') node.encounter = pick(f < 2 ? crypt.early : crypt.late);
-      if (kind === 'elite') node.encounter = pick(crypt.elites);
-      if (kind === 'event') node.event = pick(events);
-      floor.push(node);
+  const acts = actsOf(floors);
+  acts.forEach((len, a) => {
+    const act = a + 1;
+    const last = a === acts.length - 1;
+    const wardenAt = len >= WARDEN_ACT ? Math.floor(len / 2) : -1;
+    const eliteFloor = wardenAt > 0 ? Math.max(1, Math.floor(wardenAt / 2) + 1) : Math.floor(len / 2) + (len > 5 ? 1 : 0);
+    for (let f = 0; f < len; f++) {
+      if (f === wardenAt) {
+        const encounter = pick(crypt.elites);
+        map.push([{ kind: 'boss', encounter, next: [], act, warden: true, name: crypt.wardenName ?? 'The Warden' }]);
+        continue;
+      }
+      const width = f === 0 && a === 0 ? 2 : 2 + Math.floor(rng() * 2);
+      const floor: MapNode[] = [];
+      for (let i = 0; i < width; i++) {
+        let kind: NodeKind;
+        if (f === 0 && a === 0) kind = 'fight';
+        else if (f === len - 1) kind = i === 0 ? 'shrine' : i === 1 ? 'reliquary' : 'event';
+        else if (f === eliteFloor) kind = i === 0 ? 'elite' : pick(['fight', 'event', 'fight']);
+        else kind = pick(['fight', 'fight', 'fight', 'event', 'event', 'shrine', 'reliquary', ...(f > 1 || a > 0 ? ['elite' as const] : [])]);
+        const node: MapNode = { kind, next: [], act };
+        if (kind === 'fight') node.encounter = pick(f < 2 && a === 0 ? crypt.early : crypt.late);
+        if (kind === 'elite') node.encounter = pick(crypt.elites);
+        if (kind === 'event') node.event = pick(events);
+        floor.push(node);
+      }
+      // Shuffle so the elite, shrine and so on are not always on the left.
+      for (let i = floor.length - 1; i > 0; i--) {
+        const j = Math.floor(rng() * (i + 1));
+        [floor[i], floor[j]] = [floor[j], floor[i]];
+      }
+      map.push(floor);
     }
-    // Shuffle so the elite, shrine and so on are not always on the left.
-    for (let i = floor.length - 1; i > 0; i--) {
-      const j = Math.floor(rng() * (i + 1));
-      [floor[i], floor[j]] = [floor[j], floor[i]];
+    if (last) map.push([{ kind: 'boss', encounter: crypt.boss, next: [], act, name: crypt.bossName }]);
+    else {
+      const others = ACT_BOSSES.filter((b) => b !== crypt.boss);
+      const enc = others[a % others.length] ?? crypt.boss;
+      const foe = ENEMIES[ENCOUNTERS[enc][0]]?.name ?? 'The Keeper';
+      map.push([{ kind: 'boss', encounter: enc, next: [], act, actEnd: true, name: foe }]);
     }
-    map.push(floor);
-  }
-  map.push([{ kind: 'boss', encounter: crypt.boss, next: [] }]);
+  });
 
   // Paths: each node reaches the nearest node(s) above; every node is reachable.
   for (let f = 0; f < map.length - 1; f++) {
@@ -186,7 +297,7 @@ export const reviveCost = (level: number) => Math.round(levelUpCost(level) * 0.6
 
 export function startRun(save: SaveData, party: string[], crypt: CryptDef = OSSUARY, rng: Rng = Math.random, heresy = 0): RunState {
   const ids = party.filter((id) => canMuster(save, id)).slice(0, MAX_PARTY);
-  const run: RunState = { crypt, map: generateMap(crypt, rng), party: ids, hp: {}, path: [], floor: -1, at: 0, resolved: true, heresy, relics: [], tithes: 0, seals: 0, loot: [] };
+  const run: RunState = { crypt, map: generateMap(crypt, rng, cryptFloors(crypt, heresy)), party: ids, hp: {}, path: [], floor: -1, at: 0, resolved: true, heresy, relics: [], tithes: 0, seals: 0, loot: [] };
   for (const id of ids) run.hp[id] = maxHpOf(save, run, id);
   save.lastParty = ids;
   return run;
@@ -229,7 +340,9 @@ export function makeBattle(save: SaveData, run: RunState, encounter: string, rng
   const armorPct = relics.reduce((s, r) => s + (r.armorPct ?? 0), 0);
   // Heresy shortens the candle by a round every second tier.
   const vigil = Math.max(2, VIGIL_DEFAULT + relics.reduce((s, r) => s + (r.vigilBonus ?? 0), 0) - (run.curseVigil ?? 0) - Math.floor(run.heresy / 2));
-  const enemyScale = scale ?? 1 + HERESY_ENEMY * run.heresy;
+  // Heresy, the crypt's depth and the act the party has reached all harden the foes.
+  const act = run.map[run.floor]?.[run.at]?.act ?? 1;
+  const enemyScale = (scale ?? 1 + HERESY_ENEMY * run.heresy) * (run.crypt.power ?? 1) * (1 + ACT_ENEMY * (act - 1));
 
   let rank = 0;
   const party: Unit[] = [];
@@ -272,7 +385,11 @@ export function skirmish(save: SaveData, party: string[], encounter: string, tie
 }
 
 /** Recommended party power for a crypt at a Heresy tier: what its boss asks. */
-export const cryptRecommended = (save: SaveData, crypt: CryptDef, heresy = 0) => recommendedPower(skirmish(save, [], crypt.boss, heresy, undefined, crypt));
+export const cryptRecommended = (save: SaveData, crypt: CryptDef, heresy = 0) => {
+  const acts = actsOf(cryptFloors(crypt, heresy)).length;
+  const scale = (1 + HERESY_ENEMY * heresy) * (1 + ACT_ENEMY * (acts - 1));
+  return recommendedPower(skirmish(save, [], crypt.boss, heresy, undefined, crypt, scale));
+};
 
 /** The node being played, if it is not finished yet. */
 export function currentNode(run: RunState): MapNode | undefined {
@@ -336,6 +453,11 @@ export function winRoom(run: RunState, save?: SaveData, rng: Rng = Math.random) 
     run.tithes += Math.round(REWARDS.fightTithes * m);
   }
   run.resolved = true;
+  // An act's boss falls: a Sanctuary before the next act.
+  if (node.actEnd && run.floor < run.map.length - 1) {
+    run.sanctuary = node.act ?? 1;
+    if (save) healAll(save, run, SANCTUARY_HEAL);
+  }
   if (save) {
     addBond(save, run.party.filter((id) => (run.hp[id] ?? 0) > 0), node.kind === 'boss' ? BOND_XP.boss : node.kind === 'elite' ? BOND_XP.elite : BOND_XP.fight);
     track(save, 'fightWon');

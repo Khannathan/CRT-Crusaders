@@ -51,8 +51,17 @@ Each class has three skills and a Rite. Stronger skills have cooldowns, shown on
 
 Each crusade is a branching map, climbed from the bottom up: tap a glowing room, read what's inside (the enemies in a fight are listed), then Go. Rooms are fights, elite fights (tougher, pay a relic and a Seal), unknown events (a choice with stakes), shrines (heal) and reliquaries (pick a relic). The floor before the boss is always a rest. Maps are random each run.
 
+**18 crypts, one step of the ramp each:** 5, 6, 7 ... 10 floors (one act), then 15 ... 20 (two acts), then 25 ... 30 (three acts). Each crypt opens when the one before is cleared, with stronger foes (x1.17 per step) and richer rewards.
+
 - **The Drowned Ossuary**: 5 floors, then the Choir Below.
-- **The Sunken Belfry**: opens after the Ossuary is cleared. 6 floors, harder enemies, 1.6x rewards, then the Hollow Abbess.
+- **The Sunken Belfry**: 6 floors, then the Hollow Abbess.
+- Then the Weeping Cloister, Ash Scriptorium, Hanging Chapel, Bone Orchard and on down to the Last Altar (30 floors).
+
+**Acts:** a run holds up to 10 floors per act. Every act ends in a boss; acts of 8 or more floors also have a **Warden** midway (the crypt's own named elite boss). After an act boss falls comes a **Sanctuary**: every Sister standing heals 40%, then descend to the next act (its foes are 15% stronger) or leave with everything found.
+
+**Heresy grows the crypt:** each Heresy tier also adds floors along the same ramp, so the top tier (V) of every crypt is 30 floors in 3 acts. The Ossuary goes 5, 10, 15, 20, 25, 30.
+
+**Every fight pays Tithes**, whether or not Pilgrimage clears are left. **Sweep** (Rank IV) replays a cleared crypt on Auto.
 
 Enemies with tricks: the Warden shields allies, the Mourning Priest heals them, the Reliquary Golem's armor shrugs off hits (poison and burns ignore armor), the Undertow Lurker drags a back-rank crusader to the front, the Bloated Pilgrim bursts when killed, the Candle Thief steals Zeal, the Plague Nun poisons everyone, and the Grave Bishop empowers itself and raises the dead.
 
