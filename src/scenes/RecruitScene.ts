@@ -31,7 +31,7 @@ export class RecruitScene extends Phaser.Scene {
     const top = addHeading(this, 'The Sealed Altar', CURRENCY_BAR_H + 16);
     makeButton(this, GAME_W - PAD - 62, CURRENCY_BAR_H + 38, 124, 44, 'Record', () => this.scene.start('PullHistory'), { fontSize: 16, icon: 'book' });
 
-    // Order banner: pick an Order with ‹ ›, then tap one of its two URs to target her.
+    // Order banner: pick an Order with ‹ ›; its UR is the target, its two SSRs are boosted.
     const banner = this.currentBanner();
     const ord = ORDERS[banner.order];
     const urs = CRUSADERS.filter((c) => c.order === ord.name && c.rarity === 'UR');
@@ -65,29 +65,26 @@ export class RecruitScene extends Phaser.Scene {
       .setOrigin(0.5, 0);
     this.add.text(GAME_W / 2, bTop + 140, `BANNER ${i + 1} / ${ORDER_LIST.length}`, text.hud(12, PAL.muted)).setOrigin(0.5);
 
-    const size = 168;
-    urs.forEach((c, k) => {
-      const x = GAME_W / 2 + (k === 0 ? -1 : 1) * 104;
-      const y = bTop + 168 + size / 2;
-      const chosen = c.id === banner.target;
-      if (chosen) {
+    // The Order's UR in the middle (the target), its two SSRs either side (boosted on this banner).
+    const ssrs = CRUSADERS.filter((c) => c.order === ord.name && c.rarity === 'SSR');
+    const cards: { c: (typeof CRUSADERS)[number]; x: number; size: number; label: string }[] = [
+      ...urs.slice(0, 1).map((c) => ({ c, x: GAME_W / 2, size: 168, label: 'TARGET' })),
+      ...ssrs.slice(0, 2).map((c, k) => ({ c, x: GAME_W / 2 + (k === 0 ? -1 : 1) * 168, size: 108, label: 'SSR UP' })),
+    ];
+    for (const { c, x, size, label } of cards) {
+      const y = bTop + 168 + 84 + (size < 168 ? 20 : 0);
+      const ur = c.rarity === 'UR';
+      if (ur) {
         const glow = this.add.rectangle(x, y, size + 16, size + 16).setStrokeStyle(4, PAL.amber);
         this.tweens.add({ targets: glow, alpha: 0.35, duration: 700, yoyo: true, repeat: -1 });
       }
-      this.add.rectangle(x, y, size + 8, size + 8, 0x170f1b).setStrokeStyle(1, RARITY_COLOR.UR);
-      const img = this.add.image(x, y, portraitKey(c.id)).setDisplaySize(size, size).setInteractive({ useHandCursor: true });
-      if (!chosen) img.setAlpha(0.6);
+      this.add.rectangle(x, y, size + 8, size + 8, 0x170f1b).setStrokeStyle(1, RARITY_COLOR[c.rarity]);
+      const img = this.add.image(x, y, portraitKey(c.id)).setDisplaySize(size, size);
       holdForCard(this, img, c.id);
-      img.on('pointerup', () => {
-        if (justHeld()) return;
-        s.banner = { order: ord.name, target: c.id };
-        commit();
-        this.scene.restart();
-      });
-      addBadge(this, x - size / 2 + 4, y - size / 2 + 4, chosen ? 'TARGET' : 'UR', chosen ? PAL.amber : RARITY_COLOR.UR, 12);
-      this.add.text(x, y + size / 2 + 14, c.name, { ...text.body(18, chosen ? 0xfff1d6 : PAL.muted), fontStyle: '600' }).setOrigin(0.5);
-      this.add.text(x, y + size / 2 + 34, (c.title ?? CLASSES[c.classId].name).toUpperCase(), text.hud(11, PAL.muted)).setOrigin(0.5);
-    });
+      addBadge(this, x - size / 2 + 4, y - size / 2 + 4, label, ur ? PAL.amber : RARITY_COLOR.SSR, ur ? 12 : 10);
+      this.add.text(x, y + size / 2 + 14, ur ? c.name : c.name.split(' ')[0], { ...text.body(ur ? 18 : 15, ur ? 0xfff1d6 : PAL.ivory), fontStyle: '600' }).setOrigin(0.5);
+      this.add.text(x, y + size / 2 + 34, (c.title ?? CLASSES[c.classId].name).toUpperCase(), text.hud(ur ? 11 : 9, PAL.muted)).setOrigin(0.5);
+    }
 
     // Banner rules and pity
     const px = PAD;
@@ -143,9 +140,13 @@ export class RecruitScene extends Phaser.Scene {
   /** The saved banner, or the first Order's first UR. */
   private currentBanner() {
     const s = game.save;
-    if (!s.banner || !ORDERS[s.banner.order] || !CRUSADERS.some((c) => c.id === s.banner!.target && c.order === s.banner!.order)) {
+    if (!s.banner || !ORDERS[s.banner.order]) {
       const first = ORDER_LIST[0];
       s.banner = { order: first.name, target: CRUSADERS.find((c) => c.order === first.name && c.rarity === 'UR')!.id };
+    }
+    // Each Order has one UR now: she is always the target (older saves may name a Sister who is SSR now).
+    if (!CRUSADERS.some((c) => c.id === s.banner!.target && c.order === s.banner!.order && c.rarity === 'UR')) {
+      s.banner.target = CRUSADERS.find((c) => c.order === s.banner!.order && c.rarity === 'UR')!.id;
     }
     return s.banner;
   }
@@ -157,16 +158,16 @@ export class RecruitScene extends Phaser.Scene {
     this.scene.start('Reveal', { results });
   }
 
-  /** Spend Relic Shards: pick one of the Order's two URs. */
+  /** Spend Relic Shards: claim the Order's UR. */
   private claimUR(order: string) {
     const urs = CRUSADERS.filter((c) => c.order === order && c.rarity === 'UR');
     const layer = this.add.container(0, 0).setDepth(20);
     layer.add(this.add.rectangle(GAME_W / 2, GAME_H / 2, GAME_W, GAME_H, 0x09060b, 0.92).setInteractive());
     layer.add(addFrame(this, GAME_W / 2, GAME_H / 2 - 40, GAME_W - 40, 560, { fill: 0x241925 }));
     layer.add(this.add.text(GAME_W / 2, 230, 'CLAIM A UR', text.display(26, PAL.amber)).setOrigin(0.5));
-    layer.add(this.add.text(GAME_W / 2, 268, `${SPARK} Relic Shards of the ${order}. Choose who answers.`, { ...text.body(17, PAL.muted), align: 'center', wordWrap: { width: GAME_W - 90 } }).setOrigin(0.5));
+    layer.add(this.add.text(GAME_W / 2, 268, `${SPARK} Relic Shards of the ${order}. Tap her to swear her in.`, { ...text.body(17, PAL.muted), align: 'center', wordWrap: { width: GAME_W - 90 } }).setOrigin(0.5));
     urs.forEach((c, k) => {
-      const x = GAME_W / 2 + (k === 0 ? -1 : 1) * 110;
+      const x = urs.length === 1 ? GAME_W / 2 : GAME_W / 2 + (k === 0 ? -1 : 1) * 110;
       const y = 420;
       layer.add(this.add.rectangle(x, y, 184, 184, 0x170f1b).setStrokeStyle(2, RARITY_COLOR.UR));
       const img = this.add.image(x, y, portraitKey(c.id)).setDisplaySize(176, 176).setInteractive({ useHandCursor: true });
