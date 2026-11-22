@@ -39,13 +39,13 @@ void main() {
   uv.x += (1.0 - band) * 0.003 * s;
 
   // red / cyan edge separation and a little horizontal colour bleed
-  float sep = 1.6 * s / uResolution.x;
+  float sep = 0.8 * s / uResolution.x;
   vec3 col;
   col.r = texture2D(uMainSampler, uv + vec2(sep, 0.0)).r;
   col.g = texture2D(uMainSampler, uv).g;
   col.b = texture2D(uMainSampler, uv - vec2(sep, 0.0)).b;
   vec3 bleed = texture2D(uMainSampler, uv - vec2(2.5 / uResolution.x, 0.0)).rgb;
-  col = mix(col, max(col, bleed), 0.25 * s);
+  col = mix(col, max(col, bleed), 0.1 * s);
 
   // lifted blacks, slightly desaturated like worn tape
   float luma = dot(col, vec3(0.299, 0.587, 0.114));
@@ -54,11 +54,11 @@ void main() {
 
   // scanlines: one dark line every 3 game pixels
   float line = 0.5 + 0.5 * cos(uv.y * uResolution.y * 2.0944);
-  col *= 1.0 - 0.22 * s * line;
+  col *= 1.0 - 0.14 * s * line;
 
   // grain
   float n = rand(uv * uResolution + fract(uTime) * 100.0) - 0.5;
-  col += n * 0.06 * s;
+  col += n * 0.04 * s;
 
   // vignette / corner darkening
   vec2 v = uv * (1.0 - uv.yx);

@@ -11,6 +11,9 @@ import { nine } from './skin';
 
 export const PAD = 18;
 
+/** Smallest an icon is drawn, in game pixels (about 14 dp on a phone). */
+export const MIN_ICON = 18;
+
 /** Text style helpers. */
 export const text = {
   body: (size = 20, color: number = PAL.ivory): Phaser.Types.GameObjects.Text.TextStyle => ({
@@ -153,6 +156,7 @@ export function addHeading(scene: Phaser.Scene, title: string, y: number, sub?: 
  * bigger, full-colour replacements (e.g. a 32x32 ui-tithe.png) are drawn as made.
  */
 export function addIcon(scene: Phaser.Scene, x: number, y: number, name: string, size = 24, tint: number = PAL.amber) {
+  size = Math.max(MIN_ICON, size);
   const key = `ui-${name}`;
   if (!scene.textures.exists(key)) return scene.add.rectangle(x, y, size * 0.6, size * 0.6, tint).setAngle(45);
   const img = scene.add.image(x, y, key).setDisplaySize(size, size);

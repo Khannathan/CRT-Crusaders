@@ -157,7 +157,7 @@ export class RosterScene extends Phaser.Scene {
         drawPortraitBadges(this, x, topY + ph / 2, Math.min(cw, ph), c, game.save);
         this.add.text(left + 8, topY + ph + 5, c.name.split(' ')[0], { ...text.body(19, PAL.ivory), fontStyle: '600' });
         this.add.text(left + 8, topY + ph + 28, `${CLASSES[c.classId].role.toUpperCase()}${tierOf(have) ? ` T${tierOf(have)}` : ''}${have.vow ? ` V${have.vow}` : ''}`, text.hud(12, tierOf(have) ? TIER_COLOR[tierOf(have)] : PAL.muted));
-        this.add.text(left + cw - 8, topY + ph + 28, formatPower(sisterPower(game.save, c)), text.hud(12, PAL.amber)).setOrigin(1, 0);
+        this.add.text(left + cw - 8, topY + ph + 9, formatPower(sisterPower(game.save, c)), text.hud(14, PAL.amber)).setOrigin(1, 0);
         if (have.tokens) {
           addBadge(this, left + cw / 2 - 10, topY + ph - 26, `+${have.tokens}`, PAL.amber, 12);
           // ui-vow.png beside the waiting-token count when present

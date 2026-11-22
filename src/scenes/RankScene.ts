@@ -61,12 +61,15 @@ export class RankScene extends Phaser.Scene {
     y += 24;
     for (const u of UNLOCKS) {
       const open = info.rank >= u.rank;
-      this.add.rectangle(GAME_W / 2, y + 30, bw, 60, open ? 0x221820 : 0x18111a).setStrokeStyle(1, open ? PAL.bronze : PAL.armorShadow);
+      // the description wraps under the name; OPEN / SEALED sits on the name line, clear of it
+      const row = this.add.rectangle(GAME_W / 2, y, bw, 60, open ? 0x221820 : 0x18111a).setStrokeStyle(1, open ? PAL.bronze : PAL.armorShadow).setOrigin(0.5, 0);
+      const desc = this.add.text(PAD + 60, y + 32, u.desc, { ...text.body(16, PAL.muted), wordWrap: { width: bw - 74 } });
+      const h = Math.max(60, desc.height + 40);
+      row.setSize(bw, h);
       this.add.text(PAD + 14, y + 10, `${ROMAN_RANK(u.rank)}`, text.hud(14, open ? PAL.amber : PAL.steel));
       this.add.text(PAD + 60, y + 8, u.name, { ...text.body(18, open ? PAL.ivory : PAL.muted), fontStyle: '600' });
-      this.add.text(PAD + 60, y + 32, u.desc, text.body(14, PAL.muted));
-      this.add.text(GAME_W - PAD - 14, y + 30, open ? 'OPEN' : 'SEALED', text.hud(12, open ? PAL.bronze : PAL.steel)).setOrigin(1, 0.5);
-      y += 66;
+      this.add.text(GAME_W - PAD - 14, y + 18, open ? 'OPEN' : 'SEALED', text.hud(14, open ? PAL.bronze : PAL.steel)).setOrigin(1, 0.5);
+      y += h + 6;
     }
 
     y += 10;
