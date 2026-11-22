@@ -11,6 +11,7 @@ import { RARITY_ORDER } from '../systems/gacha';
 import { VIGIL_CAP_HOURS, VIGIL_SIZE, claimVigil, cryptOf, ensureVigil, setVigil, vigilCrypts, vigilPending, vigilRates, type VigilClaim, type VigilState } from '../systems/vigil';
 import { enemyKey } from '../ui/enemyArt';
 import { makeButton } from '../ui/button';
+import { bagEmpty, bagText } from '../systems/items';
 import { CURRENCY_BAR_H, addCurrencyBar } from '../ui/currencyBar';
 import { portraitKey } from '../ui/placeholderPortrait';
 import { ROMAN_RANK, giftsWaiting, rankInfo } from '../systems/rank';
@@ -235,8 +236,8 @@ export class SanctumScene extends Phaser.Scene {
 
   /** A short notice of what a claim paid. */
   private showClaim(c?: VigilClaim) {
-    if (!c || (!c.tithes && !c.seals && !c.gear.length)) return;
-    const parts = [`+${c.tithes} Tithes`, ...(c.seals ? [`+${c.seals} Seal${c.seals > 1 ? 's' : ''}`] : []), ...c.gear.map((g) => `${g.name} (${g.rarity})`)];
+    if (!c || (!c.tithes && !c.seals && !c.gear.length && bagEmpty(c.items))) return;
+    const parts = [`+${c.tithes} Tithes`, ...(c.seals ? [`+${c.seals} Seal${c.seals > 1 ? 's' : ''}`] : []), ...(bagEmpty(c.items) ? [] : [bagText(c.items)]), ...c.gear.map((g) => `${g.name} (${g.rarity})`)];
     if (c.melted) parts.push(`armory full: +${c.melted} Tithes`);
     const box = this.add.container(0, 0).setDepth(30);
     const t = this.add.text(GAME_W / 2, 150, `The Vigil yields:\n${parts.join('\n')}`, { ...text.body(19, PAL.ivory), align: 'center', wordWrap: { width: GAME_W - 80 } }).setOrigin(0.5, 0);

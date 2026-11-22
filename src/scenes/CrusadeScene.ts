@@ -9,6 +9,7 @@ import { canRepeat, repeatRuns } from '../systems/autorun';
 import { ROMAN_RANK, unlocked } from '../systems/rank';
 import { pickParty } from '../ui/partyPicker';
 import { accountPower } from '../systems/power';
+import { addBags, bagEmpty, bagText } from '../systems/items';
 import { drawRecommended } from '../ui/recommended';
 import { makeButton } from '../ui/button';
 import { CURRENCY_BAR_H, addCurrencyBar } from '../ui/currencyBar';
@@ -240,7 +241,7 @@ export class CrusadeScene extends Phaser.Scene {
     const t = results.reduce((a, r) => ({ tithes: a.tithes + r.tithes, seals: a.seals + r.seals, gear: a.gear + r.gear.length }), { tithes: 0, seals: 0, gear: 0 });
     layer.add(
       this.add
-        .text(GAME_W / 2, y0 + 520, `In all: +${t.tithes} Tithes, +${t.seals} Seals, ${t.gear} gear`, { ...text.body(19, PAL.amber), align: 'center', wordWrap: { width: GAME_W - 80 } })
+        .text(GAME_W / 2, y0 + 520, `In all: +${t.tithes} Tithes, +${t.seals} Seals, ${t.gear} gear${(() => { const m = addBags(...results.map((r) => r.items)); return bagEmpty(m) ? '' : `\n${bagText(m)}`; })()}`, { ...text.body(19, PAL.amber), align: 'center', wordWrap: { width: GAME_W - 80 } })
         .setOrigin(0.5),
     );
     layer.add(makeButton(this, GAME_W / 2, y0 + 610, 220, 56, 'Done', () => this.scene.restart(), { active: true, fontSize: 18 }).all);
