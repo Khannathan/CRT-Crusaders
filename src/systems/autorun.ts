@@ -1,4 +1,5 @@
 import type { SaveData } from '../state/save';
+import { EVENTS } from '../data/events';
 import { autoBattle } from './autoplay';
 import { expBattle } from './exp';
 import {
@@ -14,6 +15,7 @@ import {
   maxHpOf,
   relicOffer,
   shrine,
+  miracle,
   startRun,
   takeRelic,
   winRoom,
@@ -36,6 +38,7 @@ export function pickNode(save: SaveData, run: RunState): number {
   const health = living.reduce((n, id) => n + run.hp[id] / maxHpOf(save, run, id), 0) / Math.max(1, living.length);
   const rank = (i: number) => {
     const k = run.map[run.floor + 1][i].kind;
+    if (k === 'miracle') return -1;
     if (k === 'shrine') return health < 0.65 ? 0 : 4;
     if (k === 'elite') return health > 0.8 ? 1 : 6;
     if (k === 'reliquary') return 2;
@@ -51,7 +54,13 @@ export function autoRun(save: SaveData, party: string[], crypt: CryptDef, heresy
   while (!cryptCleared(run)) {
     const node = enterNode(run, pickNode(save, run));
     if (node.kind === 'shrine') shrine(save, run);
-    else if (node.kind === 'event') chooseEvent(save, run, 0, rng);
+    else if (node.kind === 'miracle') miracle(save, run);
+    else if (node.kind === 'event') {
+      // Auto never takes on a lasting burden or trades away a relic.
+      const opts = EVENTS[node.event!].options;
+      const safe = opts.findIndex((o) => !o.outcome.gainRelic && !o.outcome.dropRelic);
+      chooseEvent(save, run, Math.max(0, safe), rng);
+    }
     else if (node.kind === 'reliquary') {
       const offer = relicOffer(run, rng);
       if (offer.length) takeRelic(save, run, offer[0].id);
