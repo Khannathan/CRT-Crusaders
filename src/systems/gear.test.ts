@@ -59,7 +59,7 @@ describe('gear', () => {
     expect(save.gear!.length).toBe(MAX_GEAR - 1);
   });
 
-  it('crusades drop gear: kept on victory, lost on defeat', () => {
+  it('crusades drop gear: kept win or lose', () => {
     for (const outcome of ['victory', 'defeat'] as const) {
       const save = newSave();
       const id = CRUSADERS[0].id;
@@ -74,8 +74,8 @@ describe('gear', () => {
       expect(run.loot.length).toBe(1);
       const before = save.gear!.length;
       const res = finishRun(save, run, outcome);
-      expect(save.gear!.length).toBe(before + (outcome === 'victory' ? 1 : 0));
-      expect(res.gear.length).toBe(outcome === 'victory' ? 1 : 0);
+      expect(save.gear!.length).toBe(before + 1);
+      expect(res.gear.length).toBe(1);
     }
   });
 });

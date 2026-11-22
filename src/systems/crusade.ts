@@ -171,8 +171,8 @@ export const REWARDS = {
   bossSeals: 2,
   completeSeals: 3,
   firstClearSeals: 5,
-  /** Share of Tithes kept after a defeat. */
-  defeatKeep: 0.5,
+  /** Share of unbanked Tithes and materials kept after a defeat (banked spoils are always safe). */
+  defeatKeep: 0.75,
   /** Chance an ordinary fight drops a piece of gear (elites drop one, bosses two). */
   fightGearChance: 0.35,
   shrineHealPct: 0.4,
@@ -199,10 +199,12 @@ export interface RunState {
   pendingRelic?: boolean;
   /** Heresy tier: 0 is the base crypt, each tier is harder and pays more. */
   heresy: number;
-  /** Gear found so far, claimed when the run ends (lost on defeat). */
+  /** Gear found so far, claimed when the run ends, win or lose. */
   loot: GearItem[];
-  /** Materials found so far: kept on victory or retreat, halved on defeat. */
+  /** Materials found so far: all kept on victory or retreat; on defeat, see banked. */
   items?: Bag;
+  /** Tithes and materials made safe at the last Sanctuary: kept in full even on defeat. */
+  banked?: { tithes: number; items: Bag };
   /** Extra Zeal for the next fight only. */
   blessZeal?: number;
   /** Shorter Vigil for the next fight only. */
@@ -457,6 +459,7 @@ export function winRoom(run: RunState, save?: SaveData, rng: Rng = Math.random) 
   // An act's boss falls: a Sanctuary before the next act.
   if (node.actEnd && run.floor < run.map.length - 1) {
     run.sanctuary = node.act ?? 1;
+    run.banked = { tithes: run.tithes, items: { ...(run.items ?? {}) } };
     if (save) healAll(save, run, SANCTUARY_HEAL);
   }
   if (save) {
@@ -556,7 +559,7 @@ export interface RunResult {
   /** Heresy tier just cleared for the first time, if any. */
   heresyCleared?: number;
   fallen: string[];
-  /** Gear brought home (none on defeat). */
+  /** Gear brought home. */
   gear: GearItem[];
   /** Tithes from gear melted because the armory was full. */
   melted: number;
@@ -599,8 +602,7 @@ export function finishRun(save: SaveData, run: RunState, outcome: RunResult['out
       heresyCleared = run.heresy;
     }
   } else if (outcome === 'defeat') {
-    tithes = Math.round(tithes * REWARDS.defeatKeep);
-    seals = 0;
+    tithes = keepOnDefeat(tithes, run.banked?.tithes ?? 0);
   }
 
   for (const [id, o] of Object.entries(save.owned)) {
@@ -609,11 +611,11 @@ export function finishRun(save: SaveData, run: RunState, outcome: RunResult['out
   const fallen = run.party.filter((id) => run.hp[id] <= 0);
   for (const id of fallen) save.owned[id].recovering = 1;
 
-  const gear = outcome === 'defeat' ? [] : run.loot ?? [];
+  const gear = run.loot ?? [];
   const melted = claimGear(save, gear);
   const items: Bag = {};
   for (const [id, n] of Object.entries(run.items ?? {}) as [keyof Bag, number][]) {
-    const kept = outcome === 'defeat' ? Math.floor(n / 2) : n;
+    const kept = outcome === 'defeat' ? keepOnDefeat(n, run.banked?.items[id] ?? 0) : n;
     if (kept) items[id] = kept;
   }
   give(save, items);
@@ -621,6 +623,12 @@ export function finishRun(save: SaveData, run: RunState, outcome: RunResult['out
   save.tithes += tithes;
   save.seals += seals;
   return { outcome, tithes, seals, firstClear, heresyCleared, fallen, gear, melted, items, gilt, pilgrimage };
+}
+
+/** A defeat keeps everything banked at a Sanctuary, and most of what was found since. */
+export function keepOnDefeat(found: number, banked: number) {
+  const safe = Math.min(found, banked);
+  return safe + Math.floor((found - safe) * REWARDS.defeatKeep);
 }
 
 export function revive(save: SaveData, id: string): boolean {
