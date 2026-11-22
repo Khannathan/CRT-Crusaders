@@ -36,9 +36,10 @@ const WEIGHT = [1, 1, 1.35, 1, 1];
 /**
  * Bottom navigation, in thumb reach: pixel icon over label, gold edge on the
  * current tab, a gold dot on a tab with something to claim. `current` is any
- * scene key; it lights the tab that screen belongs to.
+ * scene key; it lights the tab that screen belongs to. `onTab`, when given,
+ * decides how to leave (a fight pauses first) instead of starting the scene.
  */
-export function addTabBar(scene: Phaser.Scene, current: string, depth = 5): Phaser.GameObjects.GameObject[] {
+export function addTabBar(scene: Phaser.Scene, current: string, depth = 5, onTab?: (sceneKey: string) => void): Phaser.GameObjects.GameObject[] {
   const currentTab = current ? tabOf(current) : '';
   const top = GAME_H - TAB_BAR_H;
   const made: Phaser.GameObjects.GameObject[] = [];
@@ -90,7 +91,10 @@ export function addTabBar(scene: Phaser.Scene, current: string, depth = 5): Phas
     if ('home' in t && anyReady(game.save, t.home)) keep(scene.add.circle(cx + bw / 2 - 12, cy - bh / 2 + 12, 5, PAL.amber).setStrokeStyle(2, 0x1b121c).setDepth(depth));
     box.setInteractive({ useHandCursor: true });
     box.on('pointerup', () => {
-      if (!on) scene.scene.start(t.scene, {});
+      // With onTab (a fight), even the lit tab leaves: Crusade goes back to the board.
+      if (onTab) onTab(t.scene);
+      else if (on) return;
+      else scene.scene.start(t.scene, {});
     });
   });
   return made;
