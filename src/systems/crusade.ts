@@ -5,7 +5,7 @@ import { CRUSADERS } from '../data/crusaders';
 import { ENCOUNTERS, ENEMIES } from '../data/enemies';
 import { EVENTS, type EventOutcome } from '../data/events';
 import { orderBonuses } from '../data/orders';
-import { RELICS, type RelicDef } from '../data/relics';
+import { FAMILY_BONUS, RELICS, relicById, type RelicDef, type RelicFamily } from '../data/relics';
 import type { SaveData } from '../state/save';
 import { Battle, VIGIL_DEFAULT, makeEnemy, type Unit } from './combat';
 import type { Rng } from './gacha';
@@ -18,7 +18,7 @@ import { noteClear, type Beaten } from './records';
 import { track, weekKey } from './tasks';
 import { skillVow } from './tiers';
 
-export type NodeKind = 'fight' | 'elite' | 'event' | 'shrine' | 'reliquary' | 'boss';
+export type NodeKind = 'fight' | 'elite' | 'event' | 'shrine' | 'reliquary' | 'boss' | 'miracle';
 
 /** One stop on the crypt map. `next` lists reachable node indices on the floor above. */
 export interface MapNode {
@@ -199,6 +199,8 @@ export interface RunState {
   seals: number;
   /** A relic choice is waiting (after an elite or an event). */
   pendingRelic?: boolean;
+  /** The waiting relic choice comes from this family. */
+  offerFamily?: RelicFamily;
   /** Heresy tier: 0 is the base crypt, each tier is harder and pays more. */
   heresy: number;
   /** Gear found so far, claimed when the run ends, win or lose. */
@@ -284,6 +286,16 @@ export function generateMap(crypt: CryptDef, rng: Rng = Math.random, floors = cr
     }
   });
 
+  // A Miracle: in about one crypt in fifteen, one ordinary room is a Miracle.
+  if (rng() < MIRACLE_CHANCE) {
+    const spots: [number, number][] = [];
+    map.forEach((floor, f) => floor.forEach((n, i) => f > 0 && (n.kind === 'fight' || n.kind === 'event' || n.kind === 'shrine') && spots.push([f, i])));
+    if (spots.length) {
+      const [f, i] = spots[Math.floor(rng() * spots.length)];
+      map[f][i] = { kind: 'miracle', next: [], act: map[f][i].act };
+    }
+  }
+
   // Paths: each node reaches the nearest node(s) above; every node is reachable.
   for (let f = 0; f < map.length - 1; f++) {
     const here = map[f];
@@ -324,9 +336,29 @@ export function startRun(save: SaveData, party: string[], crypt: CryptDef = OSSU
   return run;
 }
 
-/** Everything that modifies the party this run: relics plus Order bonuses. */
-function relicsOf(run: RunState): RelicDef[] {
-  const relics = run.relics.map((id) => RELICS.find((r) => r.id === id)!).filter(Boolean);
+/** How many relics of each family the run holds. */
+export function familyCounts(run: RunState): Record<RelicFamily, number> {
+  const out: Record<RelicFamily, number> = { burn: 0, bell: 0, martyr: 0 };
+  for (const id of run.relics) {
+    const f = relicById(id)?.family;
+    if (f) out[f] += 1;
+  }
+  return out;
+}
+
+/** The family synergies a run has switched on. */
+export function familyBonuses(run: RunState): RelicDef[] {
+  const out: RelicDef[] = [];
+  for (const [f, n] of Object.entries(familyCounts(run)) as [RelicFamily, number][]) {
+    if (n >= 2) out.push(FAMILY_BONUS[f][0]);
+    if (n >= 3) out.push(FAMILY_BONUS[f][1]);
+  }
+  return out;
+}
+
+/** Everything that modifies the party this run: relics, burdens, family synergies and Order bonuses. */
+export function relicsOf(run: RunState): RelicDef[] {
+  const relics = [...run.relics.map((id) => relicById(id)).filter((r): r is RelicDef => !!r), ...familyBonuses(run)];
   const orders = run.party.map((id) => CRUSADERS.find((c) => c.id === id)?.order ?? '');
   return [...relics, ...orderBonuses(orders)];
 }
@@ -345,7 +377,8 @@ export function heresyAvailable(save: SaveData, crypt: CryptDef): number {
   return Math.min(MAX_HERESY, (save.heresy?.[crypt.id] ?? 0) + 1);
 }
 
-export const rewardMult = (run: RunState) => run.crypt.rewardMult * (1 + HERESY_REWARD * run.heresy);
+export const rewardMult = (run: RunState) =>
+  run.crypt.rewardMult * (1 + HERESY_REWARD * run.heresy) * Math.max(0.1, 1 + relicsOf(run).reduce((n, r) => n + (r.tithesMult ?? 0), 0));
 
 export function maxHpOf(save: SaveData, run: RunState, id: string) {
   const c = CRUSADERS.find((x) => x.id === id)!;
@@ -391,7 +424,19 @@ export function makeBattle(save: SaveData, run: RunState, encounter: string, rng
     });
   }
   const enemies = ENCOUNTERS[encounter].map((type, i) => makeEnemy(type, `e${i}`, i + 1, enemyScale));
-  return new Battle(party, enemies, { rng, vigil, zeal, enemyScale });
+  const sum = (k: keyof RelicDef) => relics.reduce((n, r) => n + ((r[k] as number | undefined) ?? 0), 0);
+  const mods = {
+    burnMult: sum('burnMult'),
+    detonateMult: sum('detonateMult'),
+    openingBurn: sum('openingBurn'),
+    roundZeal: sum('roundZeal'),
+    zealMult: sum('zealMult'),
+    riteMult: sum('riteMult'),
+    lowHpAtk: sum('lowHpAtk'),
+    fallenAtk: sum('fallenAtk'),
+    fallHeal: sum('fallHeal'),
+  };
+  return new Battle(party, enemies, { rng, vigil, zeal, enemyScale, mods });
 }
 
 /**
@@ -497,6 +542,18 @@ function healAll(save: SaveData, run: RunState, pct: number) {
   }
 }
 
+/** Chance a crypt's map holds a Miracle room. */
+export const MIRACLE_CHANCE = 1 / 15;
+export const MIRACLE_SEALS = 3;
+
+/** A Miracle: every Sister rises and is made whole, Seals, and a relic of your choice. */
+export function miracle(save: SaveData, run: RunState) {
+  for (const id of run.party) run.hp[id] = maxHpOf(save, run, id);
+  run.seals += MIRACLE_SEALS;
+  run.pendingRelic = relicOffer(run).length > 0;
+  run.resolved = true;
+}
+
 export function shrine(save: SaveData, run: RunState) {
   healAll(save, run, REWARDS.shrineHealPct);
   run.resolved = true;
@@ -515,18 +572,29 @@ export function chooseEvent(save: SaveData, run: RunState, optionIndex: number, 
     }
   }
   if (out.heal) healAll(save, run, out.heal);
-  if (out.tithes) run.tithes += out.tithes;
+  if (out.tithes) run.tithes = Math.max(0, run.tithes + out.tithes);
   if (out.seals) run.seals += out.seals;
   if (out.blessZeal) run.blessZeal = (run.blessZeal ?? 0) + out.blessZeal;
   if (out.curseVigil) run.curseVigil = (run.curseVigil ?? 0) + out.curseVigil;
-  if (out.relic && relicOffer(run).length) run.pendingRelic = true;
+  if (out.gainRelic && !run.relics.includes(out.gainRelic)) addRelic(save, run, out.gainRelic);
+  if (out.dropRelic) {
+    const held = run.relics.filter((id) => !relicById(id)?.burden);
+    const lost = held[Math.floor(rng() * held.length)];
+    if (lost) run.relics = run.relics.filter((id) => id !== lost);
+  }
+  if (out.relic && relicOffer(run, Math.random, out.family).length) {
+    run.pendingRelic = true;
+    run.offerFamily = out.family;
+  }
   run.resolved = true;
   return out;
 }
 
-/** Three relics not yet held, in random order. */
-export function relicOffer(run: RunState, rng: Rng = Math.random): RelicDef[] {
-  const pool = RELICS.filter((r) => !run.relics.includes(r.id));
+/** Three relics not yet held, in random order (from one family when an event says so). */
+export function relicOffer(run: RunState, rng: Rng = Math.random, family = run.offerFamily): RelicDef[] {
+  const all = RELICS.filter((r) => !run.relics.includes(r.id));
+  const fam = family ? all.filter((r) => r.family === family) : [];
+  const pool = fam.length ? fam : all;
   for (let i = pool.length - 1; i > 0; i--) {
     const j = Math.floor(rng() * (i + 1));
     [pool[i], pool[j]] = [pool[j], pool[i]];
@@ -534,13 +602,18 @@ export function relicOffer(run: RunState, rng: Rng = Math.random): RelicDef[] {
   return pool.slice(0, 3);
 }
 
-export function takeRelic(save: SaveData, run: RunState, relicId: string) {
+/** Adds a relic or burden; a change in max HP is felt at once (never killing). */
+function addRelic(save: SaveData, run: RunState, relicId: string) {
   const before: Record<string, number> = {};
   for (const id of run.party) before[id] = maxHpOf(save, run, id);
   run.relics.push(relicId);
-  // Extra max HP arrives as healing too, so the bonus is felt at once.
-  for (const id of run.party) if (run.hp[id] > 0) run.hp[id] += maxHpOf(save, run, id) - before[id];
+  for (const id of run.party) if (run.hp[id] > 0) run.hp[id] = Math.max(1, Math.min(maxHpOf(save, run, id), run.hp[id] + maxHpOf(save, run, id) - before[id]));
+}
+
+export function takeRelic(save: SaveData, run: RunState, relicId: string) {
+  addRelic(save, run, relicId);
   run.pendingRelic = false;
+  run.offerFamily = undefined;
   run.resolved = true;
 }
 

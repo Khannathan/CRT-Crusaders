@@ -4,7 +4,7 @@ import { CRUSADERS } from '../data/crusaders';
 import { orderBonuses } from '../data/orders';
 import { CLASS_SKILLS } from '../data/skills';
 import { skillsFor } from './combat';
-import { winRoom, BELFRY, CRYPTS, RAMP, actsOf, cryptFloors, OSSUARY, choices, chooseEvent, cryptUnlocked, enterNode, finishRun, generateMap, heresyAvailable, keepOnDefeat, makeBattle, maxHpOf, startRun, PILGRIMAGE_BONUS, PILGRIMAGE_CLEARS, pilgrimageLeft } from './crusade';
+import { winRoom, BELFRY, CRYPTS, RAMP, actsOf, cryptFloors, OSSUARY, choices, chooseEvent, cryptUnlocked, enterNode, finishRun, generateMap, heresyAvailable, keepOnDefeat, familyBonuses, miracle, MIRACLE_SEALS, makeBattle, maxHpOf, startRun, PILGRIMAGE_BONUS, PILGRIMAGE_CLEARS, pilgrimageLeft } from './crusade';
 import { seeded } from './rng';
 
 describe('the crypt ramp', () => {
@@ -187,5 +187,50 @@ describe('losing a crypt', () => {
     expect(r.items.ash1).toBe(9);
     expect(save.tithes - t).toBe(350);
     expect(save.seals - s).toBe(3);
+  });
+});
+
+describe('crypt variety', () => {
+  it('has about thirty relics, twenty events, and families that switch on at two and three', async () => {
+    const { RELICS } = await import('../data/relics');
+    const { EVENTS } = await import('../data/events');
+    expect(RELICS.length).toBeGreaterThanOrEqual(28);
+    expect(Object.keys(EVENTS).length).toBeGreaterThanOrEqual(18);
+    const save = newSave();
+    const id = CRUSADERS[0].id;
+    save.owned[id] = { level: 5, vow: 0 };
+    const run = startRun(save, [id], OSSUARY);
+    run.relics = ['censer-coal'];
+    expect(familyBonuses(run)).toHaveLength(0);
+    run.relics.push('phoenix-quill');
+    expect(familyBonuses(run).map((r) => r.id)).toEqual(['family:burn:2']);
+    run.relics.push('pitch-reliquary');
+    expect(familyBonuses(run)).toHaveLength(2);
+    const enc = run.map.flat().find((n) => n.encounter)!.encounter!;
+    const b = makeBattle(save, run, enc);
+    expect(b.mods.burnMult).toBeCloseTo(0.25 + 0.2 + 0.2);
+    // foes open Burning
+    expect(b.units.filter((u) => u.side === 'enemy').every((u) => u.status.poison)).toBe(true);
+  });
+
+  it('a Miracle raises the fallen, and a burden lasts the run', () => {
+    const save = newSave();
+    const id = CRUSADERS[0].id;
+    save.owned[id] = { level: 5, vow: 0 };
+    const run = startRun(save, [id], OSSUARY);
+    run.hp[id] = 0;
+    miracle(save, run);
+    expect(run.hp[id]).toBe(maxHpOf(save, run, id));
+    expect(run.seals).toBe(MIRACLE_SEALS);
+    const full = maxHpOf(save, run, id);
+    run.relics.push('blood-pact');
+    expect(maxHpOf(save, run, id)).toBeLessThan(full);
+  });
+
+  it('about one map in fifteen holds a Miracle', () => {
+    let n = 0;
+    for (let i = 0; i < 600; i++) if (generateMap(OSSUARY, seeded(i + 7)).flat().some((x) => x.kind === 'miracle')) n++;
+    expect(n / 600).toBeGreaterThan(0.03);
+    expect(n / 600).toBeLessThan(0.12);
   });
 });

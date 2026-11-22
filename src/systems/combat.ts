@@ -175,6 +175,20 @@ export function upgraded(s: SkillDef): SkillDef {
   return u;
 }
 
+/** Run-wide modifiers from crypt relics (all 0 by default). */
+export interface BattleMods {
+  burnMult: number;
+  detonateMult: number;
+  openingBurn: number;
+  roundZeal: number;
+  zealMult: number;
+  riteMult: number;
+  lowHpAtk: number;
+  fallenAtk: number;
+  fallHeal: number;
+}
+export const NO_MODS: BattleMods = { burnMult: 0, detonateMult: 0, openingBurn: 0, roundZeal: 0, zealMult: 0, riteMult: 0, lowHpAtk: 0, fallenAtk: 0, fallHeal: 0 };
+
 export class Battle {
   units: Unit[];
   zeal: number;
@@ -192,8 +206,11 @@ export class Battle {
   private enemyScale: number;
   /** Multiplies healing the party receives (an Inquisition edict halves it). */
   partyHeal = 1;
+  /** Crypt relic effects. */
+  mods: BattleMods = { ...NO_MODS };
 
-  constructor(party: Unit[], enemies: Unit[], opts: { rng?: Rng; vigil?: number; zeal?: number; enemyScale?: number } = {}) {
+  constructor(party: Unit[], enemies: Unit[], opts: { rng?: Rng; vigil?: number; zeal?: number; enemyScale?: number; mods?: Partial<BattleMods> } = {}) {
+    this.mods = { ...NO_MODS, ...opts.mods };
     this.enemyScale = opts.enemyScale ?? 1;
     this.units = [...party, ...enemies];
     this.rng = opts.rng ?? Math.random;
@@ -201,6 +218,26 @@ export class Battle {
     const passiveZeal = party.reduce((s, u) => s + (u.passive?.kind === 'startZeal' ? u.passive.value ?? 0 : 0), 0);
     this.zeal = Math.min(ZEAL_MAX, (opts.zeal ?? 0) + passiveZeal);
     for (const e of enemies) this.planIntent(e);
+    // Relics that set the foes alight before the first blow.
+    if (this.mods.openingBurn > 0 && party.length) {
+      const avg = party.reduce((n, u) => n + u.atk, 0) / party.length;
+      const dmg = Math.max(1, Math.round(avg * this.mods.openingBurn * (1 + this.mods.burnMult)));
+      for (const e of enemies) e.status.poison = { dmg, turns: 3 };
+    }
+  }
+
+  /** A party member's damage multiplier from relics: wounded, fallen Sisters, Rites. */
+  private relicMult(actor: Unit, skill: SkillDef) {
+    if (actor.side !== 'party') return 1;
+    const m = this.mods;
+    const fallen = this.units.filter((u) => u.side === 'party' && u.hp <= 0).length;
+    let f = 1 + fallen * m.fallenAtk + (actor.hp < actor.maxHp / 2 ? m.lowHpAtk : 0);
+    if (skill.rite) f *= 1 + m.riteMult;
+    return f;
+  }
+
+  private detonateOf(actor: Unit) {
+    return actor.side === 'party' ? 1 + this.mods.detonateMult : 1;
   }
 
   private healOf(u: Unit) {
@@ -230,6 +267,7 @@ export class Battle {
     this.round += 1;
     this.hurtZealThisRound = 0;
     this.log.push(`-- round ${this.round} (zeal ${this.zeal}, vigil ${this.vigil})`);
+    if (this.mods.roundZeal > 0 && this.alive('party').length) this.addZeal(this.mods.roundZeal, events, 'relics');
     if (this.round > 1) {
       if (this.vigil > 0) {
         this.vigil -= 1;
@@ -405,7 +443,8 @@ export class Battle {
       }
       if (skill.poison) {
         const plague = actor.passive?.kind === 'plague' ? 1 + (actor.passive.value ?? 0) : 1;
-        const dmg = Math.max(1, Math.round(this.attackOf(actor) * skill.poison.mult * plague));
+        const burn = actor.side === 'party' ? 1 + this.mods.burnMult : 1;
+        const dmg = Math.max(1, Math.round(this.attackOf(actor) * skill.poison.mult * plague * burn));
         const old = skill.stackPoison ? t.status.poison : undefined;
         t.status.poison = old ? { dmg: old.dmg + dmg, turns: Math.max(old.turns, skill.poison.turns) } : { dmg, turns: skill.poison.turns };
         events.push({ type: 'status', uid: t.uid, label: actor.side === 'party' && actor.classId === 'censer' ? 'Burning' : 'Poisoned' });
@@ -414,7 +453,7 @@ export class Battle {
         const p = t.status.poison;
         t.status.poison = undefined;
         events.push({ type: 'status', uid: t.uid, label: 'Ignited!' });
-        this.pierce(t, Math.round(p.dmg * p.turns * skill.detonate), events);
+        this.pierce(t, Math.round(p.dmg * p.turns * skill.detonate * this.detonateOf(actor)), events);
         if (t.hp <= 0) continue;
       }
       if (skill.spreadPoison && t.status.poison) {
@@ -591,7 +630,7 @@ export class Battle {
   }
 
   private hit(actor: Unit, t: Unit, skill: SkillDef, events: BattleEvent[]) {
-    let raw = this.attackOf(actor) * skill.mult!;
+    let raw = this.attackOf(actor) * skill.mult! * this.relicMult(actor, skill);
     if (skill.lowHpBonus && actor.hp < actor.maxHp / 2) raw *= 1 + skill.lowHpBonus;
     if (t.status.accused) raw *= ACCUSED_MULT * (1 + (skill.bonusIfAccused ?? 0));
     if (t.status.weaken && skill.bonusIfWeak) raw *= 1 + skill.bonusIfWeak;
@@ -643,7 +682,7 @@ export class Battle {
   preview(actor: Unit, skill: SkillDef, t: Unit): number {
     let total = 0;
     if (skill.mult) {
-      let raw = this.attackOf(actor) * skill.mult;
+      let raw = this.attackOf(actor) * skill.mult * this.relicMult(actor, skill);
       if (skill.lowHpBonus && actor.hp < actor.maxHp / 2) raw *= 1 + skill.lowHpBonus;
       if (t.status.accused) raw *= ACCUSED_MULT * (1 + (skill.bonusIfAccused ?? 0));
       if (t.status.weaken && skill.bonusIfWeak) raw *= 1 + skill.bonusIfWeak;
@@ -653,7 +692,7 @@ export class Battle {
       raw *= 1 + critChance * (CRIT_MULT - 1);
       total += damageAfterArmor(raw, t.armor);
     }
-    if (skill.detonate && t.status.poison) total += t.status.poison.dmg * t.status.poison.turns * skill.detonate;
+    if (skill.detonate && t.status.poison) total += t.status.poison.dmg * t.status.poison.turns * skill.detonate * this.detonateOf(actor);
     return Math.round(total);
   }
 
@@ -685,6 +724,15 @@ export class Battle {
     events.push({ type: 'death', uid: u.uid });
     this.queue = this.queue.filter((id) => id !== u.uid);
     this.compact(u.side);
+    if (u.side === 'party' && this.mods.fallHeal > 0) {
+      for (const a of this.alive('party')) {
+        const real = Math.min(a.maxHp - a.hp, Math.round(a.maxHp * this.mods.fallHeal * this.healOf(a)));
+        if (real > 0) {
+          a.hp += real;
+          events.push({ type: 'heal', uid: a.uid, amount: real });
+        }
+      }
+    }
     if (u.side === 'party' && u.passive?.kind === 'martyr' && this.alive('party').length) {
       events.push({ type: 'text', text: `${u.name}'s sacrifice sets her Sisters ablaze!` });
       this.addZeal(u.passive.value ?? 0, events, u.passive.name);
@@ -724,6 +772,7 @@ export class Battle {
   }
 
   private addZeal(n: number, events: BattleEvent[], reason: string) {
+    if (n > 0 && this.mods.zealMult && (reason === 'attack' || reason === 'support' || reason === 'wounds')) n = Math.max(0, Math.round(n * (1 + this.mods.zealMult)));
     const before = this.zeal;
     this.zeal = Math.max(0, Math.min(ZEAL_MAX, this.zeal + n));
     if (this.zeal !== before) {

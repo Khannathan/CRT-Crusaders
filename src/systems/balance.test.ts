@@ -15,7 +15,7 @@ import {
   makeBattle,
   maxHpOf,
   relicOffer,
-  shrine,
+  shrine, miracle,
   startRun,
   takeRelic,
   winRoom,
@@ -62,6 +62,7 @@ function playCrypt(seed: number, level: number, crypt: CryptDef = OSSUARY, heres
   while (!cryptCleared(run)) {
     const node = enterNode(run, pickNode(save, run));
     if (node.kind === 'shrine') shrine(save, run);
+    else if (node.kind === 'miracle') miracle(save, run);
     else if (node.kind === 'event') chooseEvent(save, run, 0, rng);
     else if (node.kind === 'reliquary') takeRelic(save, run, relicOffer(run, rng)[0]?.id ?? 'knucklebone');
     else {
