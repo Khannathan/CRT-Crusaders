@@ -14,6 +14,7 @@ import { recommendedPower } from './power';
 import { addBags, give, roomDrops, type Bag } from './items';
 import { levelUpCost, sisterStats } from './stats';
 import { track, weekKey } from './tasks';
+import { skillVow } from './tiers';
 
 export type NodeKind = 'fight' | 'elite' | 'event' | 'shrine' | 'reliquary' | 'boss';
 
@@ -361,7 +362,7 @@ export function makeBattle(save: SaveData, run: RunState, encounter: string, rng
       hp: run.hp[id],
       atk: Math.round(st.atk * (1 + atkPct)),
       armor: Math.round(st.armor * (1 + armorPct)),
-      vow: save.owned[id].vow,
+      vow: skillVow(save.owned[id]),
       skillLv: save.owned[id].skills,
       crit: st.crit + relics.reduce((n, r) => n + (r.critAdd ?? 0), 0),
       passive: c.passive,

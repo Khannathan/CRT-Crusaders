@@ -16,6 +16,7 @@ const CURRENCY_ICON: Record<string, [string, number]> = {
   tithes: ['tithe', PAL.amber],
   vows: ['vow', PAL.amber],
   shards: ['seal', 0xb592c8],
+  stigmata: ['flame', 0xd04a5a],
 };
 
 /** Rank of Faith a screen needs (from the Rites), or 1. */

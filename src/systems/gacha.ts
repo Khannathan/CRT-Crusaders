@@ -3,6 +3,7 @@ import { ALMS_FOR_TOKEN, earn } from './currency';
 import type { CrusaderDef, Rarity } from '../data/types';
 import type { SaveData } from '../state/save';
 import { track } from './tasks';
+import { STIGMATA_FOR_COPY, addStigmata, copiesLeft } from './tiers';
 
 export const RATES: Record<Rarity, number> = { R: 0.6, SR: 0.3, SSR: 0.085, UR: 0.015 };
 export const RARITY_ORDER: Rarity[] = ['R', 'SR', 'SSR', 'UR'];
@@ -15,7 +16,7 @@ export const UR_HARD = 80;
 export const UR_SOFT_STEP = 0.06;
 /** Relic Shards: one per pull on an Order banner, kept per Order; SPARK of them buys one of that Order's URs. */
 export const SPARK = 150;
-export const MAX_VOW = 5;
+export { MAX_VOW } from './tiers';
 /** Tithes paid for a duplicate once Vows are maxed. */
 export const OVERFLOW_TITHES = 200;
 export const COST_ONE = 1;
@@ -34,6 +35,8 @@ export interface PullResult {
   tithes: number;
   /** Alms granted with those Tithes. */
   alms?: number;
+  /** Stigmata granted because she needs no more copies. */
+  stigmata?: number;
 }
 
 const rank = (r: Rarity) => RARITY_ORDER.indexOf(r);
@@ -116,16 +119,19 @@ function grantSister(save: SaveData, crusader: CrusaderDef): PullResult {
     save.owned[crusader.id] = { level: 1, vow: 0 };
     return { crusader, isNew: true, vow: 0, tithes: 0, tokens: 0 };
   }
-  // A duplicate becomes a Vow token, until tokens plus Vows taken reach MAX_VOW.
+  // A duplicate becomes a Vow token (a copy), until she holds every copy her remaining Vows and tiers need.
   const tokens = owned.tokens ?? 0;
-  if (owned.vow + tokens < MAX_VOW) {
+  if (tokens < copiesLeft(owned)) {
     owned.tokens = tokens + 1;
     return { crusader, isNew: false, vow: owned.vow, tithes: 0, tokens: owned.tokens };
   }
+  // Past that, a copy becomes Stigmata, Tithes and Alms.
   save.tithes += OVERFLOW_TITHES;
   const alms = ALMS_FOR_TOKEN[crusader.rarity];
   earn(save, 0, alms);
-  return { crusader, isNew: false, vow: owned.vow, tithes: OVERFLOW_TITHES, alms, tokens };
+  const stigmata = STIGMATA_FOR_COPY[crusader.rarity];
+  addStigmata(save, stigmata);
+  return { crusader, isNew: false, vow: owned.vow, tithes: OVERFLOW_TITHES, alms, stigmata, tokens };
 }
 
 export type PullKind = 'one' | 'ten';
@@ -166,13 +172,3 @@ export function claimSpark(save: SaveData, id: string): PullResult | undefined {
   return grantSister(save, c);
 }
 
-/** Take Vow: merges one duplicate (a Vow token) into her for good, at a Tithe cost. */
-export function takeVow(save: SaveData, id: string, cost: number): boolean {
-  const o = save.owned[id];
-  if (!o || !o.tokens || o.vow >= MAX_VOW || save.tithes < cost) return false;
-  save.tithes -= cost;
-  o.tokens -= 1;
-  o.vow += 1;
-  track(save, 'takeVow');
-  return true;
-}

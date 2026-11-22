@@ -21,7 +21,7 @@ const CHAPTER_GAP = 120;
 const PANEL_H = 214;
 
 export const rewardText = (r: StageReward) =>
-  [r.tithes ? `${r.tithes} Tithes` : '', r.seals ? `${r.seals} Seal${r.seals > 1 ? 's' : ''}` : '', r.gilt ? `${r.gilt} Gilt` : '', bagText(r.items)].filter(Boolean).join(' + ');
+  [r.tithes ? `${r.tithes} Tithes` : '', r.seals ? `${r.seals} Seal${r.seals > 1 ? 's' : ''}` : '', r.gilt ? `${r.gilt} Gilt` : '', r.stigmata ? `${r.stigmata} Stigmata` : '', bagText(r.items)].filter(Boolean).join(' + ');
 
 /**
  * The Pilgrim's Road: the Vigil's campaign map. A winding road, climbed from

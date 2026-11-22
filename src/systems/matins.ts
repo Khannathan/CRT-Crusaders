@@ -2,9 +2,10 @@ import { CRUSADERS } from '../data/crusaders';
 import { earn } from './currency';
 import type { Rarity } from '../data/types';
 import type { SaveData } from '../state/save';
-import { MAX_VOW, RARITY_ORDER, type Rng } from './gacha';
+import { RARITY_ORDER, type Rng } from './gacha';
 import { claimGear, makeGear, type GearItem } from './gear';
 import { dayKey } from './tasks';
+import { copiesLeft } from './tiers';
 
 /**
  * Matins: a 28-candle login calendar. Each new day lights the next candle.
@@ -49,7 +50,7 @@ export const matinsText = (r: MatinsReward) =>
 export function vowCandidates(save: SaveData) {
   return CRUSADERS.filter((c) => {
     const o = save.owned[c.id];
-    return o && o.vow + (o.tokens ?? 0) < MAX_VOW;
+    return o && (o.tokens ?? 0) < copiesLeft(o);
   }).sort((a, b) => RARITY_ORDER.indexOf(b.rarity) - RARITY_ORDER.indexOf(a.rarity));
 }
 

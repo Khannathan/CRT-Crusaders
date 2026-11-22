@@ -6,6 +6,7 @@ import { dayKey, weekKey } from './tasks';
 import { trialsOf } from './trials';
 import type { Rarity } from '../data/types';
 import { almsOf, giltOf } from './currency';
+import { addStigmata } from './tiers';
 
 /**
  * The Shop has three counters: Gilt (fixed, daily limits), the Almonry (six
@@ -23,6 +24,7 @@ export interface Goods {
   gear?: Rarity;
   /** A Vow token for a Sister the player picks. */
   vowToken?: boolean;
+  stigmata?: number;
   /** One more Relic Trial victory today. */
   trialEntry?: boolean;
 }
@@ -59,6 +61,7 @@ export const TITHE_OFFERS: Offer[] = [
   { id: 't-writ', name: '2 Writs of Passage', price: 600, currency: 'tithes', goods: { items: { writ1: 2 } }, limit: 5 },
   { id: 't-seal', name: '1 Wax Seal', price: 2500, currency: 'tithes', goods: { seals: 1 }, limit: 2 },
   { id: 't-gear', name: 'SR+ gear', price: 700, currency: 'tithes', goods: { gear: 'SR' }, limit: 3 },
+  { id: 't-stigmata', name: '1 Stigmata', price: 3000, currency: 'tithes', goods: { stigmata: 1 }, limit: 2 },
 ];
 
 /** What the Almonry can stock; six are drawn each day. */
@@ -74,6 +77,7 @@ export const ALMONRY_POOL: Offer[] = [
   { id: 'a-ssr', name: 'SSR+ gear', price: 150, currency: 'alms', goods: { gear: 'SSR' }, limit: 1 },
   { id: 'a-vow', name: 'Vow token of your choice', price: 400, currency: 'alms', goods: { vowToken: true }, limit: 1 },
   { id: 'a-seal', name: '2 Wax Seals', price: 160, currency: 'alms', goods: { seals: 2 }, limit: 1 },
+  { id: 'a-stigmata', name: '2 Stigmata', price: 220, currency: 'alms', goods: { stigmata: 2 }, limit: 1 },
 ];
 
 export interface ShopState {
@@ -156,6 +160,7 @@ export function buy(save: SaveData, o: Offer, opts: { sister?: string; rng?: Rng
   const out: Purchase = {};
   const g = o.goods;
   if (g.seals) save.seals += g.seals;
+  addStigmata(save, g.stigmata ?? 0);
   if (g.items) give(save, g.items);
   if (g.trialEntry) trialsOf(save, now).used -= 1;
   if (g.vowToken) {
