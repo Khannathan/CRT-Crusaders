@@ -4,6 +4,7 @@ import { CRUSADERS } from '../data/crusaders';
 import { applyCrt } from '../fx/crt';
 import { commit, game, resetGame } from '../state/game';
 import { saveSettings, settings } from '../state/settings';
+import { music } from '../audio/music';
 import { autoChoose } from '../systems/autoplay';
 import type { BattleEvent, Unit } from '../systems/combat';
 import { skirmish } from '../systems/crusade';
@@ -320,9 +321,16 @@ export class SanctumScene extends Phaser.Scene {
     const draw = () => {
       layer.removeAll(true);
       layer.add(this.add.rectangle(GAME_W / 2, GAME_H / 2, GAME_W, GAME_H, 0x09060b, 0.88).setInteractive());
-      layer.add(addFrame(this, GAME_W / 2, 460, GAME_W - 40, 640, { fill: 0x241925 }));
-      layer.add(this.add.text(GAME_W / 2, 200, 'Settings', text.display(30, PAL.amber)).setOrigin(0.5));
-      layer.add(this.add.text(GAME_W / 2, 280, 'CRT screen effect', { ...style, fontSize: '22px' }).setOrigin(0.5));
+      layer.add(addFrame(this, GAME_W / 2, 470, GAME_W - 40, 800, { fill: 0x241925 }));
+      layer.add(this.add.text(GAME_W / 2, 130, 'Settings', text.display(30, PAL.amber)).setOrigin(0.5));
+      layer.add(this.add.text(GAME_W / 2, 200, 'Music', { ...style, fontSize: '22px' }).setOrigin(0.5));
+      this.musicSlider(layer, 260);
+      const mute = makeButton(this, GAME_W - 104, 260, 128, 56, settings.musicMuted ? 'Muted' : 'Mute', () => {
+        music.setMuted(!settings.musicMuted);
+        draw();
+      }, { active: settings.musicMuted, fontSize: 19 });
+      layer.add(mute.all);
+      layer.add(this.add.text(GAME_W / 2, 360, 'CRT screen effect', { ...style, fontSize: '22px' }).setOrigin(0.5));
       const toggle = (on: boolean) => () => {
         settings.crt = on;
         saveSettings();
@@ -330,16 +338,16 @@ export class SanctumScene extends Phaser.Scene {
         draw();
       };
       for (const [i, on] of [true, false].entries()) {
-        const b = makeButton(this, GAME_W / 2 + (i ? 90 : -90), 340, 160, 64, on ? 'On' : 'Off', toggle(on), { active: settings.crt === on });
+        const b = makeButton(this, GAME_W / 2 + (i ? 90 : -90), 420, 160, 64, on ? 'On' : 'Off', toggle(on), { active: settings.crt === on });
         layer.add(b.all);
       }
-      layer.add(this.add.text(GAME_W / 2, 430, 'Strength', { ...style, fontSize: '22px', color: hex(settings.crt ? PAL.ivory : PAL.steel) }).setOrigin(0.5));
+      layer.add(this.add.text(GAME_W / 2, 510, 'Strength', { ...style, fontSize: '22px', color: hex(settings.crt ? PAL.ivory : PAL.steel) }).setOrigin(0.5));
       const levels: [string, number][] = [['Subtle', 0.35], ['Standard', 0.6], ['Heavy', 1]];
       levels.forEach(([label, v], i) => {
         const b = makeButton(
           this,
           GAME_W / 2 + (i - 1) * 168,
-          490,
+          570,
           156,
           64,
           label,
@@ -355,12 +363,47 @@ export class SanctumScene extends Phaser.Scene {
       });
       layer.add(
         this.add
-          .text(GAME_W / 2, 590, 'Scanlines, colour bleed and screen curve.\nPortrait art is never changed underneath.', { ...style, fontSize: '16px', color: hex(PAL.steel) })
+          .text(GAME_W / 2, 660, 'Scanlines, colour bleed and screen curve.\nPortrait art is never changed underneath.', { ...style, fontSize: '16px', color: hex(PAL.steel) })
           .setOrigin(0.5),
       );
-      const close = makeButton(this, GAME_W / 2, 720, 240, 72, 'Done', () => layer.destroy());
+      const close = makeButton(this, GAME_W / 2, 790, 240, 72, 'Done', () => layer.destroy());
       layer.add(close.all);
     };
     draw();
+  }
+
+  /** A draggable volume bar; changes are heard straight away. */
+  private musicSlider(layer: Phaser.GameObjects.Container, y: number) {
+    const x0 = 56;
+    const w = 300;
+    const off = settings.musicMuted;
+    layer.add(this.add.rectangle(x0, y, w, 10, PAL.deepShadow).setOrigin(0, 0.5).setStrokeStyle(2, PAL.armorShadow));
+    const fill = this.add.rectangle(x0, y, 0, 10, off ? PAL.steel : PAL.amber).setOrigin(0, 0.5);
+    const knob = this.add.circle(x0, y, 14, off ? PAL.steel : PAL.ivory).setStrokeStyle(3, PAL.oxblood);
+    const label = this.add.text(x0 + w, y - 30, '', text.body(18, off ? PAL.steel : PAL.ivory)).setOrigin(1, 0.5);
+    const show = () => {
+      const v = settings.musicVolume;
+      fill.width = w * v;
+      knob.x = x0 + w * v;
+      label.setText(`${Math.round(v * 100)}%`);
+    };
+    const set = (px: number) => {
+      const v = Math.round(Phaser.Math.Clamp((px - x0) / w, 0, 1) * 20) / 20;
+      if (v === settings.musicVolume && !settings.musicMuted) return;
+      const wasMuted = settings.musicMuted;
+      music.setVolume(v);
+      if (wasMuted !== settings.musicMuted) {
+        // unmuted by dragging: recolour
+        fill.setFillStyle(PAL.amber);
+        knob.setFillStyle(PAL.ivory);
+        label.setColor(hex(PAL.ivory));
+      }
+      show();
+    };
+    const hit = this.add.zone(x0 - 20, y, w + 40, 56).setOrigin(0, 0.5).setInteractive({ useHandCursor: true, draggable: true });
+    hit.on('pointerdown', (p: Phaser.Input.Pointer) => set(p.x));
+    hit.on('drag', (p: Phaser.Input.Pointer) => set(p.x));
+    layer.add([fill, label, hit, knob]);
+    show();
   }
 }

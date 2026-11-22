@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import { music } from '../audio/music';
 import { FONT, GAME_H, GAME_W, PAL, hex } from '../config';
 import { RARITY_COLOR } from '../data/classes';
 import { CLASSES } from '../data/classes';
@@ -21,6 +22,7 @@ export class RecruitScene extends Phaser.Scene {
 
   create() {
     addScreenGlow(this);
+    music.preload('ur');
     addCurrencyBar(this);
     const s = game.save;
     const top = addHeading(this, 'The Sealed Altar', CURRENCY_BAR_H + 16);

@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import { music } from '../audio/music';
 import { bondBattle } from '../systems/bonds';
 import { FONT, GAME_H, GAME_W, PAL, hex } from '../config';
 import { addTabBar } from '../ui/tabBar';
@@ -95,6 +96,8 @@ export class BattleScene extends Phaser.Scene {
       this.battle = challenge ? challenge.make(seeded(seed)) : makeBattle(game.save, run!, encounter, seeded(seed));
       (window as unknown as Record<string, unknown>).__crtLastBattle = { balance: BALANCE_VERSION, encounter, seed, log: this.battle.log };
     }
+    music.play(this.battle.units.some((u) => u.side === 'enemy' && u.boss) ? 'boss' : 'battle');
+    music.preload('victory', 'defeat');
     this.pauseAsked = false;
     this.menuLayer = undefined;
     this.vigilMax = resume ? resume.vigilMax : this.battle.vigil;
@@ -226,6 +229,7 @@ export class BattleScene extends Phaser.Scene {
   }
 
   private end(outcome: 'victory' | 'defeat') {
+    music.stinger(outcome, 'end');
     const challenge = current.challenge;
     if (challenge) {
       this.mode = 'busy';

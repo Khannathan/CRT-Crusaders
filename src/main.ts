@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import { GAME_H, GAME_W, PAL } from './config';
 import { installCrt } from './fx/crt';
+import { music } from './audio/music';
 import { BattleScene } from './scenes/BattleScene';
 import { BootScene } from './scenes/BootScene';
 import { CrusadeScene } from './scenes/CrusadeScene';
@@ -73,7 +74,13 @@ function start() {
     ],
   });
 
-  game.events.once(Phaser.Core.Events.READY, () => installCrt(game));
+  game.events.once(Phaser.Core.Events.READY, () => {
+    installCrt(game);
+    // Each screen asks for its loop as it opens.
+    for (const scene of game.scene.scenes) scene.events.on(Phaser.Scenes.Events.CREATE, () => music.forScene(scene.scene.key));
+  });
+  music.init();
+  (window as unknown as { __music: typeof music }).__music = music;
 
   // Lets automated play-tests see which screen is showing.
   (window as unknown as { __crt: Phaser.Game }).__crt = game;

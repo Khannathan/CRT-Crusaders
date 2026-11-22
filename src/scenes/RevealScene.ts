@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 import { FONT, GAME_H, GAME_W, PAL, hex } from '../config';
 import { CLASSES, RARITY_COLOR } from '../data/classes';
 import { COST_ONE, COST_TEN, RARITY_ORDER, canPull, pull, type PullKind, type PullResult } from '../systems/gacha';
+import { music } from '../audio/music';
 import { commit, game } from '../state/game';
 import { makeButton } from '../ui/button';
 import { NOISE_FRAMES, WAX_COLOR, noiseKey, sealKey } from '../ui/effects';
@@ -18,6 +19,8 @@ export class RevealScene extends Phaser.Scene {
   private card?: Phaser.GameObjects.Container;
   private hint!: Phaser.GameObjects.Text;
   private counter!: Phaser.GameObjects.Text;
+  /** Highest card index whose seal has been broken. */
+  private revealed = -1;
 
   constructor() {
     super('Reveal');
@@ -28,6 +31,8 @@ export class RevealScene extends Phaser.Scene {
     this.index = 0;
     this.busy = false;
     this.card = undefined;
+    this.revealed = -1;
+    if (this.results.some((r) => r.crusader.rarity === 'UR')) music.preload('ur');
   }
 
   create() {
@@ -72,6 +77,8 @@ export class RevealScene extends Phaser.Scene {
     const card = this.card!;
     const seal = card.list[0] as Phaser.GameObjects.Image;
     const high = r.crusader.rarity === 'SSR' || r.crusader.rarity === 'UR';
+    this.revealed = this.index;
+    if (r.crusader.rarity === 'UR') music.stinger('ur', 'duck');
     this.busy = true;
     this.hint.setText('');
     this.tweens.killTweensOf(seal);
@@ -157,6 +164,9 @@ export class RevealScene extends Phaser.Scene {
   }
 
   private showSummary() {
+    // Skipping past an unopened UR still rings the stinger once.
+    if (this.results.some((r, i) => i > this.revealed && r.crusader.rarity === 'UR')) music.stinger('ur', 'duck');
+    this.revealed = this.results.length;
     this.busy = true;
     this.children.removeAll(true);
     this.tweens.killAll();
