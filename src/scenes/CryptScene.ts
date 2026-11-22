@@ -104,7 +104,7 @@ export class CryptScene extends Phaser.Scene {
         .text(
           GAME_W / 2,
           330,
-          `A Sanctuary. Every Sister standing heals ${Math.round(SANCTUARY_HEAL * 100)}%.\n\nAct ${ROMAN[act]} of ${acts}${next ? `, ${next},` : ''} lies below, and its foes are stronger.\n\nSo far: ${run.tithes} Tithes, ${run.seals} Seals, ${run.loot.length} gear.`,
+          `A Sanctuary. Every Sister standing heals ${Math.round(SANCTUARY_HEAL * 100)}%.\n\nAct ${ROMAN[act]} of ${acts}${next ? `, ${next},` : ''} lies below, and its foes are stronger.\n\nYour spoils are banked: ${run.tithes} Tithes, ${run.seals} Seals, ${run.loot.length} gear, safe even if you fall.`,
           { ...style, fontSize: '21px', lineSpacing: 4 },
         )
         .setOrigin(0.5),

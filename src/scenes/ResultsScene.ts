@@ -41,8 +41,8 @@ export class ResultsScene extends Phaser.Scene {
     if (r.melted) notes.push(`The armory is full: spare gear melted for +${r.melted} Tithes.`);
     if (r.firstClear) notes.push('First clear bonus included! Heresy I is now open for this crypt.');
     if (r.heresyCleared) notes.push(`Heresy ${ROMAN[r.heresyCleared - 1]} cleared for the first time: +${HERESY_FIRST_CLEAR_SEALS} Seals.${r.heresyCleared < MAX_HERESY ? ` Heresy ${ROMAN[r.heresyCleared]} is open.` : ''}`);
-    if (r.outcome === 'defeat') notes.push('Half your Tithes and materials were lost to the dark. No Seal survived, and the crypt keeps the gear you found.');
-    if (r.outcome === 'retreat') notes.push('You kept your Tithes. Seals are earned only by purifying the crypt.');
+    if (r.outcome === 'defeat') notes.push('You keep your Seals, your gear, everything banked at a Sanctuary, and most of the rest. The completion reward waits for a cleared crypt.');
+    if (r.outcome === 'retreat') notes.push('You kept everything you found. The completion reward waits for a cleared crypt.');
     this.add.text(GAME_W / 2, r.gear.length ? 410 : 360, notes.join('\n'), { ...style, fontSize: '17px', color: hex(PAL.steel), wordWrap: { width: GAME_W - 60 } }).setOrigin(0.5, 0);
 
     if (r.fallen.length) {
