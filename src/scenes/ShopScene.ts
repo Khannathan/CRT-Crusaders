@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import { drawOfferingIcon } from '../ui/offeringIcon';
 import { tapForSources } from '../ui/sources';
 import { GAME_W, PAL } from '../config';
 import { commit, game } from '../state/game';
@@ -13,7 +14,7 @@ import { pickParty } from '../ui/partyPicker';
 import { PAD, addFrame, addIcon, text } from '../ui/theme';
 
 const COUNTERS: [Counter, string, string][] = [
-  ['gilt', 'Gilt', 'Premium goods for Gilt. Limits reset each day.'],
+  ['gilt', 'Gilt', 'Premium goods for Gilt, and an offering of the day. Limits reset daily.'],
   ['almonry', 'Almonry', 'Six offers for Alms, new each dawn. One free refresh a day.'],
   ['tithes', 'Tithes', 'Common goods for Tithes. Limits reset each Monday.'],
 ];
@@ -91,7 +92,8 @@ export class ShopScene extends Phaser.Scene {
     const ix = x + 34;
     const iy = y + 40;
     const ids = Object.keys(o.goods.items ?? {}) as ItemId[];
-    if (ids.length === 1) drawItemIcon(this, ix, iy, ids[0], 48);
+    if (o.goods.offering) drawOfferingIcon(this, ix, iy, o.goods.offering, 48);
+    else if (ids.length === 1) drawItemIcon(this, ix, iy, ids[0], 48);
     else {
       this.add.rectangle(ix, iy, 48, 48, 0x150e17).setStrokeStyle(1, PAL.armorShadow);
       addIcon(this, ix, iy, o.goods.seals ? 'seal' : o.goods.vowToken ? 'vow' : o.goods.gear ? 'shield' : 'flame', 30, o.goods.seals ? 0xd87988 : PAL.amber);

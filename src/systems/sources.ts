@@ -1,12 +1,13 @@
 import type { SaveData } from '../state/save';
 import { almsOf, giltOf } from './currency';
+import { offeringsHeld } from './offerings';
 import { countOf, familyDef, itemDef, type Bag, type ItemId } from './items';
 
 /**
  * Where every resource comes from, so any cost or counter can answer "how do
  * I get more?". Each source names the screen that gives it, for a Go button.
  */
-export type Currency = 'gilt' | 'alms' | 'seals' | 'tithes' | 'vows' | 'shards' | 'stigmata';
+export type Currency = 'gilt' | 'alms' | 'seals' | 'tithes' | 'vows' | 'shards' | 'stigmata' | 'offerings';
 export type ResourceId = Currency | ItemId;
 
 export interface Source {
@@ -102,6 +103,15 @@ const CURRENCIES: Record<Currency, ResourceInfo> = {
       { text: 'Pull a Sister who needs no more copies', scene: 'Recruit' },
     ],
   },
+  offerings: {
+    name: 'Offerings',
+    desc: "Gifts for Confession. Each raises a Sister's bond; her Order's favourites count double.",
+    sources: [
+      { text: 'Reliquary Procession: three victories a day', scene: 'Procession' },
+      { text: 'Shop: the Offering of the Day (Gilt counter)', scene: 'Shop', data: { counter: 'gilt' } },
+      { text: 'Confession: one free candle each dawn, for any Sister', scene: 'Confession' },
+    ],
+  },
   shards: {
     name: 'Relic Shards',
     desc: "Every pull on an Order's banner adds one. Enough of them buy that Order's UR.",
@@ -159,6 +169,8 @@ export function amountOf(save: SaveData, id: ResourceId): number {
       return Object.values(save.owned).reduce((n, o) => n + (o.tokens ?? 0), 0);
     case 'stigmata':
       return save.stigmata ?? 0;
+    case 'offerings':
+      return offeringsHeld(save);
     case 'shards':
       return Object.values(save.shards ?? {}).reduce((n, v) => n + v, 0);
     default:

@@ -7,6 +7,7 @@ import { trialsOf } from './trials';
 import type { Rarity } from '../data/types';
 import { almsOf, giltOf } from './currency';
 import { addStigmata } from './tiers';
+import { OFFERING_GILT, giveOfferings, offeringDef, offeringOfDay } from './offerings';
 
 /**
  * The Shop has three counters: Gilt (fixed, daily limits), the Almonry (six
@@ -27,6 +28,8 @@ export interface Goods {
   stigmata?: number;
   /** One more Relic Trial victory today. */
   trialEntry?: boolean;
+  /** An offering for Confession, by id. */
+  offering?: string;
 }
 
 export interface Offer {
@@ -121,8 +124,14 @@ export function shopOf(save: SaveData, now = Date.now()): ShopState {
 
 export const purse = (save: SaveData, c: Currency) => (c === 'gilt' ? giltOf(save) : c === 'alms' ? almsOf(save) : save.tithes);
 
+/** The Offering of the Day: one a day, a new one each dawn, priced by potency. */
+export function dailyOffering(now = Date.now()): Offer {
+  const d = offeringOfDay(now);
+  return { id: 'g-offering', name: `Offering of the Day: ${d.name}`, price: OFFERING_GILT[d.potency], currency: 'gilt', goods: { offering: d.id }, limit: 1 };
+}
+
 export function offersAt(save: SaveData, counter: Counter, now = Date.now()): Offer[] {
-  if (counter === 'gilt') return GILT_OFFERS;
+  if (counter === 'gilt') return [dailyOffering(now), ...GILT_OFFERS];
   if (counter === 'tithes') return TITHE_OFFERS;
   return shopOf(save, now).stock.map((id) => ALMONRY_POOL.find((o) => o.id === id)!).filter(Boolean);
 }
@@ -162,6 +171,7 @@ export function buy(save: SaveData, o: Offer, opts: { sister?: string; rng?: Rng
   if (g.seals) save.seals += g.seals;
   addStigmata(save, g.stigmata ?? 0);
   if (g.items) give(save, g.items);
+  if (g.offering) giveOfferings(save, [g.offering]);
   if (g.trialEntry) trialsOf(save, now).used -= 1;
   if (g.vowToken) {
     const own = save.owned[opts.sister!];
@@ -193,7 +203,7 @@ export function refreshAlmonry(save: SaveData, now = Date.now(), rng: Rng = Math
 }
 
 export const goodsText = (g: Goods) =>
-  [g.seals ? `${g.seals} Wax Seal${g.seals > 1 ? 's' : ''}` : '', bagText(g.items), g.gear ? `${g.gear}+ gear` : '', g.vowToken ? 'a Vow token' : '', g.trialEntry ? 'one more Trial victory today' : '']
+  [g.seals ? `${g.seals} Wax Seal${g.seals > 1 ? 's' : ''}` : '', bagText(g.items), g.gear ? `${g.gear}+ gear` : '', g.vowToken ? 'a Vow token' : '', g.trialEntry ? 'one more Trial victory today' : '', g.offering ? offeringDef(g.offering).name : '']
     .filter(Boolean)
     .join(', ');
 
