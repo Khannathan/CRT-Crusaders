@@ -8,6 +8,8 @@ import { makeButton } from '../ui/button';
 import { drawItemIcon } from '../ui/itemIcon';
 import { modeScreen, toast } from '../ui/modeScreen';
 import { TAB_BAR_H } from '../ui/tabBar';
+import { showSources, tapForSources } from '../ui/sources';
+import type { ResourceId } from '../systems/sources';
 import { PAD, addFrame, text } from '../ui/theme';
 
 /** The Inventory: currencies, every material by family, and refining five into one. */
@@ -32,18 +34,20 @@ export class InventoryScene extends Phaser.Scene {
     // Currencies
     const tokens = Object.values(save.owned).reduce((n, o) => n + (o.tokens ?? 0), 0);
     const shards = Object.values(save.shards ?? {}).reduce((n, v) => n + v, 0);
-    const cur: [string, string][] = [
-      ['GILT', `${giltOf(save)}`],
-      ['SEALS', `${save.seals}`],
-      ['TITHES', save.tithes.toLocaleString('en-US')],
-      ['ALMS', `${almsOf(save)}`],
-      ['VOWS', `${tokens}`],
-      ['SHARDS', `${shards}`],
+    const cur: [string, string, ResourceId?][] = [
+      ['GILT', `${giltOf(save)}`, 'gilt'],
+      ['SEALS', `${save.seals}`, 'seals'],
+      ['TITHES', save.tithes.toLocaleString('en-US'), 'tithes'],
+      ['ALMS', `${almsOf(save)}`, 'alms'],
+      ['VOWS', `${tokens}`, 'vows'],
+      ['SHARDS', `${shards}`, 'shards'],
       ['GEAR', `${save.gear?.length ?? 0}/${MAX_GEAR}`],
     ];
     const cw = bw / cur.length;
-    cur.forEach(([label, v], i) => {
+    cur.forEach(([label, v, id], i) => {
       const x = PAD + cw * i + cw / 2;
+      // tap a currency to see where it comes from
+      if (id) tapForSources(this, this.add.zone(x, top + 18, cw - 4, 40), id);
       this.add.text(x, top, label, text.hud(10, PAL.steel)).setOrigin(0.5, 0);
       this.add.text(x, top + 16, v, text.hud(16, PAL.amber)).setOrigin(0.5, 0);
     });
@@ -79,6 +83,8 @@ export class InventoryScene extends Phaser.Scene {
       const d = itemDef(this.pick);
       const n = countOf(save, this.pick);
       this.add.text(PAD + 16, panelTop + 12, `${d.name}  ×${n}`, text.display(18, 0xfff1d6));
+      const pick = this.pick;
+      makeButton(this, GAME_W - PAD - 74, panelTop + 26, 128, 34, 'Where to get', () => showSources(this, pick), { fontSize: 13 });
       this.add.text(PAD + 16, panelTop + 40, d.flavor, { ...text.body(15, PAL.muted), fontStyle: 'italic', wordWrap: { width: bw - 32 } });
       if (d.tier < 3) {
         const next = itemDef(`${d.family}${d.tier + 1}` as ItemId);

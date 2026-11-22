@@ -4,6 +4,8 @@ import { game } from '../state/game';
 import { giltOf } from '../systems/currency';
 import { nine, stretch } from './skin';
 import { addIcon } from './theme';
+import { showSources } from './sources';
+import type { ResourceId } from '../systems/sources';
 
 export const CURRENCY_BAR_H = 56;
 
@@ -31,7 +33,10 @@ export function addCurrencyBar(scene: Phaser.Scene) {
   }
 
   /** A framed chip; layout(value, right) sizes it and pins its right edge. Returns its left edge. */
-  const chip = (icon: string, tint: number, label: string) => {
+  const chip = (icon: string, tint: number, label: string, id: ResourceId) => {
+    // tap a chip to see where that currency comes from
+    const hit = scene.add.zone(0, mid, 40, 38).setDepth(6).setInteractive({ useHandCursor: true });
+    hit.on('pointerup', () => showSources(scene, id));
     // ui-chip.png skins the framed chip behind each currency
     const skin = nine(scene, 'ui-chip', 0, mid, 40, 38)?.setOrigin(1, 0.5).setDepth(5);
     const bg = skin ?? scene.add.rectangle(0, mid, 10, 38, 0x221820).setOrigin(1, 0.5).setStrokeStyle(1, 0x4b3538).setDepth(5);
@@ -42,6 +47,7 @@ export function addCurrencyBar(scene: Phaser.Scene) {
       num.setText(String(value));
       const w = 10 + 18 + 7 + num.width + 7 + name.width + 10;
       bg.setPosition(right, mid).setSize(w, 38);
+      hit.setPosition(right - w / 2, mid).setSize(w, 38);
       const left = right - w;
       ic.setX(left + 10 + 9);
       num.setX(left + 10 + 18 + 7);
@@ -49,9 +55,9 @@ export function addCurrencyBar(scene: Phaser.Scene) {
       return left;
     };
   };
-  const tithes = chip('tithe', PAL.amber, 'Tithes');
-  const seals = chip('seal', 0xd87988, 'Seals');
-  const gilt = chip('gilt', 0xf2d27a, 'Gilt');
+  const tithes = chip('tithe', PAL.amber, 'Tithes', 'tithes');
+  const seals = chip('seal', 0xd87988, 'Seals', 'seals');
+  const gilt = chip('gilt', 0xf2d27a, 'Gilt', 'gilt');
   const refresh = () => {
     const left = tithes(game.save.tithes, GAME_W - 10);
     const l2 = seals(game.save.seals, left - 6);

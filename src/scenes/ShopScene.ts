@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import { tapForSources } from '../ui/sources';
 import { GAME_W, PAL } from '../config';
 import { commit, game } from '../state/game';
 import { almsOf, giltOf } from '../systems/currency';
@@ -49,7 +50,12 @@ export class ShopScene extends Phaser.Scene {
     const desc = COUNTERS.find(([id]) => id === this.counter)![2];
     this.add.text(PAD, y, desc, { ...text.body(15, PAL.muted), wordWrap: { width: bw } });
     y += 26;
-    this.add.text(PAD, y, `GILT ${giltOf(save)}   ALMS ${almsOf(save)}   TITHES ${save.tithes.toLocaleString('en-US')}`, text.hud(13, PAL.amber));
+    // tap any of the three to see where it comes from
+    let px = PAD;
+    for (const [label, v, id] of [['GILT', giltOf(save), 'gilt'], ['ALMS', almsOf(save), 'alms'], ['TITHES', save.tithes, 'tithes']] as const) {
+      const t = tapForSources(this, this.add.text(px, y, `${label} ${v.toLocaleString('en-US')}`, text.hud(13, PAL.amber)), id);
+      px += t.width + 22;
+    }
 
     if (this.counter === 'almonry') {
       const cost = refreshCost(save);
@@ -100,6 +106,8 @@ export class ShopScene extends Phaser.Scene {
       disabled: !!block,
       active: !block,
     });
+    // short of the price: tapping it says where to earn more
+    if (block?.startsWith('Not enough')) tapForSources(this, this.add.zone(x + w / 2, y + h - 24, w - 20, 36), o.currency);
   }
 
   private purchase(o: Offer, _refresh: () => void) {

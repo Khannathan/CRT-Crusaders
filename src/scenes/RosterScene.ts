@@ -51,6 +51,7 @@ import { CURRENCY_BAR_H, addCurrencyBar } from '../ui/currencyBar';
 import { portraitKey } from '../ui/placeholderPortrait';
 import { nine } from '../ui/skin';
 import { addScrollArea } from '../ui/scroll';
+import { tapCost } from '../ui/sources';
 import { TAB_BAR_H, addTabBar } from '../ui/tabBar';
 import { PAD, addArt, addBackdrop, addBadge, addFrame, addHeading, addIcon, addScreenGlow, text } from '../ui/theme';
 
@@ -444,9 +445,9 @@ export class RosterScene extends Phaser.Scene {
     if (atCap && step) {
       const block = ascendBlock(save, c.id);
       layer.add(
-        this.add
-          .text(GAME_W / 2, GAME_H - 206, `Ascension ${ROMAN_RANK((have.asc ?? 0) + 1)}: ${costLine(save, step)}`, { ...style, fontSize: '14px', color: hex(block ? PAL.steel : PAL.amber), wordWrap: { width: GAME_W - 60 } })
-          .setOrigin(0.5),
+        tapCost(this, this.add
+          .text(GAME_W / 2, GAME_H - 206, `Ascension ${ROMAN_RANK((have.asc ?? 0) + 1)}: ${costLine(save, step)}  ›`, { ...style, fontSize: '14px', color: hex(block ? PAL.steel : PAL.amber), wordWrap: { width: GAME_W - 60 } })
+          .setOrigin(0.5), step.items, step.tithes),
       );
     }
     const canLevel = !atCap && save.tithes >= cost;
@@ -538,7 +539,7 @@ export class RosterScene extends Phaser.Scene {
         { disabled: !!block, active: !block, fontSize: 14 },
       );
       const cost = step
-        ? this.add.text(left, y + 52 + d.height, `Lv ${lv + 1} (+6% effect): ${have.level < step.level ? `needs level ${step.level} · ` : ''}${stepText(save, step)}`, text.body(14, block ? PAL.steel : PAL.amber))
+        ? tapCost(this, this.add.text(left, y + 52 + d.height, `Lv ${lv + 1} (+6% effect): ${have.level < step.level ? `needs level ${step.level} · ` : ''}${stepText(save, step)}  ›`, text.body(14, block ? PAL.steel : PAL.amber)), step.items, step.tithes)
         : undefined;
       layer.add([...btn.all, ...(cost ? [cost] : [])]);
       y += 52 + d.height + (cost ? 24 : 0) + 14;
@@ -621,6 +622,7 @@ export class RosterScene extends Phaser.Scene {
       const t = this.add.text(left, y + 34, body, { ...text.body(17, tint), wordWrap: { width } });
       layer.add(t);
       y += 46 + t.height + 12;
+      return t;
     };
     const set = gearSet(item.set);
     section(
@@ -633,13 +635,14 @@ export class RosterScene extends Phaser.Scene {
     const maxed = item.level >= MAX_REFINE;
     const iron = refineIron(item);
     const next = { ...item, level: item.level + 1 };
-    section(
+    const enhText = section(
       item.level >= MAX_GEAR_LEVEL ? `REFINE · +${item.level} OF +${MAX_REFINE}` : `ENHANCE · +${item.level} OF +${MAX_GEAR_LEVEL}, THEN REFINE TO +${MAX_REFINE}`,
       maxed
         ? 'Fully refined.'
         : `+${next.level}: ${formatStat(item.main, mainValue(next))}${SUB_UPGRADE_LEVELS.includes(next.level) && item.subs.length ? ' and a random substat grows' : ''}.\nCost: ${enhanceCost(item)} Tithes${iron ? ` and ${ironText(iron)}` : ''}.`,
       PAL.ivory,
     );
+    if (!maxed) tapCost(this, enhText, iron, enhanceCost(item));
     const eb = enhanceBlock(save, item);
     const enh = makeButton(this, GAME_W / 2, y + 10, 300, 52, maxed ? 'Fully refined' : eb ?? (item.level >= MAX_GEAR_LEVEL ? `Refine to +${next.level}` : `Enhance to +${next.level}`), () => {
       if (enhance(save, item)) {
@@ -652,13 +655,14 @@ export class RosterScene extends Phaser.Scene {
     y += 52;
 
     // Reroll
-    section(
+    const subText = section(
       'SUBSTATS',
       item.subs.length
         ? `${item.subs.map((s) => formatStat(s.stat, s.value)).join('   ')}\nReroll gives each a new stat and keeps its strength. Cost: ${ironText(REROLL_COST.items)} and ${REROLL_COST.tithes} Tithes.`
         : 'R pieces have no substats.',
       PAL.ivory,
     );
+    if (item.subs.length) tapCost(this, subText, REROLL_COST.items, REROLL_COST.tithes);
     const rb = rerollBlock(save, item);
     const reroll = makeButton(this, GAME_W / 2, y + 10, 300, 52, rb ?? 'Reroll substats', () => {
       if (rerollSubs(save, item)) {
@@ -670,7 +674,7 @@ export class RosterScene extends Phaser.Scene {
     layer.add(reroll.all);
 
     const own = (id: 'iron1' | 'iron2' | 'iron3') => `${countOf(save, id)} ${itemDef(id).name}`;
-    layer.add(this.add.text(GAME_W / 2, GAME_H - 118, `You hold ${own('iron1')}, ${own('iron2')}, ${own('iron3')} · ${save.tithes.toLocaleString('en-US')} Tithes`, { ...text.body(15, PAL.muted), align: 'center', wordWrap: { width } }).setOrigin(0.5));
+    layer.add(tapCost(this, this.add.text(GAME_W / 2, GAME_H - 118, `You hold ${own('iron1')}, ${own('iron2')}, ${own('iron3')} · ${save.tithes.toLocaleString('en-US')} Tithes  ›`, { ...text.body(15, PAL.muted), align: 'center', wordWrap: { width } }).setOrigin(0.5), { iron1: 1, iron2: 1, iron3: 1 }));
     const back = makeButton(this, GAME_W / 2, GAME_H - 62, 240, 60, 'Back', () => this.reopen(c, 'gear'), { fontSize: 19 });
     layer.add(back.all);
   }
