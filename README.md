@@ -33,6 +33,10 @@ Every built-in drawing can be replaced by dropping a PNG into a folder; nothing 
 - **Battle and Sister page skins (optional):** `ui-skill`, `ui-skill-selected`, `ui-skill-rite`, `ui-unit-frame` (tinted), `ui-turn-frame`, `ui-bar-frame`, `ui-subtab`, `ui-subtab-active`, `ui-gear-slot` (tinted) are 9-slices; `ui-bar-hp`, `ui-bar-hp-enemy`, `ui-bar-zeal` are fill tiles stretched sideways; `ui-pip`, `ui-pip-full` (24 × 24 on screen), `ui-arrow` (points right) are plain images; `ui-vigil-candle` is a strip of frames, each one-third as wide as it is tall, full on the left to snuffed on the right.
 - **Fonts:** `src/assets/fonts/` (Cinzel Decorative for titles, Crimson Pro for text, Vigil Pixel for numbers), declared in `src/fonts.css`; credits and licenses in `src/assets/fonts/licenses/`. Colours live in `PAL` in `src/config.ts`; frames, headings and badges in `src/ui/theme.ts`.
 
+## Music
+
+The soundtrack lives in `src/assets/audio/` as OGG (most browsers) plus an MP3 fallback (older Safari); the game picks one and fetches each track only when a screen first needs it. To replace a track, put the new original `.mp3` files in a folder and run `tools/encode-music.sh <folder>` (needs ffmpeg): it levels the loudness, trims the fade-out tails off loops (the game crossfades them), cuts the UR stinger to about 5.5 seconds, and writes both formats. Which screen plays which loop is `SCENE_MUSIC` in `src/audio/music.ts`. Music starts on the first tap (browsers block sound before that), pauses when the app is in the background, and its volume and mute live in Settings.
+
 ## How a fight reads
 
 Each enemy shows its next move above its card: the skill, the expected damage and who it will hit. Your crusaders show the damage heading their way (red when it would be lethal, grey when a shield blocks it). Tap an enemy to read its plan in full. A Taunt pulls single-target attacks away, Shift can step out of reach, and Foresight's delay breaks a boss's wind-up. The Choir Below changes phase at half HP and starts charging Requiem, a two-turn group attack.
