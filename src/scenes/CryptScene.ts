@@ -11,6 +11,7 @@ import { current } from '../state/run';
 import {
   REWARDS,
   ROMAN,
+  SANCTUARY_HEAL,
   chooseEvent,
   choices,
   cryptCleared,
@@ -29,9 +30,12 @@ import { makeButton } from '../ui/button';
 import { nodeIconKey } from '../ui/icons';
 import { portraitKey } from '../ui/placeholderPortrait';
 import { addArt, addScreenGlow, text as txt } from '../ui/theme';
+import { addScrollArea } from '../ui/scroll';
 
-const MAP_TOP = 112;
-const MAP_BOTTOM = 470;
+const MAP_TOP = 96;
+const MAP_BOTTOM = 486;
+/** Height of one floor on the map; a long crypt scrolls (drag or wheel). */
+const FLOOR_H = 78;
 const KIND_NAME: Record<NodeKind, string> = {
   fight: 'Fight',
   elite: 'Elite fight',
@@ -45,6 +49,8 @@ const KIND_NAME: Record<NodeKind, string> = {
 export class CryptScene extends Phaser.Scene {
   private selected?: number;
   private info: Phaser.GameObjects.GameObject[] = [];
+  /** The scrolling map, so the selection ring moves with it. */
+  private mapLayer?: Phaser.GameObjects.Container;
 
   constructor() {
     super('Crypt');
@@ -80,14 +86,49 @@ export class CryptScene extends Phaser.Scene {
     else if (node?.kind === 'event') this.showEvent(node);
     else if (node?.kind === 'reliquary') this.showRelics();
     else if (node?.encounter) this.scene.start('Battle');
+    else if (run.sanctuary) this.showSanctuary(run.sanctuary);
     else this.prompt(choices(run).length ? 'Choose your path through the dark.' : '');
   }
 
+  /** Between acts: the Sisters have been healed; go deeper or leave with everything. */
+  private showSanctuary(act: number) {
+    const run = current.run!;
+    const layer = this.overlay();
+    const acts = Math.max(...run.map.flat().map((n) => n.act ?? 1));
+    const next = run.crypt.actNames?.[act - 1];
+    const style = { fontFamily: FONT, color: hex(PAL.ivory), align: 'center', wordWrap: { width: GAME_W - 70 } };
+    layer.add(this.add.text(GAME_W / 2, 210, `ACT ${ROMAN[act - 1]} PURIFIED`, txt.display(28, PAL.amber)).setOrigin(0.5));
+    layer.add(
+      this.add
+        .text(
+          GAME_W / 2,
+          330,
+          `A Sanctuary. Every Sister standing heals ${Math.round(SANCTUARY_HEAL * 100)}%.\n\nAct ${ROMAN[act]} of ${acts}${next ? `, ${next},` : ''} lies below, and its foes are stronger.\n\nSo far: ${run.tithes} Tithes, ${run.seals} Seals, ${run.loot.length} gear.`,
+          { ...style, fontSize: '21px', lineSpacing: 4 },
+        )
+        .setOrigin(0.5),
+    );
+    const go = makeButton(this, GAME_W / 2, 520, GAME_W - 100, 80, `Descend to Act ${ROMAN[act]}`, () => {
+      run.sanctuary = undefined;
+      commit();
+      this.scene.restart();
+    }, { active: true, fontSize: 22 });
+    const leave = makeButton(this, GAME_W / 2, 620, GAME_W - 100, 64, 'Leave with everything found', () => this.finish('retreat'), { fontSize: 19 });
+    layer.add([...go.all, ...leave.all]);
+  }
+
+  /** Floor spacing: the whole map fits when it can, else FLOOR_H a floor and it scrolls. */
+  private floorH() {
+    const floors = current.run!.map.length;
+    return Math.max(FLOOR_H, (MAP_BOTTOM - MAP_TOP - 40) / Math.max(1, floors - 1));
+  }
+
+  /** Map position, with the boss at the top and the first floor at the bottom (before scrolling). */
   private nodePos(floor: number, i: number) {
     const run = current.run!;
     const floors = run.map.length;
     const width = run.map[floor].length;
-    const y = MAP_BOTTOM - (floor * (MAP_BOTTOM - MAP_TOP)) / (floors - 1);
+    const y = MAP_TOP + 26 + (floors - 1 - floor) * this.floorH();
     const x = GAME_W / 2 + (i - (width - 1) / 2) * 150;
     return { x, y };
   }
@@ -95,6 +136,12 @@ export class CryptScene extends Phaser.Scene {
   private drawMap() {
     const run = current.run!;
     const open = choices(run);
+    const floors = run.map.length;
+    // Start scrolled so the next floor to choose sits low in the window.
+    const focus = this.nodePos(Math.min(floors - 1, run.floor + 1), 0).y;
+    const map = addScrollArea(this, MAP_TOP, MAP_BOTTOM, { start: Math.min(0, MAP_BOTTOM - 60 - focus) });
+    this.mapLayer = map.content;
+    const before = this.children.list.length;
     const g = this.add.graphics();
     run.map.forEach((floor, f) =>
       floor.forEach((node, i) => {
@@ -123,9 +170,27 @@ export class CryptScene extends Phaser.Scene {
         if (here) this.add.circle(x, y, size / 2 + 6).setStrokeStyle(4, PAL.ivory);
         const img = this.add.image(x, y, nodeIconKey(node.kind)).setDisplaySize(size, size);
         if (!available && !here) img.setAlpha(passed ? 0.8 : f > run.floor ? 0.55 : 0.25);
-        if (available) img.setInteractive({ useHandCursor: true }).on('pointerup', () => this.select(i));
+        if (available) map.tap(img, () => this.select(i));
+        // Bosses carry their names; a Warden is a smaller boss mid-act.
+        if (node.kind === 'boss' && node.name) {
+          this.add.text(x + size / 2 + 12, y, `${node.name}${node.warden ? '\nWARDEN' : node.actEnd ? `\nEND OF ACT ${ROMAN[(node.act ?? 1) - 1]}` : ''}`, txt.hud(11, node.warden ? 0xe5a86a : 0xe58a8a)).setOrigin(0, 0.5);
+        }
       }),
     );
+    // Act banners where each act begins (only when there is more than one).
+    const acts = Math.max(...run.map.flat().map((n) => n.act ?? 1));
+    if (acts > 1) {
+      run.map.forEach((floor, f) => {
+        const act = floor[0].act ?? 1;
+        if (f > 0 && (run.map[f - 1][0].act ?? 1) === act) return;
+        const y = this.nodePos(f, 0).y + this.floorH() / 2;
+        this.add.rectangle(GAME_W / 2, y, GAME_W - 40, 1, PAL.bronze, 0.6);
+        const name = act > 1 ? run.crypt.actNames?.[act - 2] : undefined;
+        this.add.text(24, y - 14, `ACT ${ROMAN[act - 1]}${name ? ` · ${name.toUpperCase()}` : ''}`, txt.hud(11, PAL.bronze));
+      });
+    }
+    map.content.add(this.children.list.slice(before));
+    map.fit(this.nodePos(0, 0).y + 40);
   }
 
   private select(index: number) {
@@ -135,7 +200,9 @@ export class CryptScene extends Phaser.Scene {
     this.selected = index;
     this.clearInfo();
     const { x, y } = this.nodePos(floor, index);
-    this.info.push(this.add.circle(x, y, 32).setStrokeStyle(4, PAL.ivory));
+    const ring = this.add.circle(x, y, 32).setStrokeStyle(4, PAL.ivory);
+    this.mapLayer?.add(ring);
+    this.info.push(ring);
     const style = { fontFamily: FONT, color: hex(PAL.ivory), align: 'center', wordWrap: { width: GAME_W - 40 } };
     this.info.push(this.add.text(GAME_W / 2, 530, `${KIND_NAME[node.kind]}\n${this.describe(node)}`, { ...style, fontSize: '20px', lineSpacing: 2 }).setOrigin(0.5));
     const go = makeButton(this, GAME_W / 2, 592, 220, 52, 'Go', () => this.go(), { active: true });
@@ -151,7 +218,9 @@ export class CryptScene extends Phaser.Scene {
       case 'elite':
         return `${foes(node.encounter!)}. A greater horror. Its death yields a relic, +${REWARDS.eliteSeals} Seal.`;
       case 'boss':
-        return `${current.run!.crypt.bossName}. Destroy it and the crypt is purified.`;
+        if (node.warden) return `${node.name}, Warden of this act. A lesser boss: boss spoils.`;
+        if (node.actEnd) return `${node.name} bars the way down. Beat it to reach a Sanctuary.`;
+        return `${node.name ?? current.run!.crypt.bossName}. Destroy it and the crypt is purified.`;
       case 'event':
         return 'Something waits in the dark. A temptation, not a fight.';
       case 'shrine':
