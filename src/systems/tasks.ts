@@ -1,4 +1,5 @@
 import type { SaveData } from '../state/save';
+import { earn } from './currency';
 import { bagText, give, type Bag } from './items';
 import { gainFaith } from './rank';
 
@@ -35,6 +36,8 @@ export interface Reward {
   seals?: number;
   tithes?: number;
   items?: Bag;
+  gilt?: number;
+  alms?: number;
 }
 
 export interface Mark {
@@ -64,14 +67,14 @@ export const TASKS: Record<Period, TaskDef[]> = {
 
 export const MARKS: Record<Period, Mark[]> = {
   daily: [
-    { at: 40, reward: { tithes: 120, items: { incense1: 5 } } },
-    { at: 70, reward: { seals: 1, tithes: 80, items: { page1: 4 } } },
-    { at: 100, reward: { seals: 2, items: { incense1: 5, ash1: 4 } } },
+    { at: 40, reward: { tithes: 120, alms: 10, items: { incense1: 5 } } },
+    { at: 70, reward: { seals: 1, tithes: 80, alms: 10, items: { page1: 4 } } },
+    { at: 100, reward: { seals: 2, alms: 20, items: { incense1: 5, ash1: 4 } } },
   ],
   weekly: [
-    { at: 40, reward: { seals: 2, tithes: 300, items: { incense2: 3 } } },
-    { at: 80, reward: { seals: 3, items: { writ1: 3 } } },
-    { at: 120, reward: { seals: 5, items: { incense2: 3, writ2: 1 } } },
+    { at: 40, reward: { seals: 2, tithes: 300, alms: 30, items: { incense2: 3 } } },
+    { at: 80, reward: { seals: 3, gilt: 40, items: { writ1: 3 } } },
+    { at: 120, reward: { seals: 5, gilt: 80, items: { incense2: 3, writ2: 1 } } },
   ],
 };
 
@@ -146,9 +149,10 @@ export function grant(save: SaveData, r: Reward) {
   save.seals += r.seals ?? 0;
   save.tithes += r.tithes ?? 0;
   if (r.items) give(save, r.items);
+  earn(save, r.gilt ?? 0, r.alms ?? 0);
 }
 
-export const rewardText = (r: Reward) => [r.seals ? `${r.seals} Seal${r.seals > 1 ? 's' : ''}` : '', r.tithes ? `${r.tithes} Tithes` : '', bagText(r.items)].filter(Boolean).join(' + ');
+export const rewardText = (r: Reward) => [r.seals ? `${r.seals} Seal${r.seals > 1 ? 's' : ''}` : '', r.tithes ? `${r.tithes} Tithes` : '', r.gilt ? `${r.gilt} Gilt` : '', r.alms ? `${r.alms} Alms` : '', bagText(r.items)].filter(Boolean).join(' + ');
 
 /** Claims one mark. Returns its reward, or undefined if it isn't ready. */
 export function claimMark(save: SaveData, p: Period, at: number, now = Date.now()): Reward | undefined {

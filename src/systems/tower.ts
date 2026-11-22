@@ -1,4 +1,5 @@
 import { CRUSADERS } from '../data/crusaders';
+import { earn } from './currency';
 import { ENCOUNTERS, ENEMIES } from '../data/enemies';
 import { ORDER_LIST } from '../data/orders';
 import type { CrusaderDef } from '../data/types';
@@ -62,15 +63,16 @@ export interface FloorReward {
   seals: number;
   gear?: 'SR' | 'SSR';
   items: Bag;
+  gilt: number;
 }
 
 export function floorReward(floor: number): FloorReward {
   const boss = floor % 10 === 0;
-  return { tithes: 60 + 15 * floor, seals: boss ? 3 : floor % 5 === 0 ? 1 : 0, gear: boss ? 'SSR' : floor % 5 === 0 ? 'SR' : undefined, items: floorDrops(floor) };
+  return { tithes: 60 + 15 * floor, seals: boss ? 3 : floor % 5 === 0 ? 1 : 0, gear: boss ? 'SSR' : floor % 5 === 0 ? 'SR' : undefined, items: floorDrops(floor), gilt: boss ? 30 + floor : 0 };
 }
 
 export const rewardLine = (r: FloorReward, withItems = true) =>
-  [`${r.tithes} Tithes`, r.seals ? `${r.seals} Seal${r.seals > 1 ? 's' : ''}` : '', r.gear ? `${r.gear}+ gear` : '', withItems ? bagText(r.items) : ''].filter(Boolean).join(' + ');
+  [`${r.tithes} Tithes`, r.seals ? `${r.seals} Seal${r.seals > 1 ? 's' : ''}` : '', r.gear ? `${r.gear}+ gear` : '', r.gilt ? `${r.gilt} Gilt` : '', withItems ? bagText(r.items) : ''].filter(Boolean).join(' + ');
 
 export function towerBattle(save: SaveData, party: string[], floor: number, rng?: Rng): Battle {
   const f = floorDef(floor);
@@ -92,6 +94,7 @@ export function finishFloor(save: SaveData, floor: number, battle: Battle, rng: 
   save.tithes += reward.tithes;
   save.seals += reward.seals;
   give(save, reward.items);
+  earn(save, reward.gilt);
   let gear: GearItem | undefined;
   if (reward.gear) {
     const before = save.gear?.length ?? 0;

@@ -1,4 +1,5 @@
 import { CRUSADERS } from '../data/crusaders';
+import { earn } from './currency';
 import { ENCOUNTERS, ENEMIES } from '../data/enemies';
 import { ORDER_LIST } from '../data/orders';
 import type { SaveData } from '../state/save';
@@ -122,15 +123,16 @@ export interface Mark {
   tithes: number;
   gear?: 'SSR';
   items?: Bag;
+  gilt?: number;
 }
 
 export const BRAND_MARKS: Mark[] = [
-  { at: 3, seals: 3, tithes: 300, items: { writ2: 2 } },
-  { at: 6, seals: 5, tithes: 0, gear: 'SSR', items: { ash3: 1, page3: 1 } },
-  { at: 9, seals: 8, tithes: 500, items: { writ3: 1 } },
+  { at: 3, seals: 3, tithes: 300, gilt: 30, items: { writ2: 2 } },
+  { at: 6, seals: 5, tithes: 0, gilt: 50, gear: 'SSR', items: { ash3: 1, page3: 1 } },
+  { at: 9, seals: 8, tithes: 500, gilt: 100, items: { writ3: 1 } },
 ];
 
-export const markText = (m: Mark) => [m.seals ? `${m.seals} Seals` : '', m.tithes ? `${m.tithes} Tithes` : '', m.gear ? `${m.gear}+ gear` : '', bagText(m.items)].filter(Boolean).join(' + ');
+export const markText = (m: Mark) => [m.seals ? `${m.seals} Seals` : '', m.tithes ? `${m.tithes} Tithes` : '', m.gear ? `${m.gear}+ gear` : '', m.gilt ? `${m.gilt} Gilt` : '', bagText(m.items)].filter(Boolean).join(' + ');
 
 export const isFeatured = (rot: Rotation, id: string) => rot.featured.includes(CRUSADERS.find((c) => c.id === id)?.order ?? '');
 
@@ -204,6 +206,7 @@ export function finishAct(save: SaveData, act: number, battle: Battle, rng: Rng 
     save.seals += m.seals;
     save.tithes += m.tithes;
     if (m.items) give(save, m.items);
+    earn(save, m.gilt ?? 0);
     if (m.gear) {
       const r = rollGearRarity(rng, 0.2);
       const before = save.gear?.length ?? 0;

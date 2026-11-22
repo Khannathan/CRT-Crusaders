@@ -27,6 +27,7 @@ export interface RiteEntry {
 
 export const RITES: RiteEntry[] = [
   { label: 'Inventory', scene: 'Inventory', icon: 'shield', art: 'inventory', rank: 1 },
+  { label: 'Shop', scene: 'Shop', icon: 'seal', art: 'shop', rank: 1 },
   { label: 'Matins', scene: 'Matins', icon: 'flame', rank: 1, ready: (s) => matinsReady(s) },
   { label: 'Penance', scene: 'Penance', icon: 'book', rank: 2, ready: (s) => anyClaimable(s) },
   { label: 'Trials', scene: 'Trials', icon: 'shield', rank: 3, ready: (s) => entriesLeft(s) > 0 },

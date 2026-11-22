@@ -1,4 +1,5 @@
 import { BOND_XP, addBond } from './bonds';
+import { GILT_FIRST_CLEAR, GILT_HERESY, earn } from './currency';
 import { CLASSES } from '../data/classes';
 import { CRUSADERS } from '../data/crusaders';
 import { ENCOUNTERS } from '../data/enemies';
@@ -437,6 +438,8 @@ export interface RunResult {
   melted: number;
   /** Materials brought home. */
   items: Bag;
+  /** Gilt for a first clear or a new Heresy tier. */
+  gilt: number;
   /** The weekly Pilgrimage bonus, if this victory was one of the week's blessed clears. */
   pilgrimage?: { seals: number; tithes: number; left: number };
 }
@@ -448,6 +451,7 @@ export function finishRun(save: SaveData, run: RunState, outcome: RunResult['out
   let firstClear = false;
   let heresyCleared: number | undefined;
   let pilgrimage: RunResult['pilgrimage'];
+  let gilt = 0;
   if (outcome === 'victory') {
     track(save, 'cryptCleared');
     const bonus = blessClear(save);
@@ -460,12 +464,14 @@ export function finishRun(save: SaveData, run: RunState, outcome: RunResult['out
     if (!save.cleared.includes(run.crypt.id)) {
       firstClear = true;
       seals += REWARDS.firstClearSeals;
+      gilt += GILT_FIRST_CLEAR;
       save.cleared.push(run.crypt.id);
     }
     const best = (save.heresy ??= {})[run.crypt.id] ?? 0;
     if (run.heresy > best) {
       save.heresy[run.crypt.id] = run.heresy;
       seals += HERESY_FIRST_CLEAR_SEALS;
+      gilt += GILT_HERESY;
       heresyCleared = run.heresy;
     }
   } else if (outcome === 'defeat') {
@@ -487,9 +493,10 @@ export function finishRun(save: SaveData, run: RunState, outcome: RunResult['out
     if (kept) items[id] = kept;
   }
   give(save, items);
+  earn(save, gilt);
   save.tithes += tithes;
   save.seals += seals;
-  return { outcome, tithes, seals, firstClear, heresyCleared, fallen, gear, melted, items, pilgrimage };
+  return { outcome, tithes, seals, firstClear, heresyCleared, fallen, gear, melted, items, gilt, pilgrimage };
 }
 
 export function revive(save: SaveData, id: string): boolean {

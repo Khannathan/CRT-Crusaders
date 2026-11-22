@@ -38,8 +38,8 @@ export class RankScene extends Phaser.Scene {
     const waiting = giftsWaiting(save);
     const gy = top + 170;
     if (waiting.length) {
-      const sum = waiting.reduce((a, r) => ({ seals: a.seals + rankGift(r).seals, tithes: a.tithes + rankGift(r).tithes }), { seals: 0, tithes: 0 });
-      this.add.text(PAD, gy - 14, `${waiting.length} rank gift${waiting.length > 1 ? 's' : ''} waiting: ${sum.seals} Seals + ${sum.tithes} Tithes`, text.body(18, PAL.amber));
+      const sum = waiting.reduce((a, r) => ({ seals: a.seals + rankGift(r).seals, tithes: a.tithes + rankGift(r).tithes, gilt: a.gilt + rankGift(r).gilt }), { seals: 0, tithes: 0, gilt: 0 });
+      this.add.text(PAD, gy - 14, `${waiting.length} rank gift${waiting.length > 1 ? 's' : ''} waiting: ${sum.seals} Seals + ${sum.tithes} Tithes + ${sum.gilt} Gilt`, { ...text.body(18, PAL.amber), wordWrap: { width: GAME_W - PAD * 2 } });
       makeButton(this, GAME_W / 2, gy + 34, 260, 56, 'Claim gifts', () => {
         claimGifts(save);
         commit();
@@ -48,7 +48,7 @@ export class RankScene extends Phaser.Scene {
       }, { active: true, fontSize: 19, icon: 'seal' });
     } else {
       const next = rankGift(info.rank + 1);
-      this.add.text(PAD, gy - 14, info.rank >= MAX_RANK ? 'Every gift is claimed.' : `Next rank gift: ${next.seals} Seals + ${next.tithes} Tithes`, text.body(18, PAL.muted));
+      this.add.text(PAD, gy - 14, info.rank >= MAX_RANK ? 'Every gift is claimed.' : `Next rank gift: ${next.seals} Seals + ${next.tithes} Tithes + ${next.gilt} Gilt`, text.body(18, PAL.muted));
     }
 
     let y = gy + 84;
