@@ -20,6 +20,7 @@ import { untilText } from './modeScreen';
 import { nextStage, roadRates, stageDef } from '../systems/campaign';
 import { ORDER_LIST } from '../data/orders';
 import { makeButton } from './button';
+import { ladder, renownOf } from '../systems/rivals';
 import { PAD } from './theme';
 
 /**
@@ -84,6 +85,11 @@ export const RITES: RiteEntry[] = [
     status: (s) => `${totalBrands(s)} of ${BRAND_MAX} Brands  ·  ends in ${untilText(rotation().ends - Date.now())}`,
   },
   // The Cloister: growth and spending.
+  {
+    label: 'Rival Orders', scene: 'Rivals', icon: 'sigil', rank: 1, home: 'board', bg: 'bg-hall',
+    blurb: 'Your records, and the rival Sisterhoods just above and below you on the ladder.',
+    status: (s) => `Place ${ladder(s).place} of ${ladder(s).rows.length}  ·  Renown ${renownOf(s)}`,
+  },
   { label: 'Inventory', scene: 'Inventory', icon: 'shield', art: 'inventory', rank: 1, home: 'cloister', bg: 'bg-hall', blurb: 'Every relic, ash, page and writ your Sisters carried home. Refine and use them.' },
   { label: 'Shop', scene: 'Shop', icon: 'seal', art: 'shop', rank: 1, home: 'cloister', bg: 'bg-altar', blurb: 'Seals, crates, the Almonry and the Tithe Exchange. Stock turns daily and weekly.' },
   {
