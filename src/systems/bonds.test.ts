@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { CRUSADERS } from '../data/crusaders';
 import { newSave } from '../state/save';
-import { BOND_AT, MAX_BOND, addBond, anyUnheard, bondInfo, candleCost, confessions, hear, offerCandle } from './bonds';
+import { BOND_AT, MAX_BOND, addBond, anyUnheard, bondInfo, confessions, hear } from './bonds';
 import { claimVigil } from './vigil';
 import { sisterStats } from './stats';
 
@@ -28,15 +28,6 @@ describe('Sister bonds', () => {
     expect(after.atk).toBeGreaterThan(before.atk);
     expect(after.hp).toBeGreaterThan(before.hp);
     expect(after.armor).toBe(before.armor);
-  });
-
-  it('candles cost Tithes and fail when too poor', () => {
-    const save = newSave();
-    save.owned[id] = { level: 1, vow: 0 };
-    save.tithes = candleCost(save, id);
-    expect(offerCandle(save, id)).toBe(true);
-    expect(save.tithes).toBe(0);
-    expect(offerCandle(save, id)).toBe(false);
   });
 
   it('new confessions show as unheard until heard', () => {

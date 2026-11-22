@@ -6,6 +6,7 @@ import { ROMAN_RANK, unlocked } from '../systems/rank';
 import { anyClaimable } from '../systems/tasks';
 import { anyUnheard } from '../systems/bonds';
 import { entriesLeft } from '../systems/trials';
+import { PROCESSION_ENTRIES, candleReady, honouredToday, processionLeft } from '../systems/offerings';
 
 const BRAND_MAX = 9;
 import { RELICS, relicBlock } from '../systems/reliquary';
@@ -67,6 +68,11 @@ export const RITES: RiteEntry[] = [
     status: (s) => `${entriesLeft(s)} of ${TRIAL_ENTRIES} entries left today`,
   },
   {
+    label: 'Reliquary Procession', scene: 'Procession', icon: 'flame', rank: 5, home: 'board', bg: 'bg-altar', ready: (s) => processionLeft(s) > 0,
+    blurb: 'Carry the relics through the dead. Wins pay offerings for Confession.',
+    status: (s) => `${processionLeft(s)} of ${PROCESSION_ENTRIES} entries left  ·  honours the ${honouredToday().name}`,
+  },
+  {
     label: 'Bell Tower', scene: 'Tower', icon: 'sanctum', rank: 6, home: 'board', bg: 'bg-sunken-belfry',
     blurb: 'Sixty floors, each a set fight. Some floors take only one Order.',
     status: (s) => `Best floor ${towerOf(s).best} of ${TOWER_FLOORS}`,
@@ -92,7 +98,7 @@ export const RITES: RiteEntry[] = [
   // The Sanctum's rail: daily duties.
   { label: 'Matins', scene: 'Matins', icon: 'flame', rank: 1, home: 'sanctum', ready: (s) => matinsReady(s) },
   { label: 'Penance', scene: 'Penance', icon: 'book', rank: 2, home: 'sanctum', ready: (s) => anyClaimable(s) },
-  { label: 'Confession', scene: 'Confession', icon: 'book', rank: 5, home: 'sanctum', ready: (s) => anyUnheard(s) },
+  { label: 'Confession', scene: 'Confession', icon: 'book', rank: 5, home: 'sanctum', ready: (s) => anyUnheard(s) || (Object.keys(s.owned).length > 0 && candleReady(s)) },
 ];
 
 /** The Rite (or board) a scene belongs to, for its tab and its Back button. */

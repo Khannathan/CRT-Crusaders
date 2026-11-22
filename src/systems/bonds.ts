@@ -66,17 +66,6 @@ export function bondBattle(save: SaveData, battle: Battle) {
   return addBond(save, battle.units.filter((u) => u.side === 'party').map((u) => u.ref), BOND_XP.challenge);
 }
 
-export const candleCost = (save: SaveData, id: string) => 80 * (bondLevel(bondOf(save, id).xp) + 1);
-
-/** Lights a candle for her: Tithes for bond XP. False if maxed or too poor. */
-export function offerCandle(save: SaveData, id: string): boolean {
-  const cost = candleCost(save, id);
-  if (!save.owned[id] || bondInfo(save, id).max || save.tithes < cost) return false;
-  save.tithes -= cost;
-  addBond(save, [id], BOND_XP.candle);
-  return true;
-}
-
 /** Marks her confessions up to her bond level as heard. */
 export function hear(save: SaveData, id: string) {
   const all = bondsOf(save);
