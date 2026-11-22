@@ -143,7 +143,7 @@ export class RevealScene extends Phaser.Scene {
     });
 
     const style = { fontFamily: FONT, color: hex(PAL.ivory), align: 'center' };
-    const tag = r.isNew ? 'NEWLY SWORN' : r.tithes ? `Vows full: +${r.tithes} Tithes` : 'Vow token: take it in the Roster';
+    const tag = r.isNew ? 'NEWLY SWORN' : r.tithes ? `Vows full: +${r.tithes} Tithes, +${r.alms ?? 0} Alms` : 'Vow token: take it in the Roster';
     const texts = [
       this.add.text(0, SIZE / 2 + 44, c.name, { ...style, fontSize: '30px' }).setOrigin(0.5),
       this.add.text(0, SIZE / 2 + 82, `${c.rarity} · ${CLASSES[c.classId].name}`, { ...style, fontSize: '19px', color: hex(color) }).setOrigin(0.5),
@@ -180,7 +180,7 @@ export class RevealScene extends Phaser.Scene {
       const color = RARITY_COLOR[r.crusader.rarity];
       this.add.rectangle(x, y, 120, 120).setStrokeStyle(4, color);
       this.add.image(x, y, portraitKey(r.crusader.id)).setDisplaySize(112, 112);
-      const label = r.isNew ? 'NEW' : r.tithes ? `+${r.tithes} T` : 'VOW TOKEN';
+      const label = r.isNew ? 'NEW' : r.tithes ? `+${r.alms ?? 0} ALMS` : 'VOW TOKEN';
       this.add
         .text(x, y + 72, `${r.crusader.rarity} · ${label}`, { fontFamily: FONT, fontSize: '15px', color: hex(r.isNew ? PAL.amber : PAL.steel) })
         .setOrigin(0.5);

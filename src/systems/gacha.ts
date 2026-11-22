@@ -1,4 +1,5 @@
 import { CRUSADERS } from '../data/crusaders';
+import { ALMS_FOR_TOKEN, earn } from './currency';
 import type { CrusaderDef, Rarity } from '../data/types';
 import type { SaveData } from '../state/save';
 import { track } from './tasks';
@@ -31,6 +32,8 @@ export interface PullResult {
   tokens: number;
   /** Tithes granted because Vows were already maxed. */
   tithes: number;
+  /** Alms granted with those Tithes. */
+  alms?: number;
 }
 
 const rank = (r: Rarity) => RARITY_ORDER.indexOf(r);
@@ -120,7 +123,9 @@ function grantSister(save: SaveData, crusader: CrusaderDef): PullResult {
     return { crusader, isNew: false, vow: owned.vow, tithes: 0, tokens: owned.tokens };
   }
   save.tithes += OVERFLOW_TITHES;
-  return { crusader, isNew: false, vow: owned.vow, tithes: OVERFLOW_TITHES, tokens };
+  const alms = ALMS_FOR_TOKEN[crusader.rarity];
+  earn(save, 0, alms);
+  return { crusader, isNew: false, vow: owned.vow, tithes: OVERFLOW_TITHES, alms, tokens };
 }
 
 export type PullKind = 'one' | 'ten';
