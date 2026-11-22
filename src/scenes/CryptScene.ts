@@ -177,6 +177,8 @@ export class CryptScene extends Phaser.Scene {
         const img = this.add.image(x, y, nodeIconKey(node.kind)).setDisplaySize(size, size);
         if (!available && !here) img.setAlpha(passed ? 0.8 : f > run.floor ? 0.55 : 0.25);
         if (available) map.tap(img, () => this.select(i));
+        // Any room further ahead can be looked at (not entered) with a tap.
+        else if (f > run.floor && !here) map.tap(img, () => this.peek(f, i));
         // Bosses carry their names; a Warden is a smaller boss mid-act.
         if (node.kind === 'boss' && node.name) {
           this.add.text(x + size / 2 + 12, y, `${node.name}${node.warden ? '\nWARDEN' : node.actEnd ? `\nEND OF ACT ${ROMAN[(node.act ?? 1) - 1]}` : ''}`, txt.hud(11, node.warden ? 0xe5a86a : 0xe58a8a)).setOrigin(0, 0.5);
@@ -213,6 +215,22 @@ export class CryptScene extends Phaser.Scene {
     this.info.push(this.add.text(GAME_W / 2, 530, `${KIND_NAME[node.kind]}\n${this.describe(node)}`, { ...style, fontSize: '20px', lineSpacing: 2 }).setOrigin(0.5));
     const go = makeButton(this, GAME_W / 2, 592, 220, 52, 'Go', () => this.go(), { active: true });
     this.info.push(...go.all);
+  }
+
+  /** A room further up the map: what it holds, without walking there. */
+  private peek(floor: number, index: number) {
+    const run = current.run!;
+    const node = run.map[floor][index];
+    this.selected = undefined;
+    this.clearInfo();
+    const { x, y } = this.nodePos(floor, index);
+    const ring = this.add.circle(x, y, node.kind === 'boss' ? 38 : 29).setStrokeStyle(3, PAL.steel);
+    this.mapLayer?.add(ring);
+    this.info.push(ring);
+    const ahead = floor - run.floor;
+    const style = { fontFamily: FONT, color: hex(PAL.ivory), align: 'center', wordWrap: { width: GAME_W - 40 } };
+    this.info.push(this.add.text(GAME_W / 2, 530, `${KIND_NAME[node.kind]}  ·  ${ahead} floor${ahead === 1 ? '' : 's'} ahead\n${this.describe(node)}`, { ...style, fontSize: '19px', lineSpacing: 2 }).setOrigin(0.5));
+    this.info.push(this.add.text(GAME_W / 2, 592, 'Out of reach for now. Tap a glowing room to move.', { ...style, fontSize: '16px', color: hex(PAL.steel) }).setOrigin(0.5));
   }
 
   private describe(node: MapNode): string {
