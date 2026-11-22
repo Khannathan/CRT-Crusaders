@@ -15,12 +15,13 @@ import { makeButton } from '../ui/button';
 import { addArt } from '../ui/theme';
 import { Bar, candleFrames, nine } from '../ui/skin';
 import { current } from '../state/run';
-import { BALANCE_VERSION, Battle, ZEAL_MAX, skillsFor, type BattleEvent, type Unit } from '../systems/combat';
+import { BALANCE_VERSION, Battle, EXECUTE_AT, ZEAL_MAX, skillsFor, type BattleEvent, type Unit } from '../systems/combat';
 import { absorbBattle, currentNode, finishRun, makeBattle, winRoom } from '../systems/crusade';
 import { newSeed, seeded } from '../systems/rng';
 import { enemyKey } from '../ui/enemyArt';
 import { intentIconKey } from '../ui/icons';
 import { portraitKey } from '../ui/placeholderPortrait';
+import { comboBurst, damageSize, hitStop, popNumber, riteCard, shake, staticDeath, whiteFlash } from '../ui/juice';
 
 const CARD = 128;
 const ENEMY_Y = 250;
@@ -56,6 +57,8 @@ export class BattleScene extends Phaser.Scene {
   private cards = new Map<string, Card>();
   private actor?: Unit;
   private mode: Mode = 'busy';
+  /** A combo about to pay off on this target: burst on its first hit. */
+  private combo?: { uid: string; label: string; color: number };
   private chosen?: SkillDef;
   private skillButtons: Phaser.GameObjects.GameObject[] = [];
   private logText!: Phaser.GameObjects.Text;
@@ -225,8 +228,12 @@ export class BattleScene extends Phaser.Scene {
     this.mode = 'busy';
     this.clearSkills();
     this.lunge(actor);
-    const events = this.battle.act(actor, skill, target);
-    this.play(events, () => this.step());
+    this.combo = undefined;
+    if (target && skill.detonate && target.status.poison) this.combo = { uid: target.uid, label: 'IGNITED!', color: 0xff8a3d };
+    else if (target && skill.execute && target.hp < target.maxHp * EXECUTE_AT) this.combo = { uid: target.uid, label: 'SENTENCED!', color: 0xe04848 };
+    const go = () => this.play(this.battle.act(actor, skill, target), () => this.step());
+    if (skill.rite && actor.side === 'party') riteCard(this, skill.name, actor.name, go);
+    else go();
   }
 
   private end(outcome: 'victory' | 'defeat') {
@@ -466,6 +473,7 @@ export class BattleScene extends Phaser.Scene {
         .setOrigin(0, 1); // grows upward when a long name wraps
       box.add([card.intentIcon, card.intentText]);
     }
+    if (u.hp <= 0) box.setAlpha(0);
     this.cards.set(u.uid, card);
   }
 
@@ -474,8 +482,9 @@ export class BattleScene extends Phaser.Scene {
     for (const u of this.battle.units) {
       const c = this.cards.get(u.uid) ?? (this.makeCard(u), this.cards.get(u.uid)!);
       const dead = u.hp <= 0;
-      c.box.setAlpha(dead ? 0 : 1);
+      // A fallen card stays up until its death plays out (see show 'death').
       if (dead) c.box.disableInteractive();
+      else c.box.setAlpha(1);
       const tx = slotX(u.rank);
       if (!dead && c.box.x !== tx) this.tweens.add({ targets: c.box, x: tx, duration: 250 });
       c.hp.set(u.hp / u.maxHp);
@@ -611,11 +620,25 @@ export class BattleScene extends Phaser.Scene {
       case 'damage': {
         const c = this.cards.get(e.uid);
         if (!c) break;
-        this.float(c.box, e.amount ? `${e.crit ? 'CRIT ' : ''}-${e.amount}` : e.blocked ? 'Blocked' : '0', e.crit ? PAL.amber : e.amount ? 0xd65f5f : PAL.ivory);
-        if (e.blocked && e.amount) this.float(c.box, `(${e.blocked} blocked)`, PAL.ivory, 22);
+        const u = this.battle.get(e.uid);
+        if (e.amount) popNumber(this, c.box.x, c.box.y - 20, `${e.crit ? 'CRIT ' : ''}-${e.amount}`, e.crit ? PAL.amber : 0xd65f5f, damageSize(e.amount, u.maxHp, e.crit));
+        else this.float(c.box, e.blocked ? 'Blocked' : '0', PAL.ivory);
+        if (e.blocked && e.amount) this.float(c.box, `(${e.blocked} blocked)`, PAL.ivory, 30);
         this.tweens.add({ targets: c.img, x: { from: -6, to: 6 }, duration: 40, yoyo: true, repeat: 2, onComplete: () => c.img.setX(0) });
-        c.img.setTint(0xff6666);
-        this.time.delayedCall(160, () => c.img.clearTint());
+        if (e.amount) {
+          whiteFlash(this, c.img, 60);
+          this.time.delayedCall(60, () => c.img.setTint(0xff6666));
+          this.time.delayedCall(180, () => c.img.clearTint());
+        }
+        if (this.combo?.uid === e.uid && e.amount) {
+          comboBurst(this, c.box.x, c.box.y, this.combo.label, this.combo.color);
+          this.combo = undefined;
+          shake(this, 'crit');
+          hitStop(this, 90);
+        } else if (e.crit) {
+          shake(this, 'crit');
+          hitStop(this, 70);
+        }
         this.refresh();
         break;
       }
@@ -639,7 +662,12 @@ export class BattleScene extends Phaser.Scene {
       }
       case 'death': {
         const c = this.cards.get(e.uid);
-        if (c) this.tweens.add({ targets: c.box, alpha: 0, scale: 0.85, duration: 400 });
+        if (!c) break;
+        const u = this.battle.get(e.uid);
+        hitStop(this, u.boss ? 90 : 70);
+        shake(this, u.boss ? 'boss' : 'kill');
+        if (u.side === 'enemy') staticDeath(this, c.box, CARD + 6, u.boss);
+        else this.tweens.add({ targets: c.box, alpha: 0, scale: 0.85, duration: 400 });
         break;
       }
       case 'summon': {
@@ -651,7 +679,7 @@ export class BattleScene extends Phaser.Scene {
       }
       case 'phase': {
         this.logText.setText(e.text);
-        this.cameras.main.shake(350, 0.012);
+        shake(this, 'boss');
         const c = this.cards.get(e.uid);
         if (c) {
           c.img.setTint(0xff4444);
