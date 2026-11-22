@@ -6,6 +6,7 @@ import type { CrusaderDef } from '../data/types';
 import type { SaveData } from '../state/save';
 import { formatPower, partyPower, sisterPower } from '../systems/power';
 import { addScrollArea } from './scroll';
+import { drawOrderChips } from './orderBonus';
 import { makeButton } from './button';
 import { portraitKey } from './placeholderPortrait';
 import { drawRecommended } from './recommended';
@@ -86,7 +87,10 @@ export function pickParty(scene: Phaser.Scene, save: SaveData, opts: PickOpts, d
       parts.forEach((p) => p.setX(p.x - w / 2));
       layer.add(parts);
     }
-    if (opts.why) layer.add(scene.add.text(GAME_W / 2, GAME_H - 104, opts.why, text.body(14, PAL.steel)).setOrigin(0.5));
+    // The Order blessings this pick turns on (tap for details), or why some are dimmed.
+    const orders = picked.map((id) => all.find((c) => c.id === id)!.order);
+    if (orders.length && max > 1) layer.add(drawOrderChips(scene, GAME_W / 2, GAME_H - 108, orders, 40));
+    else if (opts.why) layer.add(scene.add.text(GAME_W / 2, GAME_H - 104, opts.why, text.body(14, PAL.steel)).setOrigin(0.5));
     const go = makeButton(scene, GAME_W / 2 + 166, GAME_H - 62, 160, 60, opts.confirm, () => {
       layer.destroy();
       done([...picked]);
