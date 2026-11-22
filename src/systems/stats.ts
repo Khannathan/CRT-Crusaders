@@ -4,6 +4,7 @@ import type { CrusaderDef } from '../data/types';
 import type { OwnedCrusader, SaveData } from '../state/save';
 import { equipped, gearBonus, type GearItem } from './gear';
 import { reliquaryBonus } from './reliquary';
+import { sisterCodexBonus } from './codex';
 
 export interface Stats {
   hp: number;
@@ -59,10 +60,12 @@ export function sisterStats(save: SaveData, c: CrusaderDef): Stats {
   const m = bondMult(save, c.id);
   // The Reliquary lifts every Sister.
   const r = reliquaryBonus(save);
+  // ...and the Order Codex lifts the Sisters of each Order.
+  const k = 1 + sisterCodexBonus(save, c);
   return {
-    hp: Math.round(st.hp * m * (1 + r.hpPct)),
-    atk: Math.round(st.atk * m * (1 + r.atkPct)),
-    armor: Math.round(st.armor * (1 + r.armorPct)),
+    hp: Math.round(st.hp * m * k * (1 + r.hpPct)),
+    atk: Math.round(st.atk * m * k * (1 + r.atkPct)),
+    armor: Math.round(st.armor * k * (1 + r.armorPct)),
     spd: st.spd + r.spd,
     crit: Math.min(1, st.crit + r.crit),
   };

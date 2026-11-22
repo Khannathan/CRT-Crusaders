@@ -2,6 +2,9 @@ import Phaser from 'phaser';
 import { GAME_H, GAME_W, PAL } from '../config';
 import { commit, game } from '../state/game';
 import { countOf, itemDef, itemIds, type ItemId } from '../systems/items';
+import { ORDER_LIST } from '../data/orders';
+import { CODEX_STEP, MAX_CODEX, codexBlock, codexBonus, codexLevel, nextCodexCost, raiseCodex, sworn } from '../systems/codex';
+import { sigilKey } from '../ui/icons';
 import { BRANCHES, RELICS, consecrate, isLit, litOf, relic, relicBlock, relicBonusText, reliquaryBonus, type RelicNode } from '../systems/reliquary';
 import { makeButton } from '../ui/button';
 import { drawItemIcon } from '../ui/itemIcon';
@@ -10,25 +13,38 @@ import { TAB_BAR_H } from '../ui/tabBar';
 import { PAD, addArt, addFrame, text } from '../ui/theme';
 
 const ROMAN = ['I', 'II', 'III', 'IV', 'V'];
+const pct = (v: number) => `${Math.round(v * 1000) / 10}%`;
 
 /** The Reliquary: three branches of relics lit with Incense, then the Crown. Every relic lifts every Sister. */
 export class ReliquaryScene extends Phaser.Scene {
   private pick?: string;
   private notice?: string;
+  private tab: 'relics' | 'codex' = 'relics';
 
   constructor() {
     super('Reliquary');
   }
 
-  init(data: { pick?: string; notice?: string }) {
+  init(data: { pick?: string; notice?: string; tab?: 'relics' | 'codex' }) {
     this.pick = data?.pick;
     this.notice = data?.notice;
+    this.tab = data?.tab ?? 'relics';
   }
 
   create() {
     const save = game.save;
-    const { top } = modeScreen(this, 'The Reliquary', 'Incense lights the relics. Each one lifts every Sister.');
+    const codex = this.tab === 'codex';
+    const { top: head } = modeScreen(this, codex ? 'Order Codex' : 'The Reliquary', codex ? 'Writs raise an Order. Each level lifts its Sisters.' : 'Incense lights the relics. Each one lifts every Sister.');
     const bw = GAME_W - PAD * 2;
+    (['relics', 'codex'] as const).forEach((t, i) => {
+      makeButton(this, GAME_W / 2 + (i - 0.5) * 200, head + 14, 190, 40, t === 'relics' ? 'Relics' : 'Order Codex', () => t !== this.tab && this.scene.restart({ tab: t }), { active: t === this.tab, fontSize: 16, skin: 'ui-subtab' });
+    });
+    const top = head + 52;
+    if (codex) {
+      this.codexTab(top);
+      if (this.notice) toast(this, this.notice);
+      return;
+    }
 
     // What the lit relics give, and the Incense on hand
     const total = relicBonusText(reliquaryBonus(save));
@@ -102,5 +118,38 @@ export class ReliquaryScene extends Phaser.Scene {
       }, { fontSize: 16, disabled: !!block, active: !block });
     }
     if (this.notice) toast(this, this.notice);
+  }
+
+  /** Ten Orders, one row each: level, what it gives, and raising it with Writs. */
+  private codexTab(top: number) {
+    const save = game.save;
+    const bw = GAME_W - PAD * 2;
+    const own = itemIds('writ')
+      .map((id) => `${countOf(save, id)} ${itemDef(id).name}`)
+      .join(' · ');
+    this.add.text(GAME_W / 2, top, `You hold ${own}`, text.body(14, PAL.muted)).setOrigin(0.5, 0);
+    const rowH = 64;
+    const y0 = top + 28;
+    ORDER_LIST.forEach((o, i) => {
+      const y = y0 + i * rowH + rowH / 2;
+      const lv = codexLevel(save, o.id);
+      const n = sworn(save, o.id);
+      const cost = nextCodexCost(save, o.id);
+      const block = codexBlock(save, o.id);
+      this.add.rectangle(GAME_W / 2, y, bw, rowH - 6, 0x1b131d).setStrokeStyle(1, lv ? o.color : PAL.armorShadow);
+      if (this.textures.exists(sigilKey(o.id))) this.add.image(PAD + 28, y, sigilKey(o.id)).setDisplaySize(40, 40).setAlpha(n ? 1 : 0.4);
+      this.add.text(PAD + 56, y - 24, o.name, { ...text.body(17, n ? PAL.ivory : PAL.steel), fontStyle: '600' });
+      this.add.text(PAD + 56, y - 3, `LV ${lv}/${MAX_CODEX}${lv ? ` · +${pct(codexBonus(save, o.id))} ATK, HP, ARM` : ''} · ${n} SWORN`, text.hud(11, lv ? PAL.amber : PAL.steel));
+      if (cost) {
+        const items = (Object.entries(cost.items) as [ItemId, number][]).map(([id, k]) => `${k} ${itemDef(id).name}`);
+        this.add.text(PAD + 56, y + 12, [...items, `${cost.tithes.toLocaleString('en-US')} T`].join(' · '), text.body(12, PAL.muted));
+      }
+      makeButton(this, GAME_W - PAD - 58, y, 104, 40, cost ? `Lv ${lv + 1}` : 'Complete', () => {
+        if (raiseCodex(save, o.id)) {
+          commit();
+          this.scene.restart({ tab: 'codex', notice: `${o.name} rises to level ${lv + 1}. Its Sisters gain ${pct(CODEX_STEP)} ATK, HP and armor.` });
+        }
+      }, { fontSize: 15, disabled: !!block, active: !block });
+    });
   }
 }
