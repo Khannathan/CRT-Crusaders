@@ -25,7 +25,8 @@ export interface ResourceInfo {
 const CRYPTS: Source = { text: 'Crusades: crypt rooms, more and rarer at higher Heresy', scene: 'Crusade' };
 const CRYPT_ELITE: Source = { text: 'Crusades: elites and bosses', scene: 'Crusade' };
 const CRYPT_BOSS: Source = { text: 'Crusades: bosses at Heresy 2 and up', scene: 'Crusade' };
-const VIGIL: Source = { text: 'The Vigil: gathers while you are away', scene: 'Sanctum' };
+const VIGIL: Source = { text: "The Vigil: gathers while you are away, faster further along the Pilgrim's Road", scene: 'Sanctum' };
+const ROAD: Source = { text: "Pilgrim's Road: first clears and chapter chests", scene: 'Campaign' };
 const DAILY: Source = { text: 'Daily Penance marks', scene: 'Penance' };
 const WEEKLY: Source = { text: 'Weekly Litany marks', scene: 'Penance', data: { tab: 'weekly' } };
 const REFINE = (lower: string): Source => ({ text: `Refine 5 ${lower} into 1 in the Inventory`, scene: 'Inventory' });
@@ -41,6 +42,7 @@ const CURRENCIES: Record<Currency, ResourceInfo> = {
     desc: 'The rare coin. Buys Seals, crates and refreshes in the Shop.',
     sources: [
       { text: 'Crusades: first clear of a crypt (100) and each new Heresy tier (40)', scene: 'Crusade' },
+      ROAD,
       { text: 'Rank of Faith gifts', scene: 'Rank' },
       { text: 'Matins: the seventh dawn of each week', scene: 'Matins' },
       { text: 'Bell Tower: boss floors', scene: 'Tower' },
@@ -63,6 +65,7 @@ const CURRENCIES: Record<Currency, ResourceInfo> = {
     sources: [
       { text: 'Crusades: elites, bosses, every clear and first clears', scene: 'Crusade' },
       { text: 'The Vigil: one every few hours', scene: 'Sanctum' },
+      ROAD,
       { text: 'Matins: a candle each dawn', scene: 'Matins' },
       { text: 'Rank of Faith gifts', scene: 'Rank' },
       DAILY,
@@ -75,6 +78,7 @@ const CURRENCIES: Record<Currency, ResourceInfo> = {
     sources: [
       { text: 'Crusades: every fight won, every run', scene: 'Crusade' },
       VIGIL,
+      ROAD,
       { text: 'Relic Trials: the Tithe trial', scene: 'Trials' },
       { text: 'Melt spare gear', scene: 'Roster' },
       DAILY,
