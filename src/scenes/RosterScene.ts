@@ -53,6 +53,7 @@ import { levelCap, sisterStats } from '../systems/stats';
 import { UNCTIONS, UNCTION_EXP, expOf, expToNext, feed, feedPlan } from '../systems/exp';
 import { drawItemIcon } from '../ui/itemIcon';
 import { ascend, ascendBlock, costLine, nextAscension } from '../systems/ascension';
+import { SYMBOL_ASC, SYMBOL_MAX, WAKE_COST, WAKE_TITHES, raiseSymbol, symbolBlock, symbolName, symbolPerks, symbolStatMult, upgradeCost } from '../systems/symbols';
 import { ROMAN_RANK } from '../systems/rank';
 import { countOf, itemDef } from '../systems/items';
 import { MAX_SKILL_LEVEL, nextSkillStep, raiseSkill, skillBlock, skillLevels, stepText } from '../systems/skillLevels';
@@ -65,12 +66,13 @@ import { tapCost, tapForSources } from '../ui/sources';
 import { TAB_BAR_H, addTabBar } from '../ui/tabBar';
 import { PAD, addArt, addBackdrop, addBadge, addFrame, addHeading, addIcon, addScreenGlow, text } from '../ui/theme';
 
-type Tab = 'grow' | 'vows' | 'skills' | 'gear';
+type Tab = 'grow' | 'vows' | 'skills' | 'gear' | 'symbol';
 const TABS: [Tab, string][] = [
   ['grow', 'Grow'],
   ['vows', 'Vows'],
   ['skills', 'Skills'],
   ['gear', 'Gear'],
+  ['symbol', 'Symbol'],
 ];
 const STAT_LABEL = { atk: 'ATK', hp: 'HP', armor: 'ARM', spd: 'SPD' } as const;
 
@@ -272,7 +274,8 @@ export class RosterScene extends Phaser.Scene {
     const skills = CLASS_SKILLS[c.classId].some((_, i) => !skillBlock(save, c.id, i));
     const worn = new Set(equipped(save, c.id).map((g) => g.slot));
     const gear = GEAR_SLOTS.some((s) => !worn.has(s) && gearOf(save).some((g) => g.slot === s && !g.on));
-    return { grow, vows, skills, gear };
+    const symbol = (have.asc ?? 0) >= SYMBOL_ASC && !symbolBlock(save, c.id);
+    return { grow, vows, skills, gear, symbol };
   }
 
   /**
@@ -380,7 +383,7 @@ export class RosterScene extends Phaser.Scene {
     });
     const list = addScrollArea(this, SHEET_Y + 54, GAME_H - 10, { parent: layer });
     const y0 = SHEET_Y + 62;
-    const end = tab === 'grow' ? this.growTab(list, c, y0) : tab === 'vows' ? this.vowsTab(list, c, y0) : tab === 'skills' ? this.skillsTab(list.content, c, y0) : this.gearTab(list.content, c, y0);
+    const end = tab === 'grow' ? this.growTab(list, c, y0) : tab === 'vows' ? this.vowsTab(list, c, y0) : tab === 'skills' ? this.skillsTab(list.content, c, y0) : tab === 'symbol' ? this.symbolTab(list, c, y0) : this.gearTab(list.content, c, y0);
     list.fit(end);
   }
 
@@ -538,6 +541,69 @@ export class RosterScene extends Phaser.Scene {
     const hook = this.add.text(left, y, `"${c.hook}"  ·  age ${c.age}`, { ...text.body(15, PAL.steel), fontStyle: 'italic', wordWrap: { width: bw } });
     layer.add(hook);
     return y + hook.height + 16;
+  }
+
+  /** Her Holy Symbol: her own relic, woken after her first Ascension and raised +1 to +15 on Grace. */
+  private symbolTab(list: ScrollArea, c: CrusaderDef, y: number): number {
+    const save = game.save;
+    const have = save.owned[c.id];
+    const layer = list.content;
+    const bw = GAME_W - PAD * 2 - 16;
+    const left = PAD + 8;
+    const lv = have.symbol;
+    const woke = lv !== undefined;
+    layer.add(this.add.text(left, y, woke ? `HOLY SYMBOL  +${lv} / ${SYMBOL_MAX}` : 'HOLY SYMBOL  ·  SLEEPING', text.hud(15, woke ? PAL.amber : PAL.steel)));
+    y += 26;
+    layer.add(this.add.text(left, y, symbolName(c), text.display(20, woke ? 0xfff1d6 : PAL.muted)));
+    y += 30;
+    if (c.relic) {
+      const t = this.add.text(left, y, `Her own relic: ${c.relic}.`, { ...text.body(15, PAL.muted), fontStyle: 'italic', wordWrap: { width: bw } });
+      layer.add(t);
+      y += t.height + 8;
+    }
+    // Stats now, and after the next step.
+    const pct = (l: number | undefined) => Math.round((symbolStatMult(l) - 1) * 1000) / 10;
+    const next = !woke ? 0 : lv! < SYMBOL_MAX ? lv! + 1 : undefined;
+    layer.add(this.add.text(left, y, `All her stats +${pct(lv)}%${next !== undefined ? `  →  +${pct(next)}% at +${next}` : ''}`, text.body(16, PAL.ivory)));
+    y += 30;
+    // The three blessings.
+    for (const p of symbolPerks(c)) {
+      const on = woke && lv! >= p.at;
+      layer.add(this.add.rectangle(GAME_W / 2, y + 26, bw, 52, on ? 0x2a1e24 : 0x150e17).setStrokeStyle(1, on ? PAL.amber : PAL.armorShadow));
+      layer.add(this.add.text(left + 10, y + 6, `+${p.at}  ${p.name.toUpperCase()}`, text.hud(12, on ? PAL.amber : PAL.steel)));
+      layer.add(this.add.text(left + 10, y + 24, p.desc, text.body(15, on ? PAL.ivory : PAL.muted)));
+      y += 60;
+    }
+    y += 4;
+    // Grace held (tap for sources).
+    const uw = bw / 3;
+    (['grace1', 'grace2', 'grace3'] as const).forEach((g, i) => {
+      const x = left + i * uw;
+      layer.add(drawItemIcon(this, x + 20, y + 18, g, 36));
+      layer.add(tapForSources(this, this.add.text(x + 44, y + 4, `×${countOf(save, g)}\n+${i * 5 + 1} to +${i * 5 + 5}`, text.body(13, countOf(save, g) ? PAL.ivory : PAL.steel)), g));
+    });
+    y += 50;
+    const block = symbolBlock(save, c.id);
+    if (woke && lv! >= SYMBOL_MAX) {
+      layer.add(this.add.text(left, y, 'Her Symbol is fully sanctified.', text.body(16, PAL.amber)));
+      return y + 40;
+    }
+    if (!woke && (have.asc ?? 0) < SYMBOL_ASC) {
+      layer.add(this.add.text(left, y, 'Her Symbol wakes once she has ascended (Grow tab, at her level cap).', { ...text.body(15, PAL.steel), wordWrap: { width: bw } }));
+      return y + 50;
+    }
+    const cost = woke ? upgradeCost(lv! + 1) : { items: WAKE_COST, tithes: WAKE_TITHES };
+    layer.add(tapCost(this, this.add.text(left, y, `${woke ? `To +${lv! + 1}` : 'To wake'}: ${costLine(save, cost)}  ›`, { ...text.body(14, block ? PAL.steel : PAL.amber), wordWrap: { width: bw } }), cost.items, cost.tithes));
+    y += 30;
+    const b = makeButton(this, GAME_W / 2, y + 28, bw, 56, woke ? `Raise to +${lv! + 1}` : 'Wake the Symbol', () => {
+      if (list.dragging) return;
+      if (raiseSymbol(save, c.id)) {
+        commit();
+        this.reopen(c, 'symbol');
+      }
+    }, { disabled: !!block, active: !block, fontSize: 18 });
+    layer.add(b.all);
+    return y + 80;
   }
 
   /** The star track, copies and Stigmata, and Take Vow or Tier Up with a before and after. */

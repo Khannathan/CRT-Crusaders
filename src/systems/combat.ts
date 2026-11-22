@@ -58,6 +58,8 @@ export interface IntentView {
 
 export interface Unit {
   uid: string;
+  /** Her Holy Symbol's battle effects, once woken. */
+  symbol?: import('./symbols').SymbolCombat;
   side: Side;
   name: string;
   /** Crusader id or enemy type id. */
@@ -270,9 +272,16 @@ export class Battle {
     if (actor.side !== 'party') return 1;
     const m = this.mods;
     const fallen = this.units.filter((u) => u.side === 'party' && u.hp <= 0).length;
-    let f = 1 + fallen * m.fallenAtk + (actor.hp < actor.maxHp / 2 ? m.lowHpAtk : 0);
-    if (skill.rite) f *= 1 + m.riteMult;
+    let f = (1 + fallen * m.fallenAtk + (actor.hp < actor.maxHp / 2 ? m.lowHpAtk : 0)) * (actor.symbol?.mult ?? 1);
+    if (skill.rite) f *= (1 + m.riteMult) * (1 + (actor.symbol?.rite ?? 0));
     return f;
+  }
+
+  /** Holy Symbol: +10% at +5, a Confessor's +20% at +10, and the Rite bonus at +15. */
+  private symbolHeal(actor: Unit, skill: SkillDef) {
+    const sy = actor.symbol;
+    if (!sy) return 1;
+    return sy.mult * sy.heal * (skill.rite ? 1 + sy.rite : 1);
   }
 
   private detonateOf(actor: Unit) {
@@ -532,7 +541,7 @@ export class Battle {
       }
       if (t.hp <= 0) continue;
       if (skill.heal || skill.healPct) {
-        const amount = Math.round((skill.heal ? actor.atk * skill.heal * this.vary() : t.maxHp * skill.healPct!) * this.healOf(t));
+        const amount = Math.round((skill.heal ? actor.atk * skill.heal * this.vary() : t.maxHp * skill.healPct!) * this.healOf(t) * this.symbolHeal(actor, skill));
         const real = Math.min(amount, t.maxHp - t.hp);
         t.hp += real;
         if (real >= t.maxHp * 0.05) support = true;
@@ -545,7 +554,7 @@ export class Battle {
       }
       if (skill.shieldPct) {
         support = true;
-        const amount = Math.round(t.maxHp * skill.shieldPct);
+        const amount = Math.round(t.maxHp * skill.shieldPct * this.symbolHeal(actor, skill));
         t.status.shield = amount;
         events.push({ type: 'shield', uid: t.uid, amount });
       }
@@ -828,7 +837,7 @@ export class Battle {
   private guardOf(t: Unit) {
     if (t.side !== 'party') return 1;
     const g = this.alive('party').find((u) => u.passive?.kind === 'bulwark');
-    return (g ? 1 - (g.passive!.value ?? 0) : 1) * (1 - (this.hound?.howl.ward ?? 0));
+    return (g ? 1 - (g.passive!.value ?? 0) : 1) * (1 - (this.hound?.howl.ward ?? 0)) * (1 - (t.symbol?.guard ?? 0));
   }
 
   /** Expected damage of a skill on one target, before shields and luck. Used by Auto and target previews. */

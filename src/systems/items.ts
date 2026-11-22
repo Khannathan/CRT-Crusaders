@@ -6,7 +6,7 @@ import type { Rng } from './gacha';
  * family feeds one growth system, so a player can tell at a glance what a drop
  * is for. Five of a tier refine into one of the next.
  */
-export type Family = 'ash' | 'page' | 'iron' | 'incense' | 'writ' | 'unction';
+export type Family = 'ash' | 'page' | 'iron' | 'incense' | 'writ' | 'unction' | 'grace';
 export type Tier = 1 | 2 | 3;
 export type ItemId = `${Family}${Tier}`;
 export type Bag = Partial<Record<ItemId, number>>;
@@ -25,6 +25,7 @@ export const FAMILIES: FamilyDef[] = [
   { id: 'iron', name: 'Blessed Iron', use: 'Gear refinement and rerolls', color: 0x9aa7b4 },
   { id: 'incense', name: 'Incense', use: 'The Reliquary, the account-wide tree', color: 0xb592c8 },
   { id: 'writ', name: 'Order Writs', use: 'Order Codex levels', color: 0xd36a5c },
+  { id: 'grace', name: 'Grace', use: 'Holy Symbols: wake and raise a Sister\'s own relic', color: 0xf0d27a },
   { id: 'unction', name: 'Unction', use: 'Sister EXP: fed on her Grow tab', color: 0x7fc4a0 },
 ];
 
@@ -55,6 +56,9 @@ export const ITEMS: ItemDef[] = [
   def('writ', 1, 'Writ of Passage', 'Lets a Sister pass the gates of another house.'),
   def('writ', 2, 'Writ of Office', 'Sealed by a Prioress. It names a duty.'),
   def('writ', 3, 'Papal Bull', 'Lead-sealed. It names a crusade.'),
+  def('grace', 1, 'Ember of Grace', 'A spark that will not go out. Raises a Holy Symbol to +5.'),
+  def('grace', 2, 'Tear of Grace', 'Wept by a statue in a sealed chapel. Raises a Holy Symbol to +10.'),
+  def('grace', 3, 'Crown of Grace', 'A circlet of light no hand can hold for long. Raises a Holy Symbol to +15.'),
   def('unction', 1, 'Lesser Unction', 'Oil for the sick. 300 EXP.'),
   def('unction', 2, 'Blessed Unction', 'Oil for the dying. 1,500 EXP.'),
   def('unction', 3, 'Extreme Unction', 'Oil for the last rites. She wakes stronger. 7,500 EXP.'),
@@ -137,6 +141,10 @@ export function roomDrops(kind: 'fight' | 'elite' | 'boss', depth: number, rng: 
     add(`${pick(rng, FIELD)}2`, n(rng, 1, 2) + Math.floor(depth / 2));
     if (rng() < 0.1 + 0.1 * depth) add(`${pick(rng, FIELD)}3`, 1);
     if (rng() < 0.25 + 0.1 * depth) add('writ1', 1);
+    // Grace for Holy Symbols: Embers from every boss, Tears and Crowns from deep Heresy.
+    add('grace1', 2 + depth);
+    if (depth >= 2) add('grace2', 1 + Math.floor((depth - 2) / 2));
+    if (depth >= 5) add('grace3', 1);
   }
   return bag;
 }

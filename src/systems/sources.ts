@@ -120,6 +120,11 @@ const CURRENCIES: Record<Currency, ResourceInfo> = {
 };
 
 const FAMILY_SOURCES: Record<string, Record<1 | 2 | 3, Source[]>> = {
+  grace: {
+    1: [{ text: 'Crusades: every crypt boss', scene: 'Crusade' }],
+    2: [{ text: 'Crusades: bosses at Heresy 2 and up', scene: 'Crusade' }, REFINE('Embers of Grace')],
+    3: [{ text: 'Crusades: bosses at Heresy 5', scene: 'Crusade' }, REFINE('Tears of Grace')],
+  },
   unction: {
     1: [VIGIL, CRYPTS, ROAD, TITHE_SHOP],
     2: [CRYPT_BOSS, VIGIL, ROAD, GILT_SHOP, REFINE('Lesser Unction')],
@@ -152,7 +157,7 @@ const FAMILY_SOURCES: Record<string, Record<1 | 2 | 3, Source[]>> = {
   },
 };
 
-const isItem = (id: ResourceId): id is ItemId => /^(ash|page|iron|incense|writ|unction)[123]$/.test(id);
+const isItem = (id: ResourceId): id is ItemId => /^(ash|page|iron|incense|writ|unction|grace)[123]$/.test(id);
 
 export function resourceInfo(id: ResourceId): ResourceInfo {
   if (!isItem(id)) return CURRENCIES[id];

@@ -26,6 +26,8 @@ export interface OwnedCrusader {
   tier?: number;
   /** Ascensions taken, 0-3. Each raises the level cap by 10. */
   asc?: number;
+  /** Holy Symbol level: undefined while it sleeps, 0-15 once woken (systems/symbols.ts). */
+  symbol?: number;
   /** Crusades left to sit out after falling (0 = ready). Tithes can revive early. */
   recovering?: number;
 }

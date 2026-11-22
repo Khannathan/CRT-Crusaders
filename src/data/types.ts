@@ -44,4 +44,6 @@ export interface CrusaderDef {
   age: number;
   hook: string;
   passive?: PassiveDef;
+  /** Her signature relic from the roster: what her Holy Symbol is. */
+  relic?: string;
 }
