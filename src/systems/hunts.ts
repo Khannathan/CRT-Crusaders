@@ -264,5 +264,11 @@ export function recommendFor(save: SaveData, hunt: HuntDef, n = 4, from: 'owned'
     out.push({ c: x.c, why: x.why });
     if (out.length >= n) break;
   }
+  // The beast's first-named class is the one it most calls for: make sure one comes along.
+  const need = hunt.classes[0];
+  if (need && out.length >= n && !out.some((p) => p.c.classId === need)) {
+    const best = scored.find((x) => x.c.classId === need);
+    if (best) out[out.length - 1] = { c: best.c, why: best.why };
+  }
   return out;
 }
