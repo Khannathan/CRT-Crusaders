@@ -35,6 +35,8 @@ export interface CrusaderDef {
   id: string;
   name: string;
   classId: string;
+  /** Physical or Magic damage; defaults to her class's (see CLASS_DMG). */
+  dmg?: import('./skills').DmgType;
   /** Her title from the roster (e.g. "Witchfire Deacon"); she fights as `classId`. */
   title?: string;
   rarity: Rarity;

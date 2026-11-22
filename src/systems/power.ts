@@ -22,7 +22,7 @@ export const CP = {
   offense: 30,
   /** Weight of HP. */
   hp: 3,
-  /** Weight of armor. */
+  /** Weight of armor (and Magic Resist). */
   armor: 3.6,
   /** Share by class role, for value raw stats miss (heals, debuffs). */
   role: { Vanguard: 1, Striker: 1, Mender: 1.3, Mystic: 1.2 } as Record<string, number>,
@@ -41,13 +41,14 @@ export const CP = {
    * fights: at 1.2 a party of that power wins most tries (the starter party
    * meets the Ossuary at about level 4 or 5).
    */
-  recommend: 1.2,
+  recommend: 1.07, // 1.2 before balance 0.8 raised foes' raw stats by 12% (statuses made Sisters stronger)
   /** Below this share of the recommendation a fight is shown as dangerous. */
   risky: 0.8,
 };
 
 export const offenseOf = (s: Stats) => s.atk * (1 + Math.min(1, s.crit) * (CRIT_MULT - 1)) * (s.spd / CP.speedBase);
-export const defenseOf = (s: Stats) => s.hp * CP.hp + s.armor * CP.armor;
+/** Armor and Magic Resist count half each: a foe hits with one or the other. */
+export const defenseOf = (s: Pick<Stats, 'hp' | 'armor'> & { mres?: number }) => s.hp * CP.hp + ((s.armor + (s.mres ?? s.armor)) / 2) * CP.armor;
 
 /** Raw power of a stat block, before role, skill and passive shares. */
 export const statPower = (s: Stats) => offenseOf(s) * CP.offense + defenseOf(s);

@@ -1,4 +1,4 @@
-import type { SkillDef } from './skills';
+import type { DmgType, SkillDef } from './skills';
 
 export interface EnemyDef {
   id: string;
@@ -22,6 +22,29 @@ export interface EnemyDef {
 
 const any: number[] = [];
 
+/**
+ * Each foe's Magic Resist (its defence against Magic; armor is its defence against
+ * Physical), the damage it deals, and its bane: the Order whose Sisters hit it
+ * 25% harder and take 15% less from it. Every Order is some foe's bane.
+ */
+export const AFFINITY: Record<string, { mres: number; dmg?: DmgType; bane: string }> = {
+  husk: { mres: 20, bane: 'Ashen Mercy' },
+  acolyte: { mres: 40, dmg: 'magic', bane: 'Veiled Tribunal' },
+  ringer: { mres: 50, dmg: 'magic', bane: 'Hollow Bell' },
+  hound: { mres: 20, bane: 'Thorn Covenant' },
+  wraith: { mres: 70, dmg: 'magic', bane: 'Candle Choir' },
+  choir: { mres: 48, dmg: 'magic', bane: 'Drowned Litany' },
+  warden: { mres: 15, bane: 'Iron Vigil' },
+  priest: { mres: 55, dmg: 'magic', bane: 'Red Pilgrimage' },
+  golem: { mres: 10, bane: 'Sepulcher Watch' },
+  lurker: { mres: 40, bane: 'Drowned Litany' },
+  pilgrim: { mres: 45, bane: 'Red Pilgrimage' },
+  thief: { mres: 30, bane: 'Glass Confession' },
+  nun: { mres: 55, dmg: 'magic', bane: 'Glass Confession' },
+  bishop: { mres: 70, dmg: 'magic', bane: 'Veiled Tribunal' },
+  abbess: { mres: 60, dmg: 'magic', bane: 'Thorn Covenant' },
+};
+
 export const ENEMIES: Record<string, EnemyDef> = {
   husk: {
     id: 'husk', name: 'Penitent Husk', hp: 105, atk: 13, armor: 56, spd: 5, color: 0x72717b, shape: 'husk',
@@ -40,7 +63,7 @@ export const ENEMIES: Record<string, EnemyDef> = {
   },
   hound: {
     id: 'hound', name: 'Ossuary Hound', hp: 65, atk: 17, armor: 24, spd: 13, color: 0xc6baa4, shape: 'hound',
-    skills: [{ id: 'maul', name: 'Maul', desc: '', from: any, target: 'enemy', reach: [1, 2, 3], mult: 1.1, aim: 'weakest' }],
+    skills: [{ id: 'maul', name: 'Maul', desc: 'Leaves a Sister Bleeding.', from: any, target: 'enemy', reach: [1, 2, 3], mult: 1.0, aim: 'weakest', bleed: { mult: 0.2, turns: 2 } }],
   },
   wraith: {
     id: 'wraith', name: 'Censer Wraith', hp: 50, atk: 15, armor: 8, spd: 9, color: 0x9b78a3, shape: 'wisp',
@@ -84,8 +107,8 @@ export const ENEMIES: Record<string, EnemyDef> = {
   golem: {
     id: 'golem', name: 'Reliquary Golem', hp: 190, atk: 20, armor: 150, spd: 3, color: 0x8a7d63, shape: 'golem',
     skills: [
-      { id: 'grind', name: 'Grind', desc: 'Knocks a Sister two ranks back.', from: any, target: 'enemy', reach: [1, 2], mult: 0.9, aim: 'front', shove: 2 },
-      { id: 'reliquary-fall', name: 'Reliquary Fall', desc: 'A crushing blow after a turn of charging.', from: any, target: 'enemy', reach: [1, 2, 3], mult: 2.2, windup: true, aim: 'weakest' },
+      { id: 'grind', name: 'Grind', desc: 'Knocks a Sister two ranks back and Sunders her armor.', from: any, target: 'enemy', reach: [1, 2], mult: 0.9, aim: 'front', shove: 2, sunder: { pct: 0.3, turns: 2 } },
+      { id: 'reliquary-fall', name: 'Reliquary Fall', desc: 'A crushing blow after a turn of charging. Stuns its target.', from: any, target: 'enemy', reach: [1, 2, 3], mult: 2.2, windup: true, aim: 'weakest', stun: 1 },
     ],
   },
   lurker: {
@@ -103,7 +126,7 @@ export const ENEMIES: Record<string, EnemyDef> = {
     id: 'thief', name: 'Candle Thief', hp: 45, atk: 13, armor: 12, spd: 15, color: 0xa08a4a, shape: 'thief',
     skills: [
       { id: 'snuff', name: 'Snuff', desc: 'Steals 15 Zeal.', from: any, target: 'enemy', mult: 0.5, zealDrain: 15, aim: 'random', weight: 1.5 },
-      { id: 'cut-purse', name: 'Cut Purse', desc: '', from: any, target: 'enemy', mult: 0.9, aim: 'weakest' },
+      { id: 'cut-purse', name: 'Cut Purse', desc: 'Leaves a Sister Bleeding.', from: any, target: 'enemy', mult: 0.8, aim: 'weakest', bleed: { mult: 0.2, turns: 2 } },
     ],
   },
   nun: {

@@ -1,6 +1,7 @@
 import { BOND_XP, addBond } from './bonds';
 import { GILT_FIRST_CLEAR, GILT_HERESY, earn } from './currency';
 import { CLASSES } from '../data/classes';
+import { dmgTagOf } from '../data/classes';
 import { CRUSADERS } from '../data/crusaders';
 import { ENCOUNTERS, ENEMIES } from '../data/enemies';
 import { EVENTS, type EventOutcome } from '../data/events';
@@ -415,10 +416,13 @@ export function makeBattle(save: SaveData, run: RunState, encounter: string, rng
       hp: run.hp[id],
       atk: Math.round(st.atk * (1 + atkPct)),
       armor: Math.round(st.armor * (1 + armorPct)),
+      mres: Math.round(st.mres * (1 + armorPct)),
+      dmg: dmgTagOf(c),
       vow: skillVow(save.owned[id]),
       skillLv: save.owned[id].skills,
       crit: st.crit + relics.reduce((n, r) => n + (r.critAdd ?? 0), 0),
       passive: c.passive,
+      order: c.order,
       spd: st.spd + (c.passive?.kind === 'swift' ? c.passive.value ?? 0 : 0),
       status: {},
     });
