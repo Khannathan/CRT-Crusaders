@@ -11,9 +11,21 @@ import { track } from './tasks';
 export const MAX_VOW = 5;
 export const MAX_TIER = 5;
 
-/** Copies for Vows 1..5 on tier 0; each tier asks one more per Vow. */
+/** Copies for Vows 1..5 on tier 0; each tier asks one more per Vow, up to COPY_GROWTH_CAP more. */
 export const VOW_COPIES = [1, 1, 2, 2, 3];
-export const copiesFor = (tier: number, vow: number) => VOW_COPIES[vow] + tier;
+export const COPY_GROWTH_CAP = 2;
+export const copiesFor = (tier: number, vow: number) => VOW_COPIES[vow] + Math.min(tier, COPY_GROWTH_CAP);
+
+/** From this tier on, Stigmata can stand in for copies she is missing. */
+export const STAND_IN_TIER = 2;
+/** Stigmata for each missing copy, by rarity. */
+export const STIGMATA_PER_COPY: Record<Rarity, number> = { R: 2, SR: 2, SSR: 4, UR: 6 };
+
+/** Copies short for her next Vow, and the Stigmata that would stand in for them (undefined if they can't yet). */
+export function standIn(o: Pick<OwnedCrusader, 'vow' | 'tier' | 'tokens'>, rarity?: Rarity): { short: number; stigmata?: number } {
+  const short = o.vow >= MAX_VOW ? 0 : Math.max(0, copiesFor(tierOf(o), o.vow) - (o.tokens ?? 0));
+  return { short, stigmata: short && rarity && tierOf(o) >= STAND_IN_TIER ? short * STIGMATA_PER_COPY[rarity] : undefined };
+}
 
 /** Stigmata (and Tithes) to rise from `tier` to the next. */
 export const TIER_STIGMATA = [2, 4, 6, 9, 12];
@@ -62,19 +74,22 @@ export const vowCost = (o: Pick<OwnedCrusader, 'vow' | 'tier'>) => 150 * (vowsEv
 export type OathBlock = 'tokens' | 'tithes' | 'stigmata' | 'done' | 'tier';
 
 /** Why the next Vow can't be taken yet, or null. */
-export function vowBlock(save: SaveData, o: OwnedCrusader): OathBlock | null {
+export function vowBlock(save: SaveData, o: OwnedCrusader, rarity?: Rarity): OathBlock | null {
   if (o.vow >= MAX_VOW) return oathComplete(o) ? 'done' : 'tier';
-  if ((o.tokens ?? 0) < copiesFor(tierOf(o), o.vow)) return 'tokens';
+  const si = standIn(o, rarity);
+  if (si.short && (si.stigmata === undefined || stigmataOf(save) < si.stigmata)) return 'tokens';
   if (save.tithes < vowCost(o)) return 'tithes';
   return null;
 }
 
-/** Takes the next Vow: spends copies and Tithes. */
-export function takeVow(save: SaveData, id: string): boolean {
+/** Takes the next Vow: spends copies (Stigmata for any she lacks, from tier II) and Tithes. */
+export function takeVow(save: SaveData, id: string, rarity?: Rarity): boolean {
   const o = save.owned[id];
-  if (!o || vowBlock(save, o)) return false;
+  if (!o || vowBlock(save, o, rarity)) return false;
+  const si = standIn(o, rarity);
   save.tithes -= vowCost(o);
-  o.tokens = (o.tokens ?? 0) - copiesFor(tierOf(o), o.vow);
+  if (si.stigmata) save.stigmata = stigmataOf(save) - si.stigmata;
+  o.tokens = Math.max(0, (o.tokens ?? 0) - copiesFor(tierOf(o), o.vow));
   o.vow += 1;
   track(save, 'takeVow');
   return true;
