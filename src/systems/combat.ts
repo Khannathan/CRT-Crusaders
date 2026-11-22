@@ -90,6 +90,10 @@ export interface Unit {
   intent?: Intent;
   /** Enemies: the skill used last turn, to avoid repeating big moves. */
   lastSkill?: string;
+  /** Sisters: her own Zeal, 0-ZEAL_MAX. Full, her Sacrament is ready. */
+  zeal?: number;
+  /** Bosses: Wrath, 0-ZEAL_MAX. Full, the boss readies its Blasphemy. */
+  wrath?: number;
   /** Bosses: 2 once the second phase has begun. */
   phase?: number;
   /** Crusaders: Vow rank, which upgrades skills (see VOW_UPGRADES). */
@@ -114,7 +118,7 @@ export type BattleEvent =
   | { type: 'death'; uid: string }
   | { type: 'summon'; uid: string }
   | { type: 'move'; uid: string }
-  | { type: 'zeal'; amount: number; reason: string }
+  | { type: 'zeal'; amount: number; reason: string; uid?: string }
   | { type: 'intent' }
   | { type: 'phase'; uid: string; text: string }
   | { type: 'text'; text: string };
@@ -143,20 +147,25 @@ export const CRIT_MULT = 1.5;
 /** Armor scale: damage is divided by (1 + armor / ARMOR_K). */
 export const ARMOR_K = 100;
 
-// Zeal economy (from the balance research doc): a first Rite around rounds 4-6.
-/** Per party action that hits an enemy, however many targets. */
-export const ZEAL_ON_ATTACK = 4;
-/** Per party action that heals someone at least 5% of max HP, or shields. */
-export const ZEAL_ON_SUPPORT = 3;
-/** +1 per full 5% of max HP the party loses to enemies... */
+// Zeal economy: every Sister fills her own bar, a first Sacrament around rounds 4-6.
+/** To the Sister, per action of hers that hits an enemy, however many targets. */
+export const ZEAL_ON_ATTACK = 14;
+/** To the Sister, per action of hers that heals someone at least 5% of max HP, or shields. */
+export const ZEAL_ON_SUPPORT = 13;
+/** +2 to a Sister per full 5% of her max HP lost to enemies... */
 const HURT_STEP = 0.05;
-/** ...up to this much per round. */
-export const ZEAL_HURT_CAP = 8;
+const HURT_ZEAL = 2;
+/** ...up to this much per Sister per round. */
+export const ZEAL_HURT_CAP = 10;
+/** Boss Wrath: per boss action, and per full 2% of its max HP lost. */
+export const WRATH_ON_ACT = 20;
+const WRATH_STEP = 0.02;
 
 export function skillsFor(u: Unit): SkillDef[] {
   if (u.side === 'enemy') {
     const d = ENEMIES[u.ref];
-    return u.phase === 2 && d.phase2 ? d.phase2.skills : d.skills;
+    const base = u.phase === 2 && d.phase2 ? d.phase2.skills : d.skills;
+    return d.blasphemy && (u.wrath ?? 0) >= ZEAL_MAX ? [...base, d.blasphemy] : base;
   }
   const vow = u.vow ?? 0;
   return [
@@ -233,7 +242,6 @@ export const NO_MODS: BattleMods = { burnMult: 0, detonateMult: 0, openingBurn: 
 
 export class Battle {
   units: Unit[];
-  zeal: number;
   round = 0;
   vigil: number;
   rage = 0;
@@ -243,8 +251,10 @@ export class Battle {
   log: string[] = [];
   private rng: Rng;
   private summons = 0;
-  private hurtFrac = 0;
-  private hurtZealThisRound = 0;
+  /** Per Sister (uid): fraction toward the next wound Zeal, and wound Zeal taken this round. */
+  private hurtFrac: Record<string, number> = {};
+  private hurtZealThisRound: Record<string, number> = {};
+  private wrathFrac: Record<string, number> = {};
   private enemyScale: number;
   /** Multiplies healing the party receives (an Inquisition edict halves it). */
   partyHeal = 1;
@@ -264,8 +274,10 @@ export class Battle {
     this.units = [...party, ...enemies];
     this.rng = opts.rng ?? Math.random;
     this.vigil = opts.vigil ?? VIGIL_DEFAULT;
+    // Opening Zeal (Holy Symbols, the Sisters' own passives) goes to every Sister.
     const passiveZeal = party.reduce((s, u) => s + (u.passive?.kind === 'startZeal' ? u.passive.value ?? 0 : 0), 0);
-    this.zeal = Math.min(ZEAL_MAX, (opts.zeal ?? 0) + passiveZeal);
+    for (const u of party) u.zeal = Math.min(ZEAL_MAX, (u.zeal ?? 0) + (opts.zeal ?? 0) + passiveZeal);
+    for (const e of enemies) if (e.boss && ENEMIES[e.ref]?.blasphemy) e.wrath = e.wrath ?? 0;
     for (const e of enemies) this.planIntent(e);
     // Relics that set the foes alight before the first blow.
     if (this.mods.openingBurn > 0 && party.length) {
@@ -273,6 +285,11 @@ export class Battle {
       const dmg = Math.max(1, Math.round(avg * this.mods.openingBurn * (1 + this.mods.burnMult)));
       for (const e of enemies) e.status.poison = { dmg, turns: 3, kind: 'burn' };
     }
+  }
+
+  /** The fullest living Sister's Zeal (one number for logs and older callers). */
+  get zeal(): number {
+    return Math.max(0, ...this.alive('party').map((u) => u.zeal ?? 0));
   }
 
   /** A party member's damage multiplier from relics: wounded, fallen Sisters, Rites. */
@@ -321,8 +338,8 @@ export class Battle {
 
   private startRound(events: BattleEvent[]) {
     this.round += 1;
-    this.hurtZealThisRound = 0;
-    this.log.push(`-- round ${this.round} (zeal ${this.zeal}, vigil ${this.vigil})`);
+    this.hurtZealThisRound = {};
+    this.log.push(`-- round ${this.round} (zeal ${this.alive('party').map((u) => u.zeal ?? 0).join('/')}, vigil ${this.vigil})`);
     if (this.mods.roundZeal > 0 && this.alive('party').length) this.addZeal(this.mods.roundZeal, events, 'relics');
     this.howl(events);
     this.bossTraits(events);
@@ -491,7 +508,8 @@ export class Battle {
 
   canUse(actor: Unit, skill: SkillDef): boolean {
     if ((actor.cooldowns?.[skill.id] ?? 0) > 0) return false;
-    if (skill.rite && this.zeal < ZEAL_MAX) return false;
+    if (skill.rite && actor.side === 'party' && (actor.zeal ?? 0) < ZEAL_MAX) return false;
+    if (skill.rite && actor.side === 'enemy' && (actor.wrath ?? 0) < ZEAL_MAX) return false;
     if (skill.from.length && !skill.from.includes(actor.rank)) return false;
     if (skill.summon && this.alive('enemy').length >= 4) return false;
     // Enemy healers only mend when someone is actually hurt.
@@ -550,7 +568,11 @@ export class Battle {
     if (skill.cooldown) cds[skill.id] = skill.cooldown;
     const single = skill.target === 'enemy' || skill.target === 'ally';
     this.log.push(`${actor.name} uses ${skill.name}${single && target ? ` on ${target.name}` : ''}`);
-    if (skill.rite) this.addZeal(-ZEAL_MAX, events, 'Rite');
+    if (skill.rite && actor.side === 'party') this.addZeal(-ZEAL_MAX, events, 'Sacrament', actor);
+    if (skill.rite && actor.side === 'enemy') {
+      actor.wrath = 0;
+      events.push({ type: 'phase', uid: actor.uid, text: `BLASPHEMY: ${skill.name}` });
+    }
 
     if (skill.id === 'shift') {
       this.shift(actor, events);
@@ -708,13 +730,18 @@ export class Battle {
       actor.status.empower = { ...skill.empower };
       events.push({ type: 'status', uid: actor.uid, label: 'Empowered' });
     }
-    if (actor.side === 'enemy' && skill.zealDrain) this.addZeal(-skill.zealDrain, events, skill.name);
-    if (actor.side === 'party') {
-      if (skill.zealGain) this.addZeal(skill.zealGain, events, skill.name);
-      // One award per action (the larger one); Rites earn nothing.
-      if (!skill.rite && offensive) this.addZeal(ZEAL_ON_ATTACK, events, 'attack');
-      else if (!skill.rite && support) this.addZeal(ZEAL_ON_SUPPORT, events, 'support');
+    // Zeal stolen: from the Sister struck, or from every Sister for a sweeping blow.
+    if (actor.side === 'enemy' && skill.zealDrain) {
+      if (single && target) this.addZeal(-skill.zealDrain, events, skill.name, target);
+      else this.addZeal(-skill.zealDrain, events, skill.name);
     }
+    if (actor.side === 'party') {
+      if (skill.zealGain) this.addZeal(skill.zealGain, events, skill.name, skill.zealAll ? undefined : actor);
+      // One award per action (the larger one); Sacraments earn nothing.
+      if (!skill.rite && offensive) this.addZeal(ZEAL_ON_ATTACK, events, 'attack', actor);
+      else if (!skill.rite && support) this.addZeal(ZEAL_ON_SUPPORT, events, 'support', actor);
+    }
+    if (actor.side === 'enemy' && actor.wrath !== undefined && !skill.rite) this.addWrath(actor, WRATH_ON_ACT, events);
     return events;
   }
 
@@ -737,7 +764,14 @@ export class Battle {
 
   /** Chooses and stores the enemy's next move. `avoid` is skipped when there is another option. */
   planIntent(actor: Unit, avoid?: string) {
-    const usable = skillsFor(actor).filter((s) => this.canUse(actor, s));
+    const prof = actor.side === 'enemy' ? ENEMIES[actor.ref]?.blasphemy : undefined;
+    if (prof && (actor.wrath ?? 0) >= ZEAL_MAX && this.canUse(actor, prof)) {
+      const single = prof.target === 'enemy' || prof.target === 'ally';
+      const target = single ? this.aim(prof, this.validTargets(actor, prof)) : undefined;
+      actor.intent = { skillId: prof.id, targetUid: target?.uid };
+      return;
+    }
+    const usable = skillsFor(actor).filter((s) => this.canUse(actor, s) && !s.rite);
     if (!usable.length) {
       actor.intent = undefined;
       return;
@@ -820,16 +854,42 @@ export class Battle {
     return 0.95 + this.rng() * 0.1;
   }
 
-  /** +1 Zeal per full 5% of max HP lost to enemies, capped per round. */
+  /** A Sister's own Zeal: +HURT_ZEAL per full 5% of her max HP lost to enemies, capped per round. */
   private hurtZeal(u: Unit, dmg: number, events: BattleEvent[]) {
-    this.hurtFrac += dmg / u.maxHp / HURT_STEP;
-    const whole = Math.floor(this.hurtFrac);
+    this.hurtFrac[u.uid] = (this.hurtFrac[u.uid] ?? 0) + dmg / u.maxHp / HURT_STEP;
+    const whole = Math.floor(this.hurtFrac[u.uid]);
     if (!whole) return;
-    this.hurtFrac -= whole;
-    const gain = Math.min(whole, ZEAL_HURT_CAP - this.hurtZealThisRound);
+    this.hurtFrac[u.uid] -= whole;
+    const taken = this.hurtZealThisRound[u.uid] ?? 0;
+    const gain = Math.min(whole * HURT_ZEAL, ZEAL_HURT_CAP - taken);
     if (gain <= 0) return;
-    this.hurtZealThisRound += gain;
-    this.addZeal(gain, events, 'wounds');
+    this.hurtZealThisRound[u.uid] = taken + gain;
+    this.addZeal(gain, events, 'wounds', u);
+  }
+
+  /** A boss's Wrath: from its own deeds and the blows it takes. Full, it readies its Blasphemy. */
+  private addWrath(u: Unit, n: number, events: BattleEvent[]) {
+    if (u.wrath === undefined || u.hp <= 0) return;
+    const before = u.wrath;
+    u.wrath = Math.min(ZEAL_MAX, before + n);
+    if (before < ZEAL_MAX && u.wrath >= ZEAL_MAX) {
+      const prof = ENEMIES[u.ref].blasphemy!;
+      events.push({ type: 'text', text: `${u.name} seethes with Wrath. ${prof.name} is coming!` });
+      if (!u.status.charging) {
+        u.intent = undefined;
+        this.planIntent(u);
+        events.push({ type: 'intent' });
+      }
+    }
+  }
+
+  private woundWrath(t: Unit, dmg: number, events: BattleEvent[]) {
+    if (t.wrath === undefined) return;
+    this.wrathFrac[t.uid] = (this.wrathFrac[t.uid] ?? 0) + dmg / t.maxHp / WRATH_STEP;
+    const whole = Math.floor(this.wrathFrac[t.uid]);
+    if (!whole) return;
+    this.wrathFrac[t.uid] -= whole;
+    this.addWrath(t, whole, events);
   }
 
   private hit(actor: Unit, t: Unit, skill: SkillDef, events: BattleEvent[]) {
@@ -857,6 +917,7 @@ export class Battle {
     t.hp -= dmg;
     events.push({ type: 'damage', uid: t.uid, amount: dmg, blocked, crit });
     if (t.side === 'party' && actor.side === 'enemy') this.hurtZeal(t, dmg, events);
+    if (t.side === 'enemy' && actor.side === 'party') this.woundWrath(t, dmg, events);
     if (dmg > 0 && actor.passive?.kind === 'lifesteal' && actor.hp > 0) {
       const real = Math.min(actor.maxHp - actor.hp, Math.round(dmg * (actor.passive.value ?? 0) * this.healOf(actor)));
       if (real > 0) {
@@ -870,7 +931,7 @@ export class Battle {
     }
     if (t.hp <= 0) {
       this.kill(t, events);
-      if (actor.side === 'party' && actor.passive?.kind === 'zealOnKill') this.addZeal(actor.passive.value ?? 0, events, actor.passive.name);
+      if (actor.side === 'party' && actor.passive?.kind === 'zealOnKill') this.addZeal(actor.passive.value ?? 0, events, actor.passive.name, actor);
     } else this.checkPhase(t, events);
   }
 
@@ -1014,15 +1075,20 @@ export class Battle {
     events.push({ type: 'summon', uid: u.uid });
   }
 
-  private addZeal(n: number, events: BattleEvent[], reason: string) {
+  /** Changes Zeal for one Sister, or (no `to`) for every living Sister. */
+  private addZeal(n: number, events: BattleEvent[], reason: string, to?: Unit) {
     if (n > 0 && this.mods.zealMult && (reason === 'attack' || reason === 'support' || reason === 'wounds')) n = Math.max(0, Math.round(n * (1 + this.mods.zealMult)));
-    const before = this.zeal;
-    this.zeal = Math.max(0, Math.min(ZEAL_MAX, this.zeal + n));
-    if (this.zeal !== before) {
-      events.push({ type: 'zeal', amount: this.zeal - before, reason });
-      this.log.push(`  zeal ${this.zeal - before > 0 ? '+' : ''}${this.zeal - before} (${reason}) = ${this.zeal}`);
+    const who = to ? (to.side === 'party' && to.hp > 0 ? [to] : []) : this.alive('party');
+    for (const u of who) {
+      const before = u.zeal ?? 0;
+      u.zeal = Math.max(0, Math.min(ZEAL_MAX, before + n));
+      if (u.zeal !== before) {
+        events.push({ type: 'zeal', amount: u.zeal - before, reason, uid: u.uid });
+        this.log.push(`  zeal ${u.name} ${u.zeal - before > 0 ? '+' : ''}${u.zeal - before} (${reason}) = ${u.zeal}`);
+      }
     }
   }
+
 }
 
 /** Enemy HP and attack scale, tuned with balance.test.ts against the Auto player. */

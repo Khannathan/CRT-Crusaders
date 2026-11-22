@@ -29,7 +29,7 @@ export interface RelicDef {
   roundZeal?: number;
   /** Zeal gains from attacks, support and wounds are this much larger. */
   zealMult?: number;
-  /** Rites hit this much harder. */
+  /** Litanies hit this much harder. */
   riteMult?: number;
   /** A Sister below half HP hits this much harder. */
   lowHpAtk?: number;
@@ -68,7 +68,7 @@ export const RELICS: RelicDef[] = [
   { id: 'ember-candle', name: 'Ember Candle', family: 'bell', desc: 'The Vigil candle burns 3 rounds longer.', vigilBonus: 3 },
   { id: 'sanctus-bell', name: 'Sanctus Hand-bell', family: 'bell', desc: '+6 Zeal at the start of every round.', roundZeal: 6 },
   { id: 'bell-rope', name: 'Frayed Bell-rope', family: 'bell', desc: 'All Zeal gains +25%.', zealMult: 0.25 },
-  { id: 'cracked-clapper', name: 'Cracked Clapper', family: 'bell', desc: 'Rites hit 30% harder.', riteMult: 0.3 },
+  { id: 'cracked-clapper', name: 'Cracked Clapper', family: 'bell', desc: 'Litanies hit 30% harder.', riteMult: 0.3 },
   { id: 'tower-bronze', name: 'Tower Bronze', family: 'bell', desc: 'Party armor +15%, +3 Zeal each round.', armorPct: 0.15, roundZeal: 3 },
   { id: 'vesper-bell', name: 'Vesper Bell', family: 'bell', desc: 'Start fights with 25 Zeal; Zeal gains +10%.', startZeal: 25, zealMult: 0.1 },
 
@@ -88,7 +88,7 @@ export const BURDENS: RelicDef[] = [
   { id: 'blood-pact', name: 'Blood Pact', burden: true, desc: 'Party attack +25%. Max HP -15%.', atkPct: 0.25, hpPct: -0.15 },
   { id: 'vow-of-silence', name: 'Vow of Silence', burden: true, desc: 'Start fights with 40 Zeal. Zeal gains -30%.', startZeal: 40, zealMult: -0.3 },
   { id: 'heretics-brand', name: "Heretic's Brand", burden: true, desc: 'Crits +15%. Armor -20%.', critAdd: 0.15, armorPct: -0.2 },
-  { id: 'gutted-candle', name: 'Gutted Candle', burden: true, desc: 'Rites +40%. The Vigil candle is 2 rounds shorter.', riteMult: 0.4, vigilBonus: -2 },
+  { id: 'gutted-candle', name: 'Gutted Candle', burden: true, desc: 'Litanies +40%. The Vigil candle is 2 rounds shorter.', riteMult: 0.4, vigilBonus: -2 },
 ];
 
 export const FAMILY_NAME: Record<RelicFamily, string> = { burn: 'Burn', bell: 'Bell', martyr: 'Martyr' };
@@ -102,7 +102,7 @@ export const FAMILY_BONUS: Record<RelicFamily, [RelicDef, RelicDef]> = {
   ],
   bell: [
     { id: 'family:bell:2', name: 'Peal (2 Bell)', desc: '+3 Zeal each round.', roundZeal: 3 },
-    { id: 'family:bell:3', name: 'Carillon (3 Bell)', desc: '+3 more Zeal each round. Rites +25%.', roundZeal: 3, riteMult: 0.25 },
+    { id: 'family:bell:3', name: 'Carillon (3 Bell)', desc: '+3 more Zeal each round. Litanies +25%.', roundZeal: 3, riteMult: 0.25 },
   ],
   martyr: [
     { id: 'family:martyr:2', name: 'Stigmata (2 Martyr)', desc: 'Below half HP, +15% damage.', lowHpAtk: 0.15 },

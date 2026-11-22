@@ -22,6 +22,8 @@ export interface EnemyDef {
   traits?: EnemyTraits;
   /** Bosses: below this share of HP, swap to a harsher skill set. */
   phase2?: { atPct: number; text: string; atkPct: number; skills: SkillDef[] };
+  /** Bosses: the Blasphemy unleashed when Wrath is full (a charged move, with a turn of warning). */
+  blasphemy?: SkillDef;
 }
 
 /** Hunt-boss mechanics. */
@@ -94,6 +96,7 @@ export const ENEMIES: Record<string, EnemyDef> = {
   },
   choir: {
     id: 'choir', name: 'The Choir Below', hp: 530, atk: 20, armor: 48, spd: 10, boss: true, color: 0x652b3b, shape: 'choir',
+    blasphemy: { id: 'drowning-requiem', name: 'Drowning Requiem', desc: 'BLASPHEMY: drowns every Sister, steals 25 of their Zeal and weakens them.', from: any, target: 'allEnemies', mult: 1.4, zealDrain: 25, weaken: { pct: 0.3, turns: 2 }, rite: true, windup: true },
     skills: [
       { id: 'hymn-of-drowning', name: 'Hymn of Drowning', desc: '', from: any, target: 'allEnemies', mult: 0.6 },
       { id: 'grasping-hands', name: 'Grasping Hands', desc: '', from: any, target: 'enemy', mult: 1.4, weaken: { pct: 0.25, turns: 2 } },
@@ -169,6 +172,7 @@ export const ENEMIES: Record<string, EnemyDef> = {
   },
   abbess: {
     id: 'abbess', name: 'The Hollow Abbess', hp: 720, atk: 22, armor: 60, spd: 9, boss: true, color: 0x3a3048, shape: 'abbess',
+    blasphemy: { id: 'excommunion', name: 'Excommunion', desc: 'BLASPHEMY: casts out every Sister, stealing 30 Zeal and Sundering their armor.', from: any, target: 'allEnemies', mult: 1.6, zealDrain: 30, sunder: { pct: 0.3, turns: 2 }, rite: true, windup: true },
     skills: [
       { id: 'toll-of-silence', name: 'Toll of Silence', desc: 'Hits everyone and steals Zeal.', from: any, target: 'allEnemies', mult: 0.55, zealDrain: 10 },
       { id: 'excommunicate', name: 'Excommunicate', desc: 'Casts a Sister two ranks back.', from: any, target: 'enemy', mult: 1.5, aim: 'strongest', shove: 2 },
@@ -191,6 +195,7 @@ export const ENEMIES: Record<string, EnemyDef> = {
   'flayed-saint': {
     id: 'flayed-saint', name: 'The Flayed Saint', hp: 3200, atk: 21, armor: 20, spd: 7, boss: true, color: 0x8a4a4a, shape: 'abbess', art: 'abbess',
     traits: { regen: 0.04 },
+    blasphemy: { id: 'stigmata-rain', name: 'Rain of Stigmata', desc: 'BLASPHEMY: every Sister bleeds heavily for 3 turns.', from: any, target: 'allEnemies', mult: 1.1, bleed: { mult: 0.4, turns: 3 }, rite: true, windup: true },
     skills: [
       { id: 'martyrs-embrace', name: "Martyr's Embrace", desc: '', from: any, target: 'enemy', mult: 1.3, aim: 'strongest' },
       { id: 'weeping-wounds', name: 'Weeping Wounds', desc: 'Every Sister Bleeds.', from: any, target: 'allEnemies', mult: 0.45, bleed: { mult: 0.25, turns: 2 } },
@@ -199,6 +204,7 @@ export const ENEMIES: Record<string, EnemyDef> = {
   'twofold-reliquary': {
     id: 'twofold-reliquary', name: 'The Twofold Reliquary', hp: 3000, atk: 20, armor: 150, spd: 6, boss: true, color: 0xa08a5a, shape: 'golem', art: 'golem',
     traits: { swap: 3 },
+    blasphemy: { id: 'gilded-judgment', name: 'Gilded Judgment', desc: 'BLASPHEMY: a blaze of gold on every Sister that Sunders their armor.', from: any, target: 'allEnemies', mult: 1.5, sunder: { pct: 0.4, turns: 2 }, rite: true, windup: true },
     skills: [
       { id: 'gilded-crush', name: 'Gilded Crush', desc: '', from: any, target: 'enemy', reach: [1, 2], mult: 1.4, aim: 'front' },
       { id: 'reliquary-glare', name: 'Reliquary Glare', desc: 'Hits everyone.', from: any, target: 'allEnemies', mult: 0.6 },
@@ -206,6 +212,7 @@ export const ENEMIES: Record<string, EnemyDef> = {
   },
   colossus: {
     id: 'colossus', name: 'The Ossuary Colossus', hp: 3600, atk: 24, armor: 140, spd: 3, boss: true, color: 0x6a6052, shape: 'golem', art: 'warden',
+    blasphemy: { id: 'ossuary-collapse', name: 'Ossuary Collapse', desc: 'BLASPHEMY: brings the crypt down on every Sister.', from: any, target: 'allEnemies', mult: 1.7, rite: true, windup: true },
     skills: [
       { id: 'grave-slam', name: 'Grave Slam', desc: 'A huge blow on the front Sister after a turn of charging.', from: any, target: 'enemy', reach: [1], mult: 3.2, windup: true, aim: 'front', weight: 1.4 },
       { id: 'bone-sweep', name: 'Bone Sweep', desc: '', from: any, target: 'enemy', reach: [1, 2], mult: 1.1, aim: 'front' },
@@ -214,6 +221,7 @@ export const ENEMIES: Record<string, EnemyDef> = {
   },
   'rot-mother': {
     id: 'rot-mother', name: 'Mother of Rot', hp: 2800, atk: 18, armor: 25, spd: 8, boss: true, color: 0x5b6b3c, shape: 'nun', art: 'nun',
+    blasphemy: { id: 'plague-flood', name: 'Plague Flood', desc: 'BLASPHEMY: drowns every Sister in a deep, lasting poison.', from: any, target: 'allEnemies', mult: 0.6, poison: { mult: 0.9, turns: 3 }, rite: true, windup: true },
     skills: [
       { id: 'blight-psalm', name: 'Blight Psalm', desc: 'Poisons every Sister.', from: any, target: 'allEnemies', mult: 0.3, poison: { mult: 0.5, turns: 3 }, weight: 1.4 },
       { id: 'festering-touch', name: 'Festering Touch', desc: '', from: any, target: 'enemy', mult: 1.1, poison: { mult: 0.6, turns: 3 }, aim: 'weakest' },
@@ -222,6 +230,7 @@ export const ENEMIES: Record<string, EnemyDef> = {
   choirmaster: {
     id: 'choirmaster', name: 'The Choirmaster', hp: 3000, atk: 19, armor: 40, spd: 9, boss: true, color: 0x652b3b, shape: 'choir', art: 'choir',
     traits: { guarded: 0.5 },
+    blasphemy: { id: 'hymn-eternal', name: 'Hymn Eternal', desc: 'BLASPHEMY: a hymn that hurts every Sister and steals 20 Zeal.', from: any, target: 'allEnemies', mult: 1.3, zealDrain: 20, rite: true, windup: true },
     skills: [
       { id: 'summon-choir', name: 'Summon the Choir', desc: 'Calls a Bell Ringer to sing for it.', from: any, target: 'self', summon: 'ringer', weight: 0.8 },
       { id: 'dread-chorus', name: 'Dread Chorus', desc: 'Hits everyone.', from: any, target: 'allEnemies', mult: 0.65 },
@@ -230,6 +239,7 @@ export const ENEMIES: Record<string, EnemyDef> = {
   'red-cardinal': {
     id: 'red-cardinal', name: 'The Red Cardinal', hp: 2900, atk: 17, armor: 45, spd: 10, boss: true, color: 0x8a1f2a, shape: 'bishop', art: 'bishop',
     traits: { enrage: 0.08 },
+    blasphemy: { id: 'crimson-conclave', name: 'Crimson Conclave', desc: 'BLASPHEMY: every Sister bleeds and is weakened.', from: any, target: 'allEnemies', mult: 1.3, bleed: { mult: 0.3, turns: 2 }, weaken: { pct: 0.25, turns: 2 }, rite: true, windup: true },
     skills: [
       { id: 'scarlet-edict', name: 'Scarlet Edict', desc: 'Steals 15 Zeal.', from: any, target: 'allEnemies', mult: 0.5, zealDrain: 15 },
       { id: 'cardinals-rod', name: "Cardinal's Rod", desc: '', from: any, target: 'enemy', mult: 1.4, aim: 'weakest' },

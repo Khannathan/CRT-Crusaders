@@ -28,7 +28,7 @@ export function autoChoose(b: Battle, actor: Unit): Choice {
   }
 
   const rite = skills.find((s) => s.rite);
-  if (rite && b.zeal >= ZEAL_MAX) {
+  if (rite && (actor.zeal ?? 0) >= ZEAL_MAX) {
     const heals = rite.healPct || rite.shieldPct;
     if (!heals || hurt.hp / hurt.maxHp < 0.6 || groupThreat) {
       const targets = b.validTargets(actor, rite);

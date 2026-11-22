@@ -151,7 +151,7 @@ export const EVENTS: Record<string, EventDef> = {
     title: 'A Guttering Reliquary',
     text: 'A candle burns down to the wick inside a cage of saint-bones.',
     options: [
-      { label: 'Take the Gutted Candle', hint: 'Lasting: Rites +40%, but every Vigil candle is 2 rounds shorter.', outcome: { text: 'It flares in your hand, hungry.', gainRelic: 'gutted-candle' } },
+      { label: 'Take the Gutted Candle', hint: 'Lasting: Litanies +40%, but every Vigil candle is 2 rounds shorter.', outcome: { text: 'It flares in your hand, hungry.', gainRelic: 'gutted-candle' } },
       { label: 'Let it burn out', hint: 'Next fight: +20 Zeal.', outcome: { text: 'You watch it die and feel its last warmth.', blessZeal: 20 } },
     ],
   },

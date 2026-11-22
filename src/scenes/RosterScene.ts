@@ -690,7 +690,7 @@ export class RosterScene extends Phaser.Scene {
       const up = VOW_UPGRADES.find(([, idx]) => idx === i);
       const isUp = !!up && skillVow(have) >= up[0];
       const tag = [
-        s.rite ? 'RITE · FULL ZEAL' : `SKILL ${['I', 'II', 'III'][i]} · ${ranks(s.from)}`,
+        s.rite ? 'LITANY · HER ZEAL FULL' : `SKILL ${['I', 'II', 'III'][i]} · ${ranks(s.from)}`,
         ...(s.cooldown ? [`COOLDOWN ${isUp ? s.cooldown - 1 : s.cooldown}`] : []),
         ...(up ? [isUp ? 'VOW UPGRADED +25%' : `VOW ${up[0]}: +25%`] : []),
       ].join(' · ');
