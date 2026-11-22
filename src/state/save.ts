@@ -35,6 +35,10 @@ export interface SaveData {
   banner?: { order: string; target: string };
   /** True after a banner UR was not the target: the next banner UR will be. */
   urGuaranteed?: boolean;
+  /** Pulls since the last UR, on any banner (UR pity). */
+  urPity?: number;
+  /** Relic Shards per Order name: one per pull on its banner. */
+  shards?: Record<string, number>;
   /** Highest Heresy tier cleared per crypt id (0 = the base crypt). */
   heresy?: Record<string, number>;
   /** Every piece of gear owned; `on` says who wears it. */
