@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 import { PAL } from '../config';
 import { RARITY_COLOR } from '../data/classes';
 import type { CrusaderDef } from '../data/types';
+import { DEFAULT_FRAME, SPLASH_FRAMES } from '../data/splashFrames';
 
 /** Native portrait size the art guide proposes. Real PNGs can be 128 or 256 square. */
 export const PORTRAIT_SIZE = 128;
@@ -112,4 +113,40 @@ export function loadSplash(scene: Phaser.Scene, id: string): Promise<string | un
     scene.load.image(key, url);
     if (!scene.load.isLoading()) scene.load.start();
   });
+}
+
+/**
+ * Her splash cropped into a w x h box at (x, y), zoomed so she sits central and
+ * at a similar size whoever she is (see SPLASH_FRAMES). Never stretched: the
+ * crop always has the box's shape.
+ * - 'hero': head to about the knees (Sister page, banners)
+ * - 'full': head to toe with a little room (pull reveal)
+ */
+export function addSplash(scene: Phaser.Scene, id: string, x: number, y: number, w: number, h: number, mode: 'hero' | 'full') {
+  const key = splashKey(id);
+  const src = scene.textures.get(key).getSourceImage();
+  const SW = src.width;
+  const SH = src.height;
+  const [cx, head, feet] = SPLASH_FRAMES[id] ?? DEFAULT_FRAME;
+  const aspect = w / h;
+  const fig = (feet - head) * SH;
+  const maxH = Math.min(SH, SW / aspect);
+  let ch: number;
+  let cy: number;
+  if (mode === 'hero') {
+    ch = Phaser.Math.Clamp(fig * 0.8 + SH * 0.1, SH * 0.36, maxH);
+    // room above her head for hats, halos and raised weapons
+    cy = head * SH - SH * 0.1;
+  } else {
+    ch = Phaser.Math.Clamp(fig * 1.25 + SH * 0.04, SH * 0.55, maxH);
+    cy = ((head + feet) / 2) * SH - ch / 2 - SH * 0.04;
+  }
+  const cw = ch * aspect;
+  const left = Phaser.Math.Clamp(cx * SW - cw / 2, 0, SW - cw);
+  const top = Phaser.Math.Clamp(cy, 0, SH - ch);
+  const scale = w / cw;
+  const img = scene.add.image(x, y, key).setScale(scale).setCrop(left, top, cw, ch);
+  // Put the crop's centre on (x, y).
+  img.setPosition(x - (left + cw / 2 - SW / 2) * scale, y - (top + ch / 2 - SH / 2) * scale);
+  return img;
 }

@@ -6,7 +6,7 @@ import { music } from '../audio/music';
 import { commit, game } from '../state/game';
 import { makeButton } from '../ui/button';
 import { NOISE_FRAMES, WAX_COLOR, noiseKey, sealKey } from '../ui/effects';
-import { portraitKey, queueSplash, splashKey } from '../ui/placeholderPortrait';
+import { addSplash, portraitKey, queueSplash, splashKey } from '../ui/placeholderPortrait';
 import { FIGURE_H, FIGURE_W, SisterSprite, fullKey } from '../ui/sisterSprite';
 import { holdForCard } from '../ui/sisterCard';
 
@@ -271,12 +271,19 @@ export class RevealScene extends Phaser.Scene {
     const frame = this.add.rectangle(0, fy, w + 12, h + 12, 0x000000).setStrokeStyle(6, color);
     const sprite = full ? new SisterSprite(this, c.id, 0, fy + h / 2 - 16, 2, color) : undefined;
     const portrait = splash
-      ? this.add.image(0, fy, splashKey(c.id)).setDisplaySize(w, h).setAlpha(0)
+      ? addSplash(this, c.id, 0, fy, w, h, 'full').setAlpha(0)
       : sprite
         ? sprite.root.setAlpha(0)
         : this.add.image(0, 0, portraitKey(c.id)).setDisplaySize(SIZE, SIZE).setAlpha(0);
     const noise = this.add.image(0, fy, noiseKey(0)).setDisplaySize(w, h);
     card.add([frame, portrait, noise]);
+    // With splash art, her pixel figure steps out in front of it, at the frame's lower right.
+    const stepper = splash && this.textures.exists(fullKey(c.id)) ? new SisterSprite(this, c.id, w / 2 - 46, fy + h / 2 + 22, 1, color) : undefined;
+    if (stepper) {
+      stepper.root.setAlpha(0);
+      card.add(stepper.root);
+      this.tweens.add({ targets: stepper.root, alpha: 1, x: { from: w / 2 + 30, to: w / 2 - 46 }, duration: 380, delay: high ? 1300 : 750, ease: 'Quad.out' });
+    }
 
     let f = 0;
     const flicker = this.time.addEvent({ delay: 60, loop: true, callback: () => noise.setTexture(noiseKey(++f % NOISE_FRAMES)).setDisplaySize(w, h) });
@@ -291,6 +298,7 @@ export class RevealScene extends Phaser.Scene {
         noise.destroy();
         // The rare ones raise their relic as the static clears.
         if (sprite && high) sprite.cast(color, c.rarity === 'UR');
+        if (stepper) this.time.delayedCall(high ? 700 : 450, () => (high ? stepper.cast(color, c.rarity === 'UR') : stepper.attack(-1)));
         this.busy = false;
         if (this.results.length > 1) this.hint.setText('Tap to return to the table');
         else this.hint.setText('Tap to continue');
