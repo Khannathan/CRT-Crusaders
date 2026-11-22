@@ -8,7 +8,7 @@ type Choice = { skill: SkillDef; target?: Unit };
  * (breaks charges, shields the threatened), keeps the party alive, then picks
  * the attack worth the most, counting combos and finishing blows.
  */
-export function autoChoose(b: Battle, actor: Unit): Choice {
+export function autoChoose(b: Battle, actor: Unit, opts: { noRite?: boolean } = {}): Choice {
   const skills = skillsFor(actor).filter((s) => b.canUse(actor, s));
   const allies = b.alive('party');
   const foes = b.alive('enemy');
@@ -27,7 +27,8 @@ export function autoChoose(b: Battle, actor: Unit): Choice {
     for (const t of v.targets) incoming.set(t, (incoming.get(t) ?? 0) + v.estimate);
   }
 
-  const rite = skills.find((s) => s.rite);
+  // With noRite the player casts Litanies by hand (real-time fights).
+  const rite = opts.noRite ? undefined : skills.find((s) => s.rite);
   if (rite && (actor.zeal ?? 0) >= ZEAL_MAX) {
     const heals = rite.healPct || rite.shieldPct || rite.revive;
     const fallen = b.units.some((u) => u.side === 'party' && u.hp <= 0);

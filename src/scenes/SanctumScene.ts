@@ -11,20 +11,16 @@ import { tendFlame } from '../systems/flame';
 import { saveSettings, settings } from '../state/settings';
 import { music } from '../audio/music';
 import { toggleFullscreen } from '../ui/fullscreen';
-import { autoChoose } from '../systems/autoplay';
-import type { BattleEvent, Unit } from '../systems/combat';
+import { FieldBattle } from '../systems/field';
+import { FieldView } from '../ui/fieldView';
 import { VIGIL_CAP_HOURS, VIGIL_SIZE, claimVigil, ensureVigil, fastReward, setVigil, vigilPending, vigilRates, vigilStage, type VigilClaim, type VigilState } from '../systems/vigil';
 import { CHAPTERS, FAST_HOURS, campaignOf, fastCost, roadDone, stageBattle, stageRecommended } from '../systems/campaign';
 import { vigilExpRate } from '../systems/exp';
 import { giltOf } from '../systems/currency';
 import { partyPower } from '../systems/power';
-import { enemyKey } from '../ui/enemyArt';
 import { makeButton } from '../ui/button';
 import { bagEmpty, bagText } from '../systems/items';
 import { CURRENCY_BAR_H, addCurrencyBar } from '../ui/currencyBar';
-import { portraitKey } from '../ui/placeholderPortrait';
-import { SisterSprite, fullKey } from '../ui/sisterSprite';
-import { SKILL_FX } from '../ui/portraitFx';
 import { ROMAN_RANK, giftsWaiting, rankInfo } from '../systems/rank';
 import { nextMilestone } from '../systems/powerGrowth';
 import { accountPower, formatPower } from '../systems/power';
@@ -146,6 +142,11 @@ export class SanctumScene extends Phaser.Scene {
     }
     this.purged = 0;
     this.purgedText = this.add.text(left + fw - 16, top + zoneH - 14, '', text.hud(12, PAL.muted)).setOrigin(1, 1);
+    // Tap the field to watch the fight up close (the real-time battle demo).
+    if (v.party.some((id) => save.owned[id])) {
+      this.add.zone(fx, top + 64 + (zoneH - 64) / 2, fw, zoneH - 64).setInteractive({ useHandCursor: true }).on('pointerup', () => this.scene.start('Field', {}));
+      this.add.text(fx, top + zoneH - 14, 'TAP TO WATCH UP CLOSE', text.hud(11, PAL.steel)).setOrigin(0.5, 1).setAlpha(0.8);
+    }
 
     // Gathering
     const rateText = this.add.text(left + 18, top + zoneH + 14, '', text.body(16, PAL.muted));
@@ -204,112 +205,64 @@ export class SanctumScene extends Phaser.Scene {
   private purgedText?: Phaser.GameObjects.Text;
   private skirmish: Phaser.GameObjects.GameObject[] = [];
 
-  /** One looping fight in the Vigil card: a real Battle played by the Auto player. */
-  private startSkirmish(v: VigilState, left: number, top: number, fw: number) {
+  private field?: FieldView;
+
+  /**
+   * One looping fight in the Vigil card, on an open field: the Sisters and the
+   * crypt's horrors walk, close in and fight in real time (the same rules as
+   * every battle, played by the Auto player). Each wave won, the next walks in.
+   */
+  private startSkirmish(v: VigilState, left: number, top: number, fw: number, carry?: Map<string, { x: number; y: number }>) {
     const save = game.save;
     this.skirmish.forEach((o) => o.destroy());
     this.skirmish = [];
+    this.field?.destroy();
+    this.field = undefined;
     const party = v.party.filter((id) => save.owned[id]);
     if (!party.length) {
       this.skirmish.push(this.add.text(left + fw / 2, top + 160, 'No Sister keeps this vigil.\nTap Sisters to post a watch.', { ...text.body(19, PAL.muted), align: 'center' }).setOrigin(0.5));
       return;
     }
     const battle = stageBattle(save, party, vigilStage(save).n);
-
-    const views = new Map<string, { img?: Phaser.GameObjects.Image; sprite?: SisterSprite; bar: Phaser.GameObjects.Rectangle; x: number; y: number }>();
-    const size = 62;
-    const place = (units: Unit[], y: number) => {
-      const n = units.length;
-      units.forEach((u, i) => {
-        const x = left + fw / 2 + (i - (n - 1) / 2) * 92;
-        // Sisters with full-body art stand on the road as small animated figures.
-        if (u.side === 'party' && this.textures.exists(fullKey(u.ref))) {
-          const feet = y + 52;
-          const sprite = new SisterSprite(this, u.ref, x, feet, 0.75, PAL.amber);
-          const back = this.add.rectangle(x - size / 2, feet + 12, size, 5, PAL.deepShadow).setOrigin(0, 0.5);
-          const bar = this.add.rectangle(x - size / 2, feet + 12, size, 5, 0x7a9a5a).setOrigin(0, 0.5);
-          this.skirmish.push(sprite.root, back, bar);
-          views.set(u.uid, { sprite, bar, x, y: feet - 60 });
-          return;
-        }
-        const key = u.side === 'party' ? portraitKey(u.ref) : enemyKey(u.ref);
-        const frame = this.add.rectangle(x, y, size + 4, size + 4, 0x110b13, 0.8).setStrokeStyle(1, u.side === 'party' ? PAL.amber : PAL.oxblood);
-        const img = this.add.image(x, y, key).setDisplaySize(size, size);
-        const back = this.add.rectangle(x - size / 2, y + size / 2 + 8, size, 5, PAL.deepShadow).setOrigin(0, 0.5);
-        const bar = this.add.rectangle(x - size / 2, y + size / 2 + 8, size, 5, u.side === 'party' ? 0x7a9a5a : PAL.oxblood).setOrigin(0, 0.5);
-        this.skirmish.push(frame, img, back, bar);
-        views.set(u.uid, { img, bar, x, y });
-      });
-    };
-    // Party by rank, rank 1 nearest the foe.
-    const byRank = (side: 'party' | 'enemy') => battle.units.filter((u) => u.side === side).sort((a, b) => a.rank - b.rank);
-    place(byRank('enemy'), top + 100);
-    place(byRank('party'), top + 220);
-
-    const float = (uid: string, label: string, color: number) => {
-      const vw = views.get(uid);
-      if (!vw) return;
-      const t = this.add.text(vw.x, vw.y - 10, label, { ...text.hud(16, color), stroke: '#000000', strokeThickness: 3 }).setOrigin(0.5);
-      this.tweens.add({ targets: t, y: vw.y - 44, alpha: 0, duration: 900, onComplete: () => t.destroy() });
-    };
-    const sync = () => {
-      for (const u of battle.units) {
-        const vw = views.get(u.uid);
-        if (!vw) continue;
-        vw.bar.setSize(Math.max(0, (size * u.hp) / u.maxHp), 5);
-        if (u.hp <= 0) {
-          vw.img?.setTint(0x333333).setAlpha(0.5);
-          if (vw.sprite && !vw.sprite.dead) vw.sprite.die();
-        }
-      }
-    };
-    const show = (events: BattleEvent[]) => {
-      for (const e of events) {
-        if (e.type === 'damage') {
-          float(e.uid, `-${e.amount}`, e.crit ? PAL.amber : PAL.ivory);
-          views.get(e.uid)?.sprite?.hit(!!e.amount);
-        } else if (e.type === 'heal') {
-          float(e.uid, `+${e.amount}`, 0x9ad08a);
-          views.get(e.uid)?.sprite?.pulse(0x9ad08a);
-        } else if (e.type === 'shield') {
-          float(e.uid, `+${e.amount}`, 0x8fb6d8);
-          views.get(e.uid)?.sprite?.pulse(0x8fb6d8);
-        }
-        else if (e.type === 'death' && battle.get(e.uid)?.side === 'enemy') this.purged += 1;
-      }
-      this.purgedText?.setText(this.purged ? `FOES PURGED: ${this.purged}` : '');
-      sync();
-    };
-
-    const timer = this.time.addEvent({
-      delay: 620,
-      loop: true,
-      callback: () => {
-        const t = battle.nextTurn();
-        show(t.events);
-        if (t.outcome || !t.actor) {
-          timer.remove();
-          const won = t.outcome === 'victory';
-          if (won) [...views.values()].forEach((vw, i) => vw.sprite?.cheer(i * 90));
-          const msg = this.add
-            .text(left + fw / 2, top + 165, won ? 'PURGED. THE VIGIL HOLDS.' : 'THE SISTERS FALL BACK AND PRAY.', { ...text.hud(15, won ? PAL.amber : PAL.oxblood), stroke: '#000000', strokeThickness: 4 })
-            .setOrigin(0.5);
-          this.skirmish.push(msg);
-          this.time.delayedCall(1400, () => this.startSkirmish(v, left, top, fw));
-          return;
-        }
-        const actor = t.actor;
-        const pick = actor.side === 'party' ? autoChoose(battle, actor) : battle.enemyChoose(actor);
-        const events = battle.act(actor, pick.skill, pick.target);
-        const vw = views.get(actor.uid);
-        if (vw?.sprite) {
-          const s = pick.skill;
-          if (s.rite || (s.target !== 'enemy' && s.target !== 'allEnemies')) vw.sprite.cast(SKILL_FX[s.id]?.color ?? PAL.amber, !!s.rite);
-          else vw.sprite.attack(-1);
-        } else if (vw?.img) this.tweens.add({ targets: vw.img, y: vw.y + (actor.side === 'party' ? -10 : 10), duration: 110, yoyo: true });
-        show(events);
+    // The field: feet stand between y = top + 110 and the bottom of the art.
+    const fieldTop = top + 108;
+    const fb = new FieldBattle(battle, { w: fw, h: 184, carry, enemiesEnter: !!carry });
+    const view = new FieldView(this, fb, {
+      x: left,
+      y: fieldTop,
+      scale: 0.5,
+      compact: true,
+      depth: 3,
+      onDeath: (u) => {
+        if (u.side !== 'enemy') return;
+        this.purged += 1;
+        this.purgedText?.setText(`FOES PURGED: ${this.purged}`);
       },
     });
+    this.field = view;
+    let over = false;
+    const tick = (_t: number, delta: number) => {
+      if (over || !this.field || this.field !== view) return;
+      const events = fb.update(Math.min(0.1, delta / 1000));
+      view.sync();
+      view.handle(events);
+      const end = events.find((e) => e.kind === 'end');
+      if (!end || end.kind !== 'end') return;
+      over = true;
+      const won = end.outcome === 'victory';
+      if (won) view.cheer();
+      const msg = this.add
+        .text(left + fw / 2, top + 165, won ? 'PURGED. THE VIGIL HOLDS.' : 'THE SISTERS FALL BACK AND PRAY.', { ...text.hud(15, won ? PAL.amber : PAL.oxblood), stroke: '#000000', strokeThickness: 4 })
+        .setOrigin(0.5)
+        .setDepth(6);
+      this.skirmish.push(msg);
+      // The next wave walks in on the Sisters where they stand (a defeat starts over).
+      this.time.delayedCall(won ? 1500 : 1800, () => this.startSkirmish(v, left, top, fw, won ? fb.partyPositions() : undefined));
+    };
+    this.events.on(Phaser.Scenes.Events.UPDATE, tick);
+    const off = () => this.events.off(Phaser.Scenes.Events.UPDATE, tick);
+    this.events.once(Phaser.Scenes.Events.SHUTDOWN, off);
+    this.skirmish.push({ destroy: () => { off(); view.destroy(); } } as unknown as Phaser.GameObjects.GameObject);
   }
 
   /** A short notice of what a claim paid. */
