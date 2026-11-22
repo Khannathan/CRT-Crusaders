@@ -58,7 +58,7 @@ export const RITES: RiteEntry[] = [
   {
     label: 'Crypts', scene: 'Crusade', icon: 'blade', rank: 1, home: 'board', bg: 'bg-drowned-ossuary',
     blurb: 'The core crusade: a branching descent, act by act, to the crypt\'s heart.',
-    status: (s) => `${CRYPTS.filter((c) => cryptUnlocked(s, c)).length} of ${CRYPTS.length} crypts open  ·  Pilgrimage ${pilgrimageLeft(s)}/${PILGRIMAGE_CLEARS}`,
+    status: (s) => `${CRYPTS.filter((c) => cryptUnlocked(s, c)).length} of ${CRYPTS.length} crypts open  ·  Pilgrimage ${pilgrimageLeft(s)}/${PILGRIMAGE_CLEARS} today`,
   },
   {
     label: "Pilgrim's Road", scene: 'Campaign', icon: 'flame', rank: 1, home: 'board', bg: 'bg-hall',
