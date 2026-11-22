@@ -64,6 +64,8 @@ export interface Unit {
   phase?: number;
   /** Crusaders: Vow rank, which upgrades skills (see VOW_UPGRADES). */
   vow?: number;
+  /** Crusaders: skill levels 1-5 (three skills and the Rite), each +6% effect a level. */
+  skillLv?: number[];
   /** Own turns left before each skill can be used again. */
   cooldowns?: Record<string, number>;
 }
@@ -117,7 +119,31 @@ export function skillsFor(u: Unit): SkillDef[] {
     return u.phase === 2 && d.phase2 ? d.phase2.skills : d.skills;
   }
   const vow = u.vow ?? 0;
-  return [...CLASS_SKILLS[u.classId!].map((s, i) => (VOW_UPGRADES.some(([v, idx]) => idx === i && vow >= v) ? upgraded(s) : s)), SHIFT_SKILL];
+  return [
+    ...CLASS_SKILLS[u.classId!].map((s, i) => leveled(VOW_UPGRADES.some(([v, idx]) => idx === i && vow >= v) ? upgraded(s) : s, u.skillLv?.[i] ?? 1)),
+    SHIFT_SKILL,
+  ];
+}
+
+const levelCache = new Map<string, SkillDef>();
+/** A skill at a level above 1: +6% effect a level (see skillLevels.ts). */
+export function leveled(s: SkillDef, lv: number): SkillDef {
+  if (lv <= 1) return s;
+  const key = `${s.id}:${s.name}:${lv}`;
+  const hit = levelCache.get(key);
+  if (hit) return hit;
+  const f = 1 + 0.06 * (lv - 1);
+  const up = (n?: number) => (n === undefined ? undefined : Math.round(n * f * 100) / 100);
+  const out: SkillDef = {
+    ...s,
+    mult: up(s.mult),
+    heal: up(s.heal),
+    healPct: up(s.healPct),
+    shieldPct: up(s.shieldPct),
+    poison: s.poison && { ...s.poison, mult: up(s.poison.mult)! },
+  };
+  levelCache.set(key, out);
+  return out;
 }
 
 /** [vow rank, skill index]: duplicate pulls upgrade a skill at these Vow ranks (index 3 is the Rite). */
