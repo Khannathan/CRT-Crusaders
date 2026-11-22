@@ -150,7 +150,7 @@ export class RevealScene extends Phaser.Scene {
     });
 
     const style = { fontFamily: FONT, color: hex(PAL.ivory), align: 'center' };
-    const tag = r.isNew ? 'NEWLY SWORN' : r.tithes ? `Vows full: +${r.tithes} Tithes, +${r.alms ?? 0} Alms` : 'Vow token: take it in the Roster';
+    const tag = r.isNew ? 'NEWLY SWORN' : r.tithes ? `Every copy held: +${r.stigmata ?? 0} Stigmata, +${r.tithes} Tithes` : `A copy of her (${r.tokens} held): Vows in the Roster`;
     const texts = [
       this.add.text(0, SIZE / 2 + 44, c.name, { ...style, fontSize: '30px' }).setOrigin(0.5),
       this.add.text(0, SIZE / 2 + 82, `${c.rarity} · ${CLASSES[c.classId].name}`, { ...style, fontSize: '19px', color: hex(color) }).setOrigin(0.5),

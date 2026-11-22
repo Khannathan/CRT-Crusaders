@@ -19,6 +19,8 @@ export interface OwnedCrusader {
   tokens?: number;
   /** Skill levels 1-5 for her three skills and Rite (missing = 1). */
   skills?: number[];
+  /** Star tier, 0-5 (separate from rarity): five Vows, then Stigmata raise it. */
+  tier?: number;
   /** Ascensions taken, 0-3. Each raises the level cap by 10. */
   asc?: number;
   /** Crusades left to sit out after falling (0 = ready). Tithes can revive early. */
@@ -51,6 +53,8 @@ export interface SaveData {
   nextGearId?: number;
   /** The idle Vigil: who keeps watch where, and since when. */
   vigil?: VigilState;
+  /** Stigmata: raise a Sister's star tier. */
+  stigmata?: number;
   /** The Pilgrim's Road: the Vigil's campaign. */
   campaign?: CampaignState;
   /** Daily Penance and weekly Litany progress. */

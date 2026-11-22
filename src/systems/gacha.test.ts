@@ -2,7 +2,8 @@ import { describe, expect, it } from 'vitest';
 import { newSave } from '../state/save';
 import { CRUSADERS } from '../data/crusaders';
 import { ORDER_LIST } from '../data/orders';
-import { MAX_VOW, OVERFLOW_TITHES, PITY_LIMIT, SPARK, UR_HARD, UR_SOFT, canPull, claimSpark, pull, rollRarity, shardsOf, takeVow, urChance } from './gacha';
+import { OVERFLOW_TITHES, PITY_LIMIT, SPARK, UR_HARD, UR_SOFT, canPull, claimSpark, pull, rollRarity, shardsOf, urChance } from './gacha';
+import { copiesLeft } from './tiers';
 
 /** Deterministic RNG (mulberry32). */
 function seeded(seed: number) {
@@ -60,31 +61,23 @@ describe('gacha', () => {
     }
   });
 
-  it('duplicates become Vow tokens, then pay Tithes once five are held or taken', () => {
+  it('duplicates become Vow tokens until every Vow of every tier is covered, then Stigmata', () => {
     const save = newSave();
     save.seals = 1000;
     const alwaysLow = () => 0; // always the first R crusader
     const first = pull(save, 'one', alwaysLow)[0];
     expect(first.isNew).toBe(true);
-    for (let v = 1; v <= MAX_VOW; v++) expect(pull(save, 'one', alwaysLow)[0].tokens).toBe(v);
     const id = first.crusader.id;
+    // every copy her tiers will ever need
+    save.owned[id].tokens = copiesLeft(save.owned[id]) - 1;
+    expect(pull(save, 'one', alwaysLow)[0].tokens).toBe(copiesLeft(save.owned[id]));
     expect(save.owned[id].vow).toBe(0);
     const tithesBefore = save.tithes;
     const over = pull(save, 'one', alwaysLow)[0];
     expect(over.tithes).toBe(OVERFLOW_TITHES);
+    expect(over.stigmata).toBe(1);
+    expect(save.stigmata).toBe(1);
     expect(save.tithes).toBe(tithesBefore + OVERFLOW_TITHES);
-  });
-
-  it('Take Vow spends a token and Tithes for a permanent Vow', () => {
-    const save = newSave();
-    save.owned['x'] = { level: 1, vow: 0, tokens: 1 };
-    save.tithes = 100;
-    expect(takeVow(save, 'x', 150)).toBe(false);
-    save.tithes = 200;
-    expect(takeVow(save, 'x', 150)).toBe(true);
-    expect(save.owned['x']).toMatchObject({ vow: 1, tokens: 0 });
-    expect(save.tithes).toBe(50);
-    expect(takeVow(save, 'x', 0)).toBe(false); // no token left
   });
 });
 

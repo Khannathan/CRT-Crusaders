@@ -178,7 +178,7 @@ export class RecruitScene extends Phaser.Scene {
       layer.add([
         img,
         this.add.text(x, y + 108, c.name, { ...text.body(18, PAL.ivory), fontStyle: '600' }).setOrigin(0.5),
-        this.add.text(x, y + 130, owned ? 'Owned: adds a Vow token' : 'Not yet sworn', text.hud(11, owned ? PAL.steel : PAL.amber)).setOrigin(0.5),
+        this.add.text(x, y + 130, owned ? 'Owned: adds a copy for Vows' : 'Not yet sworn', text.hud(11, owned ? PAL.steel : PAL.amber)).setOrigin(0.5),
       ]);
     });
     const back = makeButton(this, GAME_W / 2, 640, 200, 56, 'Not now', () => layer.destroy(), { fontSize: 18 });

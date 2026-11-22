@@ -7,6 +7,7 @@ import { equipped, type GearItem } from './gear';
 import { statsFor, sisterStats, type Stats } from './stats';
 import { bondMult } from './bonds';
 import { skillLevelsGained } from './skillLevels';
+import { skillVow } from './tiers';
 
 /**
  * Power (CP): one number for how strong a Sister, a piece of gear or the whole
@@ -62,7 +63,7 @@ export const powerOf = (c: CrusaderDef, s: Stats, vow: number, levels = 0) => Ma
 /** A Sister's power as she stands: level, Vows, gear and bond. */
 export function sisterPower(save: SaveData, c: CrusaderDef) {
   const o = save.owned[c.id];
-  return o ? powerOf(c, sisterStats(save, c), o.vow, skillLevelsGained(save, c.id)) : 0;
+  return o ? powerOf(c, sisterStats(save, c), skillVow(o), skillLevelsGained(save, c.id)) : 0;
 }
 
 export const sisterPowerById = (save: SaveData, id: string) => {
@@ -76,7 +77,7 @@ function powerWith(save: SaveData, c: CrusaderDef, gear: GearItem[]) {
   if (!o) return 0;
   const st = statsFor(c, o, gear);
   const m = bondMult(save, c.id);
-  return powerOf(c, { ...st, hp: Math.round(st.hp * m), atk: Math.round(st.atk * m) }, o.vow, skillLevelsGained(save, c.id));
+  return powerOf(c, { ...st, hp: Math.round(st.hp * m), atk: Math.round(st.atk * m) }, skillVow(o), skillLevelsGained(save, c.id));
 }
 
 /** What a worn piece adds to her power: with it on versus off. */

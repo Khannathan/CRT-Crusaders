@@ -6,6 +6,7 @@ import type { Rng } from './gacha';
 import { give, type Bag } from './items';
 import { CP, foePower, recommendedPower } from './power';
 import { dayKey } from './tasks';
+import { addStigmata } from './tiers';
 
 /**
  * The Pilgrim's Road: the Vigil's own campaign. A road of chapters, ten stages
@@ -110,6 +111,7 @@ export function stageBattle(save: SaveData, party: string[], n: number, rng?: Rn
 export const stageRecommended = (save: SaveData, n: number) => recommendedPower(stageBattle(save, [], n));
 
 export interface StageReward {
+  stigmata?: number;
   tithes: number;
   seals: number;
   gilt: number;
@@ -126,7 +128,7 @@ export function stageReward(n: number): StageReward {
 /** A chapter's chest, opened by its boss. */
 export function chapterChest(chapter: number): StageReward {
   const step = chapter + 1;
-  return { tithes: 0, seals: 3 + step, gilt: 60 + 40 * step, items: { ash2: step, page2: step, ...(step >= 3 ? { incense2: step - 1 } : {}) } };
+  return { tithes: 0, seals: 3 + step, gilt: 60 + 40 * step, stigmata: 1 + Math.floor(step / 2), items: { ash2: step, page2: step, ...(step >= 3 ? { incense2: step - 1 } : {}) } };
 }
 
 export interface StageResult {
@@ -141,6 +143,7 @@ function pay(save: SaveData, r: StageReward) {
   save.seals += r.seals;
   earn(save, r.gilt);
   give(save, r.items);
+  addStigmata(save, r.stigmata ?? 0);
 }
 
 /** Settles a stage fight. Only the next stage can be won for the first time. */
