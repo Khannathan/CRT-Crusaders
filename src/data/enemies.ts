@@ -16,8 +16,24 @@ export interface EnemyDef {
   color: number;
   shape: 'husk' | 'hood' | 'bell' | 'hound' | 'wisp' | 'choir' | 'warden' | 'priest' | 'golem' | 'lurker' | 'pilgrim' | 'thief' | 'nun' | 'bishop' | 'abbess';
   skills: SkillDef[];
+  /** Reuse another foe's art until this one has its own. */
+  art?: string;
+  /** Hunt-boss mechanics, run at the start of each round (see systems/combat.ts). */
+  traits?: EnemyTraits;
   /** Bosses: below this share of HP, swap to a harsher skill set. */
   phase2?: { atPct: number; text: string; atkPct: number; skills: SkillDef[] };
+}
+
+/** Hunt-boss mechanics. */
+export interface EnemyTraits {
+  /** Heals this share of max HP each round; half while it Bleeds, Burns or is Poisoned. */
+  regen?: number;
+  /** Takes this much less damage while any of its servants stand. */
+  guarded?: number;
+  /** Gains this much attack every round. */
+  enrage?: number;
+  /** Swaps its Armor and Magic Resist every this many rounds. */
+  swap?: number;
 }
 
 const any: number[] = [];
@@ -43,6 +59,13 @@ export const AFFINITY: Record<string, { mres: number; dmg?: DmgType; bane: strin
   nun: { mres: 55, dmg: 'magic', bane: 'Glass Confession' },
   bishop: { mres: 70, dmg: 'magic', bane: 'Veiled Tribunal' },
   abbess: { mres: 60, dmg: 'magic', bane: 'Thorn Covenant' },
+  // Hallowed Hunt bosses
+  'flayed-saint': { mres: 90, bane: 'Ashen Mercy' },
+  'twofold-reliquary': { mres: 20, dmg: 'magic', bane: 'Glass Confession' },
+  colossus: { mres: 15, bane: 'Sepulcher Watch' },
+  'rot-mother': { mres: 70, dmg: 'magic', bane: 'Candle Choir' },
+  choirmaster: { mres: 45, dmg: 'magic', bane: 'Hollow Bell' },
+  'red-cardinal': { mres: 50, bane: 'Red Pilgrimage' },
 };
 
 export const ENEMIES: Record<string, EnemyDef> = {
@@ -163,6 +186,55 @@ export const ENEMIES: Record<string, EnemyDef> = {
       ],
     },
   },
+
+  // ---- Hallowed Hunt bosses: one a day, scored by the damage dealt ----
+  'flayed-saint': {
+    id: 'flayed-saint', name: 'The Flayed Saint', hp: 3200, atk: 21, armor: 20, spd: 7, boss: true, color: 0x8a4a4a, shape: 'abbess', art: 'abbess',
+    traits: { regen: 0.04 },
+    skills: [
+      { id: 'martyrs-embrace', name: "Martyr's Embrace", desc: '', from: any, target: 'enemy', mult: 1.3, aim: 'strongest' },
+      { id: 'weeping-wounds', name: 'Weeping Wounds', desc: 'Every Sister Bleeds.', from: any, target: 'allEnemies', mult: 0.45, bleed: { mult: 0.25, turns: 2 } },
+    ],
+  },
+  'twofold-reliquary': {
+    id: 'twofold-reliquary', name: 'The Twofold Reliquary', hp: 3000, atk: 20, armor: 150, spd: 6, boss: true, color: 0xa08a5a, shape: 'golem', art: 'golem',
+    traits: { swap: 3 },
+    skills: [
+      { id: 'gilded-crush', name: 'Gilded Crush', desc: '', from: any, target: 'enemy', reach: [1, 2], mult: 1.4, aim: 'front' },
+      { id: 'reliquary-glare', name: 'Reliquary Glare', desc: 'Hits everyone.', from: any, target: 'allEnemies', mult: 0.6 },
+    ],
+  },
+  colossus: {
+    id: 'colossus', name: 'The Ossuary Colossus', hp: 3600, atk: 24, armor: 140, spd: 3, boss: true, color: 0x6a6052, shape: 'golem', art: 'warden',
+    skills: [
+      { id: 'grave-slam', name: 'Grave Slam', desc: 'A huge blow on the front Sister after a turn of charging.', from: any, target: 'enemy', reach: [1], mult: 3.2, windup: true, aim: 'front', weight: 1.4 },
+      { id: 'bone-sweep', name: 'Bone Sweep', desc: '', from: any, target: 'enemy', reach: [1, 2], mult: 1.1, aim: 'front' },
+      { id: 'raise-the-dead', name: 'Raise the Dead', desc: '', from: any, target: 'self', summon: 'husk', weight: 0.4 },
+    ],
+  },
+  'rot-mother': {
+    id: 'rot-mother', name: 'Mother of Rot', hp: 2800, atk: 18, armor: 25, spd: 8, boss: true, color: 0x5b6b3c, shape: 'nun', art: 'nun',
+    skills: [
+      { id: 'blight-psalm', name: 'Blight Psalm', desc: 'Poisons every Sister.', from: any, target: 'allEnemies', mult: 0.3, poison: { mult: 0.5, turns: 3 }, weight: 1.4 },
+      { id: 'festering-touch', name: 'Festering Touch', desc: '', from: any, target: 'enemy', mult: 1.1, poison: { mult: 0.6, turns: 3 }, aim: 'weakest' },
+    ],
+  },
+  choirmaster: {
+    id: 'choirmaster', name: 'The Choirmaster', hp: 3000, atk: 19, armor: 40, spd: 9, boss: true, color: 0x652b3b, shape: 'choir', art: 'choir',
+    traits: { guarded: 0.5 },
+    skills: [
+      { id: 'summon-choir', name: 'Summon the Choir', desc: 'Calls a Bell Ringer to sing for it.', from: any, target: 'self', summon: 'ringer', weight: 0.8 },
+      { id: 'dread-chorus', name: 'Dread Chorus', desc: 'Hits everyone.', from: any, target: 'allEnemies', mult: 0.65 },
+    ],
+  },
+  'red-cardinal': {
+    id: 'red-cardinal', name: 'The Red Cardinal', hp: 2900, atk: 17, armor: 45, spd: 10, boss: true, color: 0x8a1f2a, shape: 'bishop', art: 'bishop',
+    traits: { enrage: 0.08 },
+    skills: [
+      { id: 'scarlet-edict', name: 'Scarlet Edict', desc: 'Steals 15 Zeal.', from: any, target: 'allEnemies', mult: 0.5, zealDrain: 15 },
+      { id: 'cardinals-rod', name: "Cardinal's Rod", desc: '', from: any, target: 'enemy', mult: 1.4, aim: 'weakest' },
+    ],
+  },
 };
 
 /** Enemy line-ups, rank 1 first. */
@@ -185,4 +257,11 @@ export const ENCOUNTERS: Record<string, string[]> = {
   'belfry-elite-1': ['bishop', 'warden'],
   'belfry-elite-2': ['golem', 'nun', 'priest'],
   abbess: ['abbess', 'thief', 'nun'],
+  // Hallowed Hunts
+  'hunt-flayed-saint': ['flayed-saint'],
+  'hunt-twofold-reliquary': ['twofold-reliquary'],
+  'hunt-colossus': ['colossus'],
+  'hunt-rot-mother': ['rot-mother'],
+  'hunt-choirmaster': ['choirmaster', 'ringer', 'ringer'],
+  'hunt-red-cardinal': ['red-cardinal'],
 };

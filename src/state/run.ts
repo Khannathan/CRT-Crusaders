@@ -11,7 +11,7 @@ export interface Challenge {
   /** Shown as the battle's opening line. */
   label: string;
   make: (rng: Rng) => Battle;
-  finish: (outcome: 'victory' | 'defeat', battle: Battle) => { scene: string; data?: object };
+  finish: (outcome: 'victory' | 'defeat', battle: Battle) => { scene: string; data?: object; /** Closing line, in place of the default. */ line?: string };
 }
 
 /**

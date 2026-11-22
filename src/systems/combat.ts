@@ -58,6 +58,12 @@ export interface IntentView {
 
 export interface Unit {
   uid: string;
+  /** HP a hunt boss has won back, so its score counts every blow. */
+  healed?: number;
+  /** Hunt-boss mechanics. */
+  traits?: import('../data/enemies').EnemyTraits;
+  /** Her Holy Symbol's battle effects, once woken. */
+  symbol?: import('./symbols').SymbolCombat;
   side: Side;
   name: string;
   /** Crusader id or enemy type id. */
@@ -246,6 +252,10 @@ export class Battle {
   mods: BattleMods = { ...NO_MODS };
   /** The party's hound: it howls at the start of every round. */
   hound?: HoundHowl;
+  /** Scored fights (Hallowed Hunts) end after this many rounds. */
+  roundLimit?: number;
+  /** True once the round limit has passed. */
+  timeUp = false;
 
   constructor(party: Unit[], enemies: Unit[], opts: { rng?: Rng; vigil?: number; zeal?: number; enemyScale?: number; mods?: Partial<BattleMods>; hound?: HoundHowl } = {}) {
     this.mods = { ...NO_MODS, ...opts.mods };
@@ -270,9 +280,16 @@ export class Battle {
     if (actor.side !== 'party') return 1;
     const m = this.mods;
     const fallen = this.units.filter((u) => u.side === 'party' && u.hp <= 0).length;
-    let f = 1 + fallen * m.fallenAtk + (actor.hp < actor.maxHp / 2 ? m.lowHpAtk : 0);
-    if (skill.rite) f *= 1 + m.riteMult;
+    let f = (1 + fallen * m.fallenAtk + (actor.hp < actor.maxHp / 2 ? m.lowHpAtk : 0)) * (actor.symbol?.mult ?? 1);
+    if (skill.rite) f *= (1 + m.riteMult) * (1 + (actor.symbol?.rite ?? 0));
     return f;
+  }
+
+  /** Holy Symbol: +10% at +5, a Confessor's +20% at +10, and the Rite bonus at +15. */
+  private symbolHeal(actor: Unit, skill: SkillDef) {
+    const sy = actor.symbol;
+    if (!sy) return 1;
+    return sy.mult * sy.heal * (skill.rite ? 1 + sy.rite : 1);
   }
 
   private detonateOf(actor: Unit) {
@@ -292,7 +309,7 @@ export class Battle {
   }
 
   outcome(): 'victory' | 'defeat' | undefined {
-    if (!this.alive('party').length) return 'defeat';
+    if (!this.alive('party').length || this.timeUp) return 'defeat';
     if (!this.alive('enemy').length) return 'victory';
     return undefined;
   }
@@ -308,6 +325,7 @@ export class Battle {
     this.log.push(`-- round ${this.round} (zeal ${this.zeal}, vigil ${this.vigil})`);
     if (this.mods.roundZeal > 0 && this.alive('party').length) this.addZeal(this.mods.roundZeal, events, 'relics');
     this.howl(events);
+    this.bossTraits(events);
     if (this.round > 1) {
       if (this.vigil > 0) {
         this.vigil -= 1;
@@ -365,13 +383,45 @@ export class Battle {
     }
   }
 
+  /** Hunt-boss mechanics at the start of a round: regeneration, rage, and swapping its guard. */
+  private bossTraits(events: BattleEvent[]) {
+    for (const u of this.alive('enemy')) {
+      const t = u.traits;
+      if (!t) continue;
+      if (t.regen) {
+        const cut = u.status.bleed || u.status.poison ? 0.5 : 1;
+        const real = Math.min(u.maxHp - u.hp, Math.round(u.maxHp * t.regen * cut));
+        if (real > 0) {
+          u.hp += real;
+          u.healed = (u.healed ?? 0) + real;
+          events.push({ type: 'heal', uid: u.uid, amount: real });
+        }
+      }
+      if (t.enrage && this.round > 1) {
+        u.status.empower = { pct: Math.round(t.enrage * (this.round - 1) * 100) / 100, turns: 2 };
+        events.push({ type: 'status', uid: u.uid, label: `Rage +${Math.round(t.enrage * (this.round - 1) * 100)}%` });
+      }
+      if (t.swap && this.round > 1 && (this.round - 1) % t.swap === 0) {
+        [u.armor, u.mres] = [u.mres, u.armor];
+        events.push({ type: 'text', text: `${u.name} turns its guard: now weak to ${u.armor < u.mres ? 'Physical' : 'Magic'}.` });
+      }
+    }
+  }
+
   /** Advances to the next living actor and applies its start-of-turn effects. */
   nextTurn(): TurnStart {
     const events: BattleEvent[] = [];
     for (let guard = 0; guard < 100; guard++) {
       const done = this.outcome();
       if (done) return { events, outcome: done };
-      if (!this.queue.length) this.startRound(events);
+      if (!this.queue.length) {
+        if (this.roundLimit && this.round >= this.roundLimit) {
+          this.timeUp = true;
+          events.push({ type: 'text', text: 'The hunt is over. The beast withdraws into the dark.' });
+          return { events, outcome: 'defeat' };
+        }
+        this.startRound(events);
+      }
       const actor = this.get(this.queue.shift()!);
       if (actor.hp <= 0) continue;
 
@@ -532,7 +582,7 @@ export class Battle {
       }
       if (t.hp <= 0) continue;
       if (skill.heal || skill.healPct) {
-        const amount = Math.round((skill.heal ? actor.atk * skill.heal * this.vary() : t.maxHp * skill.healPct!) * this.healOf(t));
+        const amount = Math.round((skill.heal ? actor.atk * skill.heal * this.vary() : t.maxHp * skill.healPct!) * this.healOf(t) * this.symbolHeal(actor, skill));
         const real = Math.min(amount, t.maxHp - t.hp);
         t.hp += real;
         if (real >= t.maxHp * 0.05) support = true;
@@ -545,7 +595,7 @@ export class Battle {
       }
       if (skill.shieldPct) {
         support = true;
-        const amount = Math.round(t.maxHp * skill.shieldPct);
+        const amount = Math.round(t.maxHp * skill.shieldPct * this.symbolHeal(actor, skill));
         t.status.shield = amount;
         events.push({ type: 'shield', uid: t.uid, amount });
       }
@@ -826,9 +876,12 @@ export class Battle {
 
   /** Damage multiplier from a living Sister's bulwark passive. */
   private guardOf(t: Unit) {
-    if (t.side !== 'party') return 1;
+    if (t.side !== 'party') {
+      const g = t.traits?.guarded;
+      return g && this.alive('enemy').some((u) => u !== t) ? 1 - g : 1;
+    }
     const g = this.alive('party').find((u) => u.passive?.kind === 'bulwark');
-    return (g ? 1 - (g.passive!.value ?? 0) : 1) * (1 - (this.hound?.howl.ward ?? 0));
+    return (g ? 1 - (g.passive!.value ?? 0) : 1) * (1 - (this.hound?.howl.ward ?? 0)) * (1 - (t.symbol?.guard ?? 0));
   }
 
   /** Expected damage of a skill on one target, before shields and luck. Used by Auto and target previews. */
@@ -843,7 +896,7 @@ export class Battle {
       if (actor.passive?.kind === 'executioner' && t.hp < t.maxHp / 2) raw *= 1 + (actor.passive.value ?? 0);
       const critChance = t.status.accused && actor.passive?.kind === 'critOnAccused' ? 1 : actor.crit;
       raw *= 1 + critChance * (CRIT_MULT - 1);
-      total += damageAfterArmor(raw, defenceAgainst(t, dmgOf(actor, skill)));
+      total += damageAfterArmor(raw, defenceAgainst(t, dmgOf(actor, skill))) * this.guardOf(t);
     }
     if (skill.detonate && t.status.poison) total += t.status.poison.dmg * t.status.poison.turns * skill.detonate * this.detonateOf(actor);
     return Math.round(total);
@@ -978,7 +1031,7 @@ export function makeEnemy(type: string, uid: string, rank: number, scale = 1): U
   const d = ENEMIES[type];
   const hp = Math.round(d.hp * ENEMY_TUNE * scale);
   const a = AFFINITY[type] ?? {};
-  return { uid, side: 'enemy', name: d.name, ref: type, rank, maxHp: hp, hp, atk: Math.round(d.atk * ENEMY_TUNE * scale), armor: d.armor, mres: a.mres ?? d.armor, dmg: a.dmg ?? 'physical', spd: d.spd, crit: d.crit ?? 0.05, status: {}, boss: d.boss, bane: a.bane };
+  return { uid, side: 'enemy', name: d.name, ref: type, rank, maxHp: hp, hp, atk: Math.round(d.atk * ENEMY_TUNE * scale), armor: d.armor, mres: a.mres ?? d.armor, dmg: a.dmg ?? 'physical', spd: d.spd, crit: d.crit ?? 0.05, status: {}, boss: d.boss, bane: a.bane, traits: d.traits };
 }
 
 /** The damage a skill deals: its own type, else its user's tag (Physical by default). */

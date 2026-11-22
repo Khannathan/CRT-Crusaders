@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 import { bgFight } from './ui/bgFight';
 import { ErrandsScene } from './scenes/ErrandsScene';
 import { KennelScene } from './scenes/KennelScene';
+import { HuntScene } from './scenes/HuntScene';
 import { GAME_H, GAME_W, PAL } from './config';
 import { installCrt } from './fx/crt';
 import { music } from './audio/music';
@@ -85,6 +86,7 @@ function start() {
       CampaignScene,
       ErrandsScene,
       KennelScene,
+      HuntScene,
       CloisterScene,
       CrusadeScene,
       MusterScene,
