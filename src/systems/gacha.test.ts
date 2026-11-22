@@ -171,3 +171,17 @@ describe('Order banners', () => {
     expect(shardsOf(save, ord.name)).toBe(0);
   });
 });
+
+describe('bannerPool', () => {
+  it('lists every Sister once and the chances add up to 100%', async () => {
+    const { bannerPool } = await import('./gacha');
+    const { CRUSADERS } = await import('../data/crusaders');
+    const { newSave } = await import('../state/save');
+    const s = newSave();
+    s.banner = { order: 'Iron Vigil', target: 'CC-W040' };
+    const pool = bannerPool(s);
+    expect(pool.length).toBe(CRUSADERS.length);
+    expect(pool.reduce((a, p) => a + p.chance, 0)).toBeCloseTo(1, 6);
+    expect(pool.find((p) => p.c.id === 'CC-W040')!.chance).toBeCloseTo(0.0075, 6);
+  });
+});

@@ -7,13 +7,15 @@ import { CRUSADERS } from '../data/crusaders';
 import { ORDERS, ORDER_LIST } from '../data/orders';
 import { sigilKey } from '../ui/icons';
 import { commit, game } from '../state/game';
-import { COST_ONE, COST_TEN, PITY_LIMIT, RARITY_ORDER, RATES, SPARK, UR_HARD, UR_SOFT, canPull, claimSpark, pull, shardsOf, urPityLeft, type PullKind } from '../systems/gacha';
+import { COST_ONE, COST_TEN, PITY_LIMIT, RARITY_ORDER, RATES, bannerPool, SPARK, UR_HARD, UR_SOFT, canPull, claimSpark, pull, shardsOf, urPityLeft, type PullKind } from '../systems/gacha';
 import { makeButton } from '../ui/button';
 import { CURRENCY_BAR_H, addCurrencyBar } from '../ui/currencyBar';
 import { portraitKey } from '../ui/placeholderPortrait';
 import { TAB_BAR_H, addTabBar } from '../ui/tabBar';
 import { PAD, addBackdrop, addBadge, addFrame, addHeading, addPanel, addScreenGlow, text } from '../ui/theme';
 import { holdForCard, justHeld } from '../ui/sisterCard';
+import { addScrollArea } from '../ui/scroll';
+import { makePlaceholderPortrait } from '../ui/placeholderPortrait';
 
 /** The Sealed Altar: rates, pity counter, and the pull buttons. */
 export class RecruitScene extends Phaser.Scene {
@@ -115,7 +117,8 @@ export class RecruitScene extends Phaser.Scene {
     y += poolH + 8;
     const offerH = GAME_H - TAB_BAR_H - 10 - y;
     addPanel(this, GAME_W / 2 - pw / 2, y, pw, offerH);
-    this.add.text(px + 16, y + 8, 'Ten oaths bring an SR or better.', text.body(18, PAL.muted));
+    this.add.text(px + 16, y + 8, '×10: an SR or better.', text.body(17, PAL.muted));
+    makeButton(this, GAME_W - PAD - 16 - 186, y + 20, 128, 36, 'All Sisters', () => this.showPool(), { fontSize: 15, icon: 'roster' });
     makeButton(this, GAME_W - PAD - 16 - 60, y + 20, 120, 36, 'View rates', () => this.showRates(), { fontSize: 15, icon: 'book' });
     const btnY = y + offerH - 50;
     const half = (pw - 32 - 10) / 2;
@@ -184,6 +187,48 @@ export class RecruitScene extends Phaser.Scene {
     });
     const back = makeButton(this, GAME_W / 2, 640, 200, 56, 'Not now', () => layer.destroy(), { fontSize: 18 });
     layer.add(back.all);
+  }
+
+  /** Every Sister this banner can give, by rarity, with her chance per pull. */
+  private showPool() {
+    const s = game.save;
+    const banner = this.currentBanner();
+    const layer = this.add.container(0, 0).setDepth(20);
+    layer.add(this.add.rectangle(GAME_W / 2, GAME_H / 2, GAME_W, GAME_H, 0x09060b, 0.94).setInteractive());
+    layer.add(addFrame(this, GAME_W / 2, GAME_H / 2, GAME_W - 24, GAME_H - 40, { fill: 0x241925 }));
+    layer.add(this.add.text(GAME_W / 2, 60, 'EVERY SISTER ON THIS BANNER', text.display(22, PAL.amber)).setOrigin(0.5));
+    layer.add(
+      this.add
+        .text(GAME_W / 2, 84, `${banner.order} banner. Gold frames are boosted here. Chances are per pull, before pity. Hold a portrait for her stats.`, { ...text.body(14, PAL.muted), align: 'center', wordWrap: { width: GAME_W - 70 } })
+        .setOrigin(0.5, 0),
+    );
+    const list = addScrollArea(this, 130, GAME_H - 110, { parent: layer, depth: 20 });
+    const pool = bannerPool(s);
+    const cols = 5;
+    const cell = (GAME_W - 60) / cols;
+    let y = 140;
+    for (const r of [...RARITY_ORDER].reverse()) {
+      const rows = pool.filter((p) => p.c.rarity === r);
+      list.content.add(this.add.text(36, y, `${r}  ·  ${(RATES[r] * 100).toFixed(1)}% in all  ·  ${rows.length} Sisters`, text.hud(13, RARITY_COLOR[r])));
+      y += 24;
+      rows.forEach((p, i) => {
+        const x = 30 + cell / 2 + (i % cols) * cell;
+        const cy = y + Math.floor(i / cols) * 118 + 40;
+        makePlaceholderPortrait(this, p.c);
+        const frame = this.add.rectangle(x, cy, 78, 78, 0x170f1b).setStrokeStyle(p.featured ? 3 : 1, p.featured ? PAL.amber : RARITY_COLOR[r]);
+        const img = this.add.image(x, cy, portraitKey(p.c.id)).setDisplaySize(72, 72).setAlpha(s.owned[p.c.id] ? 1 : 0.8);
+        holdForCard(this, img, p.c.id);
+        const name = this.add.text(x, cy + 42, p.c.name.split(' ')[0], text.body(13, PAL.ivory)).setOrigin(0.5, 0);
+        const pct = p.chance * 100;
+        const odds = this.add.text(x, cy + 59, `${pct < 0.1 ? pct.toFixed(3) : pct.toFixed(2)}%`, text.hud(11, p.featured ? PAL.amber : PAL.steel)).setOrigin(0.5, 0);
+        list.content.add([frame, img, name, odds]);
+        if (s.owned[p.c.id]) list.content.add([...addBadge(this, x - 36, cy - 36, "OWNED", PAL.steel, 10)]);
+      });
+      y += Math.ceil(rows.length / cols) * 118 + 14;
+    }
+    list.fit(y);
+    const close = makeButton(this, GAME_W / 2, GAME_H - 66, 240, 60, 'Close', () => layer.destroy());
+    layer.add(close.all);
   }
 
   private showRates() {
