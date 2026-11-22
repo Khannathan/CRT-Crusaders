@@ -11,6 +11,7 @@ import { PROCESSION_ENTRIES, candleReady, honouredToday, processionLeft } from '
 const BRAND_MAX = 9;
 import { RELICS, relicBlock } from '../systems/reliquary';
 import { codexBlock } from '../systems/codex';
+import { claimable as setsClaimable, SETS } from '../systems/collection';
 import { CRYPTS, PILGRIMAGE_CLEARS, cryptUnlocked, pilgrimageLeft } from '../systems/crusade';
 import { TOWER_FLOORS, towerOf } from '../systems/tower';
 import { TRIAL_ENTRIES } from '../systems/trials';
@@ -96,6 +97,12 @@ export const RITES: RiteEntry[] = [
     blurb: 'Writs raise an Order. Each level lifts all its Sisters.',
   },
   // The Sanctum's rail: daily duties.
+  {
+    label: 'Order Book', scene: 'OrderBook', icon: 'book', rank: 1, home: 'cloister', bg: 'bg-hall',
+    ready: (s) => setsClaimable(s).length > 0,
+    blurb: 'Every Sister of every Order. Small sets pay Seals and a title.',
+    status: (s) => `${SETS.filter((x) => (s.sets ?? []).includes(x.id)).length} of ${SETS.length} sets complete`,
+  },
   { label: 'Matins', scene: 'Matins', icon: 'flame', rank: 1, home: 'sanctum', ready: (s) => matinsReady(s) },
   { label: 'Penance', scene: 'Penance', icon: 'book', rank: 2, home: 'sanctum', ready: (s) => anyClaimable(s) },
   { label: 'Confession', scene: 'Confession', icon: 'book', rank: 5, home: 'sanctum', ready: (s) => anyUnheard(s) || (Object.keys(s.owned).length > 0 && candleReady(s)) },
