@@ -68,3 +68,48 @@ export function loadFullBody(scene: Phaser.Scene, id: string): Promise<string> {
     if (!scene.load.isLoading()) scene.load.start();
   });
 }
+
+/**
+ * Splash art: src/assets/splash/<id>.webp (or .png/.jpg), a 2:3 painted scene of
+ * her, 640 x 960. About 170 KB each, so they load on demand (queueSplash in a
+ * scene's preload, or loadSplash). To swap in a Sister's new look, replace her
+ * file with one of the same name; nothing else changes.
+ */
+const SPLASH_URLS = import.meta.glob<string>('../assets/splash/*.{webp,png,jpg}', { eager: true, query: '?url', import: 'default' });
+const splashUrl = (id: string) => SPLASH_URLS[`../assets/splash/${id}.png`] ?? SPLASH_URLS[`../assets/splash/${id}.webp`] ?? SPLASH_URLS[`../assets/splash/${id}.jpg`];
+export const splashKey = (id: string) => `splash-${id}`;
+export const hasSplash = (id: string) => !!splashUrl(id);
+
+/** Smooth filtering: splash art is painted, and is drawn smaller than its pixels. */
+const smooth = (scene: Phaser.Scene, key: string) => {
+  if (scene.textures.exists(key)) scene.textures.get(key).setFilter(Phaser.Textures.FilterMode.LINEAR);
+};
+
+/** In a scene's preload(): queue her splash so it is ready in create(). */
+export function queueSplash(scene: Phaser.Scene, id: string) {
+  const key = splashKey(id);
+  const url = splashUrl(id);
+  if (!url || scene.textures.exists(key)) return;
+  scene.load.once(`filecomplete-image-${key}`, () => smooth(scene, key));
+  scene.load.image(key, url);
+}
+
+/** Loads her splash if she has one; resolves with its key, or undefined. */
+export function loadSplash(scene: Phaser.Scene, id: string): Promise<string | undefined> {
+  const key = splashKey(id);
+  const url = splashUrl(id);
+  if (!url) return Promise.resolve(undefined);
+  if (scene.textures.exists(key)) return Promise.resolve(key);
+  return new Promise((resolve) => {
+    const done = () => {
+      scene.load.off(`filecomplete-image-${key}`, done);
+      scene.load.off(Phaser.Loader.Events.COMPLETE, done);
+      smooth(scene, key);
+      resolve(scene.textures.exists(key) ? key : undefined);
+    };
+    scene.load.once(`filecomplete-image-${key}`, done);
+    scene.load.once(Phaser.Loader.Events.COMPLETE, done);
+    scene.load.image(key, url);
+    if (!scene.load.isLoading()) scene.load.start();
+  });
+}

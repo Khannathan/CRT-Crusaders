@@ -6,7 +6,7 @@ import { music } from '../audio/music';
 import { commit, game } from '../state/game';
 import { makeButton } from '../ui/button';
 import { NOISE_FRAMES, WAX_COLOR, noiseKey, sealKey } from '../ui/effects';
-import { portraitKey } from '../ui/placeholderPortrait';
+import { portraitKey, queueSplash, splashKey } from '../ui/placeholderPortrait';
 import { FIGURE_H, FIGURE_W, SisterSprite, fullKey } from '../ui/sisterSprite';
 import { holdForCard } from '../ui/sisterCard';
 
@@ -54,6 +54,11 @@ export class RevealScene extends Phaser.Scene {
     this.seals = [];
     this.focus = undefined;
     if (this.results.some((r) => r.crusader.rarity === 'UR')) music.preload('ur');
+  }
+
+  preload() {
+    // Splash art for everyone in this pull, ready for the reveal.
+    for (const r of this.results) queueSplash(this, r.crusader.id);
   }
 
   create() {
@@ -257,14 +262,19 @@ export class RevealScene extends Phaser.Scene {
       this.cameras.main.flash(250, 214, 161, 95);
     }
 
-    // Her full-body figure at twice its pixel size when the art exists, else her portrait.
-    const full = this.textures.exists(fullKey(c.id));
-    const w = full ? FIGURE_W * 2 : SIZE;
-    const h = full ? FIGURE_H * 2 : SIZE;
-    const fy = full ? -58 : 0;
+    // Her splash art when it exists, else her full-body figure at twice its pixel size, else her portrait.
+    const splash = this.textures.exists(splashKey(c.id));
+    const full = !splash && this.textures.exists(fullKey(c.id));
+    const w = splash ? 336 : full ? FIGURE_W * 2 : SIZE;
+    const h = splash ? 504 : full ? FIGURE_H * 2 : SIZE;
+    const fy = splash ? -72 : full ? -58 : 0;
     const frame = this.add.rectangle(0, fy, w + 12, h + 12, 0x000000).setStrokeStyle(6, color);
     const sprite = full ? new SisterSprite(this, c.id, 0, fy + h / 2 - 16, 2, color) : undefined;
-    const portrait = sprite ? sprite.root.setAlpha(0) : this.add.image(0, 0, portraitKey(c.id)).setDisplaySize(SIZE, SIZE).setAlpha(0);
+    const portrait = splash
+      ? this.add.image(0, fy, splashKey(c.id)).setDisplaySize(w, h).setAlpha(0)
+      : sprite
+        ? sprite.root.setAlpha(0)
+        : this.add.image(0, 0, portraitKey(c.id)).setDisplaySize(SIZE, SIZE).setAlpha(0);
     const noise = this.add.image(0, fy, noiseKey(0)).setDisplaySize(w, h);
     card.add([frame, portrait, noise]);
 
@@ -289,11 +299,13 @@ export class RevealScene extends Phaser.Scene {
 
     const style = { fontFamily: FONT, color: hex(PAL.ivory), align: 'center' };
     const tag = r.isNew ? 'NEWLY SWORN' : r.tithes ? `Every copy held: +${r.stigmata ?? 0} Stigmata, +${r.tithes} Tithes` : `A copy of her (${r.tokens} held): Vows in the Roster`;
+    // Words sit under the art, however tall it is.
+    const textY = Math.max(SIZE / 2, fy + h / 2 + 6);
     const texts = [
-      this.add.text(0, SIZE / 2 + 44, c.name, { ...style, fontSize: '30px' }).setOrigin(0.5),
-      this.add.text(0, SIZE / 2 + 82, `${c.rarity} · ${CLASSES[c.classId].name}`, { ...style, fontSize: '19px', color: hex(color) }).setOrigin(0.5),
+      this.add.text(0, textY + 44, c.name, { ...style, fontSize: '30px' }).setOrigin(0.5),
+      this.add.text(0, textY + 82, `${c.rarity} · ${CLASSES[c.classId].name}`, { ...style, fontSize: '19px', color: hex(color) }).setOrigin(0.5),
       this.add
-        .text(0, SIZE / 2 + 124, tag, { ...style, fontSize: '20px', color: hex(r.isNew ? PAL.amber : PAL.steel) })
+        .text(0, textY + 124, tag, { ...style, fontSize: '20px', color: hex(r.isNew ? PAL.amber : PAL.steel) })
         .setOrigin(0.5),
     ];
     texts.forEach((t) => t.setAlpha(0));
