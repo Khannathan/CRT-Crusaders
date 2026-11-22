@@ -529,7 +529,7 @@ export class RosterScene extends Phaser.Scene {
     layer.add(parts[0]);
     y += parts[0].height + 10;
     if (orderTier) {
-      const t = this.add.text(left, y, `With another of the ${c.order}: ${orderTier.desc}`, { ...text.body(15, PAL.muted), wordWrap: { width: bw } });
+      const t = this.add.text(left, y, `${c.order} blessing, by Sisters of the Order in the party:\n${ORDERS[c.order].tiers.map((x) => `${x.need}: ${x.desc}`).join('\n')}`, { ...text.body(15, PAL.muted), wordWrap: { width: bw } });
       layer.add(t);
       y += t.height + 10;
     }
