@@ -9,6 +9,7 @@ import type { TrialState } from '../systems/trials';
 import type { TaskState } from '../systems/tasks';
 import type { VigilState } from '../systems/vigil';
 import type { CampaignState } from '../systems/campaign';
+import type { ProcessionState } from '../systems/offerings';
 
 /** Everything the player owns, stored on the device. */
 export interface OwnedCrusader {
@@ -73,6 +74,12 @@ export interface SaveData {
   inquisition?: InquisitionState;
   /** Sister bonds: bond XP and confessions heard, by Sister id. */
   bonds?: Record<string, BondState>;
+  /** Offerings held for Confession, by offering id. */
+  offerings?: Record<string, number>;
+  /** Day the free candle was last lit. */
+  candleDay?: string;
+  /** The Reliquary Procession: entries used today and highest tier won. */
+  procession?: ProcessionState;
   /** Gilt, the premium currency (starts at GILT_START). */
   gilt?: number;
   /** Alms, the shop currency. */

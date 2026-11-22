@@ -3,7 +3,10 @@ import { GAME_H, GAME_W, PAL } from '../config';
 import { RARITY_COLOR } from '../data/classes';
 import { CRUSADERS } from '../data/crusaders';
 import { game, commit } from '../state/game';
-import { BOND_STAT, MAX_BOND, bondInfo, candleCost, confessions, hear, offerCandle } from '../systems/bonds';
+import { BOND_STAT, BOND_XP, MAX_BOND, bondInfo, confessions, hear } from '../systems/bonds';
+import { FAVOURED, OFFERINGS, POTENCY_COLOR, candleReady, favours, heldOf, lightCandle, offer, offeringDef, offeringXp, offeringsHeld } from '../systems/offerings';
+import { drawOfferingIcon } from '../ui/offeringIcon';
+import { tapForSources } from '../ui/sources';
 import { ROMAN_RANK } from '../systems/rank';
 import { makeButton } from '../ui/button';
 import { modeScreen, progressBar, toast } from '../ui/modeScreen';
@@ -14,12 +17,14 @@ import { TAB_BAR_H } from '../ui/tabBar';
 import { holdForCard } from '../ui/sisterCard';
 
 
-/** Confession: Sisters by bond, and one Sister's bond, candle and confessions. */
+/** Confession: Sisters by bond, and one Sister's bond, offerings, candle and confessions. */
 export class ConfessionScene extends Phaser.Scene {
   private id?: string;
   private notice?: string;
   /** Where the list was scrolled, kept while she is opened and closed. */
   private static listY = 0;
+  /** Where her page was scrolled, kept while giving offerings. */
+  private static detailY = 0;
 
   constructor() {
     super('Confession');
@@ -42,9 +47,10 @@ export class ConfessionScene extends Phaser.Scene {
 
   private list() {
     const save = game.save;
-    const { top } = modeScreen(this, 'Confession', 'Fight beside them, keep Vigil with them, light candles. In time they will speak.');
+    const { top } = modeScreen(this, 'Confession', 'Fight beside them, keep Vigil with them, bring them offerings. In time they will speak.');
     const owned = CRUSADERS.filter((c) => save.owned[c.id]).sort((a, b) => bondInfo(save, b.id).xp - bondInfo(save, a.id).xp);
     this.add.text(PAD, top, `+${Math.round(BOND_STAT * 100)}% ATK AND HP PER BOND LEVEL`, text.hud(12, PAL.muted));
+    tapForSources(this, this.add.text(GAME_W - PAD, top, `OFFERINGS ${offeringsHeld(save)}${candleReady(save) ? '  ·  CANDLE READY' : ''}`, text.hud(12, PAL.amber)).setOrigin(1, 0), 'offerings');
     const cell = 118;
     const x0 = GAME_W / 2 - cell * 1.5;
     // Every Sister in one list: drag or wheel to scroll.
@@ -57,7 +63,10 @@ export class ConfessionScene extends Phaser.Scene {
       makePlaceholderPortrait(this, c);
       this.add.rectangle(x, y, 98, 98, 0x000000, 0).setStrokeStyle(2, RARITY_COLOR[c.rarity]);
       const img = this.add.image(x, y, portraitKey(c.id)).setDisplaySize(94, 94);
-      list.tap(img, () => this.scene.restart({ id: c.id }));
+      list.tap(img, () => {
+        ConfessionScene.detailY = 0;
+        this.scene.restart({ id: c.id });
+      });
       holdForCard(this, img, c.id);
       this.add.text(x, y + 56, c.name.split(' ')[0], text.body(15, PAL.ivory)).setOrigin(0.5, 0);
       this.pips(x - 28, y + 82, b.level, 4);
@@ -73,26 +82,63 @@ export class ConfessionScene extends Phaser.Scene {
     const b = bondInfo(save, id);
     const { top } = modeScreen(this, c.name, `${c.title ?? ''} of the ${c.order}`, 'Confession');
     const bw = GAME_W - PAD * 2;
+    const list = addScrollArea(this, top - 4, GAME_H - TAB_BAR_H, { start: ConfessionScene.detailY, onScroll: (y) => (ConfessionScene.detailY = y) });
+    const before = this.children.list.length;
     makePlaceholderPortrait(this, c);
     this.add.rectangle(PAD + 62, top + 62, 124, 124, 0x000000, 0).setStrokeStyle(2, RARITY_COLOR[c.rarity]);
-    this.add.image(PAD + 62, top + 62, portraitKey(id)).setDisplaySize(120, 120);
+    holdForCard(this, this.add.image(PAD + 62, top + 62, portraitKey(id)).setDisplaySize(120, 120), id);
     const tx = PAD + 140;
     this.add.text(tx, top + 2, `BOND ${b.level ? ROMAN_RANK(b.level) : '0'} / ${ROMAN_RANK(MAX_BOND)}`, text.hud(15, PAL.amber));
     this.pips(tx + 6, top + 36, b.level, 7);
     this.add.text(tx, top + 52, b.level ? `+${Math.round(b.level * BOND_STAT * 100)}% ATK and HP` : 'No bond yet', text.body(15, PAL.ivory));
     progressBar(this, tx, top + 84, bw - 140, b.max ? 1 : b.into / b.need, PAL.amber, 8);
     this.add.text(tx, top + 94, b.max ? 'Bond complete' : `${b.into} / ${b.need} to the next level`, text.body(13, PAL.muted));
-    if (!b.max) {
-      const cost = candleCost(save, id);
-      makeButton(this, GAME_W / 2, top + 160, bw, 50, `Light a candle for her · ${cost} Tithes`, () => {
-        const ok = offerCandle(save, id);
-        if (ok) commit();
-        const now = bondInfo(save, id);
-        this.scene.restart({ id, notice: !ok ? 'Not enough Tithes.' : now.level > b.level ? `Bond ${ROMAN_RANK(now.level)}. She has something to tell you.` : 'The candle burns. She notices.' });
-      }, { fontSize: 16, icon: 'flame', disabled: save.tithes < cost });
-    }
 
-    let y = top + 204;
+    const after = (gave: boolean, what: string) => {
+      if (gave) commit();
+      const now = bondInfo(save, id);
+      this.scene.restart({ id, notice: !gave ? what : now.level > b.level ? `Bond ${ROMAN_RANK(now.level)}. She has something to tell you.` : what });
+    };
+
+    // The free candle: one a day, for any Sister.
+    let y = top + 140;
+    const ready = candleReady(save);
+    makeButton(this, GAME_W / 2, y + 23, bw, 46, b.max ? 'Her bond is complete' : ready ? `Light the free candle · +${BOND_XP.candle} bond` : 'Candle lit today · another at dawn', () => {
+      if (list.dragging) return;
+      after(lightCandle(save, id), 'The candle burns. She notices.');
+    }, { fontSize: 16, icon: 'flame', active: ready && !b.max, disabled: !ready || b.max });
+    y += 62;
+
+    // Offerings: tap one to give it.
+    const fav = FAVOURED[c.order] ?? [];
+    this.add.text(PAD, y, 'OFFERINGS', text.hud(13, PAL.amber));
+    tapForSources(this, this.add.text(GAME_W - PAD, y, `HELD ${offeringsHeld(save)}  ·  WHERE TO GET MORE`, text.hud(11, PAL.steel)).setOrigin(1, 0), 'offerings');
+    y += 20;
+    this.add.text(PAD, y, `The ${c.order} favours ${fav.map((f) => offeringDef(f).name).join(' and ')}: double bond.`, { ...text.body(14, PAL.muted), wordWrap: { width: bw } });
+    y += 30;
+    const cols = 4;
+    const cw = bw / cols;
+    const ch = 110;
+    OFFERINGS.forEach((o, i) => {
+      const x = PAD + cw * (i % cols) + cw / 2;
+      const cy = y + Math.floor(i / cols) * ch;
+      const held = heldOf(save, o.id);
+      const isFav = favours(c.order, o.id);
+      const parts = drawOfferingIcon(this, x, cy + 30, o.id, 56);
+      if (!held) parts.forEach((p) => (p as unknown as Phaser.GameObjects.Image).setAlpha(0.35));
+      if (isFav) this.add.star(x + 26, cy + 4, 5, 5, 11, PAL.amber).setStrokeStyle(1, 0x1b121c);
+      this.add.text(x + 28, cy + 56, `${held}`, text.hud(12, held ? PAL.ivory : PAL.steel)).setOrigin(1, 1);
+      this.add.text(x, cy + 64, o.name, { ...text.body(13, held ? PAL.ivory : PAL.steel), align: 'center', wordWrap: { width: cw - 8 } }).setOrigin(0.5, 0);
+      this.add.text(x, cy + 82, `+${offeringXp(id, o.id)}`, text.hud(11, isFav ? PAL.amber : POTENCY_COLOR[o.potency])).setOrigin(0.5, 0);
+      const hit = this.add.rectangle(x, cy + 50, cw - 6, ch - 6, 0, 0);
+      list.tap(hit, () => {
+        if (b.max) return after(false, 'Her bond is already complete.');
+        if (!held) return after(false, `No ${o.name} held. Win them in the Reliquary Procession.`);
+        after(offer(save, id, o.id), `${o.name} given${isFav ? ', and she treasures it' : ''}. +${offeringXp(id, o.id)} bond.`);
+      });
+    });
+    y += Math.ceil(OFFERINGS.length / cols) * ch + 10;
+
     this.add.text(PAD, y, 'CONFESSIONS', text.hud(13, PAL.amber));
     y += 24;
     const heardBefore = save.bonds?.[id]?.heard ?? 0;
@@ -104,12 +150,11 @@ export class ConfessionScene extends Phaser.Scene {
       this.add.text(PAD + 14, y + h / 2, `${ROMAN_RANK(lv)}`, text.hud(14, open ? PAL.amber : PAL.steel)).setOrigin(0, 0.5);
       this.add.text(PAD + 52, y + h / 2, open ? conf.title : `Opens at bond ${ROMAN_RANK(lv)}`, text.body(17, open ? PAL.ivory : PAL.steel)).setOrigin(0, 0.5);
       if (open && lv > heardBefore) this.add.text(GAME_W - PAD - 14, y + h / 2, 'NEW', text.hud(12, PAL.amber)).setOrigin(1, 0.5);
-      if (open) {
-        const hit = this.add.rectangle(GAME_W / 2, y + h / 2, bw, h, 0, 0).setInteractive({ useHandCursor: true });
-        hit.on('pointerup', () => this.read(c.name.split(' ')[0], conf.title, conf.body));
-      }
+      if (open) list.tap(this.add.rectangle(GAME_W / 2, y + h / 2, bw, h, 0, 0), () => this.read(c.name.split(' ')[0], conf.title, conf.body));
       y += h + 8;
     });
+    list.content.add(this.children.list.slice(before));
+    list.fit(y + 10);
     if (b.level > heardBefore) {
       hear(save, id);
       commit();
