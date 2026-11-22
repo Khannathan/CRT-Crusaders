@@ -59,13 +59,13 @@ import { countOf, itemDef } from '../systems/items';
 import { MAX_SKILL_LEVEL, nextSkillStep, raiseSkill, skillBlock, skillLevels, stepText } from '../systems/skillLevels';
 import { makeButton } from '../ui/button';
 import { CURRENCY_BAR_H, addCurrencyBar } from '../ui/currencyBar';
-import { hasSplash, loadFullBody, loadSplash, portraitKey } from '../ui/placeholderPortrait';
+import { addSplash, hasSplash, loadFullBody, loadSplash, portraitKey } from '../ui/placeholderPortrait';
 import { SisterSprite } from '../ui/sisterSprite';
 import { nine } from '../ui/skin';
 import { addScrollArea } from '../ui/scroll';
 import { tapCost, tapForSources } from '../ui/sources';
 import { TAB_BAR_H, addTabBar } from '../ui/tabBar';
-import { PAD, addArt, addBackdrop, addBadge, addFrame, addHeading, addIcon, addScreenGlow, text } from '../ui/theme';
+import { PAD, addArt, addBackdrop, addBadge, addFrame, addHeading, addIcon, addScreenGlow, fade, text } from '../ui/theme';
 
 type Tab = 'grow' | 'vows' | 'skills' | 'gear' | 'symbol';
 const TABS: [Tab, string][] = [
@@ -318,7 +318,7 @@ export class RosterScene extends Phaser.Scene {
       loadSplash(this, c.id).then((key) => {
         if (!key || !bust.active) return;
         splash = key;
-        const parts = addBackdrop(this, key, GAME_W / 2, HERO_H / 2, GAME_W, HERO_H, { fade: 0.45, fadeColor: 0x0d090f, focusY: 0.16 });
+        const parts = [addSplash(this, c.id, GAME_W / 2, HERO_H / 2, GAME_W, HERO_H, 'hero'), fade(this, GAME_W / 2, HERO_H / 2, GAME_W, HERO_H, 0.45, 0x0d090f)];
         // A dark wash along the top so Power and the buttons read over the art.
         const top = this.add.graphics();
         for (let i = 0; i < 14; i++) top.fillStyle(0x0d090f, 0.06 * (14 - i)).fillRect(0, i * 10, GAME_W, 10);
@@ -376,7 +376,7 @@ export class RosterScene extends Phaser.Scene {
     layer.add([
       ...addBadge(this, PAD + 4, NAME_Y - 50, c.rarity, tint, 13),
       this.add.text(PAD + 4, NAME_Y - 28, have ? c.name.toUpperCase() : 'NOT YET SWORN', text.display(26, 0xfff1d6)),
-      this.add.text(PAD + 4, NAME_Y + 6, `${c.title ?? cls.name} · ${cls.role}${c.title && c.title !== cls.name ? ` · fights as ${cls.name}` : ''}`, text.body(16, tint)),
+      this.add.text(PAD + 4, NAME_Y + 6, `${c.title ?? cls.name} · ${cls.role}`, text.body(16, tint)),
     ]);
     const sigil = addOrderSigil(this, PAD + 16, NAME_Y + 44, c.order, 26);
     if (sigil) layer.add(sigil);
