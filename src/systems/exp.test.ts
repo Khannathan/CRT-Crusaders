@@ -65,3 +65,21 @@ describe('Sister EXP', () => {
     expect(save.owned[party[0]].exp).toBe(r.exp);
   });
 });
+
+describe('choosing an Unction', () => {
+  it('uses 1, 10, a level or all of the chosen flask, never past her full cap', async () => {
+    const { usePlan, useUnction, expRoom } = await import('./exp');
+    const save = newSave();
+    const id = CRUSADERS[0].id;
+    save.owned[id] = { level: 1, vow: 0 };
+    save.items = { unction1: 50 };
+    save.tithes = 1e6;
+    expect(usePlan(save, id, 'unction1', 10).count).toBe(10);
+    expect(usePlan(save, id, 'unction2', 1).block).toBe('unction');
+    expect(useUnction(save, id, 'unction1', 1, true)).toBeGreaterThanOrEqual(1);
+    const all = usePlan(save, id, 'unction1', Infinity);
+    expect(all.count).toBeLessThanOrEqual(Math.ceil(expRoom(save, id) / 300));
+    useUnction(save, id, 'unction1', Infinity);
+    expect(save.items.unction1).toBe(49 - all.count);
+  });
+});
