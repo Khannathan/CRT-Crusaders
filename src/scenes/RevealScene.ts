@@ -7,11 +7,24 @@ import { commit, game } from '../state/game';
 import { makeButton } from '../ui/button';
 import { NOISE_FRAMES, WAX_COLOR, noiseKey, sealKey } from '../ui/effects';
 import { portraitKey } from '../ui/placeholderPortrait';
+import { holdForCard } from '../ui/sisterCard';
 
 const CY = 400;
 const SIZE = 256;
 
-/** One card at a time: tap the seal, it breaks, the portrait rises out of static. */
+const COLS = 5;
+const CELL_W = 100;
+const CELL_H = 150;
+const GRID_Y = 230;
+const cellX = (i: number) => (GAME_W - COLS * CELL_W) / 2 + CELL_W / 2 + (i % COLS) * CELL_W;
+const cellY = (i: number) => GRID_Y + Math.floor(i / COLS) * CELL_H;
+const rankOf = (r: PullResult) => RARITY_ORDER.indexOf(r.crusader.rarity);
+
+/**
+ * A single pull: tap the seal, it breaks, the portrait rises out of static.
+ * A 10-pull: all ten seals are laid out first (each in its true rarity's wax),
+ * then broken in order; an SSR or UR also gets the full rise.
+ */
 export class RevealScene extends Phaser.Scene {
   private results: PullResult[] = [];
   private index = 0;
@@ -21,6 +34,11 @@ export class RevealScene extends Phaser.Scene {
   private counter!: Phaser.GameObjects.Text;
   /** Highest card index whose seal has been broken. */
   private revealed = -1;
+  /** 10-pull: the seals laid out on the table, by index. */
+  private seals: (Phaser.GameObjects.Image | undefined)[] = [];
+  /** 10-pull: an SSR or UR is shown full size over the table. */
+  private focus?: Phaser.GameObjects.Container;
+  private skipBest?: ReturnType<typeof makeButton>;
 
   constructor() {
     super('Reveal');
@@ -32,29 +50,139 @@ export class RevealScene extends Phaser.Scene {
     this.busy = false;
     this.card = undefined;
     this.revealed = -1;
+    this.seals = [];
+    this.focus = undefined;
     if (this.results.some((r) => r.crusader.rarity === 'UR')) music.preload('ur');
   }
 
   create() {
     this.cameras.main.setBackgroundColor(0x0a090c);
     this.counter = this.add.text(24, 28, '', { fontFamily: FONT, fontSize: '18px', color: hex(PAL.steel) }).setOrigin(0, 0.5);
-    if (this.results.length > 1) {
-      const skip = makeButton(this, GAME_W - 80, 32, 120, 48, 'Skip', () => this.showSummary(), { fontSize: 18 });
-      skip.box.setDepth(10);
-      skip.inner.setDepth(10);
-      skip.text.setDepth(11);
-    }
     this.hint = this.add
       .text(GAME_W / 2, GAME_H - 140, '', { fontFamily: FONT, fontSize: '20px', color: hex(PAL.steel) })
-      .setOrigin(0.5);
+      .setOrigin(0.5)
+      .setDepth(25);
     this.input.on('pointerup', (_p: Phaser.Input.Pointer, over: Phaser.GameObjects.GameObject[]) => {
       if (over.length || this.busy) return; // buttons handle their own taps
       this.advance();
     });
-    this.showSeal();
+    if (this.results.length > 1) this.layTable();
+    else this.showSeal();
+  }
+
+  // ---------- 10-pull: the table of seals ----------
+
+  private layTable() {
+    this.add.text(GAME_W / 2, 100, 'Ten oaths, sealed in wax', { fontFamily: FONT, fontSize: '26px', color: hex(PAL.amber) }).setOrigin(0.5);
+    this.add.text(GAME_W / 2, 134, 'Each seal is the true colour of what it holds.', { fontFamily: FONT, fontSize: '16px', color: hex(PAL.steel) }).setOrigin(0.5);
+    this.busy = true;
+    this.results.forEach((r, i) => {
+      const seal = this.add.image(cellX(i), cellY(i) - 60, sealKey(r.crusader.rarity)).setScale(0.9).setAlpha(0);
+      this.seals[i] = seal;
+      this.tweens.add({ targets: seal, y: cellY(i), alpha: 1, delay: i * 90, duration: 260, ease: 'Back.out' });
+    });
+    this.time.delayedCall(this.results.length * 90 + 300, () => {
+      this.busy = false;
+      this.hint.setText('Tap to break the seals in order');
+    });
+    this.skipBest = makeButton(this, GAME_W / 2, GAME_H - 70, 260, 64, 'Skip to best', () => this.skipToBest(), { fontSize: 19 });
+    this.skipBest.all.forEach((o) => (o as unknown as Phaser.GameObjects.Components.Depth).setDepth?.(10));
+  }
+
+  /** Breaks the next seal on the table; a rare one rises full size. */
+  private breakNext(quick = false) {
+    const i = this.revealed + 1;
+    const r = this.results[i];
+    const seal = this.seals[i];
+    if (!r || !seal) return;
+    this.revealed = i;
+    const high = rankOf(r) >= RARITY_ORDER.indexOf('SSR');
+    if (!quick && r.crusader.rarity === 'UR') music.stinger('ur', 'duck');
+    if (quick) {
+      seal.destroy();
+      this.tableCard(i, r, false);
+      return;
+    }
+    this.busy = true;
+    this.hint.setText('');
+    this.counter.setText(`${i + 1} / ${this.results.length}`);
+    this.tweens.add({
+      targets: seal,
+      x: { from: seal.x - 4, to: seal.x + 4 },
+      duration: 45,
+      yoyo: true,
+      repeat: high ? 5 : 2,
+      onComplete: () => {
+        seal.destroy();
+        this.shards(WAX_COLOR[r.crusader.rarity], cellX(i), cellY(i), 0.45);
+        this.tableCard(i, r, true);
+        if (high) this.time.delayedCall(250, () => this.showFocus(r));
+        else {
+          this.busy = false;
+          this.hint.setText(i < this.results.length - 1 ? 'Tap for the next seal' : 'Tap to see all ten');
+        }
+      },
+    });
+  }
+
+  /** A broken seal's Sister, small, in her place on the table. */
+  private tableCard(i: number, r: PullResult, animate: boolean) {
+    const c = r.crusader;
+    const col = RARITY_COLOR[c.rarity];
+    const parts: Phaser.GameObjects.GameObject[] = [
+      this.add.rectangle(0, 0, 90, 90, 0x000000).setStrokeStyle(4, col),
+      this.add.image(0, 0, portraitKey(c.id)).setDisplaySize(84, 84),
+      this.add.text(0, 58, c.name.split(' ')[0], { fontFamily: FONT, fontSize: '15px', color: hex(PAL.ivory) }).setOrigin(0.5),
+      this.add.text(0, 76, c.rarity, { fontFamily: FONT, fontSize: '14px', color: hex(col) }).setOrigin(0.5),
+    ];
+    if (r.isNew) parts.push(...newStamp(this, 26, -36, 0.7));
+    const card = this.add.container(cellX(i), cellY(i), parts);
+    holdForCard(this, parts[1] as Phaser.GameObjects.Image, c.id);
+    if (animate) {
+      card.setScale(0.6).setAlpha(0);
+      this.tweens.add({ targets: card, scale: 1, alpha: 1, duration: 220, ease: 'Back.out' });
+    }
+  }
+
+  /** The full rise for an SSR or UR, over a dimmed table. */
+  private showFocus(r: PullResult) {
+    const dim = this.add.rectangle(GAME_W / 2, GAME_H / 2, GAME_W, GAME_H, 0x0a090c, 0.92);
+    // The dim layer takes taps, so nothing on the table underneath is pressed.
+    dim.setInteractive().on('pointerup', () => !this.busy && this.closeFocus());
+    this.focus = this.add.container(0, 0, [dim]).setDepth(20);
+    const index = this.index;
+    this.index = this.revealed;
+    this.riseFromStatic(r, true);
+    this.index = index;
+    this.focus.add(this.card!);
+  }
+
+  private closeFocus() {
+    this.focus?.destroy();
+    this.focus = undefined;
+    this.card = undefined;
+    this.hint.setText(this.revealed < this.results.length - 1 ? 'Tap for the next seal' : 'Tap to see all ten');
+  }
+
+  /** Breaks every seal at once and shows the rarest Sister full size. */
+  private skipToBest() {
+    if (this.busy) return;
+    if (this.focus) this.closeFocus();
+    while (this.revealed < this.results.length - 1) this.breakNext(true);
+    const best = [...this.results].sort((a, b) => rankOf(b) - rankOf(a) || Number(b.isNew) - Number(a.isNew))[0];
+    this.skipBest?.all.forEach((o) => o.destroy());
+    this.skipBest = undefined;
+    if (best.crusader.rarity === 'UR') music.stinger('ur', 'duck');
+    this.showFocus(best);
   }
 
   private advance() {
+    if (this.results.length > 1) {
+      if (this.focus) this.closeFocus();
+      else if (this.revealed < this.results.length - 1) this.breakNext();
+      else this.showSummary();
+      return;
+    }
     if (this.card?.getData('stage') === 'seal') this.breakSeal();
     else if (this.index < this.results.length - 1) {
       this.index += 1;
@@ -96,14 +224,14 @@ export class RevealScene extends Phaser.Scene {
     });
   }
 
-  private shards(color: number) {
+  private shards(color: number, x = GAME_W / 2, y = CY, scale = 1) {
     for (let i = 0; i < 14; i++) {
       const a = (Math.PI * 2 * i) / 14 + Math.random() * 0.3;
-      const s = this.add.rectangle(GAME_W / 2, CY, 12, 12, color).setDepth(5);
+      const s = this.add.rectangle(x, y, 12 * scale, 12 * scale, color).setDepth(5);
       this.tweens.add({
         targets: s,
-        x: GAME_W / 2 + Math.cos(a) * 260,
-        y: CY + Math.sin(a) * 260 + 80,
+        x: x + Math.cos(a) * 260 * scale,
+        y: y + Math.sin(a) * 260 * scale + 80 * scale,
         angle: 180,
         alpha: 0,
         duration: 700,
@@ -145,7 +273,8 @@ export class RevealScene extends Phaser.Scene {
         flicker.remove();
         noise.destroy();
         this.busy = false;
-        this.hint.setText(this.index < this.results.length - 1 ? 'Tap for the next Sister' : 'Tap to continue');
+        if (this.results.length > 1) this.hint.setText('Tap to return to the table');
+        else this.hint.setText('Tap to continue');
       },
     });
 
@@ -190,6 +319,7 @@ export class RevealScene extends Phaser.Scene {
       const color = RARITY_COLOR[r.crusader.rarity];
       this.add.rectangle(x, y, 120, 120).setStrokeStyle(4, color);
       this.add.image(x, y, portraitKey(r.crusader.id)).setDisplaySize(112, 112);
+      if (r.isNew) newStamp(this, x + 40, y - 46, 0.8);
       const label = r.isNew ? 'NEW' : r.tithes ? `+${r.alms ?? 0} ALMS` : 'VOW TOKEN';
       this.add
         .text(x, y + 72, `${r.crusader.rarity} · ${label}`, { fontFamily: FONT, fontSize: '15px', color: hex(r.isNew ? PAL.amber : PAL.steel) })
@@ -204,6 +334,8 @@ export class RevealScene extends Phaser.Scene {
     again('one', GAME_W / 2 - 128, `Again ×1\n${COST_ONE} Seal`);
     again('ten', GAME_W / 2 + 128, game.save.freeTenUsed ? `Again ×10\n${COST_TEN} Seals` : 'Again ×10\nFree first time');
 
+    const hist = this.add.text(24, 56, 'Oath Record ›', { fontFamily: FONT, fontSize: '17px', color: hex(PAL.steel) }).setOrigin(0, 0.5).setInteractive({ useHandCursor: true });
+    hist.on('pointerup', () => this.scene.start('PullHistory'));
     makeButton(this, GAME_W / 2 - 128, GAME_H - 80, 236, 68, 'Back to altar', () => this.scene.start('Recruit', {}), { fontSize: 19 });
     makeButton(this, GAME_W / 2 + 128, GAME_H - 80, 236, 68, 'See roster', () => this.scene.start('Roster', {}), { fontSize: 19 });
   }
@@ -214,4 +346,11 @@ export class RevealScene extends Phaser.Scene {
     commit();
     this.scene.restart({ results });
   }
+}
+
+/** A red "NEW" stamp, tilted, for a Sister sworn for the first time. */
+function newStamp(scene: Phaser.Scene, x: number, y: number, scale = 1): Phaser.GameObjects.GameObject[] {
+  const box = scene.add.rectangle(x, y, 58 * scale, 28 * scale, 0x6b1f22).setStrokeStyle(2, PAL.amber).setAngle(-12);
+  const t = scene.add.text(x, y, 'NEW', { fontFamily: FONT, fontSize: `${Math.round(19 * scale)}px`, color: hex(PAL.amber) }).setOrigin(0.5).setAngle(-12);
+  return [box, t];
 }

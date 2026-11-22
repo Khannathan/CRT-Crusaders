@@ -10,6 +10,7 @@ import { MusterScene } from './scenes/MusterScene';
 import { RecruitScene } from './scenes/RecruitScene';
 import { ResultsScene } from './scenes/ResultsScene';
 import { RevealScene } from './scenes/RevealScene';
+import { PullHistoryScene } from './scenes/PullHistoryScene';
 import { RosterScene } from './scenes/RosterScene';
 import { SanctumScene } from './scenes/SanctumScene';
 import { PenanceScene } from './scenes/PenanceScene';
@@ -71,6 +72,7 @@ function start() {
       ReliquaryScene,
       RecruitScene,
       RevealScene,
+      PullHistoryScene,
       RosterScene,
       ModesScene,
       CampaignScene,

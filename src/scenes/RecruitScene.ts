@@ -27,6 +27,7 @@ export class RecruitScene extends Phaser.Scene {
     addCurrencyBar(this);
     const s = game.save;
     const top = addHeading(this, 'The Sealed Altar', CURRENCY_BAR_H + 16);
+    makeButton(this, GAME_W - PAD - 62, CURRENCY_BAR_H + 38, 124, 44, 'Record', () => this.scene.start('PullHistory'), { fontSize: 16, icon: 'book' });
 
     // Order banner: pick an Order with ‹ ›, then tap one of its two URs to target her.
     const banner = this.currentBanner();
