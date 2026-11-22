@@ -73,6 +73,8 @@ export interface SaveData {
   /** Shop purchases and today's Almonry stock. */
   shop?: import('../systems/shop').ShopState;
   /** Materials by item id (see systems/items.ts). */
+  /** Lit Reliquary relic ids (systems/reliquary.ts). */
+  reliquary?: string[];
   items?: import('../systems/items').Bag;
   /** Last party, in rank order, to pre-fill the muster screen. */
   lastParty: string[];

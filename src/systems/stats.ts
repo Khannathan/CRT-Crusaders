@@ -3,6 +3,7 @@ import { RARITY_MULT } from '../data/classes';
 import type { CrusaderDef } from '../data/types';
 import type { OwnedCrusader, SaveData } from '../state/save';
 import { equipped, gearBonus, type GearItem } from './gear';
+import { reliquaryBonus } from './reliquary';
 
 export interface Stats {
   hp: number;
@@ -56,7 +57,15 @@ export function statsFor(c: CrusaderDef, owned: OwnedCrusader, gear: GearItem[] 
 export function sisterStats(save: SaveData, c: CrusaderDef): Stats {
   const st = statsFor(c, save.owned[c.id], equipped(save, c.id));
   const m = bondMult(save, c.id);
-  return m === 1 ? st : { ...st, hp: Math.round(st.hp * m), atk: Math.round(st.atk * m) };
+  // The Reliquary lifts every Sister.
+  const r = reliquaryBonus(save);
+  return {
+    hp: Math.round(st.hp * m * (1 + r.hpPct)),
+    atk: Math.round(st.atk * m * (1 + r.atkPct)),
+    armor: Math.round(st.armor * (1 + r.armorPct)),
+    spd: st.spd + r.spd,
+    crit: Math.min(1, st.crit + r.crit),
+  };
 }
 
 /** Tithes to take the next Vow. */
