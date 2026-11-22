@@ -5,6 +5,7 @@ import { countOf, itemDef, itemIds, type ItemId } from '../systems/items';
 import { ORDER_LIST } from '../data/orders';
 import { CODEX_STEP, MAX_CODEX, codexBlock, codexBonus, codexLevel, nextCodexCost, raiseCodex, sworn } from '../systems/codex';
 import { sigilKey } from '../ui/icons';
+import { tapCost, tapForSources } from '../ui/sources';
 import { BRANCHES, RELICS, consecrate, isLit, litOf, relic, relicBlock, relicBonusText, reliquaryBonus, type RelicNode } from '../systems/reliquary';
 import { makeButton } from '../ui/button';
 import { drawItemIcon } from '../ui/itemIcon';
@@ -52,7 +53,7 @@ export class ReliquaryScene extends Phaser.Scene {
     itemIds('incense').forEach((id, i) => {
       const x = GAME_W / 2 + (i - 1) * 150;
       drawItemIcon(this, x - 36, top + 38, id, 26);
-      this.add.text(x - 16, top + 38, `${countOf(save, id)} ${itemDef(id).name}`, text.body(14, PAL.ivory)).setOrigin(0, 0.5);
+      tapForSources(this, this.add.text(x - 16, top + 38, `${countOf(save, id)} ${itemDef(id).name}`, text.body(14, PAL.ivory)).setOrigin(0, 0.5), id);
     });
 
     // The tree: three columns of five, the Crown beneath
@@ -108,7 +109,7 @@ export class ReliquaryScene extends Phaser.Scene {
       this.add.text(PAD + 16, panelTop + 42, `Every Sister: ${relicBonusText(n.bonus)}`, text.body(16, PAL.amber));
       if (!done) {
         const cost = (Object.entries(n.items) as [ItemId, number][]).map(([id, k]) => `${k} ${itemDef(id).name} (${countOf(save, id)})`);
-        this.add.text(PAD + 16, panelTop + 68, `Cost: ${[...cost, `${n.tithes.toLocaleString('en-US')} Tithes`].join(' · ')}`, { ...text.body(14, PAL.muted), wordWrap: { width: bw - 32 } });
+        tapCost(this, this.add.text(PAD + 16, panelTop + 68, `Cost: ${[...cost, `${n.tithes.toLocaleString('en-US')} Tithes`].join(' · ')}  ›`, { ...text.body(14, PAL.muted), wordWrap: { width: bw - 32 } }), n.items, n.tithes);
       }
       makeButton(this, GAME_W / 2, panelTop + panelH - 32, 280, 46, done ? 'Lit' : block ?? 'Consecrate', () => {
         if (consecrate(save, n.id)) {
@@ -142,7 +143,7 @@ export class ReliquaryScene extends Phaser.Scene {
       this.add.text(PAD + 56, y - 3, `LV ${lv}/${MAX_CODEX}${lv ? ` · +${pct(codexBonus(save, o.id))} ATK, HP, ARM` : ''} · ${n} SWORN`, text.hud(11, lv ? PAL.amber : PAL.steel));
       if (cost) {
         const items = (Object.entries(cost.items) as [ItemId, number][]).map(([id, k]) => `${k} ${itemDef(id).name}`);
-        this.add.text(PAD + 56, y + 12, [...items, `${cost.tithes.toLocaleString('en-US')} T`].join(' · '), text.body(12, PAL.muted));
+        tapCost(this, this.add.text(PAD + 56, y + 12, `${[...items, `${cost.tithes.toLocaleString('en-US')} T`].join(' · ')}  ›`, text.body(12, PAL.muted)), cost.items, cost.tithes);
       }
       makeButton(this, GAME_W - PAD - 58, y, 104, 40, cost ? `Lv ${lv + 1}` : 'Complete', () => {
         if (raiseCodex(save, o.id)) {
