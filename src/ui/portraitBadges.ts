@@ -1,6 +1,6 @@
 import Phaser from 'phaser';
 import { GAME_H, GAME_W, PAL } from '../config';
-import { CLASSES, RARITY_COLOR } from '../data/classes';
+import { CLASSES, RARITY_COLOR, classIconFor } from '../data/classes';
 import { ORDERS } from '../data/orders';
 import type { CrusaderDef } from '../data/types';
 import type { SaveData } from '../state/save';
@@ -40,7 +40,7 @@ export function drawPortraitBadges(scene: Phaser.Scene, cx: number, cy: number, 
   if (o) out.push(o);
   // Class.
   const cl = Math.round(size * 0.24);
-  out.push(...iconDisc(scene, cx - h + cl / 2 + 5, cy + h - cl / 2 - 5, `class-${c.classId}`, cl));
+  out.push(...iconDisc(scene, cx - h + cl / 2 + 5, cy + h - cl / 2 - 5, classIconFor(scene, c.classId), cl));
   // Level.
   const own = save.owned[c.id];
   if (own && opts.level !== false) {

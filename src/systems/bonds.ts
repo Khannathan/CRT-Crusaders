@@ -89,6 +89,15 @@ const CLASS_SIN: Record<string, string> = {
   inquisitor: 'She speaks of the first heretic she ever judged. "He wept and named his children. I did not stop. I tell myself the Lord would not have stopped either."',
   confessor: 'She laughs, low and tired. "I hear a hundred sins a week. No one asks who hears mine. So I came to you."',
   censer: 'Smoke still clings to her habit. "The fire is clean," she says. "That is what they told me. They did not tell me it remembers."',
+  sentinel: 'She keeps the funerary key on a cord against her skin. "Every door I guard has someone behind it I could not save. I stand there so no one else has to."',
+  martyr: 'She turns her palms up. The scars there are old and deliberate. "They say a martyr dies once. I have done it four times now. It gets no easier. It only gets quieter."',
+  hospitaller: 'She washes her hands twice before she speaks. "I have raised the dead, Father. They come back cold. They thank me. I do not think they mean it."',
+  abbess: 'She picks a thorn from her sleeve and sets it on the sill. "I prune the garden and I prune the faithful. Both bleed. Only one of them forgives me."',
+  cantor: 'She hums before she speaks, a low funeral note. "Every hymn I know is for the dead. I have never once been asked to sing at a wedding."',
+  adjudicator: 'She will not meet your eyes, only your reflection in the grate. "I judge by the mirror. It never lies. That is why I have stopped looking into it myself."',
+  veilblade: 'She speaks so quietly you lean in to hear. "No one sees me do it. Not the heretic, not my Sisters. Some nights I wonder if the Lord sees it either."',
+  arbalist: 'She turns a blessed bolt over in her fingers. "From that far away they look like anyone. That is the mercy of it. That is the sin of it too."',
+  exorcist: 'Her lantern gutters as she talks. "I cast them out, and they go somewhere. I have never asked where. I am afraid it is into me."',
   oracle: 'Her eyes stay closed throughout. "I have seen how I die. It is not in the crypts. I will not tell you where, only that you were not there."',
 };
 

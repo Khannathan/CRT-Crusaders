@@ -134,3 +134,54 @@ export function feed(save: SaveData, id: string, n: number): number {
 
 /** Vigil EXP per hour for each of its Sisters, from the road. */
 export const vigilExpRate = (best: number) => 120 * (1 + 0.1 * best);
+
+/** EXP she can still take before her cap is full (one level banks at the cap). */
+export function expRoom(save: SaveData, id: string): number {
+  const o = save.owned[id];
+  if (!o) return 0;
+  const cap = levelCap(o);
+  let room = 0;
+  for (let l = o.level; l <= cap; l++) room += expToNext(l);
+  return Math.max(0, room - expOf(o));
+}
+
+export interface UsePlan {
+  /** Flasks of the chosen Unction to use. */
+  count: number;
+  tithes: number;
+  exp: number;
+  /** Why none can be used, or undefined. */
+  block?: 'cap' | 'unction' | 'tithes';
+}
+
+/**
+ * Using one chosen Unction: `n` flasks (Infinity for all she can take), or
+ * `level: true` for just enough to reach her next level. Never wastes a flask
+ * past her full cap, and stops where Tithes run out.
+ */
+export function usePlan(save: SaveData, id: string, u: ItemId, n: number, level = false): UsePlan {
+  const o = save.owned[id];
+  const per = UNCTION_EXP[u] ?? 0;
+  const none = (block: UsePlan['block']): UsePlan => ({ count: 0, tithes: 0, exp: 0, block });
+  if (!o || !per) return none('cap');
+  const room = expRoom(save, id);
+  if (room <= 0 || o.level >= levelCap(o)) return none('cap');
+  const want = level ? Math.ceil(Math.max(1, expToNext(o.level) - expOf(o)) / per) : n;
+  const held = countOf(save, u);
+  if (held <= 0) return none('unction');
+  if (level && held < want) return none('unction');
+  const perTithes = per * TITHES_PER_EXP;
+  const afford = Math.floor(save.tithes / perTithes);
+  const count = Math.min(want, held, Math.ceil(room / per), afford);
+  if (count <= 0) return none('tithes');
+  if (level && count < want) return none('tithes');
+  return { count, tithes: Math.ceil(count * perTithes), exp: count * per };
+}
+
+/** Uses the chosen Unction by plan. Returns levels gained (or -1 when nothing was used). */
+export function useUnction(save: SaveData, id: string, u: ItemId, n: number, level = false): number {
+  const p = usePlan(save, id, u, n, level);
+  if (!p.count || !spend(save, { [u]: p.count })) return -1;
+  save.tithes -= p.tithes;
+  return addExp(save, id, p.exp);
+}

@@ -384,3 +384,59 @@ describe('Sister passives', () => {
     expect(autoStep(b, war)?.uid).toBe('oracle');
   });
 });
+
+describe('round 9 class effects', () => {
+  const sk = (cls: string, id: string) => CLASS_SKILLS[cls].find((s) => s.id === id)!;
+
+  it('every one of the 15 classes has three skills and a Litany', () => {
+    expect(Object.keys(CLASS_SKILLS)).toHaveLength(15);
+    for (const kit of Object.values(CLASS_SKILLS)) expect(kit.filter((s) => s.rite)).toHaveLength(1);
+  });
+
+  it('a Sentinel on guard strikes back when hit', () => {
+    const s = crusader('s', 'sentinel', 1, { status: { counter: { mult: 1, turns: 2 } } });
+    const e = makeEnemy('husk', 'e0', 1);
+    const b = new Battle([s], [e], { rng: seeded(3) });
+    const before = e.hp;
+    b.act(e, { id: 'x', name: 'x', desc: '', from: [], target: 'enemy', mult: 1 }, s);
+    expect(e.hp).toBeLessThan(before);
+  });
+
+  it('the Hospitaller raises the fallen', () => {
+    const h = crusader('h', 'hospitaller', 1);
+    const dead = crusader('d', 'warsister', 2, { hp: 0 });
+    const b = new Battle([h, dead], [makeEnemy('husk', 'e0', 1)], { rng: seeded(4) });
+    b.act(h, sk('hospitaller', 'grail-of-return'));
+    expect(dead.hp).toBeGreaterThan(0);
+    expect(b.alive('party')).toHaveLength(2);
+  });
+
+  it('the Abbess heals every Sister by the damage she deals', () => {
+    const a = crusader('a', 'abbess', 1);
+    const hurt = crusader('w', 'warsister', 2, { hp: 40 });
+    const b = new Battle([a, hurt], [makeEnemy('husk', 'e0', 1)], { rng: seeded(5) });
+    b.act(a, sk('abbess', 'thorned-rebuke'), b.get('e0'));
+    expect(hurt.hp).toBeGreaterThan(40);
+  });
+
+  it('the Exorcist strips shields and blessings', () => {
+    const x = crusader('x', 'exorcist', 3);
+    const e = makeEnemy('husk', 'e0', 1);
+    e.status = { shield: 50, empower: { pct: 0.3, turns: 2 }, ward: { pct: 0.2, turns: 2 } };
+    const b = new Battle([x], [e], { rng: seeded(6) });
+    b.act(x, sk('exorcist', 'lantern-flare'), e);
+    expect(e.status.empower).toBeUndefined();
+    expect(e.status.ward).toBeUndefined();
+    expect(e.status.shield ?? 0).toBe(0);
+  });
+
+  it('the Arbalist shoots through shields', () => {
+    const a = crusader('a', 'arbalist', 3);
+    const e = makeEnemy('husk', 'e0', 1);
+    e.status = { shield: 10_000 };
+    const b = new Battle([a], [e], { rng: seeded(7) });
+    const before = e.hp;
+    b.act(a, sk('arbalist', 'shieldbreaker'), e);
+    expect(e.hp).toBeLessThan(before);
+  });
+});

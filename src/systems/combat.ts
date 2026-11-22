@@ -35,6 +35,12 @@ export interface Status {
   delayed?: boolean;
   /** Enemy is winding up its planned skill; it fires next turn unless delayed. */
   charging?: boolean;
+  /** Strikes back for this multiple of attack when hit. */
+  counter?: { mult: number; turns: number };
+  /** Returns this share of damage taken to the attacker. */
+  thorns?: { pct: number; turns: number };
+  /** Extra critical chance. */
+  critUp?: { pct: number; turns: number };
 }
 
 /** What an enemy will do on its next turn, shown to the player in advance. */
@@ -117,6 +123,7 @@ export type BattleEvent =
   | { type: 'status'; uid: string; label: string }
   | { type: 'death'; uid: string }
   | { type: 'summon'; uid: string }
+  | { type: 'revive'; uid: string }
   | { type: 'move'; uid: string }
   | { type: 'zeal'; amount: number; reason: string; uid?: string }
   | { type: 'intent' }
@@ -251,6 +258,8 @@ export class Battle {
   log: string[] = [];
   private rng: Rng;
   private summons = 0;
+  /** True while a riposte resolves, so ripostes never chain. */
+  private countering = false;
   /** Per Sister (uid): fraction toward the next wound Zeal, and wound Zeal taken this round. */
   private hurtFrac: Record<string, number> = {};
   private hurtZealThisRound: Record<string, number> = {};
@@ -506,6 +515,9 @@ export class Battle {
     if (st.sunder && --st.sunder.turns <= 0) st.sunder = undefined;
     if (st.hex && --st.hex.turns <= 0) st.hex = undefined;
     if (st.ward && --st.ward.turns <= 0) st.ward = undefined;
+    if (st.counter && --st.counter.turns <= 0) st.counter = undefined;
+    if (st.thorns && --st.thorns.turns <= 0) st.thorns = undefined;
+    if (st.critUp && --st.critUp.turns <= 0) st.critUp = undefined;
     if (st.stun) {
       st.stun -= 1;
       if (st.stun <= 0) st.stun = undefined;
@@ -601,6 +613,8 @@ export class Battle {
       return events;
     }
 
+    if (skill.revive) this.revive(actor, skill.revive, events);
+
     const group = skill.target === 'allAllies' || skill.target === 'allEnemies';
     const targets = group ? this.validTargets(actor, skill) : skill.target === 'self' ? [actor] : target ? [target] : [];
     let offensive = false;
@@ -634,7 +648,7 @@ export class Battle {
       if (skill.poison) {
         const plague = actor.passive?.kind === 'plague' ? 1 + (actor.passive.value ?? 0) : 1;
         const burn = actor.side === 'party' ? 1 + this.mods.burnMult : 1;
-        const kind = actor.classId === 'censer' ? 'burn' : 'poison';
+        const kind = actor.classId === 'censer' || actor.classId === 'exorcist' ? 'burn' : 'poison';
         const dmg = Math.max(1, Math.round(this.attackOf(actor) * skill.poison.mult * plague * burn * baneMult(actor, t)));
         const old = skill.stackPoison ? t.status.poison : undefined;
         t.status.poison = old ? { dmg: old.dmg + dmg, turns: Math.max(old.turns, skill.poison.turns), kind } : { dmg, turns: skill.poison.turns, kind };
@@ -708,6 +722,27 @@ export class Battle {
         t.status.ward = { ...skill.ward };
         events.push({ type: 'status', uid: t.uid, label: 'Warded' });
       }
+      if (skill.thorns) {
+        t.status.thorns = { ...skill.thorns };
+        events.push({ type: 'status', uid: t.uid, label: 'Thorned' });
+      }
+      if (skill.critUp) {
+        t.status.critUp = { ...skill.critUp };
+        events.push({ type: 'status', uid: t.uid, label: 'Keen' });
+      }
+      if (skill.purge && t.side !== actor.side) {
+        const st = t.status;
+        if (st.shield || st.empower || st.ward || st.regen || st.haste || st.thorns || st.counter || st.critUp) {
+          st.shield = 0;
+          st.empower = st.ward = st.regen = st.thorns = st.counter = st.critUp = undefined;
+          st.haste = undefined;
+          events.push({ type: 'status', uid: t.uid, label: 'Purged' });
+        }
+      }
+      if (skill.wrathDrain && t.wrath !== undefined && t.wrath > 0) {
+        t.wrath = Math.max(0, t.wrath - skill.wrathDrain);
+        events.push({ type: 'status', uid: t.uid, label: `-${skill.wrathDrain} Wrath` });
+      }
       if (skill.accuse) {
         t.status.accused = skill.accuse;
         events.push({ type: 'status', uid: t.uid, label: 'Accused' });
@@ -735,6 +770,10 @@ export class Battle {
     if (skill.taunt) {
       actor.status.taunt = skill.taunt;
       events.push({ type: 'status', uid: actor.uid, label: 'Taunting' });
+    }
+    if (skill.counter && actor.hp > 0) {
+      actor.status.counter = { ...skill.counter };
+      events.push({ type: 'status', uid: actor.uid, label: 'On guard' });
     }
     if (skill.empower && !skill.empowerTarget) {
       actor.status.empower = { ...skill.empower };
@@ -904,16 +943,17 @@ export class Battle {
 
   private hit(actor: Unit, t: Unit, skill: SkillDef, events: BattleEvent[]) {
     let raw = this.attackOf(actor) * skill.mult! * this.relicMult(actor, skill) * baneMult(actor, t) * wardOf(t);
+    if (skill.bossBonus && t.boss) raw *= 1 + skill.bossBonus;
     if (skill.lowHpBonus && actor.hp < actor.maxHp / 2) raw *= 1 + skill.lowHpBonus;
     if (t.status.accused) raw *= ACCUSED_MULT * (1 + (skill.bonusIfAccused ?? 0));
     if (t.status.weaken && skill.bonusIfWeak) raw *= 1 + skill.bonusIfWeak;
     if (skill.execute && t.hp < t.maxHp * EXECUTE_AT) raw *= 1 + skill.execute;
     if (actor.passive?.kind === 'executioner' && t.hp < t.maxHp / 2) raw *= 1 + (actor.passive.value ?? 0);
-    const crit = (t.status.accused && actor.passive?.kind === 'critOnAccused') || this.rng() < actor.crit;
+    const crit = (t.status.accused && actor.passive?.kind === 'critOnAccused') || this.rng() < critOf(actor, skill);
     if (crit) raw *= CRIT_MULT;
-    let dmg = Math.max(1, Math.round(damageAfterArmor(raw, defenceAgainst(t, dmgOf(actor, skill))) * this.vary() * this.guardOf(t)));
+    let dmg = Math.max(1, Math.round(damageAfterArmor(raw, defenceAgainst(t, dmgOf(actor, skill)) * (1 - (skill.armorPierce ?? 0))) * this.vary() * this.guardOf(t)));
     let blocked = 0;
-    if (t.status.shield) {
+    if (t.status.shield && !skill.pierceShield) {
       blocked = Math.min(t.status.shield, dmg);
       t.status.shield -= blocked;
       dmg -= blocked;
@@ -935,14 +975,48 @@ export class Battle {
         events.push({ type: 'heal', uid: actor.uid, amount: real });
       }
     }
-    if (dmg > 0 && t.passive?.kind === 'thorns' && actor !== t && actor.hp > 0) {
-      events.push({ type: 'status', uid: t.uid, label: t.passive.name });
-      this.pierce(actor, Math.round(dmg * (t.passive.value ?? 0)), events);
+    if (dmg > 0 && skill.drain && actor.hp > 0) this.mend(actor, dmg * skill.drain, events);
+    if (dmg > 0 && skill.lifelink) for (const a of this.alive(actor.side)) this.mend(a, dmg * skill.lifelink, events);
+    const thorns = (t.passive?.kind === 'thorns' ? (t.passive.value ?? 0) : 0) + (t.status.thorns?.pct ?? 0);
+    if (dmg > 0 && thorns > 0 && actor !== t && actor.hp > 0) {
+      events.push({ type: 'status', uid: t.uid, label: t.status.thorns ? 'Thorns' : t.passive!.name });
+      this.pierce(actor, Math.round(dmg * thorns), events);
+    }
+    // Riposte: a Sentinel on guard (or with the passive) strikes back once per blow.
+    const counter = (t.status.counter?.mult ?? 0) + (t.passive?.kind === 'riposte' ? (t.passive.value ?? 0) : 0);
+    if (dmg > 0 && counter > 0 && !this.countering && t.hp > 0 && actor.hp > 0 && actor.side !== t.side) {
+      this.countering = true;
+      events.push({ type: 'status', uid: t.uid, label: 'Riposte!' });
+      this.hit(t, actor, { id: 'riposte', name: 'Riposte', desc: '', from: [], target: 'enemy', mult: counter }, events);
+      this.countering = false;
     }
     if (t.hp <= 0) {
       this.kill(t, events);
       if (actor.side === 'party' && actor.passive?.kind === 'zealOnKill') this.addZeal(actor.passive.value ?? 0, events, actor.passive.name, actor);
     } else this.checkPhase(t, events);
+  }
+
+  /** Heals a unit (no overheal), with a heal event. */
+  private mend(u: Unit, amount: number, events: BattleEvent[]) {
+    if (u.hp <= 0) return;
+    const real = Math.min(u.maxHp - u.hp, Math.round(amount * this.healOf(u)));
+    if (real > 0) {
+      u.hp += real;
+      events.push({ type: 'heal', uid: u.uid, amount: real });
+    }
+  }
+
+  /** Raises every fallen unit on the user's side with this share of max HP, behind the living. */
+  private revive(actor: Unit, pct: number, events: BattleEvent[]) {
+    for (const u of this.units) {
+      if (u.side !== actor.side || u.hp > 0) continue;
+      u.hp = Math.max(1, Math.round(u.maxHp * pct));
+      u.status = {};
+      u.rank = this.alive(actor.side).length;
+      if (u.zeal !== undefined) u.zeal = 0;
+      this.log.push(`  ${u.name} rises`);
+      events.push({ type: 'revive', uid: u.uid }, { type: 'status', uid: u.uid, label: 'Raised!' });
+    }
   }
 
   /** Damage multiplier from a living Sister's bulwark passive. */
@@ -960,14 +1034,15 @@ export class Battle {
     let total = 0;
     if (skill.mult) {
       let raw = this.attackOf(actor) * skill.mult * this.relicMult(actor, skill) * baneMult(actor, t) * wardOf(t);
+      if (skill.bossBonus && t.boss) raw *= 1 + skill.bossBonus;
       if (skill.lowHpBonus && actor.hp < actor.maxHp / 2) raw *= 1 + skill.lowHpBonus;
       if (t.status.accused) raw *= ACCUSED_MULT * (1 + (skill.bonusIfAccused ?? 0));
       if (t.status.weaken && skill.bonusIfWeak) raw *= 1 + skill.bonusIfWeak;
       if (skill.execute && t.hp < t.maxHp * EXECUTE_AT) raw *= 1 + skill.execute;
       if (actor.passive?.kind === 'executioner' && t.hp < t.maxHp / 2) raw *= 1 + (actor.passive.value ?? 0);
-      const critChance = t.status.accused && actor.passive?.kind === 'critOnAccused' ? 1 : actor.crit;
+      const critChance = t.status.accused && actor.passive?.kind === 'critOnAccused' ? 1 : Math.min(1, critOf(actor, skill));
       raw *= 1 + critChance * (CRIT_MULT - 1);
-      total += damageAfterArmor(raw, defenceAgainst(t, dmgOf(actor, skill))) * this.guardOf(t);
+      total += damageAfterArmor(raw, defenceAgainst(t, dmgOf(actor, skill)) * (1 - (skill.armorPierce ?? 0))) * this.guardOf(t);
     }
     if (skill.detonate && t.status.poison) total += t.status.poison.dmg * t.status.poison.turns * skill.detonate * this.detonateOf(actor);
     return Math.round(total);
@@ -1128,6 +1203,9 @@ export function defenceAgainst(t: Unit, type: DmgType) {
   if (type === 'magic') return t.mres * (t.status.hex ? 1 - t.status.hex.pct : 1);
   return t.armor * (t.status.sunder ? 1 - t.status.sunder.pct : 1);
 }
+
+/** Critical chance of a unit's hit with this skill. */
+const critOf = (u: Unit, skill: SkillDef) => u.crit + (u.status.critUp?.pct ?? 0) + (skill.critChance ?? 0);
 
 const wardOf = (t: Unit) => (t.status.ward ? 1 - t.status.ward.pct : 1);
 
