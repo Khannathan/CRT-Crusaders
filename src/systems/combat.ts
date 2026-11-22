@@ -126,7 +126,7 @@ export interface TurnStart {
 }
 
 /** Bump when combat numbers change, so logged runs can be compared fairly. */
-export const BALANCE_VERSION = '0.8';
+export const BALANCE_VERSION = '0.9';
 /** Execute skills hit harder below this share of max HP. */
 export const EXECUTE_AT = 0.3;
 
@@ -1026,7 +1026,7 @@ export class Battle {
 }
 
 /** Enemy HP and attack scale, tuned with balance.test.ts against the Auto player. */
-export const ENEMY_TUNE = 1.37;
+export const ENEMY_TUNE = 1.6;
 export function makeEnemy(type: string, uid: string, rank: number, scale = 1): Unit {
   const d = ENEMIES[type];
   const hp = Math.round(d.hp * ENEMY_TUNE * scale);

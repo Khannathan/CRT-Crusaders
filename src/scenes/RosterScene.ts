@@ -725,7 +725,7 @@ export class RosterScene extends Phaser.Scene {
     if (c.passive) {
       layer.add(this.add.rectangle(GAME_W / 2, y, width, 1, PAL.armorShadow));
       const name = this.add.text(left, y + 10, c.passive.name, { ...text.body(20, PAL.violet), fontStyle: '600' });
-      const t = this.add.text(left, y + 38, `PASSIVE · ${c.rarity} ONLY`, text.hud(11, PAL.steel));
+      const t = this.add.text(left, y + 38, `PASSIVE · ${c.rarity}`, text.hud(11, PAL.steel));
       const d = this.add.text(left, y + 56, c.passive.desc, { ...text.body(15, PAL.muted), wordWrap: { width } });
       layer.add([name, t, d]);
       const p = c.passive;

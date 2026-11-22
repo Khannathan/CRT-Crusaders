@@ -759,14 +759,14 @@ export function revive(save: SaveData, id: string): boolean {
   return true;
 }
 
-/** Suggested ranks: Vanguards front, Strikers next, Mystics, Menders at the back. */
+/** Suggested ranks: a Tank in front, Melee DPS next, then Ranged DPS and Buffers, the Healer at the back. */
 export function suggestParty(save: SaveData): string[] {
-  const order = { Vanguard: 0, Striker: 1, Mystic: 2, Mender: 3 } as const;
+  const order = { Tank: 0, 'Melee DPS': 1, 'Ranged DPS': 2, Buffer: 3, Healer: 4 } as const;
   const ready = CRUSADERS.filter((c) => canMuster(save, c.id));
   const byStrength = [...ready].sort((a, b) => sisterStats(save, b).atk - sisterStats(save, a).atk);
   // one of each role first, then the strongest of the rest
   const picked: typeof ready = [];
-  for (const role of Object.keys(order) as (keyof typeof order)[]) {
+  for (const role of ['Tank', 'Melee DPS', 'Healer'] as (keyof typeof order)[]) {
     const best = byStrength.find((c) => CLASSES[c.classId].role === role && !picked.includes(c));
     if (best) picked.push(best);
   }

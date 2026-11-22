@@ -2,12 +2,12 @@ import type { ClassDef, CrusaderDef, Rarity } from './types';
 import type { DmgType } from './skills';
 
 export const CLASSES: Record<string, ClassDef> = {
-  warsister: { id: 'warsister', name: 'Penitent War-Sister', role: 'Vanguard', summary: 'Scourges her own flesh for power. The nearer to death, the harder she strikes.' },
-  hierophant: { id: 'hierophant', name: 'Reliquary Hierophant', role: 'Vanguard', summary: 'Bears the reliquary as a shield and calls the enemy\'s wrath upon herself.' },
-  inquisitor: { id: 'inquisitor', name: 'Inquisitor', role: 'Striker', summary: 'Names the heretic. The Accused suffer more from every blow.' },
-  confessor: { id: 'confessor', name: 'Plague Confessor', role: 'Mender', summary: 'Mends the faithful and rots the unrepentant.' },
-  censer: { id: 'censer', name: 'Censer Priestess', role: 'Mystic', summary: 'Holy smoke chokes, burns and weakens every foe.' },
-  oracle: { id: 'oracle', name: 'Ash Oracle', role: 'Mystic', summary: "Reads doom in the ashes. She delays fate and strikes from afar." },
+  warsister: { id: 'warsister', name: 'Penitent War-Sister', role: 'Melee DPS', summary: 'Scourges her own flesh for power. The nearer to death, the harder she strikes.' },
+  hierophant: { id: 'hierophant', name: 'Reliquary Hierophant', role: 'Tank', summary: 'Bears the reliquary as a shield and calls the enemy\'s wrath upon herself.' },
+  inquisitor: { id: 'inquisitor', name: 'Inquisitor', role: 'Melee DPS', summary: 'Names the heretic. The Accused suffer more from every blow.' },
+  confessor: { id: 'confessor', name: 'Plague Confessor', role: 'Healer', summary: 'Mends the faithful and rots the unrepentant.' },
+  censer: { id: 'censer', name: 'Censer Priestess', role: 'Ranged DPS', summary: 'Holy smoke chokes, burns and weakens every foe.' },
+  oracle: { id: 'oracle', name: 'Ash Oracle', role: 'Buffer', summary: "Reads doom in the ashes. She delays fate and strikes from afar." },
 };
 
 /** Base-stat multiplier per rarity (design doc: +0/10/25/40%). */
@@ -23,4 +23,10 @@ export const RARITY_COLOR: Record<Rarity, number> = {
 
 /** Each class's usual damage; a Sister may carry her own tag (CrusaderDef.dmg). */
 export const CLASS_DMG: Record<string, DmgType> = { warsister: 'physical', hierophant: 'physical', inquisitor: 'physical', confessor: 'magic', censer: 'magic', oracle: 'magic' };
-export const dmgTagOf = (c: Pick<CrusaderDef, 'classId' | 'dmg'>): DmgType => c.dmg ?? CLASS_DMG[c.classId] ?? 'physical';
+/** Titles that fight with the other damage type from their class. */
+export const TITLE_DMG: Record<string, DmgType> = {
+  Inquisitor: 'magic', // sigils and seals, not steel
+  'Thorn Abbess': 'physical',
+  'Bone Archivist': 'physical',
+};
+export const dmgTagOf = (c: Pick<CrusaderDef, 'classId' | 'dmg'> & { title?: string }): DmgType => c.dmg ?? (c.title ? TITLE_DMG[c.title] : undefined) ?? CLASS_DMG[c.classId] ?? 'physical';

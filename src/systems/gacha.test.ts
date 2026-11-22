@@ -107,11 +107,11 @@ describe('Order banners', () => {
     expect(hits / urs).toBeLessThan(0.73);
   });
 
-  it('every Order has two URs to target and five Sisters', () => {
+  it('every Order has one UR to target, two SSRs, an SR and an R', () => {
     for (const o of ORDER_LIST) {
       const sisters = CRUSADERS.filter((c) => c.order === o.name);
       expect(sisters).toHaveLength(5);
-      expect(sisters.filter((c) => c.rarity === 'UR')).toHaveLength(2);
+      expect(sisters.map((c) => c.rarity).sort()).toEqual(['R', 'SR', 'SSR', 'SSR', 'UR']);
     }
     expect(CRUSADERS).toHaveLength(50);
     expect(new Set(CRUSADERS.map((c) => c.id)).size).toBe(50);
