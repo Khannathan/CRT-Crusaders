@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import { TAB_BAR_H, addTabBar } from '../ui/tabBar';
 import { FONT, GAME_H, GAME_W, PAL, hex } from '../config';
 import { RARITY_COLOR } from '../data/classes';
 import { CRUSADERS } from '../data/crusaders';
@@ -30,7 +31,7 @@ import { portraitKey } from '../ui/placeholderPortrait';
 import { addArt, addScreenGlow, text as txt } from '../ui/theme';
 
 const MAP_TOP = 112;
-const MAP_BOTTOM = 500;
+const MAP_BOTTOM = 470;
 const KIND_NAME: Record<NodeKind, string> = {
   fight: 'Fight',
   elite: 'Elite fight',
@@ -70,7 +71,8 @@ export class CryptScene extends Phaser.Scene {
 
     this.drawMap();
     this.drawParty();
-    makeButton(this, GAME_W / 2, GAME_H - 48, 260, 60, 'Retreat (keep Tithes)', () => this.finish('retreat'), { fontSize: 17 });
+    addTabBar(this, 'Crusade');
+    makeButton(this, GAME_W / 2, GAME_H - TAB_BAR_H - 28, 260, 48, 'Retreat (keep Tithes)', () => this.finish('retreat'), { fontSize: 17 });
 
     // Resume whatever the current node still needs.
     const node = currentNode(run);
@@ -135,8 +137,8 @@ export class CryptScene extends Phaser.Scene {
     const { x, y } = this.nodePos(floor, index);
     this.info.push(this.add.circle(x, y, 32).setStrokeStyle(4, PAL.ivory));
     const style = { fontFamily: FONT, color: hex(PAL.ivory), align: 'center', wordWrap: { width: GAME_W - 40 } };
-    this.info.push(this.add.text(GAME_W / 2, 572, `${KIND_NAME[node.kind]}\n${this.describe(node)}`, { ...style, fontSize: '20px', lineSpacing: 2 }).setOrigin(0.5));
-    const go = makeButton(this, GAME_W / 2, 640, 240, 60, 'Go', () => this.go(), { active: true });
+    this.info.push(this.add.text(GAME_W / 2, 530, `${KIND_NAME[node.kind]}\n${this.describe(node)}`, { ...style, fontSize: '20px', lineSpacing: 2 }).setOrigin(0.5));
+    const go = makeButton(this, GAME_W / 2, 592, 220, 52, 'Go', () => this.go(), { active: true });
     this.info.push(...go.all);
   }
 
@@ -173,7 +175,7 @@ export class CryptScene extends Phaser.Scene {
   private prompt(text: string) {
     this.clearInfo();
     this.info.push(
-      this.add.text(GAME_W / 2, 580, text, { fontFamily: FONT, fontSize: '21px', color: hex(PAL.muted), align: 'center' }).setOrigin(0.5),
+      this.add.text(GAME_W / 2, 545, text, { fontFamily: FONT, fontSize: '21px', color: hex(PAL.muted), align: 'center' }).setOrigin(0.5),
     );
   }
 
@@ -185,7 +187,7 @@ export class CryptScene extends Phaser.Scene {
   private drawParty() {
     const run = current.run!;
     const style = { fontFamily: FONT, color: hex(PAL.ivory), align: 'center' };
-    const py = 740;
+    const py = 680;
     run.party.forEach((id, i) => {
       const c = CRUSADERS.find((x) => x.id === id)!;
       const cx = GAME_W / 2 + (i - 1.5) * 120;
@@ -204,7 +206,7 @@ export class CryptScene extends Phaser.Scene {
     if (run.curseVigil) notes.push(`Next fight: Vigil ${run.curseVigil} shorter`);
     if (notes.length) {
       this.add
-        .text(GAME_W / 2, py + 108, notes.join('\n'), { ...style, fontSize: '18px', color: hex(PAL.violet), wordWrap: { width: GAME_W - 40 } })
+        .text(GAME_W / 2, py + 110, notes.join('\n'), { ...style, fontSize: '18px', color: hex(PAL.violet), wordWrap: { width: GAME_W - 40 } })
         .setOrigin(0.5);
     }
   }
