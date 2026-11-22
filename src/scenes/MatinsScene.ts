@@ -9,6 +9,7 @@ import { modeScreen } from '../ui/modeScreen';
 import { portraitKey } from '../ui/placeholderPortrait';
 import { PAD, addFrame, text } from '../ui/theme';
 import { holdForCard } from '../ui/sisterCard';
+import { sortAndFilter, sortControls } from '../ui/sisterSort';
 
 /** Adds the three 32-wide frames of ui-matins-candle.png once; returns how many (0 when missing). */
 function matinsCandleFrames(scene: Phaser.Scene) {
@@ -116,11 +117,16 @@ export class MatinsScene extends Phaser.Scene {
     layer.add(addFrame(this, GAME_W / 2, GAME_H / 2, GAME_W - 24, GAME_H - 40, { fill: 0x241925 }));
     layer.add(this.add.text(GAME_W / 2, 66, 'WHOSE VOW?', text.display(22, PAL.ivory)).setOrigin(0.5));
     layer.add(this.add.text(GAME_W / 2, 100, 'The last candle grants one Vow token.', text.body(17, PAL.muted)).setOrigin(0.5));
-    const cands = vowCandidates(save);
-    const list = addScrollArea(this, 128, GAME_H - 104, { parent: layer });
+    const cands = sortAndFilter(save, vowCandidates(save));
+    layer.add(sortControls(this, GAME_W / 2, 146, GAME_W - 60, () => {
+      layer.destroy();
+      this.pickSister(then);
+    }, { depth: 20, h: 36 }));
+    if (!cands.length) layer.add(this.add.text(GAME_W / 2, 250, 'No Sister matches these filters.', text.body(17, PAL.muted)).setOrigin(0.5));
+    const list = addScrollArea(this, 168, GAME_H - 104, { parent: layer });
     cands.forEach((c, i) => {
         const x = GAME_W / 2 + ((i % 4) - 1.5) * 112;
-        const y = 180 + Math.floor(i / 4) * 128;
+        const y = 222 + Math.floor(i / 4) * 128;
         const frame = this.add.rectangle(x, y, 100, 100, 0x150e17).setStrokeStyle(2, RARITY_COLOR[c.rarity]);
         const img = this.add.image(x, y, portraitKey(c.id)).setDisplaySize(94, 94);
         const name = this.add.text(x, y + 60, c.name.split(' ')[0], text.body(15, PAL.ivory)).setOrigin(0.5);
@@ -131,7 +137,7 @@ export class MatinsScene extends Phaser.Scene {
         holdForCard(this, frame, c.id);
         list.content.add([frame, img, name]);
       });
-    list.fit(180 + Math.ceil(cands.length / 4) * 128 - 40);
+    list.fit(222 + Math.ceil(cands.length / 4) * 128 - 40);
     const back = makeButton(this, GAME_W / 2, GAME_H - 62, 220, 60, 'Back', () => layer.destroy(), { fontSize: 19 });
     layer.add(back.all);
   }

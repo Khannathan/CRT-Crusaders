@@ -4,12 +4,12 @@ import { RARITY_COLOR } from '../data/classes';
 import { CRUSADERS } from '../data/crusaders';
 import type { CrusaderDef } from '../data/types';
 import type { SaveData } from '../state/save';
-import { RARITY_ORDER } from '../systems/gacha';
 import { formatPower, partyPower, sisterPower } from '../systems/power';
 import { addScrollArea } from './scroll';
 import { makeButton } from './button';
 import { portraitKey } from './placeholderPortrait';
 import { drawRecommended } from './recommended';
+import { sortAndFilter, sortControls } from './sisterSort';
 import { addOrderSigil, holdForCard } from './sisterCard';
 import { addFrame, text } from './theme';
 
@@ -36,24 +36,29 @@ export interface PickOpts {
 export function pickParty(scene: Phaser.Scene, save: SaveData, opts: PickOpts, done: (ids: string[]) => void) {
   const max = opts.max ?? 4;
   const allow = opts.allow ?? (() => true);
-  const owned = CRUSADERS.filter((c) => save.owned[c.id]).sort(
-    (a, b) => Number(allow(b)) - Number(allow(a)) || RARITY_ORDER.indexOf(b.rarity) - RARITY_ORDER.indexOf(a.rarity),
-  );
-  const picked = opts.initial.filter((id) => owned.some((c) => c.id === id && allow(c))).slice(0, max);
+  const all = CRUSADERS.filter((c) => save.owned[c.id]);
+  const picked = opts.initial.filter((id) => all.some((c) => c.id === id && allow(c))).slice(0, max);
   let scroll = 0;
-  const suggest = opts.suggest ?? (() => owned.filter(allow).sort((a, b) => sisterPower(save, b) - sisterPower(save, a)).slice(0, max).map((c) => c.id));
+  const suggest = opts.suggest ?? (() => all.filter(allow).sort((a, b) => sisterPower(save, b) - sisterPower(save, a)).slice(0, max).map((c) => c.id));
   const layer = scene.add.container(0, 0).setDepth(40);
   const draw = () => {
     layer.removeAll(true);
     layer.add(scene.add.rectangle(GAME_W / 2, GAME_H / 2, GAME_W, GAME_H, 0x09060b, 0.96).setInteractive());
     layer.add(addFrame(scene, GAME_W / 2, GAME_H / 2, GAME_W - 24, GAME_H - 40, { fill: 0x241925 }));
     layer.add(scene.add.text(GAME_W / 2, 62, opts.title.toUpperCase(), text.display(22, PAL.ivory)).setOrigin(0.5));
-    layer.add(scene.add.text(GAME_W / 2, 96, `${opts.sub}\nHold a portrait for her stats.`, { ...text.body(16, PAL.muted), align: 'center', wordWrap: { width: GAME_W - 70 } }).setOrigin(0.5, 0));
+    layer.add(scene.add.text(GAME_W / 2, 90, `${opts.sub} Hold a portrait for her stats.`, { ...text.body(15, PAL.muted), align: 'center', wordWrap: { width: GAME_W - 70 } }).setOrigin(0.5, 0));
+    // The Roster's sort and filter; those who can be chosen come first, and a picked Sister is never filtered out.
+    const owned = sortAndFilter(save, all, picked).sort((a, b) => Number(allow(b)) - Number(allow(a)));
+    layer.add(sortControls(scene, GAME_W / 2, 152, GAME_W - 60, () => {
+      scroll = 0;
+      draw();
+    }, { depth: 40, h: 36 }));
     const cell = 112;
-    const list = addScrollArea(scene, 150, GAME_H - 206, { parent: layer, start: scroll, onScroll: (y) => (scroll = y) });
+    if (!owned.length) layer.add(scene.add.text(GAME_W / 2, 260, 'No Sister matches these filters.', text.body(17, PAL.muted)).setOrigin(0.5));
+    const list = addScrollArea(scene, 174, GAME_H - 206, { parent: layer, start: scroll, onScroll: (y) => (scroll = y) });
     owned.forEach((c, i) => {
       const x = GAME_W / 2 + ((i % 4) - 1.5) * cell;
-      const y = 212 + Math.floor(i / 4) * (cell + 38);
+      const y = 236 + Math.floor(i / 4) * (cell + 38);
       const ok = allow(c);
       const at = picked.indexOf(c.id);
       const on = at >= 0;
@@ -74,7 +79,7 @@ export function pickParty(scene: Phaser.Scene, save: SaveData, opts: PickOpts, d
       }
       holdForCard(scene, frame, c.id);
     });
-    list.fit(212 + Math.ceil(owned.length / 4) * (cell + 38) - 50);
+    list.fit(236 + Math.ceil(owned.length / 4) * (cell + 38) - 50);
     if (opts.rec) {
       const parts = drawRecommended(scene, GAME_W / 2, GAME_H - 184, opts.rec, partyPower(save, picked), { size: 13, label: 'PARTY' });
       const w = parts[1].x + parts[1].width - parts[0].x;
