@@ -56,6 +56,8 @@ export interface SaveData {
   /** Cosmetic titles earned, and the one worn. */
   titles?: string[];
   title?: string;
+  /** The Vigil Flame: a kind daily streak (see flame.ts). */
+  flame?: { level: number; best: number; day: number; grace: number; week: string };
   /** Highest Heresy tier cleared per crypt id (0 = the base crypt). */
   heresy?: Record<string, number>;
   /** Every piece of gear owned; `on` says who wears it. */
