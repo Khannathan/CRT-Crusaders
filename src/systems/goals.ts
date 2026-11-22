@@ -16,6 +16,10 @@ export interface Goal {
   id: string;
   /** Short line, e.g. "3 Seals to your next 10-pull". */
   text: string;
+  /** Chip heading, e.g. "Next 10-pull". */
+  title: string;
+  /** What is still missing, short, e.g. "3 Seals". "Ready" when frac is 1. */
+  need: string;
   /** 0 to 1, how close it is. 1 means it is ready now. */
   frac: number;
   /** Where tapping it goes. */
@@ -30,6 +34,8 @@ export function tenPullGoal(save: SaveData): Goal {
   return {
     id: 'ten-pull',
     text: left > 0 ? `${left} Seal${left === 1 ? '' : 's'} to your next 10-pull` : 'A 10-pull is ready at the Altar',
+    title: 'Next 10-pull',
+    need: left > 0 ? `${left} Seal${left === 1 ? '' : 's'}` : 'Ready',
     frac: Math.min(1, save.seals / COST_TEN),
     scene: 'Recruit',
   };
@@ -38,7 +44,7 @@ export function tenPullGoal(save: SaveData): Goal {
 export function rankGoal(save: SaveData): Goal | undefined {
   const r = rankInfo(save);
   if (!r.need) return undefined;
-  return { id: 'rank', text: `${r.need - r.into} Faith to Rank ${r.rank + 1}`, frac: r.into / r.need, scene: 'Rank' };
+  return { id: 'rank', text: `${r.need - r.into} Faith to Rank ${r.rank + 1}`, title: `Rank ${r.rank + 1}`, need: `${r.need - r.into} Faith`, frac: r.into / r.need, scene: 'Rank' };
 }
 
 export function levelGoal(save: SaveData, id: string): Goal | undefined {
@@ -46,7 +52,7 @@ export function levelGoal(save: SaveData, id: string): Goal | undefined {
   if (!o || o.level >= levelCap(o)) return undefined;
   const need = expToNext(o.level);
   const have = expOf(o);
-  return { id: `level:${id}`, text: `${need - have} EXP until ${first(id)} reaches Lv ${o.level + 1}`, frac: Math.min(1, have / need), scene: 'Roster', data: { openId: id } };
+  return { id: `level:${id}`, text: `${need - have} EXP until ${first(id)} reaches Lv ${o.level + 1}`, title: `${first(id)} Lv ${o.level + 1}`, need: have >= need ? 'Ready' : `${need - have} EXP`, frac: Math.min(1, have / need), scene: 'Roster', data: { openId: id } };
 }
 
 /** How close an Order's next Codex level is: the scarcest of its Tithes and Writs. */
@@ -62,6 +68,8 @@ export function codexGoal(save: SaveData, order: string): Goal | undefined {
   return {
     id: `codex:${order}`,
     text: missing ? `${missing} to raise the ${name} Codex to ${codexLevel(save, order) + 1}` : `The ${name} Codex can rise to ${codexLevel(save, order) + 1}`,
+    title: `${name} Codex`,
+    need: missing ? [writs && `${writs} Writ${writs === 1 ? '' : 's'}`, tithes && `${tithes} Tithes`].filter(Boolean).join(', ') : 'Ready',
     frac,
     scene: 'Reliquary',
     data: { tab: 'codex' },
@@ -73,7 +81,7 @@ export function sparkGoal(save: SaveData): Goal | undefined {
   for (const o of ORDER_LIST) {
     const n = shardsOf(save, o.id);
     if (!n) continue;
-    const g: Goal = { id: `spark:${o.id}`, text: n >= SPARK ? `Choose a ${o.name} UR with your Relic Shards` : `${SPARK - n} Relic Shards to choose a ${o.name} UR`, frac: Math.min(1, n / SPARK), scene: 'Recruit' };
+    const g: Goal = { id: `spark:${o.id}`, text: n >= SPARK ? `Choose a ${o.name} UR with your Relic Shards` : `${SPARK - n} Relic Shards to choose a ${o.name} UR`, title: `${o.name} UR`, need: n >= SPARK ? 'Ready' : `${SPARK - n} Shards`, frac: Math.min(1, n / SPARK), scene: 'Recruit' };
     if (!best || g.frac > best.frac) best = g;
   }
   return best;

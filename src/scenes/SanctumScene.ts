@@ -5,6 +5,7 @@ import { applyCrt } from '../fx/crt';
 import { commit, game, resetGame } from '../state/game';
 import { current } from '../state/run';
 import { showExport, showImport } from '../ui/saveTransfer';
+import { drawAlmostThere } from '../ui/almostThere';
 import { saveSettings, settings } from '../state/settings';
 import { music } from '../audio/music';
 import { toggleFullscreen } from '../ui/fullscreen';
@@ -69,12 +70,17 @@ export class SanctumScene extends Phaser.Scene {
       this.drawVigil(fx, fy, fw, fh);
     }
 
-    // The Rites: daily duties. Modes live on the Crusade board, growth in the Cloister.
-    this.add.text(PAD, bottom + 12, 'DAILY RITES', text.hud(13, PAL.amber));
-    const ritesBottom = drawRites(this, game.save, bottom + 32);
+    // The closest real goals, then the Rites (daily duties).
+    let below = bottom;
+    if (owned.length) {
+      this.add.text(PAD, bottom + 10, 'ALMOST THERE', text.hud(13, PAL.amber));
+      below = drawAlmostThere(this, game.save, bottom + 28);
+    }
+    this.add.text(PAD, below + 10, 'DAILY RITES', text.hud(13, PAL.amber));
+    const ritesBottom = drawRites(this, game.save, below + 28);
 
     // Prototype-only: settings, and wiping the save to replay the first-time flow.
-    const linkY = ritesBottom + 30;
+    const linkY = ritesBottom + 24;
     this.textLink(PAD + 4, linkY, 'Settings', () => this.showSettings());
     this.textLink(GAME_W - PAD - 4, linkY, 'Reset save', () => this.confirmReset(), 1);
 
