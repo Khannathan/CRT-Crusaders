@@ -1,8 +1,9 @@
 import { BOND_XP, addBond } from './bonds';
+import { addExp, vigilExpRate } from './exp';
 import { give, vigilDrops, type Bag } from './items';
 import type { SaveData } from '../state/save';
 import { suggestParty } from './crusade';
-import { FAST_HOURS, chaptersCleared, nextStage, roadRates, stageDef, useFast } from './campaign';
+import { FAST_HOURS, campaignOf, chaptersCleared, nextStage, roadRates, stageDef, useFast } from './campaign';
 import type { Rng } from './gacha';
 import { claimGear, makeGear, rollGearRarity, type GearItem } from './gear';
 import { track } from './tasks';
@@ -63,6 +64,8 @@ export interface VigilClaim {
   gear: GearItem[];
   melted: number;
   items: Bag;
+  /** EXP each of the Vigil's Sisters gained. */
+  exp?: number;
 }
 
 /** Pays out `hours` of gathering at the road's rates. */
@@ -77,7 +80,9 @@ function payOut(save: SaveData, hours: number, party: string[], rng: Rng): Vigil
   const items = vigilDrops(p.hours * r.items * 2, rng);
   give(save, items);
   addBond(save, party, Math.floor(p.hours * BOND_XP.vigilHour));
-  return { tithes: p.tithes, seals: p.seals, gear, melted, items };
+  const exp = Math.floor(p.hours * vigilExpRate(campaignOf(save).best));
+  for (const id of party) addExp(save, id, exp);
+  return { tithes: p.tithes, seals: p.seals, gear, melted, items, exp };
 }
 
 /** Pays out what the Vigil gathered and starts the clock again. */

@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import { music } from '../audio/music';
 import { bondBattle } from '../systems/bonds';
+import { expBattle } from '../systems/exp';
 import { FONT, GAME_H, GAME_W, PAL, hex } from '../config';
 import { addTabBar } from '../ui/tabBar';
 import { RARITY_COLOR } from '../data/classes';
@@ -231,10 +232,13 @@ export class BattleScene extends Phaser.Scene {
   private end(outcome: 'victory' | 'defeat') {
     music.stinger(outcome, 'end');
     const challenge = current.challenge;
+    // Battle EXP: every Sister still standing.
+    const won = expBattle(game.save, this.battle);
+    const expLine = won.exp ? `  +${won.exp} EXP${won.levelled.length ? ', level up!' : ''}` : '';
     if (challenge) {
       this.mode = 'busy';
       this.clearSkills();
-      this.logText.setText(outcome === 'victory' ? 'The trial is passed.' : 'Your Sisters fall back, bloodied but alive.');
+      this.logText.setText(outcome === 'victory' ? `The trial is passed.${expLine}` : 'Your Sisters fall back, bloodied but alive.');
       this.time.delayedCall(1200, () => {
         current.challenge = undefined;
         bondBattle(game.save, this.battle);
@@ -248,7 +252,7 @@ export class BattleScene extends Phaser.Scene {
     absorbBattle(run, this.battle);
     this.mode = 'busy';
     this.clearSkills();
-    this.logText.setText(outcome === 'victory' ? 'The heretics are purged.' : 'Your Sisters have fallen. The dark takes its tithe.');
+    this.logText.setText(outcome === 'victory' ? `The heretics are purged.${expLine}` : 'Your Sisters have fallen. The dark takes its tithe.');
     this.time.delayedCall(1200, () => {
       if (outcome === 'victory') {
         winRoom(run, game.save);

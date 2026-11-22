@@ -120,6 +120,11 @@ const CURRENCIES: Record<Currency, ResourceInfo> = {
 };
 
 const FAMILY_SOURCES: Record<string, Record<1 | 2 | 3, Source[]>> = {
+  unction: {
+    1: [VIGIL, CRYPTS, ROAD, TITHE_SHOP],
+    2: [CRYPT_BOSS, VIGIL, ROAD, GILT_SHOP, REFINE('Lesser Unction')],
+    3: [ROAD, ALMONRY, REFINE('Blessed Unction')],
+  },
   ash: {
     1: [CRYPTS, VIGIL, { text: 'Relic Trials: the Ash trial (Mon, Thu, weekends)', scene: 'Trials' }, DAILY, TITHE_SHOP],
     2: [CRYPT_ELITE, { text: 'Relic Trials: Ash trial, higher tiers', scene: 'Trials' }, GILT_SHOP, ALMONRY, REFINE('Grave Ash')],
@@ -147,7 +152,7 @@ const FAMILY_SOURCES: Record<string, Record<1 | 2 | 3, Source[]>> = {
   },
 };
 
-const isItem = (id: ResourceId): id is ItemId => /^(ash|page|iron|incense|writ)[123]$/.test(id);
+const isItem = (id: ResourceId): id is ItemId => /^(ash|page|iron|incense|writ|unction)[123]$/.test(id);
 
 export function resourceInfo(id: ResourceId): ResourceInfo {
   if (!isItem(id)) return CURRENCIES[id];

@@ -45,12 +45,13 @@ import {
   type GearItem,
   type GearSlot,
 } from '../systems/gear';
-import { levelCap, levelUpCost, sisterStats } from '../systems/stats';
+import { levelCap, sisterStats } from '../systems/stats';
+import { UNCTIONS, UNCTION_EXP, expOf, expToNext, feed, feedPlan } from '../systems/exp';
+import { drawItemIcon } from '../ui/itemIcon';
 import { ascend, ascendBlock, costLine, nextAscension } from '../systems/ascension';
 import { ROMAN_RANK } from '../systems/rank';
 import { countOf, itemDef } from '../systems/items';
 import { MAX_SKILL_LEVEL, nextSkillStep, raiseSkill, skillBlock, skillLevels, stepText } from '../systems/skillLevels';
-import { track } from '../systems/tasks';
 import { makeButton } from '../ui/button';
 import { CURRENCY_BAR_H, addCurrencyBar } from '../ui/currencyBar';
 import { loadFullBody, portraitKey } from '../ui/placeholderPortrait';
@@ -365,24 +366,12 @@ export class RosterScene extends Phaser.Scene {
       .join('  ·  ');
   }
 
-  /** Levels she can gain now, up to `n`, and what they cost in Tithes. */
-  private levelPlan(c: CrusaderDef, n: number) {
-    const have = game.save.owned[c.id];
-    const cap = levelCap(have);
-    let lv = have.level;
-    let cost = 0;
-    while (lv - have.level < n && lv < cap && cost + levelUpCost(lv) <= game.save.tithes) cost += levelUpCost(lv++);
-    // Nothing affordable: show what one level would cost.
-    if (lv === have.level && lv < cap) return { levels: 0, cost: levelUpCost(lv) };
-    return { levels: lv - have.level, cost };
-  }
-
   /** Which sheet tabs have something to do (a gold dot). */
   private tabReady(c: CrusaderDef): Record<Tab, boolean> {
     const save = game.save;
     const have = save.owned[c.id];
     const atCap = have.level >= levelCap(have);
-    const grow = atCap ? !!nextAscension(save, c.id) && !ascendBlock(save, c.id) : save.tithes >= levelUpCost(have.level);
+    const grow = atCap ? !!nextAscension(save, c.id) && !ascendBlock(save, c.id) : feedPlan(save, c.id, 1).levels > 0;
     const vows = !(have.vow >= MAX_VOW ? tierBlock(save, have) : vowBlock(save, have));
     const skills = CLASS_SKILLS[c.classId].some((_, i) => !skillBlock(save, c.id, i));
     const worn = new Set(equipped(save, c.id).map((g) => g.slot));
@@ -572,30 +561,45 @@ export class RosterScene extends Phaser.Scene {
     layer.add(tapForSources(this, this.add.text(GAME_W - PAD - 8, y, `${save.tithes.toLocaleString('en-US')} TITHES`, text.hud(12, PAL.steel)).setOrigin(1, 0), 'tithes'));
     y += 28;
     const now = sisterStats(save, c);
+    // EXP bar: into this level, or banked at her cap.
+    const need = expToNext(have.level);
+    const into = Math.min(expOf(have), need);
+    layer.add(this.add.rectangle(left, y + 6, bw, 12, 0x150e17).setOrigin(0, 0.5).setStrokeStyle(1, PAL.armorShadow));
+    if (into) layer.add(this.add.rectangle(left + 1, y + 6, (bw - 2) * (into / need), 10, 0x7fc4a0).setOrigin(0, 0.5));
+    layer.add(this.add.text(left, y + 16, atCap ? (into >= need ? 'EXP full: Ascend to keep growing' : `EXP ${into.toLocaleString('en-US')} / ${need.toLocaleString('en-US')} banked at her cap`) : `EXP ${into.toLocaleString('en-US')} / ${need.toLocaleString('en-US')}`, text.body(13, PAL.muted)));
+    y += 40;
     if (!atCap) {
+      // Unction held: tap for sources.
+      const uw = bw / 3;
+      UNCTIONS.forEach((u, i) => {
+        const x = left + i * uw;
+        layer.add(drawItemIcon(this, x + 20, y + 18, u, 36));
+        const t = tapForSources(this, this.add.text(x + 44, y + 4, `×${countOf(save, u)}\n${UNCTION_EXP[u].toLocaleString('en-US')} EXP`, text.body(13, countOf(save, u) ? PAL.ivory : PAL.steel)), u);
+        layer.add(t);
+      });
+      y += 46;
       const one = this.preview(c, (o) => (o.level += 1));
       layer.add(this.add.text(left, y, `Next level: ${this.diffText(now, one)}`, { ...text.body(15, PAL.ivory), wordWrap: { width: bw } }));
       y += 30;
       const w = (bw - 16) / 3;
       ([['+1', 1], ['+10', 10], ['Max', 999]] as const).forEach(([label, n], i) => {
-        const plan = this.levelPlan(c, n);
+        const plan = feedPlan(save, c.id, n);
         const can = plan.levels > 0;
-        const b = makeButton(this, left + w / 2 + i * (w + 8), y + 30, w, 58, `${label}${can && n > 1 ? ` (${plan.levels})` : ''}\n${plan.cost.toLocaleString('en-US')} Tithes`, () => {
+        const sub = can ? `${plan.tithes.toLocaleString('en-US')} Tithes` : plan.block === 'unction' ? 'Need Unction' : plan.block === 'tithes' ? 'Need Tithes' : 'At cap';
+        const b = makeButton(this, left + w / 2 + i * (w + 8), y + 30, w, 58, `${label}${can && n > 1 ? ` (${plan.levels})` : ''}\n${sub}`, () => {
           if (list.dragging || !can) return;
-          for (let k = 0; k < plan.levels; k++) {
-            save.tithes -= levelUpCost(have.level);
-            have.level += 1;
-            track(save, 'levelUp');
+          if (feed(save, c.id, n)) {
+            commit();
+            this.reopen(c, 'grow');
           }
-          commit();
-          this.reopen(c, 'grow');
-        }, { disabled: !can, active: can && i === 0, fontSize: 15 });
+        }, { disabled: !can, active: can && i === 0, fontSize: 14 });
         layer.add(b.all);
       });
       y += 72;
-      if (save.tithes < levelUpCost(have.level)) {
-        layer.add(tapForSources(this, this.add.text(left, y, 'Short of Tithes: tap to see where to get more ›', text.body(14, PAL.amber)), 'tithes'));
-        y += 26;
+      const block = feedPlan(save, c.id, 1).block;
+      if (block) {
+        layer.add(tapForSources(this, this.add.text(left, y, block === 'unction' ? 'Short of Unction: battles, the Vigil and the road give EXP too. Tap for sources ›' : 'Short of Tithes: tap to see where to get more ›', { ...text.body(14, PAL.amber), wordWrap: { width: bw } }), block === 'unction' ? 'unction1' : 'tithes'));
+        y += 44;
       }
     } else {
       const step = nextAscension(save, c.id);

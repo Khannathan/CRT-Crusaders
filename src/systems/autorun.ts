@@ -1,5 +1,6 @@
 import type { SaveData } from '../state/save';
 import { autoBattle } from './autoplay';
+import { expBattle } from './exp';
 import {
   absorbBattle,
   canMuster,
@@ -60,6 +61,7 @@ export function autoRun(save: SaveData, party: string[], crypt: CryptDef, heresy
       const res = autoBattle(b, 600);
       absorbBattle(run, b);
       if (res !== 'victory') return finishRun(save, run, 'defeat');
+      expBattle(save, b);
       winRoom(run, save, rng);
     }
     if (run.pendingRelic) {

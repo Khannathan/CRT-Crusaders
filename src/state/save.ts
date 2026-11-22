@@ -14,6 +14,8 @@ import type { ProcessionState } from '../systems/offerings';
 /** Everything the player owns, stored on the device. */
 export interface OwnedCrusader {
   level: number;
+  /** EXP into her current level (see systems/exp.ts). */
+  exp?: number;
   /** Vows taken, 0-5. Each one spends a Vow token. */
   vow: number;
   /** Vow tokens: duplicate pulls of her, waiting for Take Vow. */
@@ -103,7 +105,7 @@ const KEY = 'crt-crusaders.save.v1';
  * lets you try the altar beyond the free first 10-pull.
  */
 export function newSave(): SaveData {
-  return { version: 1, seals: 30, tithes: 500, pity: 0, totalPulls: 0, freeTenUsed: false, owned: {}, cleared: [], lastParty: [], gear: starterGear() };
+  return { version: 1, seals: 30, tithes: 500, pity: 0, totalPulls: 0, freeTenUsed: false, owned: {}, cleared: [], lastParty: [], gear: starterGear(), items: { unction1: 10 } };
 }
 
 export function loadSave(): SaveData {

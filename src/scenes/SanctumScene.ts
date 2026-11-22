@@ -9,7 +9,8 @@ import { toggleFullscreen } from '../ui/fullscreen';
 import { autoChoose } from '../systems/autoplay';
 import type { BattleEvent, Unit } from '../systems/combat';
 import { VIGIL_CAP_HOURS, VIGIL_SIZE, claimVigil, ensureVigil, fastReward, setVigil, vigilPending, vigilRates, vigilStage, type VigilClaim, type VigilState } from '../systems/vigil';
-import { CHAPTERS, FAST_HOURS, fastCost, roadDone, stageBattle, stageRecommended } from '../systems/campaign';
+import { CHAPTERS, FAST_HOURS, campaignOf, fastCost, roadDone, stageBattle, stageRecommended } from '../systems/campaign';
+import { vigilExpRate } from '../systems/exp';
 import { giltOf } from '../systems/currency';
 import { partyPower } from '../systems/power';
 import { enemyKey } from '../ui/enemyArt';
@@ -145,7 +146,7 @@ export class SanctumScene extends Phaser.Scene {
       const r = vigilRates(save, v);
       const p = vigilPending(save, v, now);
       const every = (perHour: number) => (perHour <= 0 ? 'never' : perHour >= 1 ? `${perHour.toFixed(1)}/h` : `every ${Math.round(1 / perHour)}h`);
-      rateText.setText(`${Math.round(r.tithes)} Tithes/h · gear ${every(r.gear)} · Seal ${every(r.seals)} · set by your best stage`);
+      rateText.setText(`${Math.round(r.tithes)} Tithes/h · ${Math.round(vigilExpRate(campaignOf(save).best))} EXP/h · gear ${every(r.gear)} · Seal ${every(r.seals)}`);
       const parts = [`${p.tithes} Tithes`, ...(p.gear ? [`${p.gear} gear`] : []), ...(p.seals ? [`${p.seals} Seal${p.seals > 1 ? 's' : ''}`] : [])];
       gotText.setText(`Gathered: ${parts.join(' · ')}`);
       bar.setSize(Math.max(1, barW * (p.hours / VIGIL_CAP_HOURS)), 8);
@@ -249,7 +250,7 @@ export class SanctumScene extends Phaser.Scene {
   /** A short notice of what a claim paid. */
   private showClaim(c?: VigilClaim, title = 'The Vigil yields:') {
     if (!c || (!c.tithes && !c.seals && !c.gear.length && bagEmpty(c.items))) return;
-    const parts = [`+${c.tithes} Tithes`, ...(c.seals ? [`+${c.seals} Seal${c.seals > 1 ? 's' : ''}`] : []), ...(bagEmpty(c.items) ? [] : [bagText(c.items)]), ...c.gear.map((g) => `${g.name} (${g.rarity})`)];
+    const parts = [`+${c.tithes} Tithes`, ...(c.exp ? [`+${c.exp} EXP to each Sister`] : []), ...(c.seals ? [`+${c.seals} Seal${c.seals > 1 ? 's' : ''}`] : []), ...(bagEmpty(c.items) ? [] : [bagText(c.items)]), ...c.gear.map((g) => `${g.name} (${g.rarity})`)];
     if (c.melted) parts.push(`armory full: +${c.melted} Tithes`);
     const box = this.add.container(0, 0).setDepth(30);
     const t = this.add.text(GAME_W / 2, 150, `${title}\n${parts.join('\n')}`, { ...text.body(19, PAL.ivory), align: 'center', wordWrap: { width: GAME_W - 80 } }).setOrigin(0.5, 0);
