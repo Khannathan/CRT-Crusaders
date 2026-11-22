@@ -89,6 +89,12 @@ export function makeNodeTextures(scene: Phaser.Scene) {
     g.fillStyle(PAL.bronze).fillRect(13, 18, 22, 16);
     g.fillStyle(PAL.amber).fillRect(13, 14, 22, 6).fillRect(22, 22, 4, 6);
   });
+  // miracle: a radiant halo over a cross
+  node('miracle', 0xfff1d6, (g) => {
+    g.fillStyle(0xffe9a8).fillCircle(24, 24, 14);
+    g.fillStyle(0xfff8e4).fillCircle(24, 24, 9);
+    g.fillStyle(PAL.amber).fillRect(22, 13, 4, 22).fillRect(16, 19, 16, 4);
+  });
   node('boss', PAL.oxblood, (g) => {
     g.fillStyle(PAL.ivory).fillCircle(24, 22, 11).fillRect(17, 28, 14, 8);
     g.fillStyle(PAL.bg).fillCircle(20, 21, 3).fillCircle(28, 21, 3).fillRect(20, 31, 2, 4).fillRect(23, 31, 2, 4).fillRect(26, 31, 2, 4);

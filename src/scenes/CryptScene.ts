@@ -5,7 +5,7 @@ import { RARITY_COLOR } from '../data/classes';
 import { CRUSADERS } from '../data/crusaders';
 import { ENCOUNTERS, ENEMIES } from '../data/enemies';
 import { EVENTS } from '../data/events';
-import { RELICS } from '../data/relics';
+import { FAMILY_BONUS, FAMILY_COLOR, FAMILY_NAME, relicById, type RelicFamily } from '../data/relics';
 import { commit, game } from '../state/game';
 import { current } from '../state/run';
 import {
@@ -22,6 +22,9 @@ import {
   relicOffer,
   rewardMult,
   shrine,
+  miracle,
+  familyCounts,
+  MIRACLE_SEALS,
   takeRelic,
   type MapNode,
   type NodeKind,
@@ -44,6 +47,7 @@ const KIND_NAME: Record<NodeKind, string> = {
   shrine: 'Shrine',
   reliquary: 'Reliquary',
   boss: 'Boss',
+  miracle: 'Miracle',
 };
 
 /** The crypt map: pick a path floor by floor, from the bottom up to the boss. */
@@ -73,11 +77,12 @@ export class CryptScene extends Phaser.Scene {
     const style = { fontFamily: FONT, color: hex(PAL.ivory), align: 'center' };
     this.add.text(GAME_W / 2, 30, run.crypt.name.toUpperCase() + (run.heresy ? `  ·  HERESY ${ROMAN[run.heresy - 1]}` : ''), txt.display(run.heresy ? 20 : 24, run.heresy ? 0xe58a8a : PAL.ivory)).setOrigin(0.5);
     this.add
-      .text(GAME_W / 2, 62, `Earned so far: ${run.tithes} Tithes · ${run.seals} Seals`, { ...style, fontSize: '18px', color: hex(PAL.muted) })
+      .text(GAME_W / 2, 56, `Earned so far: ${run.tithes} Tithes · ${run.seals} Seals`, { ...style, fontSize: '18px', color: hex(PAL.muted) })
       .setOrigin(0.5);
 
     this.drawMap();
     this.drawParty();
+    this.drawBuild();
     addTabBar(this, 'Crusade');
     makeButton(this, GAME_W / 2, GAME_H - TAB_BAR_H - 28, 260, 48, 'Retreat (keep Tithes)', () => this.finish('retreat'), { fontSize: 17 });
 
@@ -228,6 +233,8 @@ export class CryptScene extends Phaser.Scene {
         return `Kneel and pray: every Sister heals ${REWARDS.shrineHealPct * 100}%.`;
       case 'reliquary':
         return 'Claim one holy relic for this crusade.';
+      case 'miracle':
+        return `A Miracle. Every Sister, fallen or not, rises whole. +${MIRACLE_SEALS} Seals and a relic of your choice.`;
     }
   }
 
@@ -239,6 +246,11 @@ export class CryptScene extends Phaser.Scene {
       shrine(game.save, run);
       commit();
       this.scene.restart();
+    } else if (node.kind === 'miracle') {
+      miracle(game.save, run);
+      commit();
+      this.cameras.main.flash(500, 255, 240, 200);
+      this.time.delayedCall(450, () => this.scene.restart());
     } else this.scene.restart(); // create() routes to the battle, event or relic choice
   }
 
@@ -272,7 +284,6 @@ export class CryptScene extends Phaser.Scene {
       this.add.text(cx, py + 74, hp > 0 ? `${hp}/${max}` : 'Fallen', { ...style, fontSize: '17px', color: hex(PAL.muted) }).setOrigin(0.5);
     });
     const notes: string[] = [];
-    if (run.relics.length) notes.push(`Relics: ${run.relics.map((id) => RELICS.find((r) => r.id === id)!.name).join(', ')}`);
     if (run.blessZeal) notes.push(`Next fight: +${run.blessZeal} Zeal`);
     if (run.curseVigil) notes.push(`Next fight: Vigil ${run.curseVigil} shorter`);
     if (notes.length) {
@@ -280,6 +291,59 @@ export class CryptScene extends Phaser.Scene {
         .text(GAME_W / 2, py + 110, notes.join('\n'), { ...style, fontSize: '18px', color: hex(PAL.violet), wordWrap: { width: GAME_W - 40 } })
         .setOrigin(0.5);
     }
+  }
+
+  /** The run's build: family counts at a glance; tap for every relic and synergy. */
+  private drawBuild() {
+    const run = current.run!;
+    if (!run.relics.length) return;
+    const counts = familyCounts(run);
+    const parts: Phaser.GameObjects.Text[] = [];
+    const label = this.add.text(0, 82, `${run.relics.length} relic${run.relics.length > 1 ? 's' : ''}`, txt.hud(13, PAL.muted)).setOrigin(0, 0.5);
+    parts.push(label);
+    for (const f of ['burn', 'bell', 'martyr'] as RelicFamily[]) {
+      if (!counts[f]) continue;
+      parts.push(this.add.text(0, 82, `${FAMILY_NAME[f]} ${counts[f]}${counts[f] >= 2 ? '★' : ''}`, txt.hud(13, FAMILY_COLOR[f])).setOrigin(0, 0.5));
+    }
+    parts.push(this.add.text(0, 82, '›', txt.hud(14, PAL.amber)).setOrigin(0, 0.5));
+    const gap = 16;
+    const total = parts.reduce((n, p) => n + p.width, 0) + gap * (parts.length - 1);
+    let x = GAME_W / 2 - total / 2;
+    for (const p of parts) {
+      p.setX(x);
+      x += p.width + gap;
+    }
+    const hit = this.add.rectangle(GAME_W / 2, 82, total + 30, 24, 0x000000, 0.001).setInteractive({ useHandCursor: true });
+    hit.on('pointerup', () => this.showBuild());
+  }
+
+  private showBuild() {
+    const run = current.run!;
+    const layer = this.overlay();
+    layer.add(this.add.text(GAME_W / 2, 90, 'YOUR BUILD', txt.display(26, PAL.ivory)).setOrigin(0.5));
+    let y = 140;
+    const counts = familyCounts(run);
+    for (const f of ['burn', 'bell', 'martyr'] as RelicFamily[]) {
+      const [two, three] = FAMILY_BONUS[f];
+      const n = counts[f];
+      const line = `${FAMILY_NAME[f]} ${n}/3   ${n >= 2 ? '✓' : '○'} ${two.name.split(' (')[0]}: ${two.desc}   ${n >= 3 ? '✓' : '○'} ${three.name.split(' (')[0]}: ${three.desc}`;
+      const t = this.add.text(30, y, line, { ...txt.body(15, n >= 2 ? FAMILY_COLOR[f] : PAL.steel), wordWrap: { width: GAME_W - 60 } });
+      layer.add(t);
+      y += t.height + 12;
+    }
+    y += 6;
+    for (const id of run.relics) {
+      const r = relicById(id);
+      if (!r) continue;
+      const col = r.burden ? 0xd65f5f : r.family ? FAMILY_COLOR[r.family] : PAL.ivory;
+      const tag = r.burden ? 'BURDEN' : r.family ? FAMILY_NAME[r.family].toUpperCase() : '';
+      layer.add(this.add.text(30, y, `${r.name}${tag ? `  ·  ${tag}` : ''}`, txt.body(17, col)));
+      const d = this.add.text(30, y + 22, r.desc, { ...txt.body(15, PAL.muted), wordWrap: { width: GAME_W - 60 } });
+      layer.add(d);
+      y += 26 + d.height + 8;
+    }
+    const close = makeButton(this, GAME_W / 2, Math.min(GAME_H - 140, y + 50), 220, 60, 'Close', () => layer.destroy());
+    layer.add(close.all);
   }
 
   private overlay() {
@@ -304,7 +368,10 @@ export class CryptScene extends Phaser.Scene {
     layer.add(this.add.text(GAME_W / 2, 200, 'THE RELIQUARY OFFERS', txt.display(24, PAL.ivory)).setOrigin(0.5));
     offer.forEach((r, i) => {
       const y = 320 + i * 130;
-      const b = makeButton(this, GAME_W / 2, y, GAME_W - 80, 110, `${r.name}\n${r.desc}`, () => {
+      const counts = familyCounts(run);
+      const n = r.family ? counts[r.family] + 1 : 0;
+      const synergy = r.family && n >= 2 && n <= 3 ? `  ·  ${n}${n === 2 ? 'nd' : 'rd'} ${FAMILY_NAME[r.family]}: ${FAMILY_BONUS[r.family][n - 2].name.split(' (')[0]}!` : r.family ? `  ·  ${FAMILY_NAME[r.family]}` : '';
+      const b = makeButton(this, GAME_W / 2, y, GAME_W - 80, 110, `${r.name}${synergy}\n${r.desc}`, () => {
         takeRelic(game.save, run, r.id);
         commit();
         this.scene.restart();
