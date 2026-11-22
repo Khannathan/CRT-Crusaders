@@ -83,6 +83,29 @@ function pickCrusader(save: SaveData, rng: Rng, rarity: Rarity): CrusaderDef {
   return pickFrom(rng, pool);
 }
 
+/**
+ * Every Sister this banner can give, with her base chance per pull (before
+ * pity). The targeted UR takes half the UR rate, the banner Order's SSRs half
+ * the SSR rate; everyone else shares the rest of her rarity evenly.
+ */
+export function bannerPool(save: SaveData): { c: CrusaderDef; chance: number; featured: boolean }[] {
+  const banner = save.banner;
+  const out: { c: CrusaderDef; chance: number; featured: boolean }[] = [];
+  for (const r of [...RARITY_ORDER].reverse()) {
+    const pool = CRUSADERS.filter((c) => c.rarity === r);
+    const rate = RATES[r];
+    const target = r === 'UR' && banner ? pool.find((c) => c.id === banner.target) : undefined;
+    const orderSSR = r === 'SSR' && banner ? pool.filter((c) => c.order === banner.order) : [];
+    for (const c of pool) {
+      let chance = rate / pool.length;
+      if (target) chance = c === target ? rate * TARGET_SHARE : (rate * (1 - TARGET_SHARE)) / (pool.length - 1);
+      else if (orderSSR.length) chance = (rate * (1 - ORDER_SSR_SHARE)) / pool.length + (orderSSR.includes(c) ? (rate * ORDER_SSR_SHARE) / orderSSR.length : 0);
+      out.push({ c, chance, featured: c === target || orderSSR.includes(c) });
+    }
+  }
+  return out;
+}
+
 /** UR chance on the n-th pull since the last UR (1-based). */
 export function urChance(n: number) {
   if (n >= UR_HARD) return 1;
