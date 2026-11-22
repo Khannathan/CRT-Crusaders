@@ -1,0 +1,10 @@
+{
+  "name": "CRT Crusaders",
+  "short_name": "Crusaders",
+  "start_url": "./",
+  "scope": "./",
+  "display": "fullscreen",
+  "orientation": "portrait",
+  "background_color": "#0a090c",
+  "theme_color": "#121116"
+}

@@ -5,6 +5,7 @@ import { applyCrt } from '../fx/crt';
 import { commit, game, resetGame } from '../state/game';
 import { saveSettings, settings } from '../state/settings';
 import { music } from '../audio/music';
+import { toggleFullscreen } from '../ui/fullscreen';
 import { autoChoose } from '../systems/autoplay';
 import type { BattleEvent, Unit } from '../systems/combat';
 import { skirmish } from '../systems/crusade';
@@ -341,7 +342,12 @@ export class SanctumScene extends Phaser.Scene {
           .text(GAME_W / 2, 660, 'Scanlines, colour bleed and screen curve.\nPortrait art is never changed underneath.', { ...style, fontSize: '16px', color: hex(PAL.steel) })
           .setOrigin(0.5),
       );
-      const close = makeButton(this, GAME_W / 2, 790, 240, 72, 'Done', () => layer.destroy());
+      const fs = makeButton(this, GAME_W / 2, 736, 240, 52, this.scale.isFullscreen ? 'Leave full screen' : 'Full screen', () => {
+        toggleFullscreen(this);
+        layer.destroy();
+      }, { fontSize: 18 });
+      layer.add(fs.all);
+      const close = makeButton(this, GAME_W / 2, 822, 240, 64, 'Done', () => layer.destroy());
       layer.add(close.all);
     };
     draw();
