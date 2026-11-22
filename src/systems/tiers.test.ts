@@ -3,15 +3,16 @@ import { CRUSADERS } from '../data/crusaders';
 import { newSave } from '../state/save';
 import { powerOf } from './power';
 import { statsFor } from './stats';
-import { MAX_TIER, MAX_VOW, TIER_STIGMATA, copiesFor, copiesLeft, oathMult, skillVow, takeVow, tierBlock, tierTithes, tierUp, vowBlock } from './tiers';
+import { MAX_TIER, MAX_VOW, TIER_STIGMATA, copiesFor, copiesLeft, oathMult, skillVow, takeVow, tierBlock, tierTithes, tierUp, vowBlock, standIn, STIGMATA_PER_COPY } from './tiers';
 
 describe('star tiers', () => {
-  it('each Vow needs more copies on each tier', () => {
+  it('each Vow needs more copies on each tier, up to two more', () => {
     expect([0, 1, 2, 3, 4].map((v) => copiesFor(0, v))).toEqual([1, 1, 2, 2, 3]);
     expect([0, 1, 2, 3, 4].map((v) => copiesFor(1, v))).toEqual([2, 2, 3, 3, 4]);
     expect([0, 1, 2, 3, 4].map((v) => copiesFor(2, v))).toEqual([3, 3, 4, 4, 5]);
-    // 9 copies for tier 0, then 14, 19 ... 34
-    expect(copiesLeft({ vow: 0, tier: 0 })).toBe(9 + 14 + 19 + 24 + 29 + 34);
+    expect([0, 1, 2, 3, 4].map((v) => copiesFor(5, v))).toEqual([3, 3, 4, 4, 5]);
+    // 9 copies for tier 0, 14 for tier 1, then 19 a tier (was 129 in all)
+    expect(copiesLeft({ vow: 0, tier: 0 })).toBe(9 + 14 + 19 * 4);
     expect(copiesLeft({ vow: MAX_VOW, tier: MAX_TIER })).toBe(0);
   });
 
@@ -48,5 +49,23 @@ describe('star tiers', () => {
     const p5 = powerOf(c, statsFor(c, at5), skillVow(at5));
     const p1 = powerOf(c, statsFor(c, t1), skillVow(t1));
     expect(p1).toBeGreaterThan(p5);
+  });
+
+  it('from tier II, Stigmata stand in for missing copies, priced by rarity', () => {
+    const save = newSave();
+    save.tithes = 1e6;
+    save.owned.x = { level: 1, vow: 0, tier: 1, tokens: 0 };
+    expect(standIn(save.owned.x, 'UR').stigmata).toBeUndefined();
+    save.stigmata = 1000;
+    expect(vowBlock(save, save.owned.x, 'UR')).toBe('tokens');
+    save.owned.x.tier = 2;
+    save.owned.x.tokens = 1;
+    expect(standIn(save.owned.x, 'UR')).toEqual({ short: 2, stigmata: 2 * STIGMATA_PER_COPY.UR });
+    expect(vowBlock(save, save.owned.x)).toBe('tokens');
+    expect(takeVow(save, 'x', 'UR')).toBe(true);
+    expect(save.stigmata).toBe(1000 - 2 * STIGMATA_PER_COPY.UR);
+    expect(save.owned.x).toMatchObject({ vow: 1, tokens: 0 });
+    save.stigmata = 1;
+    expect(vowBlock(save, save.owned.x, 'UR')).toBe('tokens');
   });
 });

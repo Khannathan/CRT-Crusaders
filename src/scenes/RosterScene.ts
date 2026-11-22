@@ -18,7 +18,7 @@ import { VOW_UPGRADES } from '../systems/combat';
 import type { CrusaderDef } from '../data/types';
 import { commit, game } from '../state/game';
 import { RARITY_ORDER } from '../systems/gacha';
-import { MAX_TIER, MAX_VOW, TIER_BONUS, TIER_COLOR, TIER_NAME, TIER_STIGMATA, VOW_BONUS, copiesFor, oathComplete, oathMult, skillVow, stigmataOf, takeVow, tierBlock, tierOf, tierTithes, tierUp, vowBlock, vowCost } from '../systems/tiers';
+import { MAX_TIER, MAX_VOW, TIER_BONUS, TIER_COLOR, TIER_NAME, TIER_STIGMATA, VOW_BONUS, copiesFor, oathComplete, oathMult, skillVow, standIn, STAND_IN_TIER, STIGMATA_PER_COPY, stigmataOf, takeVow, tierBlock, tierOf, tierTithes, tierUp, vowBlock, vowCost } from '../systems/tiers';
 import {
   GEAR_SLOTS,
   MAX_GEAR_LEVEL,
@@ -270,7 +270,7 @@ export class RosterScene extends Phaser.Scene {
     const have = save.owned[c.id];
     const atCap = have.level >= levelCap(have);
     const grow = atCap ? !!nextAscension(save, c.id) && !ascendBlock(save, c.id) : feedPlan(save, c.id, 1).levels > 0;
-    const vows = !(have.vow >= MAX_VOW ? tierBlock(save, have) : vowBlock(save, have));
+    const vows = !(have.vow >= MAX_VOW ? tierBlock(save, have) : vowBlock(save, have, c.rarity));
     const skills = CLASS_SKILLS[c.classId].some((_, i) => !skillBlock(save, c.id, i));
     const worn = new Set(equipped(save, c.id).map((g) => g.slot));
     const gear = GEAR_SLOTS.some((s) => !worn.has(s) && gearOf(save).some((g) => g.slot === s && !g.on));
@@ -633,24 +633,25 @@ export class RosterScene extends Phaser.Scene {
     y += 22;
 
     const stig = stigmataOf(save);
+    const si = standIn(have, c.rarity);
     const atFive = have.vow >= MAX_VOW;
     const done = oathComplete(have) || (atFive && tier >= MAX_TIER);
     const line = done
       ? 'Every tier and Vow is taken. She is wholly given.'
       : atFive
         ? `Five Vows kept. Tier up for ${TIER_STIGMATA[tier]} Stigmata (you hold ${stig}) and ${tierTithes(tier).toLocaleString('en-US')} Tithes.  ›`
-        : `Next Vow: ${need} cop${need > 1 ? 'ies' : 'y'} of her (you hold ${tokens}) and ${vowCost(have)} Tithes.  ›`;
-    const lineText = tapForSources(this, this.add.text(left, y, line, { ...text.body(15, tokens >= need || atFive ? PAL.amber : PAL.muted), wordWrap: { width: bw } }), atFive ? 'stigmata' : 'vows');
+        : `Next Vow: ${need} cop${need > 1 ? 'ies' : 'y'} of her (you hold ${tokens}) and ${vowCost(have)} Tithes.${si.stigmata ? ` Stigmata stand in for the ${si.short} missing: ${si.stigmata} (you hold ${stig}).` : ''}  ›`;
+    const lineText = tapForSources(this, this.add.text(left, y, line, { ...text.body(15, tokens >= need || atFive || (si.stigmata !== undefined && stig >= si.stigmata) ? PAL.amber : PAL.muted), wordWrap: { width: bw } }), atFive ? 'stigmata' : 'vows');
     layer.add(lineText);
     y += lineText.height + 10;
     if (!done) {
-      const block = atFive ? tierBlock(save, have) : vowBlock(save, have);
+      const block = atFive ? tierBlock(save, have) : vowBlock(save, have, c.rarity);
       const after = this.preview(c, (o) => (atFive ? Object.assign(o, { tier: tierOf(o) + 1, vow: 0 }) : (o.vow += 1)));
       layer.add(this.add.text(left, y, `${atFive ? 'Tier up' : 'Take the Vow'}: ${this.diffText(sisterStats(save, c), after) || 'stats rise'}`, { ...text.body(15, PAL.ivory), wordWrap: { width: bw } }));
       y += 30;
-      const b = makeButton(this, GAME_W / 2, y + 28, bw, 56, atFive ? `Tier Up  ·  ${TIER_STIGMATA[tier]} Stigmata` : `Take Vow  ·  ${need} cop${need > 1 ? 'ies' : 'y'}`, () => {
+      const b = makeButton(this, GAME_W / 2, y + 28, bw, 56, atFive ? `Tier Up  ·  ${TIER_STIGMATA[tier]} Stigmata` : si.stigmata ? `Take Vow  ·  ${need - si.short} cop${need - si.short === 1 ? 'y' : 'ies'} + ${si.stigmata} Stigmata` : `Take Vow  ·  ${need} cop${need > 1 ? 'ies' : 'y'}`, () => {
         if (list.dragging) return;
-        if (atFive ? tierUp(save, c.id) : takeVow(save, c.id)) {
+        if (atFive ? tierUp(save, c.id) : takeVow(save, c.id, c.rarity)) {
           commit();
           this.reopen(c, 'vows');
         }
@@ -666,7 +667,7 @@ export class RosterScene extends Phaser.Scene {
       layer.add(this.add.text(left, y, `${got ? '✓' : '·'}  Vow ${v}: ${skills[i].name}+ (+25%, shorter cooldown)`, text.body(15, got ? PAL.amber : PAL.muted)));
       y += 24;
     });
-    const t = this.add.text(left, y + 6, `Each Vow: +${Math.round(VOW_BONUS * 100)}% stats. Each tier: +${Math.round(TIER_BONUS * 100)}% more, and the stars change colour. Vows start again on each tier and ask one more copy each.`, { ...text.body(14, PAL.steel), wordWrap: { width: bw } });
+    const t = this.add.text(left, y + 6, `Each Vow: +${Math.round(VOW_BONUS * 100)}% stats. Each tier: +${Math.round(TIER_BONUS * 100)}% more, and the stars change colour. Vows start again on each tier and ask one more copy each, at most two more. From tier ${ROMAN_RANK(STAND_IN_TIER)}, Stigmata stand in for copies she lacks (${STIGMATA_PER_COPY[c.rarity]} each for ${c.rarity === 'UR' ? 'a' : 'an'} ${c.rarity}).`, { ...text.body(14, PAL.steel), wordWrap: { width: bw } });
     layer.add(t);
     return y + t.height + 20;
   }
