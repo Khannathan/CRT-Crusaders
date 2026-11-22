@@ -6,7 +6,7 @@ import { CRUSADERS } from '../data/crusaders';
 import { ORDERS, ORDER_LIST } from '../data/orders';
 import { sigilKey } from '../ui/icons';
 import { commit, game } from '../state/game';
-import { COST_ONE, COST_TEN, PITY_LIMIT, RARITY_ORDER, RATES, canPull, pull, type PullKind } from '../systems/gacha';
+import { COST_ONE, COST_TEN, PITY_LIMIT, RARITY_ORDER, RATES, SPARK, UR_HARD, UR_SOFT, canPull, claimSpark, pull, shardsOf, urPityLeft, type PullKind } from '../systems/gacha';
 import { makeButton } from '../ui/button';
 import { CURRENCY_BAR_H, addCurrencyBar } from '../ui/currencyBar';
 import { portraitKey } from '../ui/placeholderPortrait';
@@ -85,22 +85,32 @@ export class RecruitScene extends Phaser.Scene {
     const px = PAD;
     const pw = GAME_W - PAD * 2;
     let y = by + bh / 2 + 10;
-    const poolH = 112;
+    const poolH = 150;
     addPanel(this, GAME_W / 2 - pw / 2, y, pw, poolH);
     const target = CRUSADERS.find((c) => c.id === banner.target)!;
     this.add
       .text(px + 16, y + 12, s.urGuaranteed ? `Next UR is ${target.name.split(' ')[0]}, sworn.` : `A UR here is ${target.name.split(' ')[0]} half the time,`, text.body(19, PAL.ivory))
       .setFontStyle('600');
     this.add.text(px + 16, y + 38, s.urGuaranteed ? 'The last UR strayed. The next one will not.' : 'and always after one that strays.', text.body(18, PAL.muted));
+    // Pity counters: UR (shared by every banner) and SSR
     const toPity = PITY_LIMIT - s.pity;
-    this.add.text(px + 16, y + 70, `SSR or better within ${toPity} pull${toPity === 1 ? '' : 's'}.`, text.body(18, PAL.amber)).setFontStyle('600');
-    makeButton(this, GAME_W - PAD - 16 - 70, y + 80, 140, 44, 'View rates', () => this.showRates(), { fontSize: 17, icon: 'book' });
+    const urLeft = urPityLeft(s);
+    this.add.text(px + 16, y + 66, `UR within ${urLeft} · SSR+ within ${toPity}`, text.body(18, PAL.amber)).setFontStyle('600');
+    // Relic Shards for this Order: SPARK buys one of its URs
+    const shards = shardsOf(s, ord.name);
+    this.add.text(px + 16, y + 98, `RELIC SHARDS · ${ord.name.toUpperCase()}`, text.hud(11, PAL.steel));
+    const barW = pw - 32 - 156;
+    this.add.rectangle(px + 16, y + 126, barW, 8, PAL.deepShadow).setOrigin(0, 0.5);
+    this.add.rectangle(px + 16, y + 126, Math.max(1, barW * Math.min(1, shards / SPARK)), 8, RARITY_COLOR.UR).setOrigin(0, 0.5);
+    this.add.text(px + 16 + barW, y + 112, `${shards} / ${SPARK}`, text.hud(11, shards >= SPARK ? PAL.amber : PAL.muted)).setOrigin(1, 1);
+    makeButton(this, GAME_W - PAD - 16 - 70, y + 116, 140, 44, 'Claim a UR', () => this.claimUR(ord.name), { fontSize: 16, active: shards >= SPARK, disabled: shards < SPARK });
 
     // Offer panel
     y += poolH + 8;
     const offerH = GAME_H - TAB_BAR_H - 10 - y;
     addPanel(this, GAME_W / 2 - pw / 2, y, pw, offerH);
-    this.add.text(px + 16, y + 8, 'Ten oaths always bring an SR or better.', text.body(18, PAL.muted));
+    this.add.text(px + 16, y + 8, 'Ten oaths bring an SR or better.', text.body(18, PAL.muted));
+    makeButton(this, GAME_W - PAD - 16 - 60, y + 20, 120, 36, 'View rates', () => this.showRates(), { fontSize: 15, icon: 'book' });
     const btnY = y + offerH - 50;
     const half = (pw - 32 - 10) / 2;
     const freeTen = !s.freeTenUsed;
@@ -138,11 +148,41 @@ export class RecruitScene extends Phaser.Scene {
     this.scene.start('Reveal', { results });
   }
 
+  /** Spend Relic Shards: pick one of the Order's two URs. */
+  private claimUR(order: string) {
+    const urs = CRUSADERS.filter((c) => c.order === order && c.rarity === 'UR');
+    const layer = this.add.container(0, 0).setDepth(20);
+    layer.add(this.add.rectangle(GAME_W / 2, GAME_H / 2, GAME_W, GAME_H, 0x09060b, 0.92).setInteractive());
+    layer.add(addFrame(this, GAME_W / 2, GAME_H / 2 - 40, GAME_W - 40, 560, { fill: 0x241925 }));
+    layer.add(this.add.text(GAME_W / 2, 230, 'CLAIM A UR', text.display(26, PAL.amber)).setOrigin(0.5));
+    layer.add(this.add.text(GAME_W / 2, 268, `${SPARK} Relic Shards of the ${order}. Choose who answers.`, { ...text.body(17, PAL.muted), align: 'center', wordWrap: { width: GAME_W - 90 } }).setOrigin(0.5));
+    urs.forEach((c, k) => {
+      const x = GAME_W / 2 + (k === 0 ? -1 : 1) * 110;
+      const y = 420;
+      layer.add(this.add.rectangle(x, y, 184, 184, 0x170f1b).setStrokeStyle(2, RARITY_COLOR.UR));
+      const img = this.add.image(x, y, portraitKey(c.id)).setDisplaySize(176, 176).setInteractive({ useHandCursor: true });
+      img.on('pointerup', () => {
+        const r = claimSpark(game.save, c.id);
+        if (!r) return;
+        commit();
+        this.scene.start('Reveal', { results: [r] });
+      });
+      const owned = game.save.owned[c.id];
+      layer.add([
+        img,
+        this.add.text(x, y + 108, c.name, { ...text.body(18, PAL.ivory), fontStyle: '600' }).setOrigin(0.5),
+        this.add.text(x, y + 130, owned ? 'Owned: adds a Vow token' : 'Not yet sworn', text.hud(11, owned ? PAL.steel : PAL.amber)).setOrigin(0.5),
+      ]);
+    });
+    const back = makeButton(this, GAME_W / 2, 640, 200, 56, 'Not now', () => layer.destroy(), { fontSize: 18 });
+    layer.add(back.all);
+  }
+
   private showRates() {
     const layer = this.add.container(0, 0).setDepth(20);
     const shade = this.add.rectangle(GAME_W / 2, GAME_H / 2, GAME_W, GAME_H, 0x09060b, 0.85).setInteractive();
     const style = { fontFamily: FONT, fontSize: '22px', color: hex(PAL.ivory) };
-    const panel = addFrame(this, GAME_W / 2, 470, GAME_W - 40, 640, { fill: 0x241925 });
+    const panel = addFrame(this, GAME_W / 2, 480, GAME_W - 40, 700, { fill: 0x241925 });
     const title = this.add.text(GAME_W / 2, 200, 'Recruitment rates', text.display(28, PAL.amber)).setOrigin(0.5);
     layer.add([shade, ...panel, title]);
     RARITY_ORDER.forEach((r, i) => {
@@ -155,12 +195,12 @@ export class RecruitScene extends Phaser.Scene {
     const notes = this.add
       .text(
         GAME_W / 2,
-        560,
-        `On an Order banner, a UR is the targeted Sister half\nthe time, and always after a UR that strays.\nHalf of SSRs come from the banner's Order.\n×10 always includes an SR or better.\nThe ${PITY_LIMIT}th pull without an SSR or UR gives one.\nDuplicates add a Vow rank (max 5), then pay Tithes.`,
-        { ...style, fontSize: '17px', color: hex(PAL.steel), align: 'center', lineSpacing: 8 },
+        590,
+        `A UR is the targeted Sister half the time,\nand always after a UR that strays.\nHalf of SSRs come from the banner's Order.\n×10 always includes an SR or better.\nThe ${PITY_LIMIT}th pull without an SSR or UR gives one.\nUR chance climbs after pull ${UR_SOFT}; pull ${UR_HARD} is a UR.\nUR and SSR pity carry across all banners.\nEach pull gives a Relic Shard of its Order;\n${SPARK} buy either of that Order's URs.\nDuplicates add a Vow rank (max 5), then pay Tithes.`,
+        { ...style, fontSize: '16px', color: hex(PAL.steel), align: 'center', lineSpacing: 4 },
       )
       .setOrigin(0.5);
-    const close = makeButton(this, GAME_W / 2, GAME_H - 250, 240, 72, 'Close', () => layer.destroy());
+    const close = makeButton(this, GAME_W / 2, GAME_H - 185, 240, 64, 'Close', () => layer.destroy());
     layer.add([notes, ...close.all]);
   }
 }

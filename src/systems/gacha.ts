@@ -7,6 +7,13 @@ export const RATES: Record<Rarity, number> = { R: 0.6, SR: 0.3, SSR: 0.085, UR: 
 export const RARITY_ORDER: Rarity[] = ['R', 'SR', 'SSR', 'UR'];
 /** The PITY_LIMIT-th pull without an SSR or UR is guaranteed one. */
 export const PITY_LIMIT = 50;
+/** UR pity, shared across every banner: from pull UR_SOFT the UR chance climbs; pull UR_HARD is always a UR. */
+export const UR_SOFT = 60;
+export const UR_HARD = 80;
+/** UR chance added per pull past UR_SOFT. */
+export const UR_SOFT_STEP = 0.06;
+/** Relic Shards: one per pull on an Order banner, kept per Order; SPARK of them buys one of that Order's URs. */
+export const SPARK = 150;
 export const MAX_VOW = 5;
 /** Tithes paid for a duplicate once Vows are maxed. */
 export const OVERFLOW_TITHES = 200;
@@ -28,9 +35,9 @@ export interface PullResult {
 
 const rank = (r: Rarity) => RARITY_ORDER.indexOf(r);
 
-/** Rolls a rarity from RATES, restricted to rarities at or above `floor`. */
-export function rollRarity(rng: Rng, floor: Rarity = 'R'): Rarity {
-  const allowed = RARITY_ORDER.filter((r) => rank(r) >= rank(floor));
+/** Rolls a rarity from RATES, restricted to rarities at or above `floor` (and below UR if `noUR`). */
+export function rollRarity(rng: Rng, floor: Rarity = 'R', noUR = false): Rarity {
+  const allowed = RARITY_ORDER.filter((r) => rank(r) >= rank(floor) && !(noUR && r === 'UR'));
   const total = allowed.reduce((s, r) => s + RATES[r], 0);
   let x = rng() * total;
   for (const r of allowed) {
@@ -70,15 +77,37 @@ function pickCrusader(save: SaveData, rng: Rng, rarity: Rarity): CrusaderDef {
   return pickFrom(rng, pool);
 }
 
+/** UR chance on the n-th pull since the last UR (1-based). */
+export function urChance(n: number) {
+  if (n >= UR_HARD) return 1;
+  if (n <= UR_SOFT) return RATES.UR;
+  return Math.min(1, RATES.UR + UR_SOFT_STEP * (n - UR_SOFT));
+}
+
+/** Pulls left until a UR is certain. */
+export const urPityLeft = (save: SaveData) => UR_HARD - (save.urPity ?? 0);
+
+export const shardsOf = (save: SaveData, order: string) => save.shards?.[order] ?? 0;
+
 /** One pull: applies pity, adds the Sister (or a Vow token) to the save. Does not spend Seals. */
 function pullOnce(save: SaveData, rng: Rng, floor: Rarity): PullResult {
   save.pity += 1;
   save.totalPulls += 1;
+  save.urPity = (save.urPity ?? 0) + 1;
+  if (save.banner) (save.shards ??= {})[save.banner.order] = shardsOf(save, save.banner.order) + 1;
   const pityFloor: Rarity = save.pity >= PITY_LIMIT ? 'SSR' : 'R';
-  const rarity = rollRarity(rng, rank(pityFloor) > rank(floor) ? pityFloor : floor);
+  const lo = rank(pityFloor) > rank(floor) ? pityFloor : floor;
+  // Past soft pity the UR check comes first, at its raised chance.
+  const soft = save.urPity > UR_SOFT;
+  const rarity: Rarity = soft ? (rng() < urChance(save.urPity) ? 'UR' : rollRarity(rng, lo, true)) : rollRarity(rng, lo);
   if (rank(rarity) >= rank('SSR')) save.pity = 0;
+  if (rarity === 'UR') save.urPity = 0;
 
-  const crusader = pickCrusader(save, rng, rarity);
+  return grantSister(save, pickCrusader(save, rng, rarity));
+}
+
+/** Adds a Sister, or a Vow token for a duplicate, or Tithes once her Vows are full. */
+function grantSister(save: SaveData, crusader: CrusaderDef): PullResult {
   const owned = save.owned[crusader.id];
   if (!owned) {
     save.owned[crusader.id] = { level: 1, vow: 0 };
@@ -122,6 +151,14 @@ export function pull(save: SaveData, kind: PullKind, rng: Rng = Math.random): Pu
     results.push(pullOnce(save, rng, needSR ? 'SR' : 'R'));
   }
   return results;
+}
+
+/** Spends SPARK Relic Shards of an Order for one of its URs. */
+export function claimSpark(save: SaveData, id: string): PullResult | undefined {
+  const c = CRUSADERS.find((x) => x.id === id && x.rarity === 'UR');
+  if (!c || shardsOf(save, c.order) < SPARK) return undefined;
+  save.shards![c.order] -= SPARK;
+  return grantSister(save, c);
 }
 
 /** Take Vow: merges one duplicate (a Vow token) into her for good, at a Tithe cost. */
