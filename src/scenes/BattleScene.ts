@@ -537,6 +537,12 @@ export class BattleScene extends Phaser.Scene {
         .text(0, -CARD / 2 + 3, '', { fontFamily: FONT, fontSize: '18px', color: hex(PAL.ivory), backgroundColor: '#652b3b', padding: { x: 5, y: 2 } })
         .setOrigin(0.5, 0);
       box.add(card.threat);
+      // Her Order's sigil, as on every portrait.
+      if (u.order) {
+        box.add(this.add.circle(CARD / 2 - 16, -CARD / 2 + 16, 14, 0x0d090f, 0.9));
+        const sig = addOrderSigil(this, CARD / 2 - 16, -CARD / 2 + 16, u.order, 24);
+        if (sig) box.add(sig);
+      }
     } else {
       // Intent sits above the card: what this enemy will do on its next turn.
       card.intentIcon = this.add.image(-CARD / 2 + 12, -CARD / 2 - 42, intentIconKey('attack')).setDisplaySize(24, 24);
