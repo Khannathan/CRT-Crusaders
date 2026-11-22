@@ -3,6 +3,7 @@ import { GAME_H, GAME_W, PAL } from '../config';
 import { CLASSES, RARITY_COLOR } from '../data/classes';
 import { CRUSADERS } from '../data/crusaders';
 import { orderBonuses } from '../data/orders';
+import { drawOrderChips } from '../ui/orderBonus';
 import { commit, game } from '../state/game';
 import { current } from '../state/run';
 import { CRYPTS, MAX_PARTY, canMuster, cryptRecommended, startRun, suggestParty } from '../systems/crusade';
@@ -80,14 +81,9 @@ export class MusterScene extends Phaser.Scene {
 
     // Pool of owned crusaders
     // Order bonuses this party turns on
-    const bonuses = orderBonuses(this.party.map((id) => CRUSADERS.find((c) => c.id === id)!.order));
-    this.add
-      .text(GAME_W / 2, 304, bonuses.length ? bonuses.map((b) => `${b.name}: ${b.desc}`).join('\n') : 'Two Sisters of one Order kneel together for its blessing.', {
-        ...text.body(bonuses.length ? 16 : 15, bonuses.length ? PAL.amber : PAL.muted),
-        align: 'center',
-      })
-      .setOrigin(0.5, 0)
-      .setLineSpacing(-2);
+    const orders = this.party.map((id) => CRUSADERS.find((c) => c.id === id)!.order);
+    if (orderBonuses(orders).length || orders.length) drawOrderChips(this, GAME_W / 2, 314, orders, 5);
+    if (!orderBonuses(orders).length) this.add.text(GAME_W / 2, 332, 'Two Sisters of one Order kneel together for its blessing. Tap for details.', text.body(13, PAL.muted)).setOrigin(0.5, 0);
     this.add.rectangle(GAME_W / 2, 344, GAME_W - 32, 1, PAL.armorShadow);
     // The Roster's sort and filter; Sisters already called always show.
     const owned = sortAndFilter(game.save, CRUSADERS.filter((c) => game.save.owned[c.id]), this.party);
