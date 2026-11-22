@@ -40,6 +40,11 @@ export const MAX_LEVEL = BASE_LEVEL_CAP + ASC_LEVELS * MAX_ASCENSION;
 export const ASC_STAT = 0.05;
 export { VOW_BONUS } from './tiers';
 
+/** Gear Speed past this counts half, and all gear together adds at most GEAR_SPEED_CAP. */
+export const GEAR_SPEED_SOFT = 4;
+export const GEAR_SPEED_CAP = 8;
+export const gearSpeed = (n: number) => Math.round(Math.min(GEAR_SPEED_CAP, n <= GEAR_SPEED_SOFT ? n : GEAR_SPEED_SOFT + (n - GEAR_SPEED_SOFT) / 2));
+
 export const levelCap = (o: Pick<OwnedCrusader, 'asc'>) => BASE_LEVEL_CAP + ASC_LEVELS * (o.asc ?? 0);
 
 export const levelUpCost = (level: number) => 50 * level;
@@ -54,7 +59,7 @@ export function statsFor(c: CrusaderDef, owned: OwnedCrusader, gear: GearItem[] 
     atk: Math.round(base.atk * mult * (1 + g.atkPct)),
     armor: Math.round(base.armor * mult * (1 + g.armorPct)),
     mres: Math.round(base.mres * mult * (1 + g.armorPct)),
-    spd: base.spd + Math.round(g.spd), // class speed plus gear, so turn order stays readable
+    spd: base.spd + gearSpeed(g.spd), // class speed plus gear (soft-capped), so turn order stays readable
     crit: Math.min(1, base.crit + g.crit),
   };
 }
