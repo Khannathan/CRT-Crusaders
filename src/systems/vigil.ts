@@ -1,4 +1,5 @@
 import { BOND_XP, addBond } from './bonds';
+import { give, vigilDrops, type Bag } from './items';
 import { CRUSADERS } from '../data/crusaders';
 import type { CrusaderDef } from '../data/types';
 import type { SaveData } from '../state/save';
@@ -89,12 +90,13 @@ export interface VigilClaim {
   seals: number;
   gear: GearItem[];
   melted: number;
+  items: Bag;
 }
 
 /** Pays out what the Vigil gathered and starts the clock again. */
 export function claimVigil(save: SaveData, now: number, rng: Rng = Math.random): VigilClaim {
   const v = save.vigil;
-  if (!v) return { tithes: 0, seals: 0, gear: [], melted: 0 };
+  if (!v) return { tithes: 0, seals: 0, gear: [], melted: 0, items: {} };
   const p = vigilPending(save, v, now);
   const crypt = cryptOf(v);
   const luck = Math.min(0.2, (crypt.rewardMult - 1) * 0.1);
@@ -102,10 +104,12 @@ export function claimVigil(save: SaveData, now: number, rng: Rng = Math.random):
   const melted = claimGear(save, gear);
   save.tithes += p.tithes;
   save.seals += p.seals;
+  const items = vigilDrops(p.hours, rng);
+  give(save, items);
   addBond(save, v.party, Math.floor(p.hours * BOND_XP.vigilHour));
   v.since = now;
   if (p.tithes > 0) track(save, 'vigilClaim', 1, now);
-  return { tithes: p.tithes, seals: p.seals, gear, melted };
+  return { tithes: p.tithes, seals: p.seals, gear, melted, items };
 }
 
 /** Changing the crypt or the party claims first, so nothing gathered is lost. */

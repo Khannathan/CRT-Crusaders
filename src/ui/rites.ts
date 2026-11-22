@@ -17,6 +17,8 @@ export interface RiteEntry {
   label: string;
   scene: string;
   icon: string;
+  /** Its own icon (ui-<art>.png), used in place of `icon` once the file exists. */
+  art?: string;
   /** Rank of Faith needed (see UNLOCKS in rank.ts). */
   rank: number;
   /** Something is waiting to be claimed. */
@@ -24,6 +26,7 @@ export interface RiteEntry {
 }
 
 export const RITES: RiteEntry[] = [
+  { label: 'Inventory', scene: 'Inventory', icon: 'shield', art: 'inventory', rank: 1 },
   { label: 'Matins', scene: 'Matins', icon: 'flame', rank: 1, ready: (s) => matinsReady(s) },
   { label: 'Penance', scene: 'Penance', icon: 'book', rank: 2, ready: (s) => anyClaimable(s) },
   { label: 'Trials', scene: 'Trials', icon: 'shield', rank: 3, ready: (s) => entriesLeft(s) > 0 },
@@ -46,7 +49,7 @@ export function drawRites(scene: Phaser.Scene, save: SaveData, top: number): num
       return;
     }
     // ui-rite-tile.png skins each tile; ui-ready-dot.png marks one with something to claim
-    makeButton(scene, x, y, w, h, r.label, () => scene.scene.start(r.scene, {}), { fontSize: 18, icon: r.icon, skin: 'ui-rite-tile' });
+    makeButton(scene, x, y, w, h, r.label, () => scene.scene.start(r.scene, {}), { fontSize: 18, icon: r.art && scene.textures.exists(`ui-${r.art}`) ? r.art : r.icon, skin: 'ui-rite-tile' });
     if (r.ready?.(save)) {
       if (scene.textures.exists('ui-ready-dot')) scene.add.image(x + w / 2 - 10, y - h / 2 + 10, 'ui-ready-dot').setDisplaySize(16, 16);
       else scene.add.circle(x + w / 2 - 10, y - h / 2 + 10, 6, PAL.amber).setStrokeStyle(2, 0x1b121c);

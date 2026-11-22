@@ -16,6 +16,8 @@ export interface OwnedCrusader {
   vow: number;
   /** Vow tokens: duplicate pulls of her, waiting for Take Vow. */
   tokens?: number;
+  /** Ascensions taken, 0-3. Each raises the level cap by 10. */
+  asc?: number;
   /** Crusades left to sit out after falling (0 = ready). Tithes can revive early. */
   recovering?: number;
 }
@@ -62,6 +64,8 @@ export interface SaveData {
   inquisition?: InquisitionState;
   /** Sister bonds: bond XP and confessions heard, by Sister id. */
   bonds?: Record<string, BondState>;
+  /** Materials by item id (see systems/items.ts). */
+  items?: import('../systems/items').Bag;
   /** Last party, in rank order, to pre-fill the muster screen. */
   lastParty: string[];
 }

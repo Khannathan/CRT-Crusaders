@@ -24,15 +24,24 @@ const CLASS_BASE: Record<string, Stats> = {
   oracle: { hp: 80, atk: 17, armor: 24, spd: 8, crit: 0.12 },
 };
 
-export const MAX_LEVEL = 20;
+/** Level cap before any Ascension; each Ascension adds ASC_LEVELS. */
+export const BASE_LEVEL_CAP = 20;
+export const ASC_LEVELS = 10;
+export const MAX_ASCENSION = 3;
+/** The highest level any Sister can reach. */
+export const MAX_LEVEL = BASE_LEVEL_CAP + ASC_LEVELS * MAX_ASCENSION;
+/** Stat bonus per Ascension. */
+export const ASC_STAT = 0.05;
 export const VOW_BONUS = 0.05;
+
+export const levelCap = (o: Pick<OwnedCrusader, 'asc'>) => BASE_LEVEL_CAP + ASC_LEVELS * (o.asc ?? 0);
 
 export const levelUpCost = (level: number) => 50 * level;
 
 /** A Sister's stats from rarity, level, Vows and (optionally) the gear she wears. */
 export function statsFor(c: CrusaderDef, owned: OwnedCrusader, gear: GearItem[] = []): Stats {
   const base = CLASS_BASE[c.classId];
-  const mult = RARITY_MULT[c.rarity] * (1 + 0.08 * (owned.level - 1)) * (1 + VOW_BONUS * owned.vow);
+  const mult = RARITY_MULT[c.rarity] * (1 + 0.08 * (owned.level - 1)) * (1 + VOW_BONUS * owned.vow) * (1 + ASC_STAT * (owned.asc ?? 0));
   const g = gearBonus(gear);
   return {
     hp: Math.round(base.hp * mult * (1 + g.hpPct)),

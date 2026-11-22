@@ -30,6 +30,8 @@ export function drawStars(scene: Phaser.Scene, x: number, y: number, stars: numb
   for (let i = 0; i < 3; i++) scene.add.star(x + i * (size * 2 + 4), y, 5, size * 0.45, size, i < stars ? PAL.amber : 0x3a2e35);
 }
 
+const TRIAL_LABEL: Record<TrialKind, string> = { blade: 'Blade', habit: 'Habit', rosary: 'Rosary', tithes: 'Tithes', seals: 'Seals', ash: 'Ash', page: 'Psalter' };
+
 /** Relic Trials: today's spoil, five tiers, Fight or Sweep. */
 export class TrialsScene extends Phaser.Scene {
   private kind?: TrialKind;
@@ -55,12 +57,12 @@ export class TrialsScene extends Phaser.Scene {
     this.add.text(PAD, top, `VICTORIES LEFT TODAY ${left}/${TRIAL_ENTRIES}`, text.hud(14, left ? PAL.amber : PAL.steel));
     this.add.text(GAME_W - PAD, top, `3 STARS: NO ONE FALLS, BY ROUND ${SWIFT_ROUNDS}`, text.hud(11, PAL.muted)).setOrigin(1, 0);
 
-    // Which trial (weekends open all five)
+    // Which trial (weekends open all seven)
     let y = top + 30;
     if (open.length > 1) {
-      const w = (bw - 4 * 6) / 5;
+      const w = (bw - (open.length - 1) * 6) / open.length;
       open.forEach((t, i) => {
-        makeButton(this, PAD + w / 2 + i * (w + 6), y + 22, w, 44, t.kind[0].toUpperCase() + t.kind.slice(1), () => this.scene.restart({ kind: t.kind }), {
+        makeButton(this, PAD + w / 2 + i * (w + 6), y + 22, w, 44, TRIAL_LABEL[t.kind], () => this.scene.restart({ kind: t.kind }), {
           active: t === trial,
           fontSize: 14,
         });
