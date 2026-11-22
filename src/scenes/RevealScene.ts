@@ -7,6 +7,7 @@ import { commit, game } from '../state/game';
 import { makeButton } from '../ui/button';
 import { NOISE_FRAMES, WAX_COLOR, noiseKey, sealKey } from '../ui/effects';
 import { portraitKey } from '../ui/placeholderPortrait';
+import { FIGURE_H, FIGURE_W, SisterSprite, fullKey } from '../ui/sisterSprite';
 import { holdForCard } from '../ui/sisterCard';
 
 const CY = 400;
@@ -256,13 +257,19 @@ export class RevealScene extends Phaser.Scene {
       this.cameras.main.flash(250, 214, 161, 95);
     }
 
-    const frame = this.add.rectangle(0, 0, SIZE + 12, SIZE + 12, 0x000000).setStrokeStyle(6, color);
-    const portrait = this.add.image(0, 0, portraitKey(c.id)).setDisplaySize(SIZE, SIZE).setAlpha(0);
-    const noise = this.add.image(0, 0, noiseKey(0)).setDisplaySize(SIZE, SIZE);
+    // Her full-body figure at twice its pixel size when the art exists, else her portrait.
+    const full = this.textures.exists(fullKey(c.id));
+    const w = full ? FIGURE_W * 2 : SIZE;
+    const h = full ? FIGURE_H * 2 : SIZE;
+    const fy = full ? -58 : 0;
+    const frame = this.add.rectangle(0, fy, w + 12, h + 12, 0x000000).setStrokeStyle(6, color);
+    const sprite = full ? new SisterSprite(this, c.id, 0, fy + h / 2 - 16, 2, color) : undefined;
+    const portrait = sprite ? sprite.root.setAlpha(0) : this.add.image(0, 0, portraitKey(c.id)).setDisplaySize(SIZE, SIZE).setAlpha(0);
+    const noise = this.add.image(0, fy, noiseKey(0)).setDisplaySize(w, h);
     card.add([frame, portrait, noise]);
 
     let f = 0;
-    const flicker = this.time.addEvent({ delay: 60, loop: true, callback: () => noise.setTexture(noiseKey(++f % NOISE_FRAMES)) });
+    const flicker = this.time.addEvent({ delay: 60, loop: true, callback: () => noise.setTexture(noiseKey(++f % NOISE_FRAMES)).setDisplaySize(w, h) });
     this.tweens.add({ targets: portrait, alpha: 1, duration: high ? 900 : 500, delay: high ? 500 : 250 });
     this.tweens.add({
       targets: noise,
@@ -272,6 +279,8 @@ export class RevealScene extends Phaser.Scene {
       onComplete: () => {
         flicker.remove();
         noise.destroy();
+        // The rare ones raise their relic as the static clears.
+        if (sprite && high) sprite.cast(color, c.rarity === 'UR');
         this.busy = false;
         if (this.results.length > 1) this.hint.setText('Tap to return to the table');
         else this.hint.setText('Tap to continue');

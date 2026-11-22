@@ -60,6 +60,7 @@ import { MAX_SKILL_LEVEL, nextSkillStep, raiseSkill, skillBlock, skillLevels, st
 import { makeButton } from '../ui/button';
 import { CURRENCY_BAR_H, addCurrencyBar } from '../ui/currencyBar';
 import { loadFullBody, portraitKey } from '../ui/placeholderPortrait';
+import { SisterSprite } from '../ui/sisterSprite';
 import { nine } from '../ui/skin';
 import { addScrollArea } from '../ui/scroll';
 import { tapCost, tapForSources } from '../ui/sources';
@@ -80,7 +81,8 @@ const STAT_LABEL = { atk: 'ATK', hp: 'HP', armor: 'ARM', spd: 'SPD' } as const;
 const BUST = 320;
 const HERO_Y = 210;
 const HERO_H = 470;
-const FIGURE_H = 450;
+/** Full-body figures draw at twice their 128 x 192 pixel size, so the pixels stay square. */
+const FIGURE_H = 384;
 const FIGURE_Y = 250;
 const NAME_Y = 400;
 const STATS_Y = 506;
@@ -304,14 +306,17 @@ export class RosterScene extends Phaser.Scene {
     const bust = this.add.image(GAME_W / 2, HERO_Y, portraitKey(c.id)).setDisplaySize(BUST, BUST);
     if (!have) bust.setTint(0x111111);
     layer.add(bust);
-    if (have) {
-      loadFullBody(this, c.id).then((key) => {
-        if (!key || !bust.active || key === portraitKey(c.id) || !this.textures.exists(key)) return;
-        const src = this.textures.get(key).getSourceImage();
-        const h = FIGURE_H;
-        bust.setTexture(key).setDisplaySize((src.width / src.height) * h, h).setY(FIGURE_Y);
-      });
-    }
+    // Her full figure, breathing; tap her and she shows off a strike or a blessing.
+    let figure: SisterSprite | undefined;
+    let poses = 0;
+    // Not sworn yet: her figure stands in shadow, to be won at the Altar.
+    loadFullBody(this, c.id).then((key) => {
+      if (!key || !bust.active || key === portraitKey(c.id) || !this.textures.exists(key)) return;
+      figure = new SisterSprite(this, c.id, GAME_W / 2, FIGURE_Y + FIGURE_H / 2 - 16, 2, order?.color ?? tint);
+      if (!have) figure.silhouette();
+      layer.addAt(figure.root, layer.getIndex(bust));
+      bust.destroy();
+    });
     // Dark band under the name so it reads over the art.
     const band = this.add.graphics();
     for (let i = 0; i < 12; i++) band.fillStyle(0x0d090f, 0.08 * i).fillRect(0, NAME_Y - 60 + i * 6, GAME_W, 6);
@@ -324,6 +329,7 @@ export class RosterScene extends Phaser.Scene {
     swipe.on('pointerdown', (p: Phaser.Input.Pointer) => (downX = p.x));
     swipe.on('pointerup', (p: Phaser.Input.Pointer) => {
       if (Math.abs(p.x - downX) > 60) this.step(c, p.x < downX ? 1 : -1, tab);
+      else if (figure && have) poses++ % 2 ? figure.cast(order?.color ?? tint) : figure.attack(-1);
     });
     layer.add(swipe);
 

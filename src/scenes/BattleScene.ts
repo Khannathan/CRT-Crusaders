@@ -26,12 +26,17 @@ import { newSeed, seeded } from '../systems/rng';
 import { enemyKey } from '../ui/enemyArt';
 import { intentIconKey } from '../ui/icons';
 import { portraitKey } from '../ui/placeholderPortrait';
+import { SisterSprite, fullKey } from '../ui/sisterSprite';
 import { SKILL_FX, auraFx, burstFx, fxForEnemy, makeFxTextures, type Fx } from '../ui/portraitFx';
 import { comboBurst, damageSize, hitStop, popNumber, riteCard, shake, staticDeath, whiteFlash } from '../ui/juice';
 
 const CARD = 128;
 const ENEMY_Y = 250;
 const PARTY_Y = 585;
+/** Party Sisters with full-body art stand as animated figures: box centre, and feet below it. */
+const FIGURE_Y = 580;
+const FEET = 84;
+const FIGURE_BOX = 176;
 const ROMAN = ['I', 'II', 'III', 'IV'];
 /** Skill buttons sit just above the tab bar, which stays on screen through a fight. */
 const SKILL_H = 94;
@@ -55,6 +60,8 @@ interface Card {
   threat?: Phaser.GameObjects.Text;
   /** Expected damage while choosing a target. */
   preview: Phaser.GameObjects.Text;
+  /** Party Sisters with full-body art: her animated figure (img is its upper body). */
+  sprite?: SisterSprite;
 }
 
 type Mode = 'busy' | 'skill' | 'target';
@@ -145,19 +152,20 @@ export class BattleScene extends Phaser.Scene {
     for (let i = 0; i < 4; i++) {
       // Enemy rank numerals sit in the card corner, leaving the space above for intents.
       this.add.text(slotX(i + 1) - CARD / 2 + 4, ENEMY_Y - CARD / 2 + 2, ROMAN[i], { ...style, fontSize: '17px', color: hex(PAL.steel) }).setDepth(5);
-      this.add.text(slotX(i + 1), PARTY_Y - 84, ROMAN[i], { ...style, fontSize: '17px', color: hex(PAL.armorShadow) }).setOrigin(0.5);
+      if (this.figures()) this.add.text(slotX(i + 1) - CARD / 2 + 4, FIGURE_Y + FEET + 28, ROMAN[i], { ...style, fontSize: '17px', color: hex(PAL.steel) }).setOrigin(0, 0.5);
+      else this.add.text(slotX(i + 1), PARTY_Y - 84, ROMAN[i], { ...style, fontSize: '17px', color: hex(PAL.armorShadow) }).setOrigin(0.5);
     }
 
     this.logText = this.add
-      .text(GAME_W / 2, 405, '', { ...style, fontSize: '22px', align: 'center', wordWrap: { width: GAME_W - 40 } })
+      .text(GAME_W / 2, 398, '', { ...style, fontSize: '22px', align: 'center', wordWrap: { width: GAME_W - 40 } })
       .setOrigin(0.5);
-    if (!this.textures.exists('ui-bar-frame')) this.add.rectangle(GAME_W / 2, 455, 404, 18, PAL.deepShadow).setStrokeStyle(2, PAL.armorShadow);
-    this.zealBar = new Bar(this, GAME_W / 2 - 200, 455, 400, 14, 'ui-bar-zeal', PAL.amber, PAL.deepShadow);
-    this.zealText = this.add.text(GAME_W / 2, 478, '', { ...style, fontSize: '16px', color: hex(PAL.steel) }).setOrigin(0.5);
+    if (!this.textures.exists('ui-bar-frame')) this.add.rectangle(GAME_W / 2, 442, 404, 18, PAL.deepShadow).setStrokeStyle(2, PAL.armorShadow);
+    this.zealBar = new Bar(this, GAME_W / 2 - 200, 442, 400, 14, 'ui-bar-zeal', PAL.amber, PAL.deepShadow);
+    this.zealText = this.add.text(GAME_W / 2, 463, '', { ...style, fontSize: '16px', color: hex(PAL.steel) }).setOrigin(0.5);
     this.drawHound();
 
     this.descText = this.add
-      .text(GAME_W / 2, 734, '', { ...style, fontSize: '18px', align: 'center', color: hex(PAL.steel), wordWrap: { width: GAME_W - 40 } })
+      .text(GAME_W / 2, 740, '', { ...style, fontSize: '18px', align: 'center', color: hex(PAL.steel), wordWrap: { width: GAME_W - 40 } })
       .setOrigin(0.5);
 
     // The tab bar stays through the fight; leaving by it pauses the fight.
@@ -247,7 +255,7 @@ export class BattleScene extends Phaser.Scene {
     const actor = this.actor!;
     this.mode = 'busy';
     this.clearSkills();
-    this.lunge(actor);
+    this.lunge(actor, skill);
     this.combo = undefined;
     if (target && skill.detonate && target.status.poison) this.combo = { uid: target.uid, label: 'IGNITED!', color: 0xff8a3d };
     else if (target && skill.execute && target.hp < target.maxHp * EXECUTE_AT) this.combo = { uid: target.uid, label: 'SENTENCED!', color: 0xe04848 };
@@ -274,6 +282,7 @@ export class BattleScene extends Phaser.Scene {
     this.mode = 'busy';
     this.clearSkills();
     const next = settleBattle(this.battle, outcome);
+    if (outcome === 'victory') [...this.cards.values()].forEach((c, i) => c.sprite?.cheer(i * 90));
     this.logText.setText(next.line);
     this.time.delayedCall(1200, () => this.scene.start(next.scene, next.data ?? {}));
   }
@@ -505,8 +514,14 @@ export class BattleScene extends Phaser.Scene {
 
   // ---------- drawing ----------
 
+  /** True when the party stands as full-body figures (any Sister in it has the art). */
+  private figures() {
+    return this.battle.units.some((u) => u.side === 'party' && this.textures.exists(fullKey(u.ref)));
+  }
+
   private makeCard(u: Unit) {
     const party = u.side === 'party';
+    if (party && this.textures.exists(fullKey(u.ref))) return this.makeFigure(u);
     const key = party ? portraitKey(u.ref) : enemyKey(u.ref);
     const border = party ? RARITY_COLOR[CRUSADERS.find((c) => c.id === u.ref)!.rarity] : u.boss ? PAL.oxblood : PAL.armorShadow;
     const glow = this.add.rectangle(0, 0, CARD + 14, CARD + 14).setStrokeStyle(5, PAL.amber).setVisible(false);
@@ -560,6 +575,40 @@ export class BattleScene extends Phaser.Scene {
     this.cards.set(u.uid, card);
   }
 
+  /** A party Sister as her animated full-body figure, with her bars underneath. */
+  private makeFigure(u: Unit) {
+    const rarity = RARITY_COLOR[CRUSADERS.find((c) => c.id === u.ref)!.rarity];
+    const sprite = new SisterSprite(this, u.ref, 0, FEET, 1, rarity);
+    const midY = FEET - FIGURE_BOX / 2;
+    const glow = this.add.rectangle(0, midY, CARD + 6, FIGURE_BOX + 6).setStrokeStyle(5, PAL.amber).setVisible(false);
+    // An invisible stand-in for the old card frame, so refresh() can treat both alike.
+    const frame = this.add.rectangle(0, midY, CARD, FIGURE_BOX).setVisible(false);
+    const hp = new Bar(this, -CARD / 2, FEET + 12, CARD, 10, 'ui-bar-hp', 0x7a9a5a);
+    const shieldFill = this.add.rectangle(-CARD / 2, FEET + 12, 0, 4, PAL.ivory).setOrigin(0, 0.5);
+    const hpText = this.add.text(0, FEET + 28, '', { fontFamily: FONT, fontSize: '17px', color: hex(PAL.ivory) }).setOrigin(0.5);
+    const tags = this.add.text(0, FEET + 45, '', { fontFamily: FONT, fontSize: '15px', color: hex(PAL.violet), align: 'center', lineSpacing: -4, wordWrap: { width: CARD } }).setOrigin(0.5, 0.3);
+    const preview = this.add
+      .text(0, midY, '', { fontFamily: FONT, fontSize: '26px', color: hex(PAL.amber), stroke: '#000000', strokeThickness: 5, align: 'center' })
+      .setOrigin(0.5);
+    const threat = this.add
+      .text(0, -FEET - 4, '', { fontFamily: FONT, fontSize: '18px', color: hex(PAL.ivory), backgroundColor: '#652b3b', padding: { x: 5, y: 2 } })
+      .setOrigin(0.5, 0);
+    const box = this.add.container(slotX(u.rank), FIGURE_Y, [glow, frame, sprite.root, ...hp.parts, shieldFill, hpText, tags, preview, threat]);
+    // Her Order's sigil by her feet.
+    if (u.order) {
+      box.add(this.add.circle(CARD / 2 - 14, FEET - 14, 13, 0x0d090f, 0.85));
+      const sig = addOrderSigil(this, CARD / 2 - 14, FEET - 14, u.order, 22);
+      if (sig) box.add(sig);
+    }
+    box.setSize(CARD, FIGURE_BOX).setInteractive(new Phaser.Geom.Rectangle(0, 0, CARD, FIGURE_BOX + 40), Phaser.Geom.Rectangle.Contains);
+    box.on('pointerup', () => (this.mode === 'target' ? this.pickTarget(u) : this.explain(u)));
+    if (u.hp <= 0) {
+      box.setAlpha(0);
+      sprite.dead = true;
+    }
+    this.cards.set(u.uid, { box, frame, glow, img: sprite.upper, hp, shieldFill, hpText, tags, threat, preview, sprite });
+  }
+
   /** Redraws every card, the turn strip, Zeal and the candle. */
   private refresh(highlight: Unit[] = []) {
     for (const u of this.battle.units) {
@@ -592,9 +641,13 @@ export class BattleScene extends Phaser.Scene {
       ].filter(Boolean);
       c.tags.setText(tags.join(' · '));
       const active = this.actor?.uid === u.uid && !dead;
+      if (c.sprite) {
+        if (!dead && c.sprite.dead) c.sprite.revive();
+        c.sprite.setActive(active);
+      }
       const edge = active ? PAL.ivory : u.side === 'party' ? RARITY_COLOR[CRUSADERS.find((x) => x.id === u.ref)!.rarity] : u.boss ? PAL.oxblood : PAL.armorShadow;
       if (c.skinFrame) c.skinFrame.setTint(edge);
-      else c.frame.setStrokeStyle(active ? 5 : 3, edge);
+      else if (!c.sprite) c.frame.setStrokeStyle(active ? 5 : 3, edge);
       c.glow.setVisible(highlight.includes(u));
       c.preview.setText(highlight.includes(u) ? this.previewText(u) : '');
       if (highlight.includes(u)) {
@@ -708,9 +761,9 @@ export class BattleScene extends Phaser.Scene {
     const h = this.battle.hound;
     const def = h && HOUNDS.find((d) => d.name === h.name);
     if (!h || !def) return;
-    const [, img] = houndFace(this, 36, 462, def, 46);
+    const [, img] = houndFace(this, 36, 438, def, 46);
     this.houndImg = img;
-    this.add.text(36, 490, 'HOUND', text.hud(9, PAL.steel)).setOrigin(0.5, 0);
+    this.add.text(36, 464, 'HOUND', text.hud(9, PAL.steel)).setOrigin(0.5, 0);
     img.setInteractive({ useHandCursor: true }).on('pointerup', () =>
       showDetail(this, { title: def.name, color: RARITY_COLOR[def.rarity], tags: `${def.rarity} HOUND`, desc: `${h.howlName}, at the start of every round: ${howlParts(h.howl).join('; ')}.`, facts: ['Change hounds in the Kennel or under any party.'] }),
     );
@@ -738,8 +791,9 @@ export class BattleScene extends Phaser.Scene {
         if (e.amount) popNumber(this, c.box.x, c.box.y - 20, `${e.crit ? 'CRIT ' : ''}-${e.amount}`, e.crit ? PAL.amber : 0xd65f5f, damageSize(e.amount, u.maxHp, e.crit));
         else this.float(c.box, e.blocked ? 'Blocked' : '0', PAL.ivory);
         if (e.blocked && e.amount) this.float(c.box, `(${e.blocked} blocked)`, PAL.ivory, 30);
-        this.tweens.add({ targets: c.img, x: { from: -6, to: 6 }, duration: 40, yoyo: true, repeat: 2, onComplete: () => c.img.setX(0) });
-        if (e.amount) {
+        if (c.sprite) c.sprite.hit(!!e.amount);
+        else this.tweens.add({ targets: c.img, x: { from: -6, to: 6 }, duration: 40, yoyo: true, repeat: 2, onComplete: () => c.img.setX(0) });
+        if (e.amount && !c.sprite) {
           whiteFlash(this, c.img, 60);
           this.time.delayedCall(60, () => c.img.setTint(0xff6666));
           this.time.delayedCall(180, () => c.img.clearTint());
@@ -759,12 +813,14 @@ export class BattleScene extends Phaser.Scene {
       case 'heal': {
         const c = this.cards.get(e.uid);
         if (c) this.float(c.box, `+${e.amount}`, 0x9fd27a);
+        c?.sprite?.pulse(0x9fd27a);
         this.refresh();
         break;
       }
       case 'shield': {
         const c = this.cards.get(e.uid);
         if (c) this.float(c.box, `Shield ${e.amount}`, PAL.ivory);
+        c?.sprite?.pulse(0xf2e6c9);
         this.refresh();
         break;
       }
@@ -781,6 +837,7 @@ export class BattleScene extends Phaser.Scene {
         hitStop(this, u.boss ? 90 : 70);
         shake(this, u.boss ? 'boss' : 'kill');
         if (u.side === 'enemy') staticDeath(this, c.box, CARD + 6, u.boss);
+        else if (c.sprite) c.sprite.die(() => this.tweens.add({ targets: c.box, alpha: 0, duration: 200 }));
         else this.tweens.add({ targets: c.box, alpha: 0, scale: 0.85, duration: 400 });
         break;
       }
@@ -818,9 +875,15 @@ export class BattleScene extends Phaser.Scene {
     this.tweens.add({ targets: t, y: t.y - 40, alpha: 0, duration: 900, ease: 'Quad.out', onComplete: () => t.destroy() });
   }
 
-  private lunge(u: Unit) {
+  private lunge(u: Unit, skill: SkillDef) {
     const c = this.cards.get(u.uid);
     if (!c) return;
+    if (c.sprite) {
+      // A strike lunges at the foe; anything else is cast in a halo of the skill's colour.
+      if (skill.rite || (skill.target !== 'enemy' && skill.target !== 'allEnemies')) c.sprite.cast(SKILL_FX[skill.id]?.color ?? PAL.amber, !!skill.rite);
+      else c.sprite.attack(-1);
+      return;
+    }
     const dy = u.side === 'party' ? -18 : 18;
     this.tweens.add({ targets: c.box, y: c.box.y + dy, duration: 110, yoyo: true });
   }

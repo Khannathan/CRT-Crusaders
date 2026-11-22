@@ -31,11 +31,12 @@ export function makePlaceholderPortrait(scene: Phaser.Scene, c: CrusaderDef) {
 }
 
 /**
- * Full-body art: src/assets/full-body/<id>.png (or .webp), a tall 2:3 transparent
- * figure, head to toe. These are big, so they load on demand, not at boot.
+ * Full-body art: src/assets/full-body/<id>.png (or .webp), a 128 x 192 transparent
+ * pixel-art figure, head to toe. Small enough to load at boot (see BootScene);
+ * loadFullBody still fetches one on demand if it is missing.
  */
 const FULL_BODY_URLS = import.meta.glob<string>('../assets/full-body/*.{png,webp}', { eager: true, query: '?url', import: 'default' });
-const fullBodyUrl = (id: string) => FULL_BODY_URLS[`../assets/full-body/${id}.png`] ?? FULL_BODY_URLS[`../assets/full-body/${id}.webp`];
+export const fullBodyUrl = (id: string) => FULL_BODY_URLS[`../assets/full-body/${id}.png`] ?? FULL_BODY_URLS[`../assets/full-body/${id}.webp`];
 
 /** True when a full-body file exists for this Sister (loaded or not). */
 export const hasFullBody = (id: string) => !!fullBodyUrl(id);
@@ -58,7 +59,7 @@ export function loadFullBody(scene: Phaser.Scene, id: string): Promise<string> {
     const done = () => {
       scene.load.off(`filecomplete-image-${key}`, done);
       scene.load.off(Phaser.Loader.Events.COMPLETE, done);
-      if (scene.textures.exists(key)) scene.textures.get(key).setFilter(Phaser.Textures.FilterMode.LINEAR);
+      // pixel art: keep the game's nearest-neighbour filter so the pixels stay square
       resolve(fullBodyKey(scene, id));
     };
     scene.load.once(`filecomplete-image-${key}`, done);

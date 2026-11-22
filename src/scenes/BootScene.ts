@@ -6,7 +6,7 @@ import { ENEMIES } from '../data/enemies';
 import { enemyKey, makeEnemyTextures } from '../ui/enemyArt';
 import { ORDER_LIST } from '../data/orders';
 import { makeIconTextures, makeNodeTextures, makeSigilTextures } from '../ui/icons';
-import { makePlaceholderPortrait, portraitKey } from '../ui/placeholderPortrait';
+import { fullBodyUrl, makePlaceholderPortrait, portraitKey } from '../ui/placeholderPortrait';
 
 /**
  * Every PNG in src/assets/portraits, found at build time. Name files by roster id
@@ -41,6 +41,9 @@ export class BootScene extends Phaser.Scene {
     for (const c of CRUSADERS) {
       const url = portraitUrl(c.id);
       if (url) this.load.image(portraitKey(c.id), url);
+      // Full-body pixel figures are small (about 7 KB each), so battles can use them at once.
+      const full = fullBodyUrl(c.id);
+      if (full) this.load.image(`full-${c.id}`, full);
     }
     for (const e of Object.values(ENEMIES)) {
       const url = pick(ENEMY_URLS, `../assets/enemies/${e.id}`) ?? (e.art ? pick(ENEMY_URLS, `../assets/enemies/${e.art}`) : undefined);

@@ -23,6 +23,8 @@ import { makeButton } from '../ui/button';
 import { bagEmpty, bagText } from '../systems/items';
 import { CURRENCY_BAR_H, addCurrencyBar } from '../ui/currencyBar';
 import { portraitKey } from '../ui/placeholderPortrait';
+import { SisterSprite, fullKey } from '../ui/sisterSprite';
+import { SKILL_FX } from '../ui/portraitFx';
 import { ROMAN_RANK, giftsWaiting, rankInfo } from '../systems/rank';
 import { nextMilestone } from '../systems/powerGrowth';
 import { accountPower, formatPower } from '../systems/power';
@@ -214,12 +216,22 @@ export class SanctumScene extends Phaser.Scene {
     }
     const battle = stageBattle(save, party, vigilStage(save).n);
 
-    const views = new Map<string, { img: Phaser.GameObjects.Image; bar: Phaser.GameObjects.Rectangle; x: number; y: number }>();
+    const views = new Map<string, { img?: Phaser.GameObjects.Image; sprite?: SisterSprite; bar: Phaser.GameObjects.Rectangle; x: number; y: number }>();
     const size = 62;
     const place = (units: Unit[], y: number) => {
       const n = units.length;
       units.forEach((u, i) => {
         const x = left + fw / 2 + (i - (n - 1) / 2) * 92;
+        // Sisters with full-body art stand on the road as small animated figures.
+        if (u.side === 'party' && this.textures.exists(fullKey(u.ref))) {
+          const feet = y + 52;
+          const sprite = new SisterSprite(this, u.ref, x, feet, 0.75, PAL.amber);
+          const back = this.add.rectangle(x - size / 2, feet + 12, size, 5, PAL.deepShadow).setOrigin(0, 0.5);
+          const bar = this.add.rectangle(x - size / 2, feet + 12, size, 5, 0x7a9a5a).setOrigin(0, 0.5);
+          this.skirmish.push(sprite.root, back, bar);
+          views.set(u.uid, { sprite, bar, x, y: feet - 60 });
+          return;
+        }
         const key = u.side === 'party' ? portraitKey(u.ref) : enemyKey(u.ref);
         const frame = this.add.rectangle(x, y, size + 4, size + 4, 0x110b13, 0.8).setStrokeStyle(1, u.side === 'party' ? PAL.amber : PAL.oxblood);
         const img = this.add.image(x, y, key).setDisplaySize(size, size);
@@ -231,7 +243,7 @@ export class SanctumScene extends Phaser.Scene {
     };
     // Party by rank, rank 1 nearest the foe.
     const byRank = (side: 'party' | 'enemy') => battle.units.filter((u) => u.side === side).sort((a, b) => a.rank - b.rank);
-    place(byRank('enemy'), top + 110);
+    place(byRank('enemy'), top + 100);
     place(byRank('party'), top + 220);
 
     const float = (uid: string, label: string, color: number) => {
@@ -245,14 +257,24 @@ export class SanctumScene extends Phaser.Scene {
         const vw = views.get(u.uid);
         if (!vw) continue;
         vw.bar.setSize(Math.max(0, (size * u.hp) / u.maxHp), 5);
-        if (u.hp <= 0) vw.img.setTint(0x333333).setAlpha(0.5);
+        if (u.hp <= 0) {
+          vw.img?.setTint(0x333333).setAlpha(0.5);
+          if (vw.sprite && !vw.sprite.dead) vw.sprite.die();
+        }
       }
     };
     const show = (events: BattleEvent[]) => {
       for (const e of events) {
-        if (e.type === 'damage') float(e.uid, `-${e.amount}`, e.crit ? PAL.amber : PAL.ivory);
-        else if (e.type === 'heal') float(e.uid, `+${e.amount}`, 0x9ad08a);
-        else if (e.type === 'shield') float(e.uid, `+${e.amount}`, 0x8fb6d8);
+        if (e.type === 'damage') {
+          float(e.uid, `-${e.amount}`, e.crit ? PAL.amber : PAL.ivory);
+          views.get(e.uid)?.sprite?.hit(!!e.amount);
+        } else if (e.type === 'heal') {
+          float(e.uid, `+${e.amount}`, 0x9ad08a);
+          views.get(e.uid)?.sprite?.pulse(0x9ad08a);
+        } else if (e.type === 'shield') {
+          float(e.uid, `+${e.amount}`, 0x8fb6d8);
+          views.get(e.uid)?.sprite?.pulse(0x8fb6d8);
+        }
         else if (e.type === 'death' && battle.get(e.uid)?.side === 'enemy') this.purged += 1;
       }
       this.purgedText?.setText(this.purged ? `FOES PURGED: ${this.purged}` : '');
@@ -268,6 +290,7 @@ export class SanctumScene extends Phaser.Scene {
         if (t.outcome || !t.actor) {
           timer.remove();
           const won = t.outcome === 'victory';
+          if (won) [...views.values()].forEach((vw, i) => vw.sprite?.cheer(i * 90));
           const msg = this.add
             .text(left + fw / 2, top + 165, won ? 'PURGED. THE VIGIL HOLDS.' : 'THE SISTERS FALL BACK AND PRAY.', { ...text.hud(15, won ? PAL.amber : PAL.oxblood), stroke: '#000000', strokeThickness: 4 })
             .setOrigin(0.5);
@@ -279,7 +302,11 @@ export class SanctumScene extends Phaser.Scene {
         const pick = actor.side === 'party' ? autoChoose(battle, actor) : battle.enemyChoose(actor);
         const events = battle.act(actor, pick.skill, pick.target);
         const vw = views.get(actor.uid);
-        if (vw) this.tweens.add({ targets: vw.img, y: vw.y + (actor.side === 'party' ? -10 : 10), duration: 110, yoyo: true });
+        if (vw?.sprite) {
+          const s = pick.skill;
+          if (s.rite || (s.target !== 'enemy' && s.target !== 'allEnemies')) vw.sprite.cast(SKILL_FX[s.id]?.color ?? PAL.amber, !!s.rite);
+          else vw.sprite.attack(-1);
+        } else if (vw?.img) this.tweens.add({ targets: vw.img, y: vw.y + (actor.side === 'party' ? -10 : 10), duration: 110, yoyo: true });
         show(events);
       },
     });
