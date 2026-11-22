@@ -2,7 +2,7 @@ import Phaser from 'phaser';
 import { music } from '../audio/music';
 import { bondBattle } from '../systems/bonds';
 import { expBattle } from '../systems/exp';
-import { FONT, GAME_H, GAME_W, PAL, hex } from '../config';
+import { FONT, GAME_W, PAL, hex } from '../config';
 import { addTabBar } from '../ui/tabBar';
 import { RARITY_COLOR } from '../data/classes';
 import { CRUSADERS } from '../data/crusaders';
@@ -26,8 +26,10 @@ import { comboBurst, damageSize, hitStop, popNumber, riteCard, shake, staticDeat
 
 const CARD = 128;
 const ENEMY_Y = 250;
-const PARTY_Y = 600;
+const PARTY_Y = 585;
 const ROMAN = ['I', 'II', 'III', 'IV'];
+/** Skill buttons sit just above the tab bar, which stays on screen through a fight. */
+const SKILL_H = 94;
 const slotX = (rank: number) => 8 + CARD / 2 + (rank - 1) * (CARD + 4);
 
 interface Card {
@@ -76,8 +78,8 @@ export class BattleScene extends Phaser.Scene {
   private strip: Phaser.GameObjects.GameObject[] = [];
   private vigilMax = 8;
   private toggles: Phaser.GameObjects.GameObject[] = [];
-  private pauseAsked = false;
-  private menuLayer?: Phaser.GameObjects.Container;
+  /** A tab the player tapped while the enemy was acting: open it at the next party turn. */
+  private leaveFor?: string;
 
   constructor() {
     super('Battle');
@@ -106,8 +108,7 @@ export class BattleScene extends Phaser.Scene {
     }
     music.play(this.battle.units.some((u) => u.side === 'enemy' && u.boss) ? 'boss' : 'battle');
     music.preload('victory', 'defeat');
-    this.pauseAsked = false;
-    this.menuLayer = undefined;
+    this.leaveFor = undefined;
     this.vigilMax = resume ? resume.vigilMax : this.battle.vigil;
     this.cards.clear();
     this.mode = 'busy';
@@ -139,8 +140,11 @@ export class BattleScene extends Phaser.Scene {
     this.zealText = this.add.text(GAME_W / 2, 478, '', { ...style, fontSize: '16px', color: hex(PAL.steel) }).setOrigin(0.5);
 
     this.descText = this.add
-      .text(GAME_W / 2, 760, '', { ...style, fontSize: '19px', align: 'center', color: hex(PAL.steel), wordWrap: { width: GAME_W - 40 } })
+      .text(GAME_W / 2, 734, '', { ...style, fontSize: '18px', align: 'center', color: hex(PAL.steel), wordWrap: { width: GAME_W - 40 } })
       .setOrigin(0.5);
+
+    // The tab bar stays through the fight; leaving by it pauses the fight.
+    addTabBar(this, 'Battle', 20, (k) => this.leaveTo(k));
 
     makeFxTextures(this);
     for (const u of this.battle.units) this.makeCard(u);
@@ -156,38 +160,22 @@ export class BattleScene extends Phaser.Scene {
 
   // ---------- leaving mid-fight ----------
 
-  /** Menu: pauses on the player's turn (now, or the next one) and shows the tabs. */
-  private askMenu() {
-    if (this.menuLayer) return;
-    if (this.actor?.side === 'party' && (this.mode === 'skill' || this.mode === 'target')) return this.openMenu();
-    this.pauseAsked = true;
-    this.descText.setText('The fight will pause at your next turn.');
+  /**
+   * A tab tapped mid-fight: the fight waits on the player's turn (now, or the
+   * next one), then that screen opens. Resume it from the Crusade tab.
+   */
+  private leaveTo(key: string) {
+    if (this.actor?.side === 'party' && (this.mode === 'skill' || this.mode === 'target')) return this.pauseAndGo(key);
+    this.leaveFor = key;
+    this.descText.setText('The fight will wait at your next turn.');
   }
 
-  private openMenu() {
+  private pauseAndGo(key: string) {
     const actor = this.actor!;
     current.paused = { battle: this.battle, actorUid: actor.uid, vigilMax: this.vigilMax, run: current.challenge ? undefined : current.run, floor: current.run?.floor, at: current.run?.at, challenge: current.challenge };
     this.mode = 'busy';
     this.clearSkills();
-    const style = { fontFamily: FONT, color: hex(PAL.ivory), align: 'center' };
-    const layer = this.add.container(0, 0).setDepth(30);
-    layer.add(this.add.rectangle(GAME_W / 2, GAME_H / 2, GAME_W, GAME_H, 0x09060b, 0.9).setInteractive());
-    layer.add(this.add.text(GAME_W / 2, 330, 'THE FIGHT WAITS', { ...style, fontSize: '30px', color: hex(PAL.amber) }).setOrigin(0.5));
-    layer.add(
-      this.add
-        .text(GAME_W / 2, 400, 'Your Sisters hold their ground until you return.\nCome back to it from the Crusade tab.', { ...style, fontSize: '19px', color: hex(PAL.muted), wordWrap: { width: GAME_W - 60 } })
-        .setOrigin(0.5),
-    );
-    const resume = makeButton(this, GAME_W / 2, 500, 260, 64, 'Resume the fight', () => {
-      layer.destroy();
-      tabs.forEach((o) => o.destroy());
-      this.menuLayer = undefined;
-      current.paused = undefined;
-      this.resumeTurn(actor.uid);
-    }, { active: true, icon: 'blade' });
-    layer.add(resume.all);
-    const tabs = addTabBar(this, '', 31);
-    this.menuLayer = layer;
+    this.scene.start(key, {});
   }
 
   /** Back to a party member's turn after a pause. */
@@ -218,10 +206,7 @@ export class BattleScene extends Phaser.Scene {
         this.mode = 'skill';
         this.chosen = undefined;
         this.logText.setText(`${this.actor.name}'s turn`);
-        if (this.pauseAsked) {
-          this.pauseAsked = false;
-          return this.openMenu();
-        }
+        if (this.leaveFor) return this.pauseAndGo(this.leaveFor);
         if (settings.autoBattle) this.time.delayedCall(350, () => this.autoAct());
         else this.showSkills();
       }
@@ -295,8 +280,7 @@ export class BattleScene extends Phaser.Scene {
     this.toggles.forEach((o) => o.destroy());
     const auto = makeButton(this, 236, 24, 92, 40, settings.autoBattle ? 'Auto: On' : 'Auto', () => this.toggleAuto(), { active: settings.autoBattle, fontSize: 19 });
     const speed = makeButton(this, 340, 24, 92, 40, settings.battleSpeed === 2 ? 'Speed 2x' : 'Speed 1x', () => this.toggleSpeed(), { active: settings.battleSpeed === 2, fontSize: 19 });
-    const menu = makeButton(this, 150, 24, 70, 40, 'Menu', () => this.askMenu(), { fontSize: 19 });
-    this.toggles = [auto.box, auto.text, speed.box, speed.text, ...menu.all];
+    this.toggles = [auto.box, auto.text, speed.box, speed.text];
   }
 
   private toggleAuto() {
@@ -336,17 +320,17 @@ export class BattleScene extends Phaser.Scene {
     const w = 102;
     order.forEach((s, i) => {
       const x = 9 + w / 2 + i * (w + 3);
-      const y = 862;
+      const y = 819;
       const usable = this.battle.canUse(actor, s);
       const selected = this.chosen === s;
       const color = s.rite ? PAL.amber : PAL.oxblood;
       const box = this.add
-        .rectangle(x, y, w, 120, selected ? color : PAL.deepShadow)
+        .rectangle(x, y, w, SKILL_H, selected ? color : PAL.deepShadow)
         .setStrokeStyle(2, usable ? color : PAL.armorShadow)
         .setAlpha(usable ? 1 : 0.4);
       // ui-skill / ui-skill-selected / ui-skill-rite .png, when present
       const skinKey = selected ? 'ui-skill-selected' : s.rite ? 'ui-skill-rite' : 'ui-skill';
-      const skin = nine(this, skinKey, x, y, w, 120);
+      const skin = nine(this, skinKey, x, y, w, SKILL_H);
       if (skin) {
         box.setFillStyle(0x000000, 0.001).setStrokeStyle().setAlpha(1);
         skin.setAlpha(usable ? 1 : 0.4);
@@ -354,13 +338,13 @@ export class BattleScene extends Phaser.Scene {
       }
       const cd = actor.cooldowns?.[s.id] ?? 0;
       // skill-<id>.png (32 x 32) sits above the name when present
-      const icon = addArt(this, `skill-${s.id}`, x, y - 30, 32);
+      const icon = addArt(this, `skill-${s.id}`, x, y - 25, 30);
       if (icon) {
         icon.setAlpha(usable ? 1 : 0.4);
         this.skillButtons.push(icon);
       }
       const label = this.add
-        .text(x, icon ? y + 20 : y, s.rite ? `RITE\n${s.name}` : cd > 0 ? `${s.name}\n(ready in ${cd})` : s.name, {
+        .text(x, icon ? y + 18 : y, s.rite ? `RITE\n${s.name}` : cd > 0 ? `${s.name}\n(ready in ${cd})` : s.name, {
           fontFamily: FONT,
           fontSize: icon ? '16px' : '18px',
           color: hex(selected && s.rite && !skin ? PAL.bg : PAL.ivory),
