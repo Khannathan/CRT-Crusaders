@@ -59,7 +59,7 @@ import { countOf, itemDef } from '../systems/items';
 import { MAX_SKILL_LEVEL, nextSkillStep, raiseSkill, skillBlock, skillLevels, stepText } from '../systems/skillLevels';
 import { makeButton } from '../ui/button';
 import { CURRENCY_BAR_H, addCurrencyBar } from '../ui/currencyBar';
-import { loadFullBody, portraitKey } from '../ui/placeholderPortrait';
+import { hasSplash, loadFullBody, loadSplash, portraitKey } from '../ui/placeholderPortrait';
 import { SisterSprite } from '../ui/sisterSprite';
 import { nine } from '../ui/skin';
 import { addScrollArea } from '../ui/scroll';
@@ -96,6 +96,8 @@ export class RosterScene extends Phaser.Scene {
   private order: string[] = [];
   /** Kept across restarts so levelling up a Sister doesn't jump the list back to the top. */
   private static scrollY = 0;
+  /** Sister page hero: her splash art (true) or her animated pixel figure (false). */
+  private static showSplash = true;
   private dragged = false;
   private detailOpen = false;
 
@@ -308,9 +310,24 @@ export class RosterScene extends Phaser.Scene {
     layer.add(bust);
     // Her full figure, breathing; tap her and she shows off a strike or a blessing.
     let figure: SisterSprite | undefined;
+    let splash: string | undefined;
     let poses = 0;
+    // Sworn Sisters show their splash art (a toggle switches to the figure).
+    const useSplash = !!have && hasSplash(c.id) && RosterScene.showSplash;
+    if (useSplash) {
+      loadSplash(this, c.id).then((key) => {
+        if (!key || !bust.active) return;
+        splash = key;
+        const parts = addBackdrop(this, key, GAME_W / 2, HERO_H / 2, GAME_W, HERO_H, { fade: 0.45, fadeColor: 0x0d090f, focusY: 0.16 });
+        // A dark wash along the top so Power and the buttons read over the art.
+        const top = this.add.graphics();
+        for (let i = 0; i < 14; i++) top.fillStyle(0x0d090f, 0.06 * (14 - i)).fillRect(0, i * 10, GAME_W, 10);
+        layer.addAt([...parts, top], layer.getIndex(bust));
+        bust.destroy();
+      });
+    }
     // Not sworn yet: her figure stands in shadow, to be won at the Altar.
-    loadFullBody(this, c.id).then((key) => {
+    if (!useSplash) loadFullBody(this, c.id).then((key) => {
       if (!key || !bust.active || key === portraitKey(c.id) || !this.textures.exists(key)) return;
       figure = new SisterSprite(this, c.id, GAME_W / 2, FIGURE_Y + FIGURE_H / 2 - 16, 2, order?.color ?? tint);
       if (!have) figure.silhouette();
@@ -329,9 +346,18 @@ export class RosterScene extends Phaser.Scene {
     swipe.on('pointerdown', (p: Phaser.Input.Pointer) => (downX = p.x));
     swipe.on('pointerup', (p: Phaser.Input.Pointer) => {
       if (Math.abs(p.x - downX) > 60) this.step(c, p.x < downX ? 1 : -1, tab);
+      else if (splash) this.viewSplash(splash);
       else if (figure && have) poses++ % 2 ? figure.cast(order?.color ?? tint) : figure.attack(-1);
     });
     layer.add(swipe);
+    if (have && hasSplash(c.id)) {
+      const flip = makeButton(this, PAD + 52, 128, 104, 40, RosterScene.showSplash ? 'Figure' : 'Splash', () => {
+        RosterScene.showSplash = !RosterScene.showSplash;
+        layer.destroy();
+        this.showDetail(c, tab);
+      }, { fontSize: 15 });
+      layer.add(flip.all);
+    }
 
     // Corners: Power, Back, and the arrows.
     if (have) layer.add([this.add.text(PAD + 4, 22, 'POWER', text.hud(12, PAL.steel)), this.add.text(PAD + 4, 38, formatPower(sisterPower(save, c)), text.display(26, PAL.amber))]);
@@ -394,6 +420,19 @@ export class RosterScene extends Phaser.Scene {
   }
 
   /** The next (or previous) Sister in the roster's order, on the same tab. */
+  /** Her splash art, whole, over everything; tap to close. */
+  private viewSplash(key: string) {
+    const layer = this.add.container(0, 0).setDepth(40);
+    const bg = this.add.rectangle(GAME_W / 2, GAME_H / 2, GAME_W, GAME_H, 0x000000, 0.94).setInteractive();
+    const src = this.textures.get(key).getSourceImage();
+    const scale = Math.min(GAME_W / src.width, (GAME_H - 60) / src.height);
+    const img = this.add.image(GAME_W / 2, GAME_H / 2 - 10, key).setScale(scale * 0.96).setAlpha(0);
+    const hint = this.add.text(GAME_W / 2, GAME_H - 22, 'Tap to close', text.hud(13, PAL.steel)).setOrigin(0.5);
+    layer.add([bg, img, hint]);
+    this.tweens.add({ targets: img, alpha: 1, scale, duration: 220, ease: 'Quad.out' });
+    bg.once('pointerup', () => layer.destroy());
+  }
+
   private step(c: CrusaderDef, dir: number, tab: Tab) {
     const i = this.order.indexOf(c.id);
     if (i < 0 || this.order.length < 2) return;

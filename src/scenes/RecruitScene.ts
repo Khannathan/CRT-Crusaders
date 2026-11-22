@@ -11,7 +11,7 @@ import { COST_ONE, COST_TEN, PITY_LIMIT, RARITY_ORDER, RATES, bannerPool, booste
 import { isStandard, limitedUnseen, limitedWindow, markLimitedSeen, timeLeft, upcoming } from '../systems/limited';
 import { makeButton } from '../ui/button';
 import { CURRENCY_BAR_H, addCurrencyBar } from '../ui/currencyBar';
-import { portraitKey } from '../ui/placeholderPortrait';
+import { portraitKey, queueSplash, splashKey } from '../ui/placeholderPortrait';
 import { TAB_BAR_H, addTabBar } from '../ui/tabBar';
 import { PAD, addBackdrop, addBadge, addFrame, addHeading, addPanel, addScreenGlow, text } from '../ui/theme';
 import { holdForCard, justHeld } from '../ui/sisterCard';
@@ -22,6 +22,11 @@ import { makePlaceholderPortrait } from '../ui/placeholderPortrait';
 export class RecruitScene extends Phaser.Scene {
   constructor() {
     super('Recruit');
+  }
+
+  preload() {
+    // The banner's target Sister's splash art fills the banner.
+    queueSplash(this, this.currentBanner().target);
   }
 
   create() {
@@ -45,8 +50,11 @@ export class RecruitScene extends Phaser.Scene {
     const bh = 430;
     const by = top + 12 + bh / 2;
     const bTop = by - bh / 2;
-    const art = this.textures.exists(`banner-${ord.id}`) ? `banner-${ord.id}` : 'bg-altar';
-    addBackdrop(this, art, GAME_W / 2, by, bw, bh, { fade: 0.55, fadeColor: 0x140b12, focusY: 0.35 });
+    const splash = this.textures.exists(splashKey(banner.target)) ? splashKey(banner.target) : undefined;
+    const art = splash ?? (this.textures.exists(`banner-${ord.id}`) ? `banner-${ord.id}` : 'bg-altar');
+    addBackdrop(this, art, GAME_W / 2, by, bw, bh, { fade: 0.55, fadeColor: 0x140b12, focusY: splash ? 0.22 : 0.35 });
+    // Her splash is busy; dim it so the banner's words and cards read on top.
+    if (splash) this.add.rectangle(GAME_W / 2, by, bw, bh, 0x140b12, 0.4);
     this.add.rectangle(GAME_W / 2, by, bw, bh, limited ? RARITY_COLOR.UR : ord.color, 0.12);
     addFrame(this, GAME_W / 2, by, bw, bh, { edge: limited ? RARITY_COLOR.UR : ord.color });
     const page = limited ? 0 : ORDER_LIST.indexOf(ord) + 1;
