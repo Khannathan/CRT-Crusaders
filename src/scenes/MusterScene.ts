@@ -12,6 +12,7 @@ import { VERDICT_COLOR } from '../ui/recommended';
 import { portraitKey } from '../ui/placeholderPortrait';
 import { addIcon, addScreenGlow, text } from '../ui/theme';
 import { addScrollArea } from '../ui/scroll';
+import { addOrderSigil, holdForCard, justHeld } from '../ui/sisterCard';
 
 const ROMAN = ['I', 'II', 'III', 'IV'];
 
@@ -66,9 +67,12 @@ export class MusterScene extends Phaser.Scene {
       this.add.rectangle(x, slotY, 134, 134, 0x170f1b).setStrokeStyle(1, RARITY_COLOR[c.rarity]);
       const img = this.add.image(x, slotY, portraitKey(id)).setDisplaySize(128, 128).setInteractive({ useHandCursor: true });
       img.on('pointerup', () => {
+        if (justHeld()) return;
         this.party = this.party.filter((p) => p !== id);
         this.create();
       });
+      holdForCard(this, img, id);
+      addOrderSigil(this, x + 46, slotY - 46, c.order, 26);
       this.add.text(x, slotY + 82, c.name.split(' ')[0], { ...text.body(18), fontStyle: '600' }).setOrigin(0.5);
       this.add.text(x, slotY + 102, CLASSES[c.classId].role.toUpperCase(), text.hud(12, PAL.muted)).setOrigin(0.5);
     }
@@ -96,6 +100,7 @@ export class MusterScene extends Phaser.Scene {
       this.add.rectangle(x, y, 134, 134, 0x170f1b).setStrokeStyle(1, ready ? RARITY_COLOR[c.rarity] : PAL.armorShadow);
       const img = this.add.image(x, y, portraitKey(c.id)).setDisplaySize(128, 128);
       if (inParty || !ready) img.setAlpha(0.3);
+      addOrderSigil(this, x + 46, y - 46, c.order, 26)?.setAlpha(inParty || !ready ? 0.5 : 1);
       if (ready && !inParty) {
         list.tap(img, () => {
           if (this.party.length < MAX_PARTY) {
@@ -104,6 +109,7 @@ export class MusterScene extends Phaser.Scene {
           }
         });
       }
+      holdForCard(this, img, c.id);
       const sub = !ready ? 'Recovering' : `Lv ${game.save.owned[c.id].level} · ${formatPower(sisterPower(game.save, c))}`;
       this.add.text(x, y + 76, c.name.split(' ')[0], { ...text.body(17), fontStyle: '600' }).setOrigin(0.5);
       this.add.text(x, y + 95, sub, text.body(14, PAL.muted)).setOrigin(0.5);

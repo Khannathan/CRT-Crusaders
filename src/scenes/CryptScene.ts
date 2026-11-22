@@ -31,6 +31,7 @@ import { nodeIconKey } from '../ui/icons';
 import { portraitKey } from '../ui/placeholderPortrait';
 import { addArt, addScreenGlow, text as txt } from '../ui/theme';
 import { addScrollArea } from '../ui/scroll';
+import { holdForCard } from '../ui/sisterCard';
 
 const MAP_TOP = 96;
 const MAP_BOTTOM = 486;
@@ -264,6 +265,7 @@ export class CryptScene extends Phaser.Scene {
       const max = maxHpOf(game.save, run, id);
       this.add.rectangle(cx, py, 96, 96).setStrokeStyle(3, hp > 0 ? RARITY_COLOR[c.rarity] : PAL.armorShadow);
       const img = this.add.image(cx, py, portraitKey(id)).setDisplaySize(90, 90);
+      holdForCard(this, img, id);
       if (hp <= 0) img.setTint(0x333333);
       this.add.rectangle(cx - 45, py + 58, 90, 8, PAL.deepShadow).setOrigin(0, 0.5);
       this.add.rectangle(cx - 45, py + 58, (90 * hp) / max, 8, hp / max > 0.4 ? 0x7a9a5a : PAL.oxblood).setOrigin(0, 0.5);

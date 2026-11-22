@@ -44,6 +44,8 @@ function start() {
     parent: 'game',
     backgroundColor: PAL.bg,
     pixelArt: true,
+    // a long press opens a Sister's card; keep the browser's menu out of the way
+    disableContextMenu: true,
     scale: {
       mode: Phaser.Scale.FIT,
       autoCenter: Phaser.Scale.CENTER_BOTH,

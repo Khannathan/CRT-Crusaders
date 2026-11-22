@@ -17,6 +17,7 @@ import { portraitKey } from '../ui/placeholderPortrait';
 import { addScrollArea } from '../ui/scroll';
 import { TAB_BAR_H, addTabBar } from '../ui/tabBar';
 import { PAD, addBackdrop, addFrame, addHeading, addScreenGlow, text } from '../ui/theme';
+import { holdForCard } from '../ui/sisterCard';
 
 /** Rank of Faith needed to repeat a cleared crypt on Auto. */
 const REPEAT_RANK = 4;
@@ -168,7 +169,7 @@ export class CrusadeScene extends Phaser.Scene {
       this.add.text(GAME_W - PAD, bottom + 26, 'MENDING FOR ONE CRUSADE', text.hud(12, PAL.muted)).setOrigin(1, 0);
       resting.forEach((c, i) => {
         const y = bottom + 84 + i * 64;
-        this.add.image(PAD + 28, y, portraitKey(c.id)).setDisplaySize(56, 56);
+        holdForCard(this, this.add.image(PAD + 28, y, portraitKey(c.id)).setDisplaySize(56, 56), c.id);
         this.add.rectangle(PAD + 28, y, 56, 56).setStrokeStyle(1, RARITY_COLOR[c.rarity]);
         this.add.text(PAD + 68, y, c.name, { ...style, fontSize: '18px' }).setOrigin(0, 0.5);
         const cost = reviveCost(s.owned[c.id].level);
@@ -219,7 +220,7 @@ export class CrusadeScene extends Phaser.Scene {
       );
       party.forEach((id, i) => {
         const x = GAME_W / 2 + (i - (party.length - 1) / 2) * 104;
-        layer.add(this.add.image(x, y0 + 190, portraitKey(id)).setDisplaySize(92, 92));
+        layer.add(holdForCard(this, this.add.image(x, y0 + 190, portraitKey(id)).setDisplaySize(92, 92), id));
         layer.add(this.add.rectangle(x, y0 + 190, 96, 96).setStrokeStyle(2, RARITY_COLOR[CRUSADERS.find((c) => c.id === id)!.rarity]));
       });
       layer.add(

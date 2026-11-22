@@ -5,6 +5,7 @@ import { CRUSADERS } from '../data/crusaders';
 import { HERESY_FIRST_CLEAR_SEALS, MAX_HERESY, ROMAN, type RunResult } from '../systems/crusade';
 import { makeButton } from '../ui/button';
 import { portraitKey } from '../ui/placeholderPortrait';
+import { holdForCard } from '../ui/sisterCard';
 
 const TITLES = { victory: 'The crypt is purified', defeat: 'The crusade is broken', retreat: 'You fall back to the Sanctum' };
 
@@ -50,7 +51,7 @@ export class ResultsScene extends Phaser.Scene {
         .setOrigin(0.5);
       r.fallen.forEach((id, i) => {
         const x = GAME_W / 2 + (i - (r.fallen.length - 1) / 2) * 132;
-        this.add.image(x, 640, portraitKey(id)).setDisplaySize(128, 128).setTint(0x555555);
+        holdForCard(this, this.add.image(x, 640, portraitKey(id)).setDisplaySize(128, 128).setTint(0x555555), id);
         this.add.text(x, 720, CRUSADERS.find((c) => c.id === id)!.name.split(' ')[0], { ...style, fontSize: '15px' }).setOrigin(0.5);
       });
     }

@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import { justHeld } from './sisterCard';
 
 export interface ScrollArea {
   /** Add the scrolling objects here, placed as if the list were not scrolled. */
@@ -105,7 +106,7 @@ export function addScrollArea(scene: Phaser.Scene, top: number, bottom: number, 
     tap(obj, fn) {
       (obj as unknown as Phaser.GameObjects.Image).setInteractive({ useHandCursor: true });
       obj.on('pointerup', (p: Phaser.Input.Pointer) => {
-        if (dragged || !inView(p.y) || !live()) return;
+        if (dragged || justHeld() || !inView(p.y) || !live()) return;
         fn(p);
       });
       return obj;
