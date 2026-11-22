@@ -1,4 +1,5 @@
 import { activeHowl } from './hounds';
+import { symbolCombat } from './symbols';
 import { BOND_XP, addBond } from './bonds';
 import { GILT_FIRST_CLEAR, GILT_HERESY, earn } from './currency';
 import { CLASSES } from '../data/classes';
@@ -401,11 +402,14 @@ export function makeBattle(save: SaveData, run: RunState, encounter: string, rng
   const enemyScale = (scale ?? 1 + HERESY_ENEMY * run.heresy) * (run.crypt.power ?? 1) * (1 + ACT_ENEMY * (act - 1));
 
   let rank = 0;
+  let symbolZeal = 0;
   const party: Unit[] = [];
   for (const id of run.party) {
     if (run.hp[id] <= 0) continue;
     const c = CRUSADERS.find((x) => x.id === id)!;
     const st = sisterStats(save, c);
+    const sym = symbolCombat(c, save.owned[id].symbol);
+    symbolZeal += sym?.zeal ?? 0;
     party.push({
       uid: id,
       side: 'party',
@@ -421,7 +425,8 @@ export function makeBattle(save: SaveData, run: RunState, encounter: string, rng
       dmg: dmgTagOf(c),
       vow: skillVow(save.owned[id]),
       skillLv: save.owned[id].skills,
-      crit: st.crit + relics.reduce((n, r) => n + (r.critAdd ?? 0), 0),
+      crit: st.crit + relics.reduce((n, r) => n + (r.critAdd ?? 0), 0) + (sym?.crit ?? 0),
+      symbol: sym,
       passive: c.passive,
       order: c.order,
       spd: st.spd + (c.passive?.kind === 'swift' ? c.passive.value ?? 0 : 0),
@@ -441,7 +446,7 @@ export function makeBattle(save: SaveData, run: RunState, encounter: string, rng
     fallenAtk: sum('fallenAtk'),
     fallHeal: sum('fallHeal'),
   };
-  return new Battle(party, enemies, { rng, vigil, zeal, enemyScale, mods, hound: activeHowl(save) });
+  return new Battle(party, enemies, { rng, vigil, zeal: zeal + symbolZeal, enemyScale, mods, hound: activeHowl(save) });
 }
 
 /**

@@ -43,7 +43,7 @@ export class BootScene extends Phaser.Scene {
       if (url) this.load.image(portraitKey(c.id), url);
     }
     for (const e of Object.values(ENEMIES)) {
-      const url = pick(ENEMY_URLS, `../assets/enemies/${e.id}`);
+      const url = pick(ENEMY_URLS, `../assets/enemies/${e.id}`) ?? (e.art ? pick(ENEMY_URLS, `../assets/enemies/${e.art}`) : undefined);
       if (url) this.load.image(enemyKey(e.id), url);
     }
     const ui = new Map<string, string>();

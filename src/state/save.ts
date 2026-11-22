@@ -26,6 +26,8 @@ export interface OwnedCrusader {
   tier?: number;
   /** Ascensions taken, 0-3. Each raises the level cap by 10. */
   asc?: number;
+  /** Holy Symbol level: undefined while it sleeps, 0-15 once woken (systems/symbols.ts). */
+  symbol?: number;
   /** Crusades left to sit out after falling (0 = ready). Tithes can revive early. */
   recovering?: number;
 }
@@ -103,6 +105,8 @@ export interface SaveData {
   shop?: import('../systems/shop').ShopState;
   /** The Kennel: hounds owned and the one going into battle. */
   hounds?: import('../systems/hounds').HoundState;
+  /** Hallowed Hunts: today's entries and best, tiers opened and records. */
+  hunts?: import('../systems/hunts').HuntState;
   /** Saved parties, each with an icon shown on its Sisters' portraits. */
   presets?: import('../systems/presets').PartyPreset[];
   /** Materials by item id (see systems/items.ts). */
