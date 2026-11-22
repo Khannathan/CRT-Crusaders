@@ -24,6 +24,7 @@ import { ShopScene } from './scenes/ShopScene';
 import { ReliquaryScene } from './scenes/ReliquaryScene';
 import './fonts.css';
 import { CloisterScene, ModesScene } from './scenes/ModesScene';
+import { CampaignScene } from './scenes/CampaignScene';
 
 /**
  * Phaser draws text onto canvases, so web fonts must be loaded before any scene
@@ -70,6 +71,7 @@ function start() {
       RevealScene,
       RosterScene,
       ModesScene,
+      CampaignScene,
       CloisterScene,
       CrusadeScene,
       MusterScene,

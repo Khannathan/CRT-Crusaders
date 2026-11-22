@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import { CRUSADERS } from '../data/crusaders';
 import { newSave } from '../state/save';
-import { BELFRY } from './crusade';
-import { VIGIL_CAP_HOURS, claimVigil, ensureVigil, setVigil, vigilPending, vigilRates } from './vigil';
+import { FAST_HOURS } from './campaign';
+import { VIGIL_CAP_HOURS, claimVigil, ensureVigil, fastReward, setVigil, vigilPending, vigilRates } from './vigil';
 
 const H = 3.6e6;
 const ids = CRUSADERS.filter((c) => c.rarity === 'R').slice(0, 4).map((c) => c.id);
@@ -32,16 +32,36 @@ describe('Vigils', () => {
     expect(capped.tithes).toBe(vigilPending(save, v, VIGIL_CAP_HOURS * H).tithes);
   });
 
-  it('stronger Sisters gather more, up to a limit', () => {
-    const weak = saveWith(1);
-    const strong = saveWith(20);
-    const rw = vigilRates(weak, ensureVigil(weak, 0)!);
-    const rs = vigilRates(strong, ensureVigil(strong, 0)!);
-    expect(rs.tithes).toBeGreaterThan(rw.tithes);
-    expect(rs.eff).toBeLessThanOrEqual(1.5);
+  it('gathers faster the further the Pilgrim\'s Road is cleared', () => {
+    const fresh = saveWith(1);
+    const far = saveWith(1);
+    far.campaign = { best: 23 };
+    const rf = vigilRates(fresh);
+    const rr = vigilRates(far);
+    expect(rr.tithes).toBeGreaterThan(rf.tithes * 2);
+    expect(rr.gear).toBeGreaterThan(rf.gear);
+    expect(rr.seals).toBeGreaterThan(rf.seals);
   });
 
-  it('claiming pays out and restarts the clock; changing crypt claims first', () => {
+  it('Fast Reward: two hours at once, free once a day, then for Gilt', () => {
+    const save = saveWith(5);
+    ensureVigil(save, 0);
+    const day = 30 * 24 * H;
+    const t0 = save.tithes;
+    const g0 = save.gilt ?? 300;
+    const c = fastReward(save, day, () => 0.5)!;
+    expect(c.tithes).toBe(Math.floor(FAST_HOURS * vigilRates(save).tithes));
+    expect(save.tithes).toBe(t0 + c.tithes);
+    expect(save.vigil!.since).toBe(0); // the running Vigil is untouched
+    fastReward(save, day + 1000, () => 0.5);
+    expect(save.gilt).toBe(g0 - 50);
+    fastReward(save, day + 2000);
+    fastReward(save, day + 3000);
+    expect(fastReward(save, day + 4000)).toBeUndefined(); // 1 free + 3 paid a day
+    expect(fastReward(save, day + 24 * H)).toBeDefined(); // a new day
+  });
+
+  it('claiming pays out and restarts the clock; changing the watch claims first', () => {
     const save = saveWith(8);
     ensureVigil(save, 0);
     const t0 = save.tithes;
@@ -51,13 +71,9 @@ describe('Vigils', () => {
     expect(c.gear.length).toBe(expected.gear);
     expect(c.gear.length).toBeGreaterThan(0);
     expect(save.vigil!.since).toBe(6 * H);
-    // The Belfry is locked until the Ossuary is cleared.
-    setVigil(save, 7 * H, { crypt: BELFRY.id });
-    expect(save.vigil!.crypt).not.toBe(BELFRY.id);
-    save.cleared.push('drowned-ossuary');
     const before = save.tithes;
-    setVigil(save, 8 * H, { crypt: BELFRY.id });
-    expect(save.vigil!.crypt).toBe(BELFRY.id);
+    setVigil(save, 8 * H, { party: ids.slice(0, 2) });
+    expect(save.vigil!.party).toEqual(ids.slice(0, 2));
     expect(save.tithes).toBeGreaterThan(before);
   });
 });
