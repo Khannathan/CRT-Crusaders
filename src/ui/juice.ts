@@ -118,14 +118,14 @@ export function staticDeath(scene: Phaser.Scene, box: Phaser.GameObjects.Contain
 }
 
 /** A Rite's name stamped across the screen while the camera leans in. */
-export function riteCard(scene: Phaser.Scene, name: string, who: string, onDone: () => void) {
+export function riteCard(scene: Phaser.Scene, name: string, who: string, onDone: () => void, verb = 'INVOKES') {
   const y = 430;
   const cam = scene.cameras.main;
   cam.zoomTo(1.08, 220, 'Quad.easeOut');
   const band = scene.add.rectangle(GAME_W / 2, y, GAME_W, 120, 0x0c0709, 0.9).setDepth(40).setScale(1, 0);
   const edgeA = scene.add.rectangle(GAME_W / 2, y - 60, GAME_W, 3, PAL.amber).setDepth(41).setScale(0, 1);
   const edgeB = scene.add.rectangle(GAME_W / 2, y + 60, GAME_W, 3, PAL.amber).setDepth(41).setScale(0, 1);
-  const sub = scene.add.text(GAME_W / 2, y - 30, `${who.toUpperCase()} INVOKES`, { fontFamily: FONT, fontSize: '18px', color: hex(PAL.bronze) }).setOrigin(0.5).setDepth(42).setAlpha(0);
+  const sub = scene.add.text(GAME_W / 2, y - 30, `${who.toUpperCase()} ${verb}`, { fontFamily: FONT, fontSize: '18px', color: hex(PAL.bronze) }).setOrigin(0.5).setDepth(42).setAlpha(0);
   const title = scene.add
     .text(GAME_W / 2, y + 12, name.toUpperCase(), { fontFamily: FONT, fontSize: '46px', color: hex(PAL.amber), stroke: '#000000', strokeThickness: 6 })
     .setOrigin(0.5)

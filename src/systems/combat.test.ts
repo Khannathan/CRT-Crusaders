@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { ENEMIES } from '../data/enemies';
 import { CLASS_SKILLS } from '../data/skills';
 import { autoStep } from './autoplay';
-import { Battle, CRIT_MULT, ZEAL_HURT_CAP, ZEAL_MAX, damageAfterArmor, makeEnemy, type Unit } from './combat';
+import { Battle, CRIT_MULT, ZEAL_HURT_CAP, ZEAL_MAX, ZEAL_ON_ATTACK, damageAfterArmor, makeEnemy, type Unit } from './combat';
 
 function seeded(seed: number) {
   return () => {
@@ -47,11 +47,11 @@ describe('combat', () => {
     expect(run(true)).toBeGreaterThan(run(false) * 1.5);
   });
 
-  it('shields absorb damage and the Rite spends all Zeal', () => {
+  it('shields absorb damage and the Litany spends all her Zeal', () => {
     const h = crusader('h', 'hierophant', 1);
     const b = new Battle([h], [makeEnemy('husk', 'e0', 1)], { rng: () => 0.5, zeal: ZEAL_MAX });
     b.act(h, CLASS_SKILLS.hierophant[3]);
-    expect(h.status.shield).toBe(35);
+    expect(h.status.shield).toBe(25);
     expect(b.zeal).toBe(0);
     b.act(b.get('e0'), ENEMIES.husk.skills[0], h);
     expect(h.hp).toBe(100);
@@ -194,7 +194,9 @@ describe('skills and combos', () => {
     b.act(o, CLASS_SKILLS.oracle[2], w);
     expect(w.status.empower).toBeTruthy();
     expect(o.status.empower).toBeUndefined();
-    expect(b.zeal).toBe(10);
+    // Its Zeal goes to every Sister.
+    expect(w.zeal).toBe(10);
+    expect(o.zeal).toBeGreaterThanOrEqual(10);
   });
 });
 
@@ -217,11 +219,44 @@ describe('balance formulas', () => {
     expect(e.maxHp - e.hp).toBe(Math.round(20 * 1.2 * 1.25 * 1.5 * CRIT_MULT));
   });
 
-  it('Zeal: +4 per attack action regardless of targets, Rites earn nothing', () => {
+  it('Zeal: each Sister fills her own bar, the same per attack however many targets', () => {
     const c = crusader('c', 'censer', 2);
-    const b = new Battle([c], ['husk', 'acolyte', 'ringer'].map((t, i) => makeEnemy(t, `e${i}`, i + 1)), { rng: () => 0.5 });
+    const other = crusader('o', 'oracle', 3);
+    const b = new Battle([c, other], ['husk', 'acolyte', 'ringer'].map((t, i) => makeEnemy(t, `e${i}`, i + 1)), { rng: () => 0.5 });
     b.act(c, CLASS_SKILLS.censer[0]); // hits all three
-    expect(b.zeal).toBe(4);
+    expect(c.zeal).toBe(ZEAL_ON_ATTACK);
+    expect(other.zeal ?? 0).toBe(0);
+  });
+
+  it("a Litany needs the Sister's own bar full, and empties only hers", () => {
+    const c = crusader('c', 'censer', 2);
+    const other = crusader('o', 'oracle', 3);
+    const b = new Battle([c, other], [makeEnemy('husk', 'e0', 1)], { rng: () => 0.5 });
+    const litany = CLASS_SKILLS.censer.find((s) => s.rite)!;
+    expect(b.canUse(c, litany)).toBe(false);
+    c.zeal = ZEAL_MAX;
+    other.zeal = 60;
+    expect(b.canUse(c, litany)).toBe(true);
+    b.act(c, litany);
+    expect(c.zeal).toBe(0);
+    expect(other.zeal).toBe(60);
+  });
+
+  it('a boss with full Wrath readies its Blasphemy, charges a turn, then unleashes it', () => {
+    const boss = makeEnemy('abbess', 'e0', 1);
+    const s1 = crusader('s1', 'hierophant', 1, { maxHp: 1e6, hp: 1e6 });
+    const b = new Battle([s1], [boss], { rng: () => 0.5 });
+    expect(boss.wrath).toBe(0);
+    boss.wrath = ZEAL_MAX - 1;
+    b.act(boss, ENEMIES.abbess.skills[1], s1);
+    expect(boss.wrath).toBe(ZEAL_MAX);
+    expect(boss.intent?.skillId).toBe(ENEMIES.abbess.blasphemy!.id);
+    const { skill } = b.enemyChoose(boss);
+    b.act(boss, skill); // charges
+    expect(boss.status.charging).toBe(true);
+    b.act(boss, b.enemyChoose(boss).skill); // unleashes
+    expect(boss.wrath).toBeLessThan(ZEAL_MAX);
+    expect(s1.hp).toBeLessThan(1e6);
   });
 
   it('Zeal from wounds is capped per round', () => {

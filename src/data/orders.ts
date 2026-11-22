@@ -40,7 +40,7 @@ export const ORDER_LIST: OrderDef[] = [
     id: 'veiled-tribunal', name: 'Veiled Tribunal', color: 0x6e5a8c, accent: 0xc6baa4,
     creed: 'Every heart is guilty until it is weighed.',
     lore: 'Faceless judges who travel with a scale, a blade and no appeal.',
-    tiers: [{ need: 2, desc: 'Crit chance +8%.', critAdd: 0.08 }, { need: 3, desc: 'Crit +6% more, attack +6%.', critAdd: 0.06, atkPct: 0.06 }, { need: 4, desc: 'Attack +10%. Rites hit 20% harder.', atkPct: 0.1, riteMult: 0.2 }],
+    tiers: [{ need: 2, desc: 'Crit chance +8%.', critAdd: 0.08 }, { need: 3, desc: 'Crit +6% more, attack +6%.', critAdd: 0.06, atkPct: 0.06 }, { need: 4, desc: 'Attack +10%. Litanies hit 20% harder.', atkPct: 0.1, riteMult: 0.2 }],
   },
   {
     id: 'sepulcher-watch', name: 'Sepulcher Watch', color: 0xb8ab8a, accent: 0x383845,
@@ -52,7 +52,7 @@ export const ORDER_LIST: OrderDef[] = [
     id: 'candle-choir', name: 'Candle Choir', color: 0xd6a15f, accent: 0x652b3b,
     creed: 'Sing, and the dark recoils.',
     lore: 'Their hymns have not stopped in three hundred years. When one voice fails, another takes the note.',
-    tiers: [{ need: 2, desc: 'Start every fight with +10 Zeal.', startZeal: 10 }, { need: 3, desc: '+10 more starting Zeal, +3 Zeal every round.', startZeal: 10, roundZeal: 3 }, { need: 4, desc: 'Zeal gains +20%. Rites hit 15% harder.', zealMult: 0.2, riteMult: 0.15 }],
+    tiers: [{ need: 2, desc: 'Start every fight with +10 Zeal.', startZeal: 10 }, { need: 3, desc: '+10 more starting Zeal, +3 Zeal every round.', startZeal: 10, roundZeal: 3 }, { need: 4, desc: 'Zeal gains +20%. Litanies hit 15% harder.', zealMult: 0.2, riteMult: 0.15 }],
   },
   {
     id: 'thorn-covenant', name: 'Thorn Covenant', color: 0x5a7a3a, accent: 0x9a2a33,
@@ -70,7 +70,7 @@ export const ORDER_LIST: OrderDef[] = [
     id: 'glass-confession', name: 'Glass Confession', color: 0x9cc3d0, accent: 0x6e5a8c,
     creed: 'Nothing is hidden from the mirror.',
     lore: 'Confessors who hear sins through a pane of black glass, and remember every one.',
-    tiers: [{ need: 2, desc: 'Crit chance +8%.', critAdd: 0.08 }, { need: 3, desc: 'Attack +8%.', atkPct: 0.08 }, { need: 4, desc: 'Crit +6% more. Rites hit 25% harder.', critAdd: 0.06, riteMult: 0.25 }],
+    tiers: [{ need: 2, desc: 'Crit chance +8%.', critAdd: 0.08 }, { need: 3, desc: 'Attack +8%.', atkPct: 0.08 }, { need: 4, desc: 'Crit +6% more. Litanies hit 25% harder.', critAdd: 0.06, riteMult: 0.25 }],
   },
   {
     id: 'red-pilgrimage', name: 'Red Pilgrimage', color: 0x9a2a33, accent: 0xd6a15f,

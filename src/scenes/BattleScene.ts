@@ -62,6 +62,8 @@ interface Card {
   preview: Phaser.GameObjects.Text;
   /** Party Sisters with full-body art: her animated figure (img is its upper body). */
   sprite?: SisterSprite;
+  /** A Sister's own Zeal, or a boss's Wrath, under her HP. */
+  meter?: Bar;
 }
 
 type Mode = 'busy' | 'skill' | 'target';
@@ -271,7 +273,8 @@ export class BattleScene extends Phaser.Scene {
         this.step();
       });
     };
-    if (skill.rite && actor.side === 'party') riteCard(this, skill.name, actor.name, go);
+    // A boss's Blasphemy gets its card when it lands, not on the turn it charges.
+    if (skill.rite && (actor.side === 'party' || actor.status.charging)) riteCard(this, skill.name, actor.name, go, actor.side === 'party' ? 'INVOKES' : 'UNLEASHES A BLASPHEMY');
     else go();
   }
 
@@ -348,7 +351,7 @@ export class BattleScene extends Phaser.Scene {
         .setStrokeStyle(2, usable ? color : PAL.armorShadow)
         .setAlpha(usable ? 1 : 0.4);
       // ui-skill / ui-skill-selected / ui-skill-rite .png, when present
-      const skinKey = selected ? 'ui-skill-selected' : s.rite ? 'ui-skill-rite' : 'ui-skill';
+      const skinKey = selected ? 'ui-skill-selected' : s.rite ? (this.textures.exists('ui-skill-litany') ? 'ui-skill-litany' : 'ui-skill-rite') : 'ui-skill';
       const skin = nine(this, skinKey, x, y, w, SKILL_H);
       if (skin) {
         box.setFillStyle(0x000000, 0.001).setStrokeStyle().setAlpha(1);
@@ -363,7 +366,7 @@ export class BattleScene extends Phaser.Scene {
         this.skillButtons.push(icon);
       }
       const label = this.add
-        .text(x, icon ? y + 18 : y, s.rite ? `RITE\n${s.name}` : step ? (actor.stepped ? 'Stepped' : 'Step\n(free)') : cd > 0 ? `${s.name}\n(ready in ${cd})` : s.name, {
+        .text(x, icon ? y + 18 : y, s.rite ? `LITANY\n${s.name}` : step ? (actor.stepped ? 'Stepped' : 'Step\n(free)') : cd > 0 ? `${s.name}\n(ready in ${cd})` : s.name, {
           fontFamily: FONT,
           fontSize: icon ? '16px' : '18px',
           color: hex(selected && s.rite && !skin ? PAL.bg : PAL.ivory),
@@ -380,7 +383,7 @@ export class BattleScene extends Phaser.Scene {
         held = false;
         timer = this.time.delayedCall(420 * settings.battleSpeed, () => {
           held = true;
-          showDetail(this, { title: s.name, color: s.rite ? PAL.amber : PAL.ivory, tags: s.rite ? 'RITE · FULL ZEAL' : step ? 'FREE · ONCE A TURN' : `SKILL${s.cooldown ? ` · COOLDOWN ${s.cooldown}` : ''}`, desc: s.desc }, 60);
+          showDetail(this, { title: s.name, color: s.rite ? PAL.amber : PAL.ivory, tags: s.rite ? 'LITANY · HER ZEAL FULL' : step ? 'FREE · ONCE A TURN' : `SKILL${s.cooldown ? ` · COOLDOWN ${s.cooldown}` : ''}`, desc: s.desc }, 60);
         });
       });
       box.on('pointerout', () => timer?.remove());
@@ -399,7 +402,7 @@ export class BattleScene extends Phaser.Scene {
     if (s.id === 'shift') return this.pickStep(usable);
     if (!usable) {
       const cd = actor.cooldowns?.[s.id] ?? 0;
-      const why = cd > 0 ? `Cooling down: ready in ${cd} turn${cd > 1 ? 's' : ''}.` : s.rite && this.battle.zeal < ZEAL_MAX ? 'Needs a full Zeal meter.' : s.from.length ? `Usable from rank ${s.from.map((r) => ROMAN[r - 1]).join(', ')}.` : 'No target in reach.';
+      const why = cd > 0 ? `Cooling down: ready in ${cd} turn${cd > 1 ? 's' : ''}.` : s.rite && (actor.zeal ?? 0) < ZEAL_MAX ? `Needs her own Zeal full (${actor.zeal ?? 0}/${ZEAL_MAX}).` : s.from.length ? `Usable from rank ${s.from.map((r) => ROMAN[r - 1]).join(', ')}.` : 'No target in reach.';
       this.descText.setText(`${s.name}: ${s.desc}\n${why}`);
       return;
     }
@@ -495,6 +498,7 @@ export class BattleScene extends Phaser.Scene {
     if (view.skill.sunder) text += ' It Sunders armor.';
     if (view.skill.stun) text += ' It Stuns.';
     if (view.skill.zealDrain) text += ` It steals ${view.skill.zealDrain} Zeal.`;
+    if (view.skill.rite) text = `BLASPHEMY! ${text}`;
     if (view.skill.pull) text += ' It drags its target to the front rank.';
     if (ENEMIES[u.ref].burst) text += ' When it dies, it bursts over all your Sisters.';
     // Which defence is thin, and which Order it fears.
@@ -532,12 +536,14 @@ export class BattleScene extends Phaser.Scene {
     if (skinFrame) frame.setStrokeStyle();
     const hp = new Bar(this, -CARD / 2, CARD / 2 + 12, CARD, 10, party ? 'ui-bar-hp' : 'ui-bar-hp-enemy', party ? 0x7a9a5a : PAL.oxblood);
     const shieldFill = this.add.rectangle(-CARD / 2, CARD / 2 + 12, 0, 4, PAL.ivory).setOrigin(0, 0.5);
-    const hpText = this.add.text(0, CARD / 2 + 28, '', { fontFamily: FONT, fontSize: '17px', color: hex(PAL.ivory) }).setOrigin(0.5);
+    const hpText = this.add.text(0, CARD / 2 + 35, '', { fontFamily: FONT, fontSize: '17px', color: hex(PAL.ivory) }).setOrigin(0.5);
     const tags = this.add
-      .text(0, CARD / 2 + 46, '', { fontFamily: FONT, fontSize: '15px', color: hex(PAL.violet), align: 'center' })
+      .text(0, CARD / 2 + 52, '', { fontFamily: FONT, fontSize: '15px', color: hex(PAL.violet), align: 'center' })
       .setOrigin(0.5);
+    // Her own Zeal (a Sister) or its Wrath (a boss), just under the HP bar.
+    const meter = party || u.wrath !== undefined ? new Bar(this, -CARD / 2, CARD / 2 + 21, CARD, 8, party ? 'ui-bar-litany' : 'ui-bar-wrath', party ? PAL.bronze : 0xb0303a) : undefined;
     const y = party ? PARTY_Y : ENEMY_Y;
-    const box = this.add.container(slotX(u.rank), y, [glow, frame, img, ...(skinFrame ? [skinFrame] : []), ...hp.parts, shieldFill, hpText, tags]);
+    const box = this.add.container(slotX(u.rank), y, [glow, frame, img, ...(skinFrame ? [skinFrame] : []), ...hp.parts, ...(meter?.parts ?? []), shieldFill, hpText, tags]);
     box.setSize(CARD, CARD).setInteractive({ useHandCursor: true });
     box.on('pointerup', () => (this.mode === 'target' ? this.pickTarget(u) : this.explain(u)));
     const preview = this.add
@@ -546,7 +552,7 @@ export class BattleScene extends Phaser.Scene {
     box.add(preview);
     // Enemies carry their own idle aura behind the portrait.
     if (!party) auraFx(this, box, CARD, fxForEnemy(u.ref), skinFrame ?? img);
-    const card: Card = { box, frame, skinFrame, glow, img, hp, shieldFill, hpText, tags, preview };
+    const card: Card = { box, frame, skinFrame, glow, img, hp, shieldFill, hpText, tags, preview, meter };
     if (party) {
       card.threat = this.add
         .text(0, -CARD / 2 + 3, '', { fontFamily: FONT, fontSize: '18px', color: hex(PAL.ivory), backgroundColor: '#652b3b', padding: { x: 5, y: 2 } })
@@ -585,15 +591,16 @@ export class BattleScene extends Phaser.Scene {
     const frame = this.add.rectangle(0, midY, CARD, FIGURE_BOX).setVisible(false);
     const hp = new Bar(this, -CARD / 2, FEET + 12, CARD, 10, 'ui-bar-hp', 0x7a9a5a);
     const shieldFill = this.add.rectangle(-CARD / 2, FEET + 12, 0, 4, PAL.ivory).setOrigin(0, 0.5);
-    const hpText = this.add.text(0, FEET + 28, '', { fontFamily: FONT, fontSize: '17px', color: hex(PAL.ivory) }).setOrigin(0.5);
-    const tags = this.add.text(0, FEET + 45, '', { fontFamily: FONT, fontSize: '15px', color: hex(PAL.violet), align: 'center', lineSpacing: -4, wordWrap: { width: CARD } }).setOrigin(0.5, 0.3);
+    const meter = new Bar(this, -CARD / 2, FEET + 21, CARD, 8, 'ui-bar-litany', PAL.bronze);
+    const hpText = this.add.text(0, FEET + 35, '', { fontFamily: FONT, fontSize: '17px', color: hex(PAL.ivory) }).setOrigin(0.5);
+    const tags = this.add.text(0, FEET + 51, '', { fontFamily: FONT, fontSize: '15px', color: hex(PAL.violet), align: 'center', lineSpacing: -4, wordWrap: { width: CARD } }).setOrigin(0.5, 0.3);
     const preview = this.add
       .text(0, midY, '', { fontFamily: FONT, fontSize: '26px', color: hex(PAL.amber), stroke: '#000000', strokeThickness: 5, align: 'center' })
       .setOrigin(0.5);
     const threat = this.add
       .text(0, -FEET - 4, '', { fontFamily: FONT, fontSize: '18px', color: hex(PAL.ivory), backgroundColor: '#652b3b', padding: { x: 5, y: 2 } })
       .setOrigin(0.5, 0);
-    const box = this.add.container(slotX(u.rank), FIGURE_Y, [glow, frame, sprite.root, ...hp.parts, shieldFill, hpText, tags, preview, threat]);
+    const box = this.add.container(slotX(u.rank), FIGURE_Y, [glow, frame, sprite.root, ...hp.parts, ...meter.parts, shieldFill, hpText, tags, preview, threat]);
     // Her Order's sigil by her feet.
     if (u.order) {
       box.add(this.add.circle(CARD / 2 - 14, FEET - 14, 13, 0x0d090f, 0.85));
@@ -606,7 +613,7 @@ export class BattleScene extends Phaser.Scene {
       box.setAlpha(0);
       sprite.dead = true;
     }
-    this.cards.set(u.uid, { box, frame, glow, img: sprite.upper, hp, shieldFill, hpText, tags, threat, preview, sprite });
+    this.cards.set(u.uid, { box, frame, glow, img: sprite.upper, hp, shieldFill, hpText, tags, threat, preview, sprite, meter });
   }
 
   /** Redraws every card, the turn strip, Zeal and the candle. */
@@ -620,6 +627,10 @@ export class BattleScene extends Phaser.Scene {
       const tx = slotX(u.rank);
       if (!dead && c.box.x !== tx) this.tweens.add({ targets: c.box, x: tx, duration: 250 });
       c.hp.set(u.hp / u.maxHp);
+      if (c.meter) {
+        const v = (u.side === 'party' ? u.zeal : u.wrath) ?? 0;
+        c.meter.set(v / ZEAL_MAX, v >= ZEAL_MAX ? (u.side === 'party' ? 0xffd36a : 0xff4a4a) : u.side === 'party' ? 0xc8902e : 0xa8262f);
+      }
       c.shieldFill.width = Math.min(CARD, (CARD * (u.status.shield ?? 0)) / u.maxHp);
       c.hpText.setText(`${u.hp}/${u.maxHp}`);
       const st = u.status;
@@ -660,8 +671,20 @@ export class BattleScene extends Phaser.Scene {
     this.drawIntents();
 
     const b = this.battle;
-    this.zealBar.set(b.zeal / ZEAL_MAX, b.zeal >= ZEAL_MAX ? PAL.amber : PAL.bronze);
-    this.zealText.setText(b.zeal >= ZEAL_MAX ? 'ZEAL ABLAZE: a Rite is ready' : `Zeal ${b.zeal} / ${ZEAL_MAX}`);
+    // The big bar follows the Sister whose turn it is; each Sister's own bar sits under her HP.
+    const who = this.actor?.side === 'party' ? this.actor : undefined;
+    const ready = b.alive('party').filter((u) => (u.zeal ?? 0) >= ZEAL_MAX).length;
+    const z = who?.zeal ?? 0;
+    this.zealBar.set(who ? z / ZEAL_MAX : 0, z >= ZEAL_MAX ? PAL.amber : PAL.bronze);
+    this.zealText.setText(
+      who
+        ? z >= ZEAL_MAX
+          ? `${who.name.split(' ')[0]}'s ZEAL ABLAZE: her Litany is ready`
+          : `${who.name.split(' ')[0]}'s Zeal ${z} / ${ZEAL_MAX}${ready ? `  ·  ${ready} Litan${ready > 1 ? 'ies' : 'y'} ready` : ''}`
+        : ready
+          ? `${ready} Litan${ready > 1 ? 'ies' : 'y'} ready`
+          : 'Each Sister fills her own Zeal',
+    );
     this.roundText.setText(`Round ${Math.max(1, b.round)}`);
 
     // Vigil candle: shrinks each round; once out, enemies grow stronger

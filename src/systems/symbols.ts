@@ -53,7 +53,7 @@ export function symbolPerks(c: CrusaderDef): SymbolPerk[] {
   return [
     { at: 5, name: 'Awakened', desc: 'Her skills deal and heal 10% more.' },
     { at: 10, name: k.name, desc: k.desc },
-    { at: 15, name: 'Sanctified', desc: 'Her Rite is 30% stronger.' },
+    { at: 15, name: 'Sanctified', desc: 'Her Litany is 30% stronger.' },
   ];
 }
 
