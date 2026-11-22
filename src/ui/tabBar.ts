@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import { FONT, GAME_H, GAME_W, PAL, hex } from '../config';
 import { game } from '../state/game';
+import { crusadeTabTarget, drawBadge } from './bgFight';
 import { anyReady, homeOf } from './rites';
 import { nine, stretch } from './skin';
 import { addIcon } from './theme';
@@ -89,10 +90,14 @@ export function addTabBar(scene: Phaser.Scene, current: string, depth = 5, onTab
         .setDepth(depth),
     );
     if ('home' in t && anyReady(game.save, t.home)) keep(scene.add.circle(cx + bw / 2 - 12, cy - bh / 2 + 12, 5, PAL.amber).setStrokeStyle(2, 0x1b121c).setDepth(depth));
+    if (centre) drawBadge(scene, cx + bw / 2 - 24, cy - bh / 2 + 12, depth);
     box.setInteractive({ useHandCursor: true });
     box.on('pointerup', () => {
       // With onTab (a fight), even the lit tab leaves: Crusade goes back to the board.
-      if (onTab) onTab(t.scene);
+      if (onTab) return onTab(t.scene);
+      // An Auto fight running (or just ended) away from the screen: Crusade leads to it.
+      const away = centre ? crusadeTabTarget() : undefined;
+      if (away) scene.scene.start(away.scene, away.data ?? {});
       else if (on) return;
       else scene.scene.start(t.scene, {});
     });
