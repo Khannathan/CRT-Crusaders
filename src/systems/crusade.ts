@@ -13,6 +13,7 @@ import { claimGear, makeGear, rollGearRarity, type GearItem } from './gear';
 import { recommendedPower } from './power';
 import { addBags, give, roomDrops, type Bag } from './items';
 import { levelUpCost, sisterStats } from './stats';
+import { rankOf } from './rank';
 import { track, weekKey } from './tasks';
 import { skillVow } from './tiers';
 
@@ -205,12 +206,25 @@ export interface RunState {
   items?: Bag;
   /** Tithes and materials made safe at the last Sanctuary: kept in full even on defeat. */
   banked?: { tithes: number; items: Bag };
+  /** Faith and each Sister's level and EXP when the run began, so the results can show what moved. */
+  start?: RunStart;
   /** Extra Zeal for the next fight only. */
   blessZeal?: number;
   /** Shorter Vigil for the next fight only. */
   curseVigil?: number;
   /** Set to the act just finished while the party rests at a Sanctuary. */
   sanctuary?: number;
+}
+
+export interface RunStart {
+  faith: number;
+  exp: Record<string, { level: number; exp: number }>;
+}
+
+export function runStart(save: SaveData, ids: string[]): RunStart {
+  const exp: RunStart['exp'] = {};
+  for (const id of ids) exp[id] = { level: save.owned[id]?.level ?? 1, exp: save.owned[id]?.exp ?? 0 };
+  return { faith: rankOf(save).xp, exp };
 }
 
 /** Boss encounters an earlier act may end on (the crypt's own boss closes the last act). */
@@ -302,6 +316,7 @@ export function startRun(save: SaveData, party: string[], crypt: CryptDef = OSSU
   const ids = party.filter((id) => canMuster(save, id)).slice(0, MAX_PARTY);
   const run: RunState = { crypt, map: generateMap(crypt, rng, cryptFloors(crypt, heresy)), party: ids, hp: {}, path: [], floor: -1, at: 0, resolved: true, heresy, relics: [], tithes: 0, seals: 0, loot: [] };
   for (const id of ids) run.hp[id] = maxHpOf(save, run, id);
+  run.start = runStart(save, ids);
   save.lastParty = ids;
   return run;
 }
@@ -569,6 +584,8 @@ export interface RunResult {
   gilt: number;
   /** The weekly Pilgrimage bonus, if this victory was one of the week's blessed clears. */
   pilgrimage?: { seals: number; tithes: number; left: number };
+  party: string[];
+  start?: RunStart;
 }
 
 /** Ends the run: pays out, marks the fallen as recovering, and lets others recover. */
@@ -622,7 +639,7 @@ export function finishRun(save: SaveData, run: RunState, outcome: RunResult['out
   earn(save, gilt);
   save.tithes += tithes;
   save.seals += seals;
-  return { outcome, tithes, seals, firstClear, heresyCleared, fallen, gear, melted, items, gilt, pilgrimage };
+  return { outcome, tithes, seals, firstClear, heresyCleared, fallen, gear, melted, items, gilt, pilgrimage, party: run.party, start: run.start };
 }
 
 /** A defeat keeps everything banked at a Sanctuary, and most of what was found since. */
