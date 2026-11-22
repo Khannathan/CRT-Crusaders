@@ -10,7 +10,9 @@ import { BOND_STAT, bondInfo } from '../systems/bonds';
 import { addOrderSigil } from '../ui/sisterCard';
 import { passes, sortControls, sortRoster, sortState } from '../ui/sisterSort';
 import type { ScrollArea } from '../ui/scroll';
-import { CLASS_SKILLS } from '../data/skills';
+import { CLASS_SKILLS, DMG_NAME, type SkillDef } from '../data/skills';
+import { showDetail as showSkillDetail } from '../ui/glossary';
+import { dmgTagOf } from '../data/classes';
 import { VOW_UPGRADES } from '../systems/combat';
 import type { CrusaderDef } from '../data/types';
 import { commit, game } from '../state/game';
@@ -626,6 +628,9 @@ export class RosterScene extends Phaser.Scene {
       const t = this.add.text(tx, y + 28, tag, text.hud(11, isUp ? PAL.amber : PAL.steel));
       const d = this.add.text(left, y + 46, s.desc, { ...text.body(15, PAL.muted), wordWrap: { width } });
       layer.add([...(icon ? [icon] : []), name, t, d]);
+      // Tap the skill for its full description, with every effect explained.
+      const open = () => showSkillDetail(this, { title: `${s.name}${isUp ? '+' : ''}`, color: s.rite ? PAL.amber : PAL.ivory, tags: tag, desc: s.desc, facts: skillFacts(c, s, skillLevels(save, c.id)[i], isUp) }, 60);
+      for (const o of [name, d]) o.setInteractive({ useHandCursor: true }).on('pointerup', (p: Phaser.Input.Pointer) => p.getDistance() < 12 && open());
       // Skill level: Psalter Pages and Tithes raise it, up to MAX_SKILL_LEVEL.
       const lv = skillLevels(save, c.id)[i];
       const step = nextSkillStep(save, c.id, i);
@@ -657,6 +662,9 @@ export class RosterScene extends Phaser.Scene {
       const t = this.add.text(left, y + 38, `PASSIVE · ${c.rarity} ONLY`, text.hud(11, PAL.steel));
       const d = this.add.text(left, y + 56, c.passive.desc, { ...text.body(15, PAL.muted), wordWrap: { width } });
       layer.add([name, t, d]);
+      const p = c.passive;
+      for (const o of [name, d])
+        o.setInteractive({ useHandCursor: true }).on('pointerup', (ptr: Phaser.Input.Pointer) => ptr.getDistance() < 12 && showSkillDetail(this, { title: p.name, color: PAL.violet, tags: `PASSIVE · ${c.rarity} · ALWAYS ON`, desc: p.desc }, 60));
       y += 56 + d.height;
     }
     return y + 16;
@@ -857,4 +865,21 @@ export class RosterScene extends Phaser.Scene {
       layer.add(off.all);
     }
   }
+}
+
+/** Plain facts about a skill for its detail card: damage, type, reach, level. */
+function skillFacts(c: CrusaderDef, s: SkillDef, lv: number, vowUp: boolean): string[] {
+  const f = (1 + 0.06 * (lv - 1)) * (vowUp ? 1.25 : 1);
+  const out: string[] = [];
+  const type = DMG_NAME[s.dmg ?? dmgTagOf(c)];
+  if (s.mult) out.push(`${type} damage: ${Math.round(s.mult * f * 100)}% of her attack${s.target === 'allEnemies' ? ' to every enemy' : ''}.`);
+  if (s.heal) out.push(`Heals ${Math.round(s.heal * f * 100)}% of her attack.`);
+  if (s.healPct) out.push(`Heals ${Math.round(s.healPct * f * 100)}% of max HP.`);
+  if (s.shieldPct) out.push(`Shield: ${Math.round(s.shieldPct * f * 100)}% of max HP.`);
+  if (s.poison) out.push(`Each tick: ${Math.round(s.poison.mult * f * 100)}% of her attack for ${s.poison.turns} turns.`);
+  if (s.bleed) out.push(`Bleed: ${Math.round(s.bleed.mult * f * 100)}% of her attack a turn for ${s.bleed.turns} turns.`);
+  if (s.from.length) out.push(`Used from rank ${s.from.join(', ')}.`);
+  if (s.reach?.length) out.push(`Reaches enemy rank ${s.reach.join(', ')}.`);
+  out.push(`Level ${lv}: +${Math.round((f / (vowUp ? 1.25 : 1) - 1) * 100)}% effect${vowUp ? ', and +25% from her Vow' : ''}.`);
+  return out;
 }

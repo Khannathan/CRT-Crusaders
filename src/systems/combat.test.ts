@@ -15,7 +15,7 @@ function seeded(seed: number) {
 }
 
 const crusader = (uid: string, classId: string, rank: number, extra: Partial<Unit> = {}): Unit => ({
-  uid, side: 'party', name: uid, ref: uid, classId, rank, maxHp: 100, hp: 100, atk: 20, armor: 0, crit: 0, spd: 10, status: {}, ...extra,
+  uid, side: 'party', name: uid, ref: uid, classId, rank, maxHp: 100, hp: 100, atk: 20, armor: 0, mres: 0, crit: 0, spd: 10, status: {}, ...extra,
 });
 
 describe('combat', () => {
@@ -81,7 +81,7 @@ describe('enemy telegraphs', () => {
     const c = crusader('c', 'oracle', 2, { hp: 30 });
     const b = new Battle([a, c], [makeEnemy('hound', 'e0', 1)], { rng: seeded(3) });
     const view = b.intentOf(b.get('e0'))!;
-    expect(view.kind).toBe('attack');
+    expect(view.kind).toBe('debuff'); // its Maul leaves a Sister Bleeding
     expect(view.targets.map((u) => u.uid)).toEqual(['c']); // hounds go for the most hurt
     expect(view.estimate).toBeGreaterThan(0);
     expect(b.enemyChoose(b.get('e0')).target?.uid).toBe('c');
@@ -97,7 +97,7 @@ describe('enemy telegraphs', () => {
   });
 
   it('the boss enters a second phase at half HP and re-plans', () => {
-    const w = crusader('w', 'warsister', 1, { atk: 300 });
+    const w = crusader('w', 'warsister', 1, { atk: 400 });
     const boss = makeEnemy('choir', 'e0', 1);
     boss.armor = 0;
     const b = new Battle([w], [boss], { rng: () => 0.5 });

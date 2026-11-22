@@ -1,4 +1,5 @@
-import type { ClassDef, Rarity } from './types';
+import type { ClassDef, CrusaderDef, Rarity } from './types';
+import type { DmgType } from './skills';
 
 export const CLASSES: Record<string, ClassDef> = {
   warsister: { id: 'warsister', name: 'Penitent War-Sister', role: 'Vanguard', summary: 'Scourges her own flesh for power. The nearer to death, the harder she strikes.' },
@@ -19,3 +20,7 @@ export const RARITY_COLOR: Record<Rarity, number> = {
   SSR: 0xefbc79, // gold
   UR: 0xe19cc4, // rose
 };
+
+/** Each class's usual damage; a Sister may carry her own tag (CrusaderDef.dmg). */
+export const CLASS_DMG: Record<string, DmgType> = { warsister: 'physical', hierophant: 'physical', inquisitor: 'physical', confessor: 'magic', censer: 'magic', oracle: 'magic' };
+export const dmgTagOf = (c: Pick<CrusaderDef, 'classId' | 'dmg'>): DmgType => c.dmg ?? CLASS_DMG[c.classId] ?? 'physical';
