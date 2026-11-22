@@ -12,10 +12,12 @@ export interface Settings {
   musicMuted: boolean;
   /** Camera shake on big hits. */
   screenShake: boolean;
+  /** Tech demo: battles play out in real time on an open field instead of in turns. */
+  realtimeBattles: boolean;
 }
 
 const KEY = 'crt-crusaders.settings.v1';
-const DEFAULTS: Settings = { crt: true, crtStrength: 0.6, battleSpeed: 1, autoBattle: false, musicVolume: 0.7, musicMuted: false, screenShake: true };
+const DEFAULTS: Settings = { crt: true, crtStrength: 0.6, battleSpeed: 1, autoBattle: false, musicVolume: 0.7, musicMuted: false, screenShake: true, realtimeBattles: false };
 
 function load(): Settings {
   try {

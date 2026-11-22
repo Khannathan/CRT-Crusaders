@@ -336,7 +336,8 @@ export class Battle {
     return this.queue.map((id) => this.get(id)).filter((u) => u.hp > 0);
   }
 
-  private startRound(events: BattleEvent[]) {
+  /** A new round: the candle, relic Zeal, the howl, boss traits and the turn order. Real-time fights call it on a clock. */
+  startRound(events: BattleEvent[]) {
     this.round += 1;
     this.hurtZealThisRound = {};
     this.log.push(`-- round ${this.round} (zeal ${this.alive('party').map((u) => u.zeal ?? 0).join('/')}, vigil ${this.vigil})`);
@@ -441,69 +442,78 @@ export class Battle {
       }
       const actor = this.get(this.queue.shift()!);
       if (actor.hp <= 0) continue;
-
-      const st = actor.status;
-      st.shield = 0;
-      actor.stepped = false;
-      if (st.poison) {
-        const dmg = Math.min(actor.hp, st.poison.dmg);
-        actor.hp -= dmg;
-        events.push({ type: 'damage', uid: actor.uid, amount: dmg, blocked: 0 });
-        if (actor.side === 'party') this.hurtZeal(actor, dmg, events);
-        st.poison.turns -= 1;
-        if (st.poison.turns <= 0) st.poison = undefined;
-        if (actor.hp <= 0) {
-          this.kill(actor, events);
-          continue;
-        }
-        this.checkPhase(actor, events);
-      }
-      if (st.bleed) {
-        const dmg = Math.min(actor.hp, st.bleed.dmg);
-        actor.hp -= dmg;
-        events.push({ type: 'damage', uid: actor.uid, amount: dmg, blocked: 0 });
-        if (actor.side === 'party') this.hurtZeal(actor, dmg, events);
-        if (--st.bleed.turns <= 0) st.bleed = undefined;
-        if (actor.hp <= 0) {
-          this.kill(actor, events);
-          continue;
-        }
-        this.checkPhase(actor, events);
-      }
-      if (st.regen) {
-        const real = Math.min(actor.maxHp - actor.hp, Math.round(actor.maxHp * st.regen.pct * this.healOf(actor)));
-        if (real > 0) {
-          actor.hp += real;
-          events.push({ type: 'heal', uid: actor.uid, amount: real });
-        }
-        if (--st.regen.turns <= 0) st.regen = undefined;
-      }
-      if (actor.passive?.kind === 'healAura') {
-        for (const a of this.alive(actor.side)) {
-          const real = Math.min(a.maxHp - a.hp, Math.round(a.maxHp * (actor.passive.value ?? 0) * this.healOf(a)));
-          if (real > 0) {
-            a.hp += real;
-            events.push({ type: 'heal', uid: a.uid, amount: real });
-          }
-        }
-      }
-      if (st.weaken && --st.weaken.turns <= 0) st.weaken = undefined;
-      if (st.empower && --st.empower.turns <= 0) st.empower = undefined;
-      if (st.accused && --st.accused <= 0) st.accused = undefined;
-      if (st.taunt && --st.taunt <= 0) st.taunt = undefined;
-      if (st.sunder && --st.sunder.turns <= 0) st.sunder = undefined;
-      if (st.hex && --st.hex.turns <= 0) st.hex = undefined;
-      if (st.ward && --st.ward.turns <= 0) st.ward = undefined;
-      if (st.stun) {
-        st.stun -= 1;
-        if (st.stun <= 0) st.stun = undefined;
-        this.log.push(`${actor.name} is stunned`);
-        events.push({ type: 'status', uid: actor.uid, label: 'Stunned' });
-        continue;
-      }
+      if (!this.beginTurn(actor, events)) continue;
       return { actor, events };
     }
     return { events, outcome: this.outcome() };
+  }
+
+  /**
+   * Start-of-turn effects for one unit: shield drops, damage over time, regen,
+   * auras, statuses tick down. False when it dies or is stunned and loses the turn.
+   * Real-time fights call it before each of a unit's actions.
+   */
+  beginTurn(actor: Unit, events: BattleEvent[]): boolean {
+    const st = actor.status;
+    st.shield = 0;
+    actor.stepped = false;
+    if (st.poison) {
+      const dmg = Math.min(actor.hp, st.poison.dmg);
+      actor.hp -= dmg;
+      events.push({ type: 'damage', uid: actor.uid, amount: dmg, blocked: 0 });
+      if (actor.side === 'party') this.hurtZeal(actor, dmg, events);
+      st.poison.turns -= 1;
+      if (st.poison.turns <= 0) st.poison = undefined;
+      if (actor.hp <= 0) {
+        this.kill(actor, events);
+        return false;
+      }
+      this.checkPhase(actor, events);
+    }
+    if (st.bleed) {
+      const dmg = Math.min(actor.hp, st.bleed.dmg);
+      actor.hp -= dmg;
+      events.push({ type: 'damage', uid: actor.uid, amount: dmg, blocked: 0 });
+      if (actor.side === 'party') this.hurtZeal(actor, dmg, events);
+      if (--st.bleed.turns <= 0) st.bleed = undefined;
+      if (actor.hp <= 0) {
+        this.kill(actor, events);
+        return false;
+      }
+      this.checkPhase(actor, events);
+    }
+    if (st.regen) {
+      const real = Math.min(actor.maxHp - actor.hp, Math.round(actor.maxHp * st.regen.pct * this.healOf(actor)));
+      if (real > 0) {
+        actor.hp += real;
+        events.push({ type: 'heal', uid: actor.uid, amount: real });
+      }
+      if (--st.regen.turns <= 0) st.regen = undefined;
+    }
+    if (actor.passive?.kind === 'healAura') {
+      for (const a of this.alive(actor.side)) {
+        const real = Math.min(a.maxHp - a.hp, Math.round(a.maxHp * (actor.passive.value ?? 0) * this.healOf(a)));
+        if (real > 0) {
+          a.hp += real;
+          events.push({ type: 'heal', uid: a.uid, amount: real });
+        }
+      }
+    }
+    if (st.weaken && --st.weaken.turns <= 0) st.weaken = undefined;
+    if (st.empower && --st.empower.turns <= 0) st.empower = undefined;
+    if (st.accused && --st.accused <= 0) st.accused = undefined;
+    if (st.taunt && --st.taunt <= 0) st.taunt = undefined;
+    if (st.sunder && --st.sunder.turns <= 0) st.sunder = undefined;
+    if (st.hex && --st.hex.turns <= 0) st.hex = undefined;
+    if (st.ward && --st.ward.turns <= 0) st.ward = undefined;
+    if (st.stun) {
+      st.stun -= 1;
+      if (st.stun <= 0) st.stun = undefined;
+      this.log.push(`${actor.name} is stunned`);
+      events.push({ type: 'status', uid: actor.uid, label: 'Stunned' });
+      return false;
+    }
+    return true;
   }
 
   canUse(actor: Unit, skill: SkillDef): boolean {
