@@ -1,5 +1,7 @@
 import Phaser from 'phaser';
-import { GAME_W, PAL } from '../config';
+import { GAME_H, GAME_W, PAL } from '../config';
+import { addScrollArea } from '../ui/scroll';
+import { TAB_BAR_H } from '../ui/tabBar';
 import { commit, game } from '../state/game';
 import { MAX_RANK, ROMAN_RANK, UNLOCKS, claimGifts, giftsWaiting, rankGift, rankInfo } from '../systems/rank';
 import { makeButton } from '../ui/button';
@@ -52,6 +54,9 @@ export class RankScene extends Phaser.Scene {
     }
 
     let y = gy + 84;
+    // Everything below scrolls (drag or mouse wheel) down to the tab bar.
+    const list = addScrollArea(this, y - 4, GAME_H - TAB_BAR_H);
+    const before = this.children.list.length;
     this.add.text(PAD, y, 'WHAT RANKS OPEN', text.hud(13, PAL.amber));
     y += 24;
     for (const u of UNLOCKS) {
@@ -66,6 +71,8 @@ export class RankScene extends Phaser.Scene {
 
     y += 10;
     this.add.text(PAD, y, 'WHAT EARNS FAITH', text.hud(13, PAL.amber));
-    this.add.text(PAD, y + 22, EARNS.map((e) => `· ${e}`).join('\n'), { ...text.body(16, PAL.muted), lineSpacing: 2 });
+    const earns = this.add.text(PAD, y + 22, EARNS.map((e) => `· ${e}`).join('\n'), { ...text.body(16, PAL.muted), lineSpacing: 2 });
+    list.content.add(this.children.list.slice(before));
+    list.fit(y + 22 + earns.height + 16);
   }
 }
