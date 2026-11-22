@@ -6,6 +6,7 @@ import { CRYPTS, cryptUnlocked, suggestParty, type CryptDef } from './crusade';
 import type { Rng } from './gacha';
 import { claimGear, makeGear, rollGearRarity, type GearItem } from './gear';
 import { sisterStats, statsFor, type Stats } from './stats';
+import { statPower } from './power';
 import { track } from './tasks';
 
 /**
@@ -30,7 +31,8 @@ const RECOMMENDED_LEVEL: Record<string, number> = { 'drowned-ossuary': 5, 'sunke
 const MIN_EFF = 0.2;
 const MAX_EFF = 1.5;
 
-const power = (s: Stats) => s.atk * 4 + s.hp / 4 + s.armor / 4;
+/** The shared power formula (see power.ts), so the Vigil and CP agree. */
+const power = (s: Stats) => statPower(s);
 
 /** A stand-in R Sister of the given class, to measure what a crypt asks for. */
 const yardstick = (classId: string): CrusaderDef => ({ id: '', name: '', classId, rarity: 'R', order: '', age: 0, hook: '' });
