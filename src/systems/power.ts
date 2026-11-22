@@ -25,7 +25,7 @@ export const CP = {
   /** Weight of armor (and Magic Resist). */
   armor: 3.6,
   /** Share by class role, for value raw stats miss (heals, debuffs). */
-  role: { Vanguard: 1, Striker: 1, Mender: 1.3, Mystic: 1.2 } as Record<string, number>,
+  role: { Tank: 1, 'Melee DPS': 1, Healer: 1.3, Buffer: 1.2, 'Ranged DPS': 1.2 } as Record<string, number>,
   /** Speed that counts as 1.0x. */
   speedBase: 10,
   /** Per Vow skill upgrade. */
@@ -41,7 +41,7 @@ export const CP = {
    * fights: at 1.2 a party of that power wins most tries (the starter party
    * meets the Ossuary at about level 4 or 5).
    */
-  recommend: 1.07, // 1.2 before balance 0.8 raised foes' raw stats by 12% (statuses made Sisters stronger)
+  recommend: 1.04, // 1.2 before balance 0.8 raised foes' raw stats; 1.07 before 0.9 (tougher foes, but R and SR passives)
   /** Below this share of the recommendation a fight is shown as dangerous. */
   risky: 0.8,
 };

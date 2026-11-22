@@ -1,5 +1,5 @@
 export type Rarity = 'R' | 'SR' | 'SSR' | 'UR';
-export type Role = 'Vanguard' | 'Striker' | 'Mender' | 'Mystic';
+export type Role = 'Tank' | 'Healer' | 'Buffer' | 'Melee DPS' | 'Ranged DPS';
 
 export interface ClassDef {
   id: string;
@@ -22,7 +22,7 @@ export type PassiveKind =
   | 'martyr'
   | 'swift';
 
-/** SSR and UR crusaders carry one passive. */
+/** Every Sister carries one passive; rarer Sisters' are stronger (see data/passives.ts). */
 export interface PassiveDef {
   name: string;
   desc: string;

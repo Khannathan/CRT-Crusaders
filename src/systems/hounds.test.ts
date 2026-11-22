@@ -94,7 +94,7 @@ describe('howls in battle', () => {
       let wins = 0;
       for (let i = 0; i < 200; i++) {
         const save = withHound(id, level);
-        for (const p of party) save.owned[p].level = 1;
+        for (const p of party) save.owned[p].level = 2; // a fight the party wins about two times in three without a hound
         if (autoBattle(skirmish(save, party, OSSUARY.boss, 0, seeded(500 + i)), 400) === 'victory') wins++;
       }
       return wins / 200;
@@ -103,7 +103,7 @@ describe('howls in battle', () => {
     const cur = rate('cur');
     const shuck = rate('shuck', HOUND_MAX);
     const wolf = rate('wolfhound', HOUND_MAX);
-    console.log(`[hounds] Ossuary boss at level 1: none ${none}, cur ${cur}, shuck+5 ${shuck}, wolfhound+5 ${wolf}`);
+    console.log(`[hounds] Ossuary boss at level 2: none ${none}, cur ${cur}, shuck+5 ${shuck}, wolfhound+5 ${wolf}`);
     expect(cur).toBeGreaterThanOrEqual(none);
     expect(shuck).toBeGreaterThan(none);
     // Everyone has the Cur; the best hound at its last level is worth having, not a win button.

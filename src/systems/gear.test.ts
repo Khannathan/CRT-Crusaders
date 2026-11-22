@@ -121,3 +121,10 @@ describe('the Forge', () => {
     expect(makeGear(Math.random, 'SR').set).toBeDefined();
   });
 });
+
+describe('gear Speed soft cap', () => {
+  it('counts in full up to 4, half after, and never past 8', async () => {
+    const { gearSpeed } = await import('./stats');
+    expect([0, 3, 4, 6, 12, 20].map(gearSpeed)).toEqual([0, 3, 4, 5, 8, 8]);
+  });
+});
