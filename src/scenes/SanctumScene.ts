@@ -3,6 +3,8 @@ import { FONT, GAME_H, GAME_W, PAL, hex } from '../config';
 import { CRUSADERS } from '../data/crusaders';
 import { applyCrt } from '../fx/crt';
 import { commit, game, resetGame } from '../state/game';
+import { current } from '../state/run';
+import { showExport, showImport } from '../ui/saveTransfer';
 import { saveSettings, settings } from '../state/settings';
 import { music } from '../audio/music';
 import { toggleFullscreen } from '../ui/fullscreen';
@@ -350,20 +352,35 @@ export class SanctumScene extends Phaser.Scene {
       });
       layer.add(
         this.add
-          .text(GAME_W / 2, 660, 'Scanlines, colour bleed and screen curve.\nPortrait art is never changed underneath.', { ...style, fontSize: '16px', color: hex(PAL.steel) })
+          .text(GAME_W / 2, 640, 'Scanlines, colour bleed and screen curve.\nPortrait art is never changed underneath.', { ...style, fontSize: '16px', color: hex(PAL.steel) })
           .setOrigin(0.5),
       );
-      const fs = makeButton(this, GAME_W / 2 - 112, 736, 208, 52, this.scale.isFullscreen ? 'Leave full screen' : 'Full screen', () => {
+      const fs = makeButton(this, GAME_W / 2 - 112, 702, 208, 52, this.scale.isFullscreen ? 'Leave full screen' : 'Full screen', () => {
         toggleFullscreen(this);
         layer.destroy();
       }, { fontSize: 18 });
-      const shakeBtn = makeButton(this, GAME_W / 2 + 112, 736, 208, 52, settings.screenShake ? 'Screen shake: On' : 'Screen shake: Off', () => {
+      const shakeBtn = makeButton(this, GAME_W / 2 + 112, 702, 208, 52, settings.screenShake ? 'Screen shake: On' : 'Screen shake: Off', () => {
         settings.screenShake = !settings.screenShake;
         saveSettings();
         draw();
       }, { active: settings.screenShake, fontSize: 18 });
       layer.add([...fs.all, ...shakeBtn.all]);
-      const close = makeButton(this, GAME_W / 2, 822, 240, 64, 'Done', () => layer.destroy());
+      const backup = makeButton(this, GAME_W / 2 - 112, 764, 208, 52, 'Back up save', () => {
+        commit();
+        showExport(game.save);
+      }, { fontSize: 18 });
+      const restore = makeButton(this, GAME_W / 2 + 112, 764, 208, 52, 'Restore save', () => {
+        showImport((save) => {
+          game.save = save;
+          current.run = undefined;
+          current.paused = undefined;
+          current.challenge = undefined;
+          commit();
+          this.scene.restart();
+        });
+      }, { fontSize: 18 });
+      layer.add([...backup.all, ...restore.all]);
+      const close = makeButton(this, GAME_W / 2, 834, 240, 60, 'Done', () => layer.destroy());
       layer.add(close.all);
     };
     draw();

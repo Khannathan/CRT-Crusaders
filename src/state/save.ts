@@ -136,3 +136,33 @@ export function clearSave() {
     // ignore
   }
 }
+
+/** Prefix on an exported save code, so a stray paste is easy to spot. */
+const CODE_PREFIX = 'CRT1.';
+
+/** The save as a text code that survives copy and paste: a prefix plus base64 JSON. */
+export function exportSave(data: SaveData): string {
+  const bytes = new TextEncoder().encode(JSON.stringify(data));
+  let bin = '';
+  for (const b of bytes) bin += String.fromCharCode(b);
+  return CODE_PREFIX + btoa(bin);
+}
+
+/** Reads an exported code (or the raw JSON from a save file). Returns undefined if it is not a save. */
+export function importSave(text: string): SaveData | undefined {
+  try {
+    const t = text.trim();
+    let json: string;
+    if (t.startsWith('{')) json = t;
+    else {
+      const body = (t.startsWith(CODE_PREFIX) ? t.slice(CODE_PREFIX.length) : t).replace(/\s+/g, '');
+      const bin = atob(body);
+      json = new TextDecoder().decode(Uint8Array.from(bin, (c) => c.charCodeAt(0)));
+    }
+    const data = JSON.parse(json) as SaveData;
+    if (!data || data.version !== 1 || typeof data.owned !== 'object' || typeof data.seals !== 'number') return undefined;
+    return { ...newSave(), ...data, gear: data.gear ?? starterGear() };
+  } catch {
+    return undefined;
+  }
+}
