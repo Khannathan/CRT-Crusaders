@@ -20,6 +20,7 @@ import { untilText } from './modeScreen';
 import { nextStage, roadRates, stageDef } from '../systems/campaign';
 import { ORDER_LIST } from '../data/orders';
 import { makeButton } from './button';
+import { ERRAND_SLOTS, anyErrandDone, errandsOf, openErrands } from '../systems/errands';
 import { ladder, renownOf } from '../systems/rivals';
 import { PAD } from './theme';
 
@@ -63,6 +64,11 @@ export const RITES: RiteEntry[] = [
     label: "Pilgrim's Road", scene: 'Campaign', icon: 'flame', rank: 1, home: 'board', bg: 'bg-hall',
     blurb: 'The Vigil\'s campaign. Every stage cleared makes your Sisters gather faster while you are away.',
     status: (s) => `Stage ${stageDef(nextStage(s)).label}  ·  Vigil ${Math.round(roadRates(s).tithes)} Tithes/h`,
+  },
+  {
+    label: 'Holy Errands', scene: 'Errands', icon: 'book', rank: 1, home: 'board', bg: 'bg-altar', ready: (s) => anyErrandDone(s),
+    blurb: 'Send Sisters away on timed duties, an hour to most of a day. They come home with materials.',
+    status: (s) => `${errandsOf(s).active.length} of ${ERRAND_SLOTS} away  ·  ${openErrands(s).length} errands on offer`,
   },
   {
     label: 'Relic Trials', scene: 'Trials', icon: 'shield', rank: 3, home: 'board', bg: 'bg-sunken-belfry', ready: (s) => entriesLeft(s) > 0,
