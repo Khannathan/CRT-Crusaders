@@ -15,7 +15,7 @@ import { showDetail } from '../ui/glossary';
 import { HOUNDS } from '../data/hounds';
 import { howlParts } from '../systems/hounds';
 import { houndFace } from '../ui/hound';
-import { addArt } from '../ui/theme';
+import { addArt, text } from '../ui/theme';
 import { Bar, candleFrames, nine } from '../ui/skin';
 import { current } from '../state/run';
 import { BALANCE_VERSION, Battle, EXECUTE_AT, ZEAL_MAX, skillsFor, type BattleEvent, type Unit } from '../systems/combat';
@@ -702,8 +702,9 @@ export class BattleScene extends Phaser.Scene {
     const h = this.battle.hound;
     const def = h && HOUNDS.find((d) => d.name === h.name);
     if (!h || !def) return;
-    const [, img] = houndFace(this, 36, 466, def, 44);
+    const [, img] = houndFace(this, 36, 462, def, 46);
     this.houndImg = img;
+    this.add.text(36, 490, 'HOUND', text.hud(9, PAL.steel)).setOrigin(0.5, 0);
     img.setInteractive({ useHandCursor: true }).on('pointerup', () =>
       showDetail(this, { title: def.name, color: RARITY_COLOR[def.rarity], tags: `${def.rarity} HOUND`, desc: `${h.howlName}, at the start of every round: ${howlParts(h.howl).join('; ')}.`, facts: ['Change hounds in the Kennel or under any party.'] }),
     );
