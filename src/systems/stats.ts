@@ -28,6 +28,15 @@ const CLASS_BASE: Record<string, Stats> = {
   confessor: { hp: 90, atk: 11, armor: 40, mres: 56, spd: 10, crit: 0.08 },
   censer: { hp: 85, atk: 13, armor: 32, mres: 48, spd: 11, crit: 0.1 },
   oracle: { hp: 80, atk: 17, armor: 24, mres: 50, spd: 8, crit: 0.12 },
+  sentinel: { hp: 135, atk: 14, armor: 72, mres: 36, spd: 8, crit: 0.1 },
+  martyr: { hp: 130, atk: 15, armor: 58, mres: 46, spd: 8, crit: 0.08 },
+  hospitaller: { hp: 94, atk: 11, armor: 46, mres: 52, spd: 9, crit: 0.06 },
+  abbess: { hp: 104, atk: 14, armor: 48, mres: 46, spd: 9, crit: 0.08 },
+  cantor: { hp: 88, atk: 15, armor: 34, mres: 48, spd: 11, crit: 0.12 },
+  adjudicator: { hp: 86, atk: 14, armor: 34, mres: 52, spd: 10, crit: 0.1 },
+  veilblade: { hp: 82, atk: 21, armor: 30, mres: 26, spd: 13, crit: 0.25 },
+  arbalist: { hp: 80, atk: 19, armor: 28, mres: 30, spd: 10, crit: 0.15 },
+  exorcist: { hp: 84, atk: 16, armor: 30, mres: 46, spd: 10, crit: 0.1 },
 };
 
 /** Level cap before any Ascension; each Ascension adds ASC_LEVELS. */

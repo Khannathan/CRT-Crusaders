@@ -94,11 +94,35 @@ export interface SkillDef {
   shove?: number;
   /** Enemy-only: relative chance the AI plans this skill. Default 1. */
   weight?: number;
+  /** The user strikes back for this multiple of attack whenever she is hit, for this many turns. */
+  counter?: { mult: number; turns: number };
+  /** The user heals this share of the damage she deals. */
+  drain?: number;
+  /** Every living ally heals this share of the damage dealt. */
+  lifelink?: number;
+  /** Thorned targets return this share of damage taken to the attacker. */
+  thorns?: { pct: number; turns: number };
+  /** Raises each fallen ally with this share of max HP (group ally skills). */
+  revive?: number;
+  /** Raises the targets' critical chance. */
+  critUp?: { pct: number; turns: number };
+  /** Extra critical chance on this skill's hits. */
+  critChance?: number;
+  /** Drains this much boss Wrath. */
+  wrathDrain?: number;
+  /** Ignores this share of the target's Armor and Magic Resist. */
+  armorPierce?: number;
+  /** Hits go straight through shields. */
+  pierceShield?: boolean;
+  /** Strips the target's shield, Empower, Ward, Regenerate and Haste. */
+  purge?: boolean;
+  /** Extra damage multiplier against bosses. */
+  bossBonus?: number;
 }
 
 const any: number[] = [];
 
-/** Three skills and a Rite per class. Combos: Weakened, Accused, poison and burns feed each other. */
+/** Three skills and a Litany per class. Combos: Weakened, Accused, poison and burns feed each other. */
 export const CLASS_SKILLS: Record<string, [SkillDef, SkillDef, SkillDef, SkillDef]> = {
   warsister: [
     { id: 'penitent-blow', name: 'Penitent Blow', desc: 'Heavy strike on rank 1-2 that leaves it Bleeding for 2 turns. +40% while she is under half HP.', from: [1, 2], target: 'enemy', reach: [1, 2], mult: 1.25, lowHpBonus: 0.4, bleed: { mult: 0.2, turns: 2 }},
@@ -135,6 +159,60 @@ export const CLASS_SKILLS: Record<string, [SkillDef, SkillDef, SkillDef, SkillDe
     { id: 'foresight', name: 'Foresight', desc: 'Hit any enemy, push its turn to the end and Hex it (-25% Magic Resist) for 2 turns. Breaks a charge. Cooldown 2.', from: any, target: 'enemy', mult: 0.5, delay: true, cooldown: 2, hex: { pct: 0.25, turns: 2 }},
     { id: 'grim-augury', name: 'Grim Augury', desc: 'Grant an ally +30% attack for 2 turns and Haste (acts first next round), and every Sister 10 Zeal. Cooldown 3.', from: any, target: 'ally', empower: { pct: 0.3, turns: 2 }, empowerTarget: true, zealGain: 10, zealAll: true, cooldown: 3 , haste: 1},
     { id: 'omen-of-ash', name: 'Omen of Ash', desc: 'LITANY: heavy damage on every enemy.', from: any, target: 'allEnemies', mult: 1.15, rite: true},
+  ],
+  sentinel: [
+    { id: 'gravewarden-strike', name: 'Gravewarden Strike', desc: 'Strike rank 1-2 and draw enemy attacks for 2 turns. For 2 turns she strikes back at anyone who hits her.', from: [1, 2], target: 'enemy', reach: [1, 2], mult: 0.75, taunt: 2, counter: { mult: 0.5, turns: 2 } },
+    { id: 'tomb-stance', name: 'Tomb Stance', desc: 'Brace: -30% damage taken for 2 turns and draw enemy attacks. Cooldown 2.', from: any, target: 'self', ward: { pct: 0.3, turns: 2 }, taunt: 2, cooldown: 2 },
+    { id: 'funeral-bash', name: 'Funeral Bash', desc: 'Crack rank 1-2 with the tomb key: Sundered (-25% armor) for 2 turns and Stunned for a turn (not bosses). Cooldown 3.', from: [1, 2], target: 'enemy', reach: [1, 2], mult: 1.0, sunder: { pct: 0.25, turns: 2 }, stun: 1, cooldown: 3 },
+    { id: 'sealed-sepulcher', name: 'Sealed Sepulcher', desc: 'LITANY: Ward every ally (-25% damage taken) for 2 turns. She draws every attack and strikes back hard for 2 turns.', from: any, target: 'allAllies', ward: { pct: 0.25, turns: 2 }, rite: true, taunt: 2, counter: { mult: 0.9, turns: 2 } },
+  ],
+  martyr: [
+    { id: 'radiant-smite', name: 'Radiant Smite', desc: 'Strike rank 1-2 and heal for 35% of the damage dealt.', from: [1, 2], target: 'enemy', reach: [1, 2], mult: 1.1, drain: 0.35 },
+    { id: 'intercession', name: 'Intercession', desc: 'Draw enemy attacks for 2 turns, Ward herself (-20% damage) and Regenerate 5% a turn. Cooldown 2.', from: any, target: 'self', taunt: 2, ward: { pct: 0.2, turns: 2 }, regen: { pct: 0.05, turns: 2 }, cooldown: 2 },
+    { id: 'blood-oath', name: 'Blood Oath', desc: 'Lose 12% HP. Every ally gains +20% attack for 2 turns. Cooldown 3.', from: any, target: 'allAllies', selfDmgPct: 0.12, empower: { pct: 0.2, turns: 2 }, empowerTarget: true, cooldown: 3 },
+    { id: 'dawnbreak', name: 'Dawnbreak', desc: 'LITANY: burn every enemy with light, heal for 50% of the damage dealt and draw attacks for 2 turns.', from: any, target: 'allEnemies', mult: 0.8, drain: 0.5, rite: true, taunt: 2 },
+  ],
+  hospitaller: [
+    { id: 'chalice-draught', name: 'Chalice Draught', desc: 'Heal one ally, shield her for 15% of max HP and cure poison, burns and bleeding.', from: any, target: 'ally', heal: 2.3, shieldPct: 0.15, cleanse: true },
+    { id: 'tending-hands', name: 'Tending Hands', desc: 'Heal every ally 6% of max HP, then Regenerate 6% a turn for 3 turns. Cooldown 2.', from: any, target: 'allAllies', healPct: 0.06, regen: { pct: 0.06, turns: 3 }, cooldown: 2 },
+    { id: 'lance-of-mercy', name: 'Lance of Mercy', desc: 'Strike rank 1-3 with the hospital lance: -25% attack for 2 turns.', from: [1, 2, 3], target: 'enemy', reach: [1, 2, 3], mult: 1.2, weaken: { pct: 0.25, turns: 2 } },
+    { id: 'grail-of-return', name: 'Grail of Return', desc: 'LITANY: raise every fallen Sister with 35% HP, heal every ally 30% of max HP and Regenerate 4% a turn for 2 turns.', from: any, target: 'allAllies', healPct: 0.3, revive: 0.35, regen: { pct: 0.04, turns: 2 }, rite: true },
+  ],
+  abbess: [
+    { id: 'thorned-rebuke', name: 'Thorned Rebuke', desc: 'Lash rank 1-3, leaving it Bleeding for 2 turns. Every Sister heals 45% of the damage dealt.', from: any, target: 'enemy', reach: [1, 2, 3], mult: 1.25, bleed: { mult: 0.2, turns: 2 }, lifelink: 0.45 },
+    { id: 'briar-mantle', name: 'Briar Mantle', desc: 'Heal every ally 5% of max HP and dress them in thorns: foes that strike them take 35% back, for 2 turns. Cooldown 2.', from: any, target: 'allAllies', healPct: 0.05, thorns: { pct: 0.35, turns: 2 }, cooldown: 2 },
+    { id: 'pruning', name: 'Pruning', desc: 'Heal one ally, cure poison, burns and bleeding, and let her Regenerate 3% a turn for 2 turns.', from: any, target: 'ally', heal: 2.6, cleanse: true, regen: { pct: 0.03, turns: 2 } },
+    { id: 'garden-of-thorns', name: 'Garden of Thorns', desc: 'LITANY: rake every enemy, leaving them Bleeding for 2 turns. Every Sister heals 40% of the damage dealt.', from: any, target: 'allEnemies', mult: 0.8, bleed: { mult: 0.25, turns: 2 }, lifelink: 0.4, rite: true },
+  ],
+  cantor: [
+    { id: 'hymn-of-iron', name: 'Hymn of Iron', desc: 'Every ally gains +30% attack for 2 turns. Cooldown 2.', from: any, target: 'allAllies', empower: { pct: 0.3, turns: 2 }, empowerTarget: true, cooldown: 2 },
+    { id: 'keening-note', name: 'Keening Note', desc: 'Hit any enemy: Sundered (-20% armor) and Hexed (-20% Magic Resist) for 2 turns.', from: any, target: 'enemy', mult: 1.35, sunder: { pct: 0.2, turns: 2 }, hex: { pct: 0.2, turns: 2 } },
+    { id: 'psalm-of-blades', name: 'Psalm of Blades', desc: 'Every ally gains +20% critical chance for 2 turns, and every Sister 8 Zeal. Cooldown 3.', from: any, target: 'allAllies', critUp: { pct: 0.2, turns: 2 }, zealGain: 8, zealAll: true, cooldown: 3 },
+    { id: 'requiem-chorus', name: 'Requiem Chorus', desc: 'LITANY: every ally gains +30% attack and +25% critical chance for 2 turns, and Haste.', from: any, target: 'allAllies', empower: { pct: 0.3, turns: 2 }, empowerTarget: true, critUp: { pct: 0.25, turns: 2 }, haste: 1, rite: true },
+  ],
+  adjudicator: [
+    { id: 'reflected-sentence', name: 'Reflected Sentence', desc: 'Hit any enemy: -25% attack for 2 turns. Drains 15 Wrath from a boss.', from: any, target: 'enemy', mult: 0.7, weaken: { pct: 0.25, turns: 2 }, wrathDrain: 15 },
+    { id: 'mirror-ward', name: 'Mirror Ward', desc: 'Ward an ally (-25% damage) and give her thorns (30% back) for 2 turns. Cooldown 2.', from: any, target: 'ally', ward: { pct: 0.25, turns: 2 }, thorns: { pct: 0.3, turns: 2 }, cooldown: 2 },
+    { id: 'censure', name: 'Censure', desc: 'Every enemy: -20% attack and Sundered (-15% armor) for 2 turns. Cooldown 3.', from: any, target: 'allEnemies', mult: 0.3, weaken: { pct: 0.2, turns: 2 }, sunder: { pct: 0.15, turns: 2 }, cooldown: 3 },
+    { id: 'final-judgment', name: 'Final Judgment', desc: 'LITANY: every enemy is Weakened (-30% attack) for 2 turns and loses 40 Wrath.', from: any, target: 'allEnemies', mult: 0.6, weaken: { pct: 0.3, turns: 2 }, wrathDrain: 40, rite: true },
+  ],
+  veilblade: [
+    { id: 'veil-strike', name: 'Veil Strike', desc: 'Strike any rank, with +25% critical chance.', from: [1, 2, 3], target: 'enemy', mult: 1.05, critChance: 0.25 },
+    { id: 'shadowstep', name: 'Shadowstep', desc: 'Haste herself, +20% attack and +30% critical chance for 2 turns. Cooldown 2.', from: any, target: 'self', haste: 1, empower: { pct: 0.2, turns: 2 }, critUp: { pct: 0.3, turns: 2 }, cooldown: 2 },
+    { id: 'hamstring', name: 'Hamstring', desc: 'Cut any foe: Bleeding for 3 turns and its turn pushed to the end. Cooldown 2.', from: [1, 2, 3], target: 'enemy', mult: 0.7, bleed: { mult: 0.3, turns: 3 }, delay: true, cooldown: 2 },
+    { id: 'thousand-cuts', name: 'Thousand Cuts', desc: 'LITANY: savage blow on any enemy, +50% critical chance, double damage under 30% HP.', from: any, target: 'enemy', mult: 1.9, critChance: 0.5, execute: 1, rite: true },
+  ],
+  arbalist: [
+    { id: 'blessed-bolt', name: 'Blessed Bolt', desc: 'Heavy bolt on any rank that ignores 30% of its Armor.', from: [2, 3, 4], target: 'enemy', mult: 1.25, armorPierce: 0.3 },
+    { id: 'marking-shot', name: 'Marking Shot', desc: 'Light bolt that Accuses any foe (+25% damage taken) for 2 turns. Cooldown 1.', from: any, target: 'enemy', mult: 0.6, accuse: 2, cooldown: 1 },
+    { id: 'shieldbreaker', name: 'Shieldbreaker', desc: 'A bolt through any shield: Sundered (-30% armor) for 2 turns. Cooldown 2.', from: any, target: 'enemy', mult: 1.0, pierceShield: true, sunder: { pct: 0.3, turns: 2 }, cooldown: 2 },
+    { id: 'saints-ballista', name: "Saint's Ballista", desc: 'LITANY: a crushing bolt on any enemy, through shields and half its Armor.', from: any, target: 'enemy', mult: 2.3, armorPierce: 0.5, pierceShield: true, rite: true },
+  ],
+  exorcist: [
+    { id: 'lantern-flare', name: 'Lantern Flare', desc: 'Hit any enemy and strip its shield and blessings. +30% against bosses.', from: any, target: 'enemy', mult: 0.9, purge: true, bossBonus: 0.3 },
+    { id: 'witchfire', name: 'Witchfire', desc: 'Set any enemy Burning for 3 turns. Stacks on poison or burns.', from: any, target: 'enemy', mult: 0.45, poison: { mult: 0.42, turns: 3 }, stackPoison: true },
+    { id: 'rite-of-expulsion', name: 'Rite of Expulsion', desc: 'Strip the shield and blessings of every enemy. Cooldown 3.', from: any, target: 'allEnemies', mult: 0.4, purge: true, cooldown: 3 },
+    { id: 'banishment', name: 'Banishment', desc: 'LITANY: searing light on any enemy, stripping its blessings. +60% against bosses.', from: any, target: 'enemy', mult: 1.6, purge: true, bossBonus: 0.6, rite: true },
   ],
 };
 

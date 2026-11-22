@@ -647,6 +647,9 @@ export class BattleScene extends Phaser.Scene {
         st.accused && 'Accused',
         st.taunt && 'Taunt',
         st.empower && 'Empowered',
+        st.counter && 'Riposte',
+        st.thorns && 'Thorns',
+        st.critUp && 'Keen',
         st.charging && 'Charging',
         u.side === 'enemy' && ENEMIES[u.ref].burst && 'Bursts',
       ].filter(Boolean);
@@ -868,6 +871,15 @@ export class BattleScene extends Phaser.Scene {
         const u = this.battle.get(e.uid);
         this.makeCard(u);
         this.logText.setText(`${u.name} rises from the water.`);
+        this.refresh();
+        break;
+      }
+      case 'revive': {
+        const u = this.battle.get(e.uid);
+        this.cards.get(e.uid)?.box.destroy();
+        this.cards.delete(e.uid);
+        this.makeCard(u);
+        this.logText.setText(`${u.name} rises again.`);
         this.refresh();
         break;
       }

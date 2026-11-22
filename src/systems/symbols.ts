@@ -1,3 +1,4 @@
+import { CLASSES } from '../data/classes';
 import type { CrusaderDef } from '../data/types';
 import type { SaveData } from '../state/save';
 import { bagText, hasAll, spend, type Bag } from './items';
@@ -43,9 +44,18 @@ const CLASS_PERK: Record<string, { name: string; desc: string }> = {
   hierophant: { name: 'Unbroken Relic', desc: 'She takes 12% less damage.' },
   confessor: { name: 'Anointed Hands', desc: 'Her heals and shields are 20% stronger.' },
   oracle: { name: 'Seer\'s Ember', desc: 'The party starts every fight with +8 Zeal.' },
-  censer: { name: 'Censer\'s Breath', desc: 'The party starts every fight with +8 Zeal.' },
+  censer: { name: 'Censer\'s Breath', desc: 'Her skills deal 12% more damage.' },
   warsister: { name: 'Edge of Penance', desc: '+12% critical chance.' },
   inquisitor: { name: 'Edge of Judgement', desc: '+12% critical chance.' },
+  sentinel: { name: 'Sealed Tomb', desc: 'She takes 12% less damage.' },
+  martyr: { name: 'Dawn Plate', desc: 'She takes 12% less damage.' },
+  hospitaller: { name: 'Overflowing Chalice', desc: 'Her heals and shields are 20% stronger.' },
+  abbess: { name: 'Rosewater', desc: 'Her heals and shields are 20% stronger.' },
+  cantor: { name: 'Opening Hymn', desc: 'The party starts every fight with +8 Zeal.' },
+  adjudicator: { name: 'Gavel of Ash', desc: 'Her skills deal 12% more damage.' },
+  veilblade: { name: 'Edge of the Veil', desc: '+12% critical chance.' },
+  arbalist: { name: 'Blessed Fletching', desc: '+12% critical chance.' },
+  exorcist: { name: 'Lantern Oil', desc: 'Her skills deal 12% more damage.' },
 };
 
 export function symbolPerks(c: CrusaderDef): SymbolPerk[] {
@@ -77,9 +87,12 @@ export function symbolCombat(c: CrusaderDef, level: number | undefined): SymbolC
   const out: SymbolCombat = { mult: 1, heal: 1, guard: 0, rite: 0, crit: 0, zeal: 0 };
   if (level >= 5) out.mult = 1.1;
   if (level >= 10) {
-    if (c.classId === 'hierophant') out.guard = 0.12;
-    else if (c.classId === 'confessor') out.heal = 1.2;
-    else if (c.classId === 'oracle' || c.classId === 'censer') out.zeal = 8;
+    const role = CLASSES[c.classId]?.role;
+    if (role === 'Tank') out.guard = 0.12;
+    else if (role === 'Healer') out.heal = 1.2;
+    else if (c.classId === 'oracle' || c.classId === 'cantor') out.zeal = 8;
+    // The Censer's blessing used to copy the Oracle's; she and the other casters now hit harder.
+    else if (c.classId === 'censer' || c.classId === 'adjudicator' || c.classId === 'exorcist') out.mult *= 1.12;
     else out.crit = 0.12;
   }
   if (level >= 15) out.rite = 0.3;

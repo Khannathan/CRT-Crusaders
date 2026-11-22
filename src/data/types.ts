@@ -6,6 +6,8 @@ export interface ClassDef {
   name: string;
   role: Role;
   summary: string;
+  /** The class whose emblem it borrows until its own art arrives. */
+  icon?: string;
 }
 
 export type PassiveKind =
@@ -20,7 +22,8 @@ export type PassiveKind =
   | 'healAura'
   | 'plague'
   | 'martyr'
-  | 'swift';
+  | 'swift'
+  | 'riposte';
 
 /** Every Sister carries one passive; rarer Sisters' are stronger (see data/passives.ts). */
 export interface PassiveDef {
