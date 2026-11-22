@@ -1,6 +1,8 @@
 import Phaser from 'phaser';
 import { DISPLAY_FONT, FONT, GAME_W, HUD_FONT, PAL, hex } from '../config';
-import { game } from '../state/game';
+import { commit, game } from '../state/game';
+import { formatPower } from '../systems/power';
+import { notePower } from '../systems/powerGrowth';
 import { giltOf } from '../systems/currency';
 import { addFullscreenButton } from './fullscreen';
 import { nine, stretch } from './skin';
@@ -67,5 +69,34 @@ export function addCurrencyBar(scene: Phaser.Scene) {
     gilt(giltOf(game.save), l2 - 6);
   };
   refresh();
+  // Power you can feel: a rise since the last screen pops under the bar, and a
+  // milestone crossed pays its Gilt and gets a banner of its own.
+  const note = notePower(game.save);
+  if (note.gain > 0 || note.reached.length) {
+    commit();
+    refresh();
+    showPowerPop(scene, note.gain, note.reached);
+  }
   return refresh;
+}
+
+function showPowerPop(scene: Phaser.Scene, gain: number, reached: { at: number; name: string; gilt: number }[]) {
+  const y = CURRENCY_BAR_H + 150;
+  const m = reached.at(-1);
+  const parts: Phaser.GameObjects.GameObject[] = [];
+  const head = scene.add.text(0, 0, gain > 0 ? `+${formatPower(gain)} POWER` : 'POWER', { fontFamily: HUD_FONT, fontSize: '30px', color: hex(PAL.amber) }).setOrigin(0.5, 0);
+  parts.push(head);
+  let h = head.height;
+  if (m) {
+    const sub = scene.add
+      .text(0, h + 8, `${formatPower(m.at)} REACHED  ·  ${m.name.toUpperCase()}\n+${reached.reduce((n, r) => n + r.gilt, 0)} GILT`, { fontFamily: HUD_FONT, fontSize: '16px', color: hex(0xf2d27a), align: 'center', lineSpacing: 4 })
+      .setOrigin(0.5, 0);
+    parts.push(sub);
+    h += 8 + sub.height;
+  }
+  const w = Math.max(...parts.map((p) => (p as Phaser.GameObjects.Text).width)) + 48;
+  const box = scene.add.rectangle(0, -14, w, h + 28, 0x140d14, 0.96).setOrigin(0.5, 0).setStrokeStyle(2, m ? 0xf2d27a : PAL.amber);
+  const pop = scene.add.container(GAME_W / 2, y, [box, ...parts]).setDepth(60).setAlpha(0).setScale(0.6);
+  scene.tweens.add({ targets: pop, alpha: 1, scale: 1, duration: 280, delay: 250, ease: 'Back.Out' });
+  scene.tweens.add({ targets: pop, alpha: 0, y: y - 24, duration: 450, delay: m ? 2800 : 1600, onComplete: () => pop.destroy() });
 }

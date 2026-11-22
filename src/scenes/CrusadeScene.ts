@@ -121,7 +121,7 @@ export class CrusadeScene extends Phaser.Scene {
           : cleared
             ? `Cleared${best ? `  ·  best Heresy ${ROMAN[best - 1]}` : ''}`
             : `First clear +${REWARDS.firstClearSeals} Wax Seals`;
-      if (open) drawRecommended(this, tx, cardBottom - 128, cryptRecommended(s, crypt, tier), accountPower(s, (c) => canMuster(s, c.id)));
+      if (open) drawRecommended(this, tx, cardBottom - 128, cryptRecommended(s, crypt, tier), accountPower(s, (c) => canMuster(s, c.id)), { grow: [] });
       const chip = this.add.text(tx + 8, cardBottom - 96, note, text.hud(13, open ? PAL.amber : PAL.muted));
       this.add.rectangle(tx, cardBottom - 102, chip.width + 16, chip.height + 12, 0x211420).setOrigin(0, 0).setStrokeStyle(1, 0x674347);
       this.children.bringToTop(chip);
