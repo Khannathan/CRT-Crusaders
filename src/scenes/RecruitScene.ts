@@ -13,6 +13,7 @@ import { CURRENCY_BAR_H, addCurrencyBar } from '../ui/currencyBar';
 import { portraitKey } from '../ui/placeholderPortrait';
 import { TAB_BAR_H, addTabBar } from '../ui/tabBar';
 import { PAD, addBackdrop, addBadge, addFrame, addHeading, addPanel, addScreenGlow, text } from '../ui/theme';
+import { holdForCard, justHeld } from '../ui/sisterCard';
 
 /** The Sealed Altar: rates, pity counter, and the pull buttons. */
 export class RecruitScene extends Phaser.Scene {
@@ -73,7 +74,9 @@ export class RecruitScene extends Phaser.Scene {
       this.add.rectangle(x, y, size + 8, size + 8, 0x170f1b).setStrokeStyle(1, RARITY_COLOR.UR);
       const img = this.add.image(x, y, portraitKey(c.id)).setDisplaySize(size, size).setInteractive({ useHandCursor: true });
       if (!chosen) img.setAlpha(0.6);
+      holdForCard(this, img, c.id);
       img.on('pointerup', () => {
+        if (justHeld()) return;
         s.banner = { order: ord.name, target: c.id };
         commit();
         this.scene.restart();
@@ -163,7 +166,9 @@ export class RecruitScene extends Phaser.Scene {
       const y = 420;
       layer.add(this.add.rectangle(x, y, 184, 184, 0x170f1b).setStrokeStyle(2, RARITY_COLOR.UR));
       const img = this.add.image(x, y, portraitKey(c.id)).setDisplaySize(176, 176).setInteractive({ useHandCursor: true });
+      holdForCard(this, img, c.id);
       img.on('pointerup', () => {
+        if (justHeld()) return;
         const r = claimSpark(game.save, c.id);
         if (!r) return;
         commit();

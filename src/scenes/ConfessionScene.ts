@@ -11,6 +11,7 @@ import { makePlaceholderPortrait, portraitKey } from '../ui/placeholderPortrait'
 import { PAD, addFrame, text } from '../ui/theme';
 import { addScrollArea } from '../ui/scroll';
 import { TAB_BAR_H } from '../ui/tabBar';
+import { holdForCard } from '../ui/sisterCard';
 
 
 /** Confession: Sisters by bond, and one Sister's bond, candle and confessions. */
@@ -57,6 +58,7 @@ export class ConfessionScene extends Phaser.Scene {
       this.add.rectangle(x, y, 98, 98, 0x000000, 0).setStrokeStyle(2, RARITY_COLOR[c.rarity]);
       const img = this.add.image(x, y, portraitKey(c.id)).setDisplaySize(94, 94);
       list.tap(img, () => this.scene.restart({ id: c.id }));
+      holdForCard(this, img, c.id);
       this.add.text(x, y + 56, c.name.split(' ')[0], text.body(15, PAL.ivory)).setOrigin(0.5, 0);
       this.pips(x - 28, y + 82, b.level, 4);
       if (b.unheard) this.add.circle(x + 42, y - 42, 7, PAL.amber).setStrokeStyle(2, 0x1b121c);

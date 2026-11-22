@@ -8,6 +8,7 @@ import { makeButton } from '../ui/button';
 import { modeScreen } from '../ui/modeScreen';
 import { portraitKey } from '../ui/placeholderPortrait';
 import { PAD, addFrame, text } from '../ui/theme';
+import { holdForCard } from '../ui/sisterCard';
 
 /** Adds the three 32-wide frames of ui-matins-candle.png once; returns how many (0 when missing). */
 function matinsCandleFrames(scene: Phaser.Scene) {
@@ -127,6 +128,7 @@ export class MatinsScene extends Phaser.Scene {
           layer.destroy();
           then(c.id);
         });
+        holdForCard(this, frame, c.id);
         list.content.add([frame, img, name]);
       });
     list.fit(180 + Math.ceil(cands.length / 4) * 128 - 40);

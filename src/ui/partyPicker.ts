@@ -5,11 +5,12 @@ import { CRUSADERS } from '../data/crusaders';
 import type { CrusaderDef } from '../data/types';
 import type { SaveData } from '../state/save';
 import { RARITY_ORDER } from '../systems/gacha';
-import { partyPower, sisterPower } from '../systems/power';
+import { formatPower, partyPower, sisterPower } from '../systems/power';
 import { addScrollArea } from './scroll';
 import { makeButton } from './button';
 import { portraitKey } from './placeholderPortrait';
 import { drawRecommended } from './recommended';
+import { addOrderSigil, holdForCard } from './sisterCard';
 import { addFrame, text } from './theme';
 
 export interface PickOpts {
@@ -47,28 +48,33 @@ export function pickParty(scene: Phaser.Scene, save: SaveData, opts: PickOpts, d
     layer.add(scene.add.rectangle(GAME_W / 2, GAME_H / 2, GAME_W, GAME_H, 0x09060b, 0.96).setInteractive());
     layer.add(addFrame(scene, GAME_W / 2, GAME_H / 2, GAME_W - 24, GAME_H - 40, { fill: 0x241925 }));
     layer.add(scene.add.text(GAME_W / 2, 62, opts.title.toUpperCase(), text.display(22, PAL.ivory)).setOrigin(0.5));
-    layer.add(scene.add.text(GAME_W / 2, 96, opts.sub, { ...text.body(16, PAL.muted), align: 'center', wordWrap: { width: GAME_W - 70 } }).setOrigin(0.5, 0));
+    layer.add(scene.add.text(GAME_W / 2, 96, `${opts.sub}\nHold a portrait for her stats.`, { ...text.body(16, PAL.muted), align: 'center', wordWrap: { width: GAME_W - 70 } }).setOrigin(0.5, 0));
     const cell = 112;
-    const list = addScrollArea(scene, 138, GAME_H - 206, { parent: layer, start: scroll, onScroll: (y) => (scroll = y) });
+    const list = addScrollArea(scene, 150, GAME_H - 206, { parent: layer, start: scroll, onScroll: (y) => (scroll = y) });
     owned.forEach((c, i) => {
       const x = GAME_W / 2 + ((i % 4) - 1.5) * cell;
-      const y = 200 + Math.floor(i / 4) * (cell + 18);
+      const y = 212 + Math.floor(i / 4) * (cell + 38);
       const ok = allow(c);
       const at = picked.indexOf(c.id);
       const on = at >= 0;
       const frame = scene.add.rectangle(x, y, 100, 100, 0x150e17).setStrokeStyle(on ? 3 : 1, on ? PAL.amber : ok ? RARITY_COLOR[c.rarity] : PAL.armorShadow);
       const img = scene.add.image(x, y, portraitKey(c.id)).setDisplaySize(94, 94).setAlpha(!ok ? 0.2 : on ? 1 : 0.6);
       const name = scene.add.text(x, y + 60, c.name.split(' ')[0], text.body(15, on ? PAL.amber : ok ? PAL.ivory : PAL.steel)).setOrigin(0.5);
-      list.content.add([frame, img, name]);
+      const stat = scene.add.text(x, y + 78, `Lv ${save.owned[c.id].level} · ${formatPower(sisterPower(save, c))}`, text.hud(11, ok ? PAL.muted : PAL.steel)).setOrigin(0.5);
+      list.content.add([frame, img, name, stat]);
+      const sigil = addOrderSigil(scene, x + 38, y - 38, c.order, 24);
+      if (sigil) list.content.add(sigil.setAlpha(ok ? 1 : 0.4));
       if (on) list.content.add(scene.add.text(x - 44, y - 46, `${at + 1}`, { ...text.hud(16, PAL.amber), stroke: '#000000', strokeThickness: 4 }));
-      if (!ok) return;
-      list.tap(frame, () => {
-        if (on) picked.splice(at, 1);
-        else if (picked.length < max) picked.push(c.id);
-        scene.time.delayedCall(0, draw);
-      });
+      if (ok) {
+        list.tap(frame, () => {
+          if (on) picked.splice(at, 1);
+          else if (picked.length < max) picked.push(c.id);
+          scene.time.delayedCall(0, draw);
+        });
+      }
+      holdForCard(scene, frame, c.id);
     });
-    list.fit(200 + Math.ceil(owned.length / 4) * (cell + 18) - 40);
+    list.fit(212 + Math.ceil(owned.length / 4) * (cell + 38) - 50);
     if (opts.rec) {
       const parts = drawRecommended(scene, GAME_W / 2, GAME_H - 184, opts.rec, partyPower(save, picked), { size: 13, label: 'PARTY' });
       const w = parts[1].x + parts[1].width - parts[0].x;
