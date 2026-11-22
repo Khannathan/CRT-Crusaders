@@ -1,3 +1,4 @@
+import { trickle } from './feast';
 import type { SaveData } from '../state/save';
 import { earn } from './currency';
 import { bagText, give, type Bag } from './items';
@@ -125,6 +126,7 @@ export function devotion(save: SaveData, p: Period, now = Date.now()) {
 /** Counts something the player did toward every task that listens for it. */
 export function track(save: SaveData, event: TaskEvent, n = 1, now = Date.now()) {
   gainFaith(save, event, n);
+  trickle(save, event, n, now);
   const st = tasksOf(save, now);
   const dailyWasDone = devotion(save, 'daily', now) >= maxDevotion('daily');
   for (const p of ['daily', 'weekly'] as Period[]) {

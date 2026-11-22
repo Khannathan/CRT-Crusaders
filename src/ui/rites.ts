@@ -27,6 +27,8 @@ import { makeButton } from './button';
 import { ERRAND_SLOTS, anyErrandDone, errandsOf, openErrands } from '../systems/errands';
 import { ladder, renownOf } from '../systems/rivals';
 import { PAD } from './theme';
+import { feastName, feastOf, feastReady } from '../systems/feast';
+import { limitedWindow, timeLeft } from '../systems/limited';
 
 /**
  * Every mode and side screen, and where it lives: the Sanctum's rail (daily
@@ -58,7 +60,12 @@ export interface RiteEntry {
 export type RiteHome = 'sanctum' | 'board' | 'cloister';
 
 export const RITES: RiteEntry[] = [
-  // The Crusade board: every mode you fight in.
+  // The Crusade board: every mode you fight in. The Feast (a two-week event) leads it.
+  {
+    label: 'Feast', scene: 'Feast', icon: 'flame', rank: 1, home: 'board', bg: 'bg-altar', ready: (s) => feastReady(s),
+    blurb: 'A two-week event beside the limited Saint. Win Candles, spend them at the Feast stall.',
+    status: (s) => `${feastName()}  ·  ${feastOf(s).candles} Candles  ·  ends in ${timeLeft(limitedWindow().ends)}`,
+  },
   {
     label: 'Crypts', scene: 'Crusade', icon: 'blade', rank: 1, home: 'board', bg: 'bg-drowned-ossuary',
     blurb: 'The core crusade: a branching descent, act by act, to the crypt\'s heart.',

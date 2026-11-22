@@ -24,6 +24,7 @@ import { PenanceScene } from './scenes/PenanceScene';
 import { MatinsScene } from './scenes/MatinsScene';
 import { RankScene } from './scenes/RankScene';
 import { TrialsScene } from './scenes/TrialsScene';
+import { FeastScene } from './scenes/FeastScene';
 import { TowerScene } from './scenes/TowerScene';
 import { ProcessionScene } from './scenes/ProcessionScene';
 import { InquisitionScene } from './scenes/InquisitionScene';
@@ -71,6 +72,7 @@ function start() {
       MatinsScene,
       RankScene,
       TrialsScene,
+      FeastScene,
       TowerScene,
       ProcessionScene,
       InquisitionScene,
