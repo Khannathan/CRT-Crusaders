@@ -7,7 +7,6 @@ import { ORDERS, ORDER_LIST } from '../data/orders';
 import type { OwnedCrusader, SaveData } from '../state/save';
 import type { Stats } from '../systems/stats';
 import { BOND_STAT, bondInfo } from '../systems/bonds';
-import * as Portraits from '../ui/placeholderPortrait';
 import { addOrderSigil } from '../ui/sisterCard';
 import type { ScrollArea } from '../ui/scroll';
 import { CLASS_SKILLS } from '../data/skills';
@@ -54,7 +53,7 @@ import { MAX_SKILL_LEVEL, nextSkillStep, raiseSkill, skillBlock, skillLevels, st
 import { track } from '../systems/tasks';
 import { makeButton } from '../ui/button';
 import { CURRENCY_BAR_H, addCurrencyBar } from '../ui/currencyBar';
-import { portraitKey } from '../ui/placeholderPortrait';
+import { loadFullBody, portraitKey } from '../ui/placeholderPortrait';
 import { nine } from '../ui/skin';
 import { addScrollArea } from '../ui/scroll';
 import { tapCost, tapForSources } from '../ui/sources';
@@ -417,9 +416,8 @@ export class RosterScene extends Phaser.Scene {
     const bust = this.add.image(GAME_W / 2, HERO_Y, portraitKey(c.id)).setDisplaySize(BUST, BUST);
     if (!have) bust.setTint(0x111111);
     layer.add(bust);
-    const load = (Portraits as Record<string, unknown>).loadFullBody as ((s: Phaser.Scene, id: string) => Promise<string | undefined>) | undefined;
-    if (have && load) {
-      load(this, c.id).then((key) => {
+    if (have) {
+      loadFullBody(this, c.id).then((key) => {
         if (!key || !bust.active || key === portraitKey(c.id) || !this.textures.exists(key)) return;
         const src = this.textures.get(key).getSourceImage();
         const h = FIGURE_H;
