@@ -11,12 +11,15 @@ import { formatPower, partyPower, powerVerdict, sisterPower } from '../systems/p
 import { VERDICT_COLOR } from '../ui/recommended';
 import { portraitKey } from '../ui/placeholderPortrait';
 import { addIcon, addScreenGlow, text } from '../ui/theme';
+import { addScrollArea } from '../ui/scroll';
 
 const ROMAN = ['I', 'II', 'III', 'IV'];
 
 /** Pick up to four crusaders and their ranks. Tap to add, tap a slot to remove. */
 export class MusterScene extends Phaser.Scene {
   private party: string[] = [];
+  /** Where the Sister list was scrolled, kept across redraws. */
+  private listY = 0;
 
   constructor() {
     super('Muster');
@@ -26,6 +29,7 @@ export class MusterScene extends Phaser.Scene {
     const s = game.save;
     const last = s.lastParty.filter((id) => canMuster(s, id));
     this.party = last.length ? last : suggestParty(s);
+    this.listY = 0;
   }
 
   create() {
@@ -81,6 +85,9 @@ export class MusterScene extends Phaser.Scene {
       .setLineSpacing(-2);
     this.add.rectangle(GAME_W / 2, 344, GAME_W - 32, 1, PAL.armorShadow);
     const owned = CRUSADERS.filter((c) => game.save.owned[c.id]);
+    // The Sisters scroll (drag or mouse wheel) between the divider and the buttons.
+    const list = addScrollArea(this, 346, GAME_H - 108, { start: this.listY, onScroll: (y) => (this.listY = y) });
+    const before = this.children.list.length;
     owned.forEach((c, i) => {
       const x = 8 + 64 + (i % 4) * 132;
       const y = 410 + Math.floor(i / 4) * 172;
@@ -90,10 +97,10 @@ export class MusterScene extends Phaser.Scene {
       const img = this.add.image(x, y, portraitKey(c.id)).setDisplaySize(128, 128);
       if (inParty || !ready) img.setAlpha(0.3);
       if (ready && !inParty) {
-        img.setInteractive({ useHandCursor: true }).on('pointerup', () => {
+        list.tap(img, () => {
           if (this.party.length < MAX_PARTY) {
             this.party.push(c.id);
-            this.create();
+            this.time.delayedCall(0, () => this.create());
           }
         });
       }
@@ -101,6 +108,8 @@ export class MusterScene extends Phaser.Scene {
       this.add.text(x, y + 76, c.name.split(' ')[0], { ...text.body(17), fontStyle: '600' }).setOrigin(0.5);
       this.add.text(x, y + 95, sub, text.body(14, PAL.muted)).setOrigin(0.5);
     });
+    list.content.add(this.children.list.slice(before));
+    list.fit(410 + Math.ceil(owned.length / 4) * 172 - 50);
 
     makeButton(this, GAME_W / 2 - 128, GAME_H - 60, 236, 80, 'Suggest', () => {
       this.party = suggestParty(game.save);

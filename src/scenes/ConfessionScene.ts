@@ -9,22 +9,23 @@ import { makeButton } from '../ui/button';
 import { modeScreen, progressBar, toast } from '../ui/modeScreen';
 import { makePlaceholderPortrait, portraitKey } from '../ui/placeholderPortrait';
 import { PAD, addFrame, text } from '../ui/theme';
+import { addScrollArea } from '../ui/scroll';
+import { TAB_BAR_H } from '../ui/tabBar';
 
-const PER_PAGE = 16;
 
 /** Confession: Sisters by bond, and one Sister's bond, candle and confessions. */
 export class ConfessionScene extends Phaser.Scene {
   private id?: string;
-  private page = 0;
   private notice?: string;
+  /** Where the list was scrolled, kept while she is opened and closed. */
+  private static listY = 0;
 
   constructor() {
     super('Confession');
   }
 
-  init(data: { id?: string; page?: number; notice?: string }) {
+  init(data: { id?: string; notice?: string }) {
     this.id = data?.id;
-    this.page = data?.page ?? 0;
     this.notice = data?.notice;
   }
 
@@ -42,29 +43,26 @@ export class ConfessionScene extends Phaser.Scene {
     const save = game.save;
     const { top } = modeScreen(this, 'Confession', 'Fight beside them, keep Vigil with them, light candles. In time they will speak.');
     const owned = CRUSADERS.filter((c) => save.owned[c.id]).sort((a, b) => bondInfo(save, b.id).xp - bondInfo(save, a.id).xp);
-    const pages = Math.max(1, Math.ceil(owned.length / PER_PAGE));
-    const page = Math.min(this.page, pages - 1);
     this.add.text(PAD, top, `+${Math.round(BOND_STAT * 100)}% ATK AND HP PER BOND LEVEL`, text.hud(12, PAL.muted));
     const cell = 118;
     const x0 = GAME_W / 2 - cell * 1.5;
-    owned.slice(page * PER_PAGE, page * PER_PAGE + PER_PAGE).forEach((c, i) => {
+    // Every Sister in one list: drag or wheel to scroll.
+    const list = addScrollArea(this, top + 18, GAME_H - TAB_BAR_H, { start: ConfessionScene.listY, onScroll: (y) => (ConfessionScene.listY = y) });
+    const before = this.children.list.length;
+    owned.forEach((c, i) => {
       const x = x0 + (i % 4) * cell;
       const y = top + 74 + Math.floor(i / 4) * 140;
       const b = bondInfo(save, c.id);
       makePlaceholderPortrait(this, c);
       this.add.rectangle(x, y, 98, 98, 0x000000, 0).setStrokeStyle(2, RARITY_COLOR[c.rarity]);
-      const img = this.add.image(x, y, portraitKey(c.id)).setDisplaySize(94, 94).setInteractive({ useHandCursor: true });
-      img.on('pointerup', () => this.scene.restart({ id: c.id, page }));
+      const img = this.add.image(x, y, portraitKey(c.id)).setDisplaySize(94, 94);
+      list.tap(img, () => this.scene.restart({ id: c.id }));
       this.add.text(x, y + 56, c.name.split(' ')[0], text.body(15, PAL.ivory)).setOrigin(0.5, 0);
       this.pips(x - 28, y + 82, b.level, 4);
       if (b.unheard) this.add.circle(x + 42, y - 42, 7, PAL.amber).setStrokeStyle(2, 0x1b121c);
     });
-    if (pages > 1) {
-      const y = GAME_H - 150;
-      makeButton(this, GAME_W / 2 - 120, y, 70, 44, '‹', () => this.scene.restart({ page: (page + pages - 1) % pages }), { fontSize: 22 });
-      this.add.text(GAME_W / 2, y, `${page + 1} / ${pages}`, text.hud(14, PAL.steel)).setOrigin(0.5);
-      makeButton(this, GAME_W / 2 + 120, y, 70, 44, '›', () => this.scene.restart({ page: (page + 1) % pages }), { fontSize: 22 });
-    }
+    list.content.add(this.children.list.slice(before));
+    list.fit(top + 74 + Math.ceil(owned.length / 4) * 140 - 30);
   }
 
   private detail(id: string) {

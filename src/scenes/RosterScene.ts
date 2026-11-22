@@ -50,6 +50,7 @@ import { makeButton } from '../ui/button';
 import { CURRENCY_BAR_H, addCurrencyBar } from '../ui/currencyBar';
 import { portraitKey } from '../ui/placeholderPortrait';
 import { nine } from '../ui/skin';
+import { addScrollArea } from '../ui/scroll';
 import { TAB_BAR_H, addTabBar } from '../ui/tabBar';
 import { PAD, addArt, addBackdrop, addBadge, addFrame, addHeading, addIcon, addScreenGlow, text } from '../ui/theme';
 
@@ -373,7 +374,11 @@ export class RosterScene extends Phaser.Scene {
     });
 
     if (tab === 'oath') this.oathTab(layer, c, style);
-    else if (tab === 'skills') this.skillsTab(layer, c);
+    else if (tab === 'skills') {
+      // Four skills and a passive can run past the Close button: the tab scrolls.
+      const list = addScrollArea(this, 372, GAME_H - 100, { parent: layer });
+      list.fit(this.skillsTab(list.content, c));
+    }
     else this.gearTab(layer, c);
     layer.add(close.all);
   }
@@ -489,7 +494,8 @@ export class RosterScene extends Phaser.Scene {
     layer.add([...lvl.all, ...vow.all]);
   }
 
-  private skillsTab(layer: Phaser.GameObjects.Container, c: CrusaderDef) {
+  /** Draws the skills into `layer`; returns where they end. */
+  private skillsTab(layer: Phaser.GameObjects.Container, c: CrusaderDef): number {
     const save = game.save;
     const have = save.owned[c.id];
     const skills = CLASS_SKILLS[c.classId];
@@ -543,7 +549,9 @@ export class RosterScene extends Phaser.Scene {
       const t = this.add.text(left, y + 38, `PASSIVE · ${c.rarity} ONLY`, text.hud(12, PAL.steel));
       const d = this.add.text(left, y + 56, c.passive.desc, { ...text.body(16, PAL.muted), wordWrap: { width } });
       layer.add([name, t, d]);
+      y += 56 + d.height;
     }
+    return y + 16;
   }
 
   private gearTab(layer: Phaser.GameObjects.Container, c: CrusaderDef) {
@@ -678,18 +686,23 @@ export class RosterScene extends Phaser.Scene {
     const items = gearOf(save)
       .filter((g) => g.slot === slot)
       .sort((a, b) => Number(a.on === c.id) - Number(b.on === c.id) || Number(!!a.on) - Number(!!b.on) || rank(b.rarity) - rank(a.rarity) || b.level - a.level);
-    const shown = items.slice(0, 7);
+    const shown = items;
+    // Every piece for the slot scrolls (drag or wheel) between the title and the buttons.
+    const listTop = 92;
+    const listBottom = GAME_H - 100;
+    const list = addScrollArea(this, listTop, listBottom, { parent: layer });
+    const inList = () => !list.dragging && this.input.activePointer.y >= listTop && this.input.activePointer.y <= listBottom;
     if (!shown.length) layer.add(this.add.text(GAME_W / 2, 200, 'No pieces for this slot yet.\nCrusade, and the dead will provide.', { ...text.body(18, PAL.muted), align: 'center' }).setOrigin(0.5));
     shown.forEach((g, i) => {
       const y = 140 + i * 92;
       const row = this.add.rectangle(GAME_W / 2, y, GAME_W - 56, 84, 0x1b131d).setStrokeStyle(1, RARITY_COLOR[g.rarity]);
-      row.setInteractive({ useHandCursor: true }).on('pointerup', () => {
+      list.tap(row, () => {
         equip(save, c.id, g.uid);
         commit();
         this.reopen(c, 'gear');
       });
       const wearer = g.on ? CRUSADERS.find((x) => x.id === g.on)?.name.split(' ')[0] : undefined;
-      layer.add([
+      list.content.add([
         row,
         this.add.text(42, y - 32, `${g.name}${g.level ? ` +${g.level}` : ''}`, { ...text.body(19, RARITY_COLOR[g.rarity]), fontStyle: '600' }),
         this.add.text(42, y - 8, `${g.rarity} · ${formatStat(g.main, mainValue(g))}${g.subs.length ? '  ·  ' + g.subs.map((s) => formatStat(s.stat, s.value)).join('  ') : ''}`, text.body(15, PAL.ivory)),
@@ -698,19 +711,20 @@ export class RosterScene extends Phaser.Scene {
       // What putting it on would do to her power
       if (g.on !== c.id) {
         const d = gearSwapDelta(save, c, g);
-        layer.add(this.add.text(GAME_W - 40, y - 32, `${d >= 0 ? '▲ +' : '▼ '}${formatPower(d)}`, text.hud(13, d > 0 ? 0x8fc07a : d < 0 ? 0xe58a8a : PAL.steel)).setOrigin(1, 0));
+        list.content.add(this.add.text(GAME_W - 40, y - 32, `${d >= 0 ? '▲ +' : '▼ '}${formatPower(d)}`, text.hud(13, d > 0 ? 0x8fc07a : d < 0 ? 0xe58a8a : PAL.steel)).setOrigin(1, 0));
       }
       if (!g.on) {
         const melt = makeButton(this, GAME_W - 92, y + 12, 104, 40, `Melt +${salvageValue(g)}`, () => {
+          if (!inList()) return;
           salvage(save, g.uid);
           commit();
           layer.destroy();
           this.gearPicker(c, slot);
         }, { fontSize: 14 });
-        layer.add(melt.all);
+        list.content.add(melt.all);
       }
     });
-    if (items.length > shown.length) layer.add(this.add.text(GAME_W / 2, 140 + 7 * 92 - 30, `+${items.length - shown.length} more`, text.body(16, PAL.muted)).setOrigin(0.5));
+    list.fit(140 + shown.length * 92 - 30);
     const current = equipped(save, c.id).find((g) => g.slot === slot);
     const back = makeButton(this, GAME_W / 2 + (current ? 120 : 0), GAME_H - 62, 220, 60, 'Back', () => layer.destroy(), { fontSize: 19 });
     layer.add(back.all);

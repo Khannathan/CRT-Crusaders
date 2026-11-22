@@ -8,7 +8,6 @@ import { music } from '../audio/music';
 import { autoChoose } from '../systems/autoplay';
 import type { BattleEvent, Unit } from '../systems/combat';
 import { skirmish } from '../systems/crusade';
-import { RARITY_ORDER } from '../systems/gacha';
 import { VIGIL_CAP_HOURS, VIGIL_SIZE, claimVigil, cryptOf, ensureVigil, setVigil, vigilCrypts, vigilPending, vigilRates, type VigilClaim, type VigilState } from '../systems/vigil';
 import { enemyKey } from '../ui/enemyArt';
 import { makeButton } from '../ui/button';
@@ -19,6 +18,7 @@ import { ROMAN_RANK, giftsWaiting, rankInfo } from '../systems/rank';
 import { accountPower, formatPower } from '../systems/power';
 import { drawRites } from '../ui/rites';
 import { addTabBar } from '../ui/tabBar';
+import { pickParty } from '../ui/partyPicker';
 import { PAD, addBackdrop, addFrame, addHeading, addScreenGlow, text } from '../ui/theme';
 
 /** Home screen: the Vigil (idle auto-battle and offline gathering), destinations and the tab bar. */
@@ -251,41 +251,16 @@ export class SanctumScene extends Phaser.Scene {
   private choosePartyFor() {
     const save = game.save;
     const v = save.vigil!;
-    const picked = [...v.party];
-    const layer = this.add.container(0, 0).setDepth(20);
-    const owned = CRUSADERS.filter((c) => save.owned[c.id]).sort((a, b) => RARITY_ORDER.indexOf(b.rarity) - RARITY_ORDER.indexOf(a.rarity));
-    const draw = () => {
-      layer.removeAll(true);
-      layer.add(this.add.rectangle(GAME_W / 2, GAME_H / 2, GAME_W, GAME_H, 0x09060b, 0.95).setInteractive());
-      layer.add(addFrame(this, GAME_W / 2, GAME_H / 2, GAME_W - 24, GAME_H - 40, { fill: 0x241925 }));
-      layer.add(this.add.text(GAME_W / 2, 66, 'POST THE WATCH', text.display(22, PAL.ivory)).setOrigin(0.5));
-      layer.add(this.add.text(GAME_W / 2, 100, `Choose up to ${VIGIL_SIZE} Sisters. They may still crusade.`, text.body(17, PAL.muted)).setOrigin(0.5));
-      const cols = 4;
-      const cell = 112;
-      owned.slice(0, 24).forEach((c, i) => {
-        const x = GAME_W / 2 + ((i % cols) - (cols - 1) / 2) * cell;
-        const y = 180 + Math.floor(i / cols) * (cell + 8);
-        const on = picked.includes(c.id);
-        const frame = this.add.rectangle(x, y, 100, 100, 0x150e17).setStrokeStyle(on ? 3 : 1, on ? PAL.amber : PAL.armorShadow);
-        const img = this.add.image(x, y, portraitKey(c.id)).setDisplaySize(94, 94).setAlpha(on ? 1 : 0.55);
-        const name = this.add.text(x, y + 40, c.name.split(' ')[0], { ...text.body(15, on ? PAL.amber : PAL.ivory), stroke: '#000000', strokeThickness: 3 }).setOrigin(0.5);
-        frame.setInteractive({ useHandCursor: true }).on('pointerup', () => {
-          const at = picked.indexOf(c.id);
-          if (at >= 0) picked.splice(at, 1);
-          else if (picked.length < VIGIL_SIZE) picked.push(c.id);
-          draw();
-        });
-        layer.add([frame, img, name]);
-      });
-      const done = makeButton(this, GAME_W / 2 + 120, GAME_H - 62, 220, 60, 'Keep watch', () => {
-        this.showClaim(setVigil(save, Date.now(), { party: picked }));
+    pickParty(
+      this,
+      save,
+      { title: 'Post the Watch', sub: `Choose up to ${VIGIL_SIZE} Sisters, or tap Suggest. They may still crusade.`, initial: v.party, max: VIGIL_SIZE, confirm: 'Keep watch' },
+      (party) => {
+        this.showClaim(setVigil(save, Date.now(), { party }));
         commit();
         this.scene.restart();
-      }, { active: picked.length > 0, disabled: !picked.length, fontSize: 19 });
-      const back = makeButton(this, GAME_W / 2 - 120, GAME_H - 62, 220, 60, 'Back', () => layer.destroy(), { fontSize: 19 });
-      layer.add([...done.all, ...back.all]);
-    };
-    draw();
+      },
+    );
   }
 
   /** The preview's underlined gold text button. */
