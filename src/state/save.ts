@@ -73,6 +73,8 @@ export interface SaveData {
   /** Shop purchases and today's Almonry stock. */
   shop?: import('../systems/shop').ShopState;
   /** Materials by item id (see systems/items.ts). */
+  /** Order Codex level by Order id (systems/codex.ts). */
+  codex?: Record<string, number>;
   /** Lit Reliquary relic ids (systems/reliquary.ts). */
   reliquary?: string[];
   items?: import('../systems/items').Bag;
