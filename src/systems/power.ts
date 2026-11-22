@@ -3,7 +3,7 @@ import type { CrusaderDef } from '../data/types';
 import type { SaveData } from '../state/save';
 import { CLASSES } from '../data/classes';
 import { CRIT_MULT, VOW_UPGRADES, type Battle } from './combat';
-import { equipped, type GearItem } from './gear';
+import { GEAR_SLOTS, equipped, gearOf, type GearItem } from './gear';
 import { statsFor, sisterStats, type Stats } from './stats';
 import { bondMult } from './bonds';
 import { skillLevelsGained } from './skillLevels';
@@ -92,6 +92,23 @@ export function gearSwapDelta(save: SaveData, c: CrusaderDef, item: GearItem) {
   const worn = equipped(save, c.id);
   const swapped = [...worn.filter((g) => g.slot !== item.slot), item];
   return powerWith(save, c, swapped) - sisterPower(save, c);
+}
+
+/** The pieces that would raise her power most, one per slot, from her own and the unworn. */
+export function autoEquipPlan(save: SaveData, c: CrusaderDef): GearItem[] {
+  const out: GearItem[] = [];
+  for (const slot of GEAR_SLOTS) {
+    const now = equipped(save, c.id).find((g) => g.slot === slot);
+    let best = now;
+    let bestP = now ? gearPower(save, c, now) : 0;
+    for (const g of gearOf(save)) {
+      if (g.slot !== slot || (g.on && g.on !== c.id)) continue;
+      const p = gearPower(save, c, g);
+      if (p > bestP) (best = g), (bestP = p);
+    }
+    if (best && best !== now) out.push(best);
+  }
+  return out;
 }
 
 /** Account power: the strongest full party (of the Sisters `allow` admits). */
