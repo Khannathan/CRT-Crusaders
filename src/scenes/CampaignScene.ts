@@ -2,7 +2,8 @@ import Phaser from 'phaser';
 import { GAME_H, GAME_W, PAL } from '../config';
 import { ENCOUNTERS, ENEMIES } from '../data/enemies';
 import { commit, game } from '../state/game';
-import { current } from '../state/run';
+import { current, type Challenge } from '../state/run';
+import { saveSettings, settings } from '../state/settings';
 import { CHAPTERS, STAGES_PER_CHAPTER, TOTAL_STAGES, campaignOf, chapterChest, finishStage, nextStage, roadRates, stageBattle, stageDef, stageRecommended, stageReward, type StageReward } from '../systems/campaign';
 import { bagText } from '../systems/items';
 import { partyPower } from '../systems/power';
@@ -135,15 +136,17 @@ export class CampaignScene extends Phaser.Scene {
     const rates = roadRates(save);
     this.add.text(GAME_W - PAD - 16, y0 + 14, `VIGIL ${Math.round(rates.tithes)} TITHES/H`, text.hud(11, PAL.steel)).setOrigin(1, 0);
     const can = n === best + 1;
-    makeButton(this, GAME_W / 2, y0 + PANEL_H - 34, 260, 52, can ? 'Challenge' : done ? 'Cleared' : 'Clear the stage before', () => this.challenge(n), {
-      active: can,
-      disabled: !can,
-      icon: 'blade',
-      fontSize: 18,
-    });
+    if (can) {
+      makeButton(this, GAME_W / 2 - 104, y0 + PANEL_H - 34, 200, 52, 'Challenge', () => this.challenge(n), { active: true, icon: 'blade', fontSize: 18 });
+      makeButton(this, GAME_W / 2 + 104, y0 + PANEL_H - 34, 200, 52, 'Auto-push', () => this.challenge(n, true), { fontSize: 18 });
+    } else makeButton(this, GAME_W / 2, y0 + PANEL_H - 34, 260, 52, done ? 'Cleared' : 'Clear the stage before', () => {}, { disabled: true, fontSize: 18 });
   }
 
-  private challenge(n: number) {
+  /**
+   * Fights stage n. With `push`, every win goes straight on to the next stage
+   * on Auto, until the first defeat (or the player switches Auto off).
+   */
+  private challenge(n: number, push = false) {
     const save = game.save;
     const s = stageDef(n);
     const v = ensureVigil(save, Date.now());
@@ -151,31 +154,53 @@ export class CampaignScene extends Phaser.Scene {
       this,
       save,
       {
-        title: `Stage ${s.label}`,
-        sub: 'The Vigil\'s Sisters are picked. Tap in rank order.',
+        title: push ? `Auto-push from ${s.label}` : `Stage ${s.label}`,
+        sub: push ? 'They fight on Auto, stage after stage, until they fall. Switch Auto off to stop after a fight.' : 'The Vigil\'s Sisters are picked. Tap in rank order.',
         initial: v?.party ?? save.lastParty,
         max: VIGIL_SIZE,
-        confirm: 'Fight',
+        confirm: push ? 'March' : 'Fight',
         rec: stageRecommended(save, n),
       },
       (party) => {
-        current.challenge = {
-          label: `Stage ${s.label} of the Pilgrim's Road. ${s.boss ? 'The road ends at something vast.' : 'Pilgrims never walk alone.'}`,
-          make: (rng) => stageBattle(save, party, n, rng),
-          finish: (outcome) => {
-            const r = finishStage(save, n, outcome);
-            commit();
-            CampaignScene.listY = undefined;
-            const notice = !r.won
-              ? 'Driven back. Strengthen the Sisters and walk on.'
-              : r.first
-                ? `Stage ${s.label} cleared: ${rewardText(r.reward!)}${r.chest ? `\nChapter chest: ${rewardText(r.chest)}` : ''}\nThe Vigil gathers faster.`
-                : `Stage ${s.label} won again.`;
-            return { scene: 'Campaign', data: { notice } };
-          },
-        };
+        if (push && !settings.autoBattle) {
+          settings.autoBattle = true;
+          saveSettings();
+        }
+        current.challenge = this.stageChallenge(party, n, push ? [] : undefined);
         this.scene.start('Battle');
       },
     );
+  }
+
+  /** One stage's fight. `pushed` (the stages won so far) makes a win march on to the next. */
+  private stageChallenge(party: string[], n: number, pushed?: string[]): Challenge {
+    const save = game.save;
+    const s = stageDef(n);
+    return {
+      label: `Stage ${s.label} of the Pilgrim's Road. ${s.boss ? 'The road ends at something vast.' : 'Pilgrims never walk alone.'}`,
+      make: (rng) => stageBattle(save, party, n, rng),
+      finish: (outcome) => {
+        const r = finishStage(save, n, outcome);
+        commit();
+        CampaignScene.listY = undefined;
+        if (pushed) {
+          if (r.won) pushed.push(s.label);
+          const more = r.won && n < TOTAL_STAGES && settings.autoBattle;
+          if (more) {
+            current.challenge = this.stageChallenge(party, n + 1, pushed);
+            return { scene: 'Battle' };
+          }
+          const cleared = pushed.length ? `Auto-push cleared ${pushed.length} stage${pushed.length === 1 ? '' : 's'} (${pushed[0]}${pushed.length > 1 ? ` to ${pushed[pushed.length - 1]}` : ''}).` : 'Auto-push won no stages.';
+          const why = !r.won ? `Stopped at ${s.label}: the Sisters were driven back.` : n >= TOTAL_STAGES ? 'The road is walked to its end.' : 'Stopped: Auto was switched off.';
+          return { scene: 'Campaign', data: { notice: `${cleared}\n${why}` } };
+        }
+        const notice = !r.won
+          ? 'Driven back. Strengthen the Sisters and walk on.'
+          : r.first
+            ? `Stage ${s.label} cleared: ${rewardText(r.reward!)}${r.chest ? `\nChapter chest: ${rewardText(r.chest)}` : ''}\nThe Vigil gathers faster.`
+            : `Stage ${s.label} won again.`;
+        return { scene: 'Campaign', data: { notice } };
+      },
+    };
   }
 }
