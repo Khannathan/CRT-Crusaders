@@ -1,7 +1,8 @@
 import Phaser from 'phaser';
 import { FONT, GAME_H, GAME_W, PAL, hex } from '../config';
 import { CLASSES, RARITY_COLOR } from '../data/classes';
-import type { PullResult } from '../systems/gacha';
+import { COST_ONE, COST_TEN, canPull, pull, type PullKind, type PullResult } from '../systems/gacha';
+import { commit, game } from '../state/game';
 import { makeButton } from '../ui/button';
 import { NOISE_FRAMES, WAX_COLOR, noiseKey, sealKey } from '../ui/effects';
 import { portraitKey } from '../ui/placeholderPortrait';
@@ -164,7 +165,7 @@ export class RevealScene extends Phaser.Scene {
 
     const cols = 3;
     const cellW = 160;
-    const cellH = 170;
+    const cellH = 150;
     const x0 = (GAME_W - cols * cellW) / 2 + cellW / 2;
     // a single result is centred
     const n = this.results.length;
@@ -172,17 +173,32 @@ export class RevealScene extends Phaser.Scene {
       const rowCount = Math.min(cols, n - Math.floor(i / cols) * cols);
       const rowX0 = x0 + ((cols - rowCount) * cellW) / 2;
       const x = rowX0 + (i % cols) * cellW;
-      const y = 180 + Math.floor(i / cols) * cellH;
+      const y = 170 + Math.floor(i / cols) * cellH;
       const color = RARITY_COLOR[r.crusader.rarity];
-      this.add.rectangle(x, y, 136, 136).setStrokeStyle(4, color);
-      this.add.image(x, y, portraitKey(r.crusader.id)).setDisplaySize(128, 128);
+      this.add.rectangle(x, y, 120, 120).setStrokeStyle(4, color);
+      this.add.image(x, y, portraitKey(r.crusader.id)).setDisplaySize(112, 112);
       const label = r.isNew ? 'NEW' : r.tithes ? `+${r.tithes} T` : 'VOW TOKEN';
       this.add
-        .text(x, y + 82, `${r.crusader.rarity} · ${label}`, { fontFamily: FONT, fontSize: '15px', color: hex(r.isNew ? PAL.amber : PAL.steel) })
+        .text(x, y + 72, `${r.crusader.rarity} · ${label}`, { fontFamily: FONT, fontSize: '15px', color: hex(r.isNew ? PAL.amber : PAL.steel) })
         .setOrigin(0.5);
     });
 
-    makeButton(this, GAME_W / 2 - 128, GAME_H - 90, 236, 80, 'Back to altar', () => this.scene.start('Recruit'), { fontSize: 20 });
-    makeButton(this, GAME_W / 2 + 128, GAME_H - 90, 236, 80, 'See roster', () => this.scene.start('Roster'), { fontSize: 20, active: true });
+    // Pull again on the same banner, without going back to the altar.
+    const seals = game.save.seals;
+    this.add.text(GAME_W - 24, 56, `${seals} Seal${seals === 1 ? '' : 's'}`, { fontFamily: FONT, fontSize: '18px', color: hex(PAL.amber) }).setOrigin(1, 0.5);
+    const again = (kind: PullKind, x: number, label: string) =>
+      makeButton(this, x, GAME_H - 176, 236, 76, label, () => this.again(kind), { fontSize: 20, disabled: !canPull(game.save, kind), active: kind === 'ten' });
+    again('one', GAME_W / 2 - 128, `Again ×1\n${COST_ONE} Seal`);
+    again('ten', GAME_W / 2 + 128, game.save.freeTenUsed ? `Again ×10\n${COST_TEN} Seals` : 'Again ×10\nFree first time');
+
+    makeButton(this, GAME_W / 2 - 128, GAME_H - 80, 236, 68, 'Back to altar', () => this.scene.start('Recruit', {}), { fontSize: 19 });
+    makeButton(this, GAME_W / 2 + 128, GAME_H - 80, 236, 68, 'See roster', () => this.scene.start('Roster', {}), { fontSize: 19 });
+  }
+
+  private again(kind: PullKind) {
+    const results = pull(game.save, kind);
+    if (!results.length) return;
+    commit();
+    this.scene.restart({ results });
   }
 }
