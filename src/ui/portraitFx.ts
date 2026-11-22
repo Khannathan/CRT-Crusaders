@@ -184,7 +184,7 @@ function recipe(fx: Fx, size: number, burst: boolean): { tex: string; cfg: Emitt
         tex: TEX.soft,
         count: n(16),
         frequency: 160,
-        cfg: { emitZone: inside(), speedY: { min: -70, max: -30 }, speedX: { min: -10, max: 10 }, lifespan: burst ? 900 : 1400, scale: { start: 0.3, end: 0.05 }, alpha: { start: 0.9, end: 0 }, tint, blendMode: 'ADD' },
+        cfg: { emitZone: inside(), speedY: { min: -70, max: -30 }, speedX: { min: -10, max: 10 }, lifespan: burst ? 900 : 1400, scale: { start: 0.55, end: 0.1 }, alpha: { start: 1, end: 0 }, tint, blendMode: 'ADD' },
       };
     case 'poison':
       return {
@@ -327,7 +327,10 @@ export function burstFx(scene: Phaser.Scene, x: number, y: number, size: number,
 export function auraFx(scene: Phaser.Scene, box: Phaser.GameObjects.Container, size: number, fx: Fx, above?: Phaser.GameObjects.GameObject) {
   makeFxTextures(scene);
   const r = recipe(fx, size, false);
-  const em = scene.add.particles(0, 0, r.tex, { ...r.cfg, frequency: Math.round(r.frequency * 0.6), quantity: 1 });
+  // Auras glow (additive) so they read over dark portraits; a shadow aura shows in its accent colour.
+  const glow = fx.motif !== 'smoke' && fx.motif !== 'stone';
+  const tint = fx.motif === 'shadow' && fx.accent !== undefined ? fx.accent : r.cfg.tint;
+  const em = scene.add.particles(0, 0, r.tex, { ...r.cfg, tint, frequency: Math.round(r.frequency * 0.45), quantity: 1, ...(glow ? { blendMode: 'ADD' } : {}) });
   box.addAt(em, above ? box.getIndex(above) + 1 : 1);
   return em;
 }
