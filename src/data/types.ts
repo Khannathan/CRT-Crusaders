@@ -46,4 +46,6 @@ export interface CrusaderDef {
   passive?: PassiveDef;
   /** Her signature relic from the roster: what her Holy Symbol is. */
   relic?: string;
+  /** A limited Saint: only on the Limited banner while her window is open (systems/limited.ts). */
+  limited?: true;
 }

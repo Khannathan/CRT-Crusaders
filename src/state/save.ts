@@ -44,7 +44,9 @@ export interface SaveData {
   /** Crypt ids cleared at least once (first-clear bonus). */
   cleared: string[];
   /** Order banner chosen at the Sealed Altar, and the UR it targets. */
-  banner?: { order: string; target: string };
+  banner?: { order: string; target: string; limited?: number };
+  /** The Limited banner window last looked at (systems/limited.ts). */
+  limitedSeen?: number;
   /** True after a banner UR was not the target: the next banner UR will be. */
   urGuaranteed?: boolean;
   /** Pulls since the last UR, on any banner (UR pity). */

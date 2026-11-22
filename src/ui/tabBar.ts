@@ -3,6 +3,7 @@ import { FONT, GAME_H, GAME_W, PAL, hex } from '../config';
 import { game } from '../state/game';
 import { crusadeTabTarget, drawBadge } from './bgFight';
 import { anyReady, homeOf } from './rites';
+import { limitedUnseen } from '../systems/limited';
 import { nine, stretch } from './skin';
 import { addIcon } from './theme';
 
@@ -89,7 +90,9 @@ export function addTabBar(scene: Phaser.Scene, current: string, depth = 5, onTab
         .setOrigin(0.5)
         .setDepth(depth),
     );
-    if ('home' in t && anyReady(game.save, t.home)) keep(scene.add.circle(cx + bw / 2 - 12, cy - bh / 2 + 12, 5, PAL.amber).setStrokeStyle(2, 0x1b121c).setDepth(depth));
+    // The Altar lights up while a new limited Saint has not been looked at.
+    const fresh = t.scene === 'Recruit' && limitedUnseen(game.save);
+    if (fresh || ('home' in t && anyReady(game.save, t.home))) keep(scene.add.circle(cx + bw / 2 - 12, cy - bh / 2 + 12, 5, PAL.amber).setStrokeStyle(2, 0x1b121c).setDepth(depth));
     if (centre) drawBadge(scene, cx + bw / 2 - 24, cy - bh / 2 + 12, depth);
     box.setInteractive({ useHandCursor: true });
     box.on('pointerup', () => {

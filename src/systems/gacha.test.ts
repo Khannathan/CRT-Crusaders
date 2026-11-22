@@ -109,12 +109,12 @@ describe('Order banners', () => {
 
   it('every Order has one UR to target, two SSRs, an SR and an R', () => {
     for (const o of ORDER_LIST) {
-      const sisters = CRUSADERS.filter((c) => c.order === o.name);
+      const sisters = CRUSADERS.filter((c) => c.order === o.name && !c.limited);
       expect(sisters).toHaveLength(5);
       expect(sisters.map((c) => c.rarity).sort()).toEqual(['R', 'SR', 'SSR', 'SSR', 'UR']);
     }
-    expect(CRUSADERS).toHaveLength(50);
-    expect(new Set(CRUSADERS.map((c) => c.id)).size).toBe(50);
+    expect(CRUSADERS.filter((c) => !c.limited)).toHaveLength(50);
+    expect(new Set(CRUSADERS.map((c) => c.id)).size).toBe(CRUSADERS.length);
   });
 
   it('a UR always comes by pull UR_HARD, and pity is shared across banners', () => {
@@ -180,7 +180,7 @@ describe('bannerPool', () => {
     const s = newSave();
     s.banner = { order: 'Iron Vigil', target: 'CC-W040' };
     const pool = bannerPool(s);
-    expect(pool.length).toBe(CRUSADERS.length);
+    expect(pool.length).toBe(CRUSADERS.filter((c) => !c.limited).length);
     expect(pool.reduce((a, p) => a + p.chance, 0)).toBeCloseTo(1, 6);
     expect(pool.find((p) => p.c.id === 'CC-W040')!.chance).toBeCloseTo(0.0075, 6);
   });

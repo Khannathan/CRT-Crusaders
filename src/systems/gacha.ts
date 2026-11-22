@@ -4,6 +4,7 @@ import type { CrusaderDef, Rarity } from '../data/types';
 import type { SaveData } from '../state/save';
 import { track } from './tasks';
 import { STIGMATA_FOR_COPY, addStigmata, copiesLeft } from './tiers';
+import { isStandard, limitedWindow } from './limited';
 
 export const RATES: Record<Rarity, number> = { R: 0.6, SR: 0.3, SSR: 0.085, UR: 0.015 };
 export const RARITY_ORDER: Rarity[] = ['R', 'SR', 'SSR', 'UR'];
@@ -14,7 +15,11 @@ export const UR_SOFT = 60;
 export const UR_HARD = 80;
 /** UR chance added per pull past UR_SOFT. */
 export const UR_SOFT_STEP = 0.06;
-/** Relic Shards: one per pull on an Order banner, kept per Order; SPARK of them buys one of that Order's URs. */
+/**
+ * Relic Shards: one per pull on an Order banner, kept per Order; SPARK of them
+ * buy that Order's UR. On the Limited banner they are Saint's Favor, kept per
+ * Saint (never lost: a Saint's Favor waits for her return).
+ */
 export const SPARK = 150;
 export { MAX_VOW } from './tiers';
 /** Tithes paid for a duplicate once Vows are maxed. */
@@ -60,14 +65,60 @@ export const ORDER_SSR_SHARE = 0.5;
 
 const pickFrom = (rng: Rng, pool: CrusaderDef[]) => pool[Math.floor(rng() * pool.length)];
 
+/** Sisters of a rarity that any banner can give at random (limited Saints only come as a target). */
+const standardOf = (rarity: Rarity) => CRUSADERS.filter((c) => c.rarity === rarity && isStandard(c));
+
 /**
- * Picks the Sister for a rolled rarity. On an Order banner, a UR is the target
- * half the time and always after a miss; an SSR comes from the Order half the time.
+ * Points the saved banner at what is on offer now: a Limited banner from an
+ * earlier window moves to this window's Saint; a missing or stale Order banner
+ * falls back to that Order's (or the first Order's) UR.
+ */
+export function syncBanner(save: SaveData, now = Date.now()) {
+  const b = save.banner;
+  if (b?.limited !== undefined) {
+    const w = limitedWindow(now);
+    if (b.limited !== w.index || b.target !== w.saint.id) save.banner = { order: w.saint.order, target: w.saint.id, limited: w.index };
+    return save.banner!;
+  }
+  const urOf = (order: string) => CRUSADERS.find((c) => c.order === order && c.rarity === 'UR' && isStandard(c));
+  if (!b || !urOf(b.order)) {
+    const first = CRUSADERS.find((c) => c.rarity === 'UR' && isStandard(c))!;
+    save.banner = { order: first.order, target: first.id };
+  } else if (b.target !== urOf(b.order)!.id) b.target = urOf(b.order)!.id;
+  return save.banner!;
+}
+
+/** Puts the Limited banner up at the Altar. */
+export function chooseLimited(save: SaveData, now = Date.now()) {
+  const w = limitedWindow(now);
+  save.banner = { order: w.saint.order, target: w.saint.id, limited: w.index };
+}
+
+/** The banner's targeted UR, if it has one. */
+function targetOf(save: SaveData): CrusaderDef | undefined {
+  const b = save.banner;
+  if (!b) return undefined;
+  return CRUSADERS.find((c) => c.id === b.target && c.rarity === 'UR' && (b.limited !== undefined ? !!c.limited : c.order === b.order && isStandard(c)));
+}
+
+/** The SSRs this banner boosts: the Order's two, or the Limited window's pair. */
+export function boostedSSRs(save: SaveData, now = Date.now()): CrusaderDef[] {
+  const b = save.banner;
+  if (!b) return [];
+  if (b.limited !== undefined) return limitedWindow(now).ssrs;
+  return standardOf('SSR').filter((c) => c.order === b.order);
+}
+
+/** Where a pull's Relic Shards (or Saint's Favor) go, and what spends them. */
+export const sparkKey = (c: Pick<CrusaderDef, 'id' | 'order' | 'limited'>) => (c.limited ? c.id : c.order);
+
+/**
+ * Picks the Sister for a rolled rarity. A banner UR is the target half the
+ * time and always after a miss; an SSR is a boosted one half the time.
  */
 function pickCrusader(save: SaveData, rng: Rng, rarity: Rarity): CrusaderDef {
-  const pool = CRUSADERS.filter((c) => c.rarity === rarity);
-  const banner = save.banner;
-  const target = banner && CRUSADERS.find((c) => c.id === banner.target && c.order === banner.order && c.rarity === 'UR');
+  const pool = standardOf(rarity);
+  const target = targetOf(save);
   if (rarity === 'UR' && target) {
     if (save.urGuaranteed || rng() < TARGET_SHARE) {
       save.urGuaranteed = false;
@@ -76,31 +127,36 @@ function pickCrusader(save: SaveData, rng: Rng, rarity: Rarity): CrusaderDef {
     save.urGuaranteed = true;
     return pickFrom(rng, pool.filter((c) => c.id !== target.id));
   }
-  if (rarity === 'SSR' && banner) {
-    const orderPool = pool.filter((c) => c.order === banner.order);
-    if (orderPool.length && rng() < ORDER_SSR_SHARE) return pickFrom(rng, orderPool);
+  if (rarity === 'SSR') {
+    const boosted = boostedSSRs(save);
+    if (boosted.length && rng() < ORDER_SSR_SHARE) return pickFrom(rng, boosted);
   }
   return pickFrom(rng, pool);
 }
 
 /**
  * Every Sister this banner can give, with her base chance per pull (before
- * pity). The targeted UR takes half the UR rate, the banner Order's SSRs half
- * the SSR rate; everyone else shares the rest of her rarity evenly.
+ * pity). The targeted UR takes half the UR rate, the boosted SSRs half the SSR
+ * rate; everyone else shares the rest of her rarity evenly.
  */
 export function bannerPool(save: SaveData): { c: CrusaderDef; chance: number; featured: boolean }[] {
-  const banner = save.banner;
   const out: { c: CrusaderDef; chance: number; featured: boolean }[] = [];
+  const target = targetOf(save);
+  const boosted = boostedSSRs(save);
   for (const r of [...RARITY_ORDER].reverse()) {
-    const pool = CRUSADERS.filter((c) => c.rarity === r);
     const rate = RATES[r];
-    const target = r === 'UR' && banner ? pool.find((c) => c.id === banner.target) : undefined;
-    const orderSSR = r === 'SSR' && banner ? pool.filter((c) => c.order === banner.order) : [];
+    const pool = standardOf(r);
+    if (r === 'UR' && target) {
+      out.push({ c: target, chance: rate * TARGET_SHARE, featured: true });
+      const rest = pool.filter((c) => c !== target);
+      for (const c of rest) out.push({ c, chance: (rate * (1 - TARGET_SHARE)) / rest.length, featured: false });
+      continue;
+    }
     for (const c of pool) {
       let chance = rate / pool.length;
-      if (target) chance = c === target ? rate * TARGET_SHARE : (rate * (1 - TARGET_SHARE)) / (pool.length - 1);
-      else if (orderSSR.length) chance = (rate * (1 - ORDER_SSR_SHARE)) / pool.length + (orderSSR.includes(c) ? (rate * ORDER_SSR_SHARE) / orderSSR.length : 0);
-      out.push({ c, chance, featured: c === target || orderSSR.includes(c) });
+      const up = r === 'SSR' && boosted.includes(c);
+      if (r === 'SSR' && boosted.length) chance = (rate * (1 - ORDER_SSR_SHARE)) / pool.length + (up ? (rate * ORDER_SSR_SHARE) / boosted.length : 0);
+      out.push({ c, chance, featured: up });
     }
   }
   return out;
@@ -123,7 +179,8 @@ function pullOnce(save: SaveData, rng: Rng, floor: Rarity): PullResult {
   save.pity += 1;
   save.totalPulls += 1;
   save.urPity = (save.urPity ?? 0) + 1;
-  if (save.banner) (save.shards ??= {})[save.banner.order] = shardsOf(save, save.banner.order) + 1;
+  const target = targetOf(save);
+  if (target) (save.shards ??= {})[sparkKey(target)] = shardsOf(save, sparkKey(target)) + 1;
   const pityFloor: Rarity = save.pity >= PITY_LIMIT ? 'SSR' : 'R';
   const lo = rank(pityFloor) > rank(floor) ? pityFloor : floor;
   // Past soft pity the UR check comes first, at its raised chance.
@@ -142,7 +199,7 @@ export const PULL_LOG_MAX = 200;
 
 function logPull(save: SaveData, r: PullResult) {
   const log = (save.pullLog ??= []);
-  log.push({ id: r.crusader.id, at: Date.now(), banner: save.banner?.order, isNew: r.isNew || undefined });
+  log.push({ id: r.crusader.id, at: Date.now(), banner: save.banner?.limited !== undefined ? 'Limited' : save.banner?.order, isNew: r.isNew || undefined });
   if (log.length > PULL_LOG_MAX) log.splice(0, log.length - PULL_LOG_MAX);
 }
 
@@ -181,6 +238,7 @@ export function canPull(save: SaveData, kind: PullKind): boolean {
  */
 export function pull(save: SaveData, kind: PullKind, rng: Rng = Math.random): PullResult[] {
   if (!canPull(save, kind)) return [];
+  if (save.banner) syncBanner(save);
   if (kind === 'one') {
     save.seals -= COST_ONE;
     track(save, 'pull');
@@ -198,11 +256,11 @@ export function pull(save: SaveData, kind: PullKind, rng: Rng = Math.random): Pu
   return results;
 }
 
-/** Spends SPARK Relic Shards of an Order for one of its URs. */
+/** Spends SPARK Relic Shards of an Order for its UR, or SPARK Saint's Favor for that Saint. */
 export function claimSpark(save: SaveData, id: string): PullResult | undefined {
   const c = CRUSADERS.find((x) => x.id === id && x.rarity === 'UR');
-  if (!c || shardsOf(save, c.order) < SPARK) return undefined;
-  save.shards![c.order] -= SPARK;
+  if (!c || shardsOf(save, sparkKey(c)) < SPARK) return undefined;
+  save.shards![sparkKey(c)] -= SPARK;
   return grantSister(save, c);
 }
 
