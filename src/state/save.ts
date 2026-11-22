@@ -49,6 +49,8 @@ export interface SaveData {
   urPity?: number;
   /** Relic Shards per Order name: one per pull on its banner. */
   shards?: Record<string, number>;
+  /** Recent pulls, newest last (capped at PULL_LOG_MAX), for the history page. */
+  pullLog?: { id: string; at: number; banner?: string; isNew?: boolean }[];
   /** Highest Heresy tier cleared per crypt id (0 = the base crypt). */
   heresy?: Record<string, number>;
   /** Every piece of gear owned; `on` says who wears it. */
