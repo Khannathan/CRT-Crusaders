@@ -108,4 +108,4 @@ export const CLASS_SKILLS: Record<string, [SkillDef, SkillDef, SkillDef, SkillDe
 };
 
 /** Always available: swap places with the ally in front (or behind, from rank 1). */
-export const SHIFT_SKILL: SkillDef = { id: 'shift', name: 'Shift', desc: 'Swap places with the neighbouring ally.', from: any, target: 'self' };
+export const SHIFT_SKILL: SkillDef = { id: 'shift', name: 'Shift', desc: 'Swap with the Sister one rank ahead (rank I swaps back): reach the rank your skills need, or step out of reach.', from: any, target: 'self' };

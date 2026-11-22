@@ -15,6 +15,7 @@ import { PAD, addFrame, text } from '../ui/theme';
 import { addScrollArea } from '../ui/scroll';
 import { TAB_BAR_H } from '../ui/tabBar';
 import { holdForCard } from '../ui/sisterCard';
+import { sortAndFilter, sortControls } from '../ui/sisterSort';
 
 
 /** Confession: Sisters by bond, and one Sister's bond, offerings, candle and confessions. */
@@ -48,17 +49,22 @@ export class ConfessionScene extends Phaser.Scene {
   private list() {
     const save = game.save;
     const { top } = modeScreen(this, 'Confession', 'Fight beside them, keep Vigil with them, bring them offerings. In time they will speak.');
-    const owned = CRUSADERS.filter((c) => save.owned[c.id]).sort((a, b) => bondInfo(save, b.id).xp - bondInfo(save, a.id).xp);
+    const owned = sortAndFilter(save, CRUSADERS.filter((c) => save.owned[c.id]));
     this.add.text(PAD, top, `+${Math.round(BOND_STAT * 100)}% ATK AND HP PER BOND LEVEL`, text.hud(12, PAL.muted));
     tapForSources(this, this.add.text(GAME_W - PAD, top, `OFFERINGS ${offeringsHeld(save)}${candleReady(save) ? '  ·  CANDLE READY' : ''}`, text.hud(12, PAL.amber)).setOrigin(1, 0), 'offerings');
     const cell = 118;
     const x0 = GAME_W / 2 - cell * 1.5;
     // Every Sister in one list: drag or wheel to scroll.
-    const list = addScrollArea(this, top + 18, GAME_H - TAB_BAR_H, { start: ConfessionScene.listY, onScroll: (y) => (ConfessionScene.listY = y) });
+    sortControls(this, GAME_W / 2, top + 42, GAME_W - PAD * 2, () => {
+      ConfessionScene.listY = 0;
+      this.scene.restart({});
+    }, { depth: 10, h: 36 });
+    if (!owned.length) this.add.text(GAME_W / 2, top + 140, 'No Sister matches these filters.', text.body(17, PAL.muted)).setOrigin(0.5);
+    const list = addScrollArea(this, top + 64, GAME_H - TAB_BAR_H, { start: ConfessionScene.listY, onScroll: (y) => (ConfessionScene.listY = y) });
     const before = this.children.list.length;
     owned.forEach((c, i) => {
       const x = x0 + (i % 4) * cell;
-      const y = top + 74 + Math.floor(i / 4) * 140;
+      const y = top + 120 + Math.floor(i / 4) * 140;
       const b = bondInfo(save, c.id);
       makePlaceholderPortrait(this, c);
       this.add.rectangle(x, y, 98, 98, 0x000000, 0).setStrokeStyle(2, RARITY_COLOR[c.rarity]);
@@ -73,7 +79,7 @@ export class ConfessionScene extends Phaser.Scene {
       if (b.unheard) this.add.circle(x + 42, y - 42, 7, PAL.amber).setStrokeStyle(2, 0x1b121c);
     });
     list.content.add(this.children.list.slice(before));
-    list.fit(top + 74 + Math.ceil(owned.length / 4) * 140 - 30);
+    list.fit(top + 120 + Math.ceil(owned.length / 4) * 140 - 30);
   }
 
   private detail(id: string) {

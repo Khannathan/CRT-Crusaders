@@ -13,6 +13,7 @@ import { portraitKey } from '../ui/placeholderPortrait';
 import { addIcon, addScreenGlow, text } from '../ui/theme';
 import { addScrollArea } from '../ui/scroll';
 import { addOrderSigil, holdForCard, justHeld } from '../ui/sisterCard';
+import { sortAndFilter, sortControls } from '../ui/sisterSort';
 
 const ROMAN = ['I', 'II', 'III', 'IV'];
 
@@ -88,13 +89,19 @@ export class MusterScene extends Phaser.Scene {
       .setOrigin(0.5, 0)
       .setLineSpacing(-2);
     this.add.rectangle(GAME_W / 2, 344, GAME_W - 32, 1, PAL.armorShadow);
-    const owned = CRUSADERS.filter((c) => game.save.owned[c.id]);
-    // The Sisters scroll (drag or mouse wheel) between the divider and the buttons.
-    const list = addScrollArea(this, 346, GAME_H - 108, { start: this.listY, onScroll: (y) => (this.listY = y) });
+    // The Roster's sort and filter; Sisters already called always show.
+    const owned = sortAndFilter(game.save, CRUSADERS.filter((c) => game.save.owned[c.id]), this.party);
+    sortControls(this, GAME_W / 2, 368, GAME_W - 32, () => {
+      this.listY = 0;
+      this.create();
+    }, { depth: 10, h: 36 });
+    if (!owned.length) this.add.text(GAME_W / 2, 470, 'No Sister matches these filters.', text.body(17, PAL.muted)).setOrigin(0.5);
+    // The Sisters scroll (drag or mouse wheel) between the controls and the buttons.
+    const list = addScrollArea(this, 390, GAME_H - 108, { start: this.listY, onScroll: (y) => (this.listY = y) });
     const before = this.children.list.length;
     owned.forEach((c, i) => {
       const x = 8 + 64 + (i % 4) * 132;
-      const y = 410 + Math.floor(i / 4) * 172;
+      const y = 456 + Math.floor(i / 4) * 172;
       const inParty = this.party.includes(c.id);
       const ready = canMuster(game.save, c.id);
       this.add.rectangle(x, y, 134, 134, 0x170f1b).setStrokeStyle(1, ready ? RARITY_COLOR[c.rarity] : PAL.armorShadow);
@@ -115,7 +122,7 @@ export class MusterScene extends Phaser.Scene {
       this.add.text(x, y + 95, sub, text.body(14, PAL.muted)).setOrigin(0.5);
     });
     list.content.add(this.children.list.slice(before));
-    list.fit(410 + Math.ceil(owned.length / 4) * 172 - 50);
+    list.fit(456 + Math.ceil(owned.length / 4) * 172 - 50);
 
     makeButton(this, GAME_W / 2 - 128, GAME_H - 60, 236, 80, 'Suggest', () => {
       this.party = suggestParty(game.save);
