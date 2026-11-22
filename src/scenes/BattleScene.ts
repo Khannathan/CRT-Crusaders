@@ -1,14 +1,12 @@
 import Phaser from 'phaser';
 import { music } from '../audio/music';
-import { bondBattle } from '../systems/bonds';
-import { expBattle } from '../systems/exp';
 import { FONT, GAME_W, PAL, hex } from '../config';
 import { addTabBar } from '../ui/tabBar';
 import { RARITY_COLOR } from '../data/classes';
 import { CRUSADERS } from '../data/crusaders';
 import { ENEMIES } from '../data/enemies';
 import type { SkillDef } from '../data/skills';
-import { commit, game } from '../state/game';
+import { game } from '../state/game';
 import { saveSettings, settings } from '../state/settings';
 import { autoChoose, autoStep } from '../systems/autoplay';
 import { makeButton } from '../ui/button';
@@ -16,7 +14,9 @@ import { addArt } from '../ui/theme';
 import { Bar, candleFrames, nine } from '../ui/skin';
 import { current } from '../state/run';
 import { BALANCE_VERSION, Battle, EXECUTE_AT, ZEAL_MAX, skillsFor, type BattleEvent, type Unit } from '../systems/combat';
-import { absorbBattle, currentNode, finishRun, makeBattle, winRoom } from '../systems/crusade';
+import { currentNode, makeBattle } from '../systems/crusade';
+import { settleBattle } from '../systems/settle';
+import { runInBackground, takeBackground } from '../ui/bgFight';
 import { newSeed, seeded } from '../systems/rng';
 import { enemyKey } from '../ui/enemyArt';
 import { intentIconKey } from '../ui/icons';
@@ -80,24 +80,32 @@ export class BattleScene extends Phaser.Scene {
   private toggles: Phaser.GameObjects.GameObject[] = [];
   /** A tab the player tapped while the enemy was acting: open it at the next party turn. */
   private leaveFor?: string;
+  /** The fight is over (paid out); only the closing line is showing. */
+  private ended = false;
+  /** Whether the current actor has acted, so a fight sent to the background knows where it stands. */
+  private acted = true;
 
   constructor() {
     super('Battle');
   }
 
   create() {
+    // An Auto fight left running in the background comes back on screen.
+    const away = takeBackground();
     const run = current.run;
     const challenge = current.challenge;
     const node = run && currentNode(run);
-    if (!challenge && (!run || !node?.encounter)) {
+    if (!away && !challenge && (!run || !node?.encounter)) {
       this.scene.start('Crypt');
       return;
     }
-    const encounter = challenge ? challenge.label : node!.encounter!;
+    const encounter = challenge ? challenge.label : node?.encounter ?? '';
     // A fight left from the Menu picks up where it stopped, if it is this same fight.
     const p = current.paused;
     const resume = p && (challenge ? p.challenge === challenge : !p.challenge && p.run === run && p.floor === run!.floor && p.at === run!.at) ? p : undefined;
-    if (resume) {
+    if (away) {
+      this.battle = away.battle;
+    } else if (resume) {
       current.paused = undefined;
       this.battle = resume.battle;
     } else {
@@ -109,7 +117,9 @@ export class BattleScene extends Phaser.Scene {
     music.play(this.battle.units.some((u) => u.side === 'enemy' && u.boss) ? 'boss' : 'battle');
     music.preload('victory', 'defeat');
     this.leaveFor = undefined;
-    this.vigilMax = resume ? resume.vigilMax : this.battle.vigil;
+    this.ended = false;
+    this.acted = true;
+    this.vigilMax = away ? away.vigilMax : resume ? resume.vigilMax : this.battle.vigil;
     this.cards.clear();
     this.mode = 'busy';
     this.chosen = undefined;
@@ -149,7 +159,10 @@ export class BattleScene extends Phaser.Scene {
     makeFxTextures(this);
     for (const u of this.battle.units) this.makeCard(u);
     this.refresh();
-    if (resume) {
+    if (away) {
+      this.logText.setText('The fight went on without you.');
+      this.time.delayedCall(400, () => (away.pending ? this.resumeTurn(away.pending.uid) : this.step()));
+    } else if (resume) {
       this.logText.setText('The fight resumes.');
       this.time.delayedCall(400, () => this.resumeTurn(resume.actorUid));
     } else {
@@ -165,6 +178,15 @@ export class BattleScene extends Phaser.Scene {
    * next one), then that screen opens. Resume it from the Crusade tab.
    */
   private leaveTo(key: string) {
+    if (this.ended) return;
+    // On Auto the fight plays on in the background.
+    if (settings.autoBattle) {
+      runInBackground(this.battle, this.vigilMax, this.acted ? undefined : this.actor);
+      this.mode = 'busy';
+      this.clearSkills();
+      this.scene.start(key, {});
+      return;
+    }
     if (this.actor?.side === 'party' && (this.mode === 'skill' || this.mode === 'target')) return this.pauseAndGo(key);
     this.leaveFor = key;
     this.descText.setText('The fight will wait at your next turn.');
@@ -193,6 +215,7 @@ export class BattleScene extends Phaser.Scene {
 
   private step() {
     const t = this.battle.nextTurn();
+    this.acted = !!t.outcome;
     this.play(t.events, () => {
       if (t.outcome) return this.end(t.outcome);
       this.actor = t.actor!;
@@ -226,51 +249,26 @@ export class BattleScene extends Phaser.Scene {
     this.fxHit.clear();
     const cast = this.cards.get(actor.uid);
     if (this.fx && cast) burstFx(this, cast.box.x, cast.box.y, CARD * 0.8, { ...this.fx, power: (this.fx.power ?? 1) * 0.6 });
-    const go = () =>
+    const go = () => {
+      this.acted = true;
       this.play(this.battle.act(actor, skill, target), () => {
         this.fx = undefined;
         this.step();
       });
+    };
     if (skill.rite && actor.side === 'party') riteCard(this, skill.name, actor.name, go);
     else go();
   }
 
   private end(outcome: 'victory' | 'defeat') {
     music.stinger(outcome, 'end');
-    const challenge = current.challenge;
-    // Battle EXP: every Sister still standing.
-    const won = expBattle(game.save, this.battle);
-    const expLine = won.exp ? `  +${won.exp} EXP${won.levelled.length ? ', level up!' : ''}` : '';
-    if (challenge) {
-      this.mode = 'busy';
-      this.clearSkills();
-      this.logText.setText(outcome === 'victory' ? `The trial is passed.${expLine}` : 'Your Sisters fall back, bloodied but alive.');
-      this.time.delayedCall(1200, () => {
-        current.challenge = undefined;
-        bondBattle(game.save, this.battle);
-        const next = challenge.finish(outcome, this.battle);
-        commit();
-        this.scene.start(next.scene, next.data);
-      });
-      return;
-    }
-    const run = current.run!;
-    absorbBattle(run, this.battle);
+    // Paid out at once, so leaving during the closing line loses nothing.
+    this.ended = true;
     this.mode = 'busy';
     this.clearSkills();
-    this.logText.setText(outcome === 'victory' ? `The heretics are purged.${expLine}` : 'Your Sisters have fallen. The dark takes its tithe.');
-    this.time.delayedCall(1200, () => {
-      if (outcome === 'victory') {
-        winRoom(run, game.save);
-        commit();
-        this.scene.start('Crypt');
-      } else {
-        const result = finishRun(game.save, run, 'defeat');
-        current.run = undefined;
-        commit();
-        this.scene.start('Results', { result });
-      }
-    });
+    const next = settleBattle(this.battle, outcome);
+    this.logText.setText(next.line);
+    this.time.delayedCall(1200, () => this.scene.start(next.scene, next.data ?? {}));
   }
 
   // ---------- input ----------
