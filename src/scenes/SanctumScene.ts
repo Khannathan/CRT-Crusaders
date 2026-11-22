@@ -6,6 +6,8 @@ import { commit, game, resetGame } from '../state/game';
 import { current } from '../state/run';
 import { showExport, showImport } from '../ui/saveTransfer';
 import { drawAlmostThere } from '../ui/almostThere';
+import { drawFlame } from '../ui/flame';
+import { tendFlame } from '../systems/flame';
 import { saveSettings, settings } from '../state/settings';
 import { music } from '../audio/music';
 import { toggleFullscreen } from '../ui/fullscreen';
@@ -114,6 +116,18 @@ export class SanctumScene extends Phaser.Scene {
     this.add.text(left + 18, top + 34, CHAPTERS[stage.chapter].name, { ...text.display(19, 0xfff1d6) }).setShadow(0, 2, '#000000', 6, false, true);
     const road = makeButton(this, left + fw - 74, top + 34, 124, 40, roadDone(save) ? 'The Road' : 'Challenge', () => this.scene.start('Campaign'), { fontSize: 16, active: !roadDone(save), icon: 'blade' });
     if (!roadDone(save) && stageRecommended(save, stage.n) <= partyPower(save, v.party.filter((id) => save.owned[id]))) this.add.circle(road.box.x + 56, road.box.y - 16, 6, PAL.amber).setStrokeStyle(2, 0x1b121c);
+    // The Vigil Flame: a candle that grows a step for each day you keep the vigil.
+    const tended = tendFlame(save);
+    commit();
+    drawFlame(this, left + 30, top + zoneH - 24, save).forEach((o) => (o as unknown as Phaser.GameObjects.Components.Depth).setDepth(4));
+    if (tended && save.flame!.level > 1) {
+      const lines = [`The Vigil Flame grows: ${save.flame!.level} days`];
+      if (tended.graced) lines.push(`Grace kept it for ${tended.graced} missed day${tended.graced > 1 ? 's' : ''}`);
+      if (tended.dimmed) lines.push(`It dimmed ${tended.dimmed} step${tended.dimmed > 1 ? 's' : ''} while you were away`);
+      for (const t of tended.titles) lines.push(`New title: "${t}"`);
+      const toast = this.add.text(left + 56, top + zoneH - 30, lines.join('\n'), { ...text.body(14, PAL.amber), backgroundColor: '#1b121ccc', padding: { x: 8, y: 5 } }).setOrigin(0, 1).setDepth(5);
+      this.tweens.add({ targets: toast, alpha: 0, delay: 3500, duration: 600, onComplete: () => toast.destroy() });
+    }
     this.purged = 0;
     this.purgedText = this.add.text(left + fw - 16, top + zoneH - 14, '', text.hud(12, PAL.muted)).setOrigin(1, 1);
 
