@@ -1,4 +1,5 @@
 import type { SaveData } from '../state/save';
+import { bagText, give, type Bag } from './items';
 import { gainFaith } from './rank';
 
 /**
@@ -33,6 +34,7 @@ export interface TaskDef {
 export interface Reward {
   seals?: number;
   tithes?: number;
+  items?: Bag;
 }
 
 export interface Mark {
@@ -62,14 +64,14 @@ export const TASKS: Record<Period, TaskDef[]> = {
 
 export const MARKS: Record<Period, Mark[]> = {
   daily: [
-    { at: 40, reward: { tithes: 120 } },
-    { at: 70, reward: { seals: 1, tithes: 80 } },
-    { at: 100, reward: { seals: 2 } },
+    { at: 40, reward: { tithes: 120, items: { incense1: 5 } } },
+    { at: 70, reward: { seals: 1, tithes: 80, items: { page1: 4 } } },
+    { at: 100, reward: { seals: 2, items: { incense1: 5, ash1: 4 } } },
   ],
   weekly: [
-    { at: 40, reward: { seals: 2, tithes: 300 } },
-    { at: 80, reward: { seals: 3 } },
-    { at: 120, reward: { seals: 5 } },
+    { at: 40, reward: { seals: 2, tithes: 300, items: { incense2: 3 } } },
+    { at: 80, reward: { seals: 3, items: { writ1: 3 } } },
+    { at: 120, reward: { seals: 5, items: { incense2: 3, writ2: 1 } } },
   ],
 };
 
@@ -143,9 +145,10 @@ export const anyClaimable = (save: SaveData, now = Date.now()) => claimable(save
 export function grant(save: SaveData, r: Reward) {
   save.seals += r.seals ?? 0;
   save.tithes += r.tithes ?? 0;
+  if (r.items) give(save, r.items);
 }
 
-export const rewardText = (r: Reward) => [r.seals ? `${r.seals} Seal${r.seals > 1 ? 's' : ''}` : '', r.tithes ? `${r.tithes} Tithes` : ''].filter(Boolean).join(' + ');
+export const rewardText = (r: Reward) => [r.seals ? `${r.seals} Seal${r.seals > 1 ? 's' : ''}` : '', r.tithes ? `${r.tithes} Tithes` : '', bagText(r.items)].filter(Boolean).join(' + ');
 
 /** Claims one mark. Returns its reward, or undefined if it isn't ready. */
 export function claimMark(save: SaveData, p: Period, at: number, now = Date.now()): Reward | undefined {

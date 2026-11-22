@@ -4,29 +4,32 @@ import type { Battle } from './combat';
 import type { Rng } from './gacha';
 import { claimGear, makeGear, rollGearRarity, type GearItem, type GearSlot } from './gear';
 import { dayKey, track } from './tasks';
+import { bagText, give, type Bag } from './items';
 
 /**
  * Relic Trials: one short fight a day per kind of spoil. Each weekday opens
  * one trial (weekends open all). Three victories a day in total; an entry is
  * only spent on a win. Three stars on a tier lets you sweep it after that.
- * Pays in gear, Tithes or Seals: no new currencies.
+ * Pays in gear, Tithes, Seals, Martyr's Ash or Psalter Pages.
  */
-export type TrialKind = GearSlot | 'tithes' | 'seals';
+export type TrialKind = GearSlot | 'tithes' | 'seals' | 'ash' | 'page';
 
 export interface TrialDef {
   kind: TrialKind;
   name: string;
   flavor: string;
-  /** Weekday it opens (0 = Sunday). Weekends open every trial. */
-  day: number;
+  /** Weekdays it opens (0 = Sunday). Weekends open every trial. */
+  days: number[];
 }
 
 export const TRIALS: TrialDef[] = [
-  { kind: 'blade', name: 'Trial of the Blade', flavor: 'The armory of the fallen. Their swords still want hands.', day: 1 },
-  { kind: 'habit', name: 'Trial of the Habit', flavor: 'Burial shrouds that turned aside a heretic blade.', day: 2 },
-  { kind: 'rosary', name: 'Trial of the Rosary', flavor: 'Prayer beads strung on the fingerbones of saints.', day: 3 },
-  { kind: 'tithes', name: 'Trial of the Coffer', flavor: 'A tithe-barn the dead still guard.', day: 4 },
-  { kind: 'seals', name: 'Trial of Wax', flavor: 'The sealing-chamber. Every seal is paid for in blood.', day: 5 },
+  { kind: 'blade', name: 'Trial of the Blade', flavor: 'The armory of the fallen. Their swords still want hands.', days: [1] },
+  { kind: 'habit', name: 'Trial of the Habit', flavor: 'Burial shrouds that turned aside a heretic blade.', days: [2] },
+  { kind: 'rosary', name: 'Trial of the Rosary', flavor: 'Prayer beads strung on the fingerbones of saints.', days: [3] },
+  { kind: 'tithes', name: 'Trial of the Coffer', flavor: 'A tithe-barn the dead still guard.', days: [4] },
+  { kind: 'seals', name: 'Trial of Wax', flavor: 'The sealing-chamber. Every seal is paid for in blood.', days: [5] },
+  { kind: 'ash', name: 'Trial of Ash', flavor: 'The pyre-yard, where the martyrs were burned. Their ash remembers.', days: [1, 4] },
+  { kind: 'page', name: 'Trial of the Psalter', flavor: 'A scriptorium sealed since the plague. The monks still copy.', days: [2, 5] },
 ];
 
 export interface TierDef {
@@ -70,7 +73,7 @@ export const entriesLeft = (save: SaveData, now = Date.now()) => Math.max(0, TRI
 /** Trials open today. */
 export function openTrials(now = Date.now()): TrialDef[] {
   const d = new Date(now).getDay();
-  return d === 0 || d === 6 ? TRIALS : TRIALS.filter((t) => t.day === d);
+  return d === 0 || d === 6 ? TRIALS : TRIALS.filter((t) => t.days.includes(d));
 }
 
 export const bestStars = (save: SaveData, kind: TrialKind, tier: number) => trialsOf(save).best[`${kind}-${tier}`] ?? 0;
@@ -95,14 +98,24 @@ export interface TrialSpoils {
   tithes: number;
   seals: number;
   gear: GearItem[];
+  items?: Bag;
+}
+
+/** Ash and Psalter trials: more and rarer with the tier. */
+export function materialSpoils(family: 'ash' | 'page', tier: number): Bag {
+  const bag: Bag = { [`${family}1`]: 6 + 3 * tier };
+  if (tier >= 1) bag[`${family}2`] = tier;
+  if (tier >= 4) bag[`${family}3`] = 1;
+  return bag;
 }
 
 export function spoilsText(s: TrialSpoils) {
-  return [s.tithes ? `${s.tithes} Tithes` : '', s.seals ? `${s.seals} Seal${s.seals > 1 ? 's' : ''}` : '', ...s.gear.map((g) => `${g.name} (${g.rarity})`)].filter(Boolean).join(', ');
+  return [s.tithes ? `${s.tithes} Tithes` : '', s.seals ? `${s.seals} Seal${s.seals > 1 ? 's' : ''}` : '', bagText(s.items), ...s.gear.map((g) => `${g.name} (${g.rarity})`)].filter(Boolean).join(', ');
 }
 
 /** What a tier pays, described before the fight. */
 export function spoilsPreview(kind: TrialKind, tier: number) {
+  if (kind === 'ash' || kind === 'page') return bagText(materialSpoils(kind, tier));
   if (kind === 'tithes') return `${300 * (tier + 1)} Tithes`;
   if (kind === 'seals') return `${[1, 1, 2, 2, 3][tier]} Seal${tier > 1 ? 's' : ''} + ${60 * (tier + 1)} Tithes`;
   return `${tier >= 2 ? 2 : 1} ${kind} gear, rarer at higher tiers`;
@@ -110,7 +123,10 @@ export function spoilsPreview(kind: TrialKind, tier: number) {
 
 function pay(save: SaveData, kind: TrialKind, tier: number, rng: Rng): TrialSpoils {
   const out: TrialSpoils = { tithes: 0, seals: 0, gear: [] };
-  if (kind === 'tithes') out.tithes = 300 * (tier + 1);
+  if (kind === 'ash' || kind === 'page') {
+    out.items = materialSpoils(kind, tier);
+    give(save, out.items);
+  } else if (kind === 'tithes') out.tithes = 300 * (tier + 1);
   else if (kind === 'seals') {
     out.seals = [1, 1, 2, 2, 3][tier];
     out.tithes = 60 * (tier + 1);

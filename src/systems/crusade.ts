@@ -10,6 +10,7 @@ import { Battle, VIGIL_DEFAULT, makeEnemy, type Unit } from './combat';
 import type { Rng } from './gacha';
 import { claimGear, makeGear, rollGearRarity, type GearItem } from './gear';
 import { recommendedPower } from './power';
+import { addBags, give, roomDrops, type Bag } from './items';
 import { levelUpCost, sisterStats } from './stats';
 import { track, weekKey } from './tasks';
 
@@ -110,6 +111,8 @@ export interface RunState {
   heresy: number;
   /** Gear found so far, claimed when the run ends (lost on defeat). */
   loot: GearItem[];
+  /** Materials found so far: kept on victory or retreat, halved on defeat. */
+  items?: Bag;
   /** Extra Zeal for the next fight only. */
   blessZeal?: number;
   /** Shorter Vigil for the next fight only. */
@@ -316,6 +319,7 @@ export function winRoom(run: RunState, save?: SaveData, rng: Rng = Math.random) 
   const drops = node.kind === 'boss' ? 2 : node.kind === 'elite' ? 1 : rng() < REWARDS.fightGearChance ? 1 : 0;
   (run.loot ??= []);
   for (let i = 0; i < drops; i++) run.loot.push(makeGear(rng, rollGearRarity(rng, luck)));
+  run.items = addBags(run.items, roomDrops(node.kind === 'boss' ? 'boss' : node.kind === 'elite' ? 'elite' : 'fight', run.heresy + (run.crypt.rewardMult > 1 ? 1 : 0), rng));
   const fightHeal = relicsOf(run).reduce((n, r) => n + (r.fightHeal ?? 0), 0);
   if (save && fightHeal) healAll(save, run, fightHeal);
   const m = rewardMult(run);
@@ -431,6 +435,8 @@ export interface RunResult {
   gear: GearItem[];
   /** Tithes from gear melted because the armory was full. */
   melted: number;
+  /** Materials brought home. */
+  items: Bag;
   /** The weekly Pilgrimage bonus, if this victory was one of the week's blessed clears. */
   pilgrimage?: { seals: number; tithes: number; left: number };
 }
@@ -475,9 +481,15 @@ export function finishRun(save: SaveData, run: RunState, outcome: RunResult['out
 
   const gear = outcome === 'defeat' ? [] : run.loot ?? [];
   const melted = claimGear(save, gear);
+  const items: Bag = {};
+  for (const [id, n] of Object.entries(run.items ?? {}) as [keyof Bag, number][]) {
+    const kept = outcome === 'defeat' ? Math.floor(n / 2) : n;
+    if (kept) items[id] = kept;
+  }
+  give(save, items);
   save.tithes += tithes;
   save.seals += seals;
-  return { outcome, tithes, seals, firstClear, heresyCleared, fallen, gear, melted, pilgrimage };
+  return { outcome, tithes, seals, firstClear, heresyCleared, fallen, gear, melted, items, pilgrimage };
 }
 
 export function revive(save: SaveData, id: string): boolean {

@@ -28,7 +28,9 @@ import {
   unequip,
   type GearSlot,
 } from '../systems/gear';
-import { MAX_LEVEL, levelUpCost, sisterStats, vowCost } from '../systems/stats';
+import { levelCap, levelUpCost, sisterStats, vowCost } from '../systems/stats';
+import { ascend, ascendBlock, costLine, nextAscension } from '../systems/ascension';
+import { ROMAN_RANK } from '../systems/rank';
 import { track } from '../systems/tasks';
 import { makeButton } from '../ui/button';
 import { CURRENCY_BAR_H, addCurrencyBar } from '../ui/currencyBar';
@@ -368,7 +370,7 @@ export class RosterScene extends Phaser.Scene {
     const cls = CLASSES[c.classId];
     const st = sisterStats(save, c);
     layer.add([
-      this.add.text(GAME_W / 2, 404, `Level ${have.level} / ${MAX_LEVEL}`, { ...style, fontSize: '22px', color: hex(PAL.amber) }).setOrigin(0.5),
+      this.add.text(GAME_W / 2, 404, `Level ${have.level} / ${levelCap(have)}${have.asc ? `  ·  Ascension ${ROMAN_RANK(have.asc)}` : ''}`, { ...style, fontSize: '22px', color: hex(PAL.amber) }).setOrigin(0.5),
       this.add
         .text(GAME_W / 2, 438, `HP ${st.hp}  ATK ${st.atk}  ARM ${st.armor}  SPD ${st.spd}  CRIT ${Math.round(st.crit * 100)}%`, { ...style, fontSize: '17px' })
         .setOrigin(0.5),
@@ -417,23 +419,41 @@ export class RosterScene extends Phaser.Scene {
     ]);
 
     const cost = levelUpCost(have.level);
-    const maxed = have.level >= MAX_LEVEL;
-    const canLevel = !maxed && save.tithes >= cost;
+    const atCap = have.level >= levelCap(have);
+    const step = nextAscension(save, c.id);
+    // At her cap, the level button becomes Ascend (Martyr's Ash and Tithes).
+    if (atCap && step) {
+      const block = ascendBlock(save, c.id);
+      layer.add(
+        this.add
+          .text(GAME_W / 2, GAME_H - 206, `Ascension ${ROMAN_RANK((have.asc ?? 0) + 1)}: ${costLine(save, step)}`, { ...style, fontSize: '14px', color: hex(block ? PAL.steel : PAL.amber), wordWrap: { width: GAME_W - 60 } })
+          .setOrigin(0.5),
+      );
+    }
+    const canLevel = !atCap && save.tithes >= cost;
+    const canAscend = atCap && !!step && !ascendBlock(save, c.id);
     const lvl = makeButton(
       this,
       GAME_W / 2 - 124,
       GAME_H - 150,
       236,
       76,
-      maxed ? 'Max level' : `Level up\n${cost} Tithes`,
+      !atCap ? `Level up\n${cost} Tithes` : step ? `Ascend\ncap ${levelCap(have)} → ${levelCap(have) + 10}` : 'Max level',
       () => {
+        if (atCap) {
+          if (ascend(save, c.id)) {
+            commit();
+            this.reopen(c, 'oath');
+          }
+          return;
+        }
         save.tithes -= cost;
         have.level += 1;
         track(save, 'levelUp');
         commit();
         this.reopen(c, 'oath');
       },
-      { disabled: !canLevel, active: canLevel, fontSize: 20 },
+      { disabled: atCap ? !canAscend : !canLevel, active: atCap ? canAscend : canLevel, fontSize: 20 },
     );
     const vCost = vowCost(have.vow);
     const canVow = tokens > 0 && have.vow < MAX_VOW && save.tithes >= vCost;

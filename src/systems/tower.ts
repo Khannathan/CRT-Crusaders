@@ -8,6 +8,7 @@ import { BELFRY, OSSUARY, skirmish } from './crusade';
 import type { Rng } from './gacha';
 import { claimGear, makeGear, rollGearRarity, type GearItem } from './gear';
 import { recommendedPower } from './power';
+import { bagText, floorDrops, give, type Bag } from './items';
 import { track } from './tasks';
 
 /**
@@ -60,14 +61,16 @@ export interface FloorReward {
   tithes: number;
   seals: number;
   gear?: 'SR' | 'SSR';
+  items: Bag;
 }
 
 export function floorReward(floor: number): FloorReward {
   const boss = floor % 10 === 0;
-  return { tithes: 60 + 15 * floor, seals: boss ? 3 : floor % 5 === 0 ? 1 : 0, gear: boss ? 'SSR' : floor % 5 === 0 ? 'SR' : undefined };
+  return { tithes: 60 + 15 * floor, seals: boss ? 3 : floor % 5 === 0 ? 1 : 0, gear: boss ? 'SSR' : floor % 5 === 0 ? 'SR' : undefined, items: floorDrops(floor) };
 }
 
-export const rewardLine = (r: FloorReward) => [`${r.tithes} Tithes`, r.seals ? `${r.seals} Seal${r.seals > 1 ? 's' : ''}` : '', r.gear ? `${r.gear}+ gear` : ''].filter(Boolean).join(' + ');
+export const rewardLine = (r: FloorReward, withItems = true) =>
+  [`${r.tithes} Tithes`, r.seals ? `${r.seals} Seal${r.seals > 1 ? 's' : ''}` : '', r.gear ? `${r.gear}+ gear` : '', withItems ? bagText(r.items) : ''].filter(Boolean).join(' + ');
 
 export function towerBattle(save: SaveData, party: string[], floor: number, rng?: Rng): Battle {
   const f = floorDef(floor);
@@ -88,6 +91,7 @@ export function finishFloor(save: SaveData, floor: number, battle: Battle, rng: 
   const reward = floorReward(floor);
   save.tithes += reward.tithes;
   save.seals += reward.seals;
+  give(save, reward.items);
   let gear: GearItem | undefined;
   if (reward.gear) {
     const before = save.gear?.length ?? 0;
