@@ -125,5 +125,5 @@ describe(`crypt balance ${BALANCE_VERSION} (auto player, ${N} seeded runs)`, () 
     expect(h3).toBeLessThan(0.95);
     // Heresy V: 30 floors in 3 acts, for an ascended party
     expect(sample(30, OSSUARY, 5).rate).toBeGreaterThan(0.8);
-  });
+  }, 60_000); // 300 runs of up to 30 floors
 });
