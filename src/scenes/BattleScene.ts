@@ -351,7 +351,7 @@ export class BattleScene extends Phaser.Scene {
         .setStrokeStyle(2, usable ? color : PAL.armorShadow)
         .setAlpha(usable ? 1 : 0.4);
       // ui-skill / ui-skill-selected / ui-skill-rite .png, when present
-      const skinKey = selected ? 'ui-skill-selected' : s.rite ? 'ui-skill-rite' : 'ui-skill';
+      const skinKey = selected ? 'ui-skill-selected' : s.rite ? (this.textures.exists('ui-skill-litany') ? 'ui-skill-litany' : 'ui-skill-rite') : 'ui-skill';
       const skin = nine(this, skinKey, x, y, w, SKILL_H);
       if (skin) {
         box.setFillStyle(0x000000, 0.001).setStrokeStyle().setAlpha(1);
@@ -541,7 +541,7 @@ export class BattleScene extends Phaser.Scene {
       .text(0, CARD / 2 + 52, '', { fontFamily: FONT, fontSize: '15px', color: hex(PAL.violet), align: 'center' })
       .setOrigin(0.5);
     // Her own Zeal (a Sister) or its Wrath (a boss), just under the HP bar.
-    const meter = party || u.wrath !== undefined ? new Bar(this, -CARD / 2, CARD / 2 + 21, CARD, 8, 'ui-bar-meter', party ? PAL.bronze : 0xb0303a) : undefined;
+    const meter = party || u.wrath !== undefined ? new Bar(this, -CARD / 2, CARD / 2 + 21, CARD, 8, party ? 'ui-bar-litany' : 'ui-bar-wrath', party ? PAL.bronze : 0xb0303a) : undefined;
     const y = party ? PARTY_Y : ENEMY_Y;
     const box = this.add.container(slotX(u.rank), y, [glow, frame, img, ...(skinFrame ? [skinFrame] : []), ...hp.parts, ...(meter?.parts ?? []), shieldFill, hpText, tags]);
     box.setSize(CARD, CARD).setInteractive({ useHandCursor: true });
@@ -591,7 +591,7 @@ export class BattleScene extends Phaser.Scene {
     const frame = this.add.rectangle(0, midY, CARD, FIGURE_BOX).setVisible(false);
     const hp = new Bar(this, -CARD / 2, FEET + 12, CARD, 10, 'ui-bar-hp', 0x7a9a5a);
     const shieldFill = this.add.rectangle(-CARD / 2, FEET + 12, 0, 4, PAL.ivory).setOrigin(0, 0.5);
-    const meter = new Bar(this, -CARD / 2, FEET + 21, CARD, 8, 'ui-bar-meter', PAL.bronze);
+    const meter = new Bar(this, -CARD / 2, FEET + 21, CARD, 8, 'ui-bar-litany', PAL.bronze);
     const hpText = this.add.text(0, FEET + 35, '', { fontFamily: FONT, fontSize: '17px', color: hex(PAL.ivory) }).setOrigin(0.5);
     const tags = this.add.text(0, FEET + 51, '', { fontFamily: FONT, fontSize: '15px', color: hex(PAL.violet), align: 'center', lineSpacing: -4, wordWrap: { width: CARD } }).setOrigin(0.5, 0.3);
     const preview = this.add
