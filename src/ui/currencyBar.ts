@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 import { DISPLAY_FONT, FONT, GAME_W, HUD_FONT, PAL, hex } from '../config';
 import { game } from '../state/game';
 import { giltOf } from '../systems/currency';
+import { addFullscreenButton } from './fullscreen';
 import { nine, stretch } from './skin';
 import { addIcon } from './theme';
 
@@ -52,8 +53,10 @@ export function addCurrencyBar(scene: Phaser.Scene) {
   const tithes = chip('tithe', PAL.amber, 'Tithes');
   const seals = chip('seal', 0xd87988, 'Seals');
   const gilt = chip('gilt', 0xf2d27a, 'Gilt');
+  // full-screen toggle in the top-right corner, chips to its left
+  addFullscreenButton(scene, GAME_W - 22, mid, 20);
   const refresh = () => {
-    const left = tithes(game.save.tithes, GAME_W - 10);
+    const left = tithes(game.save.tithes, GAME_W - 42);
     const l2 = seals(game.save.seals, left - 6);
     gilt(giltOf(game.save), l2 - 6);
   };

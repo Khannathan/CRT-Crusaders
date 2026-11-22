@@ -11,6 +11,8 @@ npm run build    # type-checks and writes the playable build to dist/
 npm test         # gacha rules, combat rules, and crypt balance simulations (balance.test.ts prints win rates)
 ```
 
+**Full screen:** the corner-bracket button at the top right of every screen (also in Settings) fills the phone's screen and hides the browser bars. iPhone Safari can't do that, so there it explains Add to Home Screen instead; the web manifest makes a home-screen launch open full screen on any phone.
+
 Every push to `main` deploys to GitHub Pages (Settings → Pages → Source: **GitHub Actions** must be turned on once).
 
 ## Adding portraits
