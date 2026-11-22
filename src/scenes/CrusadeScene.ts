@@ -4,10 +4,12 @@ import { RARITY_COLOR } from '../data/classes';
 import { CRUSADERS } from '../data/crusaders';
 import { commit, game } from '../state/game';
 import { current } from '../state/run';
-import { PILGRIMAGE_BONUS, PILGRIMAGE_CLEARS, pilgrimageLeft, CRYPTS, HERESY_ENEMY, HERESY_REWARD, REWARDS, ROMAN, canMuster, cryptUnlocked, heresyAvailable, reviveCost, revive, suggestParty, type CryptDef } from '../systems/crusade';
+import { PILGRIMAGE_BONUS, PILGRIMAGE_CLEARS, pilgrimageLeft, CRYPTS, HERESY_ENEMY, HERESY_REWARD, REWARDS, ROMAN, canMuster, cryptRecommended, cryptUnlocked, heresyAvailable, reviveCost, revive, suggestParty, type CryptDef } from '../systems/crusade';
 import { canRepeat, repeatRuns } from '../systems/autorun';
 import { ROMAN_RANK, unlocked } from '../systems/rank';
 import { pickParty } from '../ui/partyPicker';
+import { accountPower } from '../systems/power';
+import { drawRecommended } from '../ui/recommended';
 import { makeButton } from '../ui/button';
 import { CURRENCY_BAR_H, addCurrencyBar } from '../ui/currencyBar';
 import { portraitKey } from '../ui/placeholderPortrait';
@@ -97,6 +99,7 @@ export class CrusadeScene extends Phaser.Scene {
           : cleared
             ? `Cleared${best ? `  ·  best Heresy ${ROMAN[best - 1]}` : ''}`
             : `First clear +${REWARDS.firstClearSeals} Wax Seals`;
+      if (open) drawRecommended(this, tx, cardBottom - 128, cryptRecommended(s, crypt, tier), accountPower(s, (c) => canMuster(s, c.id)));
       const chip = this.add.text(tx + 8, cardBottom - 96, note, text.hud(13, open ? PAL.amber : PAL.muted));
       this.add.rectangle(tx, cardBottom - 102, chip.width + 16, chip.height + 12, 0x211420).setOrigin(0, 0).setStrokeStyle(1, 0x674347);
       this.children.bringToTop(chip);
@@ -198,7 +201,7 @@ export class CrusadeScene extends Phaser.Scene {
       });
       layer.add(
         makeButton(this, GAME_W / 2, y0 + 270, 200, 44, 'Change Sisters', () =>
-          pickParty(this, s, { title: 'Who marches?', sub: 'Tap in rank order; the first stands in front.', initial: party, allow: (c) => canMuster(s, c.id), why: 'Wounded Sisters cannot march.', confirm: 'These four' }, (ids) => {
+          pickParty(this, s, { title: 'Who marches?', sub: 'Tap in rank order; the first stands in front.', initial: party, allow: (c) => canMuster(s, c.id), why: 'Wounded Sisters cannot march.', confirm: 'These four', rec: cryptRecommended(s, crypt, heresy) }, (ids) => {
             party = ids;
             draw();
           }),

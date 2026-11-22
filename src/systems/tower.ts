@@ -7,6 +7,7 @@ import type { Battle } from './combat';
 import { BELFRY, OSSUARY, skirmish } from './crusade';
 import type { Rng } from './gacha';
 import { claimGear, makeGear, rollGearRarity, type GearItem } from './gear';
+import { recommendedPower } from './power';
 import { track } from './tasks';
 
 /**
@@ -74,6 +75,8 @@ export function towerBattle(save: SaveData, party: string[], floor: number, rng?
   const ids = party.filter((id) => allow(CRUSADERS.find((c) => c.id === id)!));
   return skirmish(save, ids, f.encounter, 0, rng, floor > 30 ? BELFRY : OSSUARY, f.scale);
 }
+
+export const floorRecommended = (save: SaveData, floor: number) => recommendedPower(towerBattle(save, [], floor));
 
 /** Records a climb. A victory on the next floor raises the best and pays once. */
 export function finishFloor(save: SaveData, floor: number, battle: Battle, rng: Rng = Math.random): { won: boolean; reward?: FloorReward; gear?: GearItem } {
