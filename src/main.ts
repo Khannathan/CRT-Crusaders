@@ -20,6 +20,7 @@ import { InquisitionScene } from './scenes/InquisitionScene';
 import { ConfessionScene } from './scenes/ConfessionScene';
 import { InventoryScene } from './scenes/InventoryScene';
 import { ShopScene } from './scenes/ShopScene';
+import { ReliquaryScene } from './scenes/ReliquaryScene';
 import './fonts.css';
 
 /**
@@ -60,6 +61,7 @@ function start() {
       ConfessionScene,
       InventoryScene,
       ShopScene,
+      ReliquaryScene,
       RecruitScene,
       RevealScene,
       RosterScene,
