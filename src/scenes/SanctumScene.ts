@@ -40,6 +40,8 @@ export class SanctumScene extends Phaser.Scene {
     addScreenGlow(this);
     this.refreshBar = addCurrencyBar(this);
     const top = addHeading(this, 'The Sanctum', CURRENCY_BAR_H + 16);
+    // A title earned in the Order Book, worn under the heading.
+    if (game.save.title) this.add.text(PAD + 128, top - 6, game.save.title.toUpperCase(), text.hud(10, PAL.amber)).setOrigin(0, 0.5);
     // Rank of Faith badge, top right; a dot when a rank gift waits.
     const ri = rankInfo(game.save);
     const rb = makeButton(this, GAME_W - PAD - 62, CURRENCY_BAR_H + 38, 124, 46, `Rank ${ROMAN_RANK(ri.rank)}`, () => this.scene.start('Rank'), { fontSize: 17, icon: 'sigil' });
