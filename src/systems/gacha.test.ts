@@ -107,13 +107,16 @@ describe('Order banners', () => {
     expect(hits / urs).toBeLessThan(0.73);
   });
 
-  it('every Order has one UR to target, two SSRs, an SR and an R', () => {
+  it('every Order has one UR to target, at least two SSRs, an SR and an R', () => {
     for (const o of ORDER_LIST) {
       const sisters = CRUSADERS.filter((c) => c.order === o.name && !c.limited);
-      expect(sisters).toHaveLength(5);
-      expect(sisters.map((c) => c.rarity).sort()).toEqual(['R', 'SR', 'SSR', 'SSR', 'UR']);
+      const n = (r: string) => sisters.filter((c) => c.rarity === r).length;
+      expect(n('UR')).toBe(1);
+      expect(n('SSR')).toBeGreaterThanOrEqual(2);
+      expect(n('SR')).toBeGreaterThanOrEqual(1);
+      expect(n('R')).toBeGreaterThanOrEqual(1);
     }
-    expect(CRUSADERS.filter((c) => !c.limited)).toHaveLength(50);
+    expect(CRUSADERS.filter((c) => !c.limited)).toHaveLength(75);
     expect(new Set(CRUSADERS.map((c) => c.id)).size).toBe(CRUSADERS.length);
   });
 

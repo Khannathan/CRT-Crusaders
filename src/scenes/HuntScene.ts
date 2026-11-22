@@ -34,7 +34,7 @@ import { TAB_BAR_H } from '../ui/tabBar';
 import { PAD, addFrame, text } from '../ui/theme';
 
 /** Front-to-back order for a suggested hunting party. */
-const FRONT = ['hierophant', 'warsister', 'inquisitor', 'confessor', 'oracle', 'censer'];
+const FRONT = ['sentinel', 'hierophant', 'martyr', 'warsister', 'inquisitor', 'veilblade', 'abbess', 'confessor', 'hospitaller', 'cantor', 'adjudicator', 'oracle', 'exorcist', 'censer', 'arbalist'];
 
 /** Hallowed Hunts: today's beast, its mechanics, who to bring, and the score track. */
 export class HuntScene extends Phaser.Scene {

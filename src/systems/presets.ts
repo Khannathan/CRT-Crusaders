@@ -17,7 +17,7 @@ export const PRESET_MAX = 10;
 /** Art keys a preset may wear, in the order the picker shows them. Missing art is skipped at draw time. */
 export const PRESET_ICONS: string[] = [
   ...['blade', 'shield', 'flame', 'book', 'seal', 'sigil', 'sanctum', 'vow', 'gilt', 'tithe', 'alms', 'devotion', 'matins-candle', 'vigil-candle', 'reliquary', 'roster'].map((n) => `ui-${n}`),
-  ...['warsister', 'hierophant', 'inquisitor', 'confessor', 'censer', 'oracle'].map((n) => `class-${n}`),
+  ...['warsister', 'hierophant', 'inquisitor', 'confessor', 'censer', 'oracle', 'sentinel', 'martyr', 'hospitaller', 'abbess', 'cantor', 'adjudicator', 'veilblade', 'arbalist', 'exorcist'].map((n) => `class-${n}`),
   ...['ashen-mercy', 'candle-choir', 'drowned-litany', 'glass-confession', 'hollow-bell', 'iron-vigil', 'pale-reliquary', 'red-pilgrimage', 'sepulcher-watch', 'thorn-covenant', 'veiled-tribunal'].map((n) => `sigil-${n}`),
   ...['accuse', 'ash-bolt', 'blood-for-zeal', 'burning-thurible', 'choking-smoke', 'contagion', 'duelists-thrust', 'fan-the-flames', 'flagellants-charge', 'foresight', 'grim-augury', 'incense-cloud', 'last-rites', 'martyrs-fury', 'miasma', 'omen-of-ash', 'penitent-blow', 'reliquary-bash', 'remedy', 'sanctuary', 'sentence', 'verdict', 'vigil-bell', 'wall-of-saints'].map((n) => `skill-${n}`),
   ...['bone-dice', 'crown', 'ember-candle', 'holy-water', 'iron-rosary', 'knucklebone', 'pilgrims-flask', 'reliquary-nail', 'faith5', 'wrath5', 'zeal5'].map((n) => `relic-${n}`),
