@@ -7,6 +7,8 @@ import { anyClaimable } from '../systems/tasks';
 import { anyUnheard } from '../systems/bonds';
 import { entriesLeft } from '../systems/trials';
 import { RELICS, relicBlock } from '../systems/reliquary';
+import { codexBlock } from '../systems/codex';
+import { ORDER_LIST } from '../data/orders';
 import { makeButton } from './button';
 import { PAD } from './theme';
 
@@ -29,7 +31,7 @@ export interface RiteEntry {
 export const RITES: RiteEntry[] = [
   { label: 'Inventory', scene: 'Inventory', icon: 'shield', art: 'inventory', rank: 1 },
   { label: 'Shop', scene: 'Shop', icon: 'seal', art: 'shop', rank: 1 },
-  { label: 'Reliquary', scene: 'Reliquary', icon: 'flame', art: 'reliquary', rank: 1, ready: (s) => RELICS.some((r) => !relicBlock(s, r.id)) },
+  { label: 'Reliquary', scene: 'Reliquary', icon: 'flame', art: 'reliquary', rank: 1, ready: (s) => RELICS.some((r) => !relicBlock(s, r.id)) || ORDER_LIST.some((o) => !codexBlock(s, o.id)) },
   { label: 'Matins', scene: 'Matins', icon: 'flame', rank: 1, ready: (s) => matinsReady(s) },
   { label: 'Penance', scene: 'Penance', icon: 'book', rank: 2, ready: (s) => anyClaimable(s) },
   { label: 'Trials', scene: 'Trials', icon: 'shield', rank: 3, ready: (s) => entriesLeft(s) > 0 },
