@@ -167,15 +167,21 @@ export function finishStage(save: SaveData, n: number, outcome: 'victory' | 'def
 export const BASE_RATES = { tithes: 60, gear: 0.3, seals: 0.25 };
 
 /** Rates per hour from the highest stage cleared; each chapter cleared is a further step. */
+/** Each Bell Tower floor cleared adds this share to the Vigil's Tithes, gear and materials. */
+export const BELL_VIGIL = 0.01;
+/** The Vigil's Bell Tower multiplier: it keeps rising, since the Tower has no top. */
+export const bellBonus = (save: SaveData) => 1 + BELL_VIGIL * (save.tower?.best ?? 0);
+
 export function roadRates(save: SaveData) {
   const best = campaignOf(save).best;
   const ch = chaptersCleared(save);
+  const bell = bellBonus(save);
   return {
-    tithes: BASE_RATES.tithes * (1 + 0.06 * best) * (1 + 0.15 * ch),
-    gear: BASE_RATES.gear + 0.012 * best,
+    tithes: BASE_RATES.tithes * (1 + 0.06 * best) * (1 + 0.15 * ch) * bell,
+    gear: (BASE_RATES.gear + 0.012 * best) * bell,
     seals: BASE_RATES.seals + 0.004 * best,
     /** Extra materials per hour on top of the Vigil's base find. */
-    items: 0.5 + 0.02 * best,
+    items: (0.5 + 0.02 * best) * bell,
   };
 }
 

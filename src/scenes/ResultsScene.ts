@@ -6,7 +6,7 @@ import { CRUSADERS } from '../data/crusaders';
 import { ORDER_LIST } from '../data/orders';
 import { game } from '../state/game';
 import type { SaveData } from '../state/save';
-import { HERESY_FIRST_CLEAR_SEALS, MAX_HERESY, ROMAN, type RunResult } from '../systems/crusade';
+import { HERESY_FIRST_CLEAR_SEALS, ROMAN, type RunResult } from '../systems/crusade';
 import { expOf, expToNext } from '../systems/exp';
 import { COST_TEN } from '../systems/gacha';
 import { SLOT_NAME } from '../systems/gear';
@@ -82,7 +82,7 @@ export class ResultsScene extends Phaser.Scene {
     if (r.pilgrimage) notes.push(`Pilgrimage blessing: +${r.pilgrimage.seals} Seals, +${r.pilgrimage.tithes} Tithes. ${r.pilgrimage.left} blessed clear${r.pilgrimage.left === 1 ? '' : 's'} left today.`);
     if (r.melted) notes.push(`The armory is full: spare gear melted for +${r.melted} Tithes.`);
     if (r.firstClear) notes.push('First clear! Heresy I is now open for this crypt.');
-    if (r.heresyCleared) notes.push(`Heresy ${ROMAN[r.heresyCleared - 1]} cleared: +${HERESY_FIRST_CLEAR_SEALS} Seals.${r.heresyCleared < MAX_HERESY ? ` Heresy ${ROMAN[r.heresyCleared]} is open.` : ''}`);
+    if (r.heresyCleared) notes.push(`Heresy ${ROMAN[r.heresyCleared - 1]} cleared: +${HERESY_FIRST_CLEAR_SEALS} Seals. Heresy ${ROMAN[r.heresyCleared]} is open.`);
     if (r.outcome === 'defeat') notes.push('You keep your Seals, your gear, everything banked at a Sanctuary, and most of the rest.');
     if (r.outcome === 'retreat') notes.push('You kept everything you found. The completion reward waits for a cleared crypt.');
     if (r.fallen.length) notes.push('The fallen mend for one crusade, or can be absolved early with Tithes.');

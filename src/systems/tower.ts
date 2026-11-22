@@ -14,12 +14,21 @@ import { track } from './tasks';
 import { addStigmata } from './tiers';
 
 /**
- * The Bell Tower: an endless climb of fixed floors. A boss every 10th floor;
- * some floors admit only one Order, others only R and SR Sisters, so a wide
- * roster climbs higher. No entry limit: a loss costs nothing. Each floor pays
- * once, on its first clear.
+ * The Bell Tower: an endless climb. A boss every 10th floor; some floors admit
+ * only one Order, others only R and SR Sisters, so a wide roster climbs higher.
+ * No entry limit: a loss costs nothing. Each floor pays once, on its first clear.
+ *
+ * Foes grow in a straight line to floor TOWER_FLOORS, then by TOWER_GROWTH a
+ * floor without end, so every bit of Power a party gains buys a few more floors
+ * (a maxed party tops out near floor 100).
  */
 export const TOWER_FLOORS = 60;
+export const TOWER_GROWTH = 1.09;
+/** Floors listed above the next one. */
+export const TOWER_LOOKAHEAD = 30;
+
+const linearScale = (floor: number) => 0.8 + 0.1 * (floor - 1);
+export const towerScale = (floor: number) => (floor <= TOWER_FLOORS ? linearScale(floor) : linearScale(TOWER_FLOORS) * TOWER_GROWTH ** (floor - TOWER_FLOORS));
 
 export type FloorRule = { kind: 'order'; order: string } | { kind: 'humble' } | undefined;
 
@@ -42,7 +51,7 @@ export function floorDef(floor: number): FloorDef {
   if (!boss && floor % 10 === 5) rule = { kind: 'order', order: ORDER_LIST[Math.floor(floor / 10) % ORDER_LIST.length].name };
   else if (!boss && floor % 10 === 8) rule = { kind: 'humble' };
   // Gentler under an Order lock: the player's pool is narrower.
-  const scale = (0.8 + 0.1 * (floor - 1)) * (rule?.kind === 'order' ? 0.85 : 1);
+  const scale = towerScale(floor) * (rule?.kind === 'order' ? 0.85 : 1);
   return { floor, encounter, scale, boss, rule };
 }
 
@@ -89,7 +98,7 @@ export const floorRecommended = (save: SaveData, floor: number) => recommendedPo
 export function finishFloor(save: SaveData, floor: number, battle: Battle, rng: Rng = Math.random): { won: boolean; reward?: FloorReward; gear?: GearItem } {
   const t = towerOf(save);
   const won = battle.outcome() === 'victory';
-  if (!won || floor !== t.best + 1 || floor > TOWER_FLOORS) return { won };
+  if (!won || floor !== t.best + 1) return { won };
   t.best = floor;
   track(save, 'towerFloor');
   const reward = floorReward(floor);
