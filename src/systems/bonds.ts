@@ -4,26 +4,92 @@ import { ORDER_LIST } from '../data/orders';
 import type { CrusaderDef } from '../data/types';
 import type { SaveData } from '../state/save';
 import type { Battle } from './combat';
+import { earn } from './currency';
+import { give, itemDef } from './items';
+
+const offeringName = (id: string) => ({ tallow: 'Tallow Candle', psalter: 'Pocket Psalter', veil: 'Lace Veil', myrrh: 'Vial of Myrrh', thorn: 'Crown Thorn', tear: "Saint's Tear", nail: 'True Nail' } as Record<string, string>)[id] ?? id;
+const itemName = (id: string) => itemDef(id as never)?.name ?? id;
 
 /**
- * Sister bonds (Confession). Fighting beside a Sister, keeping Vigil with her
- * and lighting candles for her raise her bond. Each bond level adds a little
- * ATK and HP and opens one more of her five confessions. Candles cost Tithes;
- * there is no limit and no new currency.
+ * Sister bonds (Confession), rebuilt in round 9. Fighting beside a Sister,
+ * keeping Vigil with her, lighting candles and bringing offerings raise her
+ * bond, now over 30 levels on a steep curve (100 + 10 x level squared XP per
+ * level): a favourite reaches bond X in a few weeks, bond XX in a few months,
+ * and bond XXX is a long devotion.
+ *
+ * - Bond I to X: +1% ATK and HP a level, a reward to claim at every level, and
+ *   her five confessions at II, IV, VI, VIII and X.
+ * - Bond XI to XXX: each level adds a small Devotion buff, rotating through
+ *   ATK, HP, Armor, Magic Resist and critical chance, with a bigger reward
+ *   every fifth level.
  */
 export interface BondState {
   xp: number;
-  /** Confessions read (highest level heard). */
+  /** Confessions read (highest bond level heard). */
   heard: number;
+  /** Highest bond level whose reward has been claimed. */
+  claimed?: number;
 }
 
-export const MAX_BOND = 5;
-/** Total bond XP needed for each level, 1 to 5. */
-export const BOND_AT = [60, 180, 400, 750, 1250];
-/** ATK and HP per bond level. */
-export const BOND_STAT = 0.02;
+export const MAX_BOND = 30;
+/** Bond levels where the flat ATK and HP bonus stops and Devotion buffs begin. */
+export const BOND_CORE = 10;
+/** XP to go from `level - 1` to `level`. */
+export const bondNeed = (level: number) => 100 + 10 * level * level;
+/** Total bond XP needed for each level, 1 to MAX_BOND. */
+export const BOND_AT: number[] = (() => {
+  const out: number[] = [];
+  let t = 0;
+  for (let l = 1; l <= MAX_BOND; l++) out.push((t += bondNeed(l)));
+  return out;
+})();
+/** ATK and HP per bond level, up to BOND_CORE. */
+export const BOND_STAT = 0.01;
+/** Bond levels that open a confession. */
+export const CONFESSION_AT = [2, 4, 6, 8, 10];
 
-export const BOND_XP = { fight: 4, elite: 6, boss: 10, challenge: 6, vigilHour: 2, candle: 25 };
+export type DevotionStat = 'atk' | 'hp' | 'armor' | 'mres' | 'crit';
+/** The Devotion buff each level past BOND_CORE gives, in turn. */
+export const DEVOTION: { stat: DevotionStat; value: number; label: string }[] = [
+  { stat: 'atk', value: 0.01, label: '+1% ATK' },
+  { stat: 'hp', value: 0.012, label: '+1.2% HP' },
+  { stat: 'armor', value: 0.02, label: '+2% Armor' },
+  { stat: 'mres', value: 0.02, label: '+2% Magic Resist' },
+  { stat: 'crit', value: 0.005, label: '+0.5% critical chance' },
+];
+export const devotionAt = (level: number) => DEVOTION[(level - BOND_CORE - 1) % DEVOTION.length];
+
+export const BOND_XP = { fight: 4, elite: 6, boss: 10, challenge: 6, vigilHour: 2, candle: 40 };
+
+export interface BondReward {
+  seals?: number;
+  tithes?: number;
+  gilt?: number;
+  /** Offerings by id. */
+  offerings?: Record<string, number>;
+  /** Items by id (Unction and the like). */
+  items?: Record<string, number>;
+  /** A title: "<her first name>'s Confidant". */
+  title?: boolean;
+}
+
+/** The reward for reaching each bond level (index 0 = bond I). Every level to X, then every fifth. */
+export const BOND_REWARDS: Record<number, BondReward> = {
+  1: { tithes: 500, offerings: { tallow: 1 } },
+  2: { seals: 1, items: { unction1: 3 } },
+  3: { tithes: 1000, offerings: { psalter: 1 } },
+  4: { seals: 1, gilt: 10 },
+  5: { seals: 2, items: { unction2: 2 } },
+  6: { tithes: 2000, offerings: { veil: 1 } },
+  7: { seals: 2, gilt: 15 },
+  8: { items: { unction2: 4 }, offerings: { myrrh: 1 } },
+  9: { seals: 3, tithes: 3000 },
+  10: { seals: 5, gilt: 30, title: true },
+  15: { seals: 5, gilt: 30, offerings: { thorn: 1 } },
+  20: { seals: 8, gilt: 50, items: { unction3: 2 } },
+  25: { seals: 10, gilt: 60, offerings: { tear: 1 } },
+  30: { seals: 15, gilt: 100, offerings: { nail: 1 } },
+};
 
 export const bondsOf = (save: SaveData) => (save.bonds ??= {});
 export const bondOf = (save: SaveData, id: string): BondState => bondsOf(save)[id] ?? { xp: 0, heard: 0 };
@@ -34,16 +100,47 @@ export function bondLevel(xp: number) {
   return lv;
 }
 
+/** Highest confession level opened by this bond level (0, 2, 4 ... 10). */
+export const confessionLevel = (level: number) => CONFESSION_AT.filter((at) => level >= at).length;
+
 export function bondInfo(save: SaveData, id: string) {
   const b = bondOf(save, id);
   const level = bondLevel(b.xp);
   const from = level ? BOND_AT[level - 1] : 0;
   const to = level < MAX_BOND ? BOND_AT[level] : from;
-  return { level, xp: b.xp, into: b.xp - from, need: to - from, max: level >= MAX_BOND, unheard: level > b.heard };
+  const opened = confessionLevel(level);
+  return { level, xp: b.xp, into: b.xp - from, need: to - from, max: level >= MAX_BOND, unheard: opened > b.heard, rewards: rewardsWaiting(b, level) };
 }
 
-/** Stat multiplier from bond (1.0 to 1.1). */
-export const bondMult = (save: SaveData, id: string) => 1 + BOND_STAT * bondLevel(bondOf(save, id).xp);
+/** Reward levels reached but not yet claimed. */
+function rewardsWaiting(b: BondState, level: number) {
+  return Object.keys(BOND_REWARDS)
+    .map(Number)
+    .filter((l) => l <= level && l > (b.claimed ?? 0));
+}
+
+/** Her bond stats: ATK and HP from bond I to X, then each Devotion buff. */
+export function bondStats(level: number): Record<DevotionStat, number> {
+  const out: Record<DevotionStat, number> = { atk: 0, hp: 0, armor: 0, mres: 0, crit: 0 };
+  out.atk = out.hp = BOND_STAT * Math.min(level, BOND_CORE);
+  for (let l = BOND_CORE + 1; l <= level; l++) {
+    const d = devotionAt(l);
+    out[d.stat] += d.value;
+  }
+  return out;
+}
+
+/** "+10% ATK, +12% HP, +4% Armor ..." for the bond summary. */
+export function bondStatText(level: number) {
+  const s = bondStats(level);
+  const pct = (n: number) => `${Math.round(n * 1000) / 10}%`;
+  return [s.atk && `+${pct(s.atk)} ATK`, s.hp && `+${pct(s.hp)} HP`, s.armor && `+${pct(s.armor)} Armor`, s.mres && `+${pct(s.mres)} Magic Resist`, s.crit && `+${pct(s.crit)} crit`].filter(Boolean).join(', ');
+}
+
+/** ATK and HP multiplier from bond (kept for Power and the stat sheet). */
+export const bondMult = (save: SaveData, id: string) => 1 + BOND_STAT * Math.min(BOND_CORE, bondLevel(bondOf(save, id).xp));
+/** Her bond stats now. */
+export const bondStatsOf = (save: SaveData, id: string) => bondStats(bondLevel(bondOf(save, id).xp));
 
 /** Adds bond XP to each owned Sister listed. Returns those who reached a new level. */
 export function addBond(save: SaveData, ids: string[], xp: number): string[] {
@@ -60,6 +157,37 @@ export function addBond(save: SaveData, ids: string[], xp: number): string[] {
   return up;
 }
 
+export function bondRewardText(r: BondReward, first = 'Her') {
+  const off = Object.entries(r.offerings ?? {}).map(([k, n]) => `${n} ${offeringName(k)}`);
+  const items = Object.entries(r.items ?? {}).map(([k, n]) => `${n} ${itemName(k)}`);
+  return [r.seals && `${r.seals} Seal${r.seals > 1 ? 's' : ''}`, r.gilt && `${r.gilt} Gilt`, r.tithes && `${r.tithes.toLocaleString('en-US')} Tithes`, ...items, ...off, r.title && `the title "${first}'s Confidant"`].filter(Boolean).join(' + ');
+}
+
+/** Claims every bond reward she has reached. Returns the levels paid. */
+export function claimBondRewards(save: SaveData, id: string): number[] {
+  if (!save.owned[id]) return [];
+  const all = bondsOf(save);
+  const b = (all[id] ??= { xp: 0, heard: 0 });
+  const levels = rewardsWaiting(b, bondLevel(b.xp));
+  const first = CRUSADERS.find((c) => c.id === id)?.name.split(' ')[0] ?? 'Her';
+  for (const l of levels) {
+    const r = BOND_REWARDS[l];
+    if (r.seals) save.seals += r.seals;
+    if (r.tithes) save.tithes += r.tithes;
+    if (r.gilt) earn(save, r.gilt);
+    if (r.items) give(save, r.items);
+    if (r.offerings) for (const [k, n] of Object.entries(r.offerings)) (save.offerings ??= {})[k] = (save.offerings[k] ?? 0) + n;
+    if (r.title) {
+      const t = `${first}'s Confidant`;
+      if (!(save.titles ??= []).includes(t)) save.titles.push(t);
+    }
+    b.claimed = l;
+  }
+  return levels;
+}
+
+export const anyBondRewards = (save: SaveData) => Object.keys(save.owned).some((id) => bondInfo(save, id).rewards.length > 0);
+
 /** After a won side-mode fight: every Sister who fought draws closer. */
 export function bondBattle(save: SaveData, battle: Battle) {
   if (battle.outcome() !== 'victory') return [];
@@ -70,7 +198,7 @@ export function bondBattle(save: SaveData, battle: Battle) {
 export function hear(save: SaveData, id: string) {
   const all = bondsOf(save);
   const b = (all[id] ??= { xp: 0, heard: 0 });
-  b.heard = Math.max(b.heard, bondLevel(b.xp));
+  b.heard = Math.max(b.heard, confessionLevel(bondLevel(b.xp)));
 }
 
 export const anyUnheard = (save: SaveData) => Object.keys(save.owned).some((id) => bondInfo(save, id).unheard);
@@ -101,7 +229,7 @@ const CLASS_SIN: Record<string, string> = {
   oracle: 'Her eyes stay closed throughout. "I have seen how I die. It is not in the crypts. I will not tell you where, only that you were not there."',
 };
 
-/** Her five confessions, one per bond level. Placeholder voice until the name library and lore arrive. */
+/** Her five confessions, at bond II, IV, VI, VIII and X. Placeholder voice until the name library and lore arrive. */
 export function confessions(c: CrusaderDef): Confession[] {
   const first = c.name.split(' ')[0];
   const order = ORDER_LIST.find((o) => o.name === c.order);

@@ -5,7 +5,7 @@ import { CLASSES } from '../data/classes';
 import { CRIT_MULT, VOW_UPGRADES, type Battle } from './combat';
 import { GEAR_SLOTS, equipped, gearOf, type GearItem } from './gear';
 import { statsFor, sisterStats, type Stats } from './stats';
-import { bondMult } from './bonds';
+import { bondStatsOf } from './bonds';
 import { skillLevelsGained } from './skillLevels';
 import { skillVow } from './tiers';
 
@@ -77,8 +77,8 @@ function powerWith(save: SaveData, c: CrusaderDef, gear: GearItem[]) {
   const o = save.owned[c.id];
   if (!o) return 0;
   const st = statsFor(c, o, gear);
-  const m = bondMult(save, c.id);
-  return powerOf(c, { ...st, hp: Math.round(st.hp * m), atk: Math.round(st.atk * m) }, skillVow(o), skillLevelsGained(save, c.id));
+  const bd = bondStatsOf(save, c.id);
+  return powerOf(c, { ...st, hp: Math.round(st.hp * (1 + bd.hp)), atk: Math.round(st.atk * (1 + bd.atk)), armor: Math.round(st.armor * (1 + bd.armor)), mres: Math.round(st.mres * (1 + bd.mres)), crit: Math.min(1, st.crit + bd.crit) }, skillVow(o), skillLevelsGained(save, c.id));
 }
 
 /** What a worn piece adds to her power: with it on versus off. */

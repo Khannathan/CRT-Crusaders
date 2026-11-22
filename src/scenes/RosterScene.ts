@@ -6,7 +6,7 @@ import { autoEquipPlan, formatPower, gearPower, gearSwapDelta, sisterPower } fro
 import { ORDERS } from '../data/orders';
 import type { OwnedCrusader } from '../state/save';
 import type { Stats } from '../systems/stats';
-import { BOND_STAT, bondInfo } from '../systems/bonds';
+import { bondInfo, bondStatText } from '../systems/bonds';
 import { addOrderSigil } from '../ui/sisterCard';
 import { drawPortraitBadges, showBadgeKey } from '../ui/portraitBadges';
 import { passes, sortControls, sortRoster, sortState } from '../ui/sisterSort';
@@ -483,7 +483,7 @@ export class RosterScene extends Phaser.Scene {
       ['Speed', `${st.spd}`],
       ['Critical chance', `${Math.round(st.crit * 100)}%`],
       ['Vows and tiers', `+${Math.round((oathMult(have) - 1) * 100)}% stats`],
-      ['Bond', `+${Math.round(bondInfo(save, c.id).level * BOND_STAT * 100)}% ATK and HP`],
+      ['Bond', bondStatText(bondInfo(save, c.id).level) || 'None yet'],
     ];
     rows.forEach(([k, v], i) => {
       const y = top + 74 + i * 40;

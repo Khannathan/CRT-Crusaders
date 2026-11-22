@@ -5,6 +5,7 @@ import { errandsOf, isDone, claimErrand } from './errands';
 import { FEAST_REPEATS, FEAST_STAGES, claimMarks, feastName, feastOf, repeatsLeft, sweepStage } from './feast';
 import type { Rng } from './gacha';
 import { huntEntriesLeft } from './hunts';
+import { anyBondRewards, claimBondRewards } from './bonds';
 import { addBags, bagText, type Bag } from './items';
 import { lightCandle, matinsReady, vowCandidates, MATINS } from './matins';
 import { processionLeft } from './offerings';
@@ -43,6 +44,7 @@ export function roundsReady(save: SaveData, now = Date.now()) {
     (matinsReady(save, now) && !needsVowPick(save)) ||
     claimable(save, 'daily', now).length + claimable(save, 'weekly', now).length > 0 ||
     giftsWaiting(save).length > 0 ||
+    anyBondRewards(save) ||
     (save.errands?.active ?? []).some((a) => isDone(a, now)) ||
     sweepableTrial(save, now) !== undefined ||
     (feastOf(save, now).won.length > 0 && repeatsLeft(save, now) > 0)
@@ -99,6 +101,9 @@ export function morningRounds(save: SaveData, now = Date.now(), rng: Rng = Math.
     claimGifts(save);
     r.done.push('Rank gifts claimed');
   }
+  let bondPaid = 0;
+  for (const id of Object.keys(save.owned)) bondPaid += claimBondRewards(save, id).length;
+  if (bondPaid) r.done.push(`${bondPaid} bond reward${bondPaid > 1 ? 's' : ''} claimed`);
   let marks = 0;
   for (const p of ['daily', 'weekly'] as Period[]) {
     for (const m of claimable(save, p, now)) {

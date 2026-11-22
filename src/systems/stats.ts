@@ -1,5 +1,5 @@
 import { symbolStatMult } from './symbols';
-import { bondMult } from './bonds';
+import { bondStatsOf } from './bonds';
 import { RARITY_MULT } from '../data/classes';
 import type { CrusaderDef } from '../data/types';
 import type { OwnedCrusader, SaveData } from '../state/save';
@@ -76,18 +76,19 @@ export function statsFor(c: CrusaderDef, owned: OwnedCrusader, gear: GearItem[] 
 /** Stats with her equipped gear. */
 export function sisterStats(save: SaveData, c: CrusaderDef): Stats {
   const st = statsFor(c, save.owned[c.id], equipped(save, c.id));
-  const m = bondMult(save, c.id);
+  // Bond: ATK and HP to bond X, then rotating Devotion buffs.
+  const bd = bondStatsOf(save, c.id);
   // The Reliquary lifts every Sister.
   const r = reliquaryBonus(save);
   // ...and the Order Codex lifts the Sisters of each Order.
   const k = 1 + sisterCodexBonus(save, c);
   return {
-    hp: Math.round(st.hp * m * k * (1 + r.hpPct)),
-    atk: Math.round(st.atk * m * k * (1 + r.atkPct)),
-    armor: Math.round(st.armor * k * (1 + r.armorPct)),
-    mres: Math.round(st.mres * k * (1 + r.armorPct)),
+    hp: Math.round(st.hp * (1 + bd.hp) * k * (1 + r.hpPct)),
+    atk: Math.round(st.atk * (1 + bd.atk) * k * (1 + r.atkPct)),
+    armor: Math.round(st.armor * (1 + bd.armor) * k * (1 + r.armorPct)),
+    mres: Math.round(st.mres * (1 + bd.mres) * k * (1 + r.armorPct)),
     spd: st.spd + r.spd,
-    crit: Math.min(1, st.crit + r.crit),
+    crit: Math.min(1, st.crit + r.crit + bd.crit),
   };
 }
 
