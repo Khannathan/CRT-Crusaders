@@ -15,6 +15,7 @@ import { TOWER_FLOORS, towerOf } from '../systems/tower';
 import { TRIAL_ENTRIES } from '../systems/trials';
 import { rotation, totalBrands } from '../systems/inquisition';
 import { untilText } from './modeScreen';
+import { nextStage, roadRates, stageDef } from '../systems/campaign';
 import { ORDER_LIST } from '../data/orders';
 import { makeButton } from './button';
 import { PAD } from './theme';
@@ -56,9 +57,9 @@ export const RITES: RiteEntry[] = [
     status: (s) => `${CRYPTS.filter((c) => cryptUnlocked(s, c)).length} of ${CRYPTS.length} crypts open  ·  Pilgrimage ${pilgrimageLeft(s)}/${PILGRIMAGE_CLEARS}`,
   },
   {
-    label: 'The Vigil', scene: 'Sanctum', icon: 'flame', rank: 1, home: 'board', bg: 'bg-hall',
-    blurb: 'Sisters keep watch while you are away, and gather Tithes, Seals and spoils.',
-    status: () => 'Claim it in the Sanctum',
+    label: "Pilgrim's Road", scene: 'Campaign', icon: 'flame', rank: 1, home: 'board', bg: 'bg-hall',
+    blurb: 'The Vigil\'s campaign. Every stage cleared makes your Sisters gather faster while you are away.',
+    status: (s) => `Stage ${stageDef(nextStage(s)).label}  ·  Vigil ${Math.round(roadRates(s).tithes)} Tithes/h`,
   },
   {
     label: 'Relic Trials', scene: 'Trials', icon: 'shield', rank: 3, home: 'board', bg: 'bg-sunken-belfry', ready: (s) => entriesLeft(s) > 0,

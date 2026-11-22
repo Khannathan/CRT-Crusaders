@@ -112,7 +112,11 @@ Side modes and daily duties sit under **The Rites** on the Sanctum (`src/ui/rite
 
 ## The Vigil (idle)
 
-The Sanctum shows the Vigil: up to four Sisters fighting the chosen crypt's horrors on a loop, played by the Auto player. While the game is open or closed, the Vigil gathers Tithes, gear and Seals, up to 12 hours before it must be claimed. Stronger Sisters gather more (20% to 150% of the base rate), and the Belfry pays more once it is unlocked. Use ‹ › to change crypt and **Sisters** to change the watch; both claim first so nothing is lost. Rates are in `src/systems/vigil.ts` (`VIGIL_RATES`, `VIGIL_CAP_HOURS`).
+The Sanctum shows the Vigil: up to four Sisters fighting the next stage of the **Pilgrim's Road** on a loop, played by the Auto player. While the game is open or closed, the Vigil gathers Tithes, gear, materials and Seals, up to 12 hours before it must be claimed. **Sisters** changes the watch (claiming first, so nothing is lost).
+
+**The Pilgrim's Road** (the Vigil's campaign, `src/systems/campaign.ts`, `src/scenes/CampaignScene.ts`): 5 chapters of 10 stages on a winding map you scroll; stage 5 of each chapter is an elite, stage 10 a boss. Each stage is one fight (tap it, then **Challenge**, with the Vigil's Sisters picked). The first clear pays Tithes (elites add a Seal and ash); a chapter's boss opens its chest (Gilt, Seals, refined materials). Every stage asks for a set recommended Power that climbs evenly (`REC_START`, `REC_STEP`).
+
+**How fast the Vigil gathers** comes from the highest stage cleared, not from your Sisters' strength: +6% Tithes per stage, and a further +15% per chapter cleared, with gear and Seals coming more often (`roadRates`). **Fast Reward** pays 2 hours of gathering at once: free once a day, then 50 Gilt, up to 3 more a day.
 
 ## Layout
 

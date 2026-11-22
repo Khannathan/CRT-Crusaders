@@ -8,8 +8,10 @@ import { music } from '../audio/music';
 import { toggleFullscreen } from '../ui/fullscreen';
 import { autoChoose } from '../systems/autoplay';
 import type { BattleEvent, Unit } from '../systems/combat';
-import { skirmish } from '../systems/crusade';
-import { VIGIL_CAP_HOURS, VIGIL_SIZE, claimVigil, cryptOf, ensureVigil, setVigil, vigilCrypts, vigilPending, vigilRates, type VigilClaim, type VigilState } from '../systems/vigil';
+import { VIGIL_CAP_HOURS, VIGIL_SIZE, claimVigil, ensureVigil, fastReward, setVigil, vigilPending, vigilRates, vigilStage, type VigilClaim, type VigilState } from '../systems/vigil';
+import { CHAPTERS, FAST_HOURS, fastCost, roadDone, stageBattle, stageRecommended } from '../systems/campaign';
+import { giltOf } from '../systems/currency';
+import { partyPower } from '../systems/power';
 import { enemyKey } from '../ui/enemyArt';
 import { makeButton } from '../ui/button';
 import { bagEmpty, bagText } from '../systems/items';
@@ -85,7 +87,8 @@ export class SanctumScene extends Phaser.Scene {
     const save = game.save;
     const v = ensureVigil(save, Date.now())!;
     commit();
-    const crypt = cryptOf(v);
+    const stage = vigilStage(save);
+    const crypt = CHAPTERS[stage.chapter].crypt;
     const top = fy - fh / 2;
     const left = fx - fw / 2;
     const zoneH = 300;
@@ -95,21 +98,11 @@ export class SanctumScene extends Phaser.Scene {
     this.add.rectangle(fx, top + zoneH, fw, 1, PAL.armorShadow);
     addFrame(this, fx, fy, fw, fh);
 
-    // Header: which crypt, with arrows to change it.
-    const crypts = vigilCrypts(save);
-    const ci = Math.max(0, crypts.findIndex((c) => c.id === crypt.id));
-    this.add.text(left + 18, top + 16, 'THE VIGIL', text.hud(13, PAL.amber));
-    this.add.text(left + 18, top + 34, crypt.name, { ...text.display(19, 0xfff1d6) }).setShadow(0, 2, '#000000', 6, false, true);
-    if (crypts.length > 1) {
-      const shift = (d: number) => () => {
-        const next = crypts[(ci + d + crypts.length) % crypts.length];
-        this.showClaim(setVigil(save, Date.now(), { crypt: next.id }));
-        commit();
-        this.scene.restart();
-      };
-      makeButton(this, left + fw - 84, top + 36, 40, 38, '‹', shift(-1), { fontSize: 20 });
-      makeButton(this, left + fw - 36, top + 36, 40, 38, '›', shift(1), { fontSize: 20 });
-    }
+    // Header: where on the Pilgrim's Road the Vigil stands, and the way to push on.
+    this.add.text(left + 18, top + 16, `THE VIGIL  ·  STAGE ${stage.label}`, text.hud(13, PAL.amber));
+    this.add.text(left + 18, top + 34, CHAPTERS[stage.chapter].name, { ...text.display(19, 0xfff1d6) }).setShadow(0, 2, '#000000', 6, false, true);
+    const road = makeButton(this, left + fw - 74, top + 34, 124, 40, roadDone(save) ? 'The Road' : 'Challenge', () => this.scene.start('Campaign'), { fontSize: 16, active: !roadDone(save), icon: 'blade' });
+    if (!roadDone(save) && stageRecommended(save, stage.n) <= partyPower(save, v.party.filter((id) => save.owned[id]))) this.add.circle(road.box.x + 56, road.box.y - 16, 6, PAL.amber).setStrokeStyle(2, 0x1b121c);
     this.purged = 0;
     this.purgedText = this.add.text(left + fw - 16, top + zoneH - 14, '', text.hud(12, PAL.muted)).setOrigin(1, 1);
 
@@ -120,20 +113,39 @@ export class SanctumScene extends Phaser.Scene {
     this.add.rectangle(left + 18, top + zoneH + 82, barW, 8, PAL.deepShadow).setOrigin(0, 0.5);
     const bar = this.add.rectangle(left + 18, top + zoneH + 82, 1, 8, PAL.amber).setOrigin(0, 0.5);
     const timeText = this.add.text(left + 18, top + zoneH + 96, '', text.hud(12, PAL.steel));
-    const claim = makeButton(this, left + 18 + 100, top + fh - 42, 200, 54, 'Claim', () => {
+    const bw = (fw - 36 - 16) / 3;
+    const bx = (i: number) => left + 18 + bw / 2 + i * (bw + 8);
+    const claim = makeButton(this, bx(0), top + fh - 42, bw, 54, 'Claim', () => {
       this.showClaim(claimVigil(save, Date.now()));
       commit();
       this.refreshBar?.();
       update();
-    }, { active: true, fontSize: 19, icon: 'tithe' });
-    makeButton(this, left + fw - 18 - 100, top + fh - 42, 200, 54, 'Sisters', () => this.choosePartyFor(), { fontSize: 19, icon: 'roster' });
+    }, { active: true, fontSize: 18, icon: 'tithe' });
+    const cost = fastCost(save);
+    makeButton(
+      this,
+      bx(1),
+      top + fh - 42,
+      bw,
+      54,
+      cost === null ? 'Fast: done' : cost ? `Fast · ${cost} Gilt` : 'Fast · Free',
+      () => {
+        const c = fastReward(save, Date.now());
+        if (!c) return;
+        this.showClaim(c, `Fast Reward: ${FAST_HOURS} hours at once`);
+        commit();
+        this.scene.restart();
+      },
+      { fontSize: cost ? 15 : 17, disabled: cost === null || giltOf(save) < (cost ?? 0), icon: 'flame' },
+    );
+    makeButton(this, bx(2), top + fh - 42, bw, 54, 'Sisters', () => this.choosePartyFor(), { fontSize: 18, icon: 'roster' });
 
     const update = () => {
       const now = Date.now();
       const r = vigilRates(save, v);
       const p = vigilPending(save, v, now);
       const every = (perHour: number) => (perHour <= 0 ? 'never' : perHour >= 1 ? `${perHour.toFixed(1)}/h` : `every ${Math.round(1 / perHour)}h`);
-      rateText.setText(`Strength ${Math.round(r.eff * 100)}% · ${Math.round(r.tithes)} Tithes/h · gear ${every(r.gear)} · Seal ${every(r.seals)}`);
+      rateText.setText(`${Math.round(r.tithes)} Tithes/h · gear ${every(r.gear)} · Seal ${every(r.seals)} · set by your best stage`);
       const parts = [`${p.tithes} Tithes`, ...(p.gear ? [`${p.gear} gear`] : []), ...(p.seals ? [`${p.seals} Seal${p.seals > 1 ? 's' : ''}`] : [])];
       gotText.setText(`Gathered: ${parts.join(' · ')}`);
       bar.setSize(Math.max(1, barW * (p.hours / VIGIL_CAP_HOURS)), 8);
@@ -156,14 +168,12 @@ export class SanctumScene extends Phaser.Scene {
     const save = game.save;
     this.skirmish.forEach((o) => o.destroy());
     this.skirmish = [];
-    const crypt = cryptOf(v);
     const party = v.party.filter((id) => save.owned[id]);
     if (!party.length) {
       this.skirmish.push(this.add.text(left + fw / 2, top + 160, 'No Sister keeps this vigil.\nTap Sisters to post a watch.', { ...text.body(19, PAL.muted), align: 'center' }).setOrigin(0.5));
       return;
     }
-    const pool = [...crypt.early, ...crypt.late];
-    const battle = skirmish(save, party, pool[Math.floor(Math.random() * pool.length)], 0, undefined, crypt);
+    const battle = stageBattle(save, party, vigilStage(save).n);
 
     const views = new Map<string, { img: Phaser.GameObjects.Image; bar: Phaser.GameObjects.Rectangle; x: number; y: number }>();
     const size = 62;
@@ -237,12 +247,12 @@ export class SanctumScene extends Phaser.Scene {
   }
 
   /** A short notice of what a claim paid. */
-  private showClaim(c?: VigilClaim) {
+  private showClaim(c?: VigilClaim, title = 'The Vigil yields:') {
     if (!c || (!c.tithes && !c.seals && !c.gear.length && bagEmpty(c.items))) return;
     const parts = [`+${c.tithes} Tithes`, ...(c.seals ? [`+${c.seals} Seal${c.seals > 1 ? 's' : ''}`] : []), ...(bagEmpty(c.items) ? [] : [bagText(c.items)]), ...c.gear.map((g) => `${g.name} (${g.rarity})`)];
     if (c.melted) parts.push(`armory full: +${c.melted} Tithes`);
     const box = this.add.container(0, 0).setDepth(30);
-    const t = this.add.text(GAME_W / 2, 150, `The Vigil yields:\n${parts.join('\n')}`, { ...text.body(19, PAL.ivory), align: 'center', wordWrap: { width: GAME_W - 80 } }).setOrigin(0.5, 0);
+    const t = this.add.text(GAME_W / 2, 150, `${title}\n${parts.join('\n')}`, { ...text.body(19, PAL.ivory), align: 'center', wordWrap: { width: GAME_W - 80 } }).setOrigin(0.5, 0);
     const bg = this.add.rectangle(GAME_W / 2, 150 + t.height / 2, t.width + 40, t.height + 28, 0x1b121c, 0.97).setStrokeStyle(1, PAL.amber);
     box.add([bg, t]);
     this.tweens.add({ targets: box, alpha: 0, delay: 2600, duration: 600, onComplete: () => box.destroy() });

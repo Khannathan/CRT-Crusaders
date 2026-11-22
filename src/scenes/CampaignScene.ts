@@ -1,0 +1,181 @@
+import Phaser from 'phaser';
+import { GAME_H, GAME_W, PAL } from '../config';
+import { ENCOUNTERS, ENEMIES } from '../data/enemies';
+import { commit, game } from '../state/game';
+import { current } from '../state/run';
+import { CHAPTERS, STAGES_PER_CHAPTER, TOTAL_STAGES, campaignOf, chapterChest, finishStage, nextStage, roadRates, stageBattle, stageDef, stageRecommended, stageReward, type StageReward } from '../systems/campaign';
+import { bagText } from '../systems/items';
+import { partyPower } from '../systems/power';
+import { VIGIL_SIZE, ensureVigil } from '../systems/vigil';
+import { makeButton } from '../ui/button';
+import { nodeIconKey } from '../ui/icons';
+import { modeScreen, toast } from '../ui/modeScreen';
+import { pickParty } from '../ui/partyPicker';
+import { drawRecommended } from '../ui/recommended';
+import { addScrollArea } from '../ui/scroll';
+import { TAB_BAR_H } from '../ui/tabBar';
+import { PAD, addBackdrop, addFrame, text } from '../ui/theme';
+
+const STEP = 84;
+const CHAPTER_GAP = 120;
+const PANEL_H = 214;
+
+export const rewardText = (r: StageReward) =>
+  [r.tithes ? `${r.tithes} Tithes` : '', r.seals ? `${r.seals} Seal${r.seals > 1 ? 's' : ''}` : '', r.gilt ? `${r.gilt} Gilt` : '', bagText(r.items)].filter(Boolean).join(' + ');
+
+/**
+ * The Pilgrim's Road: the Vigil's campaign map. A winding road, climbed from
+ * the bottom, five chapters of ten stages. Tap a stage to see it; Challenge
+ * fights the next one with the Vigil's Sisters (or any four).
+ */
+export class CampaignScene extends Phaser.Scene {
+  private static listY?: number;
+  private sel = 0;
+  private notice?: string;
+
+  constructor() {
+    super('Campaign');
+  }
+
+  init(data: { notice?: string }) {
+    this.notice = data.notice;
+    this.sel = 0;
+  }
+
+  create() {
+    const save = game.save;
+    const { top } = modeScreen(this, "The Pilgrim's Road", 'Every stage cleared makes the Vigil gather faster.', 'Sanctum');
+    const next = nextStage(save);
+    const best = campaignOf(save).best;
+    if (!this.sel) this.sel = next;
+    const mapTop = top + 4;
+    const mapBottom = GAME_H - TAB_BAR_H - PANEL_H - 6;
+
+    // Stage positions: stage 1 at the bottom, winding upward; a gap and a banner per chapter.
+    const height = TOTAL_STAGES * STEP + CHAPTERS.length * CHAPTER_GAP + 60;
+    const yOf = (n: number) => mapTop + height - 50 - (n - 1) * STEP - Math.floor((n - 1) / STAGES_PER_CHAPTER) * CHAPTER_GAP;
+    const xOf = (n: number) => GAME_W / 2 + Math.sin(n * 0.85) * 150;
+    const focus = yOf(this.sel);
+    const start = CampaignScene.listY ?? Math.min(0, Math.max(mapBottom - (mapTop + height), (mapTop + mapBottom) / 2 - focus));
+    const list = addScrollArea(this, mapTop, mapBottom, { start, onScroll: (y) => (CampaignScene.listY = y) });
+    const before = this.children.list.length;
+
+    // Chapter backdrops and banners
+    CHAPTERS.forEach((ch, c) => {
+      const first = c * STAGES_PER_CHAPTER + 1;
+      const last = first + STAGES_PER_CHAPTER - 1;
+      const y0 = yOf(last) - 70;
+      const y1 = yOf(first) + 50;
+      const art = this.textures.exists(`bg-${ch.crypt.id}`) ? `bg-${ch.crypt.id}` : 'bg-hall';
+      addBackdrop(this, art, GAME_W / 2, (y0 + y1) / 2, GAME_W - PAD * 2, y1 - y0, { alpha: best >= first - 1 ? 0.4 : 0.15, fade: 0.6, fadeColor: 0x120c14 });
+      const by = y0 - 26;
+      this.add.rectangle(GAME_W / 2, by, GAME_W - PAD * 2, 44, 0x1b121c, 0.92).setStrokeStyle(1, best >= first - 1 ? PAL.goldEdge : PAL.armorShadow);
+      this.add.text(PAD + 14, by, `CHAPTER ${c + 1}`, text.hud(12, PAL.amber)).setOrigin(0, 0.5);
+      this.add.text(PAD + 104, by, ch.name, text.display(17, best >= first - 1 ? 0xfff1d6 : PAL.muted)).setOrigin(0, 0.5);
+      const chest = best >= last ? 'CHEST OPENED' : 'CHEST AT 10';
+      this.add.text(GAME_W - PAD - 12, by, chest, text.hud(11, best >= last ? PAL.amber : PAL.steel)).setOrigin(1, 0.5);
+    });
+
+    // The road
+    const g = this.add.graphics();
+    for (let n = 1; n < TOTAL_STAGES; n++) {
+      g.lineStyle(4, n < next ? PAL.amber : 0x3a2a34, n < next ? 0.8 : 1);
+      g.lineBetween(xOf(n), yOf(n), xOf(n + 1), yOf(n + 1));
+    }
+    for (let n = 1; n <= TOTAL_STAGES; n++) {
+      const s = stageDef(n);
+      const x = xOf(n);
+      const y = yOf(n);
+      const done = n <= best;
+      const isNext = n === next && best < TOTAL_STAGES;
+      const r = s.boss ? 30 : s.elite ? 24 : 20;
+      const ring = this.add.circle(x, y, r + 4, 0x120c14).setStrokeStyle(n === this.sel ? 4 : 2, isNext ? PAL.amber : done ? PAL.goldEdge : PAL.armorShadow);
+      const kind = s.boss ? 'boss' : s.elite ? 'elite' : 'fight';
+      if (this.textures.exists(nodeIconKey(kind))) {
+        this.add.image(x, y, nodeIconKey(kind)).setDisplaySize(r * 2, r * 2).setAlpha(done || isNext ? 1 : 0.35);
+      } else this.add.circle(x, y, r, done ? PAL.amber : 0x2a1e28);
+      if (done) this.add.text(x + r - 4, y - r - 2, '✓', text.hud(14, PAL.amber)).setOrigin(0.5);
+      this.add.text(x + (x > GAME_W / 2 ? -(r + 12) : r + 12), y, s.label, text.hud(13, isNext ? PAL.amber : done ? PAL.ivory : PAL.steel)).setOrigin(x > GAME_W / 2 ? 1 : 0, 0.5);
+      if (isNext) this.tweens.add({ targets: ring, scale: 1.12, yoyo: true, repeat: -1, duration: 700 });
+      if (n <= next) {
+        list.tap(ring, () => {
+          this.sel = n;
+          this.time.delayedCall(0, () => this.scene.restart({}));
+        });
+      }
+    }
+    list.content.add(this.children.list.slice(before));
+    list.fit(mapTop + height);
+
+    this.drawPanel(mapBottom + 6);
+    if (this.notice) toast(this, this.notice, GAME_H / 2 - 120);
+    this.notice = undefined;
+  }
+
+  /** The chosen stage: its foes, what it asks, what it pays, and Challenge. */
+  private drawPanel(y0: number) {
+    const save = game.save;
+    const n = this.sel;
+    const s = stageDef(n);
+    const best = campaignOf(save).best;
+    const w = GAME_W - PAD * 2;
+    const left = PAD + 16;
+    addFrame(this, GAME_W / 2, y0 + PANEL_H / 2, w, PANEL_H, { fill: 0x1b121c });
+    const kind = s.boss ? 'CHAPTER BOSS' : s.elite ? 'ELITE' : 'STAGE';
+    this.add.text(left, y0 + 14, `${kind} ${s.label}`, text.hud(13, s.boss ? 0xe58a8a : PAL.amber));
+    this.add.text(left, y0 + 32, CHAPTERS[s.chapter].name, text.display(18, 0xfff1d6));
+    const foes = ENCOUNTERS[s.encounter].map((t) => ENEMIES[t]?.name ?? t);
+    this.add.text(left, y0 + 60, foes.join(', '), { ...text.body(15, PAL.muted), wordWrap: { width: w - 32 } }).setCrop(0, 0, w - 32, 40);
+    const v = ensureVigil(save, Date.now());
+    const party = (v?.party ?? []).filter((id) => save.owned[id]);
+    drawRecommended(this, left, y0 + 104, stageRecommended(save, n), partyPower(save, party), { size: 13, label: 'VIGIL' });
+    const done = n <= best;
+    const pay = done ? 'Cleared. Its first-clear reward is taken.' : `First clear: ${rewardText(stageReward(n))}${s.boss ? `\nChapter chest: ${rewardText(chapterChest(s.chapter))}` : ''}`;
+    this.add.text(left, y0 + 126, pay, { ...text.body(15, done ? PAL.steel : PAL.ivory), wordWrap: { width: w - 32 } });
+    const rates = roadRates(save);
+    this.add.text(GAME_W - PAD - 16, y0 + 14, `VIGIL ${Math.round(rates.tithes)} TITHES/H`, text.hud(11, PAL.steel)).setOrigin(1, 0);
+    const can = n === best + 1;
+    makeButton(this, GAME_W / 2, y0 + PANEL_H - 34, 260, 52, can ? 'Challenge' : done ? 'Cleared' : 'Clear the stage before', () => this.challenge(n), {
+      active: can,
+      disabled: !can,
+      icon: 'blade',
+      fontSize: 18,
+    });
+  }
+
+  private challenge(n: number) {
+    const save = game.save;
+    const s = stageDef(n);
+    const v = ensureVigil(save, Date.now());
+    pickParty(
+      this,
+      save,
+      {
+        title: `Stage ${s.label}`,
+        sub: 'The Vigil\'s Sisters are picked. Tap in rank order.',
+        initial: v?.party ?? save.lastParty,
+        max: VIGIL_SIZE,
+        confirm: 'Fight',
+        rec: stageRecommended(save, n),
+      },
+      (party) => {
+        current.challenge = {
+          label: `Stage ${s.label} of the Pilgrim's Road. ${s.boss ? 'The road ends at something vast.' : 'Pilgrims never walk alone.'}`,
+          make: (rng) => stageBattle(save, party, n, rng),
+          finish: (outcome) => {
+            const r = finishStage(save, n, outcome);
+            commit();
+            CampaignScene.listY = undefined;
+            const notice = !r.won
+              ? 'Driven back. Strengthen the Sisters and walk on.'
+              : r.first
+                ? `Stage ${s.label} cleared: ${rewardText(r.reward!)}${r.chest ? `\nChapter chest: ${rewardText(r.chest)}` : ''}\nThe Vigil gathers faster.`
+                : `Stage ${s.label} won again.`;
+            return { scene: 'Campaign', data: { notice } };
+          },
+        };
+        this.scene.start('Battle');
+      },
+    );
+  }
+}

@@ -8,6 +8,7 @@ import type { BondState } from '../systems/bonds';
 import type { TrialState } from '../systems/trials';
 import type { TaskState } from '../systems/tasks';
 import type { VigilState } from '../systems/vigil';
+import type { CampaignState } from '../systems/campaign';
 
 /** Everything the player owns, stored on the device. */
 export interface OwnedCrusader {
@@ -50,6 +51,8 @@ export interface SaveData {
   nextGearId?: number;
   /** The idle Vigil: who keeps watch where, and since when. */
   vigil?: VigilState;
+  /** The Pilgrim's Road: the Vigil's campaign. */
+  campaign?: CampaignState;
   /** Daily Penance and weekly Litany progress. */
   tasks?: TaskState;
   /** Matins login calendar. */

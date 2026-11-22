@@ -1,22 +1,21 @@
 import { BOND_XP, addBond } from './bonds';
 import { give, vigilDrops, type Bag } from './items';
-import { CRUSADERS } from '../data/crusaders';
-import type { CrusaderDef } from '../data/types';
 import type { SaveData } from '../state/save';
-import { CRYPTS, cryptUnlocked, suggestParty, type CryptDef } from './crusade';
+import { suggestParty } from './crusade';
+import { FAST_HOURS, chaptersCleared, nextStage, roadRates, stageDef, useFast } from './campaign';
 import type { Rng } from './gacha';
 import { claimGear, makeGear, rollGearRarity, type GearItem } from './gear';
-import { sisterStats, statsFor, type Stats } from './stats';
-import { statPower } from './power';
 import { track } from './tasks';
 
 /**
  * Vigils: the idle side of the game. A party of up to four Sisters keeps watch
- * over one crypt and slowly gathers Tithes, gear and Seals, even while the game
- * is closed, up to VIGIL_CAP_HOURS before someone has to claim it.
+ * on the Pilgrim's Road and slowly gathers Tithes, gear, materials and Seals,
+ * even while the game is closed, up to VIGIL_CAP_HOURS before someone claims it.
+ * How fast it gathers is set by the highest stage cleared (campaign.ts).
  */
 export interface VigilState {
-  crypt: string;
+  /** Older saves: the crypt it once watched. The Pilgrim's Road decides now. */
+  crypt?: string;
   party: string[];
   /** When gathering started (ms since epoch). */
   since: number;
@@ -24,44 +23,13 @@ export interface VigilState {
 
 export const VIGIL_CAP_HOURS = 12;
 export const VIGIL_SIZE = 4;
-/** Per hour, at full strength, before the crypt's reward multiplier. */
-export const VIGIL_RATES = { tithes: 80, gear: 0.5, seals: 0.25 };
-/** Level a party of four R Sisters needs to hold each crypt at full strength. */
-const RECOMMENDED_LEVEL: Record<string, number> = { 'drowned-ossuary': 5, 'sunken-belfry': 10 };
-/** Strength below this share of the recommended power still gathers this much. */
-const MIN_EFF = 0.2;
-const MAX_EFF = 1.5;
 
-/** The shared power formula (see power.ts), so the Vigil and CP agree. */
-const power = (s: Stats) => statPower(s);
+/** Where the Vigil fights: the next stage of the Pilgrim's Road (the last once it is done). */
+export const vigilStage = (save: SaveData) => stageDef(nextStage(save));
 
-/** A stand-in R Sister of the given class, to measure what a crypt asks for. */
-const yardstick = (classId: string): CrusaderDef => ({ id: '', name: '', classId, rarity: 'R', order: '', age: 0, hook: '' });
-
-export function recommendedPower(crypt: CryptDef) {
-  const level = RECOMMENDED_LEVEL[crypt.id] ?? 10;
-  return ['warsister', 'inquisitor', 'oracle', 'confessor'].reduce((n, cls) => n + power(statsFor(yardstick(cls), { level, vow: 0 })), 0);
-}
-
-export function partyPower(save: SaveData, party: string[]) {
-  return party.reduce((n, id) => {
-    const c = CRUSADERS.find((x) => x.id === id);
-    return c && save.owned[id] ? n + power(sisterStats(save, c)) : n;
-  }, 0);
-}
-
-/** How well the party holds the crypt: 0.2 (barely) to 1.5 (with ease). */
-export function vigilStrength(save: SaveData, v: VigilState) {
-  const crypt = cryptOf(v);
-  return Math.max(MIN_EFF, Math.min(MAX_EFF, partyPower(save, v.party) / recommendedPower(crypt)));
-}
-
-export const cryptOf = (v: VigilState) => CRYPTS.find((c) => c.id === v.crypt) ?? CRYPTS[0];
-
-export function vigilRates(save: SaveData, v: VigilState) {
-  const eff = vigilStrength(save, v);
-  const m = cryptOf(v).rewardMult;
-  return { eff, tithes: VIGIL_RATES.tithes * m * eff, gear: VIGIL_RATES.gear * eff, seals: VIGIL_RATES.seals * Math.min(1, eff) * m };
+/** Per hour, set by the highest stage cleared on the Pilgrim's Road (campaign.ts). */
+export function vigilRates(save: SaveData, _v?: VigilState) {
+  return roadRates(save);
 }
 
 export function vigilHours(v: VigilState, now: number) {
@@ -72,15 +40,19 @@ export function vigilHours(v: VigilState, now: number) {
 export function vigilPending(save: SaveData, v: VigilState, now: number) {
   const hours = vigilHours(v, now);
   const r = vigilRates(save, v);
+  return gatherFor(hours, r);
+}
+
+function gatherFor(hours: number, r: ReturnType<typeof roadRates>) {
   return { hours, full: hours >= VIGIL_CAP_HOURS, tithes: Math.floor(hours * r.tithes), gear: Math.floor(hours * r.gear), seals: Math.floor(hours * r.seals) };
 }
 
-/** Sets up the Vigil on first visit: the last party, at the hardest unlocked crypt. */
+/** Sets up the Vigil on first visit, with the last party. */
 export function ensureVigil(save: SaveData, now: number): VigilState | undefined {
   if (!Object.keys(save.owned).length) return undefined;
   if (!save.vigil) {
     const party = (save.lastParty.length ? save.lastParty : suggestParty(save)).filter((id) => save.owned[id]).slice(0, VIGIL_SIZE);
-    save.vigil = { crypt: CRYPTS[0].id, party, since: now };
+    save.vigil = { party, since: now };
   }
   return save.vigil;
 }
@@ -93,33 +65,43 @@ export interface VigilClaim {
   items: Bag;
 }
 
-/** Pays out what the Vigil gathered and starts the clock again. */
-export function claimVigil(save: SaveData, now: number, rng: Rng = Math.random): VigilClaim {
-  const v = save.vigil;
-  if (!v) return { tithes: 0, seals: 0, gear: [], melted: 0, items: {} };
-  const p = vigilPending(save, v, now);
-  const crypt = cryptOf(v);
-  const luck = Math.min(0.2, (crypt.rewardMult - 1) * 0.1);
+/** Pays out `hours` of gathering at the road's rates. */
+function payOut(save: SaveData, hours: number, party: string[], rng: Rng): VigilClaim {
+  const r = vigilRates(save);
+  const p = gatherFor(hours, r);
+  const luck = Math.min(0.2, chaptersCleared(save) * 0.04);
   const gear = Array.from({ length: p.gear }, () => makeGear(rng, rollGearRarity(rng, luck)));
   const melted = claimGear(save, gear);
   save.tithes += p.tithes;
   save.seals += p.seals;
-  const items = vigilDrops(p.hours, rng);
+  const items = vigilDrops(p.hours * r.items * 2, rng);
   give(save, items);
-  addBond(save, v.party, Math.floor(p.hours * BOND_XP.vigilHour));
-  v.since = now;
-  if (p.tithes > 0) track(save, 'vigilClaim', 1, now);
+  addBond(save, party, Math.floor(p.hours * BOND_XP.vigilHour));
   return { tithes: p.tithes, seals: p.seals, gear, melted, items };
 }
 
-/** Changing the crypt or the party claims first, so nothing gathered is lost. */
-export function setVigil(save: SaveData, now: number, change: Partial<Pick<VigilState, 'crypt' | 'party'>>): VigilClaim | undefined {
+/** Pays out what the Vigil gathered and starts the clock again. */
+export function claimVigil(save: SaveData, now: number, rng: Rng = Math.random): VigilClaim {
+  const v = save.vigil;
+  if (!v) return { tithes: 0, seals: 0, gear: [], melted: 0, items: {} };
+  const c = payOut(save, vigilHours(v, now), v.party, rng);
+  v.since = now;
+  if (c.tithes > 0) track(save, 'vigilClaim', 1, now);
+  return c;
+}
+
+/** Fast Reward: FAST_HOURS of gathering at once (free once a day, then Gilt). Undefined if not allowed. */
+export function fastReward(save: SaveData, now: number, rng: Rng = Math.random): VigilClaim | undefined {
+  const v = ensureVigil(save, now);
+  if (!v || !useFast(save, now)) return undefined;
+  return payOut(save, FAST_HOURS, v.party, rng);
+}
+
+/** Changing the party claims first, so nothing gathered is lost. */
+export function setVigil(save: SaveData, now: number, change: Partial<Pick<VigilState, 'party'>>): VigilClaim | undefined {
   const v = ensureVigil(save, now);
   if (!v) return undefined;
   const claim = claimVigil(save, now);
-  if (change.crypt && CRYPTS.some((c) => c.id === change.crypt && cryptUnlocked(save, c))) v.crypt = change.crypt;
   if (change.party) v.party = change.party.filter((id) => save.owned[id]).slice(0, VIGIL_SIZE);
   return claim;
 }
-
-export const vigilCrypts = (save: SaveData) => CRYPTS.filter((c) => cryptUnlocked(save, c));
