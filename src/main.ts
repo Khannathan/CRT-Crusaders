@@ -12,6 +12,7 @@ import { ResultsScene } from './scenes/ResultsScene';
 import { RevealScene } from './scenes/RevealScene';
 import { PullHistoryScene } from './scenes/PullHistoryScene';
 import { OrderBookScene } from './scenes/OrderBookScene';
+import { RivalsScene } from './scenes/RivalsScene';
 import { RosterScene } from './scenes/RosterScene';
 import { SanctumScene } from './scenes/SanctumScene';
 import { PenanceScene } from './scenes/PenanceScene';
@@ -75,6 +76,7 @@ function start() {
       RevealScene,
       PullHistoryScene,
       OrderBookScene,
+      RivalsScene,
       RosterScene,
       ModesScene,
       CampaignScene,

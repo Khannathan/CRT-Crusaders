@@ -58,6 +58,10 @@ export interface SaveData {
   title?: string;
   /** The Vigil Flame: a kind daily streak (see flame.ts). */
   flame?: { level: number; best: number; day: number; grace: number; week: string };
+  /** Personal bests: Bell Tower floor, Inquisition Brands in one fortnight, fewest rounds to clear each crypt (by "crypt:heresy"). */
+  records?: { tower?: number; brands?: number; clears?: Record<string, number> };
+  /** Your place on the rival ladder when you last looked, to tell you how far you climbed. */
+  ladderSeen?: number;
   /** Highest Heresy tier cleared per crypt id (0 = the base crypt). */
   heresy?: Record<string, number>;
   /** Every piece of gear owned; `on` says who wears it. */

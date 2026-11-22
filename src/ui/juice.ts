@@ -172,3 +172,20 @@ export function comboBurst(scene: Phaser.Scene, x: number, y: number, label: str
   scene.tweens.add({ targets: t, scale: 1, duration: 200, ease: 'Back.out' });
   scene.tweens.add({ targets: t, alpha: 0, y: t.y - 30, delay: 700, duration: 400, onComplete: () => t.destroy() });
 }
+
+/** A gold "NEW RECORD" banner that stamps in, holds, then lifts away. */
+export function recordBanner(scene: Phaser.Scene, line: string, y = 200, hold = 2600) {
+  const band = scene.add.rectangle(GAME_W / 2, y, GAME_W, 86, 0x2a1c10, 0.95).setStrokeStyle(2, PAL.amber).setDepth(45).setScale(1, 0);
+  const title = scene.add
+    .text(GAME_W / 2, y - 16, 'NEW RECORD', { fontFamily: FONT, fontSize: '34px', color: hex(PAL.amber), stroke: '#000000', strokeThickness: 6 })
+    .setOrigin(0.5)
+    .setDepth(46)
+    .setScale(2)
+    .setAlpha(0);
+  const sub = scene.add.text(GAME_W / 2, y + 24, line, { fontFamily: FONT, fontSize: '17px', color: hex(PAL.ivory), align: 'center', wordWrap: { width: GAME_W - 40 } }).setOrigin(0.5).setDepth(46).setAlpha(0);
+  const parts = [band, title, sub];
+  scene.tweens.add({ targets: band, scaleY: 1, duration: 160, ease: 'Quad.out' });
+  scene.tweens.add({ targets: title, scale: 1, alpha: 1, delay: 80, duration: 220, ease: 'Back.out' });
+  scene.tweens.add({ targets: sub, alpha: 1, delay: 220, duration: 200 });
+  scene.tweens.add({ targets: parts, alpha: 0, delay: hold, duration: 500, onComplete: () => parts.forEach((p) => p.destroy()) });
+}
