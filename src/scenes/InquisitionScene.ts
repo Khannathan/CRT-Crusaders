@@ -1,3 +1,5 @@
+import { recordBanner } from '../ui/juice';
+import { beatenText, noteBrands } from '../systems/records';
 import Phaser from 'phaser';
 import { CRUSADERS } from '../data/crusaders';
 import { GAME_W, PAL } from '../config';
@@ -23,8 +25,11 @@ export class InquisitionScene extends Phaser.Scene {
     super('Inquisition');
   }
 
-  init(data: { notice?: string }) {
+  private record?: string;
+
+  init(data: { notice?: string; record?: string }) {
     this.notice = data?.notice;
+    this.record = data?.record;
   }
 
   create() {
@@ -75,6 +80,7 @@ export class InquisitionScene extends Phaser.Scene {
     });
 
     if (this.notice) toast(this, this.notice);
+    if (this.record) recordBanner(this, this.record);
   }
 
   private fight(act: number) {
@@ -104,7 +110,8 @@ export class InquisitionScene extends Phaser.Scene {
             if (r.brands) notice = r.gained ? `${r.brands} Brand${r.brands > 1 ? 's' : ''} earned` : `${r.brands} Brand${r.brands > 1 ? 's' : ''}, no better than before`;
             for (const m of r.paid) notice += `\nMark ${m.at}: ${markText(m)}`;
             for (const g of r.gear) notice += `\n${g.name} (${g.rarity})`;
-            return { scene: 'Inquisition', data: { notice } };
+            const rec = r.gained ? noteBrands(save, totalBrands(save)) : undefined;
+            return { scene: 'Inquisition', data: { notice, record: rec && beatenText(rec) } };
           },
         };
         this.scene.start('Battle');

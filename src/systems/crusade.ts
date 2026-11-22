@@ -14,6 +14,7 @@ import { recommendedPower } from './power';
 import { addBags, give, roomDrops, type Bag } from './items';
 import { levelUpCost, sisterStats } from './stats';
 import { rankOf } from './rank';
+import { noteClear, type Beaten } from './records';
 import { track, weekKey } from './tasks';
 import { skillVow } from './tiers';
 
@@ -208,6 +209,8 @@ export interface RunState {
   banked?: { tithes: number; items: Bag };
   /** Faith and each Sister's level and EXP when the run began, so the results can show what moved. */
   start?: RunStart;
+  /** Battle rounds fought so far, for the fastest-clear record. */
+  rounds?: number;
   /** Extra Zeal for the next fight only. */
   blessZeal?: number;
   /** Shorter Vigil for the next fight only. */
@@ -446,6 +449,7 @@ export function absorbBattle(run: RunState, battle: Battle) {
   // One-fight blessings and curses are spent.
   run.blessZeal = undefined;
   run.curseVigil = undefined;
+  run.rounds = (run.rounds ?? 0) + Math.max(1, battle.round);
 }
 
 /** Rewards a won fight and marks the node done. */
@@ -586,6 +590,8 @@ export interface RunResult {
   pilgrimage?: { seals: number; tithes: number; left: number };
   party: string[];
   start?: RunStart;
+  /** A personal best this run set (fewest rounds to clear). */
+  record?: Beaten;
 }
 
 /** Ends the run: pays out, marks the fallen as recovering, and lets others recover. */
@@ -596,7 +602,9 @@ export function finishRun(save: SaveData, run: RunState, outcome: RunResult['out
   let heresyCleared: number | undefined;
   let pilgrimage: RunResult['pilgrimage'];
   let gilt = 0;
+  let record: Beaten | undefined;
   if (outcome === 'victory') {
+    if (run.rounds) record = noteClear(save, run.crypt.id, run.heresy, run.rounds, run.crypt.name);
     track(save, 'cryptCleared');
     const bonus = blessClear(save);
     if (bonus) {
@@ -639,7 +647,7 @@ export function finishRun(save: SaveData, run: RunState, outcome: RunResult['out
   earn(save, gilt);
   save.tithes += tithes;
   save.seals += seals;
-  return { outcome, tithes, seals, firstClear, heresyCleared, fallen, gear, melted, items, gilt, pilgrimage, party: run.party, start: run.start };
+  return { outcome, tithes, seals, firstClear, heresyCleared, fallen, gear, melted, items, gilt, pilgrimage, party: run.party, start: run.start, record };
 }
 
 /** A defeat keeps everything banked at a Sanctuary, and most of what was found since. */

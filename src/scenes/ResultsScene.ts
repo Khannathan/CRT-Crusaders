@@ -13,6 +13,8 @@ import { SLOT_NAME } from '../systems/gear';
 import { codexGoal, leadOrder, nearGoals } from '../systems/goals';
 import { rankFromXp, rankOf } from '../systems/rank';
 import { makeButton } from '../ui/button';
+import { recordBanner } from '../ui/juice';
+import { beatenText } from '../systems/records';
 import { portraitKey } from '../ui/placeholderPortrait';
 import { holdForCard } from '../ui/sisterCard';
 
@@ -99,6 +101,11 @@ export class ResultsScene extends Phaser.Scene {
 
     makeButton(this, GAME_W / 2 - 128, GAME_H - 56, 236, 76, 'Sanctum', () => this.scene.start('Sanctum'));
     makeButton(this, GAME_W / 2 + 128, GAME_H - 56, 236, 76, 'March again', () => this.scene.start('Crusade'), { active: true });
+
+    if (r.record) {
+      const rec = r.record;
+      this.time.delayedCall(this.at + 300, () => recordBanner(this, beatenText(rec), 470));
+    }
 
     // Tap anywhere to hurry the ceremony along.
     this.input.on('pointerdown', () => {

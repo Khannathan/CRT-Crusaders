@@ -1,3 +1,5 @@
+import { recordBanner } from '../ui/juice';
+import { beatenText, noteTower } from '../systems/records';
 import Phaser from 'phaser';
 import { GAME_H, GAME_W, PAL } from '../config';
 import { addScrollArea } from '../ui/scroll';
@@ -20,8 +22,11 @@ export class TowerScene extends Phaser.Scene {
     super('Tower');
   }
 
-  init(data: { notice?: string }) {
+  private record?: string;
+
+  init(data: { notice?: string; record?: string }) {
     this.notice = data?.notice;
+    this.record = data?.record;
   }
 
   create() {
@@ -69,6 +74,7 @@ export class TowerScene extends Phaser.Scene {
       list.fit(y + 8);
     }
     if (this.notice) toast(this, this.notice);
+    if (this.record) recordBanner(this, this.record);
   }
 
   private climb(floor: number) {
@@ -84,9 +90,11 @@ export class TowerScene extends Phaser.Scene {
           label: `Floor ${floor} of the Bell Tower. ${f.boss ? 'Something vast stirs in the belfry.' : 'The bells toll for you.'}`,
           make: (rng) => towerBattle(save, party, floor, rng),
           finish: (_o, battle) => {
+            const before = towerOf(save).best;
             const r = finishFloor(save, floor, battle);
             const notice = r.reward ? `Floor ${floor} taken: ${rewardLine(r.reward)}${r.gear ? `\n${r.gear.name} (${r.gear.rarity})` : ''}` : 'Driven back down the stair. Climb again when ready.';
-            return { scene: 'Tower', data: { notice } };
+            const rec = r.reward ? noteTower(save, floor, before) : undefined;
+            return { scene: 'Tower', data: { notice, record: rec && beatenText(rec) } };
           },
         };
         this.scene.start('Battle');
