@@ -1,3 +1,5 @@
+import { HOUNDS } from '../data/hounds';
+import { freeWhistle, houndsOf } from '../systems/hounds';
 import Phaser from 'phaser';
 import { GAME_W, PAL } from '../config';
 import type { SaveData } from '../state/save';
@@ -95,6 +97,11 @@ export const RITES: RiteEntry[] = [
     label: 'Rival Orders', scene: 'Rivals', icon: 'sigil', rank: 1, home: 'board', bg: 'bg-hall',
     blurb: 'Your records, and the rival Sisterhoods just above and below you on the ladder.',
     status: (s) => `Place ${ladder(s).place} of ${ladder(s).rows.length}  ·  Renown ${renownOf(s)}`,
+  },
+  {
+    label: 'Kennel', scene: 'Kennel', icon: 'shield', rank: 1, home: 'cloister', bg: 'bg-hall', ready: (s) => freeWhistle(s),
+    blurb: 'War-dogs of the Church. One goes into every fight and howls each round.',
+    status: (s) => `${Object.keys(houndsOf(s).owned).length} of ${HOUNDS.length} hounds  ·  ${freeWhistle(s) ? 'free whistle ready' : 'whistled today'}`,
   },
   { label: 'Inventory', scene: 'Inventory', icon: 'shield', art: 'inventory', rank: 1, home: 'cloister', bg: 'bg-hall', blurb: 'Every relic, ash, page and writ your Sisters carried home. Refine and use them.' },
   { label: 'Shop', scene: 'Shop', icon: 'seal', art: 'shop', rank: 1, home: 'cloister', bg: 'bg-altar', blurb: 'Seals, crates, the Almonry and the Tithe Exchange. Stock turns daily and weekly.' },

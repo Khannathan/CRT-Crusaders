@@ -1,3 +1,4 @@
+import { activeHowl } from './hounds';
 import { BOND_XP, addBond } from './bonds';
 import { GILT_FIRST_CLEAR, GILT_HERESY, earn } from './currency';
 import { CLASSES } from '../data/classes';
@@ -440,7 +441,7 @@ export function makeBattle(save: SaveData, run: RunState, encounter: string, rng
     fallenAtk: sum('fallenAtk'),
     fallHeal: sum('fallHeal'),
   };
-  return new Battle(party, enemies, { rng, vigil, zeal, enemyScale, mods });
+  return new Battle(party, enemies, { rng, vigil, zeal, enemyScale, mods, hound: activeHowl(save) });
 }
 
 /**

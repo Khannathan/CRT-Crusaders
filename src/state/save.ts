@@ -101,6 +101,8 @@ export interface SaveData {
   alms?: number;
   /** Shop purchases and today's Almonry stock. */
   shop?: import('../systems/shop').ShopState;
+  /** The Kennel: hounds owned and the one going into battle. */
+  hounds?: import('../systems/hounds').HoundState;
   /** Materials by item id (see systems/items.ts). */
   /** Order Codex level by Order id (systems/codex.ts). */
   codex?: Record<string, number>;

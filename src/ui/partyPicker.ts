@@ -7,6 +7,7 @@ import type { SaveData } from '../state/save';
 import { formatPower, partyPower, sisterPower } from '../systems/power';
 import { addScrollArea } from './scroll';
 import { drawOrderChips } from './orderBonus';
+import { drawHoundSlot } from './hound';
 import { makeButton } from './button';
 import { portraitKey } from './placeholderPortrait';
 import { drawRecommended } from './recommended';
@@ -87,6 +88,8 @@ export function pickParty(scene: Phaser.Scene, save: SaveData, opts: PickOpts, d
       parts.forEach((p) => p.setX(p.x - w / 2));
       layer.add(parts);
     }
+    // The hound that goes with a fighting party.
+    if (opts.rec) layer.add(drawHoundSlot(scene, save, GAME_W / 2, GAME_H - 146, GAME_W - 70, 40, () => scene.time.delayedCall(0, draw)));
     // The Order blessings this pick turns on (tap for details), or why some are dimmed.
     const orders = picked.map((id) => all.find((c) => c.id === id)!.order);
     if (orders.length && max > 1) layer.add(drawOrderChips(scene, GAME_W / 2, GAME_H - 108, orders, 40));

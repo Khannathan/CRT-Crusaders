@@ -38,6 +38,7 @@ export const GLOSSARY: Record<string, Term> = {
   empower: { title: 'Empower', color: BUFF, match: ['empower', 'empowered', '+25% attack', '+30% attack'], text: 'Deals more damage while it lasts.' },
   taunt: { title: 'Taunt', color: BUFF, match: ['taunt', 'taunts', 'draw enemy attacks'], text: 'Enemies that can reach her must attack her instead of her Sisters.' },
   cleanse: { title: 'Cleanse', color: BUFF, match: ['cure', 'cures', 'cured'], text: 'Removes Poison, Burn and Bleed.' },
+  howl: { title: 'Howl', color: BUFF, match: ['howl', 'howls'], text: 'Your hound howls at the start of every round. Each hound has its own howl: more damage, less damage taken, mending, a shield, Zeal, or foes losing Armor and Magic Resist. Choose the hound in the Kennel or under any party.' },
   charge: { title: 'Charge', color: DEBUFF, match: ['charge', 'charging'], text: 'A foe winding up a great blow fires it on its next turn. Delay or Stun it to break the charge.' },
   zeal: { title: 'Zeal', color: PAL.amber, match: ['zeal'], text: `The party's shared fury, up to ${ZEAL_MAX}. Attacks, support and wounds build it; at ${ZEAL_MAX} any Sister may spend it on her Rite.` },
   rite: { title: 'Rite', color: PAL.amber, match: ['rite'], text: `A Sister's great act. It costs all ${ZEAL_MAX} Zeal.` },
