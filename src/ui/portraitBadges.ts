@@ -32,6 +32,7 @@ export function drawPortraitBadges(scene: Phaser.Scene, cx: number, cy: number, 
   // Rarity.
   const r = scene.add.text(cx - h + 8, cy - h + 6, c.rarity, text.hud(small, tint));
   out.push(scene.add.rectangle(cx - h + 3, cy - h + 3, r.width + 10, r.height + 6, 0x0d090f, 0.9).setOrigin(0, 0).setStrokeStyle(1, tint), r);
+  scene.children.bringToTop(r);
   // Order.
   const sig = Math.round(size * 0.27);
   out.push(scene.add.circle(cx + h - sig / 2 - 4, cy - h + sig / 2 + 4, sig / 2 + 3, 0x0d090f, 0.9).setStrokeStyle(1, ORDERS[c.order]?.color ?? PAL.goldEdge));
@@ -45,9 +46,10 @@ export function drawPortraitBadges(scene: Phaser.Scene, cx: number, cy: number, 
   if (own && opts.level !== false) {
     const lv = scene.add.text(cx + h - 7, cy + h - 6, `LV ${own.level}`, text.hud(small, PAL.ivory)).setOrigin(1, 1);
     out.push(scene.add.rectangle(cx + h - 3, cy + h - 3, lv.width + 10, lv.height + 6, 0x0d090f, 0.9).setOrigin(1, 1).setStrokeStyle(1, PAL.armorShadow), lv);
+    scene.children.bringToTop(lv);
   }
   // Party presets.
-  const ps = Math.round(size * 0.19);
+  const ps = Math.round(size * 0.22);
   presetIconsFor(save, c.id).slice(0, 3).forEach((key, i) => {
     out.push(...iconDisc(scene, cx + h - sig / 2 - 4, cy - h + sig + 14 + ps / 2 + i * (ps + 8), key, ps, PAL.amber));
   });
@@ -76,7 +78,7 @@ export function showBadgeKey(scene: Phaser.Scene, sample: CrusaderDef, save: Sav
     ['Right edge', 'Icons of the party presets she is in. Save presets from any party picker.'],
   ];
   rows.forEach(([k, v], i) => {
-    const y = cy + size / 2 + 24 + i * 52;
+    const y = cy + size / 2 + 20 + i * 58;
     layer.add(scene.add.text(48, y, k.toUpperCase(), text.hud(12, PAL.amber)));
     layer.add(scene.add.text(48, y + 18, v, { ...text.body(16, PAL.ivory), wordWrap: { width: GAME_W - 96 } }));
   });
