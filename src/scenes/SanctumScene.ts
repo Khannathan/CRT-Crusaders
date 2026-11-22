@@ -64,8 +64,8 @@ export class SanctumScene extends Phaser.Scene {
       this.drawVigil(fx, fy, fw, fh);
     }
 
-    // The Rites: side modes and daily duties.
-    this.add.text(PAD, bottom + 12, 'THE RITES', text.hud(13, PAL.amber));
+    // The Rites: daily duties. Modes live on the Crusade board, growth in the Cloister.
+    this.add.text(PAD, bottom + 12, 'DAILY RITES', text.hud(13, PAL.amber));
     const ritesBottom = drawRites(this, game.save, bottom + 32);
 
     // Prototype-only: settings, and wiping the save to replay the first-time flow.

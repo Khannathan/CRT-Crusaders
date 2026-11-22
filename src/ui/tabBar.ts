@@ -1,19 +1,44 @@
 import Phaser from 'phaser';
 import { FONT, GAME_H, GAME_W, PAL, hex } from '../config';
+import { game } from '../state/game';
+import { anyReady, homeOf } from './rites';
 import { nine, stretch } from './skin';
 import { addIcon } from './theme';
 
 export const TAB_BAR_H = 88;
 
+/** Five tabs; the Crusade board sits in the middle, larger. */
 const TABS = [
-  { label: 'Sanctum', scene: 'Sanctum', icon: 'sanctum' },
-  { label: 'Recruit', scene: 'Recruit', icon: 'seal' },
+  { label: 'Sanctum', scene: 'Sanctum', icon: 'sanctum', home: 'sanctum' },
   { label: 'Roster', scene: 'Roster', icon: 'roster' },
-  { label: 'Crusade', scene: 'Crusade', icon: 'blade' },
+  { label: 'Crusade', scene: 'Modes', icon: 'blade', home: 'board' },
+  { label: 'Altar', scene: 'Recruit', icon: 'seal' },
+  { label: 'Cloister', scene: 'Cloister', icon: 'book', home: 'cloister' },
 ] as const;
 
-/** Bottom navigation, in thumb reach: pixel icon over label, gold edge on the current tab. */
+/** Screens reached through the Crusade board that light its tab. */
+const BOARD_SCENES = ['Modes', 'Crusade', 'Muster', 'Crypt', 'Battle', 'Results'];
+
+/** The tab (by its scene) a screen belongs to. */
+export function tabOf(sceneKey: string): string {
+  if (BOARD_SCENES.includes(sceneKey)) return 'Modes';
+  const home = homeOf(sceneKey);
+  if (home === 'board') return 'Modes';
+  if (home === 'cloister') return 'Cloister';
+  if (home === 'sanctum' || sceneKey === 'Rank') return 'Sanctum';
+  return sceneKey;
+}
+
+/** Relative widths: the centre tab is wider. */
+const WEIGHT = [1, 1, 1.35, 1, 1];
+
+/**
+ * Bottom navigation, in thumb reach: pixel icon over label, gold edge on the
+ * current tab, a gold dot on a tab with something to claim. `current` is any
+ * scene key; it lights the tab that screen belongs to.
+ */
 export function addTabBar(scene: Phaser.Scene, current: string, depth = 5): Phaser.GameObjects.GameObject[] {
+  const currentTab = current ? tabOf(current) : '';
   const top = GAME_H - TAB_BAR_H;
   const made: Phaser.GameObjects.GameObject[] = [];
   const keep = <T extends Phaser.GameObjects.GameObject>(o: T): T => {
@@ -30,13 +55,21 @@ export function addTabBar(scene: Phaser.Scene, current: string, depth = 5): Phas
     g.fillStyle(PAL.armorShadow).fillRect(0, top, GAME_W, 1);
   }
 
-  const w = GAME_W / TABS.length;
+  const unit = GAME_W / WEIGHT.reduce((a, b) => a + b, 0);
+  let x0 = 0;
   TABS.forEach((t, i) => {
-    const on = t.scene === current;
-    const cx = w * i + w / 2;
-    const cy = top + TAB_BAR_H / 2;
-    const bw = w - 8;
-    const bh = TAB_BAR_H - 14;
+    const on = t.scene === currentTab;
+    const w = unit * WEIGHT[i];
+    const cx = x0 + w / 2;
+    x0 += w;
+    const centre = i === 2;
+    const cy = top + TAB_BAR_H / 2 - (centre ? 6 : 0);
+    const bw = w - 6;
+    const bh = TAB_BAR_H - (centre ? 2 : 14);
+    if (centre) {
+      // the Crusade tab rises above the rail
+      keep(scene.add.rectangle(cx, cy, bw, bh, on ? 0x3a1d29 : 0x24161f).setStrokeStyle(1, PAL.goldEdge).setDepth(depth));
+    }
     const box = keep(scene.add.rectangle(cx, cy, bw, bh, on ? 0x3a1d29 : 0x000000, on ? 1 : 0.001).setDepth(depth));
     const skin = on ? nine(scene, 'ui-tab-active', cx, cy, bw, bh) : null;
     if (skin) {
@@ -46,13 +79,14 @@ export function addTabBar(scene: Phaser.Scene, current: string, depth = 5): Phas
       box.setStrokeStyle(1, 0x694041);
       keep(scene.add.rectangle(cx, cy - bh / 2 + 1, bw, 3, PAL.goldEdge).setDepth(depth));
     }
-    keep(addIcon(scene, cx, cy - 13, t.icon, 24, on ? PAL.amber : 0xae8b73).setDepth(depth));
+    keep(addIcon(scene, cx, cy - 13, t.icon, centre ? 30 : 24, on ? PAL.amber : 0xae8b73).setDepth(depth));
     keep(
       scene.add
-        .text(cx, cy + 17, t.label, { fontFamily: FONT, fontSize: '20px', color: hex(on ? PAL.amber : PAL.muted) })
+        .text(cx, cy + 17, t.label, { fontFamily: FONT, fontSize: centre ? '21px' : '18px', color: hex(on ? PAL.amber : PAL.muted) })
         .setOrigin(0.5)
         .setDepth(depth),
     );
+    if ('home' in t && anyReady(game.save, t.home)) keep(scene.add.circle(cx + bw / 2 - 12, cy - bh / 2 + 12, 5, PAL.amber).setStrokeStyle(2, 0x1b121c).setDepth(depth));
     box.setInteractive({ useHandCursor: true });
     box.on('pointerup', () => {
       if (!on) scene.scene.start(t.scene, {});

@@ -2,20 +2,20 @@ import Phaser from 'phaser';
 import { GAME_H, GAME_W, PAL } from '../config';
 import { makeButton } from './button';
 import { CURRENCY_BAR_H, addCurrencyBar } from './currencyBar';
-import { addTabBar } from './tabBar';
+import { addTabBar, tabOf } from './tabBar';
 import { PAD, addHeading, addScreenGlow, text } from './theme';
 
 /**
  * The shared frame for a Rite screen: glow, currency bar, heading with a line
- * of flavour, a back arrow to the Sanctum, and the tab bar. Returns the y where
+ * of flavour, a Back button to the screen it was reached from (Sanctum, Crusade board or Cloister), and the tab bar. Returns the y where
  * content may start and the currency bar's refresh.
  */
-export function modeScreen(scene: Phaser.Scene, title: string, sub: string, back = 'Sanctum') {
+export function modeScreen(scene: Phaser.Scene, title: string, sub: string, back = tabOf(scene.scene.key)) {
   addScreenGlow(scene);
   const refresh = addCurrencyBar(scene);
   const top = addHeading(scene, title, CURRENCY_BAR_H + 10, sub);
   makeButton(scene, GAME_W - PAD - 44, CURRENCY_BAR_H + 34, 88, 40, 'Back', () => scene.scene.start(back, {}), { fontSize: 16 });
-  addTabBar(scene, 'Sanctum');
+  addTabBar(scene, scene.scene.key);
   return { top: top + 12, refresh };
 }
 

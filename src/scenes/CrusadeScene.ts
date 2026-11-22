@@ -36,17 +36,18 @@ export class CrusadeScene extends Phaser.Scene {
     addCurrencyBar(this);
     const s = game.save;
     const style = { fontFamily: FONT, color: hex(PAL.ivory), align: 'center' };
-    const top = addHeading(this, 'Crusade', CURRENCY_BAR_H + 16);
+    const top = addHeading(this, 'The Crypts', CURRENCY_BAR_H + 16);
+    makeButton(this, GAME_W - PAD - 44, CURRENCY_BAR_H + 34, 88, 40, 'Back', () => this.scene.start('Modes'), { fontSize: 16 });
     const left = pilgrimageLeft(s);
     const pil = this.add
-      .text(GAME_W - PAD, top - 30, `PILGRIMAGE ${left}/${PILGRIMAGE_CLEARS}`, text.hud(14, left ? PAL.amber : PAL.steel))
+      .text(GAME_W - PAD, top + 18, `PILGRIMAGE ${left}/${PILGRIMAGE_CLEARS}`, text.hud(13, left ? PAL.amber : PAL.steel))
       .setOrigin(1, 1);
     // ui-badge-blessed.png before the Pilgrimage count, faded once the week's blessed clears are spent
     if (this.textures.exists('ui-badge-blessed')) {
-      this.add.image(pil.x - pil.width - 14, pil.y - pil.height / 2, 'ui-badge-blessed').setDisplaySize(22, 22).setAlpha(left ? 1 : 0.35);
+      this.add.image(pil.x - pil.width - 12, pil.y - pil.height / 2, 'ui-badge-blessed').setDisplaySize(20, 20).setAlpha(left ? 1 : 0.35);
     }
     this.add
-      .text(GAME_W - PAD, top - 8, left ? `NEXT ${left} CLEARS +${PILGRIMAGE_BONUS.seals} SEALS EACH` : 'RENEWS MONDAY', text.hud(11, PAL.muted))
+      .text(GAME_W - PAD, top + 34, left ? `NEXT ${left} CLEARS +${PILGRIMAGE_BONUS.seals} SEALS EACH` : 'RENEWS MONDAY', text.hud(10, PAL.muted))
       .setOrigin(1, 1);
 
     // A Rite fight left from its Menu
@@ -71,7 +72,7 @@ export class CrusadeScene extends Phaser.Scene {
 
     // One painted card per crypt (the open ones and the next to open), in a scrolling list.
     // Art key bg-<crypt id> if present, else the hall.
-    const listTop = top + 2;
+    const listTop = top + 40;
     const listBottom = GAME_H - TAB_BAR_H;
     const list = addScrollArea(this, listTop, listBottom, { start: CrusadeScene.listY, onScroll: (y) => (CrusadeScene.listY = y) });
     const before = this.children.list.length;
@@ -84,8 +85,8 @@ export class CrusadeScene extends Phaser.Scene {
     const hh = 236;
     const tx = PAD + 18;
     const ready = CRUSADERS.filter((c) => canMuster(s, c.id));
-    this.add.text(PAD, top + 8, 'Every fight pays Tithes, Pilgrimage or not.', text.body(16, PAL.muted));
-    let bottom = top + 24;
+    this.add.text(PAD, listTop + 4, 'Every fight pays Tithes, Pilgrimage or not.', text.body(16, PAL.muted));
+    let bottom = listTop + 22;
     const shown = CRYPTS.filter((c, i) => cryptUnlocked(s, c) || i === 0 || cryptUnlocked(s, CRYPTS[i - 1]));
     shown.forEach((crypt) => {
       const open = cryptUnlocked(s, crypt);

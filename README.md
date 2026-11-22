@@ -122,3 +122,5 @@ The Sanctum shows the Vigil: up to four Sisters fighting the chosen crypt's horr
 - `src/systems/` — game rules with no drawing: `gacha.ts`, `combat.ts`, `crusade.ts` (run flow and rewards), `stats.ts`.
 - `src/scenes/` — one file per screen.
 - `src/ui/` — shared buttons, tab bar and placeholder portraits.
+
+**Navigation:** five tabs. **Sanctum** (home: the Vigil, and the daily Rites rail: Matins, Penance, Confession), **Roster**, **Crusade** in the middle (a board of mode cards: Crypts, the Vigil, Relic Trials, Bell Tower, Inquisition), **Altar** (banners) and **Cloister** (Inventory, Shop, Reliquary, Order Codex). Each card shows a live status, a gold dot when something waits, and the Rank it needs. A new mode is one entry in `RITES` (`src/ui/rites.ts`) with `home: 'board'`; the board (`src/ui/modeBoard.ts`) scrolls. A gold dot on a tab means something inside it waits.
