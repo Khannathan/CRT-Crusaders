@@ -353,11 +353,16 @@ export class SanctumScene extends Phaser.Scene {
           .text(GAME_W / 2, 660, 'Scanlines, colour bleed and screen curve.\nPortrait art is never changed underneath.', { ...style, fontSize: '16px', color: hex(PAL.steel) })
           .setOrigin(0.5),
       );
-      const fs = makeButton(this, GAME_W / 2, 736, 240, 52, this.scale.isFullscreen ? 'Leave full screen' : 'Full screen', () => {
+      const fs = makeButton(this, GAME_W / 2 - 112, 736, 208, 52, this.scale.isFullscreen ? 'Leave full screen' : 'Full screen', () => {
         toggleFullscreen(this);
         layer.destroy();
       }, { fontSize: 18 });
-      layer.add(fs.all);
+      const shakeBtn = makeButton(this, GAME_W / 2 + 112, 736, 208, 52, settings.screenShake ? 'Screen shake: On' : 'Screen shake: Off', () => {
+        settings.screenShake = !settings.screenShake;
+        saveSettings();
+        draw();
+      }, { active: settings.screenShake, fontSize: 18 });
+      layer.add([...fs.all, ...shakeBtn.all]);
       const close = makeButton(this, GAME_W / 2, 822, 240, 64, 'Done', () => layer.destroy());
       layer.add(close.all);
     };

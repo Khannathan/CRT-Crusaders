@@ -10,10 +10,12 @@ export interface Settings {
   /** Music loudness, 0 to 1. */
   musicVolume: number;
   musicMuted: boolean;
+  /** Camera shake on big hits. */
+  screenShake: boolean;
 }
 
 const KEY = 'crt-crusaders.settings.v1';
-const DEFAULTS: Settings = { crt: true, crtStrength: 0.6, battleSpeed: 1, autoBattle: false, musicVolume: 0.7, musicMuted: false };
+const DEFAULTS: Settings = { crt: true, crtStrength: 0.6, battleSpeed: 1, autoBattle: false, musicVolume: 0.7, musicMuted: false, screenShake: true };
 
 function load(): Settings {
   try {
