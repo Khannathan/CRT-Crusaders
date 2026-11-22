@@ -4,7 +4,7 @@ import { CLASSES, RARITY_COLOR } from '../data/classes';
 import { CRUSADERS } from '../data/crusaders';
 import { ORDERS } from '../data/orders';
 import { game } from '../state/game';
-import { MAX_VOW } from '../systems/gacha';
+import { MAX_VOW, TIER_COLOR, tierOf } from '../systems/tiers';
 import { formatPower, powerOf, sisterPower } from '../systems/power';
 import { levelCap, sisterStats, statsFor } from '../systems/stats';
 import { makeButton } from './button';
@@ -121,9 +121,9 @@ export function showSisterCard(scene: Phaser.Scene, id: string, opts: { roster?:
   // Level, Vows, Ascension
   y = top + 24 + ps + 22;
   const facts = own
-    ? `Level ${own.level} / ${levelCap(own)}    Vows ${own.vow} / ${MAX_VOW}${own.tokens ? ` (+${own.tokens} waiting)` : ''}${own.asc ? `    Ascension ${own.asc}` : ''}`
+    ? `Level ${own.level} / ${levelCap(own)}    ${tierOf(own) ? `Tier ${tierOf(own)} · ` : ''}Vows ${own.vow} / ${MAX_VOW}${own.tokens ? ` (${own.tokens} cop${own.tokens > 1 ? 'ies' : 'y'})` : ''}${own.asc ? `    Asc ${own.asc}` : ''}`
     : 'Not yet sworn to you.';
-  layer.add(scene.add.text(left, y, facts, text.body(16, PAL.ivory)));
+  layer.add(scene.add.text(left, y, facts, text.body(16, own && tierOf(own) ? TIER_COLOR[tierOf(own)] : PAL.ivory)));
   if (own?.recovering) layer.add(scene.add.text(left, y + 24, `Wounded: sits out ${own.recovering} more crusade${own.recovering > 1 ? 's' : ''}`, text.body(15, 0xe58a8a)));
 
   // Stats

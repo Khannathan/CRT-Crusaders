@@ -11,6 +11,7 @@ import { claimGear, makeGear, rollGearRarity, type GearItem } from './gear';
 import { recommendedPower } from './power';
 import { bagText, floorDrops, give, type Bag } from './items';
 import { track } from './tasks';
+import { addStigmata } from './tiers';
 
 /**
  * The Bell Tower: an endless climb of fixed floors. A boss every 10th floor;
@@ -64,15 +65,16 @@ export interface FloorReward {
   gear?: 'SR' | 'SSR';
   items: Bag;
   gilt: number;
+  stigmata?: number;
 }
 
 export function floorReward(floor: number): FloorReward {
   const boss = floor % 10 === 0;
-  return { tithes: 60 + 15 * floor, seals: boss ? 3 : floor % 5 === 0 ? 1 : 0, gear: boss ? 'SSR' : floor % 5 === 0 ? 'SR' : undefined, items: floorDrops(floor), gilt: boss ? 30 + floor : 0 };
+  return { tithes: 60 + 15 * floor, seals: boss ? 3 : floor % 5 === 0 ? 1 : 0, gear: boss ? 'SSR' : floor % 5 === 0 ? 'SR' : undefined, items: floorDrops(floor), gilt: boss ? 30 + floor : 0, stigmata: boss ? 1 + Math.floor(floor / 30) : 0 };
 }
 
 export const rewardLine = (r: FloorReward, withItems = true) =>
-  [`${r.tithes} Tithes`, r.seals ? `${r.seals} Seal${r.seals > 1 ? 's' : ''}` : '', r.gear ? `${r.gear}+ gear` : '', r.gilt ? `${r.gilt} Gilt` : '', withItems ? bagText(r.items) : ''].filter(Boolean).join(' + ');
+  [`${r.tithes} Tithes`, r.seals ? `${r.seals} Seal${r.seals > 1 ? 's' : ''}` : '', r.gear ? `${r.gear}+ gear` : '', r.gilt ? `${r.gilt} Gilt` : '', r.stigmata ? `${r.stigmata} Stigmata` : '', withItems ? bagText(r.items) : ''].filter(Boolean).join(' + ');
 
 export function towerBattle(save: SaveData, party: string[], floor: number, rng?: Rng): Battle {
   const f = floorDef(floor);
@@ -95,6 +97,7 @@ export function finishFloor(save: SaveData, floor: number, battle: Battle, rng: 
   save.seals += reward.seals;
   give(save, reward.items);
   earn(save, reward.gilt);
+  addStigmata(save, reward.stigmata ?? 0);
   let gear: GearItem | undefined;
   if (reward.gear) {
     const before = save.gear?.length ?? 0;

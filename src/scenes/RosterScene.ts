@@ -9,7 +9,8 @@ import { CLASS_SKILLS } from '../data/skills';
 import { VOW_UPGRADES } from '../systems/combat';
 import type { CrusaderDef } from '../data/types';
 import { commit, game } from '../state/game';
-import { MAX_VOW, RARITY_ORDER, takeVow } from '../systems/gacha';
+import { RARITY_ORDER } from '../systems/gacha';
+import { MAX_TIER, MAX_VOW, TIER_COLOR, TIER_NAME, TIER_STIGMATA, copiesFor, oathComplete, stigmataOf, takeVow, tierBlock, tierOf, tierTithes, tierUp, vowBlock, vowCost } from '../systems/tiers';
 import {
   GEAR_SLOTS,
   MAX_GEAR_LEVEL,
@@ -40,7 +41,7 @@ import {
   type GearItem,
   type GearSlot,
 } from '../systems/gear';
-import { levelCap, levelUpCost, sisterStats, vowCost } from '../systems/stats';
+import { levelCap, levelUpCost, sisterStats } from '../systems/stats';
 import { ascend, ascendBlock, costLine, nextAscension } from '../systems/ascension';
 import { ROMAN_RANK } from '../systems/rank';
 import { countOf, itemDef } from '../systems/items';
@@ -51,7 +52,7 @@ import { CURRENCY_BAR_H, addCurrencyBar } from '../ui/currencyBar';
 import { portraitKey } from '../ui/placeholderPortrait';
 import { nine } from '../ui/skin';
 import { addScrollArea } from '../ui/scroll';
-import { tapCost } from '../ui/sources';
+import { tapCost, tapForSources } from '../ui/sources';
 import { TAB_BAR_H, addTabBar } from '../ui/tabBar';
 import { PAD, addArt, addBackdrop, addBadge, addFrame, addHeading, addIcon, addScreenGlow, text } from '../ui/theme';
 
@@ -174,7 +175,7 @@ export class RosterScene extends Phaser.Scene {
           addIcon(this, left + cw - 15, topY + 15, 'shield', 14, PAL.amber);
         }
         this.add.text(left + 8, topY + ph + 5, c.name.split(' ')[0], { ...text.body(19, PAL.ivory), fontStyle: '600' });
-        this.add.text(left + 8, topY + ph + 28, `LV ${have.level}${have.vow ? ` V${have.vow}` : ''}`, text.hud(12, PAL.muted));
+        this.add.text(left + 8, topY + ph + 28, `LV ${have.level}${tierOf(have) ? ` T${tierOf(have)}` : ''}${have.vow ? ` V${have.vow}` : ''}`, text.hud(12, tierOf(have) ? TIER_COLOR[tierOf(have)] : PAL.muted));
         this.add.text(left + cw - 36, topY + ph + 28, formatPower(sisterPower(game.save, c)), text.hud(12, PAL.amber)).setOrigin(1, 0);
         // class-<id>.png beside the name when present
         addArt(this, `class-${c.classId}`, left + cw - 18, topY + ph + 23, 24);
@@ -395,35 +396,34 @@ export class RosterScene extends Phaser.Scene {
         .text(GAME_W / 2, 438, `HP ${st.hp}  ATK ${st.atk}  ARM ${st.armor}  SPD ${st.spd}  CRIT ${Math.round(st.crit * 100)}%`, { ...style, fontSize: '17px' })
         .setOrigin(0.5),
     ]);
-    // Vow pips: filled = taken, outlined amber = a token waiting to be taken.
+    // Star track: five Vows per tier, stars in the tier's colour; a waiting copy pulses.
     const tokens = have.tokens ?? 0;
-    layer.add(this.add.text(GAME_W / 2 - 150, 484, 'Vows', { ...style, fontSize: '18px', color: hex(PAL.steel) }).setOrigin(0, 0.5));
+    const tier = tierOf(have);
+    const tint = TIER_COLOR[tier];
+    const need = have.vow < MAX_VOW ? copiesFor(tier, have.vow) : 0;
+    layer.add(this.add.text(GAME_W / 2 - 160, 484, tier ? `Tier ${ROMAN_RANK(tier)}` : 'Vows', { ...style, fontSize: '18px', color: hex(tier ? tint : PAL.steel) }).setOrigin(0, 0.5));
     for (let v = 0; v < MAX_VOW; v++) {
       const taken = v < have.vow;
-      const ready = !taken && v < have.vow + tokens;
+      const ready = v === have.vow && need > 0 && tokens >= need;
       const px = GAME_W / 2 - 50 + v * 40;
-      // ui-pip.png (empty) and ui-pip-full.png (taken), shown at 24 x 24, when present
-      const pipKey = taken ? 'ui-pip-full' : 'ui-pip';
-      if (this.textures.exists(pipKey)) {
-        const pip = this.add.image(px, 484, pipKey).setDisplaySize(24, 24);
-        if (ready) pip.setTint(PAL.amber);
-        layer.add(pip);
-      } else {
-        layer.add(this.add.circle(px, 484, 12, taken ? PAL.oxblood : PAL.deepShadow).setStrokeStyle(2, taken || ready ? PAL.amber : PAL.armorShadow));
-      }
-      if (ready) this.tweens.add({ targets: layer.list[layer.list.length - 1], alpha: 0.4, duration: 600, yoyo: true, repeat: -1 });
+      const star = this.add.star(px, 484, 5, 6, 14, taken ? tint : PAL.deepShadow).setStrokeStyle(2, taken || ready ? tint : PAL.armorShadow);
+      layer.add(star);
+      if (ready) this.tweens.add({ targets: star, alpha: 0.4, duration: 600, yoyo: true, repeat: -1 });
     }
-    const tokenLine = tokens
-      ? `${tokens} Vow token${tokens > 1 ? 's' : ''} waiting. Each Vow: +5% stats.`
+    if (tier) layer.add(this.add.text(GAME_W / 2 + 160, 484, TIER_NAME[tier].toUpperCase(), text.hud(12, tint)).setOrigin(0, 0.5));
+    const stig = stigmataOf(save);
+    const tokenLine = oathComplete(have)
+      ? 'Every tier and Vow is taken. She is wholly given.'
       : have.vow >= MAX_VOW
-        ? 'Every Vow is taken. She is wholly given.'
-        : 'Draw her again at the Altar to earn a Vow token.';
+        ? `Five Vows kept. Tier up: ${TIER_STIGMATA[tier]} Stigmata (you hold ${stig}).`
+        : `Next Vow needs ${need} cop${need > 1 ? 'ies' : 'y'} of her (you hold ${tokens}). Each Vow: +5% stats.`;
+    const tapId = have.vow >= MAX_VOW ? 'stigmata' : 'vows';
     const skills = CLASS_SKILLS[c.classId];
-    const perks = VOW_UPGRADES.map(([v, i]) => `${have.vow >= v ? '✓ ' : ''}Vow ${v}: ${skills[i].name}+`).join('  ·  ');
+    const perks = VOW_UPGRADES.map(([v, i]) => `${tier > 0 || have.vow >= v ? '✓ ' : ''}Vow ${v}: ${skills[i].name}+`).join('  ·  ');
     const order = ORDERS[c.order]?.tiers[0];
     layer.add([
       ...(() => {
-        const line = this.add.text(GAME_W / 2, 516, tokenLine, { ...style, fontSize: '16px', color: hex(tokens ? PAL.amber : PAL.muted) }).setOrigin(0.5);
+        const line = tapForSources(this, this.add.text(GAME_W / 2, 516, tokenLine, { ...style, fontSize: '16px', color: hex(tokens >= need || have.vow >= MAX_VOW ? PAL.amber : PAL.muted) }).setOrigin(0.5), tapId);
         // ui-vow.png before the line when tokens are waiting
         const icon = tokens ? addArt(this, 'ui-vow', 0, 516, 20) : null;
         if (icon) {
@@ -475,22 +475,29 @@ export class RosterScene extends Phaser.Scene {
       },
       { disabled: atCap ? !canAscend : !canLevel, active: atCap ? canAscend : canLevel, fontSize: 20 },
     );
-    const vCost = vowCost(have.vow);
-    const canVow = tokens > 0 && have.vow < MAX_VOW && save.tithes >= vCost;
+    // Take Vow, or at the fifth Vow, Tier Up.
+    const atFive = have.vow >= MAX_VOW;
+    const done = oathComplete(have) || (atFive && tier >= MAX_TIER);
+    const block = atFive ? tierBlock(save, have) : vowBlock(save, have);
+    const label = done
+      ? 'Oath complete'
+      : atFive
+        ? `Tier Up\n${TIER_STIGMATA[tier]} Stigmata · ${tierTithes(tier).toLocaleString('en-US')} Tithes`
+        : `Take Vow\n${need} cop${need > 1 ? 'ies' : 'y'} · ${vowCost(have)} Tithes`;
     const vow = makeButton(
       this,
       GAME_W / 2 + 124,
       GAME_H - 150,
       236,
       76,
-      have.vow >= MAX_VOW ? 'Vows complete' : `Take Vow\n1 token · ${vCost} Tithes`,
+      label,
       () => {
-        if (takeVow(save, c.id, vCost)) {
+        if (atFive ? tierUp(save, c.id) : takeVow(save, c.id)) {
           commit();
           this.reopen(c, 'oath');
         }
       },
-      { disabled: !canVow, active: canVow, fontSize: 20 },
+      { disabled: !!block, active: !block, fontSize: 18 },
     );
     layer.add([...lvl.all, ...vow.all]);
   }

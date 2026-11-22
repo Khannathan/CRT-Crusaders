@@ -40,6 +40,7 @@ export class InventoryScene extends Phaser.Scene {
       ['TITHES', save.tithes.toLocaleString('en-US'), 'tithes'],
       ['ALMS', `${almsOf(save)}`, 'alms'],
       ['VOWS', `${tokens}`, 'vows'],
+      ['STIGMATA', `${save.stigmata ?? 0}`, 'stigmata'],
       ['SHARDS', `${shards}`, 'shards'],
       ['GEAR', `${save.gear?.length ?? 0}/${MAX_GEAR}`],
     ];

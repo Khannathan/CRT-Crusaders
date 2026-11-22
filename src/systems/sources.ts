@@ -6,7 +6,7 @@ import { countOf, familyDef, itemDef, type Bag, type ItemId } from './items';
  * Where every resource comes from, so any cost or counter can answer "how do
  * I get more?". Each source names the screen that gives it, for a Go button.
  */
-export type Currency = 'gilt' | 'alms' | 'seals' | 'tithes' | 'vows' | 'shards';
+export type Currency = 'gilt' | 'alms' | 'seals' | 'tithes' | 'vows' | 'shards' | 'stigmata';
 export type ResourceId = Currency | ItemId;
 
 export interface Source {
@@ -87,8 +87,20 @@ const CURRENCIES: Record<Currency, ResourceInfo> = {
   },
   vows: {
     name: 'Vow tokens',
-    desc: 'A Sister pulled again. Take the token in her Oath tab to raise a Vow.',
+    desc: 'A Sister pulled again: a copy of her. Vows take more copies on each star tier.',
     sources: [{ text: 'Pull a Sister you already have', scene: 'Recruit' }, { text: 'Matins: the 28th candle', scene: 'Matins' }, ALMONRY],
+  },
+  stigmata: {
+    name: 'Stigmata',
+    desc: "Wounds of the faithful. Spent to raise a Sister's star tier once her five Vows are taken.",
+    sources: [
+      { text: "Pilgrim's Road: chapter chests", scene: 'Campaign' },
+      { text: 'Bell Tower: boss floors (every tenth)', scene: 'Tower' },
+      { text: 'Inquisition: the 6 and 9 Brand marks', scene: 'Inquisition' },
+      { text: 'Shop: Tithe Exchange (weekly)', scene: 'Shop', data: { counter: 'tithes' } },
+      ALMONRY,
+      { text: 'Pull a Sister who needs no more copies', scene: 'Recruit' },
+    ],
   },
   shards: {
     name: 'Relic Shards',
@@ -145,6 +157,8 @@ export function amountOf(save: SaveData, id: ResourceId): number {
       return save.tithes;
     case 'vows':
       return Object.values(save.owned).reduce((n, o) => n + (o.tokens ?? 0), 0);
+    case 'stigmata':
+      return save.stigmata ?? 0;
     case 'shards':
       return Object.values(save.shards ?? {}).reduce((n, v) => n + v, 0);
     default:
