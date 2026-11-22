@@ -4,7 +4,7 @@ import { CRUSADERS } from '../data/crusaders';
 import { orderBonuses } from '../data/orders';
 import { CLASS_SKILLS } from '../data/skills';
 import { skillsFor } from './combat';
-import { winRoom, BELFRY, CRYPTS, RAMP, actsOf, cryptFloors, OSSUARY, choices, chooseEvent, cryptUnlocked, enterNode, finishRun, generateMap, heresyAvailable, makeBattle, maxHpOf, startRun, PILGRIMAGE_BONUS, PILGRIMAGE_CLEARS, pilgrimageLeft } from './crusade';
+import { winRoom, BELFRY, CRYPTS, RAMP, actsOf, cryptFloors, OSSUARY, choices, chooseEvent, cryptUnlocked, enterNode, finishRun, generateMap, heresyAvailable, keepOnDefeat, makeBattle, maxHpOf, startRun, PILGRIMAGE_BONUS, PILGRIMAGE_CLEARS, pilgrimageLeft } from './crusade';
 import { seeded } from './rng';
 
 describe('the crypt ramp', () => {
@@ -163,5 +163,29 @@ describe('weekly Pilgrimage', () => {
     expect(finishRun(save, run(), 'victory').pilgrimage).toBeUndefined();
     // next week it renews
     expect(pilgrimageLeft(save, Date.now() + 8 * 864e5)).toBe(PILGRIMAGE_CLEARS);
+  });
+});
+
+describe('losing a crypt', () => {
+  it('keeps Seals, gear, banked spoils and most of the rest', () => {
+    expect(keepOnDefeat(100, 0)).toBe(75);
+    expect(keepOnDefeat(100, 60)).toBe(90);
+    expect(keepOnDefeat(100, 100)).toBe(100);
+    const save = newSave();
+    const id = CRUSADERS[0].id;
+    save.owned[id] = { level: 1, vow: 0 };
+    const run = startRun(save, [id], OSSUARY);
+    run.tithes = 400;
+    run.seals = 3;
+    run.items = { ash1: 10 };
+    run.banked = { tithes: 200, items: { ash1: 6 } };
+    const t = save.tithes;
+    const s = save.seals;
+    const r = finishRun(save, run, 'defeat');
+    expect(r.tithes).toBe(350);
+    expect(r.seals).toBe(3);
+    expect(r.items.ash1).toBe(9);
+    expect(save.tithes - t).toBe(350);
+    expect(save.seals - s).toBe(3);
   });
 });
