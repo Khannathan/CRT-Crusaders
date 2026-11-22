@@ -1,4 +1,5 @@
 import type { SaveData } from '../state/save';
+import { roman } from './roman';
 import { GILT_PER_RANK, earn } from './currency';
 import type { TaskEvent } from './tasks';
 
@@ -119,9 +120,4 @@ export const UNLOCKS: Unlock[] = [
 
 export const unlocked = (save: SaveData, rank: number) => rankInfo(save).rank >= rank;
 
-export const ROMAN_RANK = (n: number) => {
-  const map: [number, string][] = [[10, 'X'], [9, 'IX'], [5, 'V'], [4, 'IV'], [1, 'I']];
-  let out = '';
-  for (const [v, s] of map) while (n >= v) (out += s), (n -= v);
-  return out;
-};
+export const ROMAN_RANK = roman;

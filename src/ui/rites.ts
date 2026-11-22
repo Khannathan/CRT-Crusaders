@@ -17,7 +17,7 @@ import { RELICS, relicBlock } from '../systems/reliquary';
 import { codexBlock } from '../systems/codex';
 import { claimable as setsClaimable, SETS } from '../systems/collection';
 import { CRYPTS, PILGRIMAGE_CLEARS, cryptUnlocked, pilgrimageLeft } from '../systems/crusade';
-import { TOWER_FLOORS, towerOf } from '../systems/tower';
+import { towerOf } from '../systems/tower';
 import { TRIAL_ENTRIES } from '../systems/trials';
 import { rotation, totalBrands } from '../systems/inquisition';
 import { untilText } from './modeScreen';
@@ -92,7 +92,7 @@ export const RITES: RiteEntry[] = [
   {
     label: 'Bell Tower', scene: 'Tower', icon: 'sanctum', rank: 6, home: 'board', bg: 'bg-sunken-belfry',
     blurb: 'Sixty floors, each a set fight. Some floors take only one Order.',
-    status: (s) => `Best floor ${towerOf(s).best} of ${TOWER_FLOORS}`,
+    status: (s) => `Best floor ${towerOf(s).best}${towerOf(s).best ? `  ·  Vigil +${towerOf(s).best}%` : ''}`,
   },
   {
     label: 'Inquisition', scene: 'Inquisition', icon: 'blade', rank: 8, home: 'board', bg: 'bg-altar',

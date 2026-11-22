@@ -4,7 +4,7 @@ import { CRUSADERS } from '../data/crusaders';
 import { orderBonuses } from '../data/orders';
 import { CLASS_SKILLS } from '../data/skills';
 import { skillsFor } from './combat';
-import { winRoom, BELFRY, CRYPTS, RAMP, actsOf, cryptFloors, OSSUARY, choices, chooseEvent, cryptUnlocked, enterNode, finishRun, generateMap, heresyAvailable, keepOnDefeat, familyBonuses, miracle, MIRACLE_SEALS, makeBattle, maxHpOf, startRun, PILGRIMAGE_BONUS, PILGRIMAGE_CLEARS, pilgrimageLeft } from './crusade';
+import { winRoom, BELFRY, CRYPTS, RAMP, actsOf, cryptFloors, OSSUARY, choices, chooseEvent, cryptUnlocked, enterNode, finishRun, generateMap, heresyAvailable, heresyScale, HERESY_GROWTH, cryptRecommended, ROMAN, keepOnDefeat, familyBonuses, miracle, MIRACLE_SEALS, makeBattle, maxHpOf, startRun, PILGRIMAGE_BONUS, PILGRIMAGE_CLEARS, pilgrimageLeft } from './crusade';
 import { seeded } from './rng';
 
 describe('the crypt ramp', () => {
@@ -145,6 +145,18 @@ describe('reasons to keep going', () => {
     const again = finishRun(save, { ...run }, 'victory');
     expect(again.heresyCleared).toBeUndefined();
     expect(again.seals).toBeLessThan(first.seals);
+  });
+
+  it('Heresy has no last tier: past V the crypt stays 30 floors and foes keep growing', () => {
+    const save = newSave();
+    save.cleared.push(OSSUARY.id);
+    save.heresy = { [OSSUARY.id]: 12 };
+    expect(heresyAvailable(save, OSSUARY)).toBe(13);
+    expect(cryptFloors(OSSUARY, 12)).toBe(cryptFloors(OSSUARY, 5));
+    expect(heresyScale(6) / heresyScale(5)).toBeCloseTo(HERESY_GROWTH);
+    expect(heresyScale(5)).toBeCloseTo(2.25);
+    expect(cryptRecommended(save, OSSUARY, 20)).toBeGreaterThan(cryptRecommended(save, OSSUARY, 10) * 5);
+    expect(ROMAN[11]).toBe('XII');
   });
 });
 

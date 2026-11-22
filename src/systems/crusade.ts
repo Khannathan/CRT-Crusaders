@@ -1,3 +1,4 @@
+import { roman } from './roman';
 import { activeHowl } from './hounds';
 import { symbolCombat } from './symbols';
 import { BOND_XP, addBond } from './bonds';
@@ -366,10 +367,18 @@ export function relicsOf(run: RunState): RelicDef[] {
   return [...relics, ...orderBonuses(orders)];
 }
 
+/**
+ * Heresy tiers I to V grow the crypt toward 30 floors and its foes by a
+ * quarter each. Past V there is no end: the floors stay at 30 and the foes
+ * grow by HERESY_GROWTH a tier, so there is always a harder tier to beat.
+ */
 export const MAX_HERESY = 5;
-export const ROMAN = ['I', 'II', 'III', 'IV', 'V'];
-/** Enemy HP and attack per Heresy tier. */
+export const ROMAN = Array.from({ length: 300 }, (_, i) => roman(i + 1));
+/** Enemy HP and attack per Heresy tier, up to MAX_HERESY. */
 export const HERESY_ENEMY = 0.25;
+/** Enemy growth per tier past MAX_HERESY. */
+export const HERESY_GROWTH = 1.2;
+export const heresyScale = (h: number) => (h <= MAX_HERESY ? 1 + HERESY_ENEMY * h : (1 + HERESY_ENEMY * MAX_HERESY) * HERESY_GROWTH ** (h - MAX_HERESY));
 /** Reward bonus per Heresy tier. */
 export const HERESY_REWARD = 0.3;
 export const HERESY_FIRST_CLEAR_SEALS = 3;
@@ -377,7 +386,7 @@ export const HERESY_FIRST_CLEAR_SEALS = 3;
 /** Highest Heresy tier the player may pick for a crypt: one past the best cleared. */
 export function heresyAvailable(save: SaveData, crypt: CryptDef): number {
   if (!save.cleared.includes(crypt.id)) return 0;
-  return Math.min(MAX_HERESY, (save.heresy?.[crypt.id] ?? 0) + 1);
+  return (save.heresy?.[crypt.id] ?? 0) + 1;
 }
 
 export const rewardMult = (run: RunState) =>
@@ -396,10 +405,10 @@ export function makeBattle(save: SaveData, run: RunState, encounter: string, rng
   const zeal = relics.reduce((s, r) => s + (r.startZeal ?? 0), 0) + (run.blessZeal ?? 0);
   const armorPct = relics.reduce((s, r) => s + (r.armorPct ?? 0), 0);
   // Heresy shortens the candle by a round every second tier.
-  const vigil = Math.max(2, VIGIL_DEFAULT + relics.reduce((s, r) => s + (r.vigilBonus ?? 0), 0) - (run.curseVigil ?? 0) - Math.floor(run.heresy / 2));
+  const vigil = Math.max(2, VIGIL_DEFAULT + relics.reduce((s, r) => s + (r.vigilBonus ?? 0), 0) - (run.curseVigil ?? 0) - Math.floor(Math.min(run.heresy, MAX_HERESY) / 2));
   // Heresy, the crypt's depth and the act the party has reached all harden the foes.
   const act = run.map[run.floor]?.[run.at]?.act ?? 1;
-  const enemyScale = (scale ?? 1 + HERESY_ENEMY * run.heresy) * (run.crypt.power ?? 1) * (1 + ACT_ENEMY * (act - 1));
+  const enemyScale = (scale ?? heresyScale(run.heresy)) * (run.crypt.power ?? 1) * (1 + ACT_ENEMY * (act - 1));
 
   let rank = 0;
   let symbolZeal = 0;
@@ -463,7 +472,7 @@ export function skirmish(save: SaveData, party: string[], encounter: string, tie
 /** Recommended party power for a crypt at a Heresy tier: what its boss asks. */
 export const cryptRecommended = (save: SaveData, crypt: CryptDef, heresy = 0) => {
   const acts = actsOf(cryptFloors(crypt, heresy)).length;
-  const scale = (1 + HERESY_ENEMY * heresy) * (1 + ACT_ENEMY * (acts - 1));
+  const scale = heresyScale(heresy) * (1 + ACT_ENEMY * (acts - 1));
   return recommendedPower(skirmish(save, [], crypt.boss, heresy, undefined, crypt, scale));
 };
 

@@ -6,7 +6,8 @@ import { addScrollArea } from '../ui/scroll';
 import { TAB_BAR_H } from '../ui/tabBar';
 import { game } from '../state/game';
 import { current } from '../state/run';
-import { TOWER_FLOORS, allowedOn, finishFloor, floorDef, floorRecommended, floorReward, foesOf, rewardLine, ruleText, towerBattle, towerOf } from '../systems/tower';
+import { BELL_VIGIL, bellBonus } from '../systems/campaign';
+import { TOWER_LOOKAHEAD, allowedOn, finishFloor, floorDef, floorRecommended, floorReward, foesOf, rewardLine, ruleText, towerBattle, towerOf } from '../systems/tower';
 import { makeButton } from '../ui/button';
 import { modeScreen, progressBar, toast } from '../ui/modeScreen';
 import { pickParty } from '../ui/partyPicker';
@@ -31,18 +32,18 @@ export class TowerScene extends Phaser.Scene {
 
   create() {
     const save = game.save;
-    const { top } = modeScreen(this, 'The Bell Tower', 'Sixty floors of bells that ring for no one living. Climb as high as faith allows.');
+    const { top } = modeScreen(this, 'The Bell Tower', 'Bells that ring for no one living, floor upon floor without end. Climb as high as faith allows.');
     const t = towerOf(save);
     const bw = GAME_W - PAD * 2;
-    this.add.text(PAD, top, `HIGHEST FLOOR ${t.best} / ${TOWER_FLOORS}`, text.hud(14, PAL.amber));
+    const bell = Math.floor(t.best / 10) * 10 + 10;
+    this.add.text(PAD, top, `HIGHEST FLOOR ${t.best} · NEXT BELL ${bell}`, text.hud(14, PAL.amber));
     this.add.text(GAME_W - PAD, top, 'A LOSS COSTS NOTHING', text.hud(11, PAL.muted)).setOrigin(1, 0);
-    progressBar(this, PAD, top + 28, bw, t.best / TOWER_FLOORS, PAL.amber, 8);
+    this.add.text(PAD, top + 42, `EVERY FLOOR: VIGIL +${Math.round(BELL_VIGIL * 100)}%  ·  NOW +${Math.round((bellBonus(save) - 1) * 100)}%`, text.hud(11, PAL.amber));
+    progressBar(this, PAD, top + 28, bw, (t.best % 10) / 10, PAL.amber, 8);
 
     const next = t.best + 1;
-    let y = top + 50;
-    if (next > TOWER_FLOORS) {
-      this.add.text(GAME_W / 2, y + 80, 'The summit. The last bell is silent.\nNo floor remains to climb.', { ...text.body(20, PAL.amber), align: 'center' }).setOrigin(0.5);
-    } else {
+    let y = top + 64;
+    {
       const f = floorDef(next);
       const h = 196;
       addFrame(this, GAME_W / 2, y + h / 2, bw, h, { fill: f.boss ? 0x2a1520 : 0x1e1520, edge: f.boss ? 0xe58a8a : PAL.goldEdge });
@@ -58,10 +59,10 @@ export class TowerScene extends Phaser.Scene {
 
       this.add.text(PAD, y, 'ABOVE', text.hud(13, PAL.amber));
       y += 22;
-      // Every floor above, to the summit: drag or wheel to look up the tower.
+      // The floors above: drag or wheel to look up the tower.
       const list = addScrollArea(this, y - 2, GAME_H - TAB_BAR_H);
       const before = this.children.list.length;
-      for (let n = next + 1; n <= TOWER_FLOORS; n++) {
+      for (let n = next + 1; n <= next + TOWER_LOOKAHEAD; n++) {
         const g = floorDef(n);
         this.add.rectangle(GAME_W / 2, y + 27, bw, 54, 0x18111a).setStrokeStyle(1, g.boss ? 0x7a3a44 : PAL.armorShadow);
         this.add.text(PAD + 12, y + 8, `${n}`, text.hud(14, g.boss ? 0xe58a8a : PAL.steel));

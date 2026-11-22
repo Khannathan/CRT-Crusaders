@@ -4,7 +4,7 @@ import { RARITY_COLOR } from '../data/classes';
 import { CRUSADERS } from '../data/crusaders';
 import { commit, game } from '../state/game';
 import { current } from '../state/run';
-import { PILGRIMAGE_BONUS, PILGRIMAGE_CLEARS, pilgrimageLeft, pilgrimageRenews, CRYPTS, HERESY_ENEMY, HERESY_REWARD, REWARDS, ROMAN, canMuster, cryptRecommended, cryptUnlocked, cryptFloors, actsOf, heresyAvailable, reviveCost, revive, suggestParty, type CryptDef } from '../systems/crusade';
+import { PILGRIMAGE_BONUS, PILGRIMAGE_CLEARS, pilgrimageLeft, pilgrimageRenews, CRYPTS, heresyScale, HERESY_REWARD, REWARDS, ROMAN, canMuster, cryptRecommended, cryptUnlocked, cryptFloors, actsOf, heresyAvailable, reviveCost, revive, suggestParty, type CryptDef } from '../systems/crusade';
 import { canRepeat, repeatRuns } from '../systems/autorun';
 import { ROMAN_RANK, unlocked } from '../systems/rank';
 import { pickParty } from '../ui/partyPicker';
@@ -117,7 +117,7 @@ export class CrusadeScene extends Phaser.Scene {
       const note = !open
         ? `Clear ${prior?.name} to open`
         : tier
-          ? `Heresy ${ROMAN[tier - 1]}: foes +${Math.round(HERESY_ENEMY * tier * 100)}%, rewards +${Math.round(HERESY_REWARD * tier * 100)}%`
+          ? `Heresy ${ROMAN[tier - 1]}: foes +${Math.round((heresyScale(tier) - 1) * 100)}%, rewards +${Math.round(HERESY_REWARD * tier * 100)}%`
           : cleared
             ? `Cleared${best ? `  ·  best Heresy ${ROMAN[best - 1]}` : ''}`
             : `First clear +${REWARDS.firstClearSeals} Wax Seals`;
