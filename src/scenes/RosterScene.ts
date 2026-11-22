@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 import { FONT, GAME_H, GAME_W, PAL, hex } from '../config';
 import { CLASSES, RARITY_COLOR } from '../data/classes';
 import { CRUSADERS } from '../data/crusaders';
+import { formatPower, gearPower, gearSwapDelta, sisterPower } from '../systems/power';
 import { ORDERS } from '../data/orders';
 import { CLASS_SKILLS } from '../data/skills';
 import { VOW_UPGRADES } from '../systems/combat';
@@ -97,7 +98,8 @@ export class RosterScene extends Phaser.Scene {
           addIcon(this, left + cw - 15, topY + 15, 'shield', 14, PAL.amber);
         }
         this.add.text(left + 8, topY + ph + 5, c.name.split(' ')[0], { ...text.body(19, PAL.ivory), fontStyle: '600' });
-        this.add.text(left + 8, topY + ph + 28, `LV ${have.level}${have.vow ? `  VOW ${have.vow}` : ''}`, text.hud(12, PAL.muted));
+        this.add.text(left + 8, topY + ph + 28, `LV ${have.level}${have.vow ? ` V${have.vow}` : ''}`, text.hud(12, PAL.muted));
+        this.add.text(left + cw - 36, topY + ph + 28, formatPower(sisterPower(game.save, c)), text.hud(12, PAL.amber)).setOrigin(1, 0);
         // class-<id>.png beside the name when present
         addArt(this, `class-${c.classId}`, left + cw - 18, topY + ph + 23, 24);
         if (have.tokens) {
@@ -220,6 +222,11 @@ export class RosterScene extends Phaser.Scene {
       return;
     }
 
+    // Power, top left of the panel
+    layer.add([
+      this.add.text(44, 38, 'POWER', text.hud(12, PAL.steel)),
+      this.add.text(44, 54, formatPower(sisterPower(game.save, c)), text.display(24, PAL.amber)),
+    ]);
     layer.add([
       this.add.text(GAME_W / 2, 248, c.name.toUpperCase(), { ...style, ...text.display(24, 0xfff1d6) }).setOrigin(0.5),
       this.add.text(GAME_W / 2, 280, `${c.rarity} · ${c.title ?? cls.name} · ${cls.role}`, { ...style, fontSize: '17px', color: hex(RARITY_COLOR[c.rarity]) }).setOrigin(0.5),
@@ -384,7 +391,7 @@ export class RosterScene extends Phaser.Scene {
       if (item) {
         layer.add([
           this.add.text(left, y - 28, `${item.name}${item.level ? ` +${item.level}` : ''}`, { ...text.body(20, RARITY_COLOR[item.rarity]), fontStyle: '600' }),
-          this.add.text(left, y + 0, `${item.rarity} · ${formatStat(item.main, mainValue(item))}`, text.body(16, PAL.ivory)),
+          this.add.text(left, y + 0, `${item.rarity} · ${formatStat(item.main, mainValue(item))} · +${formatPower(gearPower(save, c, item))} power`, text.body(16, PAL.ivory)),
           this.add.text(left, y + 22, item.subs.map((s) => formatStat(s.stat, s.value)).join('  ') || 'No substats', text.body(15, PAL.muted)),
         ]);
         const maxed = item.level >= MAX_GEAR_LEVEL;
@@ -444,6 +451,11 @@ export class RosterScene extends Phaser.Scene {
         this.add.text(42, y - 8, `${g.rarity} · ${formatStat(g.main, mainValue(g))}${g.subs.length ? '  ·  ' + g.subs.map((s) => formatStat(s.stat, s.value)).join('  ') : ''}`, text.body(15, PAL.ivory)),
         this.add.text(42, y + 14, g.on === c.id ? 'Worn by her' : wearer ? `Worn by ${wearer}: tap to take it` : 'Tap to equip', text.hud(12, g.on === c.id ? PAL.amber : PAL.steel)),
       ]);
+      // What putting it on would do to her power
+      if (g.on !== c.id) {
+        const d = gearSwapDelta(save, c, g);
+        layer.add(this.add.text(GAME_W - 40, y - 32, `${d >= 0 ? '▲ +' : '▼ '}${formatPower(d)}`, text.hud(13, d > 0 ? 0x8fc07a : d < 0 ? 0xe58a8a : PAL.steel)).setOrigin(1, 0));
+      }
       if (!g.on) {
         const melt = makeButton(this, GAME_W - 92, y + 12, 104, 40, `Melt +${salvageValue(g)}`, () => {
           salvage(save, g.uid);

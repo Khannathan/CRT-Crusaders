@@ -14,6 +14,7 @@ import { makeButton } from '../ui/button';
 import { CURRENCY_BAR_H, addCurrencyBar } from '../ui/currencyBar';
 import { portraitKey } from '../ui/placeholderPortrait';
 import { ROMAN_RANK, giftsWaiting, rankInfo } from '../systems/rank';
+import { accountPower, formatPower } from '../systems/power';
 import { drawRites } from '../ui/rites';
 import { addTabBar } from '../ui/tabBar';
 import { PAD, addBackdrop, addFrame, addHeading, addScreenGlow, text } from '../ui/theme';
@@ -34,6 +35,12 @@ export class SanctumScene extends Phaser.Scene {
     const ri = rankInfo(game.save);
     const rb = makeButton(this, GAME_W - PAD - 62, CURRENCY_BAR_H + 38, 124, 46, `Rank ${ROMAN_RANK(ri.rank)}`, () => this.scene.start('Rank'), { fontSize: 17, icon: 'sigil' });
     if (giftsWaiting(game.save).length) this.add.circle(rb.box.x + 56, rb.box.y - 18, 6, PAL.amber).setStrokeStyle(2, 0x1b121c);
+    // Account power: the strongest four Sisters
+    const ap = accountPower(game.save);
+    if (ap) {
+      this.add.text(rb.box.x - 76, rb.box.y - 16, 'POWER', text.hud(11, PAL.steel)).setOrigin(1, 0);
+      this.add.text(rb.box.x - 76, rb.box.y, formatPower(ap), text.hud(16, PAL.amber)).setOrigin(1, 0);
+    }
 
     const owned = CRUSADERS.filter((c) => game.save.owned[c.id]);
     const fw = GAME_W - PAD * 2;
