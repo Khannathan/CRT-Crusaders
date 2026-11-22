@@ -385,7 +385,11 @@ export function skirmish(save: SaveData, party: string[], encounter: string, tie
 }
 
 /** Recommended party power for a crypt at a Heresy tier: what its boss asks. */
-export const cryptRecommended = (save: SaveData, crypt: CryptDef, heresy = 0) => recommendedPower(skirmish(save, [], crypt.boss, heresy, undefined, crypt));
+export const cryptRecommended = (save: SaveData, crypt: CryptDef, heresy = 0) => {
+  const acts = actsOf(cryptFloors(crypt, heresy)).length;
+  const scale = (1 + HERESY_ENEMY * heresy) * (1 + ACT_ENEMY * (acts - 1));
+  return recommendedPower(skirmish(save, [], crypt.boss, heresy, undefined, crypt, scale));
+};
 
 /** The node being played, if it is not finished yet. */
 export function currentNode(run: RunState): MapNode | undefined {

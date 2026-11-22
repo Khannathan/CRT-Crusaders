@@ -110,7 +110,7 @@ export const UNLOCKS: Unlock[] = [
   { rank: 1, name: 'Matins', desc: 'A candle each dawn, and gifts that never reset.' },
   { rank: 2, name: 'Penance', desc: 'Daily and weekly devotions that pay in wax.' },
   { rank: 3, name: 'Relic Trials', desc: 'A daily spoil: gear, Tithes or Seals. Sweep what you have mastered.' },
-  { rank: 4, name: 'Repeat crusades', desc: 'Send your Sisters back through a cleared crypt on Auto, several times over.' },
+  { rank: 4, name: 'Sweep', desc: 'Sweep a cleared crypt: your Sisters march it again on Auto, several times over.' },
   { rank: 5, name: 'Confession', desc: 'Grow close to your Sisters. Each bond level adds strength and one more confession.' },
   { rank: 6, name: 'The Bell Tower', desc: 'An endless climb. Some floors admit one Order only, others only the humble.' },
   { rank: 8, name: 'The Inquisition', desc: 'Three hard trials under a heretical edict, renewed every two weeks. Earn Brands.' },

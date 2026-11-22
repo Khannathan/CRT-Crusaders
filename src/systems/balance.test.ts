@@ -118,10 +118,12 @@ describe(`crypt balance ${BALANCE_VERSION} (auto player, ${N} seeded runs)`, () 
     expect(sample(12, BELFRY).rate).toBeGreaterThan(0.9);
   });
 
-  it('Heresy tiers ask for more levels', () => {
-    const h3 = sample(10, OSSUARY, 3).rate;
+  it('Heresy tiers ask for more levels (and grow the crypt toward 30 floors)', () => {
+    // Heresy III: 20 floors in 2 acts
+    const h3 = sample(14, OSSUARY, 3).rate;
     expect(h3).toBeGreaterThan(0.3);
     expect(h3).toBeLessThan(0.95);
-    expect(sample(20, OSSUARY, 5).rate).toBeGreaterThan(0.8);
+    // Heresy V: 30 floors in 3 acts, for an ascended party
+    expect(sample(30, OSSUARY, 5).rate).toBeGreaterThan(0.8);
   });
 });
