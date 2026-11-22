@@ -96,8 +96,9 @@ export function pickParty(scene: Phaser.Scene, save: SaveData, opts: PickOpts, d
     });
     list.fit(236 + Math.ceil(owned.length / 4) * (cell + 38) - 50);
     if (opts.rec) {
-      const parts = drawRecommended(scene, GAME_W / 2, GAME_H - 184, opts.rec, partyPower(save, picked), { size: 13, label: 'PARTY' });
-      const w = parts[1].x + parts[1].width - parts[0].x;
+      const parts = drawRecommended(scene, GAME_W / 2, GAME_H - 184, opts.rec, partyPower(save, picked), { size: 13, label: 'PARTY', grow: picked });
+      const last = parts[parts.length - 1];
+      const w = last.x + last.width - parts[0].x;
       parts.forEach((p) => p.setX(p.x - w / 2));
       layer.add(parts);
     }
