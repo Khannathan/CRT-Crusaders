@@ -41,6 +41,8 @@ export class HuntScene extends Phaser.Scene {
   static listY = 0;
   /** Difficulty picked on this screen. */
   static tier?: number;
+  /** Recommended Sisters: from the player's roster, or the best in the game. */
+  static best = false;
   private notice?: string;
 
   constructor() {
@@ -111,23 +113,39 @@ export class HuntScene extends Phaser.Scene {
     y += 6;
 
     // Recommended Sisters.
-    const recs = recommendFor(save, hunt);
-    this.add.text(PAD, y, 'RECOMMENDED SISTERS', text.hud(13, PAL.amber));
-    this.add.text(GAME_W - PAD, y, 'FROM YOUR ROSTER', text.hud(11, PAL.muted)).setOrigin(1, 0);
-    y += 24;
+    const mine = recommendFor(save, hunt);
+    const recs = HuntScene.best ? recommendFor(save, hunt, 4, 'all') : mine;
+    this.add.text(PAD, y + 6, 'RECOMMENDED SISTERS', text.hud(13, PAL.amber));
+    // Toggle: the best of your roster, or the best Sisters in the game (owned or not).
+    const toggle = (label: string, on: boolean, x: number, best: boolean) => {
+      const t = this.add.text(x, y + 6, label, text.hud(11, on ? 0x140d14 : PAL.muted)).setOrigin(1, 0);
+      const bg = this.add.rectangle(x + 6, y, t.width + 12, 26, on ? PAL.amber : 0x1b121d).setOrigin(1, 0).setStrokeStyle(1, on ? PAL.amber : PAL.armorShadow).setInteractive({ useHandCursor: true });
+      this.children.bringToTop(t);
+      list.tap(bg, () => {
+        if (HuntScene.best === best) return;
+        HuntScene.best = best;
+        this.scene.restart();
+      });
+      return t.width + 12;
+    };
+    const w1 = toggle('BEST OVERALL', HuntScene.best, GAME_W - PAD - 6, true);
+    toggle('MY ROSTER', !HuntScene.best, GAME_W - PAD - 6 - w1 - 6, false);
+    y += 34;
     const cell = bw / 4;
     recs.forEach((r, i) => {
       const x = PAD + cell * i + cell / 2;
+      const have = !!save.owned[r.c.id];
       this.add.rectangle(x, y + 50, 104, 104, 0x170f1b).setStrokeStyle(1, RARITY_COLOR[r.c.rarity]);
-      holdForCard(this, this.add.image(x, y + 50, portraitKey(r.c.id)).setDisplaySize(100, 100), r.c.id);
-      drawPortraitBadges(this, x, y + 50, 100, r.c, save);
-      this.add.text(x, y + 106, r.c.name.split(' ')[0], text.body(15, PAL.ivory)).setOrigin(0.5, 0);
+      holdForCard(this, this.add.image(x, y + 50, portraitKey(r.c.id)).setDisplaySize(100, 100).setAlpha(have ? 1 : 0.45), r.c.id);
+      drawPortraitBadges(this, x, y + 50, 100, r.c, save, { dim: !have });
+      if (!have) this.add.text(x, y + 50, 'NOT OWNED', { ...text.hud(11, PAL.ivory), backgroundColor: '#140d14cc', padding: { x: 4, y: 2 } }).setOrigin(0.5);
+      this.add.text(x, y + 106, r.c.name.split(' ')[0], text.body(15, have ? PAL.ivory : PAL.muted)).setOrigin(0.5, 0);
       this.add.text(x, y + 126, r.why.slice(0, 2).join('\n') || 'Strongest', { ...text.body(12, 0x9fd0a0), align: 'center' }).setOrigin(0.5, 0);
     });
     y += 164;
     const go = makeButton(this, GAME_W / 2, y + 30, 260, 58, huntEntriesLeft(save) ? 'Hunt' : 'No hunts left today', () => {}, { active: huntEntriesLeft(save) > 0, disabled: !huntEntriesLeft(save), fontSize: 20, icon: 'blade' });
     go.box.removeAllListeners('pointerup');
-    if (huntEntriesLeft(save)) list.tap(go.box, () => this.hunt(hunt, tier, recs.map((r) => r.c)));
+    if (huntEntriesLeft(save)) list.tap(go.box, () => this.hunt(hunt, tier, mine.map((r) => r.c)));
     y += 76;
 
     // Today's score track.

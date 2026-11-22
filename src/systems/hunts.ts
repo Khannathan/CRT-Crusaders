@@ -222,12 +222,20 @@ export interface Pick {
   why: string[];
 }
 
-/** Owned Sisters ranked for a hunt: a class it calls for, the damage it fears, its bane Order, then power. */
-export function recommendFor(save: SaveData, hunt: HuntDef, n = 4): Pick[] {
+/** How much rarity counts when ranking every Sister, owned or not ('all'). */
+const RARITY_WEIGHT: Record<string, number> = { UR: 1, SSR: 0.8, SR: 0.6, R: 0.45 };
+
+/**
+ * Sisters ranked for a hunt: a class it calls for, the damage it fears, its
+ * bane Order, then strength. 'owned' ranks your roster by its Power now;
+ * 'all' ranks every Sister in the game by rarity, owned or not.
+ */
+export function recommendFor(save: SaveData, hunt: HuntDef, n = 4, from: 'owned' | 'all' = 'owned'): Pick[] {
   const weak = weakTo(hunt);
   const bane = baneOf(hunt);
-  const owned = CRUSADERS.filter((c) => save.owned[c.id]);
-  const top = Math.max(1, ...owned.map((c) => sisterPower(save, c)));
+  const owned = from === 'all' ? CRUSADERS : CRUSADERS.filter((c) => save.owned[c.id]);
+  const top = Math.max(1, ...owned.map((c) => (save.owned[c.id] ? sisterPower(save, c) : 0)));
+  const strength = (c: CrusaderDef) => (from === 'all' ? RARITY_WEIGHT[c.rarity] ?? 0.5 : sisterPower(save, c) / top);
   const scored = owned.map((c) => {
     const why: string[] = [];
     let score = 0;
@@ -244,7 +252,7 @@ export function recommendFor(save: SaveData, hunt: HuntDef, n = 4): Pick[] {
       score += 1.5;
       why.push('Bane Order');
     }
-    score += (2 * sisterPower(save, c)) / top;
+    score += 2 * strength(c);
     return { c, why, score };
   });
   // Pick the best, but no more than two of one class, so the party has answers to every mechanic.

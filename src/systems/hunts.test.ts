@@ -68,4 +68,15 @@ describe('Hallowed Hunts', () => {
     expect(recs).toHaveLength(4);
     expect(recs.some((r) => r.c.classId === 'confessor')).toBe(true);
   });
+
+  it('the Best overall list draws on every Sister, owned or not, with URs among them', () => {
+    const save = newSave();
+    save.owned['CC-W013'] = { level: 1, vow: 0 };
+    const hunt = HUNTS[0];
+    expect(recommendFor(save, hunt).map((r) => r.c.id)).toEqual(['CC-W013']);
+    const best = recommendFor(save, hunt, 4, 'all');
+    expect(best).toHaveLength(4);
+    expect(best.some((r) => !save.owned[r.c.id])).toBe(true);
+    expect(best.some((r) => r.c.rarity === 'UR')).toBe(true);
+  });
 });
