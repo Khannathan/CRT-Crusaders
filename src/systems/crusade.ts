@@ -249,6 +249,7 @@ export function makeBattle(save: SaveData, run: RunState, encounter: string, rng
       atk: Math.round(st.atk * (1 + atkPct)),
       armor: Math.round(st.armor * (1 + armorPct)),
       vow: save.owned[id].vow,
+      skillLv: save.owned[id].skills,
       crit: st.crit + relics.reduce((n, r) => n + (r.critAdd ?? 0), 0),
       passive: c.passive,
       spd: st.spd + (c.passive?.kind === 'swift' ? c.passive.value ?? 0 : 0),

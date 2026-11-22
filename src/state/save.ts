@@ -16,6 +16,8 @@ export interface OwnedCrusader {
   vow: number;
   /** Vow tokens: duplicate pulls of her, waiting for Take Vow. */
   tokens?: number;
+  /** Skill levels 1-5 for her three skills and Rite (missing = 1). */
+  skills?: number[];
   /** Ascensions taken, 0-3. Each raises the level cap by 10. */
   asc?: number;
   /** Crusades left to sit out after falling (0 = ready). Tithes can revive early. */

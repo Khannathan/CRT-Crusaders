@@ -31,6 +31,7 @@ import {
 import { levelCap, levelUpCost, sisterStats, vowCost } from '../systems/stats';
 import { ascend, ascendBlock, costLine, nextAscension } from '../systems/ascension';
 import { ROMAN_RANK } from '../systems/rank';
+import { MAX_SKILL_LEVEL, nextSkillStep, raiseSkill, skillBlock, skillLevels, stepText } from '../systems/skillLevels';
 import { track } from '../systems/tasks';
 import { makeButton } from '../ui/button';
 import { CURRENCY_BAR_H, addCurrencyBar } from '../ui/currencyBar';
@@ -476,7 +477,8 @@ export class RosterScene extends Phaser.Scene {
   }
 
   private skillsTab(layer: Phaser.GameObjects.Container, c: CrusaderDef) {
-    const have = game.save.owned[c.id];
+    const save = game.save;
+    const have = save.owned[c.id];
     const skills = CLASS_SKILLS[c.classId];
     const ranks = (from: number[]) => (from.length ? `RANK${from.length > 1 ? 'S' : ''} ${from[0]}${from.length > 1 ? `-${from[from.length - 1]}` : ''}` : 'ANY RANK');
     const left = 40;
@@ -497,7 +499,30 @@ export class RosterScene extends Phaser.Scene {
       const t = this.add.text(tx, y + 28, tag, text.hud(12, isUp ? PAL.amber : PAL.steel));
       const d = this.add.text(left, y + 46, s.desc, { ...text.body(16, PAL.muted), wordWrap: { width } });
       layer.add([...(icon ? [icon] : []), name, t, d]);
-      y += 52 + d.height + 14;
+      // Skill level: Psalter Pages and Tithes raise it, up to MAX_SKILL_LEVEL.
+      const lv = skillLevels(save, c.id)[i];
+      const step = nextSkillStep(save, c.id, i);
+      const block = skillBlock(save, c.id, i);
+      const btn = makeButton(
+        this,
+        GAME_W - left - 66,
+        y + 12,
+        132,
+        30,
+        step ? `Lv ${lv} → ${lv + 1}` : `Lv ${MAX_SKILL_LEVEL} · max`,
+        () => {
+          if (raiseSkill(save, c.id, i)) {
+            commit();
+            this.reopen(c, 'skills');
+          }
+        },
+        { disabled: !!block, active: !block, fontSize: 14 },
+      );
+      const cost = step
+        ? this.add.text(left, y + 52 + d.height, `Lv ${lv + 1} (+6% effect): ${have.level < step.level ? `needs level ${step.level} · ` : ''}${stepText(save, step)}`, text.body(14, block ? PAL.steel : PAL.amber))
+        : undefined;
+      layer.add([...btn.all, ...(cost ? [cost] : [])]);
+      y += 52 + d.height + (cost ? 24 : 0) + 14;
     });
     if (c.passive) {
       layer.add(this.add.rectangle(GAME_W / 2, y, width, 1, PAL.armorShadow));
