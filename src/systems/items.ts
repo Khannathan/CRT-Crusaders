@@ -2,11 +2,11 @@ import type { SaveData } from '../state/save';
 import type { Rng } from './gacha';
 
 /**
- * Materials: five families, three tiers each, kept in the Inventory. Each
+ * Materials: six families, three tiers each, kept in the Inventory. Each
  * family feeds one growth system, so a player can tell at a glance what a drop
  * is for. Five of a tier refine into one of the next.
  */
-export type Family = 'ash' | 'page' | 'iron' | 'incense' | 'writ';
+export type Family = 'ash' | 'page' | 'iron' | 'incense' | 'writ' | 'unction';
 export type Tier = 1 | 2 | 3;
 export type ItemId = `${Family}${Tier}`;
 export type Bag = Partial<Record<ItemId, number>>;
@@ -25,6 +25,7 @@ export const FAMILIES: FamilyDef[] = [
   { id: 'iron', name: 'Blessed Iron', use: 'Gear refinement and rerolls', color: 0x9aa7b4 },
   { id: 'incense', name: 'Incense', use: 'The Reliquary, the account-wide tree', color: 0xb592c8 },
   { id: 'writ', name: 'Order Writs', use: 'Order Codex levels', color: 0xd36a5c },
+  { id: 'unction', name: 'Unction', use: 'Sister EXP: fed on her Grow tab', color: 0x7fc4a0 },
 ];
 
 export interface ItemDef {
@@ -54,6 +55,9 @@ export const ITEMS: ItemDef[] = [
   def('writ', 1, 'Writ of Passage', 'Lets a Sister pass the gates of another house.'),
   def('writ', 2, 'Writ of Office', 'Sealed by a Prioress. It names a duty.'),
   def('writ', 3, 'Papal Bull', 'Lead-sealed. It names a crusade.'),
+  def('unction', 1, 'Lesser Unction', 'Oil for the sick. 300 EXP.'),
+  def('unction', 2, 'Blessed Unction', 'Oil for the dying. 1,500 EXP.'),
+  def('unction', 3, 'Extreme Unction', 'Oil for the last rites. She wakes stronger. 7,500 EXP.'),
 ];
 
 export const itemDef = (id: ItemId) => ITEMS.find((i) => i.id === id)!;
@@ -122,11 +126,14 @@ export function roomDrops(kind: 'fight' | 'elite' | 'boss', depth: number, rng: 
   const add = (id: ItemId, k: number) => k > 0 && (bag[id] = (bag[id] ?? 0) + k);
   if (kind === 'fight') {
     if (rng() < 0.5 + 0.05 * depth) add(`${pick(rng, FIELD)}1`, n(rng, 1, 2));
+    if (rng() < 0.35) add('unction1', 1);
   } else if (kind === 'elite') {
+    add('unction1', 2 + depth);
     add(`${pick(rng, FIELD)}1`, n(rng, 2, 3) + depth);
     if (rng() < 0.3 + 0.1 * depth) add(`${pick(rng, FIELD)}2`, 1);
   } else {
     for (const f of FIELD) add(`${f}1`, n(rng, 1, 2) + depth);
+    add('unction2', 1 + Math.floor(depth / 2));
     add(`${pick(rng, FIELD)}2`, n(rng, 1, 2) + Math.floor(depth / 2));
     if (rng() < 0.1 + 0.1 * depth) add(`${pick(rng, FIELD)}3`, 1);
     if (rng() < 0.25 + 0.1 * depth) add('writ1', 1);
@@ -134,9 +141,12 @@ export function roomDrops(kind: 'fight' | 'elite' | 'boss', depth: number, rng: 
   return bag;
 }
 
-/** What the Vigil gathers: about one tier-1 material every two hours, a tier-2 now and then. */
+/** What the Vigil gathers: about one tier-1 material every two hours, a tier-2 now and then, and Unction. */
 export function vigilDrops(hours: number, rng: Rng = Math.random): Bag {
   const bag: Bag = {};
+  const oil = Math.floor(hours * 0.4 + rng());
+  if (oil) bag.unction1 = oil;
+  if (hours >= 4 && rng() < hours / 24) bag.unction2 = 1;
   const count = Math.floor(hours * 0.5 + rng());
   for (let i = 0; i < count; i++) {
     const id: ItemId = `${pick(rng, FIELD)}${rng() < 0.1 ? 2 : 1}`;

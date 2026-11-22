@@ -1,6 +1,7 @@
 import type { SaveData } from '../state/save';
 import { bagText, countOf, hasAll, itemDef, spend, type Bag, type ItemId } from './items';
 import { MAX_ASCENSION, levelCap } from './stats';
+import { settleExp } from './exp';
 
 /**
  * Ascension: at her level cap a Sister can ascend, spending Martyr's Ash and
@@ -42,6 +43,7 @@ export function ascend(save: SaveData, id: string): boolean {
   save.tithes -= step.tithes;
   const o = save.owned[id];
   o.asc = Math.min(MAX_ASCENSION, (o.asc ?? 0) + 1);
+  settleExp(save, id);
   return true;
 }
 

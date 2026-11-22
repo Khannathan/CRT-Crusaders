@@ -34,6 +34,12 @@ export function drawItemIcon(scene: Phaser.Scene, x: number, y: number, id: Item
   } else if (d.family === 'incense') {
     g.fillTriangle(x, cy - r * 1.1, x + r * 0.7, cy + r * 0.2, x - r * 0.7, cy + r * 0.2);
     g.fillRect(x - r * 0.6, cy + r * 0.2, r * 1.2, r * 0.8);
+  } else if (d.family === 'unction') {
+    // a vial of oil
+    g.fillCircle(x, cy + r * 0.35, r * 0.85);
+    g.fillRect(x - r * 0.3, cy - r * 0.9, r * 0.6, r * 0.8);
+    g.fillStyle(0x2a1e28, 1);
+    g.fillRect(x - r * 0.4, cy - r * 1.1, r * 0.8, r * 0.3);
   } else {
     g.fillRect(x - r, cy - r * 0.7, r * 2, r * 1.4);
     g.fillStyle(0xa8322b, 1);

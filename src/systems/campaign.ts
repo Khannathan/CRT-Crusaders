@@ -121,14 +121,15 @@ export interface StageReward {
 /** Paid once, on a stage's first clear. */
 export function stageReward(n: number): StageReward {
   const s = stageDef(n);
-  if (s.boss) return { tithes: 150 + 20 * n, seals: 0, gilt: 0, items: {} };
-  return { tithes: 40 + 12 * n, seals: s.elite ? 1 : 0, gilt: 0, items: s.elite ? { ash1: 2 } : {} };
+  const oil = { unction1: 2 + Math.floor(n / 8) };
+  if (s.boss) return { tithes: 150 + 20 * n, seals: 0, gilt: 0, items: { unction2: 2 + Math.floor(n / 10) } };
+  return { tithes: 40 + 12 * n, seals: s.elite ? 1 : 0, gilt: 0, items: s.elite ? { ash1: 2, ...oil } : oil };
 }
 
 /** A chapter's chest, opened by its boss. */
 export function chapterChest(chapter: number): StageReward {
   const step = chapter + 1;
-  return { tithes: 0, seals: 3 + step, gilt: 60 + 40 * step, stigmata: 1 + Math.floor(step / 2), items: { ash2: step, page2: step, ...(step >= 3 ? { incense2: step - 1 } : {}) } };
+  return { tithes: 0, seals: 3 + step, gilt: 60 + 40 * step, stigmata: 1 + Math.floor(step / 2), items: { ash2: step, page2: step, unction3: step, ...(step >= 3 ? { incense2: step - 1 } : {}) } };
 }
 
 export interface StageResult {
