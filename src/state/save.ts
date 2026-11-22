@@ -107,6 +107,10 @@ export interface SaveData {
   hounds?: import('../systems/hounds').HoundState;
   /** Hallowed Hunts: today's entries and best, tiers opened and records. */
   hunts?: import('../systems/hunts').HuntState;
+  /** Account Power last shown, for the "+N Power" pop (systems/powerGrowth.ts). */
+  powerSeen?: number;
+  /** Power milestones reached so far. */
+  powerMilestone?: number;
   /** Saved parties, each with an icon shown on its Sisters' portraits. */
   presets?: import('../systems/presets').PartyPreset[];
   /** Materials by item id (see systems/items.ts). */

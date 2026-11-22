@@ -24,6 +24,7 @@ import { bagEmpty, bagText } from '../systems/items';
 import { CURRENCY_BAR_H, addCurrencyBar } from '../ui/currencyBar';
 import { portraitKey } from '../ui/placeholderPortrait';
 import { ROMAN_RANK, giftsWaiting, rankInfo } from '../systems/rank';
+import { nextMilestone } from '../systems/powerGrowth';
 import { accountPower, formatPower } from '../systems/power';
 import { drawRites } from '../ui/rites';
 import { addTabBar } from '../ui/tabBar';
@@ -53,6 +54,9 @@ export class SanctumScene extends Phaser.Scene {
     if (ap) {
       this.add.text(rb.box.x - 76, rb.box.y - 16, 'POWER', text.hud(11, PAL.steel)).setOrigin(1, 0);
       this.add.text(rb.box.x - 76, rb.box.y, formatPower(ap), text.hud(16, PAL.amber)).setOrigin(1, 0);
+      // The next Power milestone (its Gilt pays the moment it is crossed).
+      const nm = nextMilestone(game.save);
+      if (nm) this.add.text(rb.box.x - 76, rb.box.y + 20, `NEXT ${formatPower(nm.at)}`, text.hud(10, PAL.steel)).setOrigin(1, 0);
     }
 
     const owned = CRUSADERS.filter((c) => game.save.owned[c.id]);
