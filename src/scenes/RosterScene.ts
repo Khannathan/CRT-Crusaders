@@ -8,6 +8,7 @@ import type { OwnedCrusader } from '../state/save';
 import type { Stats } from '../systems/stats';
 import { BOND_STAT, bondInfo } from '../systems/bonds';
 import { addOrderSigil } from '../ui/sisterCard';
+import { drawPortraitBadges, showBadgeKey } from '../ui/portraitBadges';
 import { passes, sortControls, sortRoster, sortState } from '../ui/sisterSort';
 import type { ScrollArea } from '../ui/scroll';
 import { CLASS_SKILLS, DMG_NAME, type SkillDef } from '../data/skills';
@@ -122,6 +123,12 @@ export class RosterScene extends Phaser.Scene {
       RosterScene.scrollY = 0;
       this.scene.restart({});
     }, { roster: true, depth: 20 });
+    // What the portrait corners mean.
+    const key = makeButton(this, GAME_W - PAD - 26, top + 22, 48, 40, '?', () => {
+      const sample = sorted.find((c) => owned[c.id]) ?? sorted[0];
+      if (sample) showBadgeKey(this, sample, game.save);
+    }, { fontSize: 20 });
+    key.all.forEach((o) => (o as unknown as Phaser.GameObjects.Components.Depth).setDepth?.(20));
     if (!sorted.length) this.add.text(GAME_W / 2, top + 140, 'No Sister matches these filters.', text.body(18, PAL.muted)).setOrigin(0.5);
 
     // Cards as in the preview: portrait, rarity badge, name and level underneath.
@@ -131,7 +138,6 @@ export class RosterScene extends Phaser.Scene {
     const ph = 128;
     const ch = ph + 46;
     const y0 = top + 56;
-    const party = new Set(game.save.lastParty);
     const firstCard = this.children.list.length;
     sorted.forEach((c, i) => {
       const left = PAD + (i % cols) * (cw + gap);
@@ -146,20 +152,14 @@ export class RosterScene extends Phaser.Scene {
       if (have) {
         addBackdrop(this, portraitKey(c.id), x, topY + ph / 2, cw, ph, { fade: 0, focusY: 0.3 });
         this.add.rectangle(x, topY + ph, cw, 1, tint);
-        addBadge(this, left + 4, topY + 4, c.rarity, tint, 12);
-        if (party.has(c.id)) {
-          this.add.rectangle(left + cw - 4, topY + 4, 22, 22, 0x170e15).setOrigin(1, 0).setStrokeStyle(1, 0x695045);
-          addIcon(this, left + cw - 15, topY + 15, 'shield', 14, PAL.amber);
-        }
+        drawPortraitBadges(this, x, topY + ph / 2, Math.min(cw, ph), c, game.save);
         this.add.text(left + 8, topY + ph + 5, c.name.split(' ')[0], { ...text.body(19, PAL.ivory), fontStyle: '600' });
-        this.add.text(left + 8, topY + ph + 28, `LV ${have.level}${tierOf(have) ? ` T${tierOf(have)}` : ''}${have.vow ? ` V${have.vow}` : ''}`, text.hud(12, tierOf(have) ? TIER_COLOR[tierOf(have)] : PAL.muted));
-        this.add.text(left + cw - 36, topY + ph + 28, formatPower(sisterPower(game.save, c)), text.hud(12, PAL.amber)).setOrigin(1, 0);
-        // class-<id>.png beside the name when present
-        addArt(this, `class-${c.classId}`, left + cw - 18, topY + ph + 23, 24);
+        this.add.text(left + 8, topY + ph + 28, `${CLASSES[c.classId].role.toUpperCase()}${tierOf(have) ? ` T${tierOf(have)}` : ''}${have.vow ? ` V${have.vow}` : ''}`, text.hud(12, tierOf(have) ? TIER_COLOR[tierOf(have)] : PAL.muted));
+        this.add.text(left + cw - 8, topY + ph + 28, formatPower(sisterPower(game.save, c)), text.hud(12, PAL.amber)).setOrigin(1, 0);
         if (have.tokens) {
-          addBadge(this, left + cw - 40, topY + ph - 26, `+${have.tokens}`, PAL.amber, 12);
+          addBadge(this, left + cw / 2 - 10, topY + ph - 26, `+${have.tokens}`, PAL.amber, 12);
           // ui-vow.png beside the waiting-token count when present
-          addArt(this, 'ui-vow', left + cw - 52, topY + ph - 15, 20);
+          addArt(this, 'ui-vow', left + cw / 2 - 22, topY + ph - 15, 20);
         }
       } else {
         const g = this.add.graphics();

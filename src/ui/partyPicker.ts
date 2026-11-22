@@ -12,7 +12,9 @@ import { makeButton } from './button';
 import { portraitKey } from './placeholderPortrait';
 import { drawRecommended } from './recommended';
 import { sortAndFilter, sortControls } from './sisterSort';
-import { addOrderSigil, holdForCard } from './sisterCard';
+import { holdForCard } from './sisterCard';
+import { drawPortraitBadges } from './portraitBadges';
+import { openPresets } from './presets';
 import { addFrame, text } from './theme';
 
 export interface PickOpts {
@@ -48,6 +50,16 @@ export function pickParty(scene: Phaser.Scene, save: SaveData, opts: PickOpts, d
     layer.add(scene.add.rectangle(GAME_W / 2, GAME_H / 2, GAME_W, GAME_H, 0x09060b, 0.96).setInteractive());
     layer.add(addFrame(scene, GAME_W / 2, GAME_H / 2, GAME_W - 24, GAME_H - 40, { fill: 0x241925 }));
     layer.add(scene.add.text(GAME_W / 2, 62, opts.title.toUpperCase(), text.display(22, PAL.ivory)).setOrigin(0.5));
+    // Saved parties (only where a full party fights).
+    if (max > 1) {
+      const pre = makeButton(scene, GAME_W - 82, 62, 104, 38, 'Presets', () => {
+        openPresets(scene, save, [...picked], 45, (ids) => {
+          picked.splice(0, picked.length, ...ids.filter((id) => all.some((c) => c.id === id && allow(c))).slice(0, max));
+          draw();
+        });
+      }, { fontSize: 15 });
+      layer.add(pre.all);
+    }
     layer.add(scene.add.text(GAME_W / 2, 90, `${opts.sub} Hold a portrait for her stats.`, { ...text.body(15, PAL.muted), align: 'center', wordWrap: { width: GAME_W - 70 } }).setOrigin(0.5, 0));
     // The Roster's sort and filter; those who can be chosen come first, and a picked Sister is never filtered out.
     const owned = sortAndFilter(save, all, picked).sort((a, b) => Number(allow(b)) - Number(allow(a)));
@@ -67,11 +79,10 @@ export function pickParty(scene: Phaser.Scene, save: SaveData, opts: PickOpts, d
       const frame = scene.add.rectangle(x, y, 100, 100, 0x150e17).setStrokeStyle(on ? 3 : 1, on ? PAL.amber : ok ? RARITY_COLOR[c.rarity] : PAL.armorShadow);
       const img = scene.add.image(x, y, portraitKey(c.id)).setDisplaySize(94, 94).setAlpha(!ok ? 0.2 : on ? 1 : 0.6);
       const name = scene.add.text(x, y + 60, c.name.split(' ')[0], text.body(15, on ? PAL.amber : ok ? PAL.ivory : PAL.steel)).setOrigin(0.5);
-      const stat = scene.add.text(x, y + 78, `Lv ${save.owned[c.id].level} · ${formatPower(sisterPower(save, c))}`, text.hud(11, ok ? PAL.muted : PAL.steel)).setOrigin(0.5);
+      const stat = scene.add.text(x, y + 78, formatPower(sisterPower(save, c)), text.hud(11, ok ? PAL.muted : PAL.steel)).setOrigin(0.5);
       list.content.add([frame, img, name, stat]);
-      const sigil = addOrderSigil(scene, x + 38, y - 38, c.order, 24);
-      if (sigil) list.content.add(sigil.setAlpha(ok ? 1 : 0.4));
-      if (on) list.content.add(scene.add.text(x - 44, y - 46, `${at + 1}`, { ...text.hud(16, PAL.amber), stroke: '#000000', strokeThickness: 4 }));
+      list.content.add(drawPortraitBadges(scene, x, y, 100, c, save, { dim: !ok }));
+      if (on) list.content.add(scene.add.text(x, y, `${at + 1}`, { ...text.hud(30, PAL.amber), stroke: '#000000', strokeThickness: 6 }).setOrigin(0.5));
       if (ok) {
         list.tap(frame, () => {
           if (on) picked.splice(at, 1);

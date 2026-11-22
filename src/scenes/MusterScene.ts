@@ -14,7 +14,9 @@ import { VERDICT_COLOR } from '../ui/recommended';
 import { portraitKey } from '../ui/placeholderPortrait';
 import { addIcon, addScreenGlow, text } from '../ui/theme';
 import { addScrollArea } from '../ui/scroll';
-import { addOrderSigil, holdForCard, justHeld } from '../ui/sisterCard';
+import { holdForCard, justHeld } from '../ui/sisterCard';
+import { drawPortraitBadges } from '../ui/portraitBadges';
+import { openPresets } from '../ui/presets';
 import { sortAndFilter, sortControls } from '../ui/sisterSort';
 
 const ROMAN = ['I', 'II', 'III', 'IV'];
@@ -77,7 +79,7 @@ export class MusterScene extends Phaser.Scene {
         this.create();
       });
       holdForCard(this, img, id);
-      addOrderSigil(this, x + 46, slotY - 46, c.order, 26);
+      drawPortraitBadges(this, x, slotY, 128, c, game.save);
       this.add.text(x, slotY + 82, c.name.split(' ')[0], { ...text.body(18), fontStyle: '600' }).setOrigin(0.5);
       this.add.text(x, slotY + 102, CLASSES[c.classId].role.toUpperCase(), text.hud(12, PAL.muted)).setOrigin(0.5);
     }
@@ -88,6 +90,12 @@ export class MusterScene extends Phaser.Scene {
     if (orderBonuses(orders).length || orders.length) drawOrderChips(this, GAME_W / 2, 314, orders, 5);
     if (!orderBonuses(orders).length) this.add.text(GAME_W / 2, 332, 'Two Sisters of one Order kneel together for its blessing. Tap for details.', text.body(13, PAL.muted)).setOrigin(0.5, 0);
     this.add.rectangle(GAME_W / 2, 344, GAME_W - 32, 1, PAL.armorShadow);
+    makeButton(this, GAME_W - 70, 314, 104, 34, 'Presets', () => {
+      openPresets(this, game.save, [...this.party], 40, (ids) => {
+        this.party = ids.filter((id) => canMuster(game.save, id)).slice(0, MAX_PARTY);
+        this.create();
+      });
+    }, { fontSize: 14 });
     // The Roster's sort and filter; Sisters already called always show.
     const owned = sortAndFilter(game.save, CRUSADERS.filter((c) => game.save.owned[c.id]), this.party);
     sortControls(this, GAME_W / 2, 368, GAME_W - 32, () => {
@@ -106,7 +114,7 @@ export class MusterScene extends Phaser.Scene {
       this.add.rectangle(x, y, 134, 134, 0x170f1b).setStrokeStyle(1, ready ? RARITY_COLOR[c.rarity] : PAL.armorShadow);
       const img = this.add.image(x, y, portraitKey(c.id)).setDisplaySize(128, 128);
       if (inParty || !ready) img.setAlpha(0.3);
-      addOrderSigil(this, x + 46, y - 46, c.order, 26)?.setAlpha(inParty || !ready ? 0.5 : 1);
+      drawPortraitBadges(this, x, y, 128, c, game.save, { dim: inParty || !ready });
       if (ready && !inParty) {
         list.tap(img, () => {
           if (this.party.length < MAX_PARTY) {
@@ -116,7 +124,7 @@ export class MusterScene extends Phaser.Scene {
         });
       }
       holdForCard(this, img, c.id);
-      const sub = !ready ? 'Recovering' : `Lv ${game.save.owned[c.id].level} · ${formatPower(sisterPower(game.save, c))}`;
+      const sub = !ready ? 'Recovering' : formatPower(sisterPower(game.save, c));
       this.add.text(x, y + 76, c.name.split(' ')[0], { ...text.body(17), fontStyle: '600' }).setOrigin(0.5);
       this.add.text(x, y + 95, sub, text.body(14, PAL.muted)).setOrigin(0.5);
     });
