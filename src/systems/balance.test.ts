@@ -117,7 +117,7 @@ describe(`crypt balance ${BALANCE_VERSION} (auto player, ${N} seeded runs)`, () 
     expect(mid.rate).toBeGreaterThan(0.45);
     expect(mid.rate).toBeLessThan(0.9);
     expect(sample(12, BELFRY).rate).toBeGreaterThan(0.9);
-  });
+  }, 20_000); // 900 runs
 
   it('Heresy tiers ask for more levels (and grow the crypt toward 30 floors)', () => {
     // Heresy III: 20 floors in 2 acts

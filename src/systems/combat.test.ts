@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { ENEMIES } from '../data/enemies';
 import { CLASS_SKILLS } from '../data/skills';
+import { autoStep } from './autoplay';
 import { Battle, CRIT_MULT, ZEAL_HURT_CAP, ZEAL_MAX, damageAfterArmor, makeEnemy, type Unit } from './combat';
 
 function seeded(seed: number) {
@@ -310,5 +311,41 @@ describe('Sister passives', () => {
     b.act(e, ENEMIES.husk.skills[0], m);
     expect(b.zeal).toBeGreaterThanOrEqual(30);
     expect(o.status.empower).toBeTruthy();
+  });
+
+  it('Step is free, once a turn, with a neighbour only', () => {
+    const a = crusader('a', 'warsister', 1);
+    const c = crusader('c', 'oracle', 2);
+    const d = crusader('d', 'censer', 3);
+    const b = new Battle([a, c, d], [makeEnemy('husk', 'e0', 1)], { rng: seeded(2) });
+    expect(b.stepTargets(c).map((u) => u.uid).sort()).toEqual(['a', 'd']);
+    expect(b.step(a, d)).toEqual([]); // not beside her
+    b.step(c, d);
+    expect([c.rank, d.rank]).toEqual([3, 2]);
+    expect(b.canStep(c)).toBe(false); // once a turn
+    expect(b.step(c, d)).toEqual([]);
+  });
+
+  it('skills carry the user, and shoves knock the target back', () => {
+    const war = crusader('war', 'warsister', 2);
+    const front = crusader('front', 'hierophant', 1);
+    const b = new Battle([front, war], ['husk', 'acolyte'].map((t, i) => makeEnemy(t, `e${i}`, i + 1)), { rng: seeded(3) });
+    const charge = CLASS_SKILLS.warsister.find((s) => s.id === 'flagellants-charge')!;
+    b.act(war, charge, b.get('e1'));
+    expect([war.rank, front.rank]).toEqual([1, 2]);
+    const bash = CLASS_SKILLS.hierophant.find((s) => s.id === 'reliquary-bash')!;
+    const husk = b.get('e0');
+    if (husk.hp > 0) {
+      b.act(front, bash, husk);
+      if (husk.hp > 0) expect(husk.rank).toBe(2);
+    }
+  });
+
+  it('Auto steps a Sister back into the ranks her skills need', () => {
+    const front = crusader('f', 'hierophant', 1);
+    const oracle = crusader('oracle', 'oracle', 2);
+    const war = crusader('war', 'warsister', 3);
+    const b = new Battle([front, oracle, war], [makeEnemy('husk', 'e0', 1)], { rng: seeded(4) });
+    expect(autoStep(b, war)?.uid).toBe('oracle');
   });
 });

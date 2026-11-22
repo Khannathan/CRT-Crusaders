@@ -68,6 +68,8 @@ export interface Unit {
   skillLv?: number[];
   /** Own turns left before each skill can be used again. */
   cooldowns?: Record<string, number>;
+  /** Crusaders: has taken this turn's free Step. */
+  stepped?: boolean;
 }
 
 export type BattleEvent =
@@ -90,7 +92,7 @@ export interface TurnStart {
 }
 
 /** Bump when combat numbers change, so logged runs can be compared fairly. */
-export const BALANCE_VERSION = '0.6';
+export const BALANCE_VERSION = '0.7';
 /** Execute skills hit harder below this share of max HP. */
 export const EXECUTE_AT = 0.3;
 
@@ -301,6 +303,7 @@ export class Battle {
 
       const st = actor.status;
       st.shield = 0;
+      actor.stepped = false;
       if (st.poison) {
         const dmg = Math.min(actor.hp, st.poison.dmg);
         actor.hp -= dmg;
@@ -469,6 +472,7 @@ export class Battle {
         t.rank = 1;
         events.push({ type: 'status', uid: t.uid, label: 'Dragged forward' }, { type: 'move', uid: t.uid });
       }
+      if (skill.shove && this.moveUnit(t, skill.shove, events)) events.push({ type: 'status', uid: t.uid, label: 'Knocked back' });
       if (skill.empower && skill.empowerTarget) {
         t.status.empower = { ...skill.empower };
         events.push({ type: 'status', uid: t.uid, label: 'Empowered' });
@@ -497,6 +501,9 @@ export class Battle {
         }
       }
     }
+
+    // Skills that carry the user forward or back.
+    if (skill.move && actor.hp > 0) this.moveUnit(actor, skill.move, events);
 
     if (skill.taunt) {
       actor.status.taunt = skill.taunt;
@@ -751,6 +758,43 @@ export class Battle {
     this.alive(side).forEach((u, i) => (u.rank = i + 1));
   }
 
+  /**
+   * Moves a unit `delta` ranks (negative = toward the front), trading places with
+   * whoever stands in the way. Returns how many ranks it actually moved.
+   */
+  moveUnit(u: Unit, delta: number, events: BattleEvent[]): number {
+    let moved = 0;
+    const dir = Math.sign(delta);
+    for (let i = 0; i < Math.abs(delta); i++) {
+      const other = this.alive(u.side).find((o) => o.rank === u.rank + dir);
+      if (!other) break;
+      [u.rank, other.rank] = [other.rank, u.rank];
+      events.push({ type: 'move', uid: other.uid });
+      moved++;
+    }
+    if (moved) events.push({ type: 'move', uid: u.uid });
+    return moved;
+  }
+
+  /** Sisters this one can Step with: the living ones right beside her. */
+  stepTargets(actor: Unit): Unit[] {
+    if (actor.side !== 'party' || actor.stepped || actor.hp <= 0) return [];
+    return this.alive('party').filter((o) => Math.abs(o.rank - actor.rank) === 1);
+  }
+
+  canStep(actor: Unit) {
+    return this.stepTargets(actor).length > 0;
+  }
+
+  /** The free Step: trade places with a neighbour. Does not end the turn. */
+  step(actor: Unit, other: Unit): BattleEvent[] {
+    if (!this.stepTargets(actor).includes(other)) return [];
+    [actor.rank, other.rank] = [other.rank, actor.rank];
+    actor.stepped = true;
+    this.log.push(`${actor.name} steps with ${other.name}`);
+    return [{ type: 'move', uid: actor.uid }, { type: 'move', uid: other.uid }];
+  }
+
   private shift(actor: Unit, events: BattleEvent[]) {
     const line = this.alive(actor.side);
     const other = line.find((u) => u.rank === (actor.rank === 1 ? 2 : actor.rank - 1));
@@ -783,7 +827,7 @@ export class Battle {
 }
 
 /** Enemy HP and attack scale, tuned with balance.test.ts against the Auto player. */
-export const ENEMY_TUNE = 1.18;
+export const ENEMY_TUNE = 1.22;
 export function makeEnemy(type: string, uid: string, rank: number, scale = 1): Unit {
   const d = ENEMIES[type];
   const hp = Math.round(d.hp * ENEMY_TUNE * scale);

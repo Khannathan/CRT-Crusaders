@@ -10,7 +10,7 @@ import { ENEMIES } from '../data/enemies';
 import type { SkillDef } from '../data/skills';
 import { commit, game } from '../state/game';
 import { saveSettings, settings } from '../state/settings';
-import { autoChoose } from '../systems/autoplay';
+import { autoChoose, autoStep } from '../systems/autoplay';
 import { makeButton } from '../ui/button';
 import { addArt } from '../ui/theme';
 import { Bar, candleFrames, nine } from '../ui/skin';
@@ -306,7 +306,11 @@ export class BattleScene extends Phaser.Scene {
 
   private autoAct() {
     if (!settings.autoBattle || this.mode === 'busy' || this.actor?.side !== 'party') return;
-    const c = autoChoose(this.battle, this.actor);
+    const actor = this.actor;
+    // Auto takes the free Step first when it puts Sisters back in their ranks.
+    const partner = autoStep(this.battle, actor);
+    if (partner) this.battle.step(actor, partner);
+    const c = autoChoose(this.battle, actor);
     this.refresh();
     this.perform(c.skill, c.target);
   }
@@ -315,13 +319,14 @@ export class BattleScene extends Phaser.Scene {
     this.clearSkills();
     const actor = this.actor!;
     const skills = skillsFor(actor);
-    // order: three skills, Shift, Rite
+    // order: three skills, Step, Rite
     const order = [skills[0], skills[1], skills[2], skills[4], skills[3]];
     const w = 102;
     order.forEach((s, i) => {
       const x = 9 + w / 2 + i * (w + 3);
       const y = 819;
-      const usable = this.battle.canUse(actor, s);
+      const step = s.id === 'shift';
+      const usable = step ? this.battle.canStep(actor) : this.battle.canUse(actor, s);
       const selected = this.chosen === s;
       const color = s.rite ? PAL.amber : PAL.oxblood;
       const box = this.add
@@ -344,7 +349,7 @@ export class BattleScene extends Phaser.Scene {
         this.skillButtons.push(icon);
       }
       const label = this.add
-        .text(x, icon ? y + 18 : y, s.rite ? `RITE\n${s.name}` : cd > 0 ? `${s.name}\n(ready in ${cd})` : s.name, {
+        .text(x, icon ? y + 18 : y, s.rite ? `RITE\n${s.name}` : step ? (actor.stepped ? 'Stepped' : 'Step\n(free)') : cd > 0 ? `${s.name}\n(ready in ${cd})` : s.name, {
           fontFamily: FONT,
           fontSize: icon ? '16px' : '18px',
           color: hex(selected && s.rite && !skin ? PAL.bg : PAL.ivory),
@@ -362,6 +367,7 @@ export class BattleScene extends Phaser.Scene {
   private pickSkill(s: SkillDef, usable: boolean) {
     if (this.mode === 'busy') return;
     const actor = this.actor!;
+    if (s.id === 'shift') return this.pickStep(usable);
     if (!usable) {
       const cd = actor.cooldowns?.[s.id] ?? 0;
       const why = cd > 0 ? `Cooling down: ready in ${cd} turn${cd > 1 ? 's' : ''}.` : s.rite && this.battle.zeal < ZEAL_MAX ? 'Needs a full Zeal meter.' : s.from.length ? `Usable from rank ${s.from.map((r) => ROMAN[r - 1]).join(', ')}.` : 'No target in reach.';
@@ -382,9 +388,48 @@ export class BattleScene extends Phaser.Scene {
     this.refresh(targets);
   }
 
+  /** Step: choose the neighbour to trade places with. It costs nothing and she still acts. */
+  private pickStep(usable: boolean) {
+    const actor = this.actor!;
+    const s = skillsFor(actor).find((x) => x.id === 'shift')!;
+    if (!usable) {
+      this.descText.setText(actor.stepped ? 'She has already stepped this turn. Choose a skill.' : 'No Sister stands beside her.');
+      return;
+    }
+    if (this.chosen === s) {
+      // Tapping Step again cancels it.
+      this.chosen = undefined;
+      this.mode = 'skill';
+      this.showSkills();
+      this.refresh();
+      return;
+    }
+    this.chosen = s;
+    this.mode = 'target';
+    this.descText.setText(`Step: ${s.desc.split('. ')[0]}.\nTap the glowing Sister to trade places with her.`);
+    this.showSkills();
+    this.refresh(this.battle.stepTargets(actor));
+  }
+
+  private doStep(u: Unit) {
+    const actor = this.actor!;
+    const events = this.battle.step(actor, u);
+    if (!events.length) return;
+    this.mode = 'busy';
+    this.chosen = undefined;
+    this.clearSkills();
+    this.play(events, () => {
+      this.mode = 'skill';
+      this.logText.setText(`${actor.name} steps beside ${u.name}. Still her turn.`);
+      this.showSkills();
+      this.refresh();
+    });
+  }
+
   private pickTarget(u: Unit) {
     if (this.mode !== 'target' || !this.chosen) return;
     const s = this.chosen;
+    if (s.id === 'shift') return this.doStep(u);
     if (!this.battle.validTargets(this.actor!, s).includes(u)) return;
     this.perform(s, u);
   }
@@ -421,7 +466,7 @@ export class BattleScene extends Phaser.Scene {
     if (view.skill.pull) text += ' It drags its target to the front rank.';
     if (ENEMIES[u.ref].burst) text += ' When it dies, it bursts over all your Sisters.';
     if (u.armor >= 120) text += ' Its armor is thick: poison and burns ignore armor.';
-    if (view.kind === 'attack' || view.kind === 'debuff') text += ' A Taunt pulls it away, and Shift can move out of its reach.';
+    if (view.kind === 'attack' || view.kind === 'debuff') text += ' A Taunt pulls it away, and a free Step can move out of its reach.';
     this.descText.setText(text);
   }
 
