@@ -29,7 +29,7 @@ export function settleBattle(battle: Battle, outcome: 'victory' | 'defeat'): Set
     bondBattle(game.save, battle);
     const next = challenge.finish(outcome, battle);
     commit();
-    return { ...next, won, line: won ? `The trial is passed.${expLine}` : 'Your Sisters fall back, bloodied but alive.' };
+    return { ...next, won, line: next.line ?? (won ? `The trial is passed.${expLine}` : 'Your Sisters fall back, bloodied but alive.') };
   }
   const run = current.run!;
   absorbBattle(run, battle);

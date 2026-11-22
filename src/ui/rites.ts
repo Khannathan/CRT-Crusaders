@@ -1,4 +1,6 @@
 import { HOUNDS } from '../data/hounds';
+import { ENEMIES } from '../data/enemies';
+import { HUNT_ENTRIES, huntEntriesLeft, huntOn } from '../systems/hunts';
 import { freeWhistle, houndsOf } from '../systems/hounds';
 import Phaser from 'phaser';
 import { GAME_W, PAL } from '../config';
@@ -71,6 +73,11 @@ export const RITES: RiteEntry[] = [
     label: 'Holy Errands', scene: 'Errands', icon: 'book', rank: 1, home: 'board', bg: 'bg-altar', ready: (s) => anyErrandDone(s),
     blurb: 'Send Sisters away on timed duties, an hour to most of a day. They come home with materials.',
     status: (s) => `${errandsOf(s).active.length} of ${ERRAND_SLOTS} away  ·  ${openErrands(s).length} errands on offer`,
+  },
+  {
+    label: 'Hallowed Hunts', scene: 'Hunt', icon: 'blade', rank: 4, home: 'board', bg: 'bg-sunken-belfry', ready: (s) => huntEntriesLeft(s) > 0,
+    blurb: 'A great beast each day, with its own ways. Hurt it as much as you can in twelve rounds; your best pays Grace.',
+    status: (s) => `Today: ${ENEMIES[huntOn().boss].name}  ·  ${huntEntriesLeft(s)}/${HUNT_ENTRIES} hunts left`,
   },
   {
     label: 'Relic Trials', scene: 'Trials', icon: 'shield', rank: 3, home: 'board', bg: 'bg-sunken-belfry', ready: (s) => entriesLeft(s) > 0,

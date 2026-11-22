@@ -29,6 +29,8 @@ export interface PickOpts {
   confirm: string;
   /** Recommended party power, shown against the picked party's. */
   rec?: number;
+  /** Show the hound slot (defaults to on when `rec` is given: a fight). */
+  hound?: boolean;
   /** The party Suggest picks; defaults to the strongest Sisters allowed. */
   suggest?: () => string[];
 }
@@ -100,7 +102,7 @@ export function pickParty(scene: Phaser.Scene, save: SaveData, opts: PickOpts, d
       layer.add(parts);
     }
     // The hound that goes with a fighting party.
-    if (opts.rec) layer.add(drawHoundSlot(scene, save, GAME_W / 2, GAME_H - 146, GAME_W - 70, 40, () => scene.time.delayedCall(0, draw)));
+    if (opts.hound ?? !!opts.rec) layer.add(drawHoundSlot(scene, save, GAME_W / 2, GAME_H - 146, GAME_W - 70, 40, () => scene.time.delayedCall(0, draw)));
     // The Order blessings this pick turns on (tap for details), or why some are dimmed.
     const orders = picked.map((id) => all.find((c) => c.id === id)!.order);
     if (orders.length && max > 1) layer.add(drawOrderChips(scene, GAME_W / 2, GAME_H - 108, orders, 40));

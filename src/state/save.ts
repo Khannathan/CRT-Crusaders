@@ -105,6 +105,8 @@ export interface SaveData {
   shop?: import('../systems/shop').ShopState;
   /** The Kennel: hounds owned and the one going into battle. */
   hounds?: import('../systems/hounds').HoundState;
+  /** Hallowed Hunts: today's entries and best, tiers opened and records. */
+  hunts?: import('../systems/hunts').HuntState;
   /** Saved parties, each with an icon shown on its Sisters' portraits. */
   presets?: import('../systems/presets').PartyPreset[];
   /** Materials by item id (see systems/items.ts). */
