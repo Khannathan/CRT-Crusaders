@@ -6,6 +6,7 @@ import { CRIT_MULT, VOW_UPGRADES, type Battle } from './combat';
 import { equipped, type GearItem } from './gear';
 import { statsFor, sisterStats, type Stats } from './stats';
 import { bondMult } from './bonds';
+import { skillLevelsGained } from './skillLevels';
 
 /**
  * Power (CP): one number for how strong a Sister, a piece of gear or the whole
@@ -30,6 +31,8 @@ export const CP = {
   vowSkill: 0.05,
   /** A Sister with a signature passive. */
   passive: 0.1,
+  /** Per skill level above 1 (up to 16 across her four skills). */
+  skillLevel: 0.02,
   /** Sisters counted for account power (a full party). */
   accountTop: 4,
   /**
@@ -51,14 +54,15 @@ export const statPower = (s: Stats) => offenseOf(s) * CP.offense + defenseOf(s);
 const vowSkills = (vow: number) => VOW_UPGRADES.filter(([v]) => vow >= v).length;
 
 /** The share Vow upgrades and a passive add (1.0 and up). */
-export const skillShare = (c: CrusaderDef, vow: number) => (CP.role[CLASSES[c.classId]?.role] ?? 1) * (1 + vowSkills(vow) * CP.vowSkill + (c.passive ? CP.passive : 0));
+export const skillShare = (c: CrusaderDef, vow: number, levels = 0) =>
+  (CP.role[CLASSES[c.classId]?.role] ?? 1) * (1 + vowSkills(vow) * CP.vowSkill + (c.passive ? CP.passive : 0) + levels * CP.skillLevel);
 
-export const powerOf = (c: CrusaderDef, s: Stats, vow: number) => Math.round(statPower(s) * skillShare(c, vow));
+export const powerOf = (c: CrusaderDef, s: Stats, vow: number, levels = 0) => Math.round(statPower(s) * skillShare(c, vow, levels));
 
 /** A Sister's power as she stands: level, Vows, gear and bond. */
 export function sisterPower(save: SaveData, c: CrusaderDef) {
   const o = save.owned[c.id];
-  return o ? powerOf(c, sisterStats(save, c), o.vow) : 0;
+  return o ? powerOf(c, sisterStats(save, c), o.vow, skillLevelsGained(save, c.id)) : 0;
 }
 
 export const sisterPowerById = (save: SaveData, id: string) => {
@@ -72,7 +76,7 @@ function powerWith(save: SaveData, c: CrusaderDef, gear: GearItem[]) {
   if (!o) return 0;
   const st = statsFor(c, o, gear);
   const m = bondMult(save, c.id);
-  return powerOf(c, { ...st, hp: Math.round(st.hp * m), atk: Math.round(st.atk * m) }, o.vow);
+  return powerOf(c, { ...st, hp: Math.round(st.hp * m), atk: Math.round(st.atk * m) }, o.vow, skillLevelsGained(save, c.id));
 }
 
 /** What a worn piece adds to her power: with it on versus off. */
