@@ -34,6 +34,12 @@ export const SKINS = {
   'ui-skill-selected': 22,
   'ui-skill-rite': 30,
   'ui-bar-frame': 4,
+  'ui-bar-litany-frame': 6,
+  'ui-bar-litany-frame-full': 6,
+  'ui-bar-wrath-frame': 6,
+  'ui-bar-wrath-frame-full': 6,
+  'ui-skill-litany': 14,
+  'ui-skill-litany-selected': 14,
   'ui-chip': 10,
   'ui-badge': 12,
 } as Record<string, number>;
@@ -84,6 +90,7 @@ export class Bar {
   readonly parts: Phaser.GameObjects.GameObject[] = [];
   private fill: Phaser.GameObjects.Rectangle | Phaser.GameObjects.Image;
   private skinned: boolean;
+  private frame?: Phaser.GameObjects.NineSlice;
 
   constructor(
     scene: Phaser.Scene,
@@ -94,6 +101,8 @@ export class Bar {
     fillKey: string,
     color: number,
     track = 0x1b151e,
+    /** Its own frame art (e.g. ui-bar-litany-frame.png); falls back to ui-bar-frame. */
+    frameKey = 'ui-bar-frame',
   ) {
     this.parts.push(scene.add.rectangle(left, y, w, h, track).setOrigin(0, 0.5));
     this.skinned = scene.textures.exists(fillKey);
@@ -101,8 +110,11 @@ export class Bar {
       ? scene.add.image(left, y, fillKey).setOrigin(0, 0.5).setDisplaySize(w, h)
       : scene.add.rectangle(left, y, w, h, color).setOrigin(0, 0.5);
     this.parts.push(this.fill);
-    const frame = nine(scene, 'ui-bar-frame', left + w / 2, y, w + 4, h + 4);
-    if (frame) this.parts.push(frame);
+    const frame = nine(scene, scene.textures.exists(frameKey) ? frameKey : 'ui-bar-frame', left + w / 2, y, w + 4, h + 4);
+    if (frame) {
+      this.frame = frame as Phaser.GameObjects.NineSlice;
+      this.parts.push(frame);
+    }
   }
 
   /** Swaps the fill art (e.g. ui-bar-litany-full.png once a meter is full), when that file exists. */
@@ -111,6 +123,11 @@ export class Bar {
       const { displayWidth, displayHeight } = this.fill;
       this.fill.setTexture(key).setDisplaySize(displayWidth, displayHeight);
     }
+  }
+
+  /** Swaps the frame art (e.g. to ui-bar-litany-frame-full.png), when that file exists. */
+  setFrameKey(key: string) {
+    if (this.frame && this.frame.texture.key !== key && this.frame.scene.textures.exists(key)) this.frame.setTexture(key);
   }
 
   /** frac 0..1; colour only applies to the drawn (unskinned) fill. */
