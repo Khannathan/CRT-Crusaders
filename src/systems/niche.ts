@@ -15,6 +15,7 @@ import type { CrusaderDef, Rarity, Role } from '../data/types';
 import { newSave } from '../state/save';
 import { autoBattle } from './autoplay';
 import { HUNTS, huntBattle, huntScore, type HuntDef } from './hunts';
+import { simulateField } from './field';
 import { seeded } from './rng';
 
 /** The plain party a Sister joins: one per role slot. */
@@ -42,7 +43,13 @@ export function partyFor(id: string): string[] {
 }
 
 /** Her average damage on the beast, over `seeds` fights at this level and tier. */
-export function huntRun(id: string, hunt: HuntDef, opts: { level?: number; tier?: number; seeds?: number } = {}): number {
+/**
+ * engine 'field' plays each hunt on the open field (systems/field.ts) instead
+ * of turn by turn, to check that kits keep their place there.
+ */
+export type SimEngine = 'turn' | 'field';
+
+export function huntRun(id: string, hunt: HuntDef, opts: { level?: number; tier?: number; seeds?: number; engine?: SimEngine } = {}): number {
   const level = opts.level ?? 20;
   const party = partyFor(id);
   const save = newSave();
@@ -51,7 +58,8 @@ export function huntRun(id: string, hunt: HuntDef, opts: { level?: number; tier?
   const n = opts.seeds ?? 6;
   for (let s = 0; s < n; s++) {
     const b = huntBattle(save, party, hunt, opts.tier ?? tierFor(roleOf(CRUSADERS.find((x) => x.id === id)!)), seeded(1000 + s * 7919));
-    autoBattle(b, 600);
+    if (opts.engine === 'field') simulateField(b, { rng: seeded(77 + s) }, 600);
+    else autoBattle(b, 600);
     total += huntScore(b, hunt);
   }
   return total / n;
@@ -73,7 +81,7 @@ export interface NicheRow {
 }
 
 /** Runs every Sister through every hunt and scales each role against its best SSR. */
-export function nicheTable(opts: { seeds?: number; level?: number; tier?: number; ids?: string[] } = {}): NicheRow[] {
+export function nicheTable(opts: { seeds?: number; level?: number; tier?: number; ids?: string[]; engine?: SimEngine } = {}): NicheRow[] {
   const sisters = CRUSADERS.filter((c) => !opts.ids || opts.ids.includes(c.id));
   const raw = new Map<string, Record<string, number>>();
   for (const c of sisters) raw.set(c.id, Object.fromEntries(HUNTS.map((h) => [h.id, huntRun(c.id, h, opts)])));
