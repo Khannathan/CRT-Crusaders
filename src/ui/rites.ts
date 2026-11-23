@@ -102,8 +102,8 @@ export const RITES: RiteEntry[] = [
   },
   {
     label: 'Bell Tower', scene: 'Tower', icon: 'sanctum', rank: 6, home: 'board', bg: 'bg-tower', boost: 'tower',
-    blurb: 'Sixty floors, each a set fight. Some floors take only one Order.',
-    status: (s) => `Best floor ${towerOf(s).best}${towerOf(s).best ? `  ·  Vigil +${towerOf(s).best}%` : ''}`,
+    blurb: 'An endless climb open to any Sisters, and ten Order Towers that take only a full party of one Order.',
+    status: (s) => `Best floor ${towerOf(s).best}${towerOf(s).best ? `  ·  Vigil +${towerOf(s).best}%` : ''}  ·  Order floors ${Object.values(towerOf(s).orders ?? {}).reduce((a, b) => a + b, 0)}`,
   },
   {
     label: 'Inquisition', scene: 'Inquisition', icon: 'blade', rank: 8, home: 'board', bg: 'bg-confessional',
