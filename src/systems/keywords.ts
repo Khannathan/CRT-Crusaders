@@ -100,6 +100,8 @@ export interface Hymn {
   foes?: Partial<SkillDef>;
   /** Sung by a Candle Choir Sister (only those harmonise). */
   choir: boolean;
+  /** Plays at double strength (Burns at Both Ends). */
+  double?: boolean;
 }
 
 /** The party-wide Order counters in one battle. */

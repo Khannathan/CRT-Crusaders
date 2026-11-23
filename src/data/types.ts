@@ -23,7 +23,9 @@ export type PassiveKind =
   | 'plague'
   | 'martyr'
   | 'swift'
-  | 'riposte';
+  | 'riposte'
+  /** A Sister's own signature from her kit (data/kits.ts); the rules sit in its `sig`. */
+  | 'signature';
 
 /** Every Sister carries one passive; rarer Sisters' are stronger (see data/passives.ts). */
 export interface PassiveDef {

@@ -129,7 +129,16 @@ export interface SkillDef {
    * adding `per`. Guilt is spent from the target, Scars and Stride from the user,
    * Remains and Tide from the party.
    */
-  spend?: { kw: 'guilt' | 'remains' | 'tide' | 'scars' | 'stride'; n?: number; per: { multPct?: number; shieldPct?: number; healPct?: number; zeal?: number; armorPierce?: number } };
+  spend?: {
+    kw: 'guilt' | 'remains' | 'tide' | 'scars' | 'stride';
+    n?: number;
+    /** Needs `n` points: without them the skill can't be used, or becomes `orElse`. */
+    need?: boolean;
+    orElse?: Partial<SkillDef>;
+    /** Added when a full 5 Guilt is spent. */
+    full?: Partial<SkillDef>;
+    per: { multPct?: number; multAdd?: number; shieldPct?: number; healPct?: number; zeal?: number; armorPierce?: number };
+  };
   /** Confesses the target for this many of its turns. */
   confess?: number;
   /** Foretold: the target's Mercy line is this much higher. */
@@ -140,6 +149,61 @@ export interface SkillDef {
   hymn?: { name: string; rounds: number; allies?: Partial<SkillDef>; foes?: Partial<SkillDef> };
   /** The hit can't kill: the foe is left at its Mercy line or 1 HP. */
   cannotKill?: boolean;
+
+  // ---- Sister kits (data/kits.ts) ----
+  /** A single-target hit lands this many times. */
+  hits?: number;
+  /** Every Sister gains this much Zeal for each hit that lands. */
+  zealPerHit?: number;
+  /** When the hit kills: Zeal for the user, party Remains, extra tolls of the Bell. */
+  onKill?: { zeal?: number; remains?: number; toll?: number };
+  /** Grows with the Guilt of the most guilty foe (or the target's, for partyHealPct). */
+  perGuilt?: { shieldPct?: number; empowerPct?: number; partyHealPct?: number };
+  /** Every foe is Weakened by this much per Guilt it carries, for 2 turns. */
+  guiltWeaken?: number;
+  /** Grows with the Tide: `per` for each point, and `then` once the Tide is at least `at`. */
+  byTide?: { per?: { multPct?: number; drain?: number; shieldPct?: number; critPct?: number; regenPct?: number }; at?: number; then?: Partial<SkillDef> };
+  /** +this share of damage for each Stride the user holds (not spent). */
+  perStride?: number;
+  /** +this share of damage for each Scar the user holds (not spent). */
+  perScar?: number;
+  /** Gives each target this much Stride. */
+  giveStride?: number;
+  /** The whole party steps one rank: the front Sister goes to the back. */
+  rotate?: boolean;
+  /** Shields the Sister right behind the user for this share of her max HP. */
+  shieldBehind?: number;
+  /** Takes the target's Empower, Ward, Haste and shield for the party's strongest Sister. */
+  steal?: boolean;
+  /** Heals the most hurt Sister this share of max HP. */
+  mendLowest?: number;
+  /** Each target ally loses this share of max HP (Scars for the Covenant). */
+  hurtAllies?: number;
+  /** Summoned foes arrive Delayed for the rest of the fight. */
+  lockSummons?: boolean;
+  /** Summoned foes lose this many turns. */
+  stunSummons?: number;
+  /** Spends up to this many Remains: one hit at a random foe for each. */
+  volley?: number;
+  /** Group skills only land on these ranks. */
+  onlyRanks?: number[];
+  /** Puts every Sister on Overwatch with this reaction. */
+  overwatchAll?: SkillDef;
+  /** The Bell rings up to its next Peal at once. */
+  pealNow?: boolean;
+  /** The target's kind takes +5% damage from the party for the rest of the fight. */
+  catalogue?: boolean;
+  /** Pushes the fastest foe's turn to the end. */
+  delayFastest?: boolean;
+  /** Burn ticks on the target add 1 Guilt each. */
+  burnGuilt?: boolean;
+  /** A Mercy line of at least this for this skill's hits. */
+  mercyLine?: number;
+  /** Extra effects on targets that meet the condition. */
+  cond?: { if: 'confessed' | 'underHalf' | 'burning' | 'accused' | 'boss' | 'overwatch' | 'hymn'; then: Partial<SkillDef> };
+  /** Effects laid on every living foe, or every living Sister, as well. */
+  alsoFoes?: Partial<SkillDef>;
+  alsoAllies?: Partial<SkillDef>;
 }
 
 const any: number[] = [];
