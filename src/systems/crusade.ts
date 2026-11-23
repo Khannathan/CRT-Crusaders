@@ -498,8 +498,13 @@ const bossRecommended = (save: SaveData, crypt: CryptDef, heresy: number) => {
 export const cryptRecommended = (save: SaveData, crypt: CryptDef, heresy = 0) => {
   const upTo = CRYPTS.indexOf(crypt);
   const chain = upTo >= 0 ? CRYPTS.slice(0, upTo + 1) : [crypt];
-  return Math.max(...chain.map((c) => bossRecommended(save, c, heresy)));
+  const rec = Math.max(...chain.map((c) => bossRecommended(save, c, heresy)));
+  // The very first crypt (Normal) is the door in: a fresh first 10-pull party should read as ready.
+  return crypt === CRYPTS[0] && heresy === 0 ? Math.round((rec * FIRST_CRYPT_REC) / 100) * 100 : rec;
 };
+
+/** The first crypt at Normal asks for this share of its boss's power. */
+export const FIRST_CRYPT_REC = 0.8;
 
 /** The node being played, if it is not finished yet. */
 export function currentNode(run: RunState): MapNode | undefined {

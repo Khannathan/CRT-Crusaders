@@ -42,6 +42,8 @@ export interface FloorDef {
   /** Enemy HP and attack multiplier. */
   scale: number;
   boss: boolean;
+  /** Every third floor (not a boss): a tougher elite fight. */
+  elite?: boolean;
   rule: FloorRule;
 }
 
@@ -62,7 +64,7 @@ export function floorDef(floor: number): FloorDef {
   if (!boss && floor % 10 === 8) rule = { kind: 'humble' };
   // Gentler under an Order lock: the player's pool is narrower.
   const scale = towerScale(floor) * (rule?.kind === 'order' ? 0.85 : 1);
-  return { floor, encounter, scale, boss, rule };
+  return { floor, encounter, scale, boss, elite: !boss && floor % 3 === 0, rule };
 }
 
 export const ruleText = (r: FloorRule) => (!r ? '' : r.kind === 'order' ? `Only Sisters of the ${r.order}` : 'Only R and SR Sisters');
@@ -146,7 +148,7 @@ export function orderFloorDef(order: string, floor: number): FloorDef {
   const k = Math.max(0, ORDER_LIST.findIndex((o) => o.name === order)) + 1;
   const boss = floor % 10 === 0;
   const encounter = boss ? ((floor / 10 + k) % 2 ? 'choir' : 'abbess') : floor % 3 === 0 ? ELITES[(floor / 3 + k) % ELITES.length] : POOL[(floor * 7 + k * 3) % POOL.length];
-  return { floor, encounter, scale: towerScale(floor) * ORDER_TOWER_EASE, boss, rule: { kind: 'order', order } };
+  return { floor, encounter, scale: towerScale(floor) * ORDER_TOWER_EASE, boss, elite: !boss && floor % 3 === 0, rule: { kind: 'order', order } };
 }
 
 /** First-clear spoils: Order Writs for the Codex all the way up, more on bells and bosses. */

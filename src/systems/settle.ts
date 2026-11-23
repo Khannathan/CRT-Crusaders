@@ -2,7 +2,9 @@ import { commit, game } from '../state/game';
 import { current } from '../state/run';
 import { bondBattle } from './bonds';
 import type { Battle } from './combat';
-import { absorbBattle, finishRun, winRoom } from './crusade';
+import { absorbBattle, currentNode, finishRun, makeBattle, winRoom } from './crusade';
+import { autoBattle } from './autoplay';
+import { newSeed, seeded } from './rng';
 import { expBattle } from './exp';
 
 /** Where a finished fight leads, and its closing line. */
@@ -43,4 +45,17 @@ export function settleBattle(battle: Battle, outcome: 'victory' | 'defeat'): Set
   current.run = undefined;
   commit();
   return { scene: 'Results', data: { result }, won, line };
+}
+
+/**
+ * A crypt fight cut off by a reload (the app closed mid-fight) plays out on
+ * Auto, as if skipped to its end, and is paid out like any other.
+ */
+export function playOutStoredFight(): Settled | undefined {
+  const run = current.run;
+  const node = run && currentNode(run);
+  if (!run || !node?.encounter || current.challenge) return undefined;
+  const battle = makeBattle(game.save, run, node.encounter, seeded(newSeed()));
+  const outcome = autoBattle(battle) === 'victory' ? 'victory' : 'defeat';
+  return settleBattle(battle, outcome);
 }

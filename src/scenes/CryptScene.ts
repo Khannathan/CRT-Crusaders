@@ -260,6 +260,7 @@ export class CryptScene extends Phaser.Scene {
     const run = current.run!;
     if (this.selected === undefined) return;
     const node = enterNode(run, this.selected);
+    commit(); // a reload from here on knows which room was entered
     if (node.kind === 'shrine') {
       shrine(game.save, run);
       commit();

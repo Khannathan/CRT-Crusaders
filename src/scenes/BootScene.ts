@@ -1,6 +1,8 @@
 import { current } from '../state/run';
 import { storedRun } from '../state/game';
 import { restoreRun } from '../systems/crusade';
+import { playOutStoredFight } from '../systems/settle';
+import { announceSettled } from '../ui/bgFight';
 import Phaser from 'phaser';
 import { FONT, GAME_H, GAME_W, PAL, hex } from '../config';
 import { CRUSADERS } from '../data/crusaders';
@@ -104,7 +106,10 @@ export class BootScene extends Phaser.Scene {
     makeSigilTextures(this, ORDER_LIST);
     // A crypt run cut short by a reload picks up where it was.
     if (!current.run) current.run = restoreRun(storedRun());
+    // A fight that was under way plays out to its end, as if skipped.
+    const settled = playOutStoredFight();
     this.scene.start('Sanctum');
+    if (settled) window.setTimeout(() => announceSettled(settled), 900);
   }
 
   /**

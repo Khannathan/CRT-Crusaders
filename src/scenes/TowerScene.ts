@@ -149,6 +149,7 @@ export class TowerScene extends Phaser.Scene {
     addFrame(this, GAME_W / 2, y + h / 2, bw, h, { fill: f.boss ? 0x2a1520 : 0x1e1520, edge: f.boss ? 0xe58a8a : PAL.goldEdge });
     this.add.text(PAD + 18, y + 16, `FLOOR ${f.floor}`, text.display(26, 0xfff1d6));
     if (f.boss) this.add.text(GAME_W - PAD - 18, y + 22, 'BOSS', text.hud(14, 0xe58a8a)).setOrigin(1, 0);
+    else if (f.elite) this.add.text(GAME_W - PAD - 18, y + 22, 'ELITE', text.hud(14, 0xe5a86a)).setOrigin(1, 0);
     this.add.text(PAD + 18, y + 56, foesOf(f), { ...text.body(17, PAL.ivory), wordWrap: { width: bw - 36 } });
     this.add.text(PAD + 18, y + 84, `Foes at ${Math.round(f.scale * 100)}% strength`, text.body(15, PAL.muted));
     drawRecommended(this, GAME_W - PAD - 18, y + 88, rec, power, { align: 'right' });
@@ -165,8 +166,9 @@ export class TowerScene extends Phaser.Scene {
     for (let n = f.floor + 1; n <= last; n++) {
       const { def: g, reward: r, rec: rp } = above(n);
       this.add.rectangle(GAME_W / 2, y + 27, bw, 54, 0x18111a).setStrokeStyle(1, g.boss ? 0x7a3a44 : PAL.armorShadow);
-      this.add.text(PAD + 12, y + 8, `${n}`, text.hud(14, g.boss ? 0xe58a8a : PAL.steel));
-      fitLine(this.add.text(PAD + 52, y + 6, g.boss ? `Boss: ${foesOf(g).split(',')[0]}` : foesOf(g), text.body(15, PAL.muted)), bw - 70);
+      this.add.text(PAD + 12, y + 8, `${n}`, text.hud(14, g.boss ? 0xe58a8a : g.elite ? 0xe5a86a : PAL.steel));
+      if (g.elite) this.add.text(GAME_W - PAD - 12, y + 10, 'ELITE', text.hud(11, 0xe5a86a)).setOrigin(1, 0);
+      fitLine(this.add.text(PAD + 52, y + 6, g.boss ? `Boss: ${foesOf(g).split(',')[0]}` : foesOf(g), text.body(15, PAL.muted)), g.elite ? bw - 130 : bw - 70);
       const special = g.rule && g.rule.kind !== 'order';
       fitLine(this.add.text(PAD + 52, y + 28, special ? ruleText(g.rule) : rewardLine(r, g.rule?.kind === 'order'), text.body(14, special ? 0xe5a86a : PAL.steel)), bw - 140);
       this.add.text(GAME_W - PAD - 12, y + 32, `REC ${formatPower(rp)}`, text.hud(11, PAL.steel)).setOrigin(1, 0);
