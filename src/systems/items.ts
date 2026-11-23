@@ -6,7 +6,7 @@ import type { Rng } from './gacha';
  * family feeds one growth system, so a player can tell at a glance what a drop
  * is for. Five of a tier refine into one of the next.
  */
-export type Family = 'ash' | 'page' | 'iron' | 'incense' | 'writ' | 'unction' | 'grace';
+export type Family = 'ash' | 'page' | 'iron' | 'incense' | 'writ' | 'unction' | 'grace' | 'armory';
 export type Tier = 1 | 2 | 3;
 export type ItemId = `${Family}${Tier}`;
 export type Bag = Partial<Record<ItemId, number>>;
@@ -27,6 +27,7 @@ export const FAMILIES: FamilyDef[] = [
   { id: 'writ', name: 'Order Writs', use: 'Order Codex levels', color: 0xd36a5c },
   { id: 'grace', name: 'Grace', use: 'Holy Symbols: wake and raise a Sister\'s own relic', color: 0xf0d27a },
   { id: 'unction', name: 'Unction', use: 'Sister EXP: fed on her Grow tab', color: 0x7fc4a0 },
+  { id: 'armory', name: "The Saints' Armory", use: 'UR gear: forge it, or pull for it', color: 0xe19cc4 },
 ];
 
 export interface ItemDef {
@@ -62,7 +63,13 @@ export const ITEMS: ItemDef[] = [
   def('unction', 1, 'Lesser Unction', 'Oil for the sick. 300 EXP.'),
   def('unction', 2, 'Blessed Unction', 'Oil for the dying. 1,500 EXP.'),
   def('unction', 3, 'Extreme Unction', 'Oil for the last rites. She wakes stronger. 7,500 EXP.'),
+  def('armory', 1, "Saint's Fragment", 'A splinter of a saint\'s own arms. Sixty of them forge a UR piece.'),
+  def('armory', 2, 'Armory Writ', 'One pull at the Saints\' Armory, the UR gear banner.'),
+  def('armory', 3, 'Reliquary Mould', 'Pour any UR piece you like: choose its slot and set.'),
 ];
+
+/** Families that never refine into their next tier. */
+export const NO_REFINE: Family[] = ['armory'];
 
 export const itemDef = (id: ItemId) => ITEMS.find((i) => i.id === id)!;
 export const familyDef = (f: Family) => FAMILIES.find((x) => x.id === f)!;
@@ -107,7 +114,7 @@ export const REFINE = 5;
 
 export function refine(save: SaveData, id: ItemId, times = 1): boolean {
   const d = itemDef(id);
-  if (d.tier === 3 || times < 1) return false;
+  if (d.tier === 3 || times < 1 || NO_REFINE.includes(d.family)) return false;
   if (!spend(save, { [id]: REFINE * times })) return false;
   give(save, { [`${d.family}${d.tier + 1}` as ItemId]: times });
   return true;
@@ -145,6 +152,8 @@ export function roomDrops(kind: 'fight' | 'elite' | 'boss', depth: number, rng: 
     add('grace1', 2 + depth);
     if (depth >= 2) add('grace2', 1 + Math.floor((depth - 2) / 2));
     if (depth >= 5) add('grace3', 1);
+    // Saint's Fragments toward a forged UR piece of gear.
+    add('armory1', 2 + depth);
   }
   return bag;
 }

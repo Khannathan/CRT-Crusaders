@@ -87,6 +87,8 @@ export interface Unit {
   dmg?: DmgType;
   spd: number;
   crit: number;
+  /** Extra critical damage on top of CRIT_MULT (gear). */
+  critDmg?: number;
   status: Status;
   boss?: boolean;
   passive?: PassiveDef;
@@ -950,7 +952,7 @@ export class Battle {
     if (skill.execute && t.hp < t.maxHp * EXECUTE_AT) raw *= 1 + skill.execute;
     if (actor.passive?.kind === 'executioner' && t.hp < t.maxHp / 2) raw *= 1 + (actor.passive.value ?? 0);
     const crit = (t.status.accused && actor.passive?.kind === 'critOnAccused') || this.rng() < critOf(actor, skill);
-    if (crit) raw *= CRIT_MULT;
+    if (crit) raw *= CRIT_MULT + (actor.critDmg ?? 0);
     let dmg = Math.max(1, Math.round(damageAfterArmor(raw, defenceAgainst(t, dmgOf(actor, skill)) * (1 - (skill.armorPierce ?? 0))) * this.vary() * this.guardOf(t)));
     let blocked = 0;
     if (t.status.shield && !skill.pierceShield) {
@@ -1041,7 +1043,7 @@ export class Battle {
       if (skill.execute && t.hp < t.maxHp * EXECUTE_AT) raw *= 1 + skill.execute;
       if (actor.passive?.kind === 'executioner' && t.hp < t.maxHp / 2) raw *= 1 + (actor.passive.value ?? 0);
       const critChance = t.status.accused && actor.passive?.kind === 'critOnAccused' ? 1 : Math.min(1, critOf(actor, skill));
-      raw *= 1 + critChance * (CRIT_MULT - 1);
+      raw *= 1 + critChance * (CRIT_MULT - 1 + (actor.critDmg ?? 0));
       total += damageAfterArmor(raw, defenceAgainst(t, dmgOf(actor, skill)) * (1 - (skill.armorPierce ?? 0))) * this.guardOf(t);
     }
     if (skill.detonate && t.status.poison) total += t.status.poison.dmg * t.status.poison.turns * skill.detonate * this.detonateOf(actor);

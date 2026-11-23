@@ -150,6 +150,11 @@ const FAMILY_SOURCES: Record<string, Record<1 | 2 | 3, Source[]>> = {
     2: [WEEKLY, CRYPT_ELITE, ALMONRY, REFINE('Myrrh')],
     3: [CRYPT_BOSS, REFINE('Frankincense')],
   },
+  armory: {
+    1: [{ text: 'Crusades: every boss, more at higher Heresy', scene: 'Crusade' }, { text: 'Bell Tower: boss floors', scene: 'Tower' }, { text: 'Relic Trials: tier 3 and up', scene: 'Trials' }, { text: "The Saints' Armory: one with every pull", scene: 'Armory' }, { text: 'Melt SSR and UR gear', scene: 'Roster' }, INQ, ALMONRY],
+    2: [{ text: 'Feast stall', scene: 'Feast' }, { text: 'Shop: Gilt counter', scene: 'Shop', data: { counter: 'gilt' } }, ALMONRY, { text: 'Bonds: levels 15 and 25', scene: 'Roster' }, { text: 'Bell Tower: every 50th floor', scene: 'Tower' }, INQ, { text: "The Saints' Armory: 10 free the first time", scene: 'Armory' }],
+    3: [{ text: 'Bonds: level 30', scene: 'Roster' }],
+  },
   writ: {
     1: [{ text: 'Bell Tower: every fifth floor', scene: 'Tower' }, { text: 'Crusades: bosses', scene: 'Crusade' }, WEEKLY, TITHE_SHOP],
     2: [{ text: 'Bell Tower: boss floors', scene: 'Tower' }, INQ, WEEKLY, ALMONRY, REFINE('Writs of Passage')],
@@ -157,7 +162,7 @@ const FAMILY_SOURCES: Record<string, Record<1 | 2 | 3, Source[]>> = {
   },
 };
 
-const isItem = (id: ResourceId): id is ItemId => /^(ash|page|iron|incense|writ|unction|grace)[123]$/.test(id);
+const isItem = (id: ResourceId): id is ItemId => /^(ash|page|iron|incense|writ|unction|grace|armory)[123]$/.test(id);
 
 export function resourceInfo(id: ResourceId): ResourceInfo {
   if (!isItem(id)) return CURRENCIES[id];

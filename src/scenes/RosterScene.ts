@@ -821,7 +821,7 @@ export class RosterScene extends Phaser.Scene {
     return y + 16;
   }
 
-  /** Her three slots, the Forge, and Auto-equip best; returns where they end. */
+  /** Her five slots, the Forge, Auto-equip best and the Saints' Armory; returns where they end. */
   private gearTab(layer: Phaser.GameObjects.Container, c: CrusaderDef, y0: number): number {
     const save = game.save;
     const worn = equipped(save, c.id);
@@ -870,14 +870,16 @@ export class RosterScene extends Phaser.Scene {
       .map((x) => `${x.set.name} ×${x.count}`);
     const y = y0 + 110 + GEAR_SLOTS.length * 122 - 50;
     const t = this.add
-      .text(GAME_W / 2, y, parts.length ? `Gear: ${parts.join('  ')}${sets.length ? `\nSets: ${sets.join(', ')}` : ''}` : 'Crusades yield gear. Elites and bosses always do.', {
+      .text(GAME_W / 2, y, parts.length ? `Gear: ${parts.join('  ')}${sets.length ? `\nSets: ${sets.join(', ')}` : ''}` : 'Crusades yield gear up to SSR. Elites and bosses always do. UR gear comes from the Saints\' Armory.', {
         ...text.body(15, parts.length ? PAL.amber : PAL.muted),
         align: 'center',
         wordWrap: { width: GAME_W - 70 },
       })
       .setOrigin(0.5, 0);
     layer.add(t);
-    return y + t.height + 16;
+    const ar = makeButton(this, GAME_W / 2, y + t.height + 44, bw, 48, "The Saints' Armory: UR gear", () => this.scene.start('Armory', { back: 'Roster' }), { fontSize: 16, icon: 'shield' });
+    layer.add(ar.all);
+    return y + t.height + 84;
   }
 
   /** The Forge: enhance a piece (Blessed Iron past +10), reroll its substats, read its set. */
@@ -906,7 +908,7 @@ export class RosterScene extends Phaser.Scene {
     const set = gearSet(item.set);
     section(
       'SET',
-      set ? `${set.name}. Wear two or three ${set.name} pieces.\n${setText(set)}` : 'None. Pieces found from now on belong to a set.',
+      set ? `${set.name}. Wear two or four ${set.name} pieces.\n${setText(set)}` : 'None. Pieces found from now on belong to a set.',
       set ? set.color : PAL.muted,
     );
 

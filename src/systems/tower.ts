@@ -9,7 +9,7 @@ import { BELFRY, OSSUARY, skirmish } from './crusade';
 import type { Rng } from './gacha';
 import { claimGear, makeGear, rollGearRarity, type GearItem } from './gear';
 import { recommendedPower } from './power';
-import { bagText, floorDrops, give, type Bag } from './items';
+import { addBags, bagText, floorDrops, give, type Bag } from './items';
 import { track } from './tasks';
 import { addStigmata } from './tiers';
 
@@ -79,7 +79,7 @@ export interface FloorReward {
 
 export function floorReward(floor: number): FloorReward {
   const boss = floor % 10 === 0;
-  return { tithes: 60 + 15 * floor, seals: boss ? 3 : floor % 5 === 0 ? 1 : 0, gear: boss ? 'SSR' : floor % 5 === 0 ? 'SR' : undefined, items: floorDrops(floor), gilt: boss ? 30 + floor : 0, stigmata: boss ? 1 + Math.floor(floor / 30) : 0 };
+  return { tithes: 60 + 15 * floor, seals: boss ? 3 : floor % 5 === 0 ? 1 : 0, gear: boss ? 'SSR' : floor % 5 === 0 ? 'SR' : undefined, items: boss ? addBags(floorDrops(floor), { armory1: 5 + Math.floor(floor / 10) }, floor % 50 === 0 ? { armory2: 2 } : {}) : floorDrops(floor), gilt: boss ? 30 + floor : 0, stigmata: boss ? 1 + Math.floor(floor / 30) : 0 };
 }
 
 export const rewardLine = (r: FloorReward, withItems = true) =>

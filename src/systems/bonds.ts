@@ -85,10 +85,10 @@ export const BOND_REWARDS: Record<number, BondReward> = {
   8: { items: { unction2: 4 }, offerings: { myrrh: 1 } },
   9: { seals: 3, tithes: 3000 },
   10: { seals: 5, gilt: 30, title: true },
-  15: { seals: 5, gilt: 30, offerings: { thorn: 1 } },
+  15: { seals: 5, gilt: 30, items: { armory2: 2 }, offerings: { thorn: 1 } },
   20: { seals: 8, gilt: 50, items: { unction3: 2 } },
-  25: { seals: 10, gilt: 60, offerings: { tear: 1 } },
-  30: { seals: 15, gilt: 100, offerings: { nail: 1 } },
+  25: { seals: 10, gilt: 60, items: { armory2: 3 }, offerings: { tear: 1 } },
+  30: { seals: 15, gilt: 100, items: { armory3: 1 }, offerings: { nail: 1 } },
 };
 
 export const bondsOf = (save: SaveData) => (save.bonds ??= {});

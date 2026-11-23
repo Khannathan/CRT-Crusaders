@@ -26,6 +26,8 @@ export const TRIALS: TrialDef[] = [
   { kind: 'blade', name: 'Trial of the Blade', flavor: 'The armory of the fallen. Their swords still want hands.', days: [1] },
   { kind: 'habit', name: 'Trial of the Habit', flavor: 'Burial shrouds that turned aside a heretic blade.', days: [2] },
   { kind: 'rosary', name: 'Trial of the Rosary', flavor: 'Prayer beads strung on the fingerbones of saints.', days: [3] },
+  { kind: 'veil', name: 'Trial of the Veil', flavor: 'A cloister of veiled statues. Lift one and something lifts back.', days: [2, 4] },
+  { kind: 'sabatons', name: 'Trial of the Road', flavor: 'The pilgrim road, paved with the boots of the faithful who fell on it.', days: [3, 5] },
   { kind: 'tithes', name: 'Trial of the Coffer', flavor: 'A tithe-barn the dead still guard.', days: [4] },
   { kind: 'seals', name: 'Trial of Wax', flavor: 'The sealing-chamber. Every seal is paid for in blood.', days: [5] },
   { kind: 'ash', name: 'Trial of Ash', flavor: 'The pyre-yard, where the martyrs were burned. Their ash remembers.', days: [1, 4] },
@@ -118,7 +120,7 @@ export function spoilsPreview(kind: TrialKind, tier: number) {
   if (kind === 'ash' || kind === 'page') return bagText(materialSpoils(kind, tier));
   if (kind === 'tithes') return `${300 * (tier + 1)} Tithes`;
   if (kind === 'seals') return `${[1, 1, 2, 2, 3][tier]} Seal${tier > 1 ? 's' : ''} + ${60 * (tier + 1)} Tithes`;
-  return `${tier >= 2 ? 2 : 1} ${kind} gear, rarer at higher tiers`;
+  return `${tier >= 2 ? 2 : 1} ${kind} gear, rarer at higher tiers${tier >= 3 ? ` + ${tier - 2} Saint's Fragment` : ''}`;
 }
 
 function pay(save: SaveData, kind: TrialKind, tier: number, rng: Rng): TrialSpoils {
@@ -135,6 +137,8 @@ function pay(save: SaveData, kind: TrialKind, tier: number, rng: Rng): TrialSpoi
     const before = save.gear?.length ?? 0;
     claimGear(save, pieces);
     out.gear = (save.gear ?? []).slice(before);
+    // The two hardest tiers leave a Saint's Fragment, toward UR gear.
+    if (tier >= 3) give(save, (out.items = { armory1: tier - 2 }));
   }
   save.tithes += out.tithes;
   save.seals += out.seals;

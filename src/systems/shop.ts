@@ -54,7 +54,8 @@ export const GILT_OFFERS: Offer[] = [
   { id: 'g-page', name: 'Psalter crate', price: 120, currency: 'gilt', goods: { items: { page2: 5 } }, limit: 2 },
   { id: 'g-iron', name: 'Blessed Iron crate', price: 120, currency: 'gilt', goods: { items: { iron2: 5 } }, limit: 2 },
   { id: 'g-unction', name: 'Unction crate', price: 100, currency: 'gilt', goods: { items: { unction2: 5 } }, limit: 2 },
-  { id: 'g-ssr', name: 'SSR+ gear', price: 300, currency: 'gilt', goods: { gear: 'SSR' }, limit: 1 },
+  { id: 'g-ssr', name: 'SSR gear', price: 300, currency: 'gilt', goods: { gear: 'SSR' }, limit: 1 },
+  { id: 'g-writ', name: '1 Armory Writ', price: 60, currency: 'gilt', goods: { items: { armory2: 1 } }, limit: 3 },
 ];
 
 export const TITHE_OFFERS: Offer[] = [
@@ -80,7 +81,9 @@ export const ALMONRY_POOL: Offer[] = [
   { id: 'a-page3', name: '1 Illuminated Folio', price: 120, currency: 'alms', goods: { items: { page3: 1 } }, limit: 1 },
   { id: 'a-iron3', name: '1 Reliquary Steel', price: 120, currency: 'alms', goods: { items: { iron3: 1 } }, limit: 1 },
   { id: 'a-unction3', name: '1 Extreme Unction', price: 90, currency: 'alms', goods: { items: { unction3: 1 } }, limit: 1 },
-  { id: 'a-ssr', name: 'SSR+ gear', price: 150, currency: 'alms', goods: { gear: 'SSR' }, limit: 1 },
+  { id: 'a-writ', name: '2 Armory Writs', price: 140, currency: 'alms', goods: { items: { armory2: 2 } }, limit: 1 },
+  { id: 'a-frag', name: "10 Saint's Fragments", price: 90, currency: 'alms', goods: { items: { armory1: 10 } }, limit: 1 },
+  { id: 'a-ssr', name: 'SSR gear', price: 150, currency: 'alms', goods: { gear: 'SSR' }, limit: 1 },
   { id: 'a-vow', name: 'Vow token of your choice', price: 400, currency: 'alms', goods: { vowToken: true }, limit: 1 },
   { id: 'a-seal', name: '2 Wax Seals', price: 160, currency: 'alms', goods: { seals: 2 }, limit: 1 },
   { id: 'a-stigmata', name: '2 Stigmata', price: 220, currency: 'alms', goods: { stigmata: 2 }, limit: 1 },
@@ -183,7 +186,7 @@ export function buy(save: SaveData, o: Offer, opts: { sister?: string; rng?: Rng
   if (g.gear) {
     const rng = opts.rng ?? Math.random;
     const r = rollGearRarity(rng, g.gear === 'SSR' ? 0.2 : 0.08);
-    const rarity: Rarity = g.gear === 'SSR' ? (r === 'UR' ? 'UR' : 'SSR') : r === 'R' ? 'SR' : r;
+    const rarity: Rarity = g.gear === 'SSR' ? 'SSR' : r === 'R' ? 'SR' : r;
     const before = save.gear?.length ?? 0;
     claimGear(save, [makeGear(rng, rarity)]);
     if ((save.gear?.length ?? 0) > before) out.gear = save.gear![save.gear!.length - 1];

@@ -30,7 +30,7 @@ export function drawStars(scene: Phaser.Scene, x: number, y: number, stars: numb
   for (let i = 0; i < 3; i++) scene.add.star(x + i * (size * 2 + 4), y, 5, size * 0.45, size, i < stars ? PAL.amber : 0x3a2e35);
 }
 
-const TRIAL_LABEL: Record<TrialKind, string> = { blade: 'Blade', habit: 'Habit', rosary: 'Rosary', tithes: 'Tithes', seals: 'Seals', ash: 'Ash', page: 'Psalter' };
+const TRIAL_LABEL: Record<TrialKind, string> = { blade: 'Blade', habit: 'Habit', veil: 'Veil', sabatons: 'Sabatons', rosary: 'Rosary', tithes: 'Tithes', seals: 'Seals', ash: 'Ash', page: 'Psalter' };
 
 /** Relic Trials: today's spoil, five tiers, Fight or Sweep. */
 export class TrialsScene extends Phaser.Scene {
