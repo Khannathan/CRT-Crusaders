@@ -19,10 +19,10 @@ import { seeded } from './rng';
 
 /** The plain party a Sister joins: one per role slot. */
 export const FILLER: Record<'tank' | 'healer' | 'dps' | 'flex', string> = {
-  tank: 'CC-W052', // Seraphine Ashcombe, R Hierophant
-  healer: 'CC-W151', // Solenne Veyr, R Confessor
-  dps: 'CC-W013', // Aveline Valecourt, R War-Sister
-  flex: 'CC-W171', // Vivienne Veyr, R Veilblade
+  tank: 'CC-W052', // Aquilia Lepida, R Hierophant
+  healer: 'CC-W151', // Antonia Libo, R Confessor
+  dps: 'CC-W013', // Decima Cursor, R War-Sister
+  flex: 'CC-W171', // Lollia Casca, R Veilblade
 };
 
 /** Which filler she replaces. */
