@@ -10,6 +10,7 @@ import { BOOSTED_SSRS, COST_ONE, COST_TEN, PITY_LIMIT, RARITY_ORDER, RATES, bann
 import { GRADUATE_AFTER, graduationDate, isStandard, limitedUnseen, limitedWindow, markLimitedSeen, timeLeft, upcoming, type LimitedWindow } from '../systems/limited';
 import { makeButton } from '../ui/button';
 import { CURRENCY_BAR_H, addCurrencyBar } from '../ui/currencyBar';
+import { addGroupStrip } from '../ui/nav';
 import { addSplash, loadSplash, portraitKey, queueSplash, splashKey } from '../ui/placeholderPortrait';
 import { SisterSprite, fullKey } from '../ui/sisterSprite';
 import type { CrusaderDef } from '../data/types';
@@ -39,9 +40,8 @@ export class RecruitScene extends Phaser.Scene {
     addCurrencyBar(this);
     const s = game.save;
     // A compact header (the banner's name) leaves the banner room for her splash and the Sisters.
-    makeButton(this, GAME_W - PAD - 44, CURRENCY_BAR_H + 28, 88, 40, 'Back', () => this.scene.start('Altar'), { fontSize: 16 });
-    makeButton(this, GAME_W - PAD - 96 - 58, CURRENCY_BAR_H + 28, 108, 40, 'Record', () => this.scene.start('PullHistory'), { fontSize: 15, icon: 'book' });
-    const top = CURRENCY_BAR_H + 50;
+    // The Altar's sub-tabs (Sisters, Gear, Hounds, Record) sit where the title was.
+    const top = addGroupStrip(this, CURRENCY_BAR_H + 4) - 8;
 
     // Banner pages: the Limited Saint first, then one per Order. ‹ › step through them.
     const banner = this.currentBanner();
@@ -53,13 +53,13 @@ export class RecruitScene extends Phaser.Scene {
     }
     const ord = ORDERS[banner.order];
     const bw = GAME_W - PAD * 2;
-    const bh = 490;
+    const bh = 444;
     const by = top + 4 + bh / 2;
     const bTop = by - bh / 2;
     const edge = limited ? RARITY_COLOR.UR : ord.color;
     const target = CRUSADERS.find((c) => c.id === banner.target)!;
     const ssrs = boostedSSRs(s);
-    this.add.text(PAD + 4, CURRENCY_BAR_H + 28, limited ? `${win.saint.name.split(' ')[0].toUpperCase()}'S VIGIL` : 'YOUR CALLING', text.display(22, PAL.amber)).setOrigin(0, 0.5);
+    this.add.text(PAD + 16, bTop + 22, limited ? `${win.saint.name.split(' ')[0].toUpperCase()}'S VIGIL` : 'YOUR CALLING', text.display(22, PAL.amber)).setOrigin(0, 0.5).setDepth(3).setShadow(0, 2, '#000000', 6, false, true);
     // Her splash fills the upper part of the banner; the Sisters stand on the floor below it, never over her.
     const splashH = bh - 206;
     const splashY = bTop + splashH / 2;

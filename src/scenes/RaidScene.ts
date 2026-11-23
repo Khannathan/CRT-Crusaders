@@ -45,7 +45,7 @@ export class RaidScene extends Phaser.Scene {
   create() {
     const save = game.save;
     const r = raidOf(save);
-    const { top } = modeScreen(this, 'Nightmare Raid', 'Three bosses. Three Squads. Its wounds carry.', 'Modes', 'bg-abyssal-ossuary');
+    const { top } = modeScreen(this, 'Nightmare Raid', 'Three bosses. Three Squads. Its wounds carry.', undefined, 'bg-abyssal-ossuary');
     const bw = GAME_W - PAD * 2;
     const d = r.delve;
     this.add.text(PAD, top, d ? `DELVING · BOSS ${d.boss + 1} OF ${RAID_BOSSES}` : r.used ? 'TODAY\'S DELVE IS DONE' : 'ONE DELVE TODAY', text.hud(14, PAL.amber));

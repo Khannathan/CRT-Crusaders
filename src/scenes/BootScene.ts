@@ -5,7 +5,8 @@ import { playOutStoredFight } from '../systems/settle';
 import { announceSettled } from '../ui/bgFight';
 import { catchUpMarch } from '../ui/marchUi';
 import Phaser from 'phaser';
-import { FONT, GAME_H, GAME_W, PAL, hex } from '../config';
+import { TITLE_LINES, drawTitle, wickBar } from './TitleScene';
+
 import { CRUSADERS } from '../data/crusaders';
 import { makeEffectTextures } from '../ui/effects';
 import { ENEMIES } from '../data/enemies';
@@ -46,19 +47,33 @@ const UI_URLS = import.meta.glob<string>('../assets/ui/*.{png,webp}', { eager: t
  * real-time fights; the rest keep the motion built from their still figure.
  */
 const ANIM_URLS = import.meta.glob<string>('../assets/anim/*.png', { eager: true, query: '?url', import: 'default' });
+/** Loaded before everything else: the opening screen's logo and art. */
+const TITLE_FIRST = ['logo', 'title-keyart', 'bg-hall'];
 const fileKey = (path: string) => path.split('/').pop()!.replace(/\.(png|webp)$/, '');
 
 /** Loads every portrait it can find; anything missing gets a placeholder. */
 export class BootScene extends Phaser.Scene {
+  private line = '';
+
   constructor() {
     super('Boot');
   }
 
   preload() {
-    const label = this.add
-      .text(GAME_W / 2, GAME_H / 2, 'Lighting the candles...', { fontFamily: FONT, fontSize: '24px', color: hex(PAL.ivory) })
-      .setOrigin(0.5);
-    this.load.on('progress', (p: number) => label.setText(`Lighting the candles... ${Math.round(p * 100)}%`));
+    // The opening screen draws itself as its own art arrives, and the wick burns with the load.
+    this.line = TITLE_LINES[Math.floor(Math.random() * TITLE_LINES.length)];
+    const title = drawTitle(this, this.line);
+    const bar = wickBar(this, title.bandY);
+    this.load.on('progress', (p: number) => bar.set(p));
+    this.load.once('filecomplete-image-logo', () => title.logo());
+    this.load.on('filecomplete', (key: string) => {
+      if (key === 'title-keyart' || (key === 'bg-hall' && !this.textures.exists('title-keyart'))) title.art();
+    });
+    // the title's own art first, so it shows while the rest loads
+    for (const key of TITLE_FIRST) {
+      const url = UI_URLS[`../assets/ui/${key}.png`] ?? UI_URLS[`../assets/ui/${key}.webp`];
+      if (url) this.load.image(key, url);
+    }
     for (const c of CRUSADERS) {
       const url = portraitUrl(c.id);
       if (url) this.load.image(portraitKey(c.id), url);
@@ -82,7 +97,7 @@ export class BootScene extends Phaser.Scene {
     for (const [path, url] of Object.entries(UI_URLS)) {
       if (path.endsWith('.png') || !ui.has(fileKey(path))) ui.set(fileKey(path), url); // .png wins
     }
-    for (const [key, url] of ui) this.load.image(key, url);
+    for (const [key, url] of ui) if (!TITLE_FIRST.includes(key)) this.load.image(key, url);
     for (const [path, url] of Object.entries(ANIM_URLS)) {
       const m = /([^/]+)_([a-z]+)\.png$/.exec(path);
       if (m) this.load.spritesheet(animKey(m[1], m[2] as AnimName), url, { frameWidth: 128, frameHeight: 192 });
@@ -111,7 +126,8 @@ export class BootScene extends Phaser.Scene {
     const settled = playOutStoredFight();
     // The Vigil's march catches up the time the game was closed.
     catchUpMarch();
-    this.scene.start('Sanctum');
+    // The title waits for a tap (which also wakes the music on phones).
+    this.scene.start('Title', { line: this.line });
     if (settled) window.setTimeout(() => announceSettled(settled), 900);
   }
 

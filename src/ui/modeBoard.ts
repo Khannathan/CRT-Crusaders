@@ -5,7 +5,8 @@ import { ROMAN_RANK, unlocked } from '../systems/rank';
 import { makeButton } from './button';
 import { CURRENCY_BAR_H, addCurrencyBar } from './currencyBar';
 import { RITES, type RiteHome } from './rites';
-import { BOOST_INFO, DAY_FEAST, WEEK_BOOSTS, boostLines, boostPct, dayName, nextTurn } from '../systems/boosts';
+import { isWing } from './nav';
+import { BOOST_INFO, DAY_FEAST, WEEK_BOOSTS, boostPct, nextTurn } from '../systems/boosts';
 import { untilText } from './modeScreen';
 import { addScrollArea } from './scroll';
 import { TAB_BAR_H, addTabBar } from './tabBar';
@@ -15,26 +16,22 @@ const CARD_H = 138;
 const GAP = 12;
 
 /**
- * A board of mode cards (the Crusade tab, the Cloister): painted card per
+ * A board of mode cards (a Crusade wing): painted card per
  * entry with a line on what it is, a live status, a gold dot when something
  * waits, and the Rank it needs while locked. The board scrolls, so a new mode
  * is just a new entry in RITES.
  */
 /** `resume`: a fight or run left mid-way, offered above the cards. */
-export function drawBoard(scene: Phaser.Scene, home: RiteHome, title: string, sub: string, resume?: { label: string; go: () => void }) {
+export function drawBoard(scene: Phaser.Scene, home: RiteHome, title: string, sub: string, resume?: { label: string; go: () => void; icon?: string }) {
   addScreenGlow(scene);
   addCurrencyBar(scene);
   let top = addHeading(scene, title, CURRENCY_BAR_H + 10, sub) + 14;
   if (resume) {
-    makeButton(scene, GAME_W / 2, top + 34, GAME_W - PAD * 2, 64, resume.label, resume.go, { active: true, icon: 'blade', fontSize: 20 });
+    makeButton(scene, GAME_W / 2, top + 34, GAME_W - PAD * 2, 64, resume.label, resume.go, { active: true, icon: resume.icon ?? 'blade', fontSize: 20 });
     top += 82;
   }
-  if (home === 'board') {
-    // Today's blessings: what the weekly schedule boosts today; tap for the whole week.
-    const lines = boostLines();
-    makeButton(scene, GAME_W / 2, top + 26, GAME_W - PAD * 2, 52, `${dayName().toUpperCase()}: ${lines.join(' · ')}`, () => showWeek(scene), { fontSize: 14, icon: 'flame' });
-    top += 64;
-  }
+  // A wing's page leads back to the Crusade hub.
+  if (isWing(home)) makeButton(scene, GAME_W - PAD - 44, CURRENCY_BAR_H + 34, 88, 40, 'Back', () => scene.scene.start('Modes', {}), { fontSize: 16 });
   const save = game.save;
   const bottom = GAME_H - TAB_BAR_H;
   const list = addScrollArea(scene, top - 6, bottom, { start: scrollOf[home], onScroll: (y) => (scrollOf[home] = y) });
@@ -81,7 +78,7 @@ export function drawBoard(scene: Phaser.Scene, home: RiteHome, title: string, su
 const scrollOf: Partial<Record<RiteHome, number>> = {};
 
 /** The whole week of blessings, today marked. */
-function showWeek(scene: Phaser.Scene) {
+export function showWeek(scene: Phaser.Scene) {
   const layer = scene.add.container(0, 0).setDepth(40);
   layer.add(scene.add.rectangle(GAME_W / 2, GAME_H / 2, GAME_W, GAME_H, 0x09060b, 0.95).setInteractive());
   layer.add(addFrame(scene, GAME_W / 2, GAME_H / 2, GAME_W - 24, GAME_H - 40, { fill: 0x241925 }));

@@ -52,7 +52,7 @@ export class WarScene extends Phaser.Scene {
     }
     commit();
     const rival = rivalName(save);
-    const { top } = modeScreen(this, 'Chapter War', `This week: the ${rival}. Storm their forts!`, 'Chapter', 'bg-chapter');
+    const { top } = modeScreen(this, 'Chapter War', `This week: the ${rival}. Storm their forts!`, undefined, 'bg-chapter');
     const bw = GAME_W - PAD * 2;
     let y = top;
 

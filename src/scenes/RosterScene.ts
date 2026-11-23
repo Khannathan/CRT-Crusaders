@@ -70,6 +70,7 @@ import { pickParty } from '../ui/partyPicker';
 import { current } from '../state/run';
 import { RITE_LEVELS, SANCT_LITANY, SANCT_MAX, SANCT_STEPS, finishRite, hasRite, motesOf, riteBattle, riteBest, riteBlock, riteEntriesLeft, riteReward, riteTarget, sanctBlock, sanctify, sanctOf, sweepRite } from '../systems/relicRites';
 import { CURRENCY_BAR_H, addCurrencyBar } from '../ui/currencyBar';
+import { addGroupStrip } from '../ui/nav';
 import { addSplash, hasSplash, loadSplash, portraitKey, queueSplash } from '../ui/placeholderPortrait';
 import { SisterSprite, fullKey } from '../ui/sisterSprite';
 import { nine } from '../ui/skin';
@@ -77,7 +78,7 @@ import { CARD_COLS, CARD_GAP, CARD_H, cardSlot, drawRosterCard } from '../ui/ros
 import { addScrollArea } from '../ui/scroll';
 import { showSources, tapCost, tapForSources } from '../ui/sources';
 import { TAB_BAR_H, addTabBar } from '../ui/tabBar';
-import { PAD, addArt, addBackdrop, addBadge, addFrame, addHeading, addScreenGlow, fade, noOrphan, text } from '../ui/theme';
+import { PAD, addArt, addBackdrop, addBadge, addFrame, addScreenGlow, fade, noOrphan, text } from '../ui/theme';
 import { fightMarks, joinMarks, needMarks } from '../systems/pickMarks';
 
 type Tab = 'grow' | 'vows' | 'skills' | 'gear' | 'symbol' | 'canon';
@@ -138,8 +139,9 @@ export class RosterScene extends Phaser.Scene {
     addCurrencyBar(this);
     const owned = game.save.owned;
     const count = Object.keys(owned).length;
-    const top = addHeading(this, 'Roster', CURRENCY_BAR_H + 10);
-    this.add.text(GAME_W - PAD, top - 8, `${count} / ${CRUSADERS.length}`, text.hud(16, PAL.muted)).setOrigin(1, 1);
+    // The Sisters tab's sub-tabs sit where the title was; the count and Quick Vow share a row under them.
+    const top = addGroupStrip(this, CURRENCY_BAR_H + 4) + 42;
+    this.add.text(PAD, top - 26, `${count} / ${CRUSADERS.length} SWORN`, text.hud(14, PAL.muted)).setOrigin(0, 0.5);
 
     // Quick Vow: every Vow her copies already pay for, across the whole roster, in one oath.
     if (count) {

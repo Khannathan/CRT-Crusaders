@@ -39,7 +39,7 @@ export class CrusadeScene extends Phaser.Scene {
     const s = game.save;
     const style = { fontFamily: FONT, color: hex(PAL.ivory), align: 'center' };
     const top = addHeading(this, 'The Crypts', CURRENCY_BAR_H + 16);
-    makeButton(this, GAME_W - PAD - 44, CURRENCY_BAR_H + 34, 88, 40, 'Back', () => this.scene.start('Modes'), { fontSize: 16 });
+    makeButton(this, GAME_W - PAD - 44, CURRENCY_BAR_H + 34, 88, 40, 'Back', () => this.scene.start('WingCrypts'), { fontSize: 16 });
     const left = pilgrimageLeft(s);
     const pil = this.add
       .text(GAME_W - PAD, top + 18, `PILGRIMAGE ${left}/${PILGRIMAGE_CLEARS}`, text.hud(13, left ? PAL.amber : PAL.steel))

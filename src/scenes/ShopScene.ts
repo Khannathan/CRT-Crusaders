@@ -37,7 +37,7 @@ export class ShopScene extends Phaser.Scene {
 
   create() {
     const save = game.save;
-    const { top, refresh } = modeScreen(this, 'The Shop', '');
+    const { top, refresh } = modeScreen(this, 'The Market', '');
     const bw = GAME_W - PAD * 2;
     const tw = bw / 3;
     COUNTERS.forEach(([id, label], i) => {

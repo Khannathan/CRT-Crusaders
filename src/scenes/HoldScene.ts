@@ -49,7 +49,7 @@ export class HoldScene extends Phaser.Scene {
   create() {
     const save = game.save;
     const h = holdOf(save);
-    const { top } = modeScreen(this, 'Hold the Line', 'Ten waves. Wounds carry. The fallen stay down.', 'Modes', 'bg-candle-maze');
+    const { top } = modeScreen(this, 'Hold the Line', 'Ten waves. Wounds carry. The fallen stay down.', undefined, 'bg-candle-maze');
     const bw = GAME_W - PAD * 2;
     const crypt = holdCrypt();
     this.add.text(PAD, top, `TODAY: ${crypt.name.toUpperCase()}`, text.hud(14, PAL.amber));
