@@ -2,7 +2,6 @@ import Phaser from 'phaser';
 import { music } from '../audio/music';
 import { FONT, GAME_H, GAME_W, PAL, hex } from '../config';
 import { RARITY_COLOR } from '../data/classes';
-import { CLASSES } from '../data/classes';
 import { CRUSADERS } from '../data/crusaders';
 import { ORDERS } from '../data/orders';
 import { sigilKey } from '../ui/icons';
@@ -11,9 +10,11 @@ import { BOOSTED_SSRS, COST_ONE, COST_TEN, PITY_LIMIT, RARITY_ORDER, RATES, bann
 import { GRADUATE_AFTER, graduationDate, isStandard, limitedUnseen, limitedWindow, markLimitedSeen, timeLeft, upcoming, type LimitedWindow } from '../systems/limited';
 import { makeButton } from '../ui/button';
 import { CURRENCY_BAR_H, addCurrencyBar } from '../ui/currencyBar';
-import { addSplash, portraitKey, queueSplash, splashKey } from '../ui/placeholderPortrait';
+import { addSplash, loadSplash, portraitKey, queueSplash, splashKey } from '../ui/placeholderPortrait';
+import { SisterSprite, fullKey } from '../ui/sisterSprite';
+import type { CrusaderDef } from '../data/types';
 import { TAB_BAR_H, addTabBar } from '../ui/tabBar';
-import { PAD, addBackdrop, addBadge, addFrame, addHeading, addPanel, addScreenGlow, fade, text } from '../ui/theme';
+import { PAD, addBackdrop, addBadge, addFrame, addPanel, addScreenGlow, fade, text } from '../ui/theme';
 import { holdForCard, justHeld } from '../ui/sisterCard';
 import { addScrollArea } from '../ui/scroll';
 import { makePlaceholderPortrait } from '../ui/placeholderPortrait';
@@ -34,8 +35,10 @@ export class RecruitScene extends Phaser.Scene {
     music.preload('ur');
     addCurrencyBar(this);
     const s = game.save;
-    const top = addHeading(this, 'The Sealed Altar', CURRENCY_BAR_H + 16);
-    makeButton(this, GAME_W - PAD - 62, CURRENCY_BAR_H + 38, 124, 44, 'Record', () => this.scene.start('PullHistory'), { fontSize: 16, icon: 'book' });
+    // A compact header leaves the banner room for the Sisters to stand at full height.
+    this.add.text(PAD + 4, CURRENCY_BAR_H + 28, 'THE SEALED ALTAR', text.display(24, PAL.amber)).setOrigin(0, 0.5);
+    makeButton(this, GAME_W - PAD - 58, CURRENCY_BAR_H + 28, 116, 40, 'Record', () => this.scene.start('PullHistory'), { fontSize: 15, icon: 'book' });
+    const top = CURRENCY_BAR_H + 50;
 
     // Banner pages: the Limited Saint first, then one per Order. ‹ › step through them.
     const banner = this.currentBanner();
@@ -47,18 +50,42 @@ export class RecruitScene extends Phaser.Scene {
     }
     const ord = ORDERS[banner.order];
     const bw = GAME_W - PAD * 2;
-    const bh = 430;
-    const by = top + 12 + bh / 2;
+    const bh = 490;
+    const by = top + 4 + bh / 2;
     const bTop = by - bh / 2;
-    const splash = this.textures.exists(splashKey(banner.target));
-    if (splash) {
-      addSplash(this, banner.target, GAME_W / 2, by, bw, bh, 'hero');
-      fade(this, GAME_W / 2, by, bw, bh, 0.55, 0x140b12);
-    } else addBackdrop(this, limited && this.textures.exists('banner-limited') ? 'banner-limited' : this.textures.exists(`banner-${ord.id}`) ? `banner-${ord.id}` : 'bg-altar', GAME_W / 2, by, bw, bh, { fade: 0.55, fadeColor: 0x140b12, focusY: 0.35 });
-    // Her splash is busy; dim it so the banner's words and cards read on top.
-    if (splash) this.add.rectangle(GAME_W / 2, by, bw, bh, 0x140b12, 0.4);
-    this.add.rectangle(GAME_W / 2, by, bw, bh, limited ? RARITY_COLOR.UR : ord.color, 0.12);
-    addFrame(this, GAME_W / 2, by, bw, bh, { edge: limited ? RARITY_COLOR.UR : ord.color });
+    const edge = limited ? RARITY_COLOR.UR : ord.color;
+    const target = CRUSADERS.find((c) => c.id === banner.target)!;
+    const ssrs = boostedSSRs(s);
+
+    // Background: the chosen Sister's splash (the target's at first), behind everything on the banner.
+    const back = this.add.container(0, 0);
+    const clip = this.make.graphics({}, false).fillRect(GAME_W / 2 - bw / 2, bTop, bw, bh);
+    back.setMask(clip.createGeometryMask());
+    const showBack = (id: string) => {
+      back.removeAll(true);
+      const c = CRUSADERS.find((x) => x.id === id)!;
+      const o = ORDERS[c.order];
+      if (this.textures.exists(splashKey(id))) {
+        back.add(addSplash(this, id, GAME_W / 2, by, bw, bh, 'hero'));
+        // her splash is busy; dim it so the figures and words stand out in front
+        back.add(this.add.rectangle(GAME_W / 2, by, bw, bh, 0x140b12, 0.35));
+      } else {
+        const art = this.textures.exists(`banner-${o.id}`) ? `banner-${o.id}` : limited && this.textures.exists('banner-limited') ? 'banner-limited' : 'bg-altar';
+        back.add(addBackdrop(this, art, GAME_W / 2, by, bw, bh, { focusY: 0.35 }) as Phaser.GameObjects.GameObject[]);
+        back.add(this.add.rectangle(GAME_W / 2, by, bw, bh, 0x140b12, 0.3));
+      }
+      // a floor of shadow for the figures to stand on, and a little colour of the banner
+      back.add(fade(this, GAME_W / 2, by, bw, bh, 0.5, 0x140b12));
+      back.add(this.add.rectangle(GAME_W / 2, by, bw, bh, edge, 0.1));
+      back.list.forEach((o) => (o as Phaser.GameObjects.Image).setAlpha?.(0));
+      this.tweens.add({ targets: back.list, alpha: { from: 0, to: 1 }, duration: 260 });
+      // the dimming layers keep their own alpha
+      back.list.forEach((o) => {
+        if (o instanceof Phaser.GameObjects.Rectangle) this.tweens.add({ targets: o, alpha: 1, duration: 260 });
+      });
+    };
+    addFrame(this, GAME_W / 2, by, bw, bh, { edge });
+
     // Two banners: the Limited Saint's (fixed) and the standard one the player sets up.
     const page = limited ? 0 : 1;
     const pages = 2;
@@ -69,112 +96,122 @@ export class RecruitScene extends Phaser.Scene {
       commit();
       this.scene.restart();
     };
-    // ui-arrow.png (pointing right; flipped for left) replaces the ‹ › labels when present
-    const arrow = this.textures.exists('ui-arrow');
-    makeButton(this, PAD + 34, bTop + 46, 48, 56, arrow ? '' : '‹', () => step(-1), { fontSize: 26 });
-    makeButton(this, GAME_W - PAD - 34, bTop + 46, 48, 56, arrow ? '' : '›', () => step(1), { fontSize: 26 });
-    if (arrow) {
-      this.add.image(PAD + 34, bTop + 46, 'ui-arrow').setDisplaySize(24, 24).setFlipX(true);
-      this.add.image(GAME_W - PAD - 34, bTop + 46, 'ui-arrow').setDisplaySize(24, 24);
-    }
-    if (limited) {
-      this.add.rectangle(GAME_W / 2, bTop + 96, bw - 110, 72, 0x120a12, 0.6);
-      addBadge(this, GAME_W / 2 - 52, bTop + 14, 'LIMITED SAINT', PAL.amber, 14);
-      this.add.text(GAME_W / 2, bTop + 72, win.saint.name.toUpperCase(), text.display(22, 0xfff1d6)).setOrigin(0.5).setShadow(0, 2, '#000000', 8, false, true);
-      this.add
-        .text(GAME_W / 2, bTop + 100, `${win.saint.order} · leaves in ${timeLeft(win.ends)} · not on the standard banner`, { ...text.body(16, 0xe1cabf), fontStyle: 'italic', align: 'center', wordWrap: { width: bw - 120 } })
-        .setShadow(0, 1, '#000000', 4, false, true)
-        .setOrigin(0.5, 0);
-    } else {
-      this.add.rectangle(GAME_W / 2, bTop + 96, bw - 110, 72, 0x120a12, 0.6);
-      addBadge(this, GAME_W / 2 - 40, bTop + 14, 'STANDARD', PAL.steel, 14);
-      this.add.text(GAME_W / 2, bTop + 72, 'YOUR CALLING', text.display(22, 0xfff1d6)).setOrigin(0.5).setShadow(0, 2, '#000000', 8, false, true);
-      this.add
-        .text(GAME_W / 2, bTop + 100, 'You choose the UR and two SSRs called louder here.', { ...text.body(16, 0xe1cabf), fontStyle: 'italic', align: 'center', wordWrap: { width: bw - 120 } })
-        .setOrigin(0.5, 0)
-        .setShadow(0, 1, '#000000', 4, false, true);
-    }
-    this.add.text(GAME_W / 2, bTop + 144, `BANNER ${page + 1} / ${pages}`, { ...text.hud(12, PAL.muted), stroke: '#0b070c', strokeThickness: 4 }).setOrigin(0.5);
 
-    // The target UR in the middle, the two boosted SSRs either side.
-    const urs = CRUSADERS.filter((c) => c.id === banner.target);
-    const ssrs = boostedSSRs(s);
-    const cards: { c: (typeof CRUSADERS)[number]; x: number; size: number; label: string }[] = [
-      ...urs.slice(0, 1).map((c) => ({ c, x: GAME_W / 2, size: 168, label: limited ? 'SAINT' : 'TARGET' })),
-      ...ssrs.slice(0, 2).map((c, k) => ({ c, x: GAME_W / 2 + (k === 0 ? -1 : 1) * 168, size: 108, label: 'SSR UP' })),
+    // Foreground: the three featured Sisters stand on the banner, the UR in front.
+    const feet = bTop + bh - 76;
+    const sideX = 96;
+    const figures: { c: CrusaderDef; x: number; feet: number; scale: number; sprite?: SisterSprite; parts: Phaser.GameObjects.GameObject[] }[] = [
+      ...ssrs.slice(0, 2).map((c, k) => ({ c, x: k === 0 ? PAD + sideX : GAME_W - PAD - sideX, feet: feet - 34, scale: 1, parts: [] })),
+      { c: target, x: GAME_W / 2, feet, scale: 2, parts: [] },
     ];
-    for (const { c, x, size, label } of cards) {
-      const y = bTop + 168 + 84 + (size < 168 ? 20 : 0);
-      const ur = c.rarity === 'UR';
-      if (ur) {
-        const glow = this.add.rectangle(x, y, size + 16, size + 16).setStrokeStyle(4, PAL.amber);
-        this.tweens.add({ targets: glow, alpha: 0.35, duration: 700, yoyo: true, repeat: -1 });
+    let chosen = target.id;
+    const select = (id: string) => {
+      if (id === chosen) return;
+      chosen = id;
+      for (const f of figures) {
+        f.sprite?.setActive(f.c.id === id);
+        // the others step back into her light
+        this.tweens.add({ targets: f.parts, alpha: f.c.id === id ? 1 : 0.55, duration: 220 });
       }
-      this.add.rectangle(x, y, size + 8, size + 8, 0x170f1b).setStrokeStyle(1, RARITY_COLOR[c.rarity]);
-      const img = this.add.image(x, y, portraitKey(c.id)).setDisplaySize(size, size);
-      holdForCard(this, img, c.id);
-      addBadge(this, x - size / 2 + 4, y - size / 2 + 4, label, ur ? PAL.amber : RARITY_COLOR.SSR, ur ? 12 : 10);
-      if (!ur || !limited) this.add.image(x + size / 2 - 14, y - size / 2 + 14, sigilKey(ORDERS[c.order].id)).setDisplaySize(24, 24);
-      this.add.text(x, y + size / 2 + 14, ur ? c.name : c.name.split(' ')[0], { ...text.body(ur ? 18 : 15, ur ? 0xfff1d6 : PAL.ivory), fontStyle: '600' }).setOrigin(0.5);
-      this.add.text(x, y + size / 2 + 26, c.title ?? CLASSES[c.classId].name, { ...text.body(16, PAL.muted), align: 'center', wordWrap: { width: size + 50 }, lineSpacing: -4 }).setOrigin(0.5, 0);
+      if (this.textures.exists(splashKey(id))) showBack(id);
+      else void loadSplash(this, id).then(() => chosen === id && this.scene.isActive() && showBack(id));
+    };
+    for (const f of figures) {
+      const ur = f.c.rarity === 'UR';
+      const fullArt = this.textures.exists(fullKey(f.c.id));
+      let hitH: number;
+      if (fullArt) {
+        f.sprite = new SisterSprite(this, f.c.id, f.x, f.feet, f.scale, ur ? PAL.amber : RARITY_COLOR.SSR);
+        f.parts.push(f.sprite.root);
+        hitH = f.sprite.height;
+      } else {
+        // no full-body art yet: her portrait, framed, stands in her place
+        makePlaceholderPortrait(this, f.c);
+        const size = ur ? 200 : 112;
+        f.parts.push(
+          this.add.ellipse(f.x, f.feet, size * 0.8, 16, 0x000000, 0.5),
+          this.add.rectangle(f.x, f.feet - size / 2 - 6, size + 8, size + 8, 0x170f1b).setStrokeStyle(2, RARITY_COLOR[f.c.rarity]),
+          this.add.image(f.x, f.feet - size / 2 - 6, portraitKey(f.c.id)).setDisplaySize(size, size),
+        );
+        hitH = size + 12;
+      }
+      const w = ur ? 220 : 120;
+      const hit = this.add.rectangle(f.x, f.feet - hitH / 2, w, hitH, 0, 0.001).setInteractive({ useHandCursor: true });
+      holdForCard(this, hit, f.c.id);
+      hit.on('pointerup', () => {
+        if (justHeld()) return;
+        select(f.c.id);
+      });
+      // her name plate under her feet
+      const ny = f.feet + 10;
+      this.add.text(f.x, ny, ur ? f.c.name : f.c.name.split(' ')[0], { ...text.body(ur ? 19 : 16, ur ? 0xfff1d6 : PAL.ivory), fontStyle: '600', stroke: '#0b070c', strokeThickness: 4 }).setOrigin(0.5, 0);
+      const tag = ur ? (limited ? 'LIMITED SAINT' : 'TARGET UR') : limited ? 'LIMITED SSR' : 'SSR UP';
+      this.add.text(f.x, ny + 24, tag, { ...text.hud(11, ur ? PAL.amber : RARITY_COLOR.SSR), stroke: '#0b070c', strokeThickness: 4 }).setOrigin(0.5, 0);
+      this.add.image(f.x + (ur ? 70 : 44), f.feet - hitH + 18, sigilKey(ORDERS[f.c.order].id)).setDisplaySize(ur ? 30 : 24, ur ? 30 : 24);
     }
+    figures.find((f) => f.c.id === chosen)?.sprite?.setActive(true);
+    showBack(target.id);
+    back.setDepth(-1);
 
-    if (limited) {
-      const next = upcoming()[0];
-      const label = next ? `Next Saint: ${next.saint.name.split(' ')[0]} in ${timeLeft(next.starts)}` : 'Limited banners';
-      makeButton(this, GAME_W / 2, bTop + bh - 26, 300, 36, label, () => this.showComing(), { fontSize: 15 });
-    } else {
-      makeButton(this, GAME_W / 2, bTop + bh - 28, 300, 40, 'Choose your rate-up', () => this.customize(), { fontSize: 16, active: true });
+    // Top strip: which banner this is, over the figures' heads.
+    const arrow = this.textures.exists('ui-arrow');
+    makeButton(this, PAD + 30, bTop + 34, 44, 50, arrow ? '' : '‹', () => step(-1), { fontSize: 26 });
+    makeButton(this, GAME_W - PAD - 30, bTop + 34, 44, 50, arrow ? '' : '›', () => step(1), { fontSize: 26 });
+    if (arrow) {
+      this.add.image(PAD + 30, bTop + 34, 'ui-arrow').setDisplaySize(22, 22).setFlipX(true);
+      this.add.image(GAME_W - PAD - 30, bTop + 34, 'ui-arrow').setDisplaySize(22, 22);
     }
+    const head = limited ? `${win.saint.name.split(' ')[0].toUpperCase()}'S VIGIL` : 'YOUR CALLING';
+    const sub = limited ? `Limited · leaves in ${timeLeft(win.ends)}` : `Standard · banner ${page + 1} of ${pages}`;
+    this.add.text(GAME_W / 2, bTop + 26, head, text.display(22, 0xfff1d6)).setOrigin(0.5).setShadow(0, 2, '#000000', 8, false, true);
+    this.add.text(GAME_W / 2, bTop + 52, sub, { ...text.hud(12, limited ? PAL.amber : PAL.steel), stroke: '#0b070c', strokeThickness: 4 }).setOrigin(0.5);
+    this.add.text(GAME_W / 2, bTop + bh - 6, 'Tap a Sister for her splash · hold for her card', { ...text.body(14, PAL.muted), stroke: '#0b070c', strokeThickness: 3 }).setOrigin(0.5, 1);
 
-    // Banner rules and pity
+    // Under the banner: what you can do with it
     const px = PAD;
     const pw = GAME_W - PAD * 2;
-    let y = by + bh / 2 + 10;
-    const poolH = 150;
+    let y = by + bh / 2 + 8;
+    const rowY = y + 20;
+    if (limited) {
+      const next = upcoming()[0];
+      makeButton(this, px + 120, rowY, 240, 38, next ? `Next: ${next.saint.name.split(' ')[0]} in ${timeLeft(next.starts)}` : 'Limited banners', () => this.showComing(), { fontSize: 15 });
+    } else makeButton(this, px + 120, rowY, 240, 38, 'Choose your rate-up', () => this.customize(), { fontSize: 15, active: true });
+    makeButton(this, px + 250 + 62, rowY, 120, 38, 'All Sisters', () => this.showPool(), { fontSize: 15 });
+    makeButton(this, GAME_W - PAD - 54, rowY, 108, 38, 'Rates', () => this.showRates(), { fontSize: 15, icon: 'book' });
+    y += 46;
+
+    // Banner rules and pity
+    const poolH = 116;
     addPanel(this, GAME_W / 2 - pw / 2, y, pw, poolH);
-    const target = CRUSADERS.find((c) => c.id === banner.target)!;
-    this.add
-      .text(px + 16, y + 12, s.urGuaranteed ? `Next UR is ${target.name.split(' ')[0]}, sworn.` : `A UR here is ${target.name.split(' ')[0]} half the time,`, text.body(19, PAL.ivory))
-      .setFontStyle('600');
-    this.add.text(px + 16, y + 38, s.urGuaranteed ? 'The last UR strayed. The next one will not.' : 'and always after one that strays.', text.body(18, PAL.muted));
+    const first = target.name.split(' ')[0];
+    this.add.text(px + 16, y + 10, s.urGuaranteed ? `The next UR is ${first}, sworn.` : `A UR here is ${first} half the time, and always after one that strays.`, { ...text.body(17, PAL.ivory), fontStyle: '600', wordWrap: { width: pw - 32 } });
     // Pity counters: UR (shared by every banner) and SSR
     const toPity = PITY_LIMIT - s.pity;
     const urLeft = urPityLeft(s);
-    this.add.text(px + 16, y + 66, `UR within ${urLeft} · SSR+ within ${toPity} · x10: SR+`, text.body(18, PAL.amber)).setFontStyle('600');
-    // Relic Shards for this Order: SPARK buys one of its URs
+    this.add.text(px + 16, y + 56, `UR within ${urLeft} · SSR+ within ${toPity}`, text.body(17, PAL.amber)).setFontStyle('600');
+    // Relic Shards for this Order (or Saint's Favor): SPARK buys the UR
     const key = sparkKey(target);
     const shards = shardsOf(s, key);
-    this.add.text(px + 16, y + 98, limited ? `SAINT'S FAVOR · ${target.name.split(' ')[0].toUpperCase()}` : `RELIC SHARDS · ${ord.name.toUpperCase()}`, text.hud(11, PAL.steel));
-    const barW = pw - 32 - 156;
-    this.add.rectangle(px + 16, y + 126, barW, 8, PAL.deepShadow).setOrigin(0, 0.5);
-    this.add.rectangle(px + 16, y + 126, Math.max(1, barW * Math.min(1, shards / SPARK)), 8, RARITY_COLOR.UR).setOrigin(0, 0.5);
-    this.add.text(px + 16 + barW, y + 112, `${shards} / ${SPARK}`, text.hud(11, shards >= SPARK ? PAL.amber : PAL.muted)).setOrigin(1, 1);
-    makeButton(this, GAME_W - PAD - 16 - 70, y + 116, 140, 44, limited ? 'Claim her' : 'Claim a UR', () => this.claimUR(target.id), { fontSize: 16, active: shards >= SPARK, disabled: shards < SPARK });
+    const barW = pw - 32 - 150;
+    this.add.text(px + 16, y + 84, limited ? `SAINT'S FAVOR` : `RELIC SHARDS · ${ord.name.toUpperCase()}`, text.hud(11, PAL.steel));
+    this.add.rectangle(px + 16, y + 104, barW, 8, PAL.deepShadow).setOrigin(0, 0.5);
+    this.add.rectangle(px + 16, y + 104, Math.max(1, barW * Math.min(1, shards / SPARK)), 8, RARITY_COLOR.UR).setOrigin(0, 0.5);
+    this.add.text(px + 16 + barW, y + 96, `${shards} / ${SPARK}`, text.hud(11, shards >= SPARK ? PAL.amber : PAL.muted)).setOrigin(1, 1);
+    makeButton(this, GAME_W - PAD - 16 - 64, y + 88, 128, 40, limited ? 'Claim her' : 'Claim UR', () => this.claimUR(target.id), { fontSize: 15, active: shards >= SPARK, disabled: shards < SPARK });
 
-    // Offer panel
+    // Pull buttons
     y += poolH + 8;
-    const offerH = GAME_H - TAB_BAR_H - 10 - y;
-    addPanel(this, GAME_W / 2 - pw / 2, y, pw, offerH);
-    makeButton(this, GAME_W - PAD - 16 - 312, y + 20, 116, 36, 'UR Gear', () => this.scene.start('Armory', { back: 'Recruit' }), { fontSize: 15, icon: 'shield' });
-    makeButton(this, GAME_W - PAD - 16 - 186, y + 20, 128, 36, 'All Sisters', () => this.showPool(), { fontSize: 15, icon: 'roster' });
-    makeButton(this, GAME_W - PAD - 16 - 60, y + 20, 120, 36, 'View rates', () => this.showRates(), { fontSize: 15, icon: 'book' });
-    const btnY = y + offerH - 50;
-    const half = (pw - 32 - 10) / 2;
+    const offerH = GAME_H - TAB_BAR_H - 8 - y;
+    const half = (pw - 10) / 2;
+    const btnY = y + offerH / 2;
     const freeTen = !s.freeTenUsed;
-    makeButton(this, px + 16 + half / 2, btnY, half, 84, `Recruit ×1\n${COST_ONE} Seal`, () => this.doPull('one'), {
+    makeButton(this, px + half / 2, btnY, half, offerH, `Recruit ×1\n${COST_ONE} Seal`, () => this.doPull('one'), {
       disabled: !canPull(s, 'one'),
     });
-    makeButton(
-      this,
-      px + 16 + half + 10 + half / 2,
-      btnY,
-      half,
-      84,
-      freeTen ? 'Recruit ×10\nFree first time' : `Recruit ×10\n${COST_TEN} Seals`,
-      () => this.doPull('ten'),
-      { disabled: !canPull(s, 'ten'), active: true },
-    );
+    makeButton(this, px + half + 10 + half / 2, btnY, half, offerH, freeTen ? 'Recruit ×10\nFree first time' : `Recruit ×10\n${COST_TEN} Seals`, () => this.doPull('ten'), {
+      disabled: !canPull(s, 'ten'),
+      active: true,
+    });
 
     addTabBar(this, 'Recruit');
   }
