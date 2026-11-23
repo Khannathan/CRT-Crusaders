@@ -58,6 +58,8 @@ export interface SiegeState {
   by: Record<string, number>;
   /** Milestone indexes paid. */
   paid: number[];
+  /** Your own damage tiers paid (indexes into SIEGE_TIERS). */
+  tiers?: number[];
 }
 
 export interface ChapterState {
@@ -112,6 +114,27 @@ export const SIEGE_MILESTONES: { at: number; reward: Reward & { marks: number } 
   { at: 0.75, reward: { marks: 100, gilt: 60, items: { armory1: 8 } } },
   { at: 1, reward: { marks: 150, seals: 5, items: { armory2: 2 } } },
 ];
+
+/**
+ * Your own damage this week, in beast units (one unit is the beast's HP at the
+ * week's strength; a strike deals about 0.4 to 0.8 of one).
+ */
+export const SIEGE_TIERS: { at: number; reward: Reward & { marks: number } }[] = [
+  { at: 1, reward: { marks: 20, items: { canon1: 3 } } },
+  { at: 2.5, reward: { marks: 30, seals: 1, items: { canon1: 5 } } },
+  { at: 4.5, reward: { marks: 40, gilt: 30, items: { canon2: 1 } } },
+  { at: 7, reward: { marks: 60, seals: 2, items: { canon2: 2 } } },
+  { at: 10, reward: { marks: 80, seals: 3, items: { canon3: 1 } } },
+];
+
+/** Your place in the week's standings pays when the week turns. */
+export function placeReward(place: number): Reward & { marks: number } {
+  if (place === 1) return { marks: 120, seals: 5, items: { canon2: 3 } };
+  if (place <= 3) return { marks: 80, seals: 3, items: { canon2: 2 } };
+  if (place <= 5) return { marks: 50, seals: 2, items: { canon1: 6 } };
+  if (place <= 10) return { marks: 30, seals: 1, items: { canon1: 3 } };
+  return { marks: 15 };
+}
 
 export interface ChapterOffer {
   id: string;
@@ -201,6 +224,42 @@ export function claimSiege(save: SaveData, now = Date.now()): (Reward & { marks:
   return out;
 }
 
+/** One unit of Siege damage this week (the beast's HP at the week's strength). */
+const siegeUnit = (save: SaveData, now: number) => siegeBeast(save, now).pool / SIEGE_POOL;
+
+/** Your damage tiers reached and not yet paid. */
+export function tiersReady(save: SaveData, now = Date.now()): number[] {
+  const c = save.chapter;
+  if (!c) return [];
+  const mine = (c.siege.by.you ?? 0) / siegeUnit(save, now);
+  return SIEGE_TIERS.map((t, i) => (mine >= t.at && !(c.siege.tiers ?? []).includes(i) ? i : -1)).filter((i) => i >= 0);
+}
+
+/** How many of your damage tiers are reached, and the damage the next one needs. */
+export function tierProgress(save: SaveData, now = Date.now()) {
+  const unit = siegeUnit(save, now);
+  const mine = save.chapter?.siege.by.you ?? 0;
+  const reached = SIEGE_TIERS.filter((t) => mine >= t.at * unit).length;
+  const next = SIEGE_TIERS[reached];
+  return { reached, next: next ? Math.round(next.at * unit) : undefined };
+}
+
+/** Pays your reached damage tiers. */
+export function claimTiers(save: SaveData, now = Date.now()): (Reward & { marks: number })[] {
+  const c = save.chapter;
+  if (!c) return [];
+  return tiersReady(save, now).map((i) => {
+    (c.siege.tiers ??= []).push(i);
+    const r = SIEGE_TIERS[i].reward;
+    grant(save, r);
+    c.marks += r.marks;
+    return r;
+  });
+}
+
+/** Your place in this week's standings (1 = first). */
+export const siegePlace = (save: SaveData) => siegeTable(save).findIndex((r) => r.id === 'you') + 1;
+
 /** One day of the AI members: tithes and Siege strikes, rolled from the day's seed. */
 function simulateDay(save: SaveData, now: number) {
   const c = save.chapter!;
@@ -260,8 +319,17 @@ export function chapterOf(save: SaveData, now = Date.now()): ChapterState | unde
   for (const t of days) {
     if (weekKey(t) !== c.siege.week) {
       // Last week's beast: whatever was reached is paid now.
-      const paid = claimSiege(save, t - 7 * 864e5);
+      const was = t - 7 * 864e5;
+      const paid = [...claimSiege(save, was), ...claimTiers(save, was)];
       if (paid.length) log(c, dayKey(t), `Last week's Siege paid you: ${paid.map(rewardText).join(' + ')}.`);
+      // Your place in last week's standings.
+      if (c.siege.by.you) {
+        const place = siegePlace(save);
+        const r = placeReward(place);
+        grant(save, r);
+        c.marks += r.marks;
+        log(c, dayKey(t), `You placed ${place} of ${MEMBERS + 1} in last week's Siege: ${rewardText(r)} + ${r.marks} Marks.`);
+      }
       c.siege = newSiege(t);
       c.bought = {};
       log(c, dayKey(t), `A new beast besieges the Chapter: ${siegeBeast(save, t).hunt.id.replace(/-/g, ' ')}.`);
@@ -354,5 +422,5 @@ export function buyChapter(save: SaveData, id: string, now = Date.now()): boolea
 export const chapterReady = (save: SaveData, now = Date.now()) => {
   const c = chapterOf(save, now);
   if (!c) return true;
-  return c.tithed === undefined || strikesLeft(save, now) > 0 || siegeReady(save, now).length > 0;
+  return c.tithed === undefined || strikesLeft(save, now) > 0 || siegeReady(save, now).length > 0 || tiersReady(save, now).length > 0;
 };

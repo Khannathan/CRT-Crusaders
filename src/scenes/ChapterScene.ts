@@ -14,7 +14,13 @@ import {
   buyChapter,
   chapterLevel,
   chapterOf,
+  SIEGE_POOL,
+  SIEGE_TIERS,
   claimSiege,
+  claimTiers,
+  placeReward,
+  tierProgress,
+  tiersReady,
   finishSiege,
   foundChapter,
   levelProgress,
@@ -106,10 +112,11 @@ export class ChapterScene extends Phaser.Scene {
     // Siege
     const { hunt, pool } = siegeBeast(save);
     const left = strikesLeft(save);
-    const ready = siegeReady(save);
+    const ready = [...siegeReady(save), ...tiersReady(save).map((i) => -1 - i)];
     const table = siegeTable(save);
     const rank = table.findIndex((r) => r.id === 'you') + 1;
-    addPanel(this, PAD, y, bw, 206);
+    const tp = tierProgress(save);
+    addPanel(this, PAD, y, bw, 254);
     this.add.text(PAD + 14, y + 10, 'THE WEEK\'S SIEGE', text.hud(12, PAL.steel));
     this.add.text(PAD + 14, y + 28, ENEMIES[hunt.boss].name, text.display(20, 0xfff1d6));
     this.add.text(PAD + 14, y + 62, `The Chapter has dealt ${fmt(c.siege.dealt)} of ${fmt(pool)}.`, text.body(15, PAL.ivory));
@@ -120,14 +127,18 @@ export class ChapterScene extends Phaser.Scene {
       const got = c.siege.paid.includes(i);
       this.add.rectangle(Math.min(x, PAD + 14 + barW - 1), y + 92, 3, 18, got ? PAL.steel : c.siege.dealt >= m.at * pool ? PAL.amber : PAL.ivory);
     });
-    this.add.text(PAD + 14, y + 106, `You: ${fmt(c.siege.by.you ?? 0)} · rank ${rank} of ${table.length}`, text.body(15, PAL.muted));
+    this.add.text(PAD + 14, y + 106, `You: ${fmt(c.siege.by.you ?? 0)} · place ${rank} of ${table.length}`, text.body(15, PAL.ivory));
+    this.add.text(PAD + 14, y + 130, `YOUR TIERS ${tp.reached}/${SIEGE_TIERS.length}${tp.next ? ` · NEXT AT ${fmt(tp.next)}` : ' · ALL REACHED'}`, text.hud(12, PAL.amber));
+    const pr = placeReward(rank);
+    this.add.text(PAD + 14, y + 152, `Place ${rank} pays at week's end: ${rewardText(pr)} + ${pr.marks} Marks`, { ...text.body(14, PAL.muted), wordWrap: { width: bw - 28 } });
+    y += 48;
     const bw3 = (bw - 28 - 12) / 3;
     const strike = makeButton(this, PAD + 14 + bw3 / 2, y + 164, bw3, 52, left ? `Strike (${left}/${SIEGE_STRIKES})` : 'No strikes', () => {}, { active: left > 0, disabled: !left, fontSize: 15, icon: 'blade' });
     list.tap(strike.box, () => left && this.strike());
     const claim = makeButton(this, PAD + 14 + bw3 * 1.5 + 6, y + 164, bw3, 52, ready.length ? `Claim ${ready.length}` : 'Milestones', () => {}, { active: ready.length > 0, fontSize: 15 });
     list.tap(claim.box, () => {
       if (!ready.length) return this.showMilestones();
-      const got = claimSiege(save);
+      const got = [...claimSiege(save), ...claimTiers(save)];
       commit();
       this.scene.restart({ notice: `Siege: ${got.map((r) => `${rewardText(r)} + ${r.marks} Marks`).join(', ')}` });
     });
@@ -194,15 +205,26 @@ export class ChapterScene extends Phaser.Scene {
     const c = save.chapter!;
     const { pool } = siegeBeast(save);
     const layer = this.overlay('SIEGE MILESTONES');
-    let y = 110;
+    let y = 100;
     SIEGE_MILESTONES.forEach((m, i) => {
       const got = c.siege.paid.includes(i);
       const reached = c.siege.dealt >= m.at * pool;
       layer.add(this.add.text(48, y, `${Math.round(m.at * 100)}% · ${fmt(m.at * pool)}${got ? ' · PAID' : reached ? ' · READY' : ''}`, text.hud(13, got ? PAL.steel : reached ? PAL.amber : PAL.ivory)));
       layer.add(this.add.text(48, y + 22, `${rewardText(m.reward)} + ${m.reward.marks} Marks`, { ...text.body(16, PAL.muted), wordWrap: { width: GAME_W - 96 } }));
-      y += 70;
+      y += 58;
     });
-    layer.add(this.add.text(48, y + 10, 'Milestones count the whole Chapter\'s damage. Unclaimed ones pay out when the week turns.', { ...text.body(15, PAL.muted), wordWrap: { width: GAME_W - 96 } }));
+    layer.add(this.add.text(48, y + 4, 'Milestones count the whole Chapter\'s damage. Unclaimed ones pay out when the week turns.', { ...text.body(15, PAL.muted), wordWrap: { width: GAME_W - 96 } }));
+    y += 60;
+    const tp = tierProgress(save);
+    layer.add(this.add.text(48, y, `YOUR DAMAGE TIERS · ${tp.reached}/${SIEGE_TIERS.length}`, text.hud(13, PAL.amber)));
+    y += 26;
+    const unit = pool / SIEGE_POOL;
+    SIEGE_TIERS.forEach((t, i) => {
+      const got = (c.siege.tiers ?? []).includes(i);
+      const reached = (c.siege.by.you ?? 0) >= t.at * unit;
+      layer.add(this.add.text(48, y, `${fmt(Math.round(t.at * unit))}${got ? ' · PAID' : reached ? ' · READY' : ''}: ${rewardText(t.reward)} + ${t.reward.marks} Marks`, { ...text.body(15, got ? PAL.steel : reached ? PAL.amber : PAL.ivory), wordWrap: { width: GAME_W - 96 } }));
+      y += 26;
+    });
   }
 
   private showTable() {
