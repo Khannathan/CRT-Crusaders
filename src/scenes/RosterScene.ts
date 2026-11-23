@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import { saveSettings, settings } from '../state/settings';
 import { GAME_H, GAME_W, PAL } from '../config';
 import { CLASSES, RARITY_COLOR, classIconFor } from '../data/classes';
 import { CRUSADERS } from '../data/crusaders';
@@ -59,7 +60,7 @@ import { countOf, itemDef, type ItemId } from '../systems/items';
 import { MAX_SKILL_LEVEL, nextSkillStep, raiseSkill, skillBlock, skillLevels, stepText } from '../systems/skillLevels';
 import { makeButton } from '../ui/button';
 import { CURRENCY_BAR_H, addCurrencyBar } from '../ui/currencyBar';
-import { addSplash, hasSplash, loadFullBody, loadSplash, portraitKey } from '../ui/placeholderPortrait';
+import { addSplash, hasSplash, loadSplash, portraitKey, queueSplash } from '../ui/placeholderPortrait';
 import { SisterSprite, fullKey } from '../ui/sisterSprite';
 import { nine } from '../ui/skin';
 import { addScrollArea } from '../ui/scroll';
@@ -102,7 +103,6 @@ export class RosterScene extends Phaser.Scene {
   /** Kept across restarts so levelling up a Sister doesn't jump the list back to the top. */
   private static scrollY = 0;
   /** Sister page hero: her splash art (true) or her animated pixel figure (false). */
-  private static showSplash = true;
   private dragged = false;
   private detailOpen = false;
 
@@ -309,42 +309,50 @@ export class RosterScene extends Phaser.Scene {
     layer.add(glow);
     layer.add(addBackdrop(this, 'bg-hall', GAME_W / 2, HERO_H / 2, GAME_W, HERO_H, { alpha: 0.18, fade: 0.7, fadeColor: 0x0d090f }));
 
-    // The portrait (the full figure once its art exists).
-    const bust = this.add.image(GAME_W / 2, HERO_Y, portraitKey(c.id)).setDisplaySize(BUST, BUST);
-    if (!have) bust.setTint(0x111111);
-    layer.add(bust);
-    // Her full figure, breathing; tap her and she shows off a strike or a blessing.
+    // What fills the hero: her splash with her pixel figure in front (the default), the
+    // splash alone, or her figure alone (settings.sisterView, cycled by the View button).
+    const splashArt = !!have && hasSplash(c.id);
+    const view = splashArt ? settings.sisterView : 'sprite';
+    const showSplash = view !== 'sprite';
+    const fullArt = this.textures.exists(fullKey(c.id));
+    // Her figure, breathing; tap her and she shows off a strike or a blessing.
     let figure: SisterSprite | undefined;
     let splash: string | undefined;
     let poses = 0;
-    // Sworn Sisters show their splash art (a toggle switches to the figure).
-    const useSplash = !!have && hasSplash(c.id) && RosterScene.showSplash;
-    if (useSplash) {
+    // The bust only stands in when there is no splash and no figure to show.
+    const bust = this.add.image(GAME_W / 2, HERO_Y, portraitKey(c.id)).setDisplaySize(BUST, BUST);
+    if (!have) bust.setTint(0x111111);
+    bust.setVisible(!showSplash && !fullArt);
+    layer.add(bust);
+    const splashSlot = layer.length; // the splash goes in under the figure
+    if (view === 'both' && fullArt) {
+      figure = new SisterSprite(this, c.id, STEP_X, STEP_FEET, 1, order?.color ?? tint);
+      layer.add(figure.root);
+    } else if (!showSplash && fullArt) {
+      figure = new SisterSprite(this, c.id, GAME_W / 2, FIGURE_Y + FIGURE_H / 2 - 16, 2, order?.color ?? tint);
+      if (!have) figure.silhouette();
+      layer.add(figure.root);
+    }
+    if (showSplash) {
       loadSplash(this, c.id).then((key) => {
-        if (!key || !bust.active) return;
+        if (!key || !layer.active) return;
         splash = key;
-        const parts = [addSplash(this, c.id, GAME_W / 2, HERO_H / 2, GAME_W, HERO_H, 'hero'), fade(this, GAME_W / 2, HERO_H / 2, GAME_W, HERO_H, 0.45, 0x0d090f)];
+        const art = addSplash(this, c.id, GAME_W / 2, HERO_H / 2, GAME_W, HERO_H, 'hero');
+        const parts = [art, fade(this, GAME_W / 2, HERO_H / 2, GAME_W, HERO_H, 0.45, 0x0d090f)];
         // A dark wash along the top so Power and the buttons read over the art.
         const top = this.add.graphics();
         for (let i = 0; i < 14; i++) top.fillStyle(0x0d090f, 0.06 * (14 - i)).fillRect(0, i * 10, GAME_W, 10);
-        layer.addAt([...parts, top], layer.getIndex(bust));
-        // Her pixel figure steps out in front of the splash, at the lower right (as on the pull reveal).
-        if (this.textures.exists(fullKey(c.id))) {
-          figure = new SisterSprite(this, c.id, STEP_X, STEP_FEET, 1, order?.color ?? tint);
-          layer.addAt(figure.root, layer.getIndex(bust));
-          this.tweens.add({ targets: figure.root, alpha: { from: 0, to: 1 }, x: { from: GAME_W + 40, to: STEP_X }, duration: 380, delay: 200, ease: 'Quad.out' });
-        }
-        bust.destroy();
+        layer.addAt([...parts, top], splashSlot);
+        this.tweens.add({ targets: art, alpha: { from: 0, to: 1 }, duration: 160 });
       });
     }
-    // Not sworn yet: her figure stands in shadow, to be won at the Altar.
-    if (!useSplash) loadFullBody(this, c.id).then((key) => {
-      if (!key || !bust.active || key === portraitKey(c.id) || !this.textures.exists(key)) return;
-      figure = new SisterSprite(this, c.id, GAME_W / 2, FIGURE_Y + FIGURE_H / 2 - 16, 2, order?.color ?? tint);
-      if (!have) figure.silhouette();
-      layer.addAt(figure.root, layer.getIndex(bust));
-      bust.destroy();
-    });
+    // Load the Sisters either side now, so the arrows flip straight to their art.
+    const at = this.order.indexOf(c.id);
+    for (const d of [1, -1]) {
+      const id = this.order[(at + d + this.order.length) % this.order.length];
+      if (id && save.owned[id]) queueSplash(this, id);
+    }
+    if (!this.load.isLoading()) this.load.start();
     // Dark band under the name so it reads over the art.
     const band = this.add.graphics();
     for (let i = 0; i < 12; i++) band.fillStyle(0x0d090f, 0.08 * i).fillRect(0, NAME_Y - 60 + i * 6, GAME_W, 6);
@@ -361,9 +369,12 @@ export class RosterScene extends Phaser.Scene {
       else if (figure && have) poses++ % 2 ? figure.cast(order?.color ?? tint) : figure.attack(-1);
     });
     layer.add(swipe);
-    if (have && hasSplash(c.id)) {
-      const flip = makeButton(this, PAD + 52, 128, 104, 40, RosterScene.showSplash ? 'Figure' : 'Splash', () => {
-        RosterScene.showSplash = !RosterScene.showSplash;
+    if (splashArt) {
+      // Cycles Both (splash and figure) → Splash only → Sprite only, remembered on this device.
+      const label = { both: 'Both', splash: 'Splash', sprite: 'Sprite' }[view];
+      const flip = makeButton(this, PAD + 52, 128, 104, 40, label, () => {
+        settings.sisterView = view === 'both' ? 'splash' : view === 'splash' ? 'sprite' : 'both';
+        saveSettings();
         layer.destroy();
         this.showDetail(c, tab);
       }, { fontSize: 15 });

@@ -14,10 +14,12 @@ export interface Settings {
   screenShake: boolean;
   /** Tech demo: battles play out in real time on an open field instead of in turns. */
   realtimeBattles: boolean;
+  /** A Sister's page: her splash with her pixel figure in front (both), the splash alone, or the figure alone. */
+  sisterView: 'both' | 'splash' | 'sprite';
 }
 
 const KEY = 'crt-crusaders.settings.v1';
-const DEFAULTS: Settings = { crt: true, crtStrength: 0.6, battleSpeed: 1, autoBattle: false, musicVolume: 0.7, musicMuted: false, screenShake: true, realtimeBattles: false };
+const DEFAULTS: Settings = { crt: true, crtStrength: 0.6, battleSpeed: 1, autoBattle: false, musicVolume: 0.7, musicMuted: false, screenShake: true, realtimeBattles: false, sisterView: 'both' };
 
 function load(): Settings {
   try {
