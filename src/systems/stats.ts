@@ -5,6 +5,7 @@ import type { CrusaderDef } from '../data/types';
 import type { OwnedCrusader, SaveData } from '../state/save';
 import { equipped, gearBonus, type GearItem } from './gear';
 import { reliquaryBonus } from './reliquary';
+import { chapterPerk } from './chapter';
 import { sisterCodexBonus } from './codex';
 import { oathMult } from './tiers';
 
@@ -85,9 +86,11 @@ export function sisterStats(save: SaveData, c: CrusaderDef): Stats {
   const r = reliquaryBonus(save);
   // ...and the Order Codex lifts the Sisters of each Order.
   const k = 1 + sisterCodexBonus(save, c);
+  // ...and the Chapter's level lifts ATK and HP.
+  const ch = 1 + chapterPerk(save);
   return {
-    hp: Math.round(st.hp * (1 + bd.hp) * k * (1 + r.hpPct)),
-    atk: Math.round(st.atk * (1 + bd.atk) * k * (1 + r.atkPct)),
+    hp: Math.round(st.hp * (1 + bd.hp) * k * ch * (1 + r.hpPct)),
+    atk: Math.round(st.atk * (1 + bd.atk) * k * ch * (1 + r.atkPct)),
     armor: Math.round(st.armor * (1 + bd.armor) * k * (1 + r.armorPct)),
     mres: Math.round(st.mres * (1 + bd.mres) * k * (1 + r.armorPct)),
     spd: st.spd + r.spd,

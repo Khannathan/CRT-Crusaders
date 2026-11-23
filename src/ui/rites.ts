@@ -1,6 +1,7 @@
 import { HOUNDS } from '../data/hounds';
 import type { BoostKind } from '../systems/boosts';
 import { armoryOf, featuredSet, PITY } from '../systems/armory';
+import { chapterLevel, chapterReady, siegeBeast } from '../systems/chapter';
 import { ENEMIES } from '../data/enemies';
 import { HUNT_ENTRIES, huntEntriesLeft, huntOn } from '../systems/hunts';
 import { freeWhistle, houndsOf } from '../systems/hounds';
@@ -122,6 +123,11 @@ export const RITES: RiteEntry[] = [
     status: (s) => `${Object.keys(houndsOf(s).owned).length} of ${HOUNDS.length} hounds  ·  ${freeWhistle(s) ? 'free whistle ready' : 'whistled today'}`,
   },
   { label: 'Inventory', scene: 'Inventory', icon: 'shield', art: 'inventory', rank: 1, home: 'cloister', bg: 'bg-hall', blurb: 'Every relic, ash, page and writ your Sisters carried home. Refine and use them.' },
+  {
+    label: 'The Chapter', scene: 'Chapter', icon: 'roster', rank: 1, home: 'cloister', bg: 'bg-hall', ready: (s) => chapterReady(s),
+    blurb: 'Your guild of Sisters (AI, played offline): tithe daily, besiege a beast each week, and level up together.',
+    status: (s) => (s.chapter ? `Level ${chapterLevel(s.chapter.xp)}  ·  Siege ${Math.min(100, Math.round((s.chapter.siege.dealt / siegeBeast(s).pool) * 100))}%  ·  ${s.chapter.marks} Marks` : 'Not yet joined'),
+  },
   {
     label: "Saints' Armory", scene: 'Armory', icon: 'shield', rank: 1, home: 'cloister', bg: 'bg-altar', data: { back: 'Cloister' }, boost: 'fragments',
     blurb: 'UR gear: a banner with a new featured set each week, and a forge for Saint\'s Fragments.',

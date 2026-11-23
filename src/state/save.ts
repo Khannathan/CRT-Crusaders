@@ -6,6 +6,7 @@ import type { TowerState } from '../systems/tower';
 import type { InquisitionState } from '../systems/inquisition';
 import type { BondState } from '../systems/bonds';
 import type { ArmoryState } from '../systems/armory';
+import type { ChapterState } from '../systems/chapter';
 import type { TrialState } from '../systems/trials';
 import type { TaskState } from '../systems/tasks';
 import type { VigilState } from '../systems/vigil';
@@ -81,6 +82,8 @@ export interface SaveData {
   nextGearId?: number;
   /** The Saints' Armory: UR gear banner pity and pulls. */
   armory?: ArmoryState;
+  /** The Chapter (offline guild with AI members). */
+  chapter?: ChapterState;
   /** The idle Vigil: who keeps watch where, and since when. */
   vigil?: VigilState;
   /** Stigmata: raise a Sister's star tier. */
