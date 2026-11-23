@@ -16,14 +16,13 @@ export interface Challenge {
 }
 
 /**
- * A fight left on the player's turn (via the battle Menu), kept so it picks up
- * where it stopped. Only resumed by the same run node or the same challenge.
+ * A fight left from the battle screen's Pause menu (not on Auto), kept so it
+ * picks up where it stopped. Only resumed by the same run node or the same challenge.
  */
 export interface PausedBattle {
   battle: Battle;
-  /** Fought on the open field: where everyone stands, kept as it was. */
-  field?: FieldBattle;
-  actorUid: string;
+  /** Where everyone stands, kept as it was. */
+  field: FieldBattle;
   /** Candle length at the start, for the candle display. */
   vigilMax: number;
   run?: RunState;

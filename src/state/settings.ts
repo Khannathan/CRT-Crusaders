@@ -13,7 +13,6 @@ export interface Settings {
   /** Camera shake on big hits. */
   screenShake: boolean;
   /** Tech demo: battles play out in real time on an open field instead of in turns. */
-  realtimeBattles: boolean;
   /** A Sister's page: her splash with her pixel figure in front (both), the splash alone, or the figure alone. */
   sisterView: 'both' | 'splash' | 'sprite';
 }
@@ -25,7 +24,7 @@ export const BATTLE_SPEEDS: BattleSpeed[] = [1, 2, 3];
 export const nextSpeed = (s: number): BattleSpeed => BATTLE_SPEEDS[(BATTLE_SPEEDS.indexOf(s as BattleSpeed) + 1) % BATTLE_SPEEDS.length];
 
 const KEY = 'crt-crusaders.settings.v1';
-const DEFAULTS: Settings = { crt: true, crtStrength: 0.6, battleSpeed: 1, autoBattle: false, musicVolume: 0.7, musicMuted: false, screenShake: true, realtimeBattles: false, sisterView: 'both' };
+const DEFAULTS: Settings = { crt: true, crtStrength: 0.6, battleSpeed: 1, autoBattle: false, musicVolume: 0.7, musicMuted: false, screenShake: true, sisterView: 'both' };
 
 function load(): Settings {
   try {
