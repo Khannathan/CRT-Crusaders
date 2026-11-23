@@ -32,6 +32,7 @@ import { addScrollArea } from '../ui/scroll';
 import { addOrderSigil, holdForCard } from '../ui/sisterCard';
 import { TAB_BAR_H } from '../ui/tabBar';
 import { PAD, addFrame, text } from '../ui/theme';
+import { huntMarks } from '../systems/pickMarks';
 
 /** Front-to-back order for a suggested hunting party. */
 const FRONT = ['sentinel', 'hierophant', 'martyr', 'warsister', 'inquisitor', 'veilblade', 'abbess', 'confessor', 'hospitaller', 'cantor', 'adjudicator', 'oracle', 'exorcist', 'censer', 'arbalist'];
@@ -192,7 +193,7 @@ export class HuntScene extends Phaser.Scene {
     pickParty(
       this,
       save,
-      { title: ENEMIES[hunt.boss].name, sub: `Tier ${tierLabel(tier)}. ${HUNT_ROUNDS} rounds. Tap in rank order.`, initial: save.lastParty, confirm: 'Hunt', suggest, hound: true },
+      { title: ENEMIES[hunt.boss].name, sub: `Tier ${tierLabel(tier)}. ${HUNT_ROUNDS} rounds. Tap in rank order.`, initial: save.lastParty, confirm: 'Hunt', suggest, hound: true, marks: huntMarks(save, hunt) },
       (party) => {
         save.lastParty = party;
         current.challenge = {

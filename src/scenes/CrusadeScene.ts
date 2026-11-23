@@ -19,6 +19,7 @@ import { addScrollArea } from '../ui/scroll';
 import { TAB_BAR_H, addTabBar } from '../ui/tabBar';
 import { PAD, textWash, addBackdrop, addFrame, addHeading, addScreenGlow, text } from '../ui/theme';
 import { holdForCard } from '../ui/sisterCard';
+import { cryptMarks } from '../systems/pickMarks';
 
 /** Rank of Faith needed to repeat a cleared crypt on Auto. */
 const REPEAT_RANK = 4;
@@ -227,7 +228,7 @@ export class CrusadeScene extends Phaser.Scene {
       });
       layer.add(
         makeButton(this, GAME_W / 2, y0 + 270, 200, 44, 'Change Sisters', () =>
-          pickParty(this, s, { title: 'Who marches?', sub: 'Tap in rank order. The first stands in front.', initial: party, allow: (c) => canMuster(s, c.id), why: 'Wounded Sisters cannot march.', confirm: 'These four', rec: cryptRecommended(s, crypt, heresy) }, (ids) => {
+          pickParty(this, s, { title: 'Who marches?', sub: 'Tap in rank order. The first stands in front.', initial: party, allow: (c) => canMuster(s, c.id), why: 'Wounded Sisters cannot march.', confirm: 'These four', rec: cryptRecommended(s, crypt, heresy), marks: cryptMarks(s, crypt, heresy) }, (ids) => {
             party = ids;
             draw();
           }),

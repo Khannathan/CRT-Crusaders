@@ -28,6 +28,8 @@ import { pickParty } from '../ui/partyPicker';
 import { addScrollArea } from '../ui/scroll';
 import { TAB_BAR_H } from '../ui/tabBar';
 import { PAD, fitLine, text } from '../ui/theme';
+import { fightMarks } from '../systems/pickMarks';
+import { ordealBattle as ordealFight } from '../systems/ordeals';
 
 const GRADE_COLOR = { easy: 0x8fb68a, even: 0xd9b45a, hard: 0xd0543a };
 
@@ -120,7 +122,7 @@ export class OrdealsScene extends Phaser.Scene {
     pickParty(
       this,
       save,
-      { title: `${g.label} Ordeal`, sub: `${c.title} of ${c.rival.replace(/^The /, 'the ')}. Their might rises to meet yours.`, initial: save.lastParty, confirm: 'Face the Ordeal!' },
+      { title: `${g.label} Ordeal`, sub: `${c.title} of ${c.rival.replace(/^The /, 'the ')}. Their might rises to meet yours.`, initial: save.lastParty, confirm: 'Face the Ordeal!', marks: fightMarks(ordealFight(save, [], c)) },
       (party) => {
         current.challenge = {
           label: `The ${c.title} of ${c.rival.replace(/^The /, 'the ')} stands ready. Prove your Order!`,

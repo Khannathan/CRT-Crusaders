@@ -19,6 +19,8 @@ import { drawPortraitBadges } from '../ui/portraitBadges';
 import { cardGridBottom, cardSlot, drawRosterCard } from '../ui/rosterCard';
 import { openPresets } from '../ui/presets';
 import { sortAndFilter, sortControls, emptyListLine } from '../ui/sisterSort';
+import { cryptMarks, liveLegend } from '../systems/pickMarks';
+import { drawLegend } from '../ui/markLegend';
 
 const ROMAN = ['I', 'II', 'III', 'IV'];
 
@@ -97,17 +99,24 @@ export class MusterScene extends Phaser.Scene {
         this.create();
       });
     }, { fontSize: 14 });
+    // Who the crypt's boss fears: marked cards, ready ones first, with what the marks mean.
+    const crypt = CRYPTS.find((c) => c.id === current.cryptId) ?? CRYPTS[0];
+    const marks = cryptMarks(game.save, crypt, current.heresy?.[crypt.id] ?? 0);
+    const mine = CRUSADERS.filter((c) => game.save.owned[c.id]);
+    const marksOf = new Map(mine.map((c) => [c.id, canMuster(game.save, c.id) && !this.party.includes(c.id) ? marks.of(c, this.party) : []]));
+    const legend = liveLegend(marks, mine.filter((c) => canMuster(game.save, c.id)), this.party);
+    const shift = legend.length ? drawLegend(this, 350, GAME_W - 32, legend).bottom - 350 + 4 : 0;
     // The Roster's sort and filter; Sisters already called always show.
-    const owned = sortAndFilter(game.save, CRUSADERS.filter((c) => game.save.owned[c.id]), this.party);
-    sortControls(this, GAME_W / 2, 368, GAME_W - 32, () => {
+    const owned = sortAndFilter(game.save, mine, this.party).sort((a, b) => Number(marksOf.get(b.id)!.length > 0) - Number(marksOf.get(a.id)!.length > 0));
+    sortControls(this, GAME_W / 2, 368 + shift, GAME_W - 32, () => {
       this.listY = 0;
       this.create();
     }, { depth: 10, h: 36 });
-    if (!owned.length) this.add.text(GAME_W / 2, 470, emptyListLine(game.save), text.body(17, PAL.muted)).setOrigin(0.5);
+    if (!owned.length) this.add.text(GAME_W / 2, 470 + shift, emptyListLine(game.save), text.body(17, PAL.muted)).setOrigin(0.5);
     // The Sisters scroll (drag or mouse wheel) between the controls and the buttons.
-    const list = addScrollArea(this, 390, GAME_H - 108, { start: this.listY, onScroll: (y) => (this.listY = y) });
+    const list = addScrollArea(this, 390 + shift, GAME_H - 108, { start: this.listY, onScroll: (y) => (this.listY = y) });
     // The Roster's cards, at the Roster's size.
-    const y0 = 398;
+    const y0 = 398 + shift;
     owned.forEach((c, i) => {
       const { left, top } = cardSlot(i, y0);
       const inParty = this.party.includes(c.id);
@@ -117,6 +126,7 @@ export class MusterScene extends Phaser.Scene {
         picked: inParty,
         note: ready ? undefined : 'Recovering',
         noteColor: PAL.muted,
+        marks: marksOf.get(c.id),
       });
       list.content.add(card.parts);
       if (ready && !inParty) {
@@ -131,15 +141,21 @@ export class MusterScene extends Phaser.Scene {
     });
     list.fit(cardGridBottom(owned.length, y0) + 4);
 
-    makeButton(this, GAME_W / 2 - 128, GAME_H - 60, 236, 80, 'Suggest', () => {
+    // Empty the party in one tap.
+    makeButton(this, 68, GAME_H - 60, 112, 80, 'Clear', () => {
+      if (!this.party.length) return;
+      this.party = [];
+      this.create();
+    }, { disabled: !this.party.length });
+    makeButton(this, 212, GAME_H - 60, 160, 80, 'Suggest', () => {
       this.party = suggestParty(game.save);
       this.create();
     });
     makeButton(
       this,
-      GAME_W / 2 + 128,
+      GAME_W - 124,
       GAME_H - 60,
-      236,
+      232,
       80,
       'March into the dark',
       () => {

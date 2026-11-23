@@ -40,6 +40,7 @@ import { pickParty } from '../ui/partyPicker';
 import { accountPower, formatPower } from '../systems/power';
 import { drawRecommended } from '../ui/recommended';
 import { PAD, addFrame, text, fitLine } from '../ui/theme';
+import { fightMarks } from '../systems/pickMarks';
 
 type View = 'bell' | 'orders';
 
@@ -185,7 +186,7 @@ export class TowerScene extends Phaser.Scene {
     pickParty(
       this,
       save,
-      { title: `Floor ${floor}`, sub: f.rule ? `${ruleText(f.rule)}. Tap in rank order.` : 'Tap in rank order. The first stands in front.', initial: save.lastParty, allow, why: f.rule ? ruleText(f.rule) : undefined, confirm: 'Climb', rec: floorRecommended(save, floor) },
+      { title: `Floor ${floor}`, sub: f.rule ? `${ruleText(f.rule)}. Tap in rank order.` : 'Tap in rank order. The first stands in front.', initial: save.lastParty, allow, why: f.rule ? ruleText(f.rule) : undefined, confirm: 'Climb', rec: floorRecommended(save, floor), marks: fightMarks(towerBattle(save, [], floor)) },
       (party) => {
         current.challenge = {
           label: `Floor ${floor} of the Bell Tower. ${f.boss ? 'Something vast stirs in the belfry.' : 'The bells toll for you.'}`,
@@ -211,7 +212,7 @@ export class TowerScene extends Phaser.Scene {
     pickParty(
       this,
       save,
-      { title: `${order}: floor ${floor}`, sub: `Four Sisters of the ${order}, in rank order.`, initial, allow, why: ruleText(f.rule), confirm: 'Climb', min: ORDER_PARTY, rec: orderFloorRecommended(save, order, floor) },
+      { title: `${order}: floor ${floor}`, sub: `Four Sisters of the ${order}, in rank order.`, initial, allow, why: ruleText(f.rule), confirm: 'Climb', min: ORDER_PARTY, rec: orderFloorRecommended(save, order, floor), marks: fightMarks(orderTowerBattle(save, [], order, floor)) },
       (party) => {
         current.challenge = {
           label: `Floor ${floor} of the ${order} tower. ${f.boss ? 'The Order\'s old shame waits at the top of the stair.' : 'Your Sisters climb their own house.'}`,
