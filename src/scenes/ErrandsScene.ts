@@ -23,6 +23,8 @@ import { familyDef } from '../systems/items';
 import { sisterPower } from '../systems/power';
 import { rewardText } from '../systems/tasks';
 import { makeButton } from '../ui/button';
+import { confirmSheet } from '../ui/confirmSheet';
+import { claimAllErrands, quickSend, quickSendPlan } from '../systems/quick';
 import { modeScreen, progressBar, toast, untilText } from '../ui/modeScreen';
 import { pickParty } from '../ui/partyPicker';
 import { makePlaceholderPortrait, portraitKey } from '../ui/placeholderPortrait';
@@ -56,7 +58,14 @@ export class ErrandsScene extends Phaser.Scene {
     let y = top + 4;
 
     this.add.text(PAD, y, `AWAY ${s.active.length}/${ERRAND_SLOTS}`, text.hud(14, s.active.length ? PAL.amber : PAL.steel));
-    y += 26;
+    // Claim all and Quick Send: the whole board in two taps.
+    const home = s.active.filter((a) => isDone(a)).length;
+    const plan = quickSendPlan(save);
+    const claimAll = makeButton(this, GAME_W - PAD - 270, y + 8, 150, 40, home ? `Claim all · ${home}` : 'Claim all', () => {}, { active: home > 0, disabled: !home, fontSize: 15 });
+    if (home) this.tapButton(list, claimAll.box, () => this.claimAll());
+    const quick = makeButton(this, GAME_W - PAD - 90, y + 8, 180, 40, plan.length ? `Quick Send · ${plan.length}` : 'Quick Send', () => {}, { active: plan.length > 0, disabled: !plan.length, fontSize: 15 });
+    if (plan.length) this.tapButton(list, quick.box, () => this.quickSend());
+    y += 44;
     if (!s.active.length) {
       this.add.text(PAD, y, 'No Sister is away. Send one below!', text.body(16, PAL.muted));
       y += 34;
@@ -177,6 +186,28 @@ export class ErrandsScene extends Phaser.Scene {
         this.scene.restart({ notice: `Sent forth! Back in ${e.hours}h.` });
       },
     );
+  }
+
+  /** Every finished errand home at once. */
+  private claimAll() {
+    const got = claimAllErrands(game.save);
+    if (!got.count) return;
+    commit();
+    this.scene.restart({ notice: `${got.count} errand${got.count > 1 ? 's' : ''} home with ${rewardText(got.reward)}!` });
+  }
+
+  /** Fills every free slot (longest errands first, bonus Sisters first), after one look. */
+  private quickSend() {
+    const save = game.save;
+    const plan = quickSendPlan(save);
+    if (!plan.length) return;
+    const first = (id: string) => CRUSADERS.find((c) => c.id === id)?.name.split(' ')[0] ?? id;
+    const lines = plan.map((p) => `${p.errand.name} (${p.errand.hours}h): ${p.sisters.map(first).join(', ')}${p.sisters.some((id) => fitsBonus(p.errand, id)) ? '  +50%' : ''}`);
+    confirmSheet(this, `Send ${plan.length} errand${plan.length > 1 ? 's' : ''}?`, lines, 'Go forth!', () => {
+      const sent = quickSend(save);
+      commit();
+      this.scene.restart({ notice: `${sent.length} errand${sent.length > 1 ? 's' : ''} under way. Serve, and be rewarded!` });
+    });
   }
 
   private claim(i: number) {
