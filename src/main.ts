@@ -35,6 +35,7 @@ import { StoryScene } from './scenes/StoryScene';
 import { ChronicleScene } from './scenes/ChronicleScene';
 import { MatinsScene } from './scenes/MatinsScene';
 import { MissivesScene } from './scenes/MissivesScene';
+import { CalendarScene } from './scenes/CalendarScene';
 import { RankScene } from './scenes/RankScene';
 import { TrialsScene } from './scenes/TrialsScene';
 import { HoldScene } from './scenes/HoldScene';
@@ -108,6 +109,7 @@ function start() {
       ChronicleScene,
       MatinsScene,
       MissivesScene,
+      CalendarScene,
       RankScene,
       TrialsScene,
       HoldScene,

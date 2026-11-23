@@ -197,6 +197,7 @@ export const RITES: RiteEntry[] = [
   },
   { label: 'Novitiate', scene: 'Novitiate', icon: 'sigil', rank: 1, home: 'duties', noRail: true, shown: (s) => noviceOpen(s), ready: (s) => noviceReady(s) },
   { label: 'Missives', scene: 'Missives', icon: 'book', rank: 1, home: 'lobby', ready: (s) => missivesReady(s) },
+  { label: 'Calendar', scene: 'Calendar', icon: 'book', rank: 1, home: 'lobby' },
   { label: 'Matins', scene: 'Matins', icon: 'flame', rank: 1, home: 'lobby', ready: (s) => matinsReady(s) },
   { label: 'Pass', scene: 'Pass', icon: 'sigil', rank: 1, home: 'lobby', ready: (s) => passReady(s) },
   { label: 'Penance', scene: 'Penance', icon: 'book', rank: 2, home: 'duties', ready: (s) => anyClaimable(s) },
