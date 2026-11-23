@@ -1,3 +1,4 @@
+import { keywordLine } from '../systems/keywords';
 import Phaser from 'phaser';
 import { music } from '../audio/music';
 import { FONT, GAME_W, PAL, hex } from '../config';
@@ -91,6 +92,8 @@ export class BattleScene extends Phaser.Scene {
   private zealText!: Phaser.GameObjects.Text;
   private houndImg?: Phaser.GameObjects.Image;
   private roundText!: Phaser.GameObjects.Text;
+  /** The party's Order counters in play (Remains, Tide, the Bell, Hymns). */
+  private kwText!: Phaser.GameObjects.Text;
   private candle!: Phaser.GameObjects.Graphics;
   private candleSprite?: Phaser.GameObjects.Image;
   private candleFrames = 0;
@@ -175,6 +178,7 @@ export class BattleScene extends Phaser.Scene {
     if (!this.textures.exists('ui-bar-frame')) this.add.rectangle(GAME_W / 2, 442, 404, 18, PAL.deepShadow).setStrokeStyle(2, PAL.armorShadow);
     this.zealBar = new Bar(this, GAME_W / 2 - 200, 442, 400, 14, 'ui-bar-zeal', PAL.amber, PAL.deepShadow);
     this.zealText = this.add.text(GAME_W / 2, 463, '', { ...style, fontSize: '16px', color: hex(PAL.steel) }).setOrigin(0.5);
+    this.kwText = this.add.text(16, 60, '', { ...style, fontSize: '15px', color: hex(PAL.amber) }).setOrigin(0, 0.5);
     this.drawHound();
 
     this.descText = this.add
@@ -676,6 +680,12 @@ export class BattleScene extends Phaser.Scene {
         st.thorns && 'Thorns',
         st.critUp && 'Keen',
         st.charging && 'Charging',
+        st.overwatch && 'Overwatch',
+        st.confessed && 'Confessed',
+        st.foretold && 'Foretold',
+        u.guilt && `Guilt ${u.guilt}`,
+        u.scars && `Scars ${u.scars}`,
+        u.stride && `Stride ${u.stride}`,
         u.side === 'enemy' && ENEMIES[u.ref].burst && 'Bursts',
       ].filter(Boolean);
       c.tags.setText(tags.join(' · '));
@@ -714,6 +724,7 @@ export class BattleScene extends Phaser.Scene {
           : 'Each Sister fills her own Zeal',
     );
     this.roundText.setText(`Round ${Math.max(1, b.round)}`);
+    this.kwText.setText(keywordLine(b.kw, b.alive('party').map((u) => u.order ?? '')));
 
     // Vigil candle: shrinks each round; once out, enemies grow stronger
     const left = Math.max(0, b.vigil) / this.vigilMax;

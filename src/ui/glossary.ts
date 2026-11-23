@@ -55,6 +55,16 @@ export const GLOSSARY: Record<string, Term> = {
   crit: { title: 'Critical hit', color: PAL.amber, match: ['crit', 'crits', 'critical'], text: `A critical hit deals ${CRIT_MULT}x damage.` },
   execute: { title: 'Execute', color: DEBUFF, match: ['under 30% hp'], text: `Extra damage against a foe below ${Math.round(EXECUTE_AT * 100)}% HP.` },
   bane: { title: 'Bane Order', color: PAL.amber, match: ['fears', 'bane'], text: `Every foe fears one Order. Sisters of that Order deal +${Math.round((BANE_MULT - 1) * 100)}% to it and take ${Math.round((1 - BANE_GUARD) * 100)}% less from it. Its sigil sits on its card.` },
+  overwatch: { title: 'Overwatch', color: BUFF, match: ['overwatch'], text: 'Iron Vigil. A Sister on Overwatch reacts once, out of turn, when the next foe acts. A reaction on a charging boss also drains 10 Wrath.' },
+  mercy: { title: 'Mercy', color: PAL.amber, match: ['mercy', 'mercy line', 'mercy kill', 'foretold', 'foretell'], text: 'Ashen Mercy. A common foe that an Ashen Mercy Sister leaves under its Mercy line (15% HP; Foretold raises it) dies at once, and every Sister heals 5%. A boss under the line takes +30% from them and loses 10 Wrath.' },
+  guilt: { title: 'Guilt', color: DEBUFF, match: ['guilt'], text: 'Veiled Tribunal. Their hits on an Accused foe add Guilt, up to 5. Each Guilt makes it take 4% more damage. Sentence skills spend it for more.' },
+  remains: { title: 'Remains', color: PAL.amber, match: ['remains'], text: 'Sepulcher Watch. While a Watch Sister stands, every fall (foe, add or Sister) gives the party 1 Remains, up to 6, and a boss gives one at 75%, 50% and 25% HP. Watch skills spend them.' },
+  hymn: { title: 'Hymn', color: BUFF, match: ['hymn', 'hymns', 'harmony', 'harmonise'], text: 'Candle Choir. A party aura that plays its effects every round for a few rounds. One at a time, but a second Choir Hymn harmonises: both play, and every Sister gains 5 Zeal.' },
+  scars: { title: 'Scars', color: DEBUFF, match: ['scar', 'scars'], text: 'Thorn Covenant. A Covenant Sister gains a Scar for each 5% of max HP she loses to her own skills or to bleeding, up to 10. Each Scar: +2% damage for the rest of the fight.' },
+  tide: { title: 'Tide', color: TYPE, match: ['tide', 'ebb'], text: 'Drowned Litany. Rises by 1 each round while a Drowned Sister stands, up to 5. Drowned skills grow with it; Ebb skills spend it all.' },
+  confess: { title: 'Confess', color: DEBUFF, match: ['confess', 'confessed', 'shatter'], text: 'Glass Confession. Critical hits against a Confessed foe Shatter for +20% critical damage.' },
+  stride: { title: 'Stride', color: BUFF, match: ['stride'], text: 'Red Pilgrimage. A Pilgrim gains 1 Stride each time she changes rank (a skill, a Step, a push or a pull), up to 5. Skills spend it.' },
+  toll: { title: 'Toll', color: PAL.amber, match: ['toll', 'tolls', 'peal', 'midnight', 'bell rings'], text: 'Hollow Bell. Every skill a Bell Sister uses rings the Bell. Every 3rd toll is a Peal: each Bell Sister gains 5 Zeal. The 12th toll is Midnight: once a fight, every fallen Sister rises with 20% HP.' },
   cooldown: { title: 'Cooldown', color: PAL.steel, match: ['cooldown'], text: 'Her own turns to wait before using the skill again.' },
 };
 
