@@ -4,7 +4,7 @@ export interface Settings {
   /** 0.35 = subtle, 0.6 = standard, 1 = heavy */
   crtStrength: number;
   /** Battle animation speed. */
-  battleSpeed: 1 | 2;
+  battleSpeed: BattleSpeed;
   /** The party fights on its own. */
   autoBattle: boolean;
   /** Music loudness, 0 to 1. */
@@ -18,13 +18,23 @@ export interface Settings {
   sisterView: 'both' | 'splash' | 'sprite';
 }
 
+export type BattleSpeed = 1 | 2 | 3;
+/** The speeds the battle Speed button steps through. */
+export const BATTLE_SPEEDS: BattleSpeed[] = [1, 2, 3];
+/** The next speed after this one (3x wraps back to 1x). */
+export const nextSpeed = (s: number): BattleSpeed => BATTLE_SPEEDS[(BATTLE_SPEEDS.indexOf(s as BattleSpeed) + 1) % BATTLE_SPEEDS.length];
+
 const KEY = 'crt-crusaders.settings.v1';
 const DEFAULTS: Settings = { crt: true, crtStrength: 0.6, battleSpeed: 1, autoBattle: false, musicVolume: 0.7, musicMuted: false, screenShake: true, realtimeBattles: false, sisterView: 'both' };
 
 function load(): Settings {
   try {
     const raw = localStorage.getItem(KEY);
-    if (raw) return { ...DEFAULTS, ...(JSON.parse(raw) as Partial<Settings>) };
+    if (raw) {
+      const s = { ...DEFAULTS, ...(JSON.parse(raw) as Partial<Settings>) };
+      if (!BATTLE_SPEEDS.includes(s.battleSpeed)) s.battleSpeed = 1;
+      return s;
+    }
   } catch {
     // ignore
   }

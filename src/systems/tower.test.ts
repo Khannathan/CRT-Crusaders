@@ -101,3 +101,13 @@ describe('Order Towers', () => {
     expect(ORDER_TOWER_FLOORS).toBe(50);
   });
 });
+
+describe('elite floors are marked', () => {
+  it('every third floor that is not a boss is an elite, in both kinds of tower', () => {
+    expect(floorDef(3).elite).toBe(true);
+    expect(floorDef(4).elite).toBe(false);
+    expect(floorDef(30).elite).toBe(false);
+    expect(floorDef(30).boss).toBe(true);
+    expect(orderFloorDef('Iron Vigil', 6).elite).toBe(true);
+  });
+});

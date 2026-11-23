@@ -146,6 +146,12 @@ function finish(r: Running, outcome: 'victory' | 'defeat') {
   toast(`${head}. ${notice ?? s.line.trim()}`, s.won);
 }
 
+/** A fight that ended while the game was closed: the Crusade tab leads to it, and a notice says how it went. */
+export function announceSettled(s: Settled) {
+  bgFight.done = s;
+  toast(`${s.won ? 'The fight you left was won' : 'The fight you left was lost'} while you were away. ${s.line.trim()}`, s.won);
+}
+
 /** A notice across the top of whatever screen is open; tap it to see the outcome. */
 function toast(msg: string, won: boolean) {
   const scene = bgFight.game?.scene.getScenes(true).filter((s) => s.scene.key !== 'Boot').at(-1);

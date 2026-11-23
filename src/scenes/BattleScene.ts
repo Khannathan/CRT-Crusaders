@@ -9,7 +9,7 @@ import { CRUSADERS } from '../data/crusaders';
 import { ENEMIES } from '../data/enemies';
 import type { SkillDef } from '../data/skills';
 import { game } from '../state/game';
-import { saveSettings, settings } from '../state/settings';
+import { nextSpeed, saveSettings, settings } from '../state/settings';
 import { autoChoose, autoStep } from '../systems/autoplay';
 import { makeButton } from '../ui/button';
 import { addOrderSigil } from '../ui/sisterCard';
@@ -315,7 +315,7 @@ export class BattleScene extends Phaser.Scene {
   private drawToggles() {
     this.toggles.forEach((o) => o.destroy());
     const auto = makeButton(this, 236, 24, 92, 40, settings.autoBattle ? 'Auto: On' : 'Auto', () => this.toggleAuto(), { active: settings.autoBattle, fontSize: 19 });
-    const speed = makeButton(this, 340, 24, 92, 40, settings.battleSpeed === 2 ? 'Speed 2x' : 'Speed 1x', () => this.toggleSpeed(), { active: settings.battleSpeed === 2, fontSize: 19 });
+    const speed = makeButton(this, 340, 24, 92, 40, `Speed ${settings.battleSpeed}x`, () => this.toggleSpeed(), { active: settings.battleSpeed > 1, fontSize: 19 });
     this.toggles = [auto.box, auto.text, speed.box, speed.text];
   }
 
@@ -329,7 +329,7 @@ export class BattleScene extends Phaser.Scene {
   }
 
   private toggleSpeed() {
-    settings.battleSpeed = settings.battleSpeed === 2 ? 1 : 2;
+    settings.battleSpeed = nextSpeed(settings.battleSpeed);
     saveSettings();
     this.applySpeed();
     this.drawToggles();

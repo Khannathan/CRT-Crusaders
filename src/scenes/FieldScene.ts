@@ -5,7 +5,7 @@ import { GAME_H, GAME_W, PAL } from '../config';
 import type { SkillDef } from '../data/skills';
 import { commit, game } from '../state/game';
 import { current } from '../state/run';
-import { saveSettings, settings } from '../state/settings';
+import { nextSpeed, saveSettings, settings } from '../state/settings';
 import { CHAPTERS, STAGES_PER_CHAPTER, nextStage, stageBattle, stageDef } from '../systems/campaign';
 import { ZEAL_MAX, skillsFor, type Battle, type Unit } from '../systems/combat';
 import { FieldBattle } from '../systems/field';
@@ -243,7 +243,7 @@ export class FieldScene extends Phaser.Scene {
   private drawToggles() {
     this.toggles.forEach((o) => o.destroy());
     const auto = makeButton(this, 262, 34, 96, 42, settings.autoBattle ? 'Auto: On' : 'Auto', () => this.toggleAuto(), { active: settings.autoBattle, fontSize: 17 });
-    const speed = makeButton(this, 364, 34, 96, 42, settings.battleSpeed === 2 ? 'Speed 2x' : 'Speed 1x', () => this.toggleSpeed(), { active: settings.battleSpeed === 2, fontSize: 17 });
+    const speed = makeButton(this, 364, 34, 96, 42, `Speed ${settings.battleSpeed}x`, () => this.toggleSpeed(), { active: settings.battleSpeed > 1, fontSize: 17 });
     // Practice fights can be left at any time; real ones are short and play out.
     const out = this.practice ? makeButton(this, 472, 34, 108, 42, 'Leave', () => this.leave(), { fontSize: 17 }) : undefined;
     this.toggles = [...auto.all, ...speed.all, ...(out?.all ?? [])];
@@ -258,7 +258,7 @@ export class FieldScene extends Phaser.Scene {
   }
 
   private toggleSpeed() {
-    settings.battleSpeed = settings.battleSpeed === 2 ? 1 : 2;
+    settings.battleSpeed = nextSpeed(settings.battleSpeed);
     saveSettings();
     this.applySpeed();
     this.drawToggles();
