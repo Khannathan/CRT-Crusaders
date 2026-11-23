@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
-import { FONT, GAME_W, PAL, hex } from '../config';
+import { FONT, GAME_H, GAME_W, PAL, hex } from '../config';
+import { addSplash } from './placeholderPortrait';
 import { settings } from '../state/settings';
 
 /** Battle feel: hit-stop, shake, damage pops, CRT static deaths, Rite title cards and combo bursts. */
@@ -207,4 +208,47 @@ export function recordBanner(scene: Phaser.Scene, line: string, y = 200, hold = 
   scene.tweens.add({ targets: title, scale: 1, alpha: 1, delay: 80, duration: 220, ease: 'Back.out' });
   scene.tweens.add({ targets: sub, alpha: 1, delay: 220, duration: 200 });
   scene.tweens.add({ targets: parts, alpha: 0, delay: hold, duration: 500, onComplete: () => parts.forEach((p) => p.destroy()) });
+}
+
+/**
+ * A Sister's Litany cut-in: the field dims, a slanted band sweeps across with her
+ * splash art, the Litany's name and the Chain it makes, then sweeps off.
+ * Needs her splash loaded (splashKey); otherwise use riteCard.
+ */
+export function litanyCutIn(scene: Phaser.Scene, id: string, name: string, who: string, chain = 0) {
+  const y = 400;
+  const W = GAME_W + 120;
+  const H = 190;
+  const dim = scene.add.rectangle(GAME_W / 2, GAME_H / 2, GAME_W, GAME_H, 0x000000, 0).setDepth(39);
+  const band = scene.add.container(-GAME_W, y).setDepth(40).setAngle(-7);
+  band.add(scene.add.rectangle(0, 0, W, H, 0x2a0e14));
+  const art = addSplash(scene, id, 70, 0, W - 140, H - 8, 'hero');
+  band.add(art);
+  // Dark wash on the left so the words read over her picture.
+  const wash = scene.add.graphics();
+  wash.fillGradientStyle(0x0c0709, 0x0c0709, 0x0c0709, 0x0c0709, 0.92, 0, 0.92, 0);
+  wash.fillRect(-W / 2, -H / 2, W * 0.62, H);
+  band.add(wash);
+  band.add(scene.add.rectangle(0, -H / 2, W, 4, PAL.amber));
+  band.add(scene.add.rectangle(0, H / 2, W, 4, PAL.amber));
+  const x0 = -GAME_W / 2 + 22;
+  band.add(scene.add.text(x0, -44, `${who.toUpperCase()} INVOKES`, { fontFamily: FONT, fontSize: '16px', color: hex(PAL.ivory), stroke: '#000000', strokeThickness: 4 }).setOrigin(0, 0.5));
+  band.add(
+    scene.add
+      .text(x0, 2, name.toUpperCase(), { fontFamily: FONT, fontSize: '38px', color: hex(PAL.amber), stroke: '#000000', strokeThickness: 6, wordWrap: { width: GAME_W - 60 } })
+      .setOrigin(0, 0.5),
+  );
+  if (chain >= 2) band.add(scene.add.text(x0, 50, `CHAIN x${chain}`, { fontFamily: FONT, fontSize: '20px', color: '#ffcf6a', stroke: '#000000', strokeThickness: 5 }).setOrigin(0, 0.5));
+  scene.tweens.add({ targets: dim, fillAlpha: 0.5, duration: 120 });
+  scene.tweens.add({
+    targets: band,
+    x: GAME_W / 2,
+    duration: 160,
+    ease: 'Quad.out',
+    onComplete: () => shake(scene, 'crit'),
+  });
+  scene.time.delayedCall(820, () => {
+    scene.tweens.add({ targets: band, x: GAME_W * 1.6, duration: 160, ease: 'Quad.in', onComplete: () => band.destroy() });
+    scene.tweens.add({ targets: dim, fillAlpha: 0, duration: 180, onComplete: () => dim.destroy() });
+  });
 }
