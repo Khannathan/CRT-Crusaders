@@ -45,6 +45,14 @@ export const PAL = {
   damage: 0xc27078,
 } as const;
 
+/**
+ * Health bar fills. Party green matches the real-time field and must stay
+ * bright enough to read on the dark battle backdrop (see config.test.ts).
+ */
+export const HP_PARTY = 0x7aba5a;
+/** The lost part of a party health bar: a muted wine, lighter than the frame, so damage taken reads at a glance. */
+export const HP_EMPTY = 0x4a2a32;
+
 export const hex = (c: number) => '#' + c.toString(16).padStart(6, '0');
 
 /** Body text (Crimson Pro). Fonts live in src/assets/fonts and load before the game starts. */

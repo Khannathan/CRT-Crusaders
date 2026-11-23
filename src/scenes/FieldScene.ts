@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
 import { battleLoop } from '../audio/battleMusic';
 import { music } from '../audio/music';
-import { BASE_H, GAME_H, GAME_W, PAL } from '../config';
+import { BASE_H, GAME_H, GAME_W, HP_PARTY, PAL } from '../config';
 import type { SkillDef } from '../data/skills';
 import { commit, game } from '../state/game';
 import { current } from '../state/run';
@@ -201,7 +201,7 @@ export class FieldScene extends Phaser.Scene {
       const frame = this.add.rectangle(x, y, CARD + 4, CARD + 4, 0x110b13).setStrokeStyle(2, PAL.bronze).setDepth(31);
       const img = this.add.image(x, y, portraitKey(u.ref)).setDisplaySize(CARD, CARD).setDepth(31);
       this.add.rectangle(x, y + CARD / 2 + 12, CARD, 8, 0x000000).setDepth(31);
-      const hp = this.add.rectangle(x - CARD / 2, y + CARD / 2 + 12, CARD, 6, 0x7aba5a).setOrigin(0, 0.5).setDepth(32);
+      const hp = this.add.rectangle(x - CARD / 2, y + CARD / 2 + 12, CARD, 6, HP_PARTY).setOrigin(0, 0.5).setDepth(32);
       this.add.rectangle(x, y + CARD / 2 + 22, CARD, 7, 0x000000).setDepth(31);
       const zeal = this.add.rectangle(x - CARD / 2, y + CARD / 2 + 22, 0, 5, PAL.amber).setOrigin(0, 0.5).setDepth(32);
       const rite = skillsFor(u).find((s) => s.rite);

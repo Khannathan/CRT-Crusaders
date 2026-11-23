@@ -2,7 +2,7 @@ import { keywordLine } from '../systems/keywords';
 import Phaser from 'phaser';
 import { battleLoop } from '../audio/battleMusic';
 import { music } from '../audio/music';
-import { BASE_H, FONT, GAME_H, GAME_W, PAL, hex } from '../config';
+import { BASE_H, FONT, GAME_H, GAME_W, HP_EMPTY, HP_PARTY, PAL, hex } from '../config';
 import { addTabBar } from '../ui/tabBar';
 import { RARITY_COLOR } from '../data/classes';
 import { CRUSADERS } from '../data/crusaders';
@@ -59,6 +59,12 @@ function spreadRows() {
   SKILL_DY = extra;
 }
 const FEET = 84;
+/**
+ * Party health bars draw as a flat bright fill, the same green as the real-time
+ * field. The ui-bar-hp.png from the art redo is a dark olive that vanished
+ * against the dark nave, so it is skipped here (no texture has this key).
+ */
+const PARTY_HP_FILL = 'no-skin:party-hp';
 const FIGURE_BOX = 176;
 const ROMAN = ['I', 'II', 'III', 'IV'];
 /** Skill buttons sit just above the tab bar, which stays on screen through a fight. */
@@ -576,7 +582,7 @@ export class BattleScene extends Phaser.Scene {
     // ui-unit-frame.png (tinted per rarity) over the portrait, when present
     const skinFrame = nine(this, 'ui-unit-frame', 0, 0, CARD + 6, CARD + 6) ?? undefined;
     if (skinFrame) frame.setStrokeStyle();
-    const hp = new Bar(this, -CARD / 2, CARD / 2 + 12, CARD, 10, party ? 'ui-bar-hp' : 'ui-bar-hp-enemy', party ? 0x7a9a5a : PAL.oxblood);
+    const hp = new Bar(this, -CARD / 2, CARD / 2 + 12, CARD, 10, party ? PARTY_HP_FILL : 'ui-bar-hp-enemy', party ? HP_PARTY : PAL.oxblood, party ? HP_EMPTY : undefined);
     const shieldFill = this.add.rectangle(-CARD / 2, CARD / 2 + 12, 0, 4, PAL.ivory).setOrigin(0, 0.5);
     const hpText = this.add.text(0, CARD / 2 + 35, '', { fontFamily: FONT, fontSize: '17px', color: hex(PAL.ivory) }).setOrigin(0.5);
     const tags = this.add
@@ -632,7 +638,7 @@ export class BattleScene extends Phaser.Scene {
     const glow = this.add.rectangle(0, midY, CARD + 6, FIGURE_BOX + 6).setStrokeStyle(5, PAL.amber).setVisible(false);
     // An invisible stand-in for the old card frame, so refresh() can treat both alike.
     const frame = this.add.rectangle(0, midY, CARD, FIGURE_BOX).setVisible(false);
-    const hp = new Bar(this, -CARD / 2, FEET + 12, CARD, 10, 'ui-bar-hp', 0x7a9a5a);
+    const hp = new Bar(this, -CARD / 2, FEET + 12, CARD, 10, PARTY_HP_FILL, HP_PARTY, HP_EMPTY);
     const shieldFill = this.add.rectangle(-CARD / 2, FEET + 12, 0, 4, PAL.ivory).setOrigin(0, 0.5);
     const meter = new Bar(this, -CARD / 2, FEET + 21, CARD, 8, 'ui-bar-litany', PAL.bronze, undefined, 'ui-bar-litany-frame');
     const hpText = this.add.text(0, FEET + 35, '', { fontFamily: FONT, fontSize: '17px', color: hex(PAL.ivory) }).setOrigin(0.5);

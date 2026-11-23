@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import { FONT, PAL, hex } from '../config';
+import { FONT, HP_PARTY, PAL, hex } from '../config';
 import type { SkillDef } from '../data/skills';
 import { ZEAL_MAX, type BattleEvent, type Unit } from '../systems/combat';
 import type { Body, FieldBattle, FieldEvent } from '../systems/field';
@@ -421,7 +421,7 @@ export class FieldView {
     const barW = Math.round((u.boss ? 110 : 58) * (this.o.compact ? 0.8 : 1) * (s / 0.75 > 1 ? 1.15 : 1));
     const bh = this.o.compact ? 4 : 6;
     const hpBack = this.scene.add.rectangle(0, 0, barW + 2, bh + 2, 0x000000, 0.8).setOrigin(0, 0.5);
-    const hp = this.scene.add.rectangle(0, 0, barW, bh, u.side === 'party' ? 0x7aba5a : 0xc0392b).setOrigin(0, 0.5);
+    const hp = this.scene.add.rectangle(0, 0, barW, bh, u.side === 'party' ? HP_PARTY : 0xc0392b).setOrigin(0, 0.5);
     const shield = this.scene.add.rectangle(0, 0, 0, 2, 0x8fb6d8).setOrigin(0, 0.5);
     const hasMeter = u.side === 'party' || u.wrath !== undefined;
     const meter = hasMeter ? this.scene.add.rectangle(0, 0, 0, this.o.compact ? 2 : 3, u.side === 'party' ? PAL.amber : 0xff5a3a).setOrigin(0, 0.5) : undefined;
