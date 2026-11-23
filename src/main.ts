@@ -8,6 +8,7 @@ import { installCrt } from './fx/crt';
 import { installReadableText } from './ui/readable';
 import { music } from './audio/music';
 import { BattleScene } from './scenes/BattleScene';
+import { FieldScene } from './scenes/FieldScene';
 import { BootScene } from './scenes/BootScene';
 import { CrusadeScene } from './scenes/CrusadeScene';
 import { CryptScene } from './scenes/CryptScene';
@@ -96,6 +97,7 @@ function start() {
       MusterScene,
       CryptScene,
       BattleScene,
+      FieldScene,
       ResultsScene,
     ],
   });

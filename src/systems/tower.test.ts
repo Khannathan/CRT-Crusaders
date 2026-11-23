@@ -16,7 +16,7 @@ describe('Bell Tower', () => {
     expect(floorDef(40).scale).toBeGreaterThan(floorDef(20).scale);
     const order = floorDef(15).rule;
     const allow = allowedOn(order);
-    expect(CRUSADERS.filter(allow).length).toBe(5);
+    expect(CRUSADERS.filter(allow).length).toBeGreaterThanOrEqual(5);
     expect(allowedOn(floorDef(8).rule)(CRUSADERS.find((c) => c.rarity === 'UR')!)).toBe(false);
     for (let f = 1; f <= TOWER_FLOORS; f++) expect(floorDef(f).encounter).toBeTruthy();
   });

@@ -44,10 +44,10 @@ export const HUNTS: HuntDef[] = [
     lore: 'A saint who was skinned for her faith and would not stay dead. Her wounds close as fast as they are opened.',
     mechanics: [
       { name: 'Unending Martyrdom', text: 'Heals 4% of her HP every round. Half as much while she Bleeds, Burns or is Poisoned.', answer: 'War-Sisters (Bleed) and Censers (Burn)' },
-      { name: 'Weeping Wounds', text: 'Makes every Sister Bleed.', answer: 'Confessors cure it' },
+      { name: 'Weeping Wounds', text: 'Makes every Sister Bleed.', answer: 'Confessors and Abbesses cure it' },
       { name: 'Thick Skin of Faith', text: 'Huge Magic Resist, thin Armor.', answer: 'Physical damage' },
     ],
-    classes: ['warsister', 'censer', 'confessor', 'inquisitor'],
+    classes: ['warsister', 'censer', 'confessor', 'inquisitor', 'exorcist', 'abbess'],
   },
   {
     id: 'twofold-reliquary', boss: 'twofold-reliquary', encounter: 'hunt-twofold-reliquary',
@@ -55,9 +55,9 @@ export const HUNTS: HuntDef[] = [
     mechanics: [
       { name: 'Two Saints', text: 'Every 3 rounds it swaps its Armor and Magic Resist. It starts weak to Magic.', answer: 'A party with both Physical and Magic damage' },
       { name: 'Gilded Crush', text: 'Hammers the front ranks.', answer: 'A Hierophant up front' },
-      { name: 'Cracked Gilding', text: 'Sunder and Hex cut through whichever guard is up.', answer: 'Inquisitors (Sunder) and Oracles (Hex)' },
+      { name: 'Cracked Gilding', text: 'Sunder and Hex cut through whichever guard is up.', answer: 'Executioners and Sentinels (Sunder), Oracles and Cantors (Hex)' },
     ],
-    classes: ['inquisitor', 'oracle', 'hierophant', 'censer'],
+    classes: ['inquisitor', 'oracle', 'hierophant', 'censer', 'cantor', 'arbalist'],
   },
   {
     id: 'colossus', boss: 'colossus', encounter: 'hunt-colossus',
@@ -67,7 +67,7 @@ export const HUNTS: HuntDef[] = [
       { name: 'Raise the Dead', text: 'Calls Penitent Husks to stand in the way.', answer: 'Hits that strike every foe' },
       { name: 'Bone Armor', text: 'Very high Armor, almost no Magic Resist.', answer: 'Magic damage' },
     ],
-    classes: ['hierophant', 'censer', 'oracle', 'confessor'],
+    classes: ['hierophant', 'censer', 'oracle', 'confessor', 'sentinel', 'exorcist'],
   },
   {
     id: 'rot-mother', boss: 'rot-mother', encounter: 'hunt-rot-mother',
@@ -77,27 +77,27 @@ export const HUNTS: HuntDef[] = [
       { name: 'Festering Touch', text: 'A heavy poison on the weakest Sister.', answer: 'Hierophants to Ward and shield' },
       { name: 'Rotten Hide', text: 'Thin Armor, thick Magic Resist.', answer: 'Physical damage' },
     ],
-    classes: ['confessor', 'hierophant', 'warsister', 'inquisitor'],
+    classes: ['confessor', 'hierophant', 'warsister', 'inquisitor', 'hospitaller', 'martyr'],
   },
   {
     id: 'choirmaster', boss: 'choirmaster', encounter: 'hunt-choirmaster',
     lore: 'He conducts the drowned. While they sing, nothing can touch him.',
     mechanics: [
-      { name: 'Shielded by Song', text: 'Takes 50% less damage while any singer stands.', answer: 'Censers and others who hit every foe' },
+      { name: 'Shielded by Song', text: 'Takes 50% less damage while any singer stands.', answer: 'Censers, Exorcists and others who hit every foe' },
       { name: 'Summon the Choir', text: 'Calls new Bell Ringers.', answer: 'Kill the singers fast' },
       { name: 'Dread Chorus', text: 'Hits every Sister.', answer: 'Confessors to heal' },
     ],
-    classes: ['censer', 'oracle', 'confessor', 'warsister'],
+    classes: ['censer', 'oracle', 'confessor', 'warsister', 'veilblade', 'hospitaller'],
   },
   {
     id: 'red-cardinal', boss: 'red-cardinal', encounter: 'hunt-red-cardinal',
     lore: 'A prince of the Church who signed a thousand burnings. His anger only grows.',
     mechanics: [
-      { name: 'Mounting Wrath', text: 'Gains 8% attack every round. Hit him hard and early.', answer: 'Burst: Inquisitors and War-Sisters' },
-      { name: 'Scarlet Edict', text: 'Steals 15 Zeal from the party.', answer: 'Oracles to refill Zeal and haste the party' },
+      { name: 'Mounting Wrath', text: 'Gains 8% attack every round. Hit him hard and early.', answer: 'Burst: Executioners, Veilblades and War-Sisters' },
+      { name: 'Scarlet Edict', text: 'Steals 15 Zeal from the party.', answer: 'Oracles and Cantors to refill Zeal and haste the party' },
       { name: "Cardinal's Rod", text: 'Beats the weakest Sister.', answer: 'A Hierophant to Taunt' },
     ],
-    classes: ['inquisitor', 'oracle', 'warsister', 'hierophant'],
+    classes: ['inquisitor', 'oracle', 'warsister', 'hierophant', 'adjudicator', 'sentinel'],
   },
 ];
 

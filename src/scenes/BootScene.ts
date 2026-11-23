@@ -6,6 +6,7 @@ import { ENEMIES } from '../data/enemies';
 import { enemyKey, makeEnemyTextures } from '../ui/enemyArt';
 import { ORDER_LIST } from '../data/orders';
 import { makeIconTextures, makeNodeTextures, makeSigilTextures } from '../ui/icons';
+import { animKey, type AnimName } from '../ui/fieldView';
 import { fullBodyUrl, makePlaceholderPortrait, portraitKey } from '../ui/placeholderPortrait';
 
 /**
@@ -33,6 +34,12 @@ const ENEMY_FULL_URLS = import.meta.glob<string>('../assets/enemy-full/*.png', {
  * whose name matches a built-in texture key replaces that drawing.
  */
 const UI_URLS = import.meta.glob<string>('../assets/ui/*.{png,webp}', { eager: true, query: '?url', import: 'default' });
+/**
+ * Sister animation sheets: src/assets/anim/<id>_<anim>.png, 256 x 384 (four 128 x 192
+ * frames, made by tools/intake_anims.py). Any Sister with sheets plays them in
+ * real-time fights; the rest keep the motion built from their still figure.
+ */
+const ANIM_URLS = import.meta.glob<string>('../assets/anim/*.png', { eager: true, query: '?url', import: 'default' });
 const fileKey = (path: string) => path.split('/').pop()!.replace(/\.(png|webp)$/, '');
 
 /** Loads every portrait it can find; anything missing gets a placeholder. */
@@ -70,6 +77,10 @@ export class BootScene extends Phaser.Scene {
       if (path.endsWith('.png') || !ui.has(fileKey(path))) ui.set(fileKey(path), url); // .png wins
     }
     for (const [key, url] of ui) this.load.image(key, url);
+    for (const [path, url] of Object.entries(ANIM_URLS)) {
+      const m = /([^/]+)_([a-z]+)\.png$/.exec(path);
+      if (m) this.load.spritesheet(animKey(m[1], m[2] as AnimName), url, { frameWidth: 128, frameHeight: 192 });
+    }
   }
 
   create() {

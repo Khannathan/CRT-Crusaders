@@ -132,6 +132,11 @@ export class BattleScene extends Phaser.Scene {
       const seed = newSeed();
       this.battle = challenge ? challenge.make(seeded(seed)) : makeBattle(game.save, run!, encounter, seeded(seed));
       (window as unknown as Record<string, unknown>).__crtLastBattle = { balance: BALANCE_VERSION, encounter, seed, log: this.battle.log };
+      // Tech demo: a new fight plays out in real time on an open field instead.
+      if (settings.realtimeBattles) {
+        this.scene.start('Field', { battle: this.battle });
+        return;
+      }
     }
     music.play(this.battle.units.some((u) => u.side === 'enemy' && u.boss) ? 'boss' : 'battle');
     music.preload('victory', 'defeat');
@@ -667,6 +672,9 @@ export class BattleScene extends Phaser.Scene {
         st.accused && 'Accused',
         st.taunt && 'Taunt',
         st.empower && 'Empowered',
+        st.counter && 'Riposte',
+        st.thorns && 'Thorns',
+        st.critUp && 'Keen',
         st.charging && 'Charging',
         u.side === 'enemy' && ENEMIES[u.ref].burst && 'Bursts',
       ].filter(Boolean);
@@ -890,6 +898,15 @@ export class BattleScene extends Phaser.Scene {
         const u = this.battle.get(e.uid);
         this.makeCard(u);
         this.logText.setText(`${u.name} rises from the water.`);
+        this.refresh();
+        break;
+      }
+      case 'revive': {
+        const u = this.battle.get(e.uid);
+        this.cards.get(e.uid)?.box.destroy();
+        this.cards.delete(e.uid);
+        this.makeCard(u);
+        this.logText.setText(`${u.name} rises again.`);
         this.refresh();
         break;
       }

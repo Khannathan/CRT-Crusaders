@@ -99,13 +99,13 @@ export class SisterSprite {
     if (this.dead) return;
     this.kill(this.pose);
     const s = this.s;
-    this.pose.setPosition(0, 0).setScale(1).setAngle(0);
+    this.pose.setPosition(0, 0).setScale(this.facing, 1).setAngle(0);
     this.scene.tweens.chain({
       targets: this.pose,
       tweens: [
-        { scaleX: 1.08, scaleY: 0.9, y: 4 * s * -dir, duration: 90, ease: 'Quad.out' },
-        { scaleX: 0.94, scaleY: 1.08, y: 30 * s * dir, angle: 4, duration: 80, ease: 'Quad.in' },
-        { scaleX: 1, scaleY: 1, y: 22 * s * dir, angle: 0, duration: 70 },
+        { scaleX: 1.08 * this.facing, scaleY: 0.9, y: 4 * s * -dir, duration: 90, ease: 'Quad.out' },
+        { scaleX: 0.94 * this.facing, scaleY: 1.08, y: 30 * s * dir, angle: 4, duration: 80, ease: 'Quad.in' },
+        { scaleX: this.facing, scaleY: 1, y: 22 * s * dir, angle: 0, duration: 70 },
         { y: 0, duration: 180, ease: 'Quad.out' },
       ],
     });
@@ -116,7 +116,7 @@ export class SisterSprite {
     if (this.dead) return;
     this.kill(this.pose, this.halo);
     const s = this.s;
-    this.pose.setPosition(0, 0).setScale(1).setAngle(0);
+    this.pose.setPosition(0, 0).setScale(this.facing, 1).setAngle(0);
     this.halo.setTintFill(color).setAlpha(0).setScale(s * 1.04);
     this.scene.tweens.add({ targets: this.pose, y: (big ? -16 : -9) * s, duration: 160, yoyo: true, hold: big ? 420 : 220, ease: 'Quad.out' });
     this.scene.tweens.add({ targets: this.halo, alpha: big ? 0.9 : 0.65, scale: s * (big ? 1.16 : 1.1), duration: 200, yoyo: true, hold: big ? 380 : 180 });
@@ -136,7 +136,7 @@ export class SisterSprite {
     const s = this.s;
     const parts = [this.upper, this.legs];
     this.kill(this.pose);
-    this.pose.setScale(1).setAngle(0).setY(0);
+    this.pose.setScale(this.facing, 1).setAngle(0).setY(0);
     this.scene.tweens.add({ targets: this.pose, x: { from: -5 * s, to: 5 * s }, duration: 40, yoyo: true, repeat: 2, onComplete: () => this.pose.setX(0) });
     if (!hurt) return;
     parts.forEach((p) => p.setTintFill(0xffffff));
@@ -160,7 +160,7 @@ export class SisterSprite {
       targets: this.pose,
       tweens: [
         { scaleY: 0.92, y: 6 * s, duration: 160, delay: 120, ease: 'Quad.out' },
-        { scaleY: 0.35, scaleX: 1.12, alpha: 0, duration: 420, ease: 'Quad.in' },
+        { scaleY: 0.35, scaleX: 1.12 * this.facing, alpha: 0, duration: 420, ease: 'Quad.in' },
       ],
       onComplete: () => done?.(),
     });
@@ -198,7 +198,7 @@ export class SisterSprite {
   revive() {
     this.dead = false;
     this.kill(this.pose);
-    this.pose.setPosition(0, 0).setScale(1).setAngle(0).setAlpha(1);
+    this.pose.setPosition(0, 0).setScale(this.facing, 1).setAngle(0).setAlpha(1);
     this.upper.clearTint();
     this.legs.clearTint();
     this.ring.setAlpha(1).setStrokeStyle(2 * this.s, this.ringColor, 0.55);
@@ -209,6 +209,46 @@ export class SisterSprite {
     this.upper.setTint(0x1a141e);
     this.legs.setTint(0x1a141e);
     this.ring.setAlpha(0.3);
+  }
+
+  private walking?: Phaser.Tweens.Tween;
+
+  /** Turn to face right (1) or left (-1): the art is mirrored, the floor ring is not. */
+  face(dir: 1 | -1) {
+    this.pose.scaleX = Math.abs(this.pose.scaleX || 1) * dir;
+    this.facing = dir;
+  }
+  private facing: 1 | -1 = 1;
+
+  /** A marching bob while she moves across the field. */
+  walk(on: boolean) {
+    if (this.dead || on === !!this.walking) return;
+    if (!on) {
+      this.walking?.remove();
+      this.walking = undefined;
+      this.stance.setY(0).setAngle(0);
+      return;
+    }
+    this.stance.setY(0);
+    this.walking = this.scene.tweens.add({ targets: this.stance, y: -3 * this.s, angle: { from: -2, to: 2 }, duration: 150, yoyo: true, repeat: -1, ease: 'Sine.inOut' });
+  }
+
+  /** A strike toward a point on the field (nx, ny: a unit direction). */
+  strike(nx: number, ny: number) {
+    if (this.dead) return;
+    this.kill(this.pose);
+    const s = this.s;
+    const f = this.facing;
+    this.pose.setPosition(0, 0).setScale(f, 1).setAngle(0);
+    this.scene.tweens.chain({
+      targets: this.pose,
+      tweens: [
+        { x: -nx * 5 * s, y: -ny * 5 * s, scaleX: 1.08 * f, scaleY: 0.9, duration: 90, ease: 'Quad.out' },
+        { x: nx * 26 * s, y: ny * 26 * s, scaleX: 0.94 * f, scaleY: 1.08, angle: 6 * f, duration: 80, ease: 'Quad.in' },
+        { x: nx * 18 * s, y: ny * 18 * s, scaleX: f, scaleY: 1, angle: 0, duration: 70 },
+        { x: 0, y: 0, duration: 180, ease: 'Quad.out' },
+      ],
+    });
   }
 
   /** Victory: a couple of small hops. */
