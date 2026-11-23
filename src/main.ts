@@ -10,6 +10,8 @@ import { fitBeforeBoot, watchScreenFit } from './ui/screenFit';
 import { wireSceneMusic } from './audio/battleMusic';
 import { music } from './audio/music';
 import { unlockSfx } from './audio/sfx';
+import { askPersistentStorage } from './state/save';
+import { watchInstall } from './ui/install';
 import { BattleScene } from './scenes/BattleScene';
 import { FieldScene } from './scenes/FieldScene';
 import { BootScene } from './scenes/BootScene';
@@ -76,6 +78,9 @@ function start() {
   fitBeforeBoot(parent);
   // Browsers keep audio asleep until a tap; wake the sound effects on each one (cheap once awake).
   window.addEventListener('pointerdown', unlockSfx, { passive: true });
+  // Ask the browser to keep the save on the first tap (it may only grant it after a gesture).
+  window.addEventListener('pointerdown', askPersistentStorage, { passive: true, once: true });
+  watchInstall();
   const game = new Phaser.Game({
     type: Phaser.AUTO, // WebGL, falling back to canvas
     parent: 'game',
