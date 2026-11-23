@@ -25,6 +25,7 @@ import { modeScreen, toast } from '../ui/modeScreen';
 import { pickParty } from '../ui/partyPicker';
 import { portraitKey } from '../ui/placeholderPortrait';
 import { PAD, addFrame, text } from '../ui/theme';
+import { cryptMarks } from '../systems/pickMarks';
 
 const rewardText = (held: number) => {
   const r = standReward(held);
@@ -145,7 +146,7 @@ export class HoldScene extends Phaser.Scene {
 
   private begin() {
     const save = game.save;
-    pickParty(this, save, { title: 'Hold the Line', sub: 'Ten waves with this party. Choose well: no swaps.', initial: save.lastParty, confirm: 'Hold the line!' }, (party) => {
+    pickParty(this, save, { title: 'Hold the Line', sub: 'Ten waves with this party. Choose well: no swaps.', initial: save.lastParty, confirm: 'Hold the line!', marks: cryptMarks(save, holdCrypt()) }, (party) => {
       if (!beginStand(save, party)) return;
       commit();
       this.wave();

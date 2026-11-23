@@ -21,6 +21,7 @@ import { drawRecommended } from '../ui/recommended';
 import { addScrollArea } from '../ui/scroll';
 import { TAB_BAR_H } from '../ui/tabBar';
 import { PAD, addBackdrop, addFrame, text } from '../ui/theme';
+import { fightMarks } from '../systems/pickMarks';
 
 const STEP = 84;
 const CHAPTER_GAP = 120;
@@ -245,6 +246,7 @@ export class CampaignScene extends Phaser.Scene {
         max: VIGIL_SIZE,
         confirm: push ? 'March' : 'Fight',
         rec: this.mode === 'road' ? stageRecommended(save, n) : hardTarget(this.mode, n),
+        marks: fightMarks(this.mode === 'road' ? stageBattle(save, [], n) : hardBattle(save, this.mode, [], n)),
       },
       (party) => {
         if (push && !settings.autoBattle) {

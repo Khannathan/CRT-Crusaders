@@ -12,6 +12,8 @@ import { drawRecommended } from './recommended';
 import { sortAndFilter, sortControls, emptyListLine } from './sisterSort';
 import { holdForCard } from './sisterCard';
 import { cardGridBottom, cardSlot, drawRosterCard } from './rosterCard';
+import { drawLegend } from './markLegend';
+import { liveLegend, type PickMarks } from '../systems/pickMarks';
 import { openPresets } from './presets';
 import { addFrame, text } from './theme';
 
@@ -33,6 +35,8 @@ export interface PickOpts {
   hound?: boolean;
   /** The party Suggest picks; defaults to the strongest Sisters allowed. */
   suggest?: () => string[];
+  /** Who this content favours: marked cards come first, with a legend under the title. */
+  marks?: PickMarks;
 }
 
 /**
@@ -51,7 +55,11 @@ export function pickParty(scene: Phaser.Scene, save: SaveData, opts: PickOpts, d
     layer.removeAll(true);
     layer.add(scene.add.rectangle(GAME_W / 2, GAME_H / 2, GAME_W, GAME_H, 0x09060b, 0.96).setInteractive());
     layer.add(addFrame(scene, GAME_W / 2, GAME_H / 2, GAME_W - 24, GAME_H - 40, { fill: 0x241925 }));
-    layer.add(scene.add.text(GAME_W / 2, 62, opts.title.toUpperCase(), text.display(22, PAL.ivory)).setOrigin(0.5));
+    // The title sits between Clear and Presets: a long one shrinks to fit.
+    const title = scene.add.text(GAME_W / 2, 62, opts.title.toUpperCase(), text.display(22, PAL.ivory)).setOrigin(0.5);
+    const room = max > 1 ? GAME_W - 2 * 144 : GAME_W - 60;
+    if (title.width > room) title.setScale(Math.max(0.6, room / title.width));
+    layer.add(title);
     // Saved parties (only where a full party fights).
     if (max > 1) {
       const pre = makeButton(scene, GAME_W - 82, 62, 104, 38, 'Presets', () => {
@@ -62,23 +70,45 @@ export function pickParty(scene: Phaser.Scene, save: SaveData, opts: PickOpts, d
       }, { fontSize: 15 });
       layer.add(pre.all);
     }
-    layer.add(scene.add.text(GAME_W / 2, 90, `${opts.sub} Hold a portrait for her stats.`, { ...text.body(15, PAL.muted), align: 'center', wordWrap: { width: GAME_W - 70 } }).setOrigin(0.5, 0));
-    // The Roster's sort and filter; those who can be chosen come first, and a picked Sister is never filtered out.
-    const owned = sortAndFilter(save, all, picked).sort((a, b) => Number(allow(b)) - Number(allow(a)));
-    layer.add(sortControls(scene, GAME_W / 2, 152, GAME_W - 60, () => {
+    // Empty the party in one tap.
+    if (max > 1) {
+      const clear = makeButton(scene, 82, 62, 104, 38, 'Clear', () => {
+        if (!picked.length) return;
+        picked.splice(0);
+        draw();
+      }, { fontSize: 15, disabled: !picked.length });
+      layer.add(clear.all);
+    }
+    const sub = scene.add.text(GAME_W / 2, 90, `${opts.sub} Hold a portrait for her stats.`, { ...text.body(15, PAL.muted), align: 'center', wordWrap: { width: GAME_W - 70 } }).setOrigin(0.5, 0);
+    layer.add(sub);
+    // The Roster's sort and filter; those who can be chosen come first, then those this content favours,
+    // and a picked Sister is never filtered out.
+    const marksOf = (c: CrusaderDef) => (opts.marks && allow(c) ? opts.marks.of(c, picked) : []);
+    const marked = new Map(all.map((c) => [c.id, marksOf(c)]));
+    const owned = sortAndFilter(save, all, picked).sort((a, b) => Number(allow(b)) - Number(allow(a)) || Number(marked.get(b.id)!.length > 0) - Number(marked.get(a.id)!.length > 0));
+    // What the marks mean here.
+    let sortY = 152;
+    const legend = opts.marks ? liveLegend(opts.marks, all.filter(allow), picked) : [];
+    if (legend.length) {
+      const lg = drawLegend(scene, sub.y + sub.height + 4, GAME_W - 60, legend);
+      layer.add(lg.parts);
+      sortY = Math.max(sortY, lg.bottom + 22);
+    }
+    const shift = sortY - 152;
+    layer.add(sortControls(scene, GAME_W / 2, sortY, GAME_W - 60, () => {
       scroll = 0;
       draw();
     }, { depth: 40, h: 36 }));
-    if (!owned.length) layer.add(scene.add.text(GAME_W / 2, 260, emptyListLine(save), text.body(17, PAL.muted)).setOrigin(0.5));
-    const list = addScrollArea(scene, 174, GAME_H - 206, { parent: layer, start: scroll, onScroll: (y) => (scroll = y) });
+    if (!owned.length) layer.add(scene.add.text(GAME_W / 2, 260 + shift, emptyListLine(save), text.body(17, PAL.muted)).setOrigin(0.5));
+    const list = addScrollArea(scene, 174 + shift, GAME_H - 206, { parent: layer, start: scroll, onScroll: (y) => (scroll = y) });
     // The Roster's cards, at the Roster's size.
-    const y0 = 182;
+    const y0 = 182 + shift;
     owned.forEach((c, i) => {
       const { left, top } = cardSlot(i, y0);
       const ok = allow(c);
       const at = picked.indexOf(c.id);
       const on = at >= 0;
-      const card = drawRosterCard(scene, left, top, c, save, { dim: !ok, picked: on, rank: max > 1 ? at + 1 : undefined });
+      const card = drawRosterCard(scene, left, top, c, save, { dim: !ok, picked: on, rank: max > 1 ? at + 1 : undefined, marks: marked.get(c.id) });
       list.content.add(card.parts);
       if (ok) {
         list.tap(card.hit, () => {

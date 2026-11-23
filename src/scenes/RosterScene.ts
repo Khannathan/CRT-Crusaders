@@ -78,6 +78,7 @@ import { addScrollArea } from '../ui/scroll';
 import { showSources, tapCost, tapForSources } from '../ui/sources';
 import { TAB_BAR_H, addTabBar } from '../ui/tabBar';
 import { PAD, addArt, addBackdrop, addBadge, addFrame, addHeading, addScreenGlow, fade, noOrphan, text } from '../ui/theme';
+import { fightMarks, joinMarks, needMarks } from '../systems/pickMarks';
 
 type Tab = 'grow' | 'vows' | 'skills' | 'gear' | 'symbol' | 'canon';
 const TABS: [Tab, string][] = [
@@ -892,7 +893,7 @@ export class RosterScene extends Phaser.Scene {
     pickParty(
       this,
       save,
-      { title: `Rite of ${c.name.split(' ')[0]}`, sub: `Level ${level}. She must fight in it.`, initial, confirm: 'Begin the Rite!', rec: riteTarget(level) },
+      { title: `Rite of ${c.name.split(' ')[0]}`, sub: `Level ${level}. She must fight in it.`, initial, confirm: 'Begin the Rite!', rec: riteTarget(level), marks: joinMarks(needMarks(c.id, 'HER RITE', 'she must fight'), fightMarks(riteBattle(save, [], level))) },
       (party) => {
         if (!party.includes(c.id)) {
           toast(this, `${c.name.split(' ')[0]} must fight in her own Rite.`, GAME_H / 2);

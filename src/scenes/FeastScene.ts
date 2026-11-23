@@ -32,6 +32,8 @@ import { pickParty } from '../ui/partyPicker';
 import { makePlaceholderPortrait, portraitKey } from '../ui/placeholderPortrait';
 import { holdForCard } from '../ui/sisterCard';
 import { PAD, addFrame, addPanel, text } from '../ui/theme';
+import { bonusMarks, fightMarks, joinMarks } from '../systems/pickMarks';
+import { feastBattle as feastFight, isFeatured as featuredNow } from '../systems/feast';
 
 const ROMAN = ['I', 'II', 'III', 'IV', 'V', 'VI'];
 
@@ -131,7 +133,7 @@ export class FeastScene extends Phaser.Scene {
     pickParty(
       this,
       save,
-      { title: st.name, sub: 'Bonus Sisters earn more Candles. Tap in rank order. The first stands in front.', initial: save.lastParty, confirm: 'To the Feast!' },
+      { title: st.name, sub: 'Bonus Sisters earn more Candles. Tap in rank order. The first stands in front.', initial: save.lastParty, confirm: 'To the Feast!', marks: joinMarks(bonusMarks((c) => featuredNow(c.id), 'earn more Candles'), fightMarks(feastFight(save, [], i))) },
       (party) => {
         current.challenge = {
           label: `${feastName()}: ${st.name}.`,

@@ -22,6 +22,8 @@ import { makeButton } from '../ui/button';
 import { modeScreen, toast } from '../ui/modeScreen';
 import { pickParty } from '../ui/partyPicker';
 import { PAD, text } from '../ui/theme';
+import { fightMarks } from '../systems/pickMarks';
+import { trialBattle as trialFight } from '../systems/trials';
 
 const TIER_NAME = ['I', 'II', 'III', 'IV', 'V'];
 
@@ -103,7 +105,7 @@ export class TrialsScene extends Phaser.Scene {
     pickParty(
       this,
       save,
-      { title: trial.name, sub: `Tier ${TIER_NAME[tier]}. Tap in rank order. The first stands in front.`, initial: save.lastParty, confirm: 'Enter the trial!' },
+      { title: trial.name, sub: `Tier ${TIER_NAME[tier]}. Tap in rank order. The first stands in front.`, initial: save.lastParty, confirm: 'Enter the trial!', marks: fightMarks(trialFight(save, [], tier)) },
       (party) => {
         current.challenge = {
           label: `${trial.name}, Tier ${TIER_NAME[tier]}. The dead rise to guard their spoils!`,

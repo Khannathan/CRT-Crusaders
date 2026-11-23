@@ -24,6 +24,7 @@ import { drawRecommended } from '../ui/recommended';
 import { addOrderSigil } from '../ui/sisterCard';
 import { tapForSources } from '../ui/sources';
 import { PAD, addFrame, text } from '../ui/theme';
+import { fightMarks } from '../systems/pickMarks';
 
 const POTENCY_NAME = { common: 'common', fine: 'fine', holy: 'holy' } as const;
 
@@ -91,7 +92,7 @@ export class ProcessionScene extends Phaser.Scene {
     pickParty(
       this,
       save,
-      { title: t.name, sub: 'Tap in rank order. The first stands in front.', initial: save.lastParty, confirm: 'Walk', rec: processionRecommended(save, tier) },
+      { title: t.name, sub: 'Tap in rank order. The first stands in front.', initial: save.lastParty, confirm: 'Walk', rec: processionRecommended(save, tier), marks: fightMarks(processionBattle(save, [], tier)) },
       (party) => {
         current.challenge = {
           label: `${t.name}. The relics pass, and the dead rise to take them back!`,

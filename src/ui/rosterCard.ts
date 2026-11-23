@@ -3,6 +3,7 @@ import { GAME_W, PAL } from '../config';
 import { CLASSES, RARITY_COLOR } from '../data/classes';
 import type { CrusaderDef } from '../data/types';
 import type { SaveData } from '../state/save';
+import type { Mark, MarkKind } from '../systems/pickMarks';
 import { formatPower, sisterPower } from '../systems/power';
 import { TIER_COLOR, tierOf } from '../systems/tiers';
 import { portraitKey } from './placeholderPortrait';
@@ -46,6 +47,37 @@ export interface RosterCardOpts {
   /** Replaces her Power at the right of the name line (e.g. "Recovering"). */
   note?: string;
   noteColor?: number;
+  /** What this content favours her for: a ribbon across her portrait and a coloured edge. */
+  marks?: Mark[];
+}
+
+/** One colour per kind of mark, kept apart from the gold of a picked card. */
+export const MARK_COLOR: Record<MarkKind, number> = {
+  need: 0xf3dc8a,
+  bonus: 0x9fd88a,
+  pick: 0xd2a8f2,
+  bane: 0xf08a8a,
+  dmg: 0x8fc0f0,
+};
+
+/** The ribbon of marks across the lower portrait: each label in its own colour. */
+function drawMarkRibbon(scene: Phaser.Scene, left: number, y: number, w: number, marks: Mark[]): Obj[] {
+  const out: Obj[] = [];
+  const shown = marks.filter((m, i) => marks.findIndex((n) => n.label === m.label) === i).slice(0, 2);
+  out.push(scene.add.rectangle(left + w / 2, y, w, 20, 0x0d090f, 0.88));
+  out.push(scene.add.rectangle(left + w / 2, y - 10, w, 1, MARK_COLOR[shown[0].kind], 0.9));
+  out.push(scene.add.rectangle(left + w / 2, y + 10, w, 1, MARK_COLOR[shown[0].kind], 0.9));
+  const labels = shown.map((m) => scene.add.text(0, y, m.label, text.hud(12, MARK_COLOR[m.kind])).setOrigin(0, 0.5));
+  const gap = 12;
+  const total = labels.reduce((n, t) => n + t.width, 0) + gap * (labels.length - 1);
+  let x = left + (w - total) / 2;
+  labels.forEach((t, i) => {
+    t.setX(x);
+    x += t.width + gap;
+    out.push(t);
+    if (i < labels.length - 1) out.push(scene.add.circle(x - gap / 2, y, 2, PAL.steel));
+  });
+  return out;
 }
 
 /** Draw a Sister's card; returns its parts and a hit box over the whole card for taps. */
@@ -92,6 +124,12 @@ export function drawRosterCard(scene: Phaser.Scene, left: number, top: number, c
     add(scene.add.text(left + 8, top + ph + 5, 'Unknown', { ...text.body(19, PAL.muted), fontStyle: '600' }));
     add(scene.add.text(left + 8, top + ph + 28, 'UNSWORN', text.hud(12, PAL.steel)));
   }
+  const marks = !opts.dim && show ? opts.marks ?? [] : [];
+  if (marks.length) {
+    // Above the class and level badges, below the rank number.
+    parts.push(...drawMarkRibbon(scene, left, top + ph - 46, cw, marks));
+    if (!opts.picked) add(scene.add.rectangle(x, top + ch / 2, cw - 2, ch - 2, 0, 0).setStrokeStyle(2, MARK_COLOR[marks[0].kind]));
+  }
   if (opts.dim) {
     // A dark veil over the whole card, under nothing: she cannot be chosen here.
     add(scene.add.rectangle(x, top + ch / 2, cw, ch, 0x09060b, 0.62));
@@ -99,8 +137,10 @@ export function drawRosterCard(scene: Phaser.Scene, left: number, top: number, c
   if (opts.picked) {
     add(scene.add.rectangle(x, top + ch / 2, cw - 2, ch - 2, 0, 0).setStrokeStyle(4, PAL.amber));
     if (opts.rank) {
-      add(scene.add.circle(x, top + ph / 2, 24, 0x0d090f, 0.85).setStrokeStyle(2, PAL.amber));
-      add(scene.add.text(x, top + ph / 2, `${opts.rank}`, { ...text.hud(28, PAL.amber), stroke: '#000000', strokeThickness: 5 }).setOrigin(0.5));
+      // Raised a little on a marked card, so the ribbon still reads.
+      const ry = top + ph / 2 - (marks.length ? 14 : 0);
+      add(scene.add.circle(x, ry, marks.length ? 22 : 24, 0x0d090f, 0.85).setStrokeStyle(2, PAL.amber));
+      add(scene.add.text(x, ry, `${opts.rank}`, { ...text.hud(28, PAL.amber), stroke: '#000000', strokeThickness: 5 }).setOrigin(0.5));
     }
   }
   // tap target on top of the whole card

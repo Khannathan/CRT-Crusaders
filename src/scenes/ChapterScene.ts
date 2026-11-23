@@ -41,6 +41,8 @@ import { pickParty } from '../ui/partyPicker';
 import { addScrollArea } from '../ui/scroll';
 import { TAB_BAR_H } from '../ui/tabBar';
 import { PAD, addFrame, addPanel, text } from '../ui/theme';
+import { huntMarks } from '../systems/pickMarks';
+import { siegeBeast as siegeBeastOf } from '../systems/chapter';
 
 const SIMULATED = [
   'Played offline: fourteen AI Sisters, no other players.',
@@ -177,7 +179,7 @@ export class ChapterScene extends Phaser.Scene {
     pickParty(
       this,
       save,
-      { title: 'The Siege', sub: `${ENEMIES[hunt.boss].name}: twelve rounds to wound it. Every blow counts for the Chapter!`, initial: save.lastParty, confirm: 'Strike', hound: true },
+      { title: 'The Siege', sub: `${ENEMIES[hunt.boss].name}: twelve rounds to wound it. Every blow counts for the Chapter!`, initial: save.lastParty, confirm: 'Strike', hound: true, marks: huntMarks(save, siegeBeastOf(save).hunt) },
       (party) => {
         current.challenge = {
           label: `The Chapter's Siege: ${ENEMIES[hunt.boss].name}. Twelve rounds.`,
