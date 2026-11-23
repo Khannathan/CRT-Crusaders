@@ -33,6 +33,7 @@ import {
   tithe,
   titheBlock,
 } from '../systems/chapter';
+import { attacksLeft, warScore } from '../systems/chapterWar';
 import { rewardText } from '../systems/tasks';
 import { makeButton } from '../ui/button';
 import { modeScreen, progressBar, toast } from '../ui/modeScreen';
@@ -145,6 +146,12 @@ export class ChapterScene extends Phaser.Scene {
     const tb = makeButton(this, PAD + 14 + bw3 * 2.5 + 12, y + 164, bw3, 52, 'Standings', () => {}, { fontSize: 15 });
     list.tap(tb.box, () => this.showTable());
     y += 218;
+
+    // Chapter War
+    const sc = warScore(save);
+    const war = makeButton(this, GAME_W / 2, y + 30, bw, 56, `Chapter War: ${sc.us} to ${sc.them}${attacksLeft(save) ? `  ·  ${attacksLeft(save)} storms` : ''}`, () => {}, { active: attacksLeft(save) > 0, fontSize: 17, icon: 'blade' });
+    list.tap(war.box, () => this.scene.start('War'));
+    y += 70;
 
     // Members and shop
     const half = (bw - 8) / 2;

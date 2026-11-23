@@ -146,7 +146,8 @@ export class MusterScene extends Phaser.Scene {
         const crypt = CRYPTS.find((c) => c.id === current.cryptId) ?? CRYPTS[0];
         current.run = startRun(game.save, this.party, crypt, Math.random, current.heresy?.[crypt.id] ?? 0);
         commit();
-        this.scene.start('Crypt');
+        // The party camps once before the descent.
+        this.scene.start('Camp');
       },
       { active: true, disabled: !this.party.length },
     );

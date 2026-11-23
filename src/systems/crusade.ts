@@ -1,3 +1,4 @@
+import { moraleBuff } from './campfire';
 import { canonEffect } from './canon';
 import { sanctEffect } from './sanctity';
 import { DEEP_HOSTS } from '../data/deepFoes';
@@ -235,6 +236,8 @@ export interface RunState {
   curseVigil?: number;
   /** Set to the act just finished while the party rests at a Sanctuary. */
   sanctuary?: number;
+  /** Campfire Morale for the whole descent (systems/campfire.ts); none when no camp was made. */
+  morale?: number;
 }
 
 export interface RunStart {
@@ -417,8 +420,9 @@ export function maxHpOf(save: SaveData, run: RunState, id: string) {
 /** Builds a battle for the current room from the run's party and HP. */
 export function makeBattle(save: SaveData, run: RunState, encounter: string, rng?: Rng, scale?: number): Battle {
   const relics = relicsOf(run);
-  const atkPct = relics.reduce((s, r) => s + (r.atkPct ?? 0), 0);
-  const zeal = relics.reduce((s, r) => s + (r.startZeal ?? 0), 0) + (run.blessZeal ?? 0);
+  const camp = moraleBuff(run.morale);
+  const atkPct = relics.reduce((s, r) => s + (r.atkPct ?? 0), 0) + camp.atkPct;
+  const zeal = relics.reduce((s, r) => s + (r.startZeal ?? 0), 0) + (run.blessZeal ?? 0) + camp.zeal;
   const armorPct = relics.reduce((s, r) => s + (r.armorPct ?? 0), 0);
   // Heresy shortens the candle by a round every second tier.
   const vigil = Math.max(2, VIGIL_DEFAULT + relics.reduce((s, r) => s + (r.vigilBonus ?? 0), 0) - (run.curseVigil ?? 0) - Math.floor(Math.min(run.heresy, MAX_HERESY) / 2));
