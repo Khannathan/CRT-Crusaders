@@ -3,7 +3,7 @@ import { GAME_H, GAME_W, PAL } from '../config';
 import { RARITY_COLOR } from '../data/classes';
 import { CRUSADERS } from '../data/crusaders';
 import { game, commit } from '../state/game';
-import { BOND_STAT, BOND_XP, MAX_BOND, bondInfo, confessions, hear } from '../systems/bonds';
+import { BOND_CORE, BOND_REWARDS, BOND_XP, CONFESSION_AT, MAX_BOND, bondInfo, bondRewardText, bondStatText, claimBondRewards, confessions, devotionAt, hear } from '../systems/bonds';
 import { FAVOURED, OFFERINGS, POTENCY_COLOR, candleReady, favours, heldOf, lightCandle, offer, offeringDef, offeringXp, offeringsHeld } from '../systems/offerings';
 import { drawOfferingIcon } from '../ui/offeringIcon';
 import { tapForSources } from '../ui/sources';
@@ -42,15 +42,19 @@ export class ConfessionScene extends Phaser.Scene {
     if (this.notice) toast(this, this.notice);
   }
 
+  /** Bond level as a small badge with a ring of progress. */
   private pips(x: number, y: number, level: number, size = 5) {
-    for (let i = 0; i < MAX_BOND; i++) this.add.circle(x + i * (size * 2 + 4), y, size, i < level ? PAL.amber : PAL.deepShadow).setStrokeStyle(1, i < level ? PAL.amber : PAL.armorShadow);
+    const w = size * 13;
+    this.add.rectangle(x, y, w, size * 2 + 2, PAL.deepShadow).setOrigin(0, 0.5).setStrokeStyle(1, PAL.armorShadow);
+    this.add.rectangle(x + 1, y, Math.max(0, (w - 2) * (level / MAX_BOND)), size * 2, level >= BOND_CORE ? PAL.amber : 0xb07a3a).setOrigin(0, 0.5);
+    this.add.text(x + w + 4, y, level ? ROMAN_RANK(level) : '0', text.hud(size * 2 + 2, level ? PAL.amber : PAL.steel)).setOrigin(0, 0.5);
   }
 
   private list() {
     const save = game.save;
     const { top } = modeScreen(this, 'Confession', 'Fight beside them, keep Vigil with them, bring them offerings. In time they will speak.');
     const owned = sortAndFilter(save, CRUSADERS.filter((c) => save.owned[c.id]));
-    this.add.text(PAD, top, `+${Math.round(BOND_STAT * 100)}% ATK AND HP PER BOND LEVEL`, text.hud(12, PAL.muted));
+    this.add.text(PAD, top, `BOND I-${ROMAN_RANK(BOND_CORE)}: ATK AND HP · THEN DEVOTION`, text.hud(12, PAL.muted));
     tapForSources(this, this.add.text(GAME_W - PAD, top, `OFFERINGS ${offeringsHeld(save)}${candleReady(save) ? '  ·  CANDLE READY' : ''}`, text.hud(12, PAL.amber)).setOrigin(1, 0), 'offerings');
     const cell = 118;
     const x0 = GAME_W / 2 - cell * 1.5;
@@ -76,7 +80,7 @@ export class ConfessionScene extends Phaser.Scene {
       holdForCard(this, img, c.id);
       this.add.text(x, y + 56, c.name.split(' ')[0], text.body(15, PAL.ivory)).setOrigin(0.5, 0);
       this.pips(x - 28, y + 82, b.level, 4);
-      if (b.unheard) this.add.circle(x + 42, y - 42, 7, PAL.amber).setStrokeStyle(2, 0x1b121c);
+      if (b.unheard || b.rewards.length) this.add.circle(x + 42, y - 42, 7, PAL.amber).setStrokeStyle(2, 0x1b121c);
     });
     list.content.add(this.children.list.slice(before));
     list.fit(top + 120 + Math.ceil(owned.length / 4) * 140 - 30);
@@ -95,8 +99,9 @@ export class ConfessionScene extends Phaser.Scene {
     holdForCard(this, this.add.image(PAD + 62, top + 62, portraitKey(id)).setDisplaySize(120, 120), id);
     const tx = PAD + 140;
     this.add.text(tx, top + 2, `BOND ${b.level ? ROMAN_RANK(b.level) : '0'} / ${ROMAN_RANK(MAX_BOND)}`, text.hud(15, PAL.amber));
-    this.pips(tx + 6, top + 36, b.level, 7);
-    this.add.text(tx, top + 52, b.level ? `+${Math.round(b.level * BOND_STAT * 100)}% ATK and HP` : 'No bond yet', text.body(15, PAL.ivory));
+    this.add.text(tx, top + 24, b.level ? bondStatText(b.level) : 'No bond yet', { ...text.body(14, PAL.ivory), wordWrap: { width: bw - 140 } });
+    const nextGift = b.max ? '' : b.level >= BOND_CORE ? `Next: Devotion ${devotionAt(b.level + 1).label}` : `Next: +1% ATK and HP`;
+    this.add.text(tx, top + 64, nextGift, text.body(13, PAL.muted));
     progressBar(this, tx, top + 84, bw - 140, b.max ? 1 : b.into / b.need, PAL.amber, 8);
     this.add.text(tx, top + 94, b.max ? 'Bond complete' : `${b.into} / ${b.need} to the next level`, text.body(13, PAL.muted));
 
@@ -106,8 +111,26 @@ export class ConfessionScene extends Phaser.Scene {
       this.scene.restart({ id, notice: !gave ? what : now.level > b.level ? `Bond ${ROMAN_RANK(now.level)}. She has something to tell you.` : what });
     };
 
-    // The free candle: one a day, for any Sister.
     let y = top + 140;
+    // Bond rewards: every level to X, then every fifth.
+    const waiting = b.rewards;
+    const nextReward = Object.keys(BOND_REWARDS).map(Number).find((l) => l > Math.max(b.level, (save.bonds?.[id]?.claimed ?? 0)));
+    const first = c.name.split(' ')[0];
+    if (waiting.length) {
+      const what = waiting.map((l) => bondRewardText(BOND_REWARDS[l], first)).join(' + ');
+      makeButton(this, GAME_W / 2, y + 26, bw, 52, `Claim bond reward${waiting.length > 1 ? 's' : ''} (${waiting.map((l) => ROMAN_RANK(l)).join(', ')})`, () => {
+        if (list.dragging) return;
+        claimBondRewards(save, id);
+        commit();
+        this.scene.restart({ id, notice: `Bond rewards: ${what}` });
+      }, { fontSize: 16, active: true });
+      y += 62;
+    } else if (nextReward) {
+      this.add.text(PAD, y, `BOND ${ROMAN_RANK(nextReward)} REWARD: ${bondRewardText(BOND_REWARDS[nextReward], first).toUpperCase()}`, { ...text.hud(11, PAL.steel), wordWrap: { width: bw } });
+      y += 30;
+    }
+
+    // The free candle: one a day, for any Sister.
     const ready = candleReady(save);
     makeButton(this, GAME_W / 2, y + 23, bw, 46, b.max ? 'Her bond is complete' : ready ? `Light the free candle · +${BOND_XP.candle} bond` : 'Candle lit today · another at dawn', () => {
       if (list.dragging) return;
@@ -150,18 +173,20 @@ export class ConfessionScene extends Phaser.Scene {
     const heardBefore = save.bonds?.[id]?.heard ?? 0;
     confessions(c).forEach((conf, i) => {
       const lv = i + 1;
-      const open = b.level >= lv;
+      const at = CONFESSION_AT[i];
+      // Confessions heard under the old five-level bond stay open.
+      const open = b.level >= at || heardBefore >= lv;
       const h = 52;
       addFrame(this, GAME_W / 2, y + h / 2, bw, h, { fill: open ? 0x221824 : 0x150f17, edge: open ? PAL.goldEdge : PAL.armorShadow });
       this.add.text(PAD + 14, y + h / 2, `${ROMAN_RANK(lv)}`, text.hud(14, open ? PAL.amber : PAL.steel)).setOrigin(0, 0.5);
-      this.add.text(PAD + 52, y + h / 2, open ? conf.title : `Opens at bond ${ROMAN_RANK(lv)}`, text.body(17, open ? PAL.ivory : PAL.steel)).setOrigin(0, 0.5);
+      this.add.text(PAD + 52, y + h / 2, open ? conf.title : `Opens at bond ${ROMAN_RANK(at)}`, text.body(17, open ? PAL.ivory : PAL.steel)).setOrigin(0, 0.5);
       if (open && lv > heardBefore) this.add.text(GAME_W - PAD - 14, y + h / 2, 'NEW', text.hud(12, PAL.amber)).setOrigin(1, 0.5);
       if (open) list.tap(this.add.rectangle(GAME_W / 2, y + h / 2, bw, h, 0, 0), () => this.read(c.name.split(' ')[0], conf.title, conf.body));
       y += h + 8;
     });
     list.content.add(this.children.list.slice(before));
     list.fit(y + 10);
-    if (b.level > heardBefore) {
+    if (b.unheard) {
       hear(save, id);
       commit();
     }

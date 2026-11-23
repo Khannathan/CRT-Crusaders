@@ -8,7 +8,7 @@ import type { SaveData } from '../state/save';
 import { matinsReady } from '../systems/matins';
 import { ROMAN_RANK, unlocked } from '../systems/rank';
 import { anyClaimable } from '../systems/tasks';
-import { anyUnheard } from '../systems/bonds';
+import { anyBondRewards, anyUnheard } from '../systems/bonds';
 import { entriesLeft } from '../systems/trials';
 import { PROCESSION_ENTRIES, candleReady, honouredToday, processionLeft } from '../systems/offerings';
 
@@ -138,7 +138,7 @@ export const RITES: RiteEntry[] = [
   },
   { label: 'Matins', scene: 'Matins', icon: 'flame', rank: 1, home: 'sanctum', ready: (s) => matinsReady(s) },
   { label: 'Penance', scene: 'Penance', icon: 'book', rank: 2, home: 'sanctum', ready: (s) => anyClaimable(s) },
-  { label: 'Confession', scene: 'Confession', icon: 'book', rank: 5, home: 'sanctum', ready: (s) => anyUnheard(s) || (Object.keys(s.owned).length > 0 && candleReady(s)) },
+  { label: 'Confession', scene: 'Confession', icon: 'book', rank: 5, home: 'sanctum', ready: (s) => anyUnheard(s) || anyBondRewards(s) || (Object.keys(s.owned).length > 0 && candleReady(s)) },
 ];
 
 /** The Rite (or board) a scene belongs to, for its tab and its Back button. */
