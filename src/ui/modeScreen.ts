@@ -1,3 +1,4 @@
+import { sfx } from '../audio/sfx';
 import Phaser from 'phaser';
 import { GAME_H, GAME_W, PAL } from '../config';
 import { makeButton } from './button';
@@ -49,6 +50,8 @@ export function progressBar(scene: Phaser.Scene, left: number, y: number, w: num
 
 /** A framed notice over the lower screen that fades after a few seconds. */
 export function toast(scene: Phaser.Scene, msg: string, y = GAME_H - 190) {
+  // "200 Gilt needed.", "Not now.": a refusal sounds like one.
+  if (/\bneeded\b|^Not now|^Not enough/i.test(msg)) sfx('deny');
   const t = scene.add.text(GAME_W / 2, y, msg.split('\n').map(noOrphan).join('\n'), { ...text.body(19, PAL.ivory), align: 'center', wordWrap: { width: GAME_W - 80 } }).setOrigin(0.5).setDepth(31);
   const bg = scene.add.rectangle(GAME_W / 2, y, t.width + 40, t.height + 26, 0x1b121c, 0.97).setStrokeStyle(1, PAL.amber).setDepth(30);
   scene.tweens.add({ targets: [t, bg], alpha: 0, delay: 3200, duration: 700, onComplete: () => (t.destroy(), bg.destroy()) });

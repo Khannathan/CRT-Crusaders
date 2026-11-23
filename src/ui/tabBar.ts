@@ -1,3 +1,4 @@
+import { sfx } from '../audio/sfx';
 import Phaser from 'phaser';
 import { FONT, GAME_H, GAME_W, PAL, hex } from '../config';
 import { game } from '../state/game';
@@ -126,6 +127,7 @@ export function addTabBar(scene: Phaser.Scene, current: string, depth = 5, onTab
     if (centre) drawBadge(scene, cx + 40, top - 12, depth);
     box.setInteractive({ useHandCursor: true });
     box.on('pointerup', () => {
+      sfx('tab');
       // With onTab (a fight), even the lit tab leaves: Crusade goes back to the board.
       if (onTab) return onTab(t.scene);
       // An Auto fight running (or just ended) away from the screen: Crusade leads to it.

@@ -1,3 +1,4 @@
+import { sfx } from '../audio/sfx';
 import Phaser from 'phaser';
 import { GAME_H, GAME_W, PAL } from '../config';
 import { RARITY_COLOR } from '../data/classes';
@@ -125,6 +126,7 @@ export class KennelScene extends Phaser.Scene {
   private blow(n: 1 | 10) {
     const rs = whistleMany(game.save, n);
     if (!rs.length) return toast(this, whistleBlock(game.save, Date.now(), n) ?? 'Not now.');
+    sfx('whistle');
     commit();
     if (rs.length === 1) this.reveal(rs[0]);
     else this.revealMany(rs);

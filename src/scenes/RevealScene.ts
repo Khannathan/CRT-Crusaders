@@ -70,6 +70,7 @@ export class RevealScene extends Phaser.Scene {
 
   create() {
     settleTaps(this);
+    sfx('pull');
     this.cameras.main.setBackgroundColor(0x0a090c);
     this.counter = this.add.text(24, 28, '', { fontFamily: FONT, fontSize: '18px', color: hex(PAL.steel) }).setOrigin(0, 0.5);
     this.hint = this.add
@@ -111,7 +112,7 @@ export class RevealScene extends Phaser.Scene {
     if (!r || !seal) return;
     this.revealed = i;
     const high = rankOf(r) >= RARITY_ORDER.indexOf('SSR');
-    sfx(high ? 'sealRare' : 'seal', r.crusader.rarity === 'UR' ? 2 : 1);
+    sfx(r.crusader.rarity === 'UR' ? 'urReveal' : high ? 'sealRare' : 'seal');
     if (!quick && r.crusader.rarity === 'UR') music.stinger('ur', 'duck');
     if (quick) {
       seal.destroy();
@@ -219,7 +220,7 @@ export class RevealScene extends Phaser.Scene {
     const seal = card.list[0] as Phaser.GameObjects.Image;
     const high = r.crusader.rarity === 'SSR' || r.crusader.rarity === 'UR';
     this.revealed = this.index;
-    sfx(high ? 'sealRare' : 'seal', r.crusader.rarity === 'UR' ? 2 : 1);
+    sfx(r.crusader.rarity === 'UR' ? 'urReveal' : high ? 'sealRare' : 'seal');
     if (r.crusader.rarity === 'UR') music.stinger('ur', 'duck');
     this.busy = true;
     this.hint.setText('');

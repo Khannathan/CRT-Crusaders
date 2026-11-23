@@ -1,3 +1,4 @@
+import { sfx } from '../audio/sfx';
 import Phaser from 'phaser';
 import { GAME_H, GAME_W, PAL } from '../config';
 import { commit, game } from '../state/game';
@@ -107,6 +108,7 @@ export class InventoryScene extends Phaser.Scene {
         const by = panelTop + panelH - 34;
         const go = (times: number) => () => {
           if (refine(save, this.pick!, times)) {
+            sfx('forge');
             commit();
             this.scene.restart({ pick: this.pick, notice: `Refined into ${times} ${next.name}` });
           }

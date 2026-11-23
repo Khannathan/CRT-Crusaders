@@ -1,3 +1,4 @@
+import { sfx } from '../audio/sfx';
 import Phaser from 'phaser';
 import { GAME_H, GAME_W, PAL } from '../config';
 import { ENEMIES } from '../data/enemies';
@@ -13,6 +14,7 @@ import { text } from './theme';
  */
 export function bossIntro(scene: Phaser.Scene, party: Unit[], boss: Unit, done: () => void) {
   const layer = scene.add.container(0, 0).setDepth(80);
+  sfx('bossAppear');
   const dim = scene.add.rectangle(GAME_W / 2, GAME_H / 2, GAME_W, GAME_H, 0x09060b, 0.9).setInteractive();
   layer.add(dim);
   const cy = GAME_H / 2 - 40;

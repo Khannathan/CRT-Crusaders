@@ -1,4 +1,4 @@
-import { sfx } from '../audio/sfx';
+import { sfx, type Cue } from '../audio/sfx';
 import Phaser from 'phaser';
 import { FONT, HUD_FONT, PAL, hex } from '../config';
 import { type SkinKey, hasSkin, nine } from './skin';
@@ -96,14 +96,26 @@ export function makeButton(
   }
 
   if (!opts.disabled) {
+    const cue = cueOf(main);
     box.setInteractive({ useHandCursor: true });
     box.on('pointerdown', () => pressed(true));
     box.on('pointerout', () => pressed(false));
     box.on('pointerup', () => {
       pressed(false);
-      sfx('tap');
+      sfx(cue, 0, { soft: true });
       onTap();
     });
+  } else {
+    // A locked button answers a tap with a low "not yet".
+    box.setInteractive();
+    box.on('pointerup', () => sfx('deny', 0, { soft: true }));
   }
   return { box, text, inner, extra: parts, all: [box, inner, text, ...parts] as Phaser.GameObjects.GameObject[] };
+}
+
+/** Claim buttons ring, Back and Close shut; everything else taps. The action's own sound wins. */
+function cueOf(label: string): Cue {
+  if (/^Claim/.test(label)) return 'claim';
+  if (/^(Back|Close|Done|Not now|Not yet|Cancel)$/.test(label)) return 'close';
+  return 'tap';
 }

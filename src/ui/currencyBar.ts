@@ -1,3 +1,4 @@
+import { sfx } from '../audio/sfx';
 import Phaser from 'phaser';
 import { FONT, GAME_W, HUD_FONT, PAL, hex } from '../config';
 import { commit, game } from '../state/game';
@@ -101,6 +102,7 @@ export function addCurrencyBar(scene: Phaser.Scene) {
 }
 
 function showPowerPop(scene: Phaser.Scene, gain: number, reached: { at: number; name: string; gilt: number }[]) {
+  sfx('powerUp');
   const y = CURRENCY_BAR_H + 150;
   const m = reached.at(-1);
   const parts: Phaser.GameObjects.GameObject[] = [];

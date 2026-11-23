@@ -716,6 +716,7 @@ export class FieldView {
           if (!this.o.compact) sfx('shield');
           break;
         case 'status':
+          if (!this.o.compact && e.label === 'Charge broken!') sfx('delay');
           // Lasting statuses show as icons over the bar; only the rest float up as words.
           if (!this.o.compact && !ICONED_LABELS.has(e.label)) this.float(e.uid, e.label, e.label.endsWith('!') ? PAL.amber : PAL.steel, false, 18);
           break;
