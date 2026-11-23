@@ -8,7 +8,8 @@ import { current } from '../state/run';
 import { nextSpeed, saveSettings, settings } from '../state/settings';
 import { CHAPTERS, STAGES_PER_CHAPTER, nextStage, stageBattle, stageDef } from '../systems/campaign';
 import { ZEAL_MAX, skillsFor, type Battle, type Unit } from '../systems/combat';
-import { FieldBattle } from '../systems/field';
+import { FieldBattle, screenField } from '../systems/field';
+import { runFieldInBackground } from '../ui/bgFight';
 import { keywordLine } from '../systems/keywords';
 import { settleBattle } from '../systems/settle';
 import { makeButton } from '../ui/button';
@@ -94,8 +95,11 @@ export class FieldScene extends Phaser.Scene {
   /** Practice: which Road stage is being fought. */
   private stageN = 1;
 
-  init(data: { battle?: Battle; bg?: string; stage?: number }) {
-    this.practice = !data.battle;
+  /** Candle length at the start (kept when a fight is left and picked up again). */
+  private vigilMax = 0;
+
+  init(data: { battle?: Battle; field?: FieldBattle; vigilMax?: number; bg?: string; stage?: number }) {
+    this.practice = !data.battle && !data.field;
     this.ended = false;
     this.cards = [];
     this.bossBar = undefined;
@@ -112,7 +116,7 @@ export class FieldScene extends Phaser.Scene {
     // On Auto the fight starts by itself after a moment, unless the player starts swapping.
     this.deployLeft = settings.autoBattle ? 2.2 : undefined;
     const save = game.save;
-    let battle = data.battle;
+    let battle = data.field?.battle ?? data.battle;
     let bg = data.bg;
     if (!battle) {
       const party = (save.vigil?.party ?? []).filter((id) => save.owned[id]);
@@ -124,7 +128,14 @@ export class FieldScene extends Phaser.Scene {
     }
     bg ??= current.run ? `bg-${current.run.crypt.id}` : undefined;
     this.registry.set('field-bg', bg && this.textures.exists(bg) ? bg : 'bg-hall');
-    this.field = new FieldBattle(battle, { w: GAME_W, h: FIELD_H, manualLitany: !settings.autoBattle, bodyScale: 1.45 });
+    this.vigilMax = data.vigilMax ?? battle.vigil;
+    if (data.field) {
+      // A fight picked up again (from the background or a pause): no deploy, it goes on as it stood.
+      this.field = data.field;
+      this.field.opts.manualLitany = !settings.autoBattle;
+      this.phase = 'fight';
+      this.deployLeft = undefined;
+    } else this.field = screenField(battle, !settings.autoBattle);
   }
 
   create() {
@@ -172,7 +183,8 @@ export class FieldScene extends Phaser.Scene {
 
     this.drawCards();
     this.applySpeed();
-    this.drawDeploy();
+    if (this.phase === 'deploy') this.drawDeploy();
+    else this.log('Back into the fight!');
     // On the field: a Sister = her Litany (or a swap, before the fight); a foe = Focus.
     this.input.on('pointerdown', (p: Phaser.Input.Pointer) => {
       if (this.paused || this.ended || this.aim) return;
@@ -293,8 +305,15 @@ export class FieldScene extends Phaser.Scene {
     const layer = this.add.container(0, 0).setDepth(70);
     layer.add(this.add.rectangle(GAME_W / 2, GAME_H / 2, GAME_W, GAME_H, 0x09060b, 0.65).setInteractive());
     layer.add(this.add.text(GAME_W / 2, GAME_H / 2 - 70, 'PAUSED', text.display(36, PAL.amber)).setOrigin(0.5));
-    const resume = makeButton(this, GAME_W / 2, GAME_H / 2 + 10, 220, 60, 'Resume', () => this.togglePause(), { active: true });
+    const resume = makeButton(this, GAME_W / 2, GAME_H / 2 + 10, 260, 60, 'Resume', () => this.togglePause(), { active: true });
     layer.add(resume.all);
+    if (!this.practice) {
+      // A real fight can be left: on Auto it plays on unseen, otherwise it waits.
+      const label = settings.autoBattle ? 'Leave (it plays on Auto)' : 'Leave (it waits for you)';
+      const out = makeButton(this, GAME_W / 2, GAME_H / 2 + 86, 300, 52, label, () => this.leaveFight(), { fontSize: 16 });
+      layer.add(out.all);
+      layer.add(this.add.text(GAME_W / 2, GAME_H / 2 + 132, 'Come back from the Crusade tab.', text.body(15, PAL.steel)).setOrigin(0.5));
+    }
     this.pauseLayer = layer;
   }
 
@@ -451,6 +470,20 @@ export class FieldScene extends Phaser.Scene {
   private applySpeed() {
     this.tweens.timeScale = settings.battleSpeed;
     this.time.timeScale = settings.battleSpeed;
+  }
+
+  /** Leaves a real fight to the Sanctum: on Auto it plays on in the background, else it waits paused. */
+  private leaveFight() {
+    if (this.ended) return;
+    this.ended = true;
+    if (settings.autoBattle) runFieldInBackground(this.field, this.vigilMax);
+    else {
+      const run = current.challenge ? undefined : current.run;
+      current.paused = { battle: this.field.battle, field: this.field, actorUid: '', vigilMax: this.vigilMax, run, floor: run?.floor, at: run?.at, challenge: current.challenge };
+    }
+    this.tweens.timeScale = 1;
+    this.time.timeScale = 1;
+    this.scene.start('Sanctum');
   }
 
   private leave() {

@@ -627,6 +627,22 @@ export class FieldBattle {
   }
 }
 
+/** The battle screen's field (540 x 450, figures at 1.45): also played headless in the background. */
+export const SCREEN_FIELD = { w: 540, h: 450, bodyScale: 1.45 };
+
+export function screenField(battle: Battle, manualLitany: boolean) {
+  return new FieldBattle(battle, { ...SCREEN_FIELD, manualLitany });
+}
+
+/** Steps a field fight forward by `sec` seconds in small steps. Returns the outcome if it ended. */
+export function advanceField(f: FieldBattle, sec: number): 'victory' | 'defeat' | undefined {
+  const dt = 1 / 20;
+  for (let t = 0; t < sec; t += dt) {
+    for (const e of f.update(dt)) if (e.kind === 'end') return e.outcome;
+  }
+  return undefined;
+}
+
 /** Plays a whole fight with no view (tests, balance checks). */
 export function simulateField(battle: Battle, opts: Omit<FieldOpts, 'w' | 'h'> & { w?: number; h?: number } = {}, maxSec = 240) {
   const f = new FieldBattle(battle, { w: 540, h: 600, ...opts });
