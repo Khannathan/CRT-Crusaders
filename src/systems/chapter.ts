@@ -112,7 +112,7 @@ export const SIEGE_MILESTONES: { at: number; reward: Reward & { marks: number } 
   { at: 0.25, reward: { marks: 60, items: { unction2: 3 } } },
   { at: 0.5, reward: { marks: 80, seals: 1, items: { iron2: 3 } } },
   { at: 0.75, reward: { marks: 100, gilt: 60, items: { armory1: 8 } } },
-  { at: 1, reward: { marks: 150, seals: 2, items: { armory2: 2 } } },
+  { at: 1, reward: { marks: 150, seals: 1, items: { armory2: 3 } } },
 ];
 
 /**

@@ -94,7 +94,7 @@ export interface StallItem {
 
 export const FEAST_STALL: StallItem[] = [
   { id: 'favor', name: "Saint's Favor ×10", cost: 250, stock: 5, reward: { favor: 10 } },
-  { id: 'seal', name: 'Seal', cost: 80, stock: 5, reward: { seals: 1 } },
+  { id: 'seal', name: 'Seal', cost: 80, stock: 3, reward: { seals: 1 } },
   { id: 'stigmata', name: 'Stigmata', cost: 150, stock: 5, reward: { stigmata: 1 } },
   { id: 'ash', name: "Martyr's Ash III", cost: 200, stock: 3, reward: { items: { ash3: 1 } } },
   { id: 'page', name: 'Psalter Pages III', cost: 200, stock: 3, reward: { items: { page3: 1 } } },

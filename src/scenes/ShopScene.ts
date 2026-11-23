@@ -1,19 +1,25 @@
 import Phaser from 'phaser';
 import { drawOfferingIcon } from '../ui/offeringIcon';
 import { tapForSources } from '../ui/sources';
-import { GAME_W, PAL } from '../config';
+import { GAME_H, GAME_W, PAL } from '../config';
 import { commit, game } from '../state/game';
 import { almsOf, giltOf } from '../systems/currency';
 import type { ItemId } from '../systems/items';
 import { vowCandidates } from '../systems/matins';
 import { REFRESH_GILT, buy, buyBlock, goodsText, leftOf, offersAt, refreshAlmonry, refreshCost, type Counter, type Offer } from '../systems/shop';
 import { makeButton } from '../ui/button';
+import { BLESSING, RANK_PACKS, blessingBlock, blessingDays, blessingReady, buyBlessing, buyPack, claimBlessing, packBlock, packBought } from '../systems/packs';
+import { rankInfo } from '../systems/rank';
+import { addScrollArea } from '../ui/scroll';
+import { TAB_BAR_H } from '../ui/tabBar';
 import { drawItemIcon } from '../ui/itemIcon';
 import { modeScreen, toast, untilText } from '../ui/modeScreen';
 import { pickParty } from '../ui/partyPicker';
 import { PAD, addFrame, addIcon, text } from '../ui/theme';
 
-const COUNTERS: [Counter, string, string][] = [
+type Tab = Counter | 'packs';
+const COUNTERS: [Tab, string, string][] = [
+  ['packs', 'Packs', 'One-time packs as your Rank climbs, and the Blessing.'],
   ['gilt', 'Gilt', 'Limits reset daily.'],
   ['almonry', 'Almonry', 'New each dawn. One free refresh a day.'],
   ['tithes', 'Tithes', 'Limits reset each Monday.'],
@@ -23,14 +29,14 @@ const PRICE_ICON = { gilt: 'gilt', alms: 'alms', tithes: 'tithe' } as const;
 
 /** The Shop: Gilt, the Almonry (Alms) and the Tithe Exchange. */
 export class ShopScene extends Phaser.Scene {
-  private counter: Counter = 'gilt';
+  private counter: Tab = 'gilt';
   private notice?: string;
 
   constructor() {
     super('Shop');
   }
 
-  init(data: { counter?: Counter; notice?: string }) {
+  init(data: { counter?: Tab; notice?: string }) {
     this.counter = data?.counter ?? this.counter;
     this.notice = data?.notice;
   }
@@ -39,11 +45,11 @@ export class ShopScene extends Phaser.Scene {
     const save = game.save;
     const { top, refresh } = modeScreen(this, 'The Market', '');
     const bw = GAME_W - PAD * 2;
-    const tw = bw / 3;
+    const tw = bw / COUNTERS.length;
     COUNTERS.forEach(([id, label], i) => {
       makeButton(this, PAD + tw / 2 + i * tw, top + 20, tw - 8, 44, label, () => id !== this.counter && this.scene.restart({ counter: id }), {
         active: id === this.counter,
-        fontSize: 17,
+        fontSize: 16,
         skin: 'ui-subtab',
       });
     });
@@ -72,15 +78,74 @@ export class ShopScene extends Phaser.Scene {
     }
     y += 30;
 
+    if (this.counter === 'packs') {
+      this.drawPacks(y);
+      if (this.notice) toast(this, this.notice);
+      return;
+    }
+    const counter = this.counter;
     // Offer cards, two columns
     const cw = (bw - 10) / 2;
     const ch = 118;
-    offersAt(save, this.counter).forEach((o, i) => {
+    offersAt(save, counter).forEach((o, i) => {
       const x = PAD + (i % 2) * (cw + 10);
       const cy = y + Math.floor(i / 2) * (ch + 10);
       this.card(o, x, cy, cw, ch, refresh);
     });
     if (this.notice) toast(this, this.notice);
+  }
+
+  /** The Abbess's Blessing, then the Rank packs, in a scroll. */
+  private drawPacks(y: number) {
+    const save = game.save;
+    const bw = GAME_W - PAD * 2;
+    const list = addScrollArea(this, y, GAME_H - TAB_BAR_H - 6, {});
+    const add = <T extends Phaser.GameObjects.GameObject>(o: T) => (list.content.add(o), o);
+    let cy = y + 4;
+    // The Blessing
+    const days = blessingDays(save);
+    const bh = 132;
+    list.content.add(addFrame(this, GAME_W / 2, cy + bh / 2, bw, bh, { fill: 0x2a1824, edge: PAL.amber }));
+    add(this.add.text(PAD + 16, cy + 12, "THE ABBESS'S BLESSING", text.hud(13, PAL.amber)));
+    add(this.add.text(PAD + 16, cy + 32, `${goodsText(BLESSING.now)} at once, then ${goodsText(BLESSING.daily)} + ${BLESSING.dailyGilt} Gilt each day for ${BLESSING.days} days.`, { ...text.body(16, PAL.ivory), wordWrap: { width: bw - 32 } }));
+    add(this.add.text(PAD + 16, cy + 84, days ? `BLESSED · ${days} DAY${days > 1 ? 'S' : ''} LEFT` : 'Claim it daily, or it is lost that day.', text.hud(11, days ? PAL.amber : PAL.steel)));
+    const ready = blessingReady(save);
+    const block = blessingBlock(save);
+    const btn = ready
+      ? makeButton(this, GAME_W - PAD - 92, cy + bh - 28, 160, 38, 'Claim today', () => {
+          const got = claimBlessing(save);
+          commit();
+          this.scene.restart({ counter: 'packs', notice: got ? `Blessed! ${got}.` : undefined });
+        }, { active: true, fontSize: 15 })
+      : makeButton(this, GAME_W - PAD - 92, cy + bh - 28, 160, 38, block ?? `${BLESSING.price}`, () => {
+          if (!buyBlessing(save)) return;
+          commit();
+          this.scene.restart({ counter: 'packs', notice: `Blessed for ${BLESSING.days} days! ${goodsText(BLESSING.now)} received.` });
+        }, { active: !block, disabled: !!block, fontSize: 15, icon: block ? undefined : 'gilt' });
+    list.content.add(btn.all);
+    cy += bh + 14;
+    // Rank packs
+    const rank = rankInfo(save).rank;
+    add(this.add.text(PAD + 4, cy, `RANK PACKS · YOUR RANK ${rank}`, text.hud(12, PAL.steel)));
+    cy += 24;
+    for (const p of RANK_PACKS) {
+      const h = 98;
+      const pb = packBlock(save, p);
+      const owned = packBought(save, p);
+      list.content.add(addFrame(this, GAME_W / 2, cy + h / 2, bw, h, { fill: pb ? 0x150f17 : 0x1e1520, edge: pb ? PAL.armorShadow : PAL.goldEdge }));
+      add(this.add.text(PAD + 16, cy + 10, `${p.name.toUpperCase()} · RANK ${p.rank}`, text.hud(12, pb ? PAL.steel : PAL.amber)));
+      add(this.add.text(PAD + 16, cy + 30, goodsText(p.goods), { ...text.body(15, owned ? PAL.muted : PAL.ivory), wordWrap: { width: bw - 210 } }));
+      const b = makeButton(this, GAME_W - PAD - 84, cy + h / 2, 148, 40, pb ?? `${p.price}`, () => {
+        if (list.dragging) return;
+        const got = buyPack(save, p.id);
+        if (!got) return;
+        commit();
+        this.scene.restart({ counter: 'packs', notice: `${p.name}! ${goodsText(p.goods)}.` });
+      }, { active: !pb, disabled: !!pb, fontSize: pb ? 13 : 16, icon: pb ? undefined : 'gilt' });
+      list.content.add(b.all);
+      cy += h + 8;
+    }
+    list.fit(cy + 10);
   }
 
   private card(o: Offer, x: number, y: number, w: number, h: number, refresh: () => void) {

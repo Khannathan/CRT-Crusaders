@@ -1,7 +1,8 @@
 import { current } from '../state/run';
-import { storedRun } from '../state/game';
+import { game, storedRun } from '../state/game';
 import { restoreRun } from '../systems/crusade';
 import { playOutStoredFight } from '../systems/settle';
+import { setHomecoming } from '../systems/boosts';
 import { announceSettled } from '../ui/bgFight';
 import { catchUpMarch } from '../ui/marchUi';
 import Phaser from 'phaser';
@@ -128,6 +129,8 @@ export class BootScene extends Phaser.Scene {
     const settled = playOutStoredFight();
     // The Vigil's march catches up the time the game was closed.
     catchUpMarch();
+    // A returning player's Homecoming boosts apply from the first claim (the welcome itself is given in the Sanctum).
+    setHomecoming(game.save.welcome?.homecoming);
     // The title waits for a tap (which also wakes the music on phones).
     this.scene.start('Title', { line: this.line });
     if (settled) window.setTimeout(() => announceSettled(settled), 900);

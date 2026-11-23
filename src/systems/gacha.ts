@@ -2,7 +2,7 @@ import { CRUSADERS } from '../data/crusaders';
 import { ALMS_FOR_TOKEN, earn } from './currency';
 import type { CrusaderDef, Rarity } from '../data/types';
 import type { SaveData } from '../state/save';
-import { track } from './tasks';
+import { track, weekKey } from './tasks';
 import { STIGMATA_FOR_COPY, addStigmata, copiesLeft } from './tiers';
 import { NOVICE_COST, NOVICE_TENS, noviceOpen, novitiateOf } from './novitiate';
 import { SAINTS, isLimitedNow, isStandard, limitedWindow } from './limited';
@@ -291,9 +291,20 @@ function grantSister(save: SaveData, crusader: CrusaderDef): PullResult {
 
 export type PullKind = 'one' | 'ten';
 
-export function canPull(save: SaveData, kind: PullKind): boolean {
-  if (kind === 'ten' && !save.freeTenUsed) return true;
-  return save.seals >= (kind === 'one' ? COST_ONE : COST_TEN);
+/** The first 10-pull of each week (Monday to Sunday) costs this instead of COST_TEN. */
+export const DISCOUNT_TEN = 8;
+
+/** True while this week's discounted 10-pull is unused. */
+export const discountReady = (save: SaveData, now = Date.now()) => save.discountWeek !== weekKey(now);
+
+/** Seals the next 10-pull costs: free the first time, discounted once a week. */
+export const tenCost = (save: SaveData, now = Date.now()) => (!save.freeTenUsed ? 0 : discountReady(save, now) ? DISCOUNT_TEN : COST_TEN);
+
+/** The 10-pull button's second line. */
+export const tenLabel = (save: SaveData, now = Date.now()) => (!save.freeTenUsed ? 'Free first time' : discountReady(save, now) ? `${DISCOUNT_TEN} Seals · weekly` : `${COST_TEN} Seals`);
+
+export function canPull(save: SaveData, kind: PullKind, now = Date.now()): boolean {
+  return save.seals >= (kind === 'one' ? COST_ONE : tenCost(save, now));
 }
 
 /**
@@ -308,8 +319,10 @@ export function pull(save: SaveData, kind: PullKind, rng: Rng = Math.random): Pu
     track(save, 'pull');
     return [pullOnce(save, rng, 'R')];
   }
+  const cost = tenCost(save);
+  save.seals -= cost;
   if (!save.freeTenUsed) save.freeTenUsed = true;
-  else save.seals -= COST_TEN;
+  else if (cost === DISCOUNT_TEN) save.discountWeek = weekKey(Date.now());
 
   track(save, 'pull', 10);
   const results: PullResult[] = [];

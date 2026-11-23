@@ -19,6 +19,7 @@ import { noviceDay, noviceOpen, noviceReady, NOVITIATE_DAYS } from '../systems/n
 import { anyClaimable } from '../systems/tasks';
 import { missivesReady } from '../systems/missives';
 import { nextSaint } from '../systems/calendar';
+import { checkReturn, homecomingLeft } from '../systems/welcome';
 import { matinsReady } from '../systems/matins';
 import { passReady } from '../systems/pass';
 import { chapterReady } from '../systems/chapter';
@@ -68,6 +69,10 @@ export class SanctumScene extends Phaser.Scene {
 
   create() {
     const save = game.save;
+    // Away three days or more: a gift in Missives and a Homecoming week.
+    const away = checkReturn(save);
+    commit();
+    if (away) this.time.delayedCall(400, () => toast(this, `Welcome home! ${away} days away. A gift waits in Missives, and a Homecoming week begins!`, GAME_H / 2 - 120));
     const owned = CRUSADERS.filter((c) => save.owned[c.id]);
     const areaTop = CURRENCY_BAR_H;
     const areaBot = GAME_H - TAB_BAR_H;
@@ -207,6 +212,8 @@ export class SanctumScene extends Phaser.Scene {
         },
       },
     ];
+    const home = homecomingLeft(save);
+    if (home) items.unshift({ title: 'Homecoming', sub: `+100% VIGIL · ${timeLeft(Date.now() + home)}`, art: 'bg-altar', go: () => this.scene.start('Missives') });
     const coming = nextSaint();
     items.push({ title: 'Calendar', sub: coming ? `NEXT: ${coming.saint.name.split(' ')[0]} · ${timeLeft(coming.starts)}` : 'WHAT COMES', art: 'bg-hall', go: () => this.scene.start('Calendar') });
     if (noviceOpen(save)) items.push({ title: 'Novitiate', sub: `DAY ${Math.min(NOVITIATE_DAYS, noviceDay(save))} OF ${NOVITIATE_DAYS}`, art: 'bg-altar', go: () => this.scene.start('Novitiate'), ready: noviceReady(save) });

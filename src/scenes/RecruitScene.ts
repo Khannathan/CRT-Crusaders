@@ -6,7 +6,7 @@ import { CRUSADERS } from '../data/crusaders';
 import { ORDERS } from '../data/orders';
 import { sigilKey } from '../ui/icons';
 import { commit, game } from '../state/game';
-import { BOOSTED_SSRS, COST_ONE, COST_TEN, PITY_LIMIT, RARITY_ORDER, RATES, bannerPool, boostedSSRs, chooseLimited, chooseStandard, customizeBanner, defaultSSRs, standardSSRs, standardURs, SPARK, UR_HARD, UR_SOFT, canPull, claimSpark, pull, shardsOf, sparkKey, syncBanner, urPityLeft, type PullKind } from '../systems/gacha';
+import { BOOSTED_SSRS, COST_ONE, PITY_LIMIT, RARITY_ORDER, RATES, bannerPool, boostedSSRs, chooseLimited, chooseStandard, customizeBanner, defaultSSRs, standardSSRs, standardURs, SPARK, UR_HARD, UR_SOFT, canPull, tenLabel, claimSpark, pull, shardsOf, sparkKey, syncBanner, urPityLeft, type PullKind } from '../systems/gacha';
 import { GRADUATE_AFTER, graduationDate, isStandard, limitedUnseen, limitedWindow, markLimitedSeen, timeLeft, upcoming, type LimitedWindow } from '../systems/limited';
 import { makeButton } from '../ui/button';
 import { CURRENCY_BAR_H, addCurrencyBar } from '../ui/currencyBar';
@@ -208,11 +208,10 @@ export class RecruitScene extends Phaser.Scene {
     const offerH = GAME_H - TAB_BAR_H - 8 - y;
     const half = (pw - 10) / 2;
     const btnY = y + offerH / 2;
-    const freeTen = !s.freeTenUsed;
     makeButton(this, px + half / 2, btnY, half, offerH, `Recruit ×1\n${COST_ONE} Seal`, () => this.doPull('one'), {
       disabled: !canPull(s, 'one'),
     });
-    makeButton(this, px + half + 10 + half / 2, btnY, half, offerH, freeTen ? 'Recruit ×10\nFree first time' : `Recruit ×10\n${COST_TEN} Seals`, () => this.doPull('ten'), {
+    makeButton(this, px + half + 10 + half / 2, btnY, half, offerH, `Recruit ×10\n${tenLabel(s)}`, () => this.doPull('ten'), {
       disabled: !canPull(s, 'ten'),
       active: true,
     });

@@ -47,7 +47,13 @@ export const setBoostsEnabled = (on: boolean) => (enabled = on);
 export const dayName = (now = Date.now()) => DAY_NAME[new Date(now).getDay()];
 
 /** Today's boosts. */
-export const boostsToday = (now = Date.now()): Boost[] => (enabled ? WEEK_BOOSTS[new Date(now).getDay()] : []);
+/** Homecoming (systems/welcome.ts): a returning player's week of boosts, on top of the day's. */
+export const HOMECOMING: Boost[] = [{ kind: 'vigil', pct: 1 }, { kind: 'exp', pct: 0.5 }];
+let homecomingUntil = 0;
+export const setHomecoming = (until?: number) => (homecomingUntil = until ?? 0);
+export const homecomingOn = (now = Date.now()) => now < homecomingUntil;
+
+export const boostsToday = (now = Date.now()): Boost[] => (enabled ? [...WEEK_BOOSTS[new Date(now).getDay()], ...(homecomingOn(now) ? HOMECOMING : [])] : []);
 
 /** Multiplier for a kind today: 1, or 1.5 for a +50% day. */
 export const boostMult = (kind: BoostKind, now = Date.now()) => 1 + boostsToday(now).reduce((s, b) => s + (b.kind === kind ? b.pct : 0), 0);

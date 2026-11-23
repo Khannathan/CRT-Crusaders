@@ -3,7 +3,7 @@ import Phaser from 'phaser';
 import { NOVICE_COST, noviceTensLeft } from '../systems/novitiate';
 import { FONT, GAME_H, GAME_W, PAL, hex } from '../config';
 import { CLASSES, RARITY_COLOR } from '../data/classes';
-import { COST_ONE, COST_TEN, RARITY_ORDER, canPull, noviceTen, pull, type PullKind, type PullResult } from '../systems/gacha';
+import { COST_ONE, RARITY_ORDER, canPull, tenLabel, noviceTen, pull, type PullKind, type PullResult } from '../systems/gacha';
 import { music } from '../audio/music';
 import { commit, game } from '../state/game';
 import { makeButton } from '../ui/button';
@@ -390,7 +390,7 @@ export class RevealScene extends Phaser.Scene {
       }, { fontSize: 20, disabled: !left || game.save.seals < NOVICE_COST, active: true });
     } else {
       again('one', GAME_W / 2 - 128, `Again ×1\n${COST_ONE} Seal`);
-      again('ten', GAME_W / 2 + 128, game.save.freeTenUsed ? `Again ×10\n${COST_TEN} Seals` : 'Again ×10\nFree first time');
+      again('ten', GAME_W / 2 + 128, `Again ×10\n${tenLabel(game.save)}`);
     }
 
     const hist = this.add.text(24, 56, 'Oath Record ›', { fontFamily: FONT, fontSize: '17px', color: hex(PAL.steel) }).setOrigin(0, 0.5).setInteractive({ useHandCursor: true });
