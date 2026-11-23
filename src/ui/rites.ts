@@ -31,7 +31,9 @@ import { ERRAND_SLOTS, anyErrandDone, errandsOf, openErrands } from '../systems/
 import { ladder, renownOf } from '../systems/rivals';
 import { PAD } from './theme';
 import { feastName, feastOf, feastReady } from '../systems/feast';
-import { limitedWindow, timeLeft } from '../systems/limited';
+import { limitedUnseen, limitedWindow, timeLeft } from '../systems/limited';
+import { countOf } from '../systems/items';
+import { armoryOf, featuredSet } from '../systems/armory';
 
 /**
  * Every mode and side screen, and where it lives: the Sanctum's rail (daily
@@ -62,7 +64,7 @@ export interface RiteEntry {
   bg?: string;
 }
 
-export type RiteHome = 'sanctum' | 'board' | 'cloister';
+export type RiteHome = 'sanctum' | 'board' | 'cloister' | 'altar';
 
 export const RITES: RiteEntry[] = [
   // The Crusade board: every mode you fight in. The Feast (a two-week event) leads it.
@@ -111,16 +113,30 @@ export const RITES: RiteEntry[] = [
     blurb: 'A fortnightly Edict: three trials, nine Brands, each Sister fights once.',
     status: (s) => `${totalBrands(s)} of ${BRAND_MAX} Brands  ·  ends in ${untilText(rotation().ends - Date.now())}`,
   },
+  // The Sealed Altar: one card per thing you can pull for, each with its own currency.
+  {
+    label: 'Sisters', scene: 'Recruit', icon: 'seal', art: 'altar', rank: 1, home: 'altar', bg: 'bg-altar',
+    ready: (s) => limitedUnseen(s) || !s.freeTenUsed,
+    blurb: 'Call Sisters with Seals. Your own standard banner, and a Limited Saint every two weeks.',
+    status: (s) => `${s.seals} Seals  ·  ${limitedWindow().saint.name.split(' ')[0]} leaves in ${timeLeft(limitedWindow().ends)}`,
+  },
+  {
+    label: 'Gear', scene: 'Armory', icon: 'shield', rank: 1, home: 'altar', bg: 'bg-reliquary', data: { back: 'Altar' },
+    ready: (s) => countOf(s, 'armory2') > 0 || !armoryOf(s).gifted,
+    blurb: "The Saints' Armory: UR gear, pulled with Armory Writs or forged from Saint's Fragments.",
+    status: (s) => `${countOf(s, 'armory2')} Writs  ·  featured ${featuredSet().set.name}`,
+  },
+  {
+    label: 'Hounds', scene: 'Kennel', icon: 'shield', rank: 1, home: 'altar', bg: 'bg-kennel',
+    ready: (s) => freeWhistle(s) || countOf(s, 'kennel2') > 0 || !houndsOf(s).gifted,
+    blurb: 'War-dogs of the Church, called with Hound Whistles. One goes into every fight and howls each round.',
+    status: (s) => `${countOf(s, 'kennel2')} Whistles  ·  ${Object.keys(houndsOf(s).owned).length}/${HOUNDS.length} hounds  ·  ${freeWhistle(s) ? 'free call ready' : 'free call used'}`,
+  },
   // The Cloister: growth and spending.
   {
     label: 'Rival Orders', scene: 'Rivals', icon: 'sigil', rank: 1, home: 'board', bg: 'bg-hall',
     blurb: 'Your records, and the rival Sisterhoods just above and below you on the ladder.',
     status: (s) => `Place ${ladder(s).place} of ${ladder(s).rows.length}  ·  Renown ${renownOf(s)}`,
-  },
-  {
-    label: 'Kennel', scene: 'Kennel', icon: 'shield', rank: 1, home: 'cloister', bg: 'bg-kennel', ready: (s) => freeWhistle(s),
-    blurb: 'War-dogs of the Church. One goes into every fight and howls each round.',
-    status: (s) => `${Object.keys(houndsOf(s).owned).length} of ${HOUNDS.length} hounds  ·  ${freeWhistle(s) ? 'free whistle ready' : 'whistled today'}`,
   },
   { label: 'Inventory', scene: 'Inventory', icon: 'shield', art: 'inventory', rank: 1, home: 'cloister', bg: 'bg-hall', blurb: 'Every relic, ash, page and writ your Sisters carried home. Refine and use them.' },
   {

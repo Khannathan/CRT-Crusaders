@@ -4,16 +4,22 @@ import { RARITY_COLOR } from '../data/classes';
 import { HOUNDS, houndDef, type HoundDef } from '../data/hounds';
 import { commit, game } from '../state/game';
 import {
+  FIRST_WHISTLES,
   HOUND_MAX,
   HOUND_PITY,
   HOUND_RATES,
+  HOUND_SPARK,
+  TEN_WHISTLE_GILT,
   WHISTLE_GILT,
-  freeWhistle,
+  adoptBlock,
+  adoptHound,
+  giftWhistles,
+  whistleMany,
+  whistlePay,
   howlAt,
   howlParts,
   houndsOf,
   setHound,
-  whistle,
   whistleBlock,
   type WhistleResult,
 } from '../systems/hounds';
@@ -23,6 +29,7 @@ import { modeScreen, toast } from '../ui/modeScreen';
 import { addScrollArea } from '../ui/scroll';
 import { TAB_BAR_H } from '../ui/tabBar';
 import { PAD, text } from '../ui/theme';
+import { countOf } from '../systems/items';
 
 /** The Kennel: whistle for hounds, and choose the one that goes into battle. */
 export class KennelScene extends Phaser.Scene {
@@ -35,7 +42,10 @@ export class KennelScene extends Phaser.Scene {
   create() {
     const save = game.save;
     const s = houndsOf(save);
-    const { top, refresh } = modeScreen(this, 'Kennel', 'The Church\'s war-dogs. One hound goes into every fight and howls at the start of each round.');
+    const gifted = giftWhistles(save);
+    if (gifted) commit();
+    const { top, refresh } = modeScreen(this, 'Kennel', 'The Church\'s war-dogs, called with Hound Whistles. One goes into every fight and howls each round.');
+    if (gifted) toast(this, `The kennel-master gives you ${FIRST_WHISTLES} Hound Whistles.`);
     const bw = GAME_W - PAD * 2;
     const list = addScrollArea(this, top - 4, GAME_H - TAB_BAR_H, { start: KennelScene.listY, onScroll: (y) => (KennelScene.listY = y) });
     const before = this.children.list.length;
@@ -56,16 +66,30 @@ export class KennelScene extends Phaser.Scene {
     } else this.add.text(PAD + 16, y + 60, 'No hound goes with your Sisters. Tap one below.', text.body(16, PAL.muted));
     y += ch + 14;
 
-    // The whistle.
-    const free = freeWhistle(save);
-    const block = whistleBlock(save);
-    const btn = makeButton(this, GAME_W / 2, y + 30, 300, 58, free ? 'Whistle (free today)' : `Whistle · ${WHISTLE_GILT} Gilt`, () => {}, { active: !block, disabled: !!block, fontSize: 18 });
-    btn.box.removeAllListeners('pointerup');
-    list.tap(btn.box, () => this.blow());
-    y += 66;
+    // The whistle: free once a day, then Hound Whistles (the Kennel's own currency), then Gilt.
+    const whistles = countOf(save, 'kennel2');
+    const bones = countOf(save, 'kennel1');
+    const leash = countOf(save, 'kennel3');
+    this.add.text(PAD, y, `HOUND WHISTLES  ${whistles}`, text.hud(14, PAL.amber));
+    this.add.text(GAME_W - PAD, y, `MARROW BONES  ${bones}/${HOUND_SPARK}${leash ? `  ·  LEASH ${leash}` : ''}`, text.hud(14, bones >= HOUND_SPARK || leash ? PAL.amber : PAL.steel)).setOrigin(1, 0);
+    y += 28;
+    const pay1 = whistlePay(save, 1);
+    const label1 = pay1 === 'free' ? 'Call ×1\nfree today' : pay1 === 'gilt' ? `Call ×1\n${WHISTLE_GILT} Gilt` : 'Call ×1\n1 Whistle';
+    const pay10 = whistlePay(save, 10);
+    const label10 = pay10 === 'gilt' ? `Call ×10\n${TEN_WHISTLE_GILT} Gilt` : 'Call ×10\n10 Whistles';
+    const third = (bw - 20) / 3;
+    const b1 = makeButton(this, PAD + third / 2, y + 32, third, 64, label1, () => {}, { active: !!pay1, disabled: !pay1, fontSize: 16 });
+    const b10 = makeButton(this, PAD + third * 1.5 + 10, y + 32, third, 64, label10, () => {}, { active: !!pay10, disabled: !pay10, fontSize: 16 });
+    const ab = adoptBlock(save);
+    const bA = makeButton(this, PAD + third * 2.5 + 20, y + 32, third, 64, `Adopt\n${leash ? '1 Leash' : `${HOUND_SPARK} Bones`}`, () => {}, { disabled: !!ab, fontSize: 16 });
+    for (const b of [b1, b10, bA]) b.box.removeAllListeners('pointerup');
+    list.tap(b1.box, () => this.blow(1));
+    list.tap(b10.box, () => this.blow(10));
+    list.tap(bA.box, () => (ab ? toast(this, ab) : this.adopt()));
+    y += 74;
     const rates = (['R', 'SR', 'SSR', 'UR'] as const).map((r) => `${r} ${Math.round(HOUND_RATES[r] * 100)}%`).join('  ·  ');
-    this.add.text(GAME_W / 2, y, `${rates}\nAn SSR or UR hound within ${HOUND_PITY - (s.pity ?? 0)} whistles. A hound you have grows a level (to ${HOUND_MAX}), each 10% stronger.`, { ...text.body(14, PAL.muted), align: 'center', wordWrap: { width: bw - 20 } }).setOrigin(0.5, 0);
-    y += 64;
+    this.add.text(GAME_W / 2, y, `${rates}\nAn SSR or UR hound within ${HOUND_PITY - (s.pity ?? 0)} calls. Every call leaves a Marrow Bone; ${HOUND_SPARK} adopt any hound. A hound you have grows a level (to ${HOUND_MAX}), each 10% stronger.`, { ...text.body(14, PAL.muted), align: 'center', wordWrap: { width: bw - 20 } }).setOrigin(0.5, 0);
+    y += 84;
 
     // Every hound: tap one you have to bring it.
     this.add.text(PAD, y, `HOUNDS  ${Object.keys(s.owned).length}/${HOUNDS.length}`, text.hud(14, PAL.steel));
@@ -98,11 +122,61 @@ export class KennelScene extends Phaser.Scene {
     refresh();
   }
 
-  private blow() {
-    const r = whistle(game.save);
-    if (!r) return toast(this, whistleBlock(game.save) ?? 'Not now.');
+  private blow(n: 1 | 10) {
+    const rs = whistleMany(game.save, n);
+    if (!rs.length) return toast(this, whistleBlock(game.save, Date.now(), n) ?? 'Not now.');
     commit();
-    this.reveal(r);
+    if (rs.length === 1) this.reveal(rs[0]);
+    else this.revealMany(rs);
+  }
+
+  /** Pick the hound to adopt with Marrow Bones or a Saint's Leash. */
+  private adopt() {
+    const save = game.save;
+    const layer = this.add.container(0, 0).setDepth(60);
+    layer.add(this.add.rectangle(GAME_W / 2, GAME_H / 2, GAME_W, GAME_H, 0x09060b, 0.94).setInteractive());
+    layer.add(this.add.text(GAME_W / 2, 90, 'ADOPT A HOUND', text.display(24, PAL.amber)).setOrigin(0.5));
+    const cost = countOf(save, 'kennel3') ? "one Saint's Leash" : `${HOUND_SPARK} Marrow Bones`;
+    layer.add(this.add.text(GAME_W / 2, 120, `Costs ${cost}. One you have grows a level.`, { ...text.body(16, PAL.muted), align: 'center', wordWrap: { width: GAME_W - 80 } }).setOrigin(0.5, 0));
+    const cols = 3;
+    const cw = (GAME_W - PAD * 2) / cols;
+    [...HOUNDS].reverse().forEach((h, i) => {
+      const x = PAD + cw * (i % cols) + cw / 2;
+      const cy = 180 + Math.floor(i / cols) * 190;
+      const own = houndsOf(save).owned[h.id];
+      const box = this.add.rectangle(x, cy + 84, cw - 10, 178, 0x1a1219).setStrokeStyle(1, RARITY_COLOR[h.rarity]).setInteractive({ useHandCursor: true });
+      const [f, img] = houndFace(this, x, cy + 58, h, 92);
+      layer.add([box, f, img]);
+      layer.add(this.add.text(x, cy + 112, h.name, { ...text.body(15, PAL.ivory), align: 'center', wordWrap: { width: cw - 20 } }).setOrigin(0.5, 0));
+      layer.add(this.add.text(x, cy + 150, own ? `${h.rarity}  LV ${own.level}` : `${h.rarity}  NEW`, text.hud(12, RARITY_COLOR[h.rarity])).setOrigin(0.5, 0));
+      box.on('pointerup', () => {
+        const r = adoptHound(save, h.id);
+        if (!r) return;
+        commit();
+        layer.destroy();
+        this.reveal(r);
+      });
+    });
+    layer.add(makeButton(this, GAME_W / 2, GAME_H - 140, 220, 56, 'Not now', () => layer.destroy(), { fontSize: 18 }).all);
+  }
+
+  /** Ten hounds at once, in a grid. */
+  private revealMany(rs: WhistleResult[]) {
+    const layer = this.add.container(0, 0).setDepth(60);
+    layer.add(this.add.rectangle(GAME_W / 2, GAME_H / 2, GAME_W, GAME_H, 0x09060b, 0.94).setInteractive());
+    layer.add(this.add.text(GAME_W / 2, 90, 'THE PACK ANSWERS', text.display(24, PAL.amber)).setOrigin(0.5));
+    const cols = 2;
+    const cw = (GAME_W - PAD * 2) / cols;
+    rs.forEach((r, i) => {
+      const x = PAD + cw * (i % cols) + 54;
+      const cy = 150 + Math.floor(i / cols) * 120;
+      const [f, img] = houndFace(this, x, cy + 40, r.hound, 80);
+      layer.add([f, img]);
+      const tag = r.isNew ? 'NEW' : r.alms ? `+${r.alms} ALMS` : `LV ${r.level}`;
+      layer.add(this.add.text(x + 54, cy + 14, r.hound.name, { ...text.body(16, PAL.ivory), wordWrap: { width: cw - 120 } }));
+      layer.add(this.add.text(x + 54, cy + 58, `${r.hound.rarity}  ·  ${tag}`, text.hud(12, r.isNew ? PAL.amber : RARITY_COLOR[r.hound.rarity])));
+    });
+    layer.add(makeButton(this, GAME_W / 2, GAME_H - 140, 220, 56, 'Kennel', () => this.scene.restart(), { fontSize: 18, active: true }).all);
   }
 
   /** The hound that answered the whistle. */

@@ -36,8 +36,9 @@ export class RecruitScene extends Phaser.Scene {
     addCurrencyBar(this);
     const s = game.save;
     // A compact header leaves the banner room for the Sisters to stand at full height.
-    this.add.text(PAD + 4, CURRENCY_BAR_H + 28, 'THE SEALED ALTAR', text.display(24, PAL.amber)).setOrigin(0, 0.5);
-    makeButton(this, GAME_W - PAD - 58, CURRENCY_BAR_H + 28, 116, 40, 'Record', () => this.scene.start('PullHistory'), { fontSize: 15, icon: 'book' });
+    this.add.text(PAD + 4, CURRENCY_BAR_H + 28, 'SISTERS', text.display(24, PAL.amber)).setOrigin(0, 0.5);
+    makeButton(this, GAME_W - PAD - 44, CURRENCY_BAR_H + 28, 88, 40, 'Back', () => this.scene.start('Altar'), { fontSize: 16 });
+    makeButton(this, GAME_W - PAD - 96 - 58, CURRENCY_BAR_H + 28, 108, 40, 'Record', () => this.scene.start('PullHistory'), { fontSize: 15, icon: 'book' });
     const top = CURRENCY_BAR_H + 50;
 
     // Banner pages: the Limited Saint first, then one per Order. ‹ › step through them.

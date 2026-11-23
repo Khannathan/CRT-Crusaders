@@ -4,7 +4,8 @@ import { newSave } from '../state/save';
 import { autoBattle } from './autoplay';
 import { OSSUARY, skirmish } from './crusade';
 import { GILT_START } from './currency';
-import { FIRST_HOUND, HOUND_MAX, HOUND_PITY, WHISTLE_GILT, activeHowl, howlAt, houndsOf, setHound, whistle, whistleBlock } from './hounds';
+import { FIRST_HOUND, FIRST_WHISTLES, HOUND_MAX, HOUND_PITY, HOUND_SPARK, TEN_WHISTLE_GILT, WHISTLE_GILT, activeHowl, adoptBlock, adoptHound, giftWhistles, howlAt, houndsOf, setHound, whistle, whistleBlock, whistleMany } from './hounds';
+import { countOf, give } from './items';
 import { seeded } from './rng';
 
 const DAY = 86_400_000;
@@ -110,4 +111,44 @@ describe('howls in battle', () => {
     expect(shuck - cur).toBeLessThan(0.25);
     expect(wolf - cur).toBeLessThan(0.3);
   }, 20_000); // 800 simulated fights: about 3 s alone, over 5 s on a busy CI runner
+
+  it('Hound Whistles pay before Gilt, and every call leaves a Marrow Bone', () => {
+    const save = newSave();
+    const rng = seeded(4);
+    expect(giftWhistles(save)).toBe(true);
+    expect(giftWhistles(save)).toBe(false);
+    expect(countOf(save, 'kennel2')).toBe(FIRST_WHISTLES);
+    whistle(save, rng, T0); // the free one
+    expect(countOf(save, 'kennel2')).toBe(FIRST_WHISTLES);
+    whistle(save, rng, T0);
+    expect(countOf(save, 'kennel2')).toBe(FIRST_WHISTLES - 1);
+    expect(save.gilt ?? GILT_START).toBe(GILT_START);
+    expect(countOf(save, 'kennel1')).toBe(2);
+  });
+
+  it('ten calls at once take 10 Whistles, or Gilt', () => {
+    const save = newSave();
+    give(save, { kennel2: 10 });
+    expect(whistleMany(save, 10, seeded(2), T0)).toHaveLength(10);
+    expect(countOf(save, 'kennel2')).toBe(0);
+    save.gilt = TEN_WHISTLE_GILT;
+    expect(whistleMany(save, 10, seeded(3), T0)).toHaveLength(10);
+    expect(save.gilt).toBe(0);
+    expect(whistleBlock(save, T0, 10)).toMatch(/10 Hound Whistles/);
+    expect(whistleMany(save, 10, seeded(3), T0)).toHaveLength(0);
+    expect(countOf(save, 'kennel1')).toBe(20);
+  });
+
+  it('Marrow Bones or a Saint\'s Leash adopt the hound you choose', () => {
+    const save = newSave();
+    expect(adoptBlock(save)).toBeTruthy();
+    expect(adoptHound(save, 'shuck')).toBeUndefined();
+    give(save, { kennel1: HOUND_SPARK });
+    expect(adoptHound(save, 'shuck')!.isNew).toBe(true);
+    expect(countOf(save, 'kennel1')).toBe(0);
+    give(save, { kennel3: 1 });
+    expect(adoptHound(save, 'shuck')!.level).toBe(2);
+    expect(countOf(save, 'kennel3')).toBe(0);
+  });
 });
+
