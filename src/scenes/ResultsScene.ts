@@ -66,16 +66,21 @@ export class ResultsScene extends Phaser.Scene {
     const mats: string[] = [];
     if (!bagEmpty(r.items)) mats.push(bagText(r.items));
     if (r.gilt) mats.push(`+${r.gilt} Gilt`);
-    if (mats.length) this.reveal(this.add.text(GAME_W / 2, 354, mats.join('   '), { ...style, fontSize: '16px', color: hex(PAL.muted), wordWrap: { width: GAME_W - 50 } }).setOrigin(0.5, 0));
+    let matsBottom = 354;
+    if (mats.length) {
+      const m = this.add.text(GAME_W / 2, 354, mats.join('   '), { ...style, fontSize: '16px', color: hex(PAL.muted), align: 'center', wordWrap: { width: GAME_W - 50 } }).setOrigin(0.5, 0);
+      matsBottom = 354 + m.height;
+      this.reveal(m);
+    }
 
-    // Bars toward what this run moved.
-    let y = 418;
+    // Bars toward what this run moved (pushed down when the materials run long).
+    let y = Math.max(418, matsBottom + 48);
     this.reveal(this.add.text(GAME_W / 2, y - 26, 'What this crusade moved', { ...style, fontSize: '18px', color: hex(PAL.steel) }).setOrigin(0.5));
     for (const t of this.tracks(save)) {
       this.bar(26, y + 10, GAME_W - 52, t);
       y += 50;
     }
-    this.sisters(y + 4);
+    const sistersEnd = this.sisters(y + 4);
 
     // Notes, then the nearest real goal beside March again.
     const notes: string[] = [];
@@ -86,13 +91,17 @@ export class ResultsScene extends Phaser.Scene {
     if (r.outcome === 'defeat') notes.push('You keep your Seals, your gear, everything banked at a Sanctuary, and most of the rest.');
     if (r.outcome === 'retreat') notes.push('You kept everything you found. The completion reward waits for a cleared crypt.');
     if (r.fallen.length) notes.push('The fallen mend for one crusade, or can be absolved early with Tithes.');
-    if (notes.length)
-      this.reveal(this.add.text(GAME_W / 2, 738, notes.join('\n'), { ...style, fontSize: '15px', color: hex(PAL.steel), wordWrap: { width: GAME_W - 50 }, lineSpacing: 2 }).setOrigin(0.5, 0));
+    let notesEnd = 738;
+    if (notes.length) {
+      const n = this.add.text(GAME_W / 2, Math.max(738, sistersEnd + 8), notes.join('\n'), { ...style, fontSize: '15px', color: hex(PAL.steel), align: 'center', wordWrap: { width: GAME_W - 50 }, lineSpacing: 2 }).setOrigin(0.5, 0);
+      notesEnd = n.y + n.height;
+      this.reveal(n);
+    }
 
     const goal = nearGoals(save, r.party)[0];
     if (goal) {
       const line = this.add
-        .text(GAME_W / 2, 830, `Next: ${goal.text}  ›`, { ...style, fontSize: '19px', color: hex(PAL.amber), wordWrap: { width: GAME_W - 40 } })
+        .text(GAME_W / 2, Math.max(830, notesEnd + 22), `Next: ${goal.text}  ›`, { ...style, fontSize: '19px', color: hex(PAL.amber), wordWrap: { width: GAME_W - 40 } })
         .setOrigin(0.5)
         .setInteractive({ useHandCursor: true });
       line.on('pointerup', () => this.scene.start(goal.scene, goal.data));
@@ -252,7 +261,8 @@ export class ResultsScene extends Phaser.Scene {
   }
 
   /** Each Sister's level bar, two to a row; the fallen are greyed. */
-  private sisters(y0: number) {
+  /** Each Sister's EXP bar; returns where the rows end. */
+  private sisters(y0: number): number {
     const r = this.result;
     const save = game.save;
     const colW = (GAME_W - 52) / 2;
@@ -278,6 +288,7 @@ export class ResultsScene extends Phaser.Scene {
       img.setAlpha(0);
       this.tweens.add({ targets: img, alpha: 1, delay: this.at - 260, duration: 150 });
     });
+    return y0 + Math.ceil(r.party.length / 2) * 64 - 10;
   }
 }
 

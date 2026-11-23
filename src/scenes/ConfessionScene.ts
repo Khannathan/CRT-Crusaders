@@ -15,7 +15,7 @@ import { PAD, addFrame, text } from '../ui/theme';
 import { addScrollArea } from '../ui/scroll';
 import { TAB_BAR_H } from '../ui/tabBar';
 import { holdForCard } from '../ui/sisterCard';
-import { sortAndFilter, sortControls } from '../ui/sisterSort';
+import { sortAndFilter, sortControls, emptyListLine } from '../ui/sisterSort';
 
 
 /** Confession: Sisters by bond, and one Sister's bond, offerings, candle and confessions. */
@@ -63,7 +63,7 @@ export class ConfessionScene extends Phaser.Scene {
       ConfessionScene.listY = 0;
       this.scene.restart({});
     }, { depth: 10, h: 36 });
-    if (!owned.length) this.add.text(GAME_W / 2, top + 140, 'No Sister matches these filters.', text.body(17, PAL.muted)).setOrigin(0.5);
+    if (!owned.length) this.add.text(GAME_W / 2, top + 140, emptyListLine(save), text.body(17, PAL.muted)).setOrigin(0.5);
     const list = addScrollArea(this, top + 64, GAME_H - TAB_BAR_H, { start: ConfessionScene.listY, onScroll: (y) => (ConfessionScene.listY = y) });
     const before = this.children.list.length;
     owned.forEach((c, i) => {

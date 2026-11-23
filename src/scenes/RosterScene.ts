@@ -850,7 +850,7 @@ export class RosterScene extends Phaser.Scene {
     const save = game.save;
     const worn = equipped(save, c.id);
     const bw = GAME_W - PAD * 2 - 8;
-    const left = PAD + 18;
+    const left = PAD + 26;
     const auto = autoEquipPlan(save, c);
     const ab = makeButton(this, GAME_W / 2, y0 + 20, bw, 42, auto.length ? `Auto-equip best  ·  ${auto.length} piece${auto.length > 1 ? 's' : ''}` : 'Wearing her best', () => {
       for (const g of autoEquipPlan(save, c)) equip(save, c.id, g.uid);
@@ -866,8 +866,8 @@ export class RosterScene extends Phaser.Scene {
       const row = nine(this, 'ui-gear-slot', GAME_W / 2, y, bw, 112);
       layer.add(row ? row.setTint(item ? edge : 0xffffff) : this.add.rectangle(GAME_W / 2, y, bw, 112, 0x1b131d).setStrokeStyle(1, edge));
       const set = gearSet(item?.set);
-      layer.add(this.add.text(left, y - 46, `${SLOT_NAME[slot].toUpperCase()} · ${SLOT_HINT[slot].toUpperCase()}`, text.hud(12, PAL.steel)));
-      if (set) layer.add(this.add.text(GAME_W - 168, y - 46, `${set.name.toUpperCase()} SET`, text.hud(12, set.color)).setOrigin(1, 0));
+      layer.add(this.add.text(left, y - 42, `${SLOT_NAME[slot].toUpperCase()} · ${SLOT_HINT[slot].toUpperCase()}`, text.hud(12, PAL.steel)));
+      if (set) layer.add(this.add.text(GAME_W - 168, y - 42, `${set.name.toUpperCase()} SET`, text.hud(12, set.color)).setOrigin(1, 0));
       if (item) {
         // gear-<slot>-<rarity>.png beside the piece's lines
         const art = addArt(this, `gear-${slot}-${item.rarity}`, left + 26, y + 2, 52);

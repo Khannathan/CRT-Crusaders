@@ -17,7 +17,7 @@ import { addScrollArea } from '../ui/scroll';
 import { holdForCard, justHeld } from '../ui/sisterCard';
 import { drawPortraitBadges } from '../ui/portraitBadges';
 import { openPresets } from '../ui/presets';
-import { sortAndFilter, sortControls } from '../ui/sisterSort';
+import { sortAndFilter, sortControls, emptyListLine } from '../ui/sisterSort';
 
 const ROMAN = ['I', 'II', 'III', 'IV'];
 
@@ -44,7 +44,7 @@ export class MusterScene extends Phaser.Scene {
     this.add.text(GAME_W / 2, 36, 'MUSTER', text.display(30, PAL.ivory)).setOrigin(0.5);
     makeButton(this, 60, 36, 96, 48, 'Back', () => this.scene.start('Crusade'), { fontSize: 18 });
     // The hound that marches with them (tap to change).
-    drawHoundSlot(this, game.save, GAME_W / 2, 80, GAME_W - 32, 5, () => {
+    drawHoundSlot(this, game.save, GAME_W / 2, 84, GAME_W - 32, 5, () => {
       commit();
       this.create();
     }, true);
@@ -54,16 +54,16 @@ export class MusterScene extends Phaser.Scene {
       const crypt = CRYPTS.find((c) => c.id === current.cryptId) ?? CRYPTS[0];
       const rec = cryptRecommended(game.save, crypt, current.heresy?.[crypt.id] ?? 0);
       const mine = partyPower(game.save, this.party);
-      this.add.text(GAME_W - 16, 14, 'PARTY POWER', text.hud(11, PAL.steel)).setOrigin(1, 0);
-      this.add.text(GAME_W - 16, 29, formatPower(mine), text.hud(16, VERDICT_COLOR[powerVerdict(mine, rec)])).setOrigin(1, 0);
-      this.add.text(GAME_W - 16, 50, `REC ${formatPower(rec)}`, text.hud(11, PAL.muted)).setOrigin(1, 0);
+      this.add.text(GAME_W - 16, 8, 'PARTY POWER', text.hud(11, PAL.steel)).setOrigin(1, 0);
+      this.add.text(GAME_W - 16, 22, formatPower(mine), text.hud(16, VERDICT_COLOR[powerVerdict(mine, rec)])).setOrigin(1, 0);
+      this.add.text(GAME_W - 16, 42, `REC ${formatPower(rec)}`, text.hud(11, PAL.muted)).setOrigin(1, 0);
     }
 
     // Party slots
     const slotY = 190;
     for (let i = 0; i < MAX_PARTY; i++) {
       const x = 8 + 64 + i * 132;
-      this.add.text(x, slotY - 84, `RANK ${ROMAN[i]}`, text.hud(13, 0xdebd9f)).setOrigin(0.5);
+      this.add.text(x, slotY - 80, `RANK ${ROMAN[i]}`, text.hud(13, 0xdebd9f)).setOrigin(0.5);
       const id = this.party[i];
       if (!id) {
         this.add.rectangle(x, slotY, 128, 128, 0x180f19).setStrokeStyle(1, 0x624658);
@@ -102,7 +102,7 @@ export class MusterScene extends Phaser.Scene {
       this.listY = 0;
       this.create();
     }, { depth: 10, h: 36 });
-    if (!owned.length) this.add.text(GAME_W / 2, 470, 'No Sister matches these filters.', text.body(17, PAL.muted)).setOrigin(0.5);
+    if (!owned.length) this.add.text(GAME_W / 2, 470, emptyListLine(game.save), text.body(17, PAL.muted)).setOrigin(0.5);
     // The Sisters scroll (drag or mouse wheel) between the controls and the buttons.
     const list = addScrollArea(this, 390, GAME_H - 108, { start: this.listY, onScroll: (y) => (this.listY = y) });
     const before = this.children.list.length;

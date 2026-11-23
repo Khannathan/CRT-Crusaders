@@ -9,6 +9,7 @@ import { NOISE_FRAMES, WAX_COLOR, noiseKey, sealKey } from '../ui/effects';
 import { addSplash, portraitKey, queueSplash, splashKey } from '../ui/placeholderPortrait';
 import { FIGURE_H, FIGURE_W, SisterSprite, fullKey } from '../ui/sisterSprite';
 import { holdForCard } from '../ui/sisterCard';
+import { fitLine } from '../ui/theme';
 
 const CY = 400;
 const SIZE = 256;
@@ -333,7 +334,7 @@ export class RevealScene extends Phaser.Scene {
 
     const cols = 3;
     const cellW = 160;
-    const cellH = 150;
+    const cellH = 156;
     const x0 = (GAME_W - cols * cellW) / 2 + cellW / 2;
     // Rarest first: UR at the top left down to R at the bottom right (new Sisters first within a rarity).
     const rank = (r: PullResult) => RARITY_ORDER.indexOf(r.crusader.rarity);
@@ -344,14 +345,15 @@ export class RevealScene extends Phaser.Scene {
       const rowCount = Math.min(cols, n - Math.floor(i / cols) * cols);
       const rowX0 = x0 + ((cols - rowCount) * cellW) / 2;
       const x = rowX0 + (i % cols) * cellW;
-      const y = 170 + Math.floor(i / cols) * cellH;
+      const y = 166 + Math.floor(i / cols) * cellH;
       const color = RARITY_COLOR[r.crusader.rarity];
-      this.add.rectangle(x, y, 120, 120).setStrokeStyle(4, color);
-      this.add.image(x, y, portraitKey(r.crusader.id)).setDisplaySize(112, 112);
-      if (r.isNew) newStamp(this, x + 40, y - 46, 0.8);
+      this.add.rectangle(x, y, 108, 108).setStrokeStyle(4, color);
+      holdForCard(this, this.add.image(x, y, portraitKey(r.crusader.id)).setDisplaySize(100, 100), r.crusader.id);
+      if (r.isNew) newStamp(this, x + 36, y - 42, 0.8);
       const label = r.isNew ? 'NEW' : r.tithes ? `+${r.alms ?? 0} ALMS` : 'VOW TOKEN';
+      fitLine(this.add.text(x, y + 66, r.crusader.name.split(' ')[0], { fontFamily: FONT, fontSize: '17px', color: hex(PAL.ivory) }).setOrigin(0.5), cellW - 8);
       this.add
-        .text(x, y + 72, `${r.crusader.rarity} · ${label}`, { fontFamily: FONT, fontSize: '15px', color: hex(r.isNew ? PAL.amber : PAL.steel) })
+        .text(x, y + 86, `${r.crusader.rarity} · ${label}`, { fontFamily: FONT, fontSize: '15px', color: hex(r.isNew ? PAL.amber : PAL.steel) })
         .setOrigin(0.5);
     });
 

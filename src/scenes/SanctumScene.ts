@@ -69,7 +69,8 @@ export class SanctumScene extends Phaser.Scene {
       addBackdrop(this, 'bg-altar', fx, fy, fw, fh, { alpha: 0.75, fade: 0.7 });
       addFrame(this, fx, fy, fw, fh);
       this.add
-        .text(PAD + 24, bottom - 190, 'The Sanctum stands empty. No Sister keeps the vigil.', text.display(26, 0xfff1d6))
+        .text(PAD + 24, bottom - 156, 'The Sanctum stands empty. No Sister keeps the vigil.', { ...text.display(26, 0xfff1d6), wordWrap: { width: fw - 48 } })
+        .setOrigin(0, 1)
         .setShadow(0, 2, '#000000', 9, false, true);
       this.add.text(PAD + 24, bottom - 146, 'Your first ten Sisters await\nat the Sealed Altar.', { ...text.body(20, 0xd8c2bc), fontStyle: 'italic' });
       makeButton(this, PAD + 24 + 130, bottom - 56, 260, 64, 'Go to the altar', () => this.scene.start('Recruit'), { active: true, icon: 'seal' });
