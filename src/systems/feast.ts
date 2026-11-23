@@ -98,6 +98,7 @@ export const FEAST_STALL: StallItem[] = [
   { id: 'ash', name: "Martyr's Ash III", cost: 200, stock: 3, reward: { items: { ash3: 1 } } },
   { id: 'page', name: 'Psalter Pages III', cost: 200, stock: 3, reward: { items: { page3: 1 } } },
   { id: 'writ', name: 'Armory Writ', cost: 120, stock: 5, reward: { items: { armory2: 1 } } },
+  { id: 'whistle', name: 'Hound Whistle', cost: 100, stock: 5, reward: { items: { kennel2: 1 } } },
   { id: 'gilt', name: '50 Gilt', cost: 100, stock: 5, reward: { gilt: 50 } },
   { id: 'tithes', name: '1000 Tithes', cost: 40, stock: 20, reward: { tithes: 1000 } },
 ];

@@ -115,7 +115,7 @@ const CURRENCIES: Record<Currency, ResourceInfo> = {
   shards: {
     name: 'Relic Shards',
     desc: "Every pull on an Order's banner adds one. Enough of them buy that Order's UR.",
-    sources: [{ text: "Pull on an Order's banner at the Altar", scene: 'Recruit' }],
+    sources: [{ text: "Pull on the standard banner at the Altar: Shards go to the target UR's Order", scene: 'Recruit' }],
   },
 };
 
@@ -155,6 +155,11 @@ const FAMILY_SOURCES: Record<string, Record<1 | 2 | 3, Source[]>> = {
     2: [{ text: 'Feast stall', scene: 'Feast' }, { text: 'Shop: Gilt counter', scene: 'Shop', data: { counter: 'gilt' } }, ALMONRY, { text: 'Bonds: levels 15 and 25', scene: 'Roster' }, { text: 'Bell Tower: every 50th floor', scene: 'Tower' }, INQ, { text: "The Saints' Armory: 10 free the first time", scene: 'Armory' }],
     3: [{ text: 'Bonds: level 30', scene: 'Roster' }],
   },
+  kennel: {
+    1: [{ text: 'The Kennel: one with every whistle', scene: 'Kennel' }, { text: 'Hunts: milestones', scene: 'Hunt' }],
+    2: [{ text: 'The Kennel: one free whistle a day, and 5 the first time', scene: 'Kennel' }, { text: 'Hunts: milestones', scene: 'Hunt' }, { text: 'Feast stall', scene: 'Feast' }, { text: 'Shop: Gilt counter', scene: 'Shop', data: { counter: 'gilt' } }, TITHE_SHOP, ALMONRY],
+    3: [{ text: 'Hunts: the highest milestones', scene: 'Hunt' }],
+  },
   writ: {
     1: [{ text: 'Bell Tower: every fifth floor', scene: 'Tower' }, { text: 'Crusades: bosses', scene: 'Crusade' }, WEEKLY, TITHE_SHOP],
     2: [{ text: 'Bell Tower: boss floors', scene: 'Tower' }, INQ, WEEKLY, ALMONRY, REFINE('Writs of Passage')],
@@ -162,7 +167,7 @@ const FAMILY_SOURCES: Record<string, Record<1 | 2 | 3, Source[]>> = {
   },
 };
 
-const isItem = (id: ResourceId): id is ItemId => /^(ash|page|iron|incense|writ|unction|grace|armory)[123]$/.test(id);
+const isItem = (id: ResourceId): id is ItemId => /^(ash|page|iron|incense|writ|unction|grace|armory|kennel)[123]$/.test(id);
 
 export function resourceInfo(id: ResourceId): ResourceInfo {
   if (!isItem(id)) return CURRENCIES[id];

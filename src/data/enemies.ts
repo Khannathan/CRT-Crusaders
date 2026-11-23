@@ -1,4 +1,5 @@
 import type { DmgType, SkillDef } from './skills';
+import { DEEP_HOSTS, type DeepCrypt, type Twist } from './deepFoes';
 
 export interface EnemyDef {
   id: string;
@@ -68,6 +69,8 @@ export const AFFINITY: Record<string, { mres: number; dmg?: DmgType; bane: strin
   'rot-mother': { mres: 70, dmg: 'magic', bane: 'Candle Choir' },
   choirmaster: { mres: 45, dmg: 'magic', bane: 'Hollow Bell' },
   'red-cardinal': { mres: 50, bane: 'Red Pilgrimage' },
+  'font-leviathan': { mres: 45, dmg: 'magic', bane: 'Drowned Litany' },
+  'iron-abbot': { mres: 30, bane: 'Iron Vigil' },
 };
 
 export const ENEMIES: Record<string, EnemyDef> = {
@@ -236,6 +239,25 @@ export const ENEMIES: Record<string, EnemyDef> = {
       { id: 'dread-chorus', name: 'Dread Chorus', desc: 'Hits everyone.', from: any, target: 'allEnemies', mult: 0.65 },
     ],
   },
+  'font-leviathan': {
+    id: 'font-leviathan', name: 'The Font Leviathan', hp: 3400, atk: 19, armor: 60, spd: 6, boss: true, color: 0x24485a, shape: 'lurker', art: 'lurker',
+    traits: { regen: 0.02, enrage: 0.04 },
+    blasphemy: { id: 'deluge', name: 'The Deluge', desc: 'BLASPHEMY: a flood over every Sister that steals 20 Zeal.', from: any, target: 'allEnemies', mult: 1.5, zealDrain: 20, rite: true, windup: true },
+    skills: [
+      { id: 'tidal-surge', name: 'Tidal Surge', desc: 'Hits everyone and weakens them.', from: any, target: 'allEnemies', mult: 0.6, weaken: { pct: 0.15, turns: 2 } },
+      { id: 'swallow', name: 'Swallow', desc: 'Charges a turn, then swallows the strongest Sister and stuns her.', from: any, target: 'enemy', mult: 1.8, windup: true, aim: 'strongest', stun: 1, weight: 1.2 },
+    ],
+  },
+  'iron-abbot': {
+    id: 'iron-abbot', name: 'The Iron Abbot', hp: 3000, atk: 18, armor: 90, spd: 7, boss: true, color: 0x4a4a52, shape: 'bishop', art: 'bishop',
+    traits: { guarded: 0.4, swap: 4 },
+    blasphemy: { id: 'iron-interdict', name: 'Iron Interdict', desc: 'BLASPHEMY: every Sister is struck, Sundered and robbed of 15 Zeal.', from: any, target: 'allEnemies', mult: 1.4, zealDrain: 15, sunder: { pct: 0.3, turns: 2 }, rite: true, windup: true },
+    skills: [
+      { id: 'call-the-wardens', name: 'Call the Wardens', desc: 'Calls an Ossuary Warden to his side.', from: any, target: 'self', summon: 'warden', weight: 0.7 },
+      { id: 'iron-sermon', name: 'Iron Sermon', desc: 'Hits everyone and Sunders their armor.', from: any, target: 'allEnemies', mult: 0.55, sunder: { pct: 0.2, turns: 2 } },
+      { id: 'anvil-blow', name: 'Anvil Blow', desc: '', from: any, target: 'enemy', reach: [1, 2], mult: 1.6, aim: 'front' },
+    ],
+  },
   'red-cardinal': {
     id: 'red-cardinal', name: 'The Red Cardinal', hp: 2900, atk: 17, armor: 45, spd: 10, boss: true, color: 0x8a1f2a, shape: 'bishop', art: 'bishop',
     traits: { enrage: 0.08 },
@@ -274,4 +296,76 @@ export const ENCOUNTERS: Record<string, string[]> = {
   'hunt-rot-mother': ['rot-mother'],
   'hunt-choirmaster': ['choirmaster', 'ringer', 'ringer'],
   'hunt-red-cardinal': ['red-cardinal'],
+  'hunt-font-leviathan': ['font-leviathan'],
+  'hunt-iron-abbot': ['iron-abbot', 'warden'],
 };
+
+// ---- The deeper crypts' own hosts (data/deepFoes.ts) ----------------------
+
+/** Each deep crypt's pattern boss: the Ossuary's (even) or the Belfry's (odd), as in crusade.ts. */
+const DEEP_LIKE: Record<string, 'choir' | 'abbess'> = Object.fromEntries(DEEP_HOSTS.map((h, i) => [h.crypt, i % 2 === 0 ? 'choir' : 'abbess']));
+
+const slug = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+const hits = (s: SkillDef) => (s.mult ?? 0) > 0 && (s.target === 'enemy' || s.target === 'allEnemies');
+
+/** The first damaging skill gets the twist; it gives up a little damage for it. */
+function twistSkills(skills: SkillDef[], twist: Twist): SkillDef[] {
+  const i = skills.findIndex(hits);
+  if (i < 0) return skills;
+  const s = { ...skills[i] };
+  if (twist === 'bleed' && !s.bleed) (s.bleed = { mult: 0.15, turns: 2 }), (s.mult = s.mult! * 0.9);
+  else if (twist === 'poison' && !s.poison) (s.poison = { mult: 0.3, turns: 2 }), (s.mult = s.mult! * 0.85);
+  else if (twist === 'weaken' && !s.weaken) (s.weaken = { pct: 0.15, turns: 2 }), (s.mult = s.mult! * 0.9);
+  else if (twist === 'zeal' && !s.zealDrain) (s.zealDrain = 10), (s.mult = s.mult! * 0.9);
+  else if (twist === 'sunder' && !s.sunder) (s.sunder = { pct: 0.2, turns: 2 }), (s.mult = s.mult! * 0.9);
+  else return skills;
+  s.mult = Math.round(s.mult! * 100) / 100;
+  return skills.map((x, k) => (k === i ? s : x));
+}
+
+const rename = (skills: SkillDef[], names: string[], owner: string): SkillDef[] =>
+  skills.map((s, i) => (names[i] ? { ...s, id: `${owner}-${slug(names[i])}`, name: names[i] } : s));
+
+/** Its crypt's own version of a template, for summons and encounter swaps. */
+const variantIn = (host: DeepCrypt, tpl: string) => host.foes.find((f) => f.tpl === tpl)?.id ?? tpl;
+
+const summonIn = (host: DeepCrypt, skills: SkillDef[]) => skills.map((s) => (s.summon ? { ...s, summon: variantIn(host, s.summon) } : s));
+
+for (const host of DEEP_HOSTS) {
+  for (const f of host.foes) {
+    const t = ENEMIES[f.tpl];
+    const e: EnemyDef = { ...t, id: f.id, name: f.name, color: f.color, art: t.art ?? t.id, boss: t.boss, skills: summonIn(host, twistSkills(rename(t.skills, f.skills, f.id), f.twist)) };
+    if (f.twist === 'swift') (e.spd += 3), (e.hp = Math.round(e.hp * 0.9));
+    if (f.twist === 'stout') (e.hp = Math.round(e.hp * 1.15)), (e.spd = Math.max(2, e.spd - 2));
+    if (f.twist === 'burst') (e.burst = (e.burst ?? 0) + 0.5), (e.hp = Math.round(e.hp * 0.9));
+    ENEMIES[f.id] = e;
+    AFFINITY[f.id] = { ...AFFINITY[f.tpl], bane: f.bane ?? AFFINITY[f.tpl].bane };
+  }
+  const b = host.boss;
+  const like = DEEP_LIKE[host.crypt];
+  const t = ENEMIES[like];
+  const p2 = t.phase2!;
+  const boss: EnemyDef = {
+    ...t,
+    id: b.id,
+    name: b.name,
+    color: b.color,
+    art: t.art ?? t.id,
+    skills: summonIn(host, rename(t.skills, b.skills, b.id)),
+    phase2: { ...p2, text: b.text, skills: summonIn(host, rename(p2.skills, b.phase2, b.id)) },
+    blasphemy: t.blasphemy && { ...t.blasphemy, id: `${b.id}-${slug(b.blasphemy)}`, name: b.blasphemy },
+  };
+  if (b.twist !== 'none') {
+    boss.traits = b.twist === 'enrage' ? { enrage: 0.02 } : { regen: 0.01 };
+    boss.hp = Math.round(boss.hp * 0.88);
+  }
+  ENEMIES[b.id] = boss;
+  AFFINITY[b.id] = { ...AFFINITY[like], bane: b.bane };
+  // Its crypt's encounters: the pattern crypt's layout with this crypt's foes swapped in.
+  const prefix = like === 'choir' ? 'ossuary' : 'belfry';
+  for (const [key, list] of Object.entries(ENCOUNTERS)) {
+    if (!key.startsWith(`${prefix}-`)) continue;
+    ENCOUNTERS[`${host.crypt}${key.slice(prefix.length)}`] = list.map((id) => variantIn(host, id));
+  }
+  ENCOUNTERS[`${host.crypt}-boss`] = ENCOUNTERS[like].map((id, i) => (i === 0 ? b.id : variantIn(host, id)));
+}

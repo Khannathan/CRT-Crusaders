@@ -209,4 +209,112 @@ export const EVENTS: Record<string, EventDef> = {
       { label: 'Ask for their relic', hint: 'Choose a relic. -50 Tithes as a gift.', outcome: { text: 'They part with it gladly, for the cause.', relic: true, tithes: -50 } },
     ],
   },
+  'marble-saint': {
+    id: 'marble-saint',
+    title: 'A Marble Saint',
+    text: 'A marble saint weeps real tears into a cracked basin.',
+    options: [
+      { label: 'Bathe your wounds', hint: 'Heal everyone 30%. The next Vigil candle is 2 rounds shorter.', outcome: { text: 'The tears are warm. The candle above you is not.', heal: 0.3, curseVigil: 2 } },
+      { label: 'Collect the tears', hint: '+1 Seal.', outcome: { text: 'You stopper a phial of holy grief.', seals: 1 } },
+    ],
+  },
+  'confession-booth': {
+    id: 'confession-booth',
+    title: 'An Occupied Confessional',
+    text: 'Someone is in the confessional. They have been waiting a very long time for a priest.',
+    options: [
+      { label: 'Hear the confession', hint: '60%: choose a relic. Otherwise lose 15% HP.', chance: 0.6, outcome: { text: 'The sin is old and heavy. They give you something to carry it.', relic: true }, fail: { text: 'It was not a confession. It was a hunger.', hurt: 0.15 } },
+      { label: 'Draw the curtain', hint: 'Nothing happens.', outcome: { text: 'The breathing behind the curtain stops when you leave.' } },
+    ],
+  },
+  'ossuary-wall': {
+    id: 'ossuary-wall',
+    title: 'A Wall of Skulls',
+    text: 'Thousands of skulls stacked in neat rows. One row has a gap, the size of a hand.',
+    options: [
+      { label: 'Reach into the gap', hint: '+120 Tithes. Lose 10% HP.', outcome: { text: 'Cold coins, colder teeth.', tithes: 120, hurt: 0.1 } },
+      { label: 'Add a prayer for them', hint: 'Next fight: +25 Zeal.', outcome: { text: 'The skulls seem to lean closer, listening.', blessZeal: 25 } },
+    ],
+  },
+  'flooded-sacristy': {
+    id: 'flooded-sacristy',
+    title: 'A Flooded Sacristy',
+    text: 'Vestments float in black water. Something gleams below.',
+    options: [
+      { label: 'Dive for it', hint: '50%: a relic of the bell family. Otherwise lose 20% HP.', chance: 0.5, outcome: { text: 'You surface with a bell that rings underwater.', relic: true, family: 'bell' }, fail: { text: 'Hands in the water hold you down a moment too long.', hurt: 0.2 } },
+      { label: 'Wring out a stole', hint: 'Heal everyone 10%.', outcome: { text: 'Damp, but blessed.', heal: 0.1 } },
+    ],
+  },
+  'pyre-embers': {
+    id: 'pyre-embers',
+    title: 'A Martyr\'s Pyre',
+    text: 'The stake still stands. The embers at its foot have never gone out.',
+    options: [
+      { label: 'Take an ember', hint: 'Choose a relic of the burn family. Lose 10% HP.', outcome: { text: 'It burns your palm and does not let go.', relic: true, family: 'burn', hurt: 0.1 } },
+      { label: 'Kneel in the ash', hint: 'Choose a relic of the martyr family. The next Vigil candle is 3 rounds shorter.', outcome: { text: 'The ash settles on your shoulders like a mantle.', relic: true, family: 'martyr', curseVigil: 3 } },
+    ],
+  },
+  'beggar-saint': {
+    id: 'beggar-saint',
+    title: 'A Beggar in the Dark',
+    text: 'A beggar sits by the path with an empty bowl. Her eyes are too bright.',
+    options: [
+      { label: 'Give her Tithes', hint: '-60 Tithes. Heal everyone 20% and +20 Zeal next fight.', outcome: { text: 'She blesses you in a tongue no one has spoken for a thousand years.', tithes: -60, heal: 0.2, blessZeal: 20 } },
+      { label: 'Pass her by', hint: 'Nothing happens. Probably.', outcome: { text: 'Behind you, the bowl is suddenly full.' } },
+    ],
+  },
+  'cracked-reliquary': {
+    id: 'cracked-reliquary',
+    title: 'A Cracked Reliquary',
+    text: 'A gilded box split down the middle. The finger bone inside points the way you came.',
+    options: [
+      { label: 'Trade a relic for it', hint: 'Lose one relic you hold. Choose a new one.', outcome: { text: 'One holy thing for another. The bone points forward now.', dropRelic: true, relic: true } },
+      { label: 'Follow where it points', hint: 'Heal everyone 15%.', outcome: { text: 'You step back into a pocket of quiet and catch your breath.', heal: 0.15 } },
+    ],
+  },
+  'hanging-bells': {
+    id: 'hanging-bells',
+    title: 'A Forest of Bells',
+    text: 'Hundreds of small bells hang from the ceiling. None of them has a clapper.',
+    options: [
+      { label: 'Ring one anyway', hint: '50%: +2 Seals. Otherwise the next Vigil candle is 4 rounds shorter.', chance: 0.5, outcome: { text: 'It rings. Something far away answers with gold.', seals: 2 }, fail: { text: 'It rings, and every candle in the crypt leans toward the sound.', curseVigil: 4 } },
+      { label: 'Walk through quietly', hint: 'Next fight: +10 Zeal.', outcome: { text: 'Not one bell stirs. Your Sisters steady their breath.', blessZeal: 10 } },
+    ],
+  },
+  'scriptorium-desk': {
+    id: 'scriptorium-desk',
+    title: 'A Copyist\'s Desk',
+    text: 'An unfinished psalm. The ink is wet. The copyist is not here.',
+    options: [
+      { label: 'Finish the verse', hint: 'Next fight: +40 Zeal. Lose 10% HP.', outcome: { text: 'The words come too easily. They take something to come.', blessZeal: 40, hurt: 0.1 } },
+      { label: 'Take the gold leaf', hint: '+90 Tithes.', outcome: { text: 'You scrape the gilding into your purse.', tithes: 90 } },
+    ],
+  },
+  'dead-cart': {
+    id: 'dead-cart',
+    title: 'A Cart of the Dead',
+    text: 'A cart of the dead, abandoned mid-route. A purse hangs from the driver\'s belt.',
+    options: [
+      { label: 'Take the purse', hint: '+150 Tithes. Lose 20% HP.', outcome: { text: 'The coins are fine. Your Sisters are coughing.', tithes: 150, hurt: 0.2 } },
+      { label: 'Say the rites for them', hint: '+1 Seal. Heal everyone 10%.', outcome: { text: 'Someone had to. The air clears a little.', seals: 1, heal: 0.1 } },
+    ],
+  },
+  'mirror-pool': {
+    id: 'mirror-pool',
+    title: 'A Still Pool',
+    text: 'Your Sisters\' reflections in the pool are wounded where they are not.',
+    options: [
+      { label: 'Touch the water', hint: '50%: heal everyone 40%. Otherwise lose 15% HP.', chance: 0.5, outcome: { text: 'The reflections take your wounds and sink.', heal: 0.4 }, fail: { text: 'The reflections give you theirs.', hurt: 0.15 } },
+      { label: 'Look away', hint: 'Nothing happens.', outcome: { text: 'You do not look back. You are fairly sure they do.' } },
+    ],
+  },
+  'iron-maiden': {
+    id: 'iron-maiden',
+    title: 'An Open Iron Maiden',
+    text: 'The spikes are clean. A relic rests inside, where the heart would be.',
+    options: [
+      { label: 'Reach in', hint: 'Choose a relic. Lose 20% HP.', outcome: { text: 'The lid shifts. You were quick enough. Almost.', relic: true, hurt: 0.2 } },
+      { label: 'Close it', hint: '+40 Tithes from the lock.', outcome: { text: 'The lock is worth something to someone.', tithes: 40 } },
+    ],
+  },
 };

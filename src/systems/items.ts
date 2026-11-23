@@ -6,7 +6,7 @@ import type { Rng } from './gacha';
  * family feeds one growth system, so a player can tell at a glance what a drop
  * is for. Five of a tier refine into one of the next.
  */
-export type Family = 'ash' | 'page' | 'iron' | 'incense' | 'writ' | 'unction' | 'grace' | 'armory';
+export type Family = 'ash' | 'page' | 'iron' | 'incense' | 'writ' | 'unction' | 'grace' | 'armory' | 'kennel';
 export type Tier = 1 | 2 | 3;
 export type ItemId = `${Family}${Tier}`;
 export type Bag = Partial<Record<ItemId, number>>;
@@ -28,6 +28,7 @@ export const FAMILIES: FamilyDef[] = [
   { id: 'grace', name: 'Grace', use: 'Holy Symbols: wake and raise a Sister\'s own relic', color: 0xf0d27a },
   { id: 'unction', name: 'Unction', use: 'Sister EXP: fed on her Grow tab', color: 0x7fc4a0 },
   { id: 'armory', name: "The Saints' Armory", use: 'UR gear: forge it, or pull for it', color: 0xe19cc4 },
+  { id: 'kennel', name: 'The Kennel', use: 'Hounds: whistle for them, or adopt the one you want', color: 0xc9a46a },
 ];
 
 export interface ItemDef {
@@ -66,10 +67,13 @@ export const ITEMS: ItemDef[] = [
   def('armory', 1, "Saint's Fragment", 'A splinter of a saint\'s own arms. Sixty of them forge a UR piece.'),
   def('armory', 2, 'Armory Writ', 'One pull at the Saints\' Armory, the UR gear banner.'),
   def('armory', 3, 'Reliquary Mould', 'Pour any UR piece you like: choose its slot and set.'),
+  def('kennel', 1, 'Marrow Bone', 'Left by every hound that answers. Enough of them buy the hound you want.'),
+  def('kennel', 2, 'Hound Whistle', 'Carved from a saint\'s shin. One call at the Kennel.'),
+  def('kennel', 3, "Saint's Leash", 'Blessed braided leather. Adopt any hound you choose.'),
 ];
 
 /** Families that never refine into their next tier. */
-export const NO_REFINE: Family[] = ['armory'];
+export const NO_REFINE: Family[] = ['armory', 'kennel'];
 
 export const itemDef = (id: ItemId) => ITEMS.find((i) => i.id === id)!;
 export const familyDef = (f: Family) => FAMILIES.find((x) => x.id === f)!;

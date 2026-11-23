@@ -14,7 +14,7 @@ const TABS = [
   { label: 'Sanctum', scene: 'Sanctum', icon: 'sanctum', home: 'sanctum' },
   { label: 'Roster', scene: 'Roster', icon: 'roster' },
   { label: 'Crusade', scene: 'Modes', icon: 'blade', art: 'crusade', home: 'board' },
-  { label: 'Altar', scene: 'Recruit', icon: 'seal', art: 'altar' },
+  { label: 'Altar', scene: 'Altar', icon: 'seal', art: 'altar', home: 'altar' },
   { label: 'Cloister', scene: 'Cloister', icon: 'book', art: 'cloister', home: 'cloister' },
 ] as const;
 
@@ -27,8 +27,9 @@ export function tabOf(sceneKey: string): string {
   const home = homeOf(sceneKey);
   if (home === 'board') return 'Modes';
   if (home === 'cloister') return 'Cloister';
+  if (home === 'altar') return 'Altar';
   if (home === 'sanctum' || sceneKey === 'Rank') return 'Sanctum';
-  if (sceneKey === 'PullHistory' || sceneKey === 'Armory') return 'Recruit';
+  if (sceneKey === 'PullHistory' || sceneKey === 'Armory' || sceneKey === 'Reveal') return 'Altar';
   return sceneKey;
 }
 
@@ -92,7 +93,7 @@ export function addTabBar(scene: Phaser.Scene, current: string, depth = 5, onTab
         .setDepth(depth),
     );
     // The Altar lights up while a new limited Saint has not been looked at.
-    const fresh = t.scene === 'Recruit' && limitedUnseen(game.save);
+    const fresh = t.scene === 'Altar' && limitedUnseen(game.save);
     if (fresh || ('home' in t && anyReady(game.save, t.home))) keep(scene.add.circle(cx + bw / 2 - 12, cy - bh / 2 + 12, 5, PAL.amber).setStrokeStyle(2, 0x1b121c).setDepth(depth));
     if (centre) drawBadge(scene, cx + bw / 2 - 24, cy - bh / 2 + 12, depth);
     box.setInteractive({ useHandCursor: true });

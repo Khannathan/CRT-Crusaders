@@ -1,3 +1,4 @@
+import { ENEMIES } from '../data/enemies';
 import Phaser from 'phaser';
 
 /**
@@ -88,7 +89,7 @@ export const ENEMY_FX: Record<string, Fx> = {
   abbess: { motif: 'omen', color: 0x4a2050, accent: 0xd65f5f, power: 1.6 },
 };
 
-export const fxForEnemy = (ref: string): Fx => ENEMY_FX[ref] ?? { motif: 'shadow', color: 0x4a3a40, accent: 0x9a8a90 };
+export const fxForEnemy = (ref: string): Fx => ENEMY_FX[ref] ?? ENEMY_FX[ENEMIES[ref]?.art ?? ''] ?? { motif: 'shadow', color: 0x4a3a40, accent: 0x9a8a90 };
 
 // ---------- textures ----------
 

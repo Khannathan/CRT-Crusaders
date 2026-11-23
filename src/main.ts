@@ -6,6 +6,7 @@ import { HuntScene } from './scenes/HuntScene';
 import { GAME_H, GAME_W, PAL } from './config';
 import { installCrt } from './fx/crt';
 import { installReadableText } from './ui/readable';
+import { wireSceneMusic } from './audio/battleMusic';
 import { music } from './audio/music';
 import { BattleScene } from './scenes/BattleScene';
 import { FieldScene } from './scenes/FieldScene';
@@ -36,7 +37,7 @@ import { InventoryScene } from './scenes/InventoryScene';
 import { ShopScene } from './scenes/ShopScene';
 import { ReliquaryScene } from './scenes/ReliquaryScene';
 import './fonts.css';
-import { CloisterScene, ModesScene } from './scenes/ModesScene';
+import { AltarScene, CloisterScene, ModesScene } from './scenes/ModesScene';
 import { CampaignScene } from './scenes/CampaignScene';
 
 /**
@@ -97,6 +98,7 @@ function start() {
       KennelScene,
       HuntScene,
       CloisterScene,
+      AltarScene,
       CrusadeScene,
       MusterScene,
       CryptScene,
@@ -112,6 +114,7 @@ function start() {
     // Each screen asks for its loop as it opens.
     for (const scene of game.scene.scenes) scene.events.on(Phaser.Scenes.Events.CREATE, () => music.forScene(scene.scene.key));
   });
+  wireSceneMusic();
   music.init();
   (window as unknown as { __music: typeof music }).__music = music;
 

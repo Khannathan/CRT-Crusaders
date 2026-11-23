@@ -4,9 +4,13 @@ import type { SaveData } from '../state/save';
 import { ALMS_FOR_TOKEN, earn, giltOf } from './currency';
 import type { Rng } from './gacha';
 import { dayKey } from './tasks';
+import { countOf, give, spend } from './items';
 
 /**
- * The Kennel. Hounds come from the Whistle (one free each day, then Gilt).
+ * The Kennel, at the Altar. Hounds answer the Whistle: one free call each day,
+ * then a Hound Whistle (kennel2, the Kennel's own currency) or Gilt. Every
+ * call leaves a Marrow Bone (kennel1); HOUND_SPARK of them, or one Saint's
+ * Leash (kennel3), adopt any hound you choose.
  * A hound you already have grows a level instead (up to HOUND_MAX), and each
  * level makes its howl 10% stronger; past the last level it turns into Alms.
  * One hound is set at a time and goes into every fight.
@@ -19,11 +23,19 @@ export interface HoundState {
   freeDay?: string;
   /** Whistles since the last SSR or UR hound (pity). */
   pity?: number;
+  /** The first-visit Hound Whistles have been given. */
+  gifted?: boolean;
 }
 
 export const HOUND_MAX = 5;
 export const HOWL_PER_LEVEL = 0.1;
 export const WHISTLE_GILT = 80;
+/** Ten calls for Gilt at once, a little cheaper. */
+export const TEN_WHISTLE_GILT = 720;
+/** Marrow Bones that adopt any hound. */
+export const HOUND_SPARK = 60;
+/** Hound Whistles given the first time the Kennel opens. */
+export const FIRST_WHISTLES = 5;
 export const HOUND_RATES: Record<Rarity, number> = { R: 0.55, SR: 0.32, SSR: 0.11, UR: 0.02 };
 /** An SSR or better hound is sure by this whistle. */
 export const HOUND_PITY = 20;
@@ -37,9 +49,28 @@ export function houndsOf(save: SaveData): HoundState {
 
 export const freeWhistle = (save: SaveData, now = Date.now()) => houndsOf(save).freeDay !== dayKey(now);
 
-export function whistleBlock(save: SaveData, now = Date.now()): string | undefined {
-  if (freeWhistle(save, now)) return undefined;
-  return giltOf(save) < WHISTLE_GILT ? `Needs ${WHISTLE_GILT} Gilt.` : undefined;
+/** Gives the first-visit Hound Whistles. Returns true the first time. */
+export function giftWhistles(save: SaveData): boolean {
+  const s = houndsOf(save);
+  if (s.gifted) return false;
+  s.gifted = true;
+  give(save, { kennel2: FIRST_WHISTLES });
+  return true;
+}
+
+export type WhistlePay = 'free' | 'whistle' | 'gilt';
+
+/** How `n` calls would be paid for: the free call first, then Hound Whistles, then Gilt. */
+export function whistlePay(save: SaveData, n: 1 | 10 = 1, now = Date.now()): WhistlePay | undefined {
+  if (n === 1 && freeWhistle(save, now)) return 'free';
+  if (countOf(save, 'kennel2') >= n) return 'whistle';
+  if (giltOf(save) >= (n === 10 ? TEN_WHISTLE_GILT : WHISTLE_GILT)) return 'gilt';
+  return undefined;
+}
+
+export function whistleBlock(save: SaveData, now = Date.now(), n: 1 | 10 = 1): string | undefined {
+  if (whistlePay(save, n, now)) return undefined;
+  return n === 10 ? `Needs 10 Hound Whistles or ${TEN_WHISTLE_GILT} Gilt.` : `Needs a Hound Whistle or ${WHISTLE_GILT} Gilt.`;
 }
 
 export interface WhistleResult {
@@ -61,16 +92,9 @@ function rollHoundRarity(rng: Rng, pity: number): Rarity {
   return 'R';
 }
 
-/** Blows the whistle: free once a day, then Gilt. */
-export function whistle(save: SaveData, rng: Rng = Math.random, now = Date.now()): WhistleResult | undefined {
-  if (whistleBlock(save, now)) return undefined;
+/** Adds a hound, or a level, or Alms once it is at its last level. */
+function grantHound(save: SaveData, hound: HoundDef): WhistleResult {
   const s = houndsOf(save);
-  if (freeWhistle(save, now)) s.freeDay = dayKey(now);
-  else save.gilt = giltOf(save) - WHISTLE_GILT;
-  const rarity = rollHoundRarity(rng, s.pity ?? 0);
-  s.pity = rarity === 'SSR' || rarity === 'UR' ? 0 : (s.pity ?? 0) + 1;
-  const pool = HOUNDS.filter((h) => h.rarity === rarity);
-  const hound = pool[Math.floor(rng() * pool.length)];
   const had = s.owned[hound.id];
   if (!had) {
     s.owned[hound.id] = { level: 1 };
@@ -80,9 +104,47 @@ export function whistle(save: SaveData, rng: Rng = Math.random, now = Date.now()
     had.level += 1;
     return { hound, level: had.level, isNew: false };
   }
-  const alms = ALMS_FOR_TOKEN[rarity];
+  const alms = ALMS_FOR_TOKEN[hound.rarity];
   earn(save, 0, alms);
   return { hound, level: had.level, isNew: false, alms };
+}
+
+function callOnce(save: SaveData, rng: Rng): WhistleResult {
+  const s = houndsOf(save);
+  const rarity = rollHoundRarity(rng, s.pity ?? 0);
+  s.pity = rarity === 'SSR' || rarity === 'UR' ? 0 : (s.pity ?? 0) + 1;
+  const pool = HOUNDS.filter((h) => h.rarity === rarity);
+  give(save, { kennel1: 1 });
+  return grantHound(save, pool[Math.floor(rng() * pool.length)]);
+}
+
+/** Blows the whistle once: free once a day, then a Hound Whistle, then Gilt. */
+export function whistle(save: SaveData, rng: Rng = Math.random, now = Date.now()): WhistleResult | undefined {
+  return whistleMany(save, 1, rng, now)[0];
+}
+
+/** Blows the whistle `n` times (1 or 10). Returns [] when it can't be paid for. */
+export function whistleMany(save: SaveData, n: 1 | 10, rng: Rng = Math.random, now = Date.now()): WhistleResult[] {
+  const pay = whistlePay(save, n, now);
+  if (!pay) return [];
+  if (pay === 'free') houndsOf(save).freeDay = dayKey(now);
+  else if (pay === 'whistle') spend(save, { kennel2: n });
+  else save.gilt = giltOf(save) - (n === 10 ? TEN_WHISTLE_GILT : WHISTLE_GILT);
+  return Array.from({ length: n }, () => callOnce(save, rng));
+}
+
+export function adoptBlock(save: SaveData): string | undefined {
+  if (countOf(save, 'kennel3') >= 1 || countOf(save, 'kennel1') >= HOUND_SPARK) return undefined;
+  return `Needs ${HOUND_SPARK} Marrow Bones or a Saint's Leash.`;
+}
+
+/** Adopts the hound you choose: a Saint's Leash if you have one, else HOUND_SPARK Marrow Bones. */
+export function adoptHound(save: SaveData, id: string): WhistleResult | undefined {
+  const hound = houndDef(id);
+  if (!hound || adoptBlock(save)) return undefined;
+  if (countOf(save, 'kennel3') >= 1) spend(save, { kennel3: 1 });
+  else spend(save, { kennel1: HOUND_SPARK });
+  return grantHound(save, hound);
 }
 
 export function setHound(save: SaveData, id: string | undefined) {
