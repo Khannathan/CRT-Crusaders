@@ -6,6 +6,7 @@ import type { Battle } from './combat';
 import { absorbBattle, currentNode, finishRun, makeBattle, winRoom } from './crusade';
 import { newSeed, seeded } from './rng';
 import { expBattle } from './exp';
+import { battleHosanna } from './hosanna';
 
 /** Where a finished fight leads, and its closing line. */
 export interface Settled {
@@ -57,6 +58,6 @@ export function playOutStoredFight(): Settled | undefined {
   if (!run || !node?.encounter || current.challenge) return undefined;
   const battle = makeBattle(game.save, run, node.encounter, seeded(newSeed()));
   // Crypt fights are fought on the field, so they play out there too.
-  const outcome = simulateField(battle, {}, 600).outcome === 'victory' ? 'victory' : 'defeat';
+  const outcome = simulateField(battle, { hosanna: battleHosanna(game.save, battle) }, 600).outcome === 'victory' ? 'victory' : 'defeat';
   return settleBattle(battle, outcome);
 }

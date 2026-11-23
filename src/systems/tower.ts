@@ -93,7 +93,7 @@ export interface FloorReward {
 
 export function floorReward(floor: number): FloorReward {
   const boss = floor % 10 === 0;
-  return { tithes: 60 + 15 * floor, seals: boss ? 3 : floor % 5 === 0 ? 1 : 0, gear: boss ? 'SSR' : floor % 5 === 0 ? 'SR' : undefined, items: boss ? addBags(floorDrops(floor), { armory1: 5 + Math.floor(floor / 10) }, floor % 50 === 0 ? { armory2: 2 } : {}) : floorDrops(floor), gilt: boss ? 30 + floor : 0, stigmata: boss ? 1 + Math.floor(floor / 30) : 0 };
+  return { tithes: 60 + 15 * floor, seals: boss ? 3 : floor % 5 === 0 ? 1 : 0, gear: boss ? 'SSR' : floor % 5 === 0 ? 'SR' : undefined, items: boss ? addBags(floorDrops(floor), { armory1: 5 + Math.floor(floor / 10), canon1: 3 + Math.floor(floor / 20) }, floor >= 30 ? { canon2: 1 } : {}, floor % 50 === 0 ? { armory2: 2 } : {}) : floorDrops(floor), gilt: boss ? 30 + floor : 0, stigmata: boss ? 1 + Math.floor(floor / 30) : 0 };
 }
 
 export const rewardLine = (r: FloorReward, withItems = true) =>

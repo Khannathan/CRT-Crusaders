@@ -4,7 +4,7 @@ import { autoBattle } from './autoplay';
 import { stageBattle } from './campaign';
 import { CRUSADERS } from '../data/crusaders';
 import { Battle, makeEnemy, skillsFor, type Unit } from './combat';
-import { EXTRA_SEC, FieldBattle, HYMN_RADIUS, advanceField, screenField, SWING_SEC, reachOf, simulateField, type FieldEvent } from './field';
+import { CHAIN_SEC, CHAIN_ZEAL, EXTRA_SEC, FieldBattle, HYMN_RADIUS, advanceField, screenField, SWING_SEC, reachOf, simulateField, type FieldEvent } from './field';
 import { partyFor } from './niche';
 import { seeded } from './rng';
 
@@ -236,6 +236,89 @@ describe('real-time field: the player\'s hand', () => {
     const e = f.castLitany(sister.uid, pick.uid);
     expect(e?.kind).toBe('act');
     if (e?.kind === 'act') expect(e.targetUid).toBe(pick.uid);
+  });
+});
+
+describe('real-time field: Litany Chains', () => {
+  const setup = (seed = 9) => {
+    const save = newSave();
+    for (const id of STARTER) save.owned[id] = { level: 10, vow: 0 };
+    const b = stageBattle(save, STARTER, 5, seeded(seed));
+    return { b, f: new FieldBattle(b, { w: 540, h: 600, manualLitany: true, rng: seeded(2) }) };
+  };
+  const dealt = (e: FieldEvent | undefined) =>
+    e?.kind === 'act' ? e.events.reduce((n, x) => n + (x.type === 'damage' ? (x as { amount: number }).amount : 0), 0) : 0;
+
+  it('a Litany cast soon after another links the Chain and kindles the other Sisters', () => {
+    const { b, f } = setup();
+    f.update(0.05);
+    const [x, y, z] = b.units.filter((u) => u.side === 'party');
+    x.zeal = 100;
+    y.zeal = 100;
+    z.zeal = 0;
+    f.castLitany(x.uid);
+    expect(f.chain.count).toBe(1);
+    expect(z.zeal).toBe(0);
+    f.update(1);
+    f.castLitany(y.uid);
+    expect(f.chain.count).toBe(2);
+    expect(f.chain.best).toBe(2);
+    expect(z.zeal).toBeGreaterThanOrEqual(CHAIN_ZEAL);
+    expect(b.chainMult).toBe(1);
+    // The window closes: the next Litany starts a new Chain.
+    for (let t = 0; t < CHAIN_SEC + 0.5; t += 0.1) f.update(0.1);
+    expect(f.chainLeft()).toBe(0);
+    x.zeal = 100;
+    f.castLitany(x.uid);
+    expect(f.chain.count).toBe(1);
+  });
+
+  it('a linked Litany hits harder than the same Litany cast alone', () => {
+    const cast = (linked: boolean) => {
+      const { b, f } = setup(21);
+      f.update(0.05);
+      const s = b.units.find((u) => u.side === 'party' && skillsFor(u).find((k) => k.rite && (k.target === 'enemy' || k.target === 'allEnemies')))!;
+      s.zeal = 100;
+      if (linked) f.chain = { count: 2, at: f.time, best: 2 };
+      return dealt(f.castLitany(s.uid));
+    };
+    const alone = cast(false);
+    const linked = cast(true);
+    expect(alone).toBeGreaterThan(0);
+    expect(linked / alone).toBeGreaterThan(1.2);
+    expect(linked / alone).toBeLessThan(1.4);
+  });
+
+  it('holding Litanies to fire together beats firing each the moment it is ready', () => {
+    // Two manual players on the same fights: one taps at once, one holds until two are full (or 5s pass).
+    const play = (hold: boolean) => {
+      let wins = 0;
+      let secs = 0;
+      const n = 40;
+      for (let i = 0; i < n; i++) {
+        const save = newSave();
+        for (const id of STARTER) save.owned[id] = { level: 12, vow: 0 };
+        const b = stageBattle(save, STARTER, 20, seeded(300 + i));
+        const f = new FieldBattle(b, { w: 540, h: 600, manualLitany: true, rng: seeded(700 + i) });
+        let waited = 0;
+        let out: string | undefined;
+        for (let t = 0; t < 240 && !out; t += 0.05) {
+          for (const e of f.update(0.05)) if (e.kind === 'end') out = e.outcome;
+          const ready = b.alive('party').filter((u) => f.litanyReady(u));
+          waited = ready.length ? waited + 0.05 : 0;
+          if (!ready.length) continue;
+          if (hold && f.chainLeft() === 0 && ready.length < 2 && waited < 5) continue;
+          f.castLitany(ready[0].uid);
+        }
+        if (out === 'victory') wins++;
+        secs += f.time;
+      }
+      return { wins, secs: secs / n };
+    };
+    const now = play(false);
+    const held = play(true);
+    console.log(`[chain] fire at once: ${now.wins}/40 wins ${now.secs.toFixed(0)}s; hold and chain: ${held.wins}/40 wins ${held.secs.toFixed(0)}s`);
+    expect(held.wins).toBeGreaterThan(now.wins);
   });
 });
 

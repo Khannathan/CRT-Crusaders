@@ -1,3 +1,4 @@
+import { canonEffect } from './canon';
 import { symbolStatMult } from './symbols';
 import { bondStatsOf } from './bonds';
 import { RARITY_MULT } from '../data/classes';
@@ -88,13 +89,16 @@ export function sisterStats(save: SaveData, c: CrusaderDef): Stats {
   const k = 1 + sisterCodexBonus(save, c);
   // ...and the Chapter's level lifts ATK and HP.
   const ch = 1 + chapterPerk(save);
+  // Canonization: rank lifts everything, traits lift what they name.
+  const cn = canonEffect(save.owned[c.id]);
+  const m = cn.statMult;
   return {
-    hp: Math.round(st.hp * (1 + bd.hp) * k * ch * (1 + r.hpPct)),
-    atk: Math.round(st.atk * (1 + bd.atk) * k * ch * (1 + r.atkPct)),
-    armor: Math.round(st.armor * (1 + bd.armor) * k * (1 + r.armorPct)),
-    mres: Math.round(st.mres * (1 + bd.mres) * k * (1 + r.armorPct)),
-    spd: st.spd + r.spd,
-    crit: Math.min(1, st.crit + r.crit + bd.crit),
+    hp: Math.round(st.hp * (1 + bd.hp) * k * ch * (1 + r.hpPct) * m * (1 + cn.hpPct)),
+    atk: Math.round(st.atk * (1 + bd.atk) * k * ch * (1 + r.atkPct) * m * (1 + cn.atkPct)),
+    armor: Math.round(st.armor * (1 + bd.armor) * k * (1 + r.armorPct) * m * (1 + cn.armorPct)),
+    mres: Math.round(st.mres * (1 + bd.mres) * k * (1 + r.armorPct) * m * (1 + cn.armorPct)),
+    spd: st.spd + r.spd + cn.spd,
+    crit: Math.min(1, st.crit + r.crit + bd.crit + cn.crit),
     critDmg: st.critDmg,
   };
 }

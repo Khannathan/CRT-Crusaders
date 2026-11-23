@@ -57,9 +57,15 @@ import { drawItemIcon } from '../ui/itemIcon';
 import { ascend, ascendBlock, costLine, nextAscension } from '../systems/ascension';
 import { SYMBOL_ASC, SYMBOL_MAX, WAKE_COST, WAKE_TITHES, raiseSymbol, symbolBlock, symbolName, symbolPerks, symbolStatMult, upgradeCost } from '../systems/symbols';
 import { ROMAN_RANK } from '../systems/rank';
+import { CANON_STAT, MAX_CANON, PATHS, TRAITS, canCanonize, canonBlock, canonCost, canonOf, canonize, pointsLeft, resetTraits, takeTrait, traitBlock, traitPoints, traitsOf } from '../systems/canon';
+import { MAX_LEVEL } from '../systems/stats';
 import { countOf, itemDef, type ItemId } from '../systems/items';
 import { MAX_SKILL_LEVEL, nextSkillStep, raiseSkill, skillBlock, skillLevels, stepText } from '../systems/skillLevels';
 import { makeButton } from '../ui/button';
+import { toast } from '../ui/modeScreen';
+import { pickParty } from '../ui/partyPicker';
+import { current } from '../state/run';
+import { RITE_LEVELS, SANCT_LITANY, SANCT_MAX, SANCT_STEPS, finishRite, hasRite, motesOf, riteBattle, riteBest, riteBlock, riteEntriesLeft, riteReward, riteTarget, sanctBlock, sanctify, sanctOf, sweepRite } from '../systems/relicRites';
 import { CURRENCY_BAR_H, addCurrencyBar } from '../ui/currencyBar';
 import { addSplash, hasSplash, loadSplash, portraitKey, queueSplash } from '../ui/placeholderPortrait';
 import { SisterSprite, fullKey } from '../ui/sisterSprite';
@@ -70,13 +76,14 @@ import { showSources, tapCost, tapForSources } from '../ui/sources';
 import { TAB_BAR_H, addTabBar } from '../ui/tabBar';
 import { PAD, addArt, addBackdrop, addBadge, addFrame, addHeading, addScreenGlow, fade, noOrphan, text } from '../ui/theme';
 
-type Tab = 'grow' | 'vows' | 'skills' | 'gear' | 'symbol';
+type Tab = 'grow' | 'vows' | 'skills' | 'gear' | 'symbol' | 'canon';
 const TABS: [Tab, string][] = [
   ['grow', 'Grow'],
   ['vows', 'Vows'],
   ['skills', 'Skills'],
   ['gear', 'Gear'],
   ['symbol', 'Symbol'],
+  ['canon', 'Canon'],
 ];
 const STAT_LABEL = { atk: 'ATK', hp: 'HP', armor: 'ARM', spd: 'SPD' } as const;
 
@@ -112,8 +119,12 @@ export class RosterScene extends Phaser.Scene {
     super('Roster');
   }
 
-  init(data: { openId?: string; tab?: Tab | 'oath' }) {
+  /** A line to show once the page opens (a Relic Rite's result). */
+  private notice?: string;
+
+  init(data: { openId?: string; tab?: Tab | 'oath'; notice?: string }) {
     this.openId = data?.openId;
+    this.notice = data?.notice;
     // 'oath' was the old name of the Grow and Vows page.
     this.tab = !data?.tab ? 'grow' : data.tab === 'oath' ? 'vows' : data.tab;
   }
@@ -220,6 +231,7 @@ export class RosterScene extends Phaser.Scene {
 
     const reopen = CRUSADERS.find((c) => c.id === this.openId);
     if (reopen) this.showDetail(reopen, this.tab);
+    if (this.notice) toast(this, this.notice, GAME_H / 2);
   }
 
 
@@ -257,7 +269,8 @@ export class RosterScene extends Phaser.Scene {
     const worn = new Set(equipped(save, c.id).map((g) => g.slot));
     const gear = GEAR_SLOTS.some((s) => !worn.has(s) && gearOf(save).some((g) => g.slot === s && !g.on));
     const symbol = (have.asc ?? 0) >= SYMBOL_ASC && !symbolBlock(save, c.id);
-    return { grow, vows, skills, gear, symbol };
+    const canon = canCanonize(have) && (!canonBlock(save, c.id) || pointsLeft(have) > 0);
+    return { grow, vows, skills, gear, symbol, canon };
   }
 
   /**
@@ -410,7 +423,7 @@ export class RosterScene extends Phaser.Scene {
     });
     const list = addScrollArea(this, SHEET_Y + 54, GAME_H - 10, { parent: layer });
     const y0 = SHEET_Y + 62;
-    const end = tab === 'grow' ? this.growTab(list, c, y0) : tab === 'vows' ? this.vowsTab(list, c, y0) : tab === 'skills' ? this.skillsTab(list.content, c, y0) : tab === 'symbol' ? this.symbolTab(list, c, y0) : this.gearTab(list.content, c, y0);
+    const end = tab === 'grow' ? this.growTab(list, c, y0) : tab === 'vows' ? this.vowsTab(list, c, y0) : tab === 'skills' ? this.skillsTab(list.content, c, y0) : tab === 'symbol' ? this.symbolTab(list, c, y0) : tab === 'canon' ? this.canonTab(list, c, y0) : this.gearTab(list.content, c, y0);
     list.fit(end);
   }
 
@@ -661,6 +674,185 @@ export class RosterScene extends Phaser.Scene {
     }, { disabled: !!block, active: !block, fontSize: 18 });
     layer.add(b.all);
     return y + 80;
+  }
+
+  /** Canonization: ranks past level 50, then her trait tree (three paths of five). */
+  private canonTab(list: ScrollArea, c: CrusaderDef, y: number): number {
+    const save = game.save;
+    const have = save.owned[c.id];
+    const layer = list.content;
+    const bw = GAME_W - PAD * 2 - 16;
+    const left = PAD + 8;
+    const rank = canonOf(have);
+    layer.add(this.add.text(left, y, `CANON ${rank ? ROMAN_RANK(rank) : '0'} / ${ROMAN_RANK(MAX_CANON)}`, text.hud(15, rank ? PAL.amber : PAL.steel)));
+    layer.add(this.add.text(GAME_W - PAD - 8, y, `ALL STATS +${Math.round(CANON_STAT * rank * 1000) / 10}%`, text.hud(13, PAL.ivory)).setOrigin(1, 0));
+    y += 28;
+    // The rank track: twenty pips, a gold ring on each trait-point rank.
+    for (let r = 1; r <= MAX_CANON; r++) {
+      const x = left + 8 + ((r - 1) * (bw - 16)) / (MAX_CANON - 1);
+      layer.add(this.add.circle(x, y + 8, 6, r <= rank ? 0xe8e0c8 : PAL.deepShadow).setStrokeStyle(r % 2 === 0 ? 2 : 1, r % 2 === 0 ? PAL.amber : PAL.armorShadow));
+    }
+    y += 30;
+    if (!canCanonize(have)) {
+      const t = this.add.text(left, y, `She may be raised to the Canon once she reaches level ${MAX_LEVEL}, fully ascended. Each rank lifts all her stats; every second rank gives a trait point.`, { ...text.body(15, PAL.steel), wordWrap: { width: bw } });
+      layer.add(t);
+      return y + t.height + 20;
+    }
+    // Materials held (tap for sources).
+    const uw = bw / 3;
+    (['canon1', 'canon2', 'canon3'] as const).forEach((g, i) => {
+      const x = left + i * uw;
+      layer.add(drawItemIcon(this, x + 20, y + 18, g, 36));
+      layer.add(tapForSources(this, this.add.text(x + 44, y + 4, `×${countOf(save, g)}\n${itemDef(g).name}`, text.body(13, countOf(save, g) ? PAL.ivory : PAL.steel)), g));
+    });
+    y += 50;
+    if (rank < MAX_CANON) {
+      const cost = canonCost(rank);
+      const block = canonBlock(save, c.id);
+      layer.add(tapCost(this, this.add.text(left, y, `To Canon ${ROMAN_RANK(rank + 1)}: ${costLine(save, cost)}  ›`, { ...text.body(14, block ? PAL.steel : PAL.amber), wordWrap: { width: bw } }), cost.items, cost.tithes));
+      y += 30;
+      const b = makeButton(this, GAME_W / 2, y + 28, bw, 56, `Canonize: rank ${ROMAN_RANK(rank + 1)}${(rank + 1) % 2 === 0 ? ' (+1 trait point)' : ''}`, () => {
+        if (list.dragging) return;
+        if (canonize(save, c.id)) {
+          commit();
+          this.reopen(c, 'canon');
+        }
+      }, { disabled: !!block, active: !block, fontSize: 17 });
+      layer.add(b.all);
+      y += 76;
+    } else {
+      layer.add(this.add.text(left, y, 'She is wholly canonized. Saints will pray to her.', text.body(16, PAL.amber)));
+      y += 36;
+    }
+    if (hasRite(c)) y = this.riteBlock(list, c, y);
+    // Traits.
+    const left_ = pointsLeft(have);
+    layer.add(this.add.text(left, y, `TRAITS · ${left_} OF ${traitPoints(have)} POINTS LEFT`, text.hud(14, left_ > 0 ? PAL.amber : PAL.steel)));
+    if (traitsOf(have).length) {
+      const r = makeButton(this, GAME_W - PAD - 58, y + 8, 100, 32, 'Reset', () => {
+        if (list.dragging) return;
+        resetTraits(save, c.id);
+        commit();
+        this.reopen(c, 'canon');
+      }, { fontSize: 14 });
+      layer.add(r.all);
+    }
+    y += 34;
+    for (const p of PATHS) {
+      layer.add(this.add.text(left, y, p.name.toUpperCase(), text.hud(13, PAL.ivory)));
+      layer.add(this.add.text(left, y + 18, p.desc, text.body(13, PAL.muted)));
+      y += 42;
+      for (const t of TRAITS.filter((x) => x.path === p.id)) {
+        const on = traitsOf(have).includes(t.id);
+        const can = !traitBlock(have, t.id);
+        const row = this.add.rectangle(GAME_W / 2, y + 22, bw, 44, on ? 0x2a1e24 : 0x150e17).setStrokeStyle(can ? 2 : 1, on || can ? PAL.amber : PAL.armorShadow);
+        layer.add(row);
+        layer.add(this.add.text(left + 10, y + 4, `${on ? '✓ ' : ''}${t.name.toUpperCase()}`, text.hud(12, on ? PAL.amber : can ? 0xfff1d6 : PAL.steel)));
+        layer.add(this.add.text(left + 10, y + 22, t.desc, text.body(14, on ? PAL.ivory : PAL.muted)));
+        if (can) {
+          row.setInteractive({ useHandCursor: true }).on('pointerup', () => {
+            if (list.dragging) return;
+            if (takeTrait(save, c.id, t.id)) {
+              commit();
+              this.reopen(c, 'canon');
+            }
+          });
+        }
+        y += 50;
+      }
+      y += 8;
+    }
+    return y + 20;
+  }
+
+  /** Her Relic Rite (SSR and UR): fight or sweep a level for Motes, and sanctify her Litany. */
+  private riteBlock(list: ScrollArea, c: CrusaderDef, y: number): number {
+    const save = game.save;
+    const layer = list.content;
+    const bw = GAME_W - PAD * 2 - 16;
+    const left = PAD + 8;
+    const best = riteBest(save, c.id);
+    const next = Math.min(RITE_LEVELS, best + 1);
+    const s = sanctOf(save, c.id);
+    layer.add(this.add.text(left, y, `HER RELIC RITE · LEVEL ${best} / ${RITE_LEVELS}`, text.hud(14, PAL.amber)));
+    layer.add(this.add.text(GAME_W - PAD - 8, y, `${riteEntriesLeft(save)} WINS LEFT TODAY`, text.hud(12, PAL.steel)).setOrigin(1, 0));
+    y += 24;
+    const t = this.add.text(left, y, `She must fight in it. Level ${next} asks ${riteTarget(next).toLocaleString('en-US')} Power and pays ${riteReward(next).motes} Relic Motes. Motes held: ${motesOf(save, c.id)}.`, { ...text.body(14, PAL.ivory), wordWrap: { width: bw } });
+    layer.add(t);
+    y += t.height + 10;
+    const half = (bw - 10) / 2;
+    const fightBlock = riteBlock(save, c.id, next);
+    const canFight = best < RITE_LEVELS && !fightBlock;
+    const fight = makeButton(this, left + half / 2, y + 26, half, 50, best >= RITE_LEVELS ? 'All levels won' : `Fight level ${next}`, () => {
+      if (list.dragging || !canFight) return;
+      this.fightRite(c, next);
+    }, { active: canFight, disabled: !canFight, fontSize: 16 });
+    const swept = best > 0 && !riteBlock(save, c.id, best);
+    const sweep = makeButton(this, left + half * 1.5 + 10, y + 26, half, 50, best ? `Sweep level ${best}` : 'Sweep', () => {
+      if (list.dragging) return;
+      const got = sweepRite(save, c.id, best);
+      if (!got) return;
+      commit();
+      this.scene.restart({ openId: c.id, tab: 'canon', notice: `Swept: ${got.motes} Relic Motes, ${got.tithes} Tithes.` });
+    }, { disabled: !swept, fontSize: 16 });
+    layer.add([...fight.all, ...sweep.all]);
+    y += 62;
+    if (fightBlock && best < RITE_LEVELS) {
+      layer.add(this.add.text(left, y, fightBlock, text.body(13, PAL.steel)));
+      y += 22;
+    }
+    // Sanctified Litany.
+    const rite = kitSkills(c.id, c.classId).find((k) => k.rite);
+    layer.add(this.add.text(left, y, `SANCTIFIED LITANY ${s ? ROMAN_RANK(s) : '0'} / ${ROMAN_RANK(SANCT_MAX)}${rite ? ` · ${rite.name.toUpperCase()}` : ''}`, text.hud(13, s ? PAL.amber : PAL.steel)));
+    y += 22;
+    if (s < SANCT_MAX) {
+      const step = SANCT_STEPS[s];
+      const block = sanctBlock(save, c.id);
+      const line = `Next: her Litany +${Math.round(SANCT_LITANY[s + 1] * 100)}%${s + 1 === SANCT_MAX ? ', and she opens each fight with 25 Zeal' : ''}. Needs Canon ${ROMAN_RANK(step.canon)} and ${step.motes} Motes.`;
+      const lt = this.add.text(left, y, line, { ...text.body(14, block ? PAL.steel : PAL.ivory), wordWrap: { width: bw } });
+      layer.add(lt);
+      y += lt.height + 8;
+      const b = makeButton(this, GAME_W / 2, y + 26, bw, 50, `Sanctify: step ${ROMAN_RANK(s + 1)}`, () => {
+        if (list.dragging) return;
+        if (sanctify(save, c.id)) {
+          commit();
+          this.reopen(c, 'canon');
+        }
+      }, { disabled: !!block, active: !block, fontSize: 16 });
+      layer.add(b.all);
+      y += 64;
+    } else {
+      layer.add(this.add.text(left, y, `Her Litany burns +${Math.round(SANCT_LITANY[SANCT_MAX] * 100)}% and she wakes with 25 Zeal.`, text.body(14, PAL.amber)));
+      y += 30;
+    }
+    return y + 10;
+  }
+
+  private fightRite(c: CrusaderDef, level: number) {
+    const save = game.save;
+    const initial = [c.id, ...save.lastParty.filter((id) => id !== c.id)].slice(0, 4);
+    pickParty(
+      this,
+      save,
+      { title: `Rite of ${c.name.split(' ')[0]}`, sub: `Level ${level}. She must fight in it.`, initial, confirm: 'Begin the Rite!', rec: riteTarget(level) },
+      (party) => {
+        if (!party.includes(c.id)) {
+          toast(this, `${c.name.split(' ')[0]} must fight in her own Rite.`, GAME_H / 2);
+          return;
+        }
+        current.challenge = {
+          label: `The Rite of ${c.name}, level ${level}. Her relic will not be taken lightly!`,
+          make: (rng) => riteBattle(save, party, level, rng),
+          finish: (outcome) => {
+            const got = finishRite(save, c.id, level, outcome === 'victory');
+            commit();
+            const notice = got ? `Rite won! ${got.motes} Relic Motes, ${got.tithes} Tithes.` : 'The Rite repels you. Nothing was spent.';
+            return { scene: 'Roster', data: { openId: c.id, tab: 'canon', notice } };
+          },
+        };
+        this.scene.start('Battle');
+      },
+    );
   }
 
   /** The star track, copies and Stigmata, and Take Vow or Tier Up with a before and after. */

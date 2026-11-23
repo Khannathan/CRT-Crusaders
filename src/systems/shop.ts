@@ -57,6 +57,7 @@ export const GILT_OFFERS: Offer[] = [
   { id: 'g-ssr', name: 'SSR gear', price: 300, currency: 'gilt', goods: { gear: 'SSR' }, limit: 1 },
   { id: 'g-writ', name: '1 Armory Writ', price: 60, currency: 'gilt', goods: { items: { armory2: 1 } }, limit: 3 },
   { id: 'g-whistle', name: '1 Hound Whistle', price: 70, currency: 'gilt', goods: { items: { kennel2: 1 } }, limit: 3 },
+  { id: 'g-canon', name: 'Vellum crate', price: 120, currency: 'gilt', goods: { items: { canon1: 6 } }, limit: 2 },
 ];
 
 export const TITHE_OFFERS: Offer[] = [
@@ -70,6 +71,7 @@ export const TITHE_OFFERS: Offer[] = [
   { id: 't-gear', name: 'SR+ gear', price: 700, currency: 'tithes', goods: { gear: 'SR' }, limit: 3 },
   { id: 't-stigmata', name: '1 Stigmata', price: 3000, currency: 'tithes', goods: { stigmata: 1 }, limit: 2 },
   { id: 't-whistle', name: '1 Hound Whistle', price: 1200, currency: 'tithes', goods: { items: { kennel2: 1 } }, limit: 3 },
+  { id: 't-canon', name: '3 Vellum Scraps', price: 900, currency: 'tithes', goods: { items: { canon1: 3 } }, limit: 3 },
 ];
 
 /** What the Almonry can stock; six are drawn each day. */
@@ -85,6 +87,7 @@ export const ALMONRY_POOL: Offer[] = [
   { id: 'a-unction3', name: '1 Extreme Unction', price: 90, currency: 'alms', goods: { items: { unction3: 1 } }, limit: 1 },
   { id: 'a-writ', name: '2 Armory Writs', price: 140, currency: 'alms', goods: { items: { armory2: 2 } }, limit: 1 },
   { id: 'a-frag', name: "10 Saint's Fragments", price: 90, currency: 'alms', goods: { items: { armory1: 10 } }, limit: 1 },
+  { id: 'a-canon2', name: '2 Hagiographies', price: 80, currency: 'alms', goods: { items: { canon2: 2 } }, limit: 1 },
   { id: 'a-whistle', name: '3 Hound Whistles', price: 110, currency: 'alms', goods: { items: { kennel2: 3 } }, limit: 1 },
   { id: 'a-ssr', name: 'SSR gear', price: 150, currency: 'alms', goods: { gear: 'SSR' }, limit: 1 },
   { id: 'a-vow', name: 'Vow token of your choice', price: 400, currency: 'alms', goods: { vowToken: true }, limit: 1 },

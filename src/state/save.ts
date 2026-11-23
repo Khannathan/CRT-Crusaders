@@ -30,11 +30,17 @@ export interface OwnedCrusader {
   asc?: number;
   /** Holy Symbol level: undefined while it sleeps, 0-15 once woken (systems/symbols.ts). */
   symbol?: number;
+  /** Canonization past level 50: rank 0-20 and the traits taken (systems/canon.ts). */
+  canon?: { rank: number; traits: string[] };
   /** Crusades left to sit out after falling (0 = ready). Tithes can revive early. */
   recovering?: number;
 }
 
 export interface SaveData {
+  /** Relic Rites (systems/relicRites.ts): daily entries, best levels, Motes and Sanctified steps per Sister. */
+  relicRites?: { day: string; used: number; best: Record<string, number>; motes: Record<string, number>; sanct: Record<string, number> };
+  /** Hosanna picks: per party (sorted Sister ids joined by +) and the last one picked. */
+  hosanna?: { byParty?: Record<string, string>; last?: string };
   version: 1;
   seals: number;
   tithes: number;

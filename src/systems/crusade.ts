@@ -1,3 +1,5 @@
+import { canonEffect } from './canon';
+import { sanctEffect } from './sanctity';
 import { DEEP_HOSTS } from '../data/deepFoes';
 import { boostBag, boostMult } from './boosts';
 import { roman } from './roman';
@@ -431,7 +433,15 @@ export function makeBattle(save: SaveData, run: RunState, encounter: string, rng
     if (run.hp[id] <= 0) continue;
     const c = CRUSADERS.find((x) => x.id === id)!;
     const st = sisterStats(save, c);
-    const sym = symbolCombat(c, save.owned[id].symbol);
+    const cn = canonEffect(save.owned[id]);
+    // Her Sanctified Litany (Relic Rites) adds to the Canon traits.
+    const sa = sanctEffect(save, id);
+    cn.litanyPct += sa.litanyPct;
+    cn.zeal += sa.zeal;
+    const traited = cn.litanyPct || cn.dmgPct || cn.guard || cn.healPct;
+    const base = symbolCombat(c, save.owned[id].symbol) ?? (traited ? { mult: 1, heal: 1, guard: 0, rite: 0, crit: 0, zeal: 0 } : undefined);
+    // Canon traits ride on her Symbol's combat hooks (damage, Litany, heals, guard).
+    const sym = base && traited ? { ...base, mult: base.mult * (1 + cn.dmgPct), heal: base.heal * (1 + cn.healPct), guard: base.guard + cn.guard, rite: base.rite + cn.litanyPct } : base;
     symbolZeal += sym?.zeal ?? 0;
     party.push({
       uid: id,
@@ -451,6 +461,7 @@ export function makeBattle(save: SaveData, run: RunState, encounter: string, rng
       crit: st.crit + relics.reduce((n, r) => n + (r.critAdd ?? 0), 0) + (sym?.crit ?? 0),
       critDmg: st.critDmg,
       symbol: sym,
+      zeal: cn.zeal || undefined,
       passive: c.passive,
       order: c.order,
       spd: st.spd + (c.passive?.kind === 'swift' ? c.passive.value ?? 0 : 0),
