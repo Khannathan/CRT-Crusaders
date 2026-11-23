@@ -133,17 +133,24 @@ export function announceSettled(s: Settled) {
 
 /** A notice across the top of whatever screen is open; tap it to see the outcome. */
 function toast(msg: string, won: boolean) {
+  topNotice(`${msg}\nTap to see.`, won, (scene) => {
+    const go = crusadeTabTarget();
+    if (go) scene.scene.start(go.scene, go.data ?? {});
+  });
+}
+
+/** A notice across the top of whatever screen is open; `onTap` runs when it is tapped. */
+export function topNotice(msg: string, good: boolean, onTap?: (scene: Phaser.Scene) => void) {
   const scene = bgFight.game?.scene.getScenes(true).filter((s) => s.scene.key !== 'Boot').at(-1);
   if (!scene) return;
   refreshBadges(scene);
   const box = scene.add.container(GAME_W / 2, -60).setDepth(200);
-  const body = scene.add.text(0, 0, `${msg}\nTap to see.`, { fontFamily: FONT, fontSize: '17px', color: hex(PAL.ivory), align: 'center', wordWrap: { width: GAME_W - 70 } }).setOrigin(0.5);
-  const bg = scene.add.rectangle(0, 0, GAME_W - 40, body.height + 22, 0x1b121c, 0.96).setStrokeStyle(2, won ? PAL.amber : 0xb04040);
+  const body = scene.add.text(0, 0, msg, { fontFamily: FONT, fontSize: '17px', color: hex(PAL.ivory), align: 'center', wordWrap: { width: GAME_W - 70 } }).setOrigin(0.5);
+  const bg = scene.add.rectangle(0, 0, GAME_W - 40, body.height + 22, 0x1b121c, 0.96).setStrokeStyle(2, good ? PAL.amber : 0xb04040);
   box.add([bg, body]);
   bg.setInteractive({ useHandCursor: true }).on('pointerup', () => {
-    const go = crusadeTabTarget();
     box.destroy();
-    if (go) scene.scene.start(go.scene, go.data ?? {});
+    onTap?.(scene);
   });
   scene.tweens.add({ targets: box, y: body.height / 2 + 24, duration: 260, ease: 'Back.out' });
   scene.time.delayedCall(6000, () => scene.tweens.add({ targets: box, alpha: 0, duration: 400, onComplete: () => box.destroy() }));

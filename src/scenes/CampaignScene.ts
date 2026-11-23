@@ -5,12 +5,14 @@ import { ENCOUNTERS, ENEMIES } from '../data/enemies';
 import { commit, game } from '../state/game';
 import { current, type Challenge } from '../state/run';
 import { saveSettings, settings } from '../state/settings';
-import { CHAPTERS, STAGES_PER_CHAPTER, TOTAL_STAGES, campaignOf, chapterChest, finishStage, nextStage, roadRates, stageBattle, stageDef, stageRecommended, stageReward, type StageReward } from '../systems/campaign';
+import { CHAPTERS, STAGES_PER_CHAPTER, TOTAL_STAGES, campaignOf, chapterChest, finishStage, nextStage, roadDone, roadRates, stageBattle, stageDef, stageRecommended, stageReward, type StageReward } from '../systems/campaign';
 import { bagText } from '../systems/items';
 import { HARD_NAME, finishHardStage, hardBattle, hardChest, hardNext, hardOf, hardOpen, hardReward, hardStageDef, hardTarget, vowBonus, type HardMode } from '../systems/hardRoad';
 import { partyPower } from '../systems/power';
 import { VIGIL_SIZE, ensureVigil } from '../systems/vigil';
 import { makeButton } from '../ui/button';
+import { drawMarchToggle } from '../ui/marchUi';
+import { marchOf } from '../systems/march';
 import { nodeIconKey } from '../ui/icons';
 import { modeScreen, toast } from '../ui/modeScreen';
 import { pickParty } from '../ui/partyPicker';
@@ -198,8 +200,9 @@ export class CampaignScene extends Phaser.Scene {
     const chest = mode === 'road' ? chapterChest(s.chapter) : hardChest(mode, s.chapter);
     const pay = (done ? 'Cleared. Its first-clear reward is yours.' : `First clear: ${rewardText(firstPay)}${s.boss ? `\nChapter chest: ${rewardText(chest)}` : ''}`);
     this.add.text(left, y0 + 126, pay, { ...text.body(15, done ? PAL.steel : PAL.ivory), wordWrap: { width: w - 32 } });
-    const rates = roadRates(save);
-    this.add.text(GAME_W - PAD - 16, y0 + 14, `VIGIL ${Math.round(rates.tithes)} TITHES/H`, text.hud(11, PAL.steel)).setOrigin(1, 0);
+    // The March: the Vigil's Sisters push on along the Pilgrim's Road by themselves, on every screen and while you are away.
+    if (mode === 'road' && (!roadDone(save) || marchOf(save))) drawMarchToggle(this, GAME_W - PAD - 80, y0 + 28, 132, 36, 14);
+    else this.add.text(GAME_W - PAD - 16, y0 + 14, `VIGIL ${Math.round(roadRates(save).tithes)} TITHES/H`, text.hud(11, PAL.steel)).setOrigin(1, 0);
     const can = n === best + 1 || (mode !== 'road' && done && !hardOf(save, mode).unbroken.includes(n));
     if (can && !done) {
       makeButton(this, GAME_W / 2 - 104, y0 + PANEL_H - 34, 200, 52, 'Challenge', () => this.challenge(n), { active: true, icon: 'blade', fontSize: 18 });
