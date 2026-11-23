@@ -31,6 +31,8 @@ export const ACT_SEC = 2.2;
 export const ROUND_SEC = 2.6;
 /** A delayed unit's next action waits this much longer. */
 export const DELAY_SEC = 1.6;
+/** An extra action (Coup de Grâce) comes this soon after the swing ends. */
+export const EXTRA_SEC = 0.15;
 /** Seconds a unit stands still after acting (the swing), and after a Litany. */
 export const SWING_SEC = 0.45;
 export const LITANY_SEC = 0.9;
@@ -340,6 +342,14 @@ export class FieldBattle {
       me.ready = false;
       me.timer = this.interval(u);
     }
+    // Another action at once (Coup de Grâce): in turn order she goes to the front
+    // of the queue; on the field she strikes again as soon as the swing ends.
+    if (b.queue[0] === u.uid) {
+      b.queue.shift();
+      me.timer = Math.min(me.timer, me.lock + EXTRA_SEC);
+    }
+    // Ranks moved (Processional, Stride, Step, pulls): the formation follows.
+    if (events.some((e) => e.type === 'move')) this.reform();
     this.applyDelays();
     out.push({ kind: 'act', uid: u.uid, skill, targetUid, events, ranged: me.reach !== 'melee', litany: !!skill.rite && !charge, charge });
     this.addSummons(me, out);
@@ -351,6 +361,17 @@ export class FieldBattle {
       if (this.bodies.has(u.uid)) continue;
       this.addBody(u, caller);
       out.push({ kind: 'spawn', uid: u.uid });
+    }
+  }
+
+  /** New formation spots after ranks change; bodies drift there when idle. */
+  private reform() {
+    for (const u of this.battle.units) {
+      const me = this.bodies.get(u.uid);
+      if (!me) continue;
+      const home = this.home(u);
+      me.homeX = home.x;
+      me.homeY = home.y;
     }
   }
 
