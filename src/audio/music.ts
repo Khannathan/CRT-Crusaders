@@ -61,8 +61,12 @@ const SCENE_MUSIC: Record<string, LoopId | (() => LoopId)> = {
   Crypt: 'crypt',
 };
 
-/** Seconds a screen change takes to crossfade. */
+/** Seconds the old loop takes to fade out on a screen change. */
 const SCENE_FADE = 1.2;
+/** Seconds the new loop takes to fade in: quick, so a screen's music arrives with it. */
+const SCENE_FADE_IN = 0.4;
+/** Seconds a victory/defeat cue takes to fade when the player taps away from it. */
+const CUE_CUT = 0.15;
 /** Seconds a loop overlaps itself when it wraps around. */
 const LOOP_FADE = 3;
 /** Loop volume while the UR stinger plays. */
@@ -72,6 +76,8 @@ interface Playing {
   id: LoopId;
   /** Fades the whole track in and out on screen changes. */
   bus: GainNode;
+  /** When the first pass starts (context seconds). */
+  startAt: number;
   /** When the copy after the newest one starts (context seconds). */
   nextAt: number;
   sources: AudioBufferSourceNode[];
@@ -89,6 +95,10 @@ class Music {
   private holdUntil = 0;
   private holdPending: Promise<unknown> = Promise.resolve();
   private request = 0;
+  /** The victory/defeat cue now playing, so leaving its screen can cut it short. */
+  private endCue?: { src?: AudioBufferSourceNode; gain?: GainNode; cancelled: boolean };
+  /** The next screen to open is the one the cue plays over, so it does not cut it. */
+  private cueCarries = false;
 
   /** Call once at startup: makes the audio context and waits for the first tap. */
   init() {
@@ -145,9 +155,9 @@ class Music {
       const at = Math.max(ctx.currentTime + 0.05, this.holdUntil);
       const bus = ctx.createGain();
       bus.gain.setValueAtTime(0, at);
-      bus.gain.linearRampToValueAtTime(1, at + SCENE_FADE);
+      bus.gain.linearRampToValueAtTime(1, at + SCENE_FADE_IN);
       bus.connect(this.duck!);
-      const p: Playing = { id, bus, nextAt: at, sources: [] };
+      const p: Playing = { id, bus, startAt: at, nextAt: at, sources: [] };
       this.current = p;
       this.queuePass(p, buf, true);
     });
@@ -167,18 +177,32 @@ class Music {
    */
   stinger(id: StingerId, mode: 'end' | 'duck') {
     if (!this.ctx) return;
-    if (mode === 'end') this.stop(0.6);
+    let cue: NonNullable<Music['endCue']> | undefined;
+    if (mode === 'end') {
+      this.cutCue();
+      this.stop(0.6);
+      cue = this.endCue = { cancelled: false };
+      this.cueCarries = false;
+    }
     const done = this.load(id).then((buf) => {
-      if (!buf || !this.ctx) return;
+      if (!buf || !this.ctx || cue?.cancelled) return;
       const ctx = this.ctx;
       const at = ctx.currentTime + (mode === 'end' ? 0.25 : 0.02);
       const src = ctx.createBufferSource();
       src.buffer = buf;
-      src.connect(this.master!);
+      const gain = ctx.createGain();
+      src.connect(gain).connect(this.master!);
       src.start(at);
       const end = at + buf.duration;
-      if (mode === 'end') this.holdUntil = end - 1.5;
-      else {
+      if (cue) {
+        cue.src = src;
+        cue.gain = gain;
+        src.onended = () => {
+          gain.disconnect();
+          if (this.endCue === cue) this.endCue = undefined;
+        };
+        this.holdUntil = end - 1.5;
+      } else {
         const g = this.duck!.gain;
         g.cancelScheduledValues(ctx.currentTime);
         g.setValueAtTime(g.value, ctx.currentTime);
@@ -188,6 +212,46 @@ class Music {
       }
     });
     if (mode === 'end') this.holdPending = done;
+  }
+
+  /** The screen about to open is the one the victory/defeat cue plays over, so it keeps playing there. */
+  carryCue() {
+    if (this.endCue) this.cueCarries = true;
+  }
+
+  /** Called as each screen opens: leaving the victory/defeat screen cuts its cue short. */
+  sceneOpened() {
+    if (this.cueCarries) this.cueCarries = false;
+    else this.cutCue();
+  }
+
+  /** Stops the victory/defeat cue after a very quick fade, and lets the waiting loop start now. */
+  cutCue() {
+    const cue = this.endCue;
+    if (!cue || !this.ctx) return;
+    this.endCue = undefined;
+    cue.cancelled = true;
+    const now = this.ctx.currentTime;
+    if (cue.src && cue.gain) {
+      const g = cue.gain.gain;
+      g.cancelScheduledValues(now);
+      g.setValueAtTime(g.value, now);
+      g.linearRampToValueAtTime(0, now + CUE_CUT);
+      try {
+        cue.src.stop(now + CUE_CUT + 0.02);
+      } catch {
+        // already stopped
+      }
+    }
+    this.holdUntil = 0;
+    this.holdPending = Promise.resolve();
+    // A loop already scheduled to start after the cue starts now instead.
+    const p = this.current;
+    if (p && p.startAt > now) {
+      this.fadeOutCurrent(0.01);
+      this.wanted = undefined;
+      this.play(p.id);
+    }
   }
 
   /** Fetches the cue now so it is ready the moment it is needed. */

@@ -130,7 +130,11 @@ function start() {
     installCrt(game);
     watchScreenFit(game, parent);
     // Each screen asks for its loop as it opens.
-    for (const scene of game.scene.scenes) scene.events.on(Phaser.Scenes.Events.CREATE, () => music.forScene(scene.scene.key));
+    for (const scene of game.scene.scenes)
+      scene.events.on(Phaser.Scenes.Events.CREATE, () => {
+        music.sceneOpened();
+        music.forScene(scene.scene.key);
+      });
   });
   wireSceneMusic();
   music.init();

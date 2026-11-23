@@ -765,6 +765,7 @@ export class FieldScene extends Phaser.Scene {
       this.time.delayedCall(1400, () => {
         this.tweens.timeScale = 1;
         this.time.timeScale = 1;
+        music.carryCue(); // the cue plays on over the results; it stops when the player leaves them
         this.scene.start(next.scene, next.data ?? {});
       });
       return;
