@@ -15,8 +15,8 @@ import { keywordLine } from '../systems/keywords';
 import { settleBattle } from '../systems/settle';
 import { makeButton } from '../ui/button';
 import { FieldView } from '../ui/fieldView';
-import { riteCard, shake } from '../ui/juice';
-import { portraitKey } from '../ui/placeholderPortrait';
+import { litanyCutIn, riteCard, shake } from '../ui/juice';
+import { portraitKey, queueSplash, splashKey } from '../ui/placeholderPortrait';
 import { addBackdrop, text } from '../ui/theme';
 
 /** Where the field sits on screen: feet stand between FIELD_Y and FIELD_Y + FIELD_H. */
@@ -93,6 +93,11 @@ export class FieldScene extends Phaser.Scene {
   private hitStop = 0;
   /** A Litany being aimed: held from her card, dragged onto a target. */
   private aim?: { uid: string; x0: number; y0: number; at: number; on: boolean; line: Phaser.GameObjects.Graphics };
+  /** A Sister being dragged across the field (out of a danger zone). */
+  private drag?: { uid: string; x0: number; y0: number; on: boolean; line: Phaser.GameObjects.Graphics };
+  /** Danger zones on the ground, and how many zones the player has seen marked this fight. */
+  private zoneGfx?: Phaser.GameObjects.Graphics;
+  private zonesSeen = 0;
 
   constructor() {
     super('Field');
@@ -121,6 +126,9 @@ export class FieldScene extends Phaser.Scene {
     this.picked = undefined;
     this.hitStop = 0;
     this.aim = undefined;
+    this.drag = undefined;
+    this.zoneGfx = undefined;
+    this.zonesSeen = 0;
     // On Auto the fight starts by itself after a moment, unless the player starts swapping.
     this.deployLeft = settings.autoBattle ? 2.2 : undefined;
     const save = game.save;
@@ -192,6 +200,10 @@ export class FieldScene extends Phaser.Scene {
       onUltimate: (u, s, charging) => this.ultimate(u, s, charging),
     });
 
+    // Splash art for each Sister's Litany cut-in, loaded while the fight starts.
+    b.units.filter((u) => u.side === 'party').forEach((u) => queueSplash(this, u.ref));
+    this.load.start();
+
     this.drawCards();
     this.drawChain();
     this.drawHosanna();
@@ -209,11 +221,19 @@ export class FieldScene extends Phaser.Scene {
         if (u.side === 'party') this.pickSwap(u.uid);
         return;
       }
-      if (u.side === 'party') this.tryLitany(u.uid);
+      // A Sister: a tap casts her Litany, a drag moves her.
+      if (u.side === 'party') this.drag = { uid: u.uid, x0: p.x, y0: p.y, on: false, line: this.add.graphics().setDepth(50) };
       else this.focus(u.uid);
     });
-    this.input.on('pointermove', (p: Phaser.Input.Pointer) => this.aimMove(p));
-    this.input.on('pointerup', (p: Phaser.Input.Pointer) => this.aimUp(p));
+    this.input.on('pointermove', (p: Phaser.Input.Pointer) => {
+      this.aimMove(p);
+      this.dragMove(p);
+    });
+    this.input.on('pointerup', (p: Phaser.Input.Pointer) => {
+      this.aimUp(p);
+      this.dragUp(p);
+    });
+    this.zoneGfx = this.add.graphics().setDepth(9.5);
   }
 
   // ---------- before the fight: formation ----------
@@ -309,6 +329,58 @@ export class FieldScene extends Phaser.Scene {
     else this.log('Let go over a lit target to aim the Litany.');
   }
 
+  // ---------- dragging Sisters (dodging) ----------
+
+  private dragMove(p: Phaser.Input.Pointer) {
+    const d = this.drag;
+    if (!d) return;
+    if (!d.on && Math.hypot(p.x - d.x0, p.y - d.y0) < 20) return;
+    d.on = true;
+    const body = this.field.bodies.get(d.uid);
+    if (!body) return;
+    d.line.clear();
+    d.line.lineStyle(3, 0xf2d27a, 0.9).lineBetween(body.x, FIELD_Y + body.y, p.x, p.y);
+    d.line.lineStyle(3, 0xfff1d6, 1).strokeCircle(p.x, p.y, 16);
+  }
+
+  private dragUp(p: Phaser.Input.Pointer) {
+    const d = this.drag;
+    if (!d) return;
+    this.drag = undefined;
+    d.line.destroy();
+    if (!d.on) {
+      this.tryLitany(d.uid);
+      return;
+    }
+    if (this.field.moveTo(d.uid, p.x, Phaser.Math.Clamp(p.y, FIELD_Y, FIELD_Y + FIELD_H) - FIELD_Y)) {
+      const z = this.field.zones.length;
+      this.log(z ? `${this.field.battle.get(d.uid).name} runs for it!` : `${this.field.battle.get(d.uid).name} takes her ground.`);
+    }
+  }
+
+  /** Charged blows' marks: a red ring with a fill that grows until it lands. */
+  private drawZones() {
+    const g = this.zoneGfx;
+    if (!g) return;
+    g.clear();
+    const zs = this.field.zones;
+    if (zs.length > this.zonesSeen) {
+      this.zonesSeen = zs.length;
+      this.log(`${zs[zs.length - 1].skillName} is coming! Drag your Sisters out of the red!`);
+    } else if (!zs.length) this.zonesSeen = 0;
+    const pulse = 0.5 + 0.5 * Math.sin(this.time.now / 90);
+    for (const z of zs) {
+      const boss = this.field.bodies.get(z.bossUid);
+      const left = Math.max(0.2, boss?.timer ?? 1);
+      const done = Phaser.Math.Clamp((this.field.time - z.at) / (this.field.time - z.at + left), 0, 1);
+      const x = z.x;
+      const y = FIELD_Y + z.y;
+      g.fillStyle(0xff2a1a, 0.1 + 0.06 * pulse).fillCircle(x, y, z.r);
+      g.fillStyle(0xff2a1a, 0.22).fillCircle(x, y, z.r * done);
+      g.lineStyle(4, 0xff3a2a, 0.7 + 0.3 * pulse).strokeCircle(x, y, z.r);
+    }
+  }
+
   // ---------- pause ----------
 
   private togglePause() {
@@ -355,6 +427,7 @@ export class FieldScene extends Phaser.Scene {
     // Aiming a Litany: the fight crawls while the player picks a target.
     if (this.aim?.on) dt *= 0.2;
     const events = this.field.update(dt);
+    this.drawZones();
     this.view.sync();
     this.view.handle(events);
     if (events.some((e) => e.kind === 'act' && e.events.some((x) => x.type === 'death' || (x.type === 'damage' && x.crit)))) this.hitStop = 0.07;
@@ -393,6 +466,10 @@ export class FieldScene extends Phaser.Scene {
     }
     this.cardUntil = this.time.now + 1300;
     if (s.id.startsWith('hosanna-')) return riteCard(this, s.name, 'THE SISTERHOOD', () => {}, 'SINGS A HOSANNA');
+    if (u.side === 'party' && this.textures.exists(splashKey(u.ref))) {
+      const chain = this.field.chainLeft() > 0 ? this.field.chain.count : 0;
+      return litanyCutIn(this, u.ref, s.name, u.name, chain);
+    }
     riteCard(this, s.name, u.name, () => {}, u.side === 'party' ? 'INVOKES' : 'UNLEASHES A BLASPHEMY');
   }
 

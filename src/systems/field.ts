@@ -111,6 +111,23 @@ export interface Body {
   /** Where it stands in formation (rank-based), for regrouping between fights. */
   homeX: number;
   homeY: number;
+  /** The player dragged her here: she walks to it and holds there while any danger zone stands. */
+  order?: { x: number; y: number; at: number };
+}
+
+/**
+ * A boss's charged blow marked on the ground. Sisters standing outside it when
+ * it lands are spared; drag them out. Only the battle screen marks the ground
+ * (opts.dodge), so sims and background fights play exactly as before.
+ */
+export interface Zone {
+  bossUid: string;
+  skillName: string;
+  x: number;
+  y: number;
+  r: number;
+  /** Field time it was marked. */
+  at: number;
 }
 
 export type FieldEvent =
@@ -125,6 +142,8 @@ export interface FieldOpts {
   h: number;
   /** Sisters cast Litanies only when the player taps them. */
   manualLitany?: boolean;
+  /** Charged blows mark the ground and Sisters can be dragged out (the battle screen). */
+  dodge?: boolean;
   /** Sisters already standing somewhere (by Sister id), e.g. a Vigil's next wave. */
   carry?: Map<string, { x: number; y: number }>;
   /** Figure size on screen relative to the Vigil's (1): bigger bodies keep further apart and melee reaches further. */
@@ -168,6 +187,8 @@ export class FieldBattle {
   chain = { count: 0, at: -99, best: 0 };
   /** The foe the player marked: every Sister who can hit it turns on it. */
   focusUid?: string;
+  /** Danger zones standing (see Zone). */
+  zones: Zone[] = [];
   private rng: () => number;
 
   constructor(
@@ -182,6 +203,11 @@ export class FieldBattle {
         const a = this.bodies.get(singer.uid);
         const c = this.bodies.get(u.uid);
         return !a || !c || this.dist(a, c) <= HYMN_RADIUS * this.k;
+      },
+      dodges: (foe, u) => {
+        const z = this.zones.find((x) => x.bossUid === foe.uid);
+        const me = this.bodies.get(u.uid);
+        return !!z && !!me && Math.hypot(me.x - z.x, me.y - z.y) > z.r;
       },
       inOverwatch: (watcher, foe) => {
         const a = this.bodies.get(watcher.uid);
@@ -384,6 +410,12 @@ export class FieldBattle {
       if (e) out.push(e);
     }
 
+    // A Delayed or fallen boss drops its mark.
+    this.zones = this.zones.filter((z) => {
+      const f = b.get(z.bossUid);
+      return f && f.hp > 0 && f.status.charging;
+    });
+
     for (const u of b.alive()) {
       const me = this.bodies.get(u.uid);
       if (!me) continue;
@@ -391,6 +423,17 @@ export class FieldBattle {
       me.timer -= dt;
       me.moving = false;
       if (me.lock > 0) continue;
+      // Dragged: walk there, then hold while danger stands (no longer than a few seconds).
+      if (me.order) {
+        const o = me.order;
+        const there = Math.hypot(o.x - me.x, o.y - me.y) < 4;
+        if (!there) {
+          this.walkTo(me, o.x, o.y, dt);
+          if (this.time - o.at < 4) continue;
+        } else if (this.zones.length && this.time - o.at < 5) continue;
+        me.order = undefined;
+        me.plan = undefined;
+      }
 
       // Ready: start-of-turn effects (once per action), then decide.
       if (me.timer <= 0 && !me.ready) {
@@ -466,6 +509,8 @@ export class FieldBattle {
     if (litany) b.chainMult = 1 + chainBonus(link);
     const events = b.act(u, skill, target && target.hp > 0 ? target : undefined);
     b.chainMult = 1;
+    if (charge && this.opts.dodge && u.status.charging) this.markZone(u, skill, target);
+    else if (u.side === 'enemy' && skill.windup) this.zones = this.zones.filter((z) => z.bossUid !== u.uid);
     if (u.side === 'party' && this.opts.hosanna) this.hosanna = Math.min(HOSANNA_MAX, this.hosanna + (litany ? HOSANNA_PER_LITANY : HOSANNA_PER_ACT));
     if (litany) {
       this.chain.count = link;
@@ -500,6 +545,39 @@ export class FieldBattle {
     this.applyDelays();
     out.push({ kind: 'act', uid: u.uid, skill, targetUid, events, ranged: me.reach !== 'melee', litany: !!skill.rite && !charge, charge });
     this.addSummons(me, out);
+  }
+
+  /** A charged blow marks the ground: round the whole party, or round its one target. */
+  private markZone(u: Unit, skill: SkillDef, target?: Unit) {
+    const party = this.battle.alive('party').map((s) => this.bodies.get(s.uid)).filter((x): x is Body => !!x);
+    if (!party.length) return;
+    let x: number;
+    let y: number;
+    let r: number;
+    const one = skill.target === 'enemy' && target ? this.bodies.get(target.uid) : undefined;
+    if (one) {
+      x = one.x;
+      y = one.y;
+      r = 70 * this.k;
+    } else {
+      x = party.reduce((a, p) => a + p.x, 0) / party.length;
+      y = party.reduce((a, p) => a + p.y, 0) / party.length;
+      const far = Math.max(...party.map((p) => Math.hypot(p.x - x, p.y - y)));
+      r = Math.min(210 * this.k, Math.max(110 * this.k, far + 30 * this.k));
+    }
+    this.zones = this.zones.filter((z) => z.bossUid !== u.uid);
+    this.zones.push({ bossUid: u.uid, skillName: skill.name, x, y, r, at: this.time });
+  }
+
+  /** The player drags a Sister to a spot on the field. */
+  moveTo(uid: string, x: number, y: number) {
+    const me = this.bodies.get(uid);
+    const u = this.battle.get(uid);
+    if (!me || !u || u.side !== 'party' || u.hp <= 0) return false;
+    const pad = me.radius;
+    me.order = { x: Math.max(pad, Math.min(this.opts.w - pad, x)), y: Math.max(pad, Math.min(this.opts.h - pad, y)), at: this.time };
+    me.plan = undefined;
+    return true;
   }
 
   /** Summoned foes get bodies beside whoever called them. */
@@ -770,7 +848,7 @@ export class FieldBattle {
 export const SCREEN_FIELD = { w: 540, h: 450, bodyScale: 1.45 };
 
 export function screenField(battle: Battle, manualLitany: boolean, hosanna?: HosannaDef) {
-  return new FieldBattle(battle, { ...SCREEN_FIELD, manualLitany, hosanna });
+  return new FieldBattle(battle, { ...SCREEN_FIELD, manualLitany, hosanna, dodge: true });
 }
 
 /** Steps a field fight forward by `sec` seconds in small steps. Returns the outcome if it ended. */

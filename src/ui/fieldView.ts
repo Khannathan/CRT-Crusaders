@@ -366,6 +366,8 @@ interface View {
   charge?: Phaser.GameObjects.Ellipse;
   /** A marker on the ground under it (gold for Sisters, red for foes). */
   ring?: Phaser.GameObjects.Ellipse;
+  /** Second Vows: a crimson-gold ring round her feet. */
+  aura?: Phaser.GameObjects.Ellipse;
   barW: number;
 }
 
@@ -435,6 +437,12 @@ export class FieldView {
       v.ring = this.scene.add.ellipse(x, y, rw, rw * 0.34).setStrokeStyle(2, u.side === 'party' ? PAL.amber : 0xd0402a, 0.75).setFillStyle(u.side === 'party' ? PAL.amber : 0xd0402a, 0.12);
       this.objects.push(v.ring);
     }
+    if (u.exalted) {
+      const aw = 56 * (s / 0.75);
+      v.aura = this.scene.add.ellipse(x, y, aw, aw * 0.38).setStrokeStyle(3, 0xf2d27a, 1).setFillStyle(0xa0202a, 0.25);
+      this.scene.tweens.add({ targets: v.aura, scaleX: 1.15, scaleY: 1.15, alpha: 0.55, duration: 700, yoyo: true, repeat: -1 });
+      this.objects.push(v.aura);
+    }
     this.views.set(u.uid, v);
     this.objects.push(fig.root, hpBack, hp, shield, ...(meter ? [meter] : []));
   }
@@ -458,6 +466,7 @@ export class FieldView {
         v.ring.setPosition(x, y).setDepth(this.depth - 0.6).setVisible(u.hp > 0);
         v.ring.setStrokeStyle(lit ? 3 : 2, lit ? 0xfff1d6 : u.side === 'party' ? PAL.amber : 0xd0402a, lit ? 1 : 0.75);
       }
+      v.aura?.setPosition(x, y).setDepth(this.depth - 0.55).setVisible(u.hp > 0);
       if (this.focusMark && this.focusUid === u.uid) {
         this.focusMark.setPosition(x, y - v.fig.height - 30).setDepth(this.depth + 0.95).setVisible(u.hp > 0);
       }

@@ -111,6 +111,8 @@ export interface Unit {
   lastSkill?: string;
   /** Sisters: her own Zeal, 0-ZEAL_MAX. Full, her Sacrament is ready. */
   zeal?: number;
+  /** Sisters: she has taken her Second Vows (shown as a crimson-gold aura). */
+  exalted?: boolean;
   /** Bosses: Wrath, 0-ZEAL_MAX. Full, the boss readies its Blasphemy. */
   wrath?: number;
   /** Bosses: 2 once the second phase has begun. */
@@ -328,6 +330,8 @@ export class Battle {
     inHymn(singer: Unit, u: Unit): boolean;
     /** This foe has stepped into the watcher's Overwatch zone. */
     inOverwatch(watcher: Unit, foe: Unit): boolean;
+    /** This Sister was moved clear of the foe's charged blow. */
+    dodges?(foe: Unit, u: Unit): boolean;
   };
 
   constructor(party: Unit[], enemies: Unit[], opts: { rng?: Rng; vigil?: number; zeal?: number; enemyScale?: number; mods?: Partial<BattleMods>; hound?: HoundHowl } = {}) {
@@ -735,6 +739,12 @@ export class Battle {
     const group = skill.target === 'allAllies' || skill.target === 'allEnemies';
     let targets = skill.volley ? this.volleyTargets(actor, skill.volley, events) : group ? this.validTargets(actor, skill) : skill.target === 'self' ? [actor] : target ? [target] : [];
     if (group && skill.onlyRanks) targets = targets.filter((t) => skill.onlyRanks!.includes(t.rank));
+    // On the field, Sisters dragged out of a charged blow's mark are spared.
+    if (actor.side === 'enemy' && skill.windup && actor.status.charging && this.space?.dodges) {
+      const clear = targets.filter((t) => t.side === 'party' && this.space!.dodges!(actor, t));
+      for (const t of clear) events.push({ type: 'status', uid: t.uid, label: 'Dodged!' }, { type: 'text', text: `${t.name} dodges ${skill.name}!` });
+      if (clear.length) targets = targets.filter((t) => !clear.includes(t));
+    }
     let offensive = false;
     let support = false;
 
