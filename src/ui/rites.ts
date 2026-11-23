@@ -33,7 +33,6 @@ import { PAD } from './theme';
 import { feastName, feastOf, feastReady } from '../systems/feast';
 import { limitedUnseen, limitedWindow, timeLeft } from '../systems/limited';
 import { countOf } from '../systems/items';
-import { armoryOf, featuredSet } from '../systems/armory';
 
 /**
  * Every mode and side screen, and where it lives: the Sanctum's rail (daily
@@ -121,10 +120,10 @@ export const RITES: RiteEntry[] = [
     status: (s) => `${s.seals} Seals  ·  ${limitedWindow().saint.name.split(' ')[0]} leaves in ${timeLeft(limitedWindow().ends)}`,
   },
   {
-    label: 'Gear', scene: 'Armory', icon: 'shield', rank: 1, home: 'altar', bg: 'bg-reliquary', data: { back: 'Altar' },
+    label: 'Gear', scene: 'Armory', icon: 'shield', rank: 1, home: 'altar', bg: 'bg-reliquary', data: { back: 'Altar' }, boost: 'fragments',
     ready: (s) => countOf(s, 'armory2') > 0 || !armoryOf(s).gifted,
     blurb: "The Saints' Armory: UR gear, pulled with Armory Writs or forged from Saint's Fragments.",
-    status: (s) => `${countOf(s, 'armory2')} Writs  ·  featured ${featuredSet().set.name}`,
+    status: (s) => `${countOf(s, 'armory2')} Writs  ·  ${featuredSet().set.name} featured  ·  UR within ${PITY - armoryOf(s).pity}`,
   },
   {
     label: 'Hounds', scene: 'Kennel', icon: 'shield', rank: 1, home: 'altar', bg: 'bg-kennel',
@@ -143,11 +142,6 @@ export const RITES: RiteEntry[] = [
     label: 'The Chapter', scene: 'Chapter', icon: 'roster', rank: 1, home: 'cloister', bg: 'bg-hall', ready: (s) => chapterReady(s),
     blurb: 'Your guild of Sisters (AI, played offline): tithe daily, besiege a beast each week, and level up together.',
     status: (s) => (s.chapter ? `Level ${chapterLevel(s.chapter.xp)}  ·  Siege ${Math.min(100, Math.round((s.chapter.siege.dealt / siegeBeast(s).pool) * 100))}%  ·  ${s.chapter.marks} Marks` : 'Not yet joined'),
-  },
-  {
-    label: "Saints' Armory", scene: 'Armory', icon: 'shield', rank: 1, home: 'cloister', bg: 'bg-altar', data: { back: 'Cloister' }, boost: 'fragments',
-    blurb: 'UR gear: a banner with a new featured set each week, and a forge for Saint\'s Fragments.',
-    status: (s) => `${featuredSet().set.name} set featured  ·  UR within ${PITY - armoryOf(s).pity} pulls`,
   },
   { label: 'Shop', scene: 'Shop', icon: 'seal', art: 'shop', rank: 1, home: 'cloister', bg: 'bg-shop', blurb: 'Seals, crates, the Almonry and the Tithe Exchange. Stock turns daily and weekly.' },
   {
