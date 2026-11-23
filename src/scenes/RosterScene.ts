@@ -62,6 +62,10 @@ import { MAX_LEVEL } from '../systems/stats';
 import { countOf, itemDef, type ItemId } from '../systems/items';
 import { MAX_SKILL_LEVEL, nextSkillStep, raiseSkill, skillBlock, skillLevels, stepText } from '../systems/skillLevels';
 import { makeButton } from '../ui/button';
+import { toast } from '../ui/modeScreen';
+import { pickParty } from '../ui/partyPicker';
+import { current } from '../state/run';
+import { RITE_LEVELS, SANCT_LITANY, SANCT_MAX, SANCT_STEPS, finishRite, hasRite, motesOf, riteBattle, riteBest, riteBlock, riteEntriesLeft, riteReward, riteTarget, sanctBlock, sanctify, sanctOf, sweepRite } from '../systems/relicRites';
 import { CURRENCY_BAR_H, addCurrencyBar } from '../ui/currencyBar';
 import { addSplash, hasSplash, loadSplash, portraitKey, queueSplash } from '../ui/placeholderPortrait';
 import { SisterSprite, fullKey } from '../ui/sisterSprite';
@@ -115,8 +119,12 @@ export class RosterScene extends Phaser.Scene {
     super('Roster');
   }
 
-  init(data: { openId?: string; tab?: Tab | 'oath' }) {
+  /** A line to show once the page opens (a Relic Rite's result). */
+  private notice?: string;
+
+  init(data: { openId?: string; tab?: Tab | 'oath'; notice?: string }) {
     this.openId = data?.openId;
+    this.notice = data?.notice;
     // 'oath' was the old name of the Grow and Vows page.
     this.tab = !data?.tab ? 'grow' : data.tab === 'oath' ? 'vows' : data.tab;
   }
@@ -223,6 +231,7 @@ export class RosterScene extends Phaser.Scene {
 
     const reopen = CRUSADERS.find((c) => c.id === this.openId);
     if (reopen) this.showDetail(reopen, this.tab);
+    if (this.notice) toast(this, this.notice, GAME_H / 2);
   }
 
 
@@ -715,6 +724,7 @@ export class RosterScene extends Phaser.Scene {
       layer.add(this.add.text(left, y, 'She is wholly canonized. Saints will pray to her.', text.body(16, PAL.amber)));
       y += 36;
     }
+    if (hasRite(c)) y = this.riteBlock(list, c, y);
     // Traits.
     const left_ = pointsLeft(have);
     layer.add(this.add.text(left, y, `TRAITS · ${left_} OF ${traitPoints(have)} POINTS LEFT`, text.hud(14, left_ > 0 ? PAL.amber : PAL.steel)));
@@ -753,6 +763,96 @@ export class RosterScene extends Phaser.Scene {
       y += 8;
     }
     return y + 20;
+  }
+
+  /** Her Relic Rite (SSR and UR): fight or sweep a level for Motes, and sanctify her Litany. */
+  private riteBlock(list: ScrollArea, c: CrusaderDef, y: number): number {
+    const save = game.save;
+    const layer = list.content;
+    const bw = GAME_W - PAD * 2 - 16;
+    const left = PAD + 8;
+    const best = riteBest(save, c.id);
+    const next = Math.min(RITE_LEVELS, best + 1);
+    const s = sanctOf(save, c.id);
+    layer.add(this.add.text(left, y, `HER RELIC RITE · LEVEL ${best} / ${RITE_LEVELS}`, text.hud(14, PAL.amber)));
+    layer.add(this.add.text(GAME_W - PAD - 8, y, `${riteEntriesLeft(save)} WINS LEFT TODAY`, text.hud(12, PAL.steel)).setOrigin(1, 0));
+    y += 24;
+    const t = this.add.text(left, y, `She must fight in it. Level ${next} asks ${riteTarget(next).toLocaleString('en-US')} Power and pays ${riteReward(next).motes} Relic Motes. Motes held: ${motesOf(save, c.id)}.`, { ...text.body(14, PAL.ivory), wordWrap: { width: bw } });
+    layer.add(t);
+    y += t.height + 10;
+    const half = (bw - 10) / 2;
+    const fightBlock = riteBlock(save, c.id, next);
+    const canFight = best < RITE_LEVELS && !fightBlock;
+    const fight = makeButton(this, left + half / 2, y + 26, half, 50, best >= RITE_LEVELS ? 'All levels won' : `Fight level ${next}`, () => {
+      if (list.dragging || !canFight) return;
+      this.fightRite(c, next);
+    }, { active: canFight, disabled: !canFight, fontSize: 16 });
+    const swept = best > 0 && !riteBlock(save, c.id, best);
+    const sweep = makeButton(this, left + half * 1.5 + 10, y + 26, half, 50, best ? `Sweep level ${best}` : 'Sweep', () => {
+      if (list.dragging) return;
+      const got = sweepRite(save, c.id, best);
+      if (!got) return;
+      commit();
+      this.scene.restart({ openId: c.id, tab: 'canon', notice: `Swept: ${got.motes} Relic Motes, ${got.tithes} Tithes.` });
+    }, { disabled: !swept, fontSize: 16 });
+    layer.add([...fight.all, ...sweep.all]);
+    y += 62;
+    if (fightBlock && best < RITE_LEVELS) {
+      layer.add(this.add.text(left, y, fightBlock, text.body(13, PAL.steel)));
+      y += 22;
+    }
+    // Sanctified Litany.
+    const rite = kitSkills(c.id, c.classId).find((k) => k.rite);
+    layer.add(this.add.text(left, y, `SANCTIFIED LITANY ${s ? ROMAN_RANK(s) : '0'} / ${ROMAN_RANK(SANCT_MAX)}${rite ? ` · ${rite.name.toUpperCase()}` : ''}`, text.hud(13, s ? PAL.amber : PAL.steel)));
+    y += 22;
+    if (s < SANCT_MAX) {
+      const step = SANCT_STEPS[s];
+      const block = sanctBlock(save, c.id);
+      const line = `Next: her Litany +${Math.round(SANCT_LITANY[s + 1] * 100)}%${s + 1 === SANCT_MAX ? ', and she opens each fight with 25 Zeal' : ''}. Needs Canon ${ROMAN_RANK(step.canon)} and ${step.motes} Motes.`;
+      const lt = this.add.text(left, y, line, { ...text.body(14, block ? PAL.steel : PAL.ivory), wordWrap: { width: bw } });
+      layer.add(lt);
+      y += lt.height + 8;
+      const b = makeButton(this, GAME_W / 2, y + 26, bw, 50, `Sanctify: step ${ROMAN_RANK(s + 1)}`, () => {
+        if (list.dragging) return;
+        if (sanctify(save, c.id)) {
+          commit();
+          this.reopen(c, 'canon');
+        }
+      }, { disabled: !!block, active: !block, fontSize: 16 });
+      layer.add(b.all);
+      y += 64;
+    } else {
+      layer.add(this.add.text(left, y, `Her Litany burns +${Math.round(SANCT_LITANY[SANCT_MAX] * 100)}% and she wakes with 25 Zeal.`, text.body(14, PAL.amber)));
+      y += 30;
+    }
+    return y + 10;
+  }
+
+  private fightRite(c: CrusaderDef, level: number) {
+    const save = game.save;
+    const initial = [c.id, ...save.lastParty.filter((id) => id !== c.id)].slice(0, 4);
+    pickParty(
+      this,
+      save,
+      { title: `Rite of ${c.name.split(' ')[0]}`, sub: `Level ${level}. She must fight in it.`, initial, confirm: 'Begin the Rite!', rec: riteTarget(level) },
+      (party) => {
+        if (!party.includes(c.id)) {
+          toast(this, `${c.name.split(' ')[0]} must fight in her own Rite.`, GAME_H / 2);
+          return;
+        }
+        current.challenge = {
+          label: `The Rite of ${c.name}, level ${level}. Her relic will not be taken lightly!`,
+          make: (rng) => riteBattle(save, party, level, rng),
+          finish: (outcome) => {
+            const got = finishRite(save, c.id, level, outcome === 'victory');
+            commit();
+            const notice = got ? `Rite won! ${got.motes} Relic Motes, ${got.tithes} Tithes.` : 'The Rite repels you. Nothing was spent.';
+            return { scene: 'Roster', data: { openId: c.id, tab: 'canon', notice } };
+          },
+        };
+        this.scene.start('Battle');
+      },
+    );
   }
 
   /** The star track, copies and Stigmata, and Take Vow or Tier Up with a before and after. */

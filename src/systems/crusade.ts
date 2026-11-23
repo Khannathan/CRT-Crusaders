@@ -1,4 +1,5 @@
 import { canonEffect } from './canon';
+import { sanctEffect } from './sanctity';
 import { DEEP_HOSTS } from '../data/deepFoes';
 import { boostBag, boostMult } from './boosts';
 import { roman } from './roman';
@@ -433,6 +434,10 @@ export function makeBattle(save: SaveData, run: RunState, encounter: string, rng
     const c = CRUSADERS.find((x) => x.id === id)!;
     const st = sisterStats(save, c);
     const cn = canonEffect(save.owned[id]);
+    // Her Sanctified Litany (Relic Rites) adds to the Canon traits.
+    const sa = sanctEffect(save, id);
+    cn.litanyPct += sa.litanyPct;
+    cn.zeal += sa.zeal;
     const traited = cn.litanyPct || cn.dmgPct || cn.guard || cn.healPct;
     const base = symbolCombat(c, save.owned[id].symbol) ?? (traited ? { mult: 1, heal: 1, guard: 0, rite: 0, crit: 0, zeal: 0 } : undefined);
     // Canon traits ride on her Symbol's combat hooks (damage, Litany, heals, guard).
