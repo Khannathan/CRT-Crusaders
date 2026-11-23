@@ -1,3 +1,4 @@
+import { passTrack } from './pass';
 import { trickle } from './feast';
 import type { SaveData } from '../state/save';
 import { earn } from './currency';
@@ -24,7 +25,8 @@ export type TaskEvent =
   | 'dailyDone'
   | 'trialWon'
   | 'towerFloor'
-  | 'inquisitionWon';
+  | 'inquisitionWon'
+  | 'ordealWon';
 
 export interface TaskDef {
   id: string;
@@ -129,6 +131,7 @@ export function track(save: SaveData, event: TaskEvent, n = 1, now = Date.now())
   gainFaith(save, event, n);
   trickle(save, event, n, now);
   noviceTrack(save, event, n, now);
+  passTrack(save, event, n, now);
   // Lifetime counts for Deeds (systems/deeds.ts).
   const deeds = (save.deeds ??= { counts: {}, claimed: {} });
   deeds.counts[event] = (deeds.counts[event] ?? 0) + n;

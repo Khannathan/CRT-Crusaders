@@ -10,6 +10,8 @@ import Phaser from 'phaser';
 import { GAME_W, PAL } from '../config';
 import type { SaveData } from '../state/save';
 import { matinsReady } from '../systems/matins';
+import { passReady } from '../systems/pass';
+import { BRACKET, LEAGUES, ORDEALS_PER_DAY, bracket, ordealsLeft, ordealsOf, ordealsReady } from '../systems/ordeals';
 import { ROMAN_RANK, unlocked } from '../systems/rank';
 import { anyClaimable } from '../systems/tasks';
 import { noviceOpen, noviceReady } from '../systems/novitiate';
@@ -100,6 +102,11 @@ export const RITES: RiteEntry[] = [
     status: (s) => `Today: ${ENEMIES[huntOn().boss].name}  ·  ${huntEntriesLeft(s)}/${HUNT_ENTRIES} hunts left`,
   },
   {
+    label: 'The Ordeals', scene: 'Ordeals', icon: 'blade', rank: 3, home: 'board', bg: 'bg-hall', ready: (s) => ordealsReady(s),
+    blurb: 'Twenty Orders a week. Top four rise!',
+    status: (s) => `${LEAGUES[ordealsOf(s).league]} League  ·  place ${bracket(s).place}/${BRACKET}  ·  ${ordealsLeft(s)}/${ORDEALS_PER_DAY} today`,
+  },
+  {
     label: 'Relic Trials', scene: 'Trials', icon: 'shield', rank: 3, home: 'board', bg: 'bg-iron-oubliette', boost: 'trials', ready: (s) => entriesLeft(s) > 0,
     blurb: 'The dead guard a new spoil each dawn.',
     status: (s) => `${entriesLeft(s)} of ${TRIAL_ENTRIES} entries left today`,
@@ -180,6 +187,7 @@ export const RITES: RiteEntry[] = [
   },
   { label: 'Novitiate', scene: 'Novitiate', icon: 'sigil', rank: 1, home: 'sanctum', noRail: true, shown: (s) => noviceOpen(s), ready: (s) => noviceReady(s) },
   { label: 'Matins', scene: 'Matins', icon: 'flame', rank: 1, home: 'sanctum', ready: (s) => matinsReady(s) },
+  { label: 'Pass', scene: 'Pass', icon: 'sigil', rank: 1, home: 'sanctum', ready: (s) => passReady(s) },
   { label: 'Penance', scene: 'Penance', icon: 'book', rank: 2, home: 'sanctum', ready: (s) => anyClaimable(s) },
   { label: 'Confession', scene: 'Confession', icon: 'book', rank: 5, home: 'sanctum', ready: (s) => anyUnheard(s) || anyBondRewards(s) || (Object.keys(s.owned).length > 0 && candleReady(s)) },
 ];

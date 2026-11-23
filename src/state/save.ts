@@ -110,6 +110,10 @@ export interface SaveData {
   deeds?: import('../systems/deeds').DeedState;
   /** A new player's first week (systems/novitiate.ts). */
   novitiate?: import('../systems/novitiate').NovitiateState;
+  /** The Pilgrim's Pass for this season (systems/pass.ts). */
+  pass?: import('../systems/pass').PassState;
+  /** The weekly Ordeals league (systems/ordeals.ts). */
+  ordeals?: import('../systems/ordeals').OrdealState;
   /** Matins login calendar. */
   matins?: MatinsState;
   /** Blessed crypt clears used this week. */
