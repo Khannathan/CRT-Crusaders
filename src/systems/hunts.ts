@@ -163,16 +163,16 @@ export const scoreUnit = (h: HuntDef) => Math.round(ENEMIES[h.boss].hp * ENEMY_T
 /** Score milestones (in beasts at tier I) and what each pays, once a day. */
 export const MILESTONES: { at: number; reward: Reward }[] = [
   { at: 0.2, reward: { tithes: 300, items: { grace1: 3 } } },
-  { at: 0.4, reward: { tithes: 400, items: { grace1: 4 } } },
+  { at: 0.4, reward: { tithes: 400, items: { grace1: 4, kennel2: 1 } } },
   { at: 0.7, reward: { tithes: 500, items: { grace1: 5 } } },
-  { at: 1, reward: { tithes: 600, items: { grace1: 6 }, gilt: 20 } },
+  { at: 1, reward: { tithes: 600, items: { grace1: 6, kennel1: 5 }, gilt: 20 } },
   { at: 1.6, reward: { tithes: 800, items: { grace2: 2 } } },
-  { at: 2.5, reward: { tithes: 1000, items: { grace2: 3 }, gilt: 30 } },
+  { at: 2.5, reward: { tithes: 1000, items: { grace2: 3, kennel2: 2 }, gilt: 30 } },
   { at: 4, reward: { tithes: 1200, items: { grace2: 4 } } },
-  { at: 6, reward: { tithes: 1500, items: { grace3: 1 }, gilt: 40 } },
+  { at: 6, reward: { tithes: 1500, items: { grace3: 1, kennel2: 3, kennel1: 10 }, gilt: 40 } },
   { at: 9, reward: { tithes: 2000, items: { grace3: 2 } } },
   { at: 13, reward: { tithes: 2500, items: { grace3: 2 }, gilt: 60 } },
-  { at: 18, reward: { tithes: 3000, items: { grace3: 3 } } },
+  { at: 18, reward: { tithes: 3000, items: { grace3: 3, kennel3: 1 } } },
 ];
 
 export function huntBattle(save: SaveData, party: string[], hunt: HuntDef, tier: number, rng?: Rng): Battle {

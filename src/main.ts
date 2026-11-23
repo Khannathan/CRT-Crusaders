@@ -37,7 +37,7 @@ import { InventoryScene } from './scenes/InventoryScene';
 import { ShopScene } from './scenes/ShopScene';
 import { ReliquaryScene } from './scenes/ReliquaryScene';
 import './fonts.css';
-import { CloisterScene, ModesScene } from './scenes/ModesScene';
+import { AltarScene, CloisterScene, ModesScene } from './scenes/ModesScene';
 import { CampaignScene } from './scenes/CampaignScene';
 
 /**
@@ -98,6 +98,7 @@ function start() {
       KennelScene,
       HuntScene,
       CloisterScene,
+      AltarScene,
       CrusadeScene,
       MusterScene,
       CryptScene,

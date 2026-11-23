@@ -22,3 +22,13 @@ export class CloisterScene extends Phaser.Scene {
     drawBoard(this, 'cloister', 'The Cloister', 'Where the faithful grow stronger, and spend what they earned.');
   }
 }
+
+/** The Altar tab: what you can pull for (Sisters, gear, hounds), each with its own currency. */
+export class AltarScene extends Phaser.Scene {
+  constructor() {
+    super('Altar');
+  }
+  create() {
+    drawBoard(this, 'altar', 'The Sealed Altar', 'Call Sisters, saints\' arms and hounds to the faith.');
+  }
+}
