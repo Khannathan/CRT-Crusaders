@@ -11,7 +11,7 @@ import { drawHoundSlot } from './hound';
 import { makeButton } from './button';
 import { portraitKey } from './placeholderPortrait';
 import { drawRecommended } from './recommended';
-import { sortAndFilter, sortControls } from './sisterSort';
+import { sortAndFilter, sortControls, emptyListLine } from './sisterSort';
 import { holdForCard } from './sisterCard';
 import { drawPortraitBadges } from './portraitBadges';
 import { openPresets } from './presets';
@@ -72,7 +72,7 @@ export function pickParty(scene: Phaser.Scene, save: SaveData, opts: PickOpts, d
       draw();
     }, { depth: 40, h: 36 }));
     const cell = 112;
-    if (!owned.length) layer.add(scene.add.text(GAME_W / 2, 260, 'No Sister matches these filters.', text.body(17, PAL.muted)).setOrigin(0.5));
+    if (!owned.length) layer.add(scene.add.text(GAME_W / 2, 260, emptyListLine(save), text.body(17, PAL.muted)).setOrigin(0.5));
     const list = addScrollArea(scene, 174, GAME_H - 206, { parent: layer, start: scroll, onScroll: (y) => (scroll = y) });
     owned.forEach((c, i) => {
       const x = GAME_W / 2 + ((i % 4) - 1.5) * cell;

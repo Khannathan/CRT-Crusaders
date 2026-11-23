@@ -485,10 +485,20 @@ export function skirmish(save: SaveData, party: string[], encounter: string, tie
 }
 
 /** Recommended party power for a crypt at a Heresy tier: what its boss asks. */
-export const cryptRecommended = (save: SaveData, crypt: CryptDef, heresy = 0) => {
+const bossRecommended = (save: SaveData, crypt: CryptDef, heresy: number) => {
   const acts = actsOf(cryptFloors(crypt, heresy)).length;
   const scale = heresyScale(heresy) * (1 + ACT_ENEMY * (acts - 1));
   return recommendedPower(skirmish(save, [], crypt.boss, heresy, undefined, crypt, scale));
+};
+
+/**
+ * Power to bring: what its boss asks, and never less than any crypt before it
+ * (a deeper crypt is a longer descent even when its boss is a softer one).
+ */
+export const cryptRecommended = (save: SaveData, crypt: CryptDef, heresy = 0) => {
+  const upTo = CRYPTS.indexOf(crypt);
+  const chain = upTo >= 0 ? CRYPTS.slice(0, upTo + 1) : [crypt];
+  return Math.max(...chain.map((c) => bossRecommended(save, c, heresy)));
 };
 
 /** The node being played, if it is not finished yet. */
@@ -801,4 +811,15 @@ export function suggestParty(save: SaveData): string[] {
     .slice(0, MAX_PARTY)
     .sort((a, b) => order[CLASSES[a.classId].role] - order[CLASSES[b.classId].role])
     .map((c) => c.id);
+}
+
+/**
+ * Picks up a crypt run left unfinished by a reload (stored by commit() in
+ * state/game.ts). A fight that was under way starts again from its first turn.
+ */
+export function restoreRun(stored: (Omit<RunState, 'crypt'> & { crypt: string }) | undefined): RunState | undefined {
+  if (!stored) return undefined;
+  const crypt = CRYPTS.find((c) => c.id === stored.crypt);
+  if (!crypt || !Array.isArray(stored.map) || !Array.isArray(stored.party)) return undefined;
+  return { ...stored, crypt };
 }

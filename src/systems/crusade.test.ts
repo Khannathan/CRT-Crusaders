@@ -4,7 +4,7 @@ import { CRUSADERS } from '../data/crusaders';
 import { orderBonuses } from '../data/orders';
 import { CLASS_SKILLS } from '../data/skills';
 import { skillsFor } from './combat';
-import { winRoom, BELFRY, CRYPTS, RAMP, actsOf, cryptFloors, OSSUARY, choices, chooseEvent, cryptUnlocked, enterNode, finishRun, generateMap, heresyAvailable, heresyScale, HERESY_GROWTH, cryptRecommended, ROMAN, keepOnDefeat, familyBonuses, miracle, MIRACLE_SEALS, makeBattle, maxHpOf, startRun, PILGRIMAGE_BONUS, PILGRIMAGE_CLEARS, pilgrimageLeft } from './crusade';
+import { winRoom, BELFRY, CRYPTS, RAMP, actsOf, cryptFloors, OSSUARY, choices, chooseEvent, cryptUnlocked, enterNode, finishRun, generateMap, heresyAvailable, heresyScale, HERESY_GROWTH, cryptRecommended, ROMAN, keepOnDefeat, familyBonuses, miracle, MIRACLE_SEALS, makeBattle, maxHpOf, startRun, PILGRIMAGE_BONUS, PILGRIMAGE_CLEARS, pilgrimageLeft, restoreRun } from './crusade';
 import { seeded } from './rng';
 
 describe('the crypt ramp', () => {
@@ -158,6 +158,12 @@ describe('reasons to keep going', () => {
     expect(cryptRecommended(save, OSSUARY, 20)).toBeGreaterThan(cryptRecommended(save, OSSUARY, 10) * 5);
     expect(ROMAN[11]).toBe('XII');
   });
+
+  it('the power to bring never drops as the crypts go deeper', () => {
+    const save = newSave();
+    const recs = CRYPTS.map((c) => cryptRecommended(save, c));
+    recs.forEach((r, i) => expect(r).toBeGreaterThanOrEqual(recs[i - 1] ?? 0));
+  });
 });
 
 describe('daily Pilgrimage', () => {
@@ -254,5 +260,21 @@ describe('Pilgrimage renewal', () => {
     const { pilgrimageRenews } = await import('./crusade');
     const sun = new Date(2026, 10, 22, 12).getTime();
     expect(pilgrimageRenews(sun)).toBe(new Date(2026, 10, 23).getTime());
+  });
+});
+
+describe('a run survives a reload', () => {
+  it('comes back from its stored form with its crypt looked up again', () => {
+    const save = newSave();
+    for (const c of CRUSADERS.slice(0, 4)) save.owned[c.id] = { level: 1, vow: 0 };
+    const run = startRun(save, CRUSADERS.slice(0, 4).map((c) => c.id), BELFRY, seeded(3));
+    enterNode(run, choices(run)[0]);
+    const stored = JSON.parse(JSON.stringify({ ...run, crypt: run.crypt.id }));
+    const back = restoreRun(stored)!;
+    expect(back.crypt).toBe(BELFRY);
+    expect(back.map).toEqual(run.map);
+    expect(back.floor).toBe(run.floor);
+    expect(restoreRun({ ...stored, crypt: 'no-such-crypt' })).toBeUndefined();
+    expect(restoreRun(undefined)).toBeUndefined();
   });
 });

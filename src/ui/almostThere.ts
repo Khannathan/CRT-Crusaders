@@ -2,7 +2,7 @@ import Phaser from 'phaser';
 import { GAME_W, PAL } from '../config';
 import type { SaveData } from '../state/save';
 import { nearGoals } from '../systems/goals';
-import { PAD, text } from './theme';
+import { PAD, fitLine, text } from './theme';
 
 /**
  * "Almost there": the three closest real goals as tappable chips, each with a
@@ -32,8 +32,8 @@ export function drawAlmostThere(scene: Phaser.Scene, save: SaveData, top: number
       .setStrokeStyle(ready ? 2 : 1, ready ? PAL.amber : PAL.armorShadow)
       .setInteractive({ useHandCursor: true });
     box.on('pointerup', () => scene.scene.start(g.scene, g.data ?? {}));
-    scene.add.text(x + 10, top + 8, g.title.toUpperCase(), text.hud(11, PAL.amber)).setFixedSize(w - 16, 0);
-    scene.add.text(x + 10, top + 24, g.need, text.body(16, ready ? 0xfff1d6 : PAL.ivory));
+    fitLine(scene.add.text(x + 10, top + 8, g.title.toUpperCase(), text.hud(11, PAL.amber)), w - 18);
+    fitLine(scene.add.text(x + 10, top + 24, g.need, text.body(16, ready ? 0xfff1d6 : PAL.ivory)), w - 18);
     scene.add.rectangle(x + 10, top + h - 11, w - 20, 5, PAL.deepShadow).setOrigin(0, 0.5);
     scene.add.rectangle(x + 10, top + h - 11, Math.max(2, (w - 20) * g.frac), 5, ready ? PAL.amber : 0xc9a24a).setOrigin(0, 0.5);
   });

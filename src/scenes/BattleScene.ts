@@ -179,7 +179,8 @@ export class BattleScene extends Phaser.Scene {
     if (!this.textures.exists('ui-bar-frame')) this.add.rectangle(GAME_W / 2, 442, 404, 18, PAL.deepShadow).setStrokeStyle(2, PAL.armorShadow);
     this.zealBar = new Bar(this, GAME_W / 2 - 200, 442, 400, 14, 'ui-bar-zeal', PAL.amber, PAL.deepShadow);
     this.zealText = this.add.text(GAME_W / 2, 463, '', { ...style, fontSize: '16px', color: hex(PAL.steel) }).setOrigin(0.5);
-    this.kwText = this.add.text(16, 60, '', { ...style, fontSize: '15px', color: hex(PAL.amber) }).setOrigin(0, 0.5);
+    // Order counters (Toll, Tide, Remains...) sit on their own line under the turn strip.
+    this.kwText = this.add.text(GAME_W / 2, 102, '', { ...style, fontSize: '15px', color: hex(PAL.amber) }).setOrigin(0.5);
     this.drawHound();
 
     this.descText = this.add
@@ -741,15 +742,15 @@ export class BattleScene extends Phaser.Scene {
     this.strip.forEach((o) => o.destroy());
     this.strip = [];
     const order = [this.actor, ...b.upcoming()].filter((u): u is Unit => !!u && u.hp > 0).slice(0, 7);
-    this.strip.push(this.add.text(16, 70, 'Turn', { fontFamily: FONT, fontSize: '16px', color: hex(PAL.steel) }).setOrigin(0, 0.5));
+    this.strip.push(this.add.text(16, 66, 'Turn', { fontFamily: FONT, fontSize: '16px', color: hex(PAL.steel) }).setOrigin(0, 0.5));
     order.forEach((u, i) => {
       const x = 80 + i * 60;
       const key = u.side === 'party' ? portraitKey(u.ref) : enemyKey(u.ref);
-      const fr = this.add.rectangle(x, 70, 54, 54, 0x000000).setStrokeStyle(i === 0 ? 3 : 1, u.side === 'party' ? PAL.bronze : PAL.oxblood);
-      const im = this.add.image(x, 70, key).setDisplaySize(48, 48).setAlpha(i === 0 ? 1 : 0.75);
+      const fr = this.add.rectangle(x, 66, 54, 54, 0x000000).setStrokeStyle(i === 0 ? 3 : 1, u.side === 'party' ? PAL.bronze : PAL.oxblood);
+      const im = this.add.image(x, 66, key).setDisplaySize(48, 48).setAlpha(i === 0 ? 1 : 0.75);
       this.strip.push(fr, im);
       // ui-turn-frame.png over each face in the strip, when present
-      const tf = nine(this, 'ui-turn-frame', x, 70, 54, 54);
+      const tf = nine(this, 'ui-turn-frame', x, 66, 54, 54);
       if (tf) {
         fr.setStrokeStyle();
         if (i > 0) tf.setAlpha(0.75);

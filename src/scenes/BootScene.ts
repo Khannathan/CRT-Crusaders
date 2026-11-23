@@ -1,3 +1,6 @@
+import { current } from '../state/run';
+import { storedRun } from '../state/game';
+import { restoreRun } from '../systems/crusade';
 import Phaser from 'phaser';
 import { FONT, GAME_H, GAME_W, PAL, hex } from '../config';
 import { CRUSADERS } from '../data/crusaders';
@@ -99,6 +102,8 @@ export class BootScene extends Phaser.Scene {
     makeIconTextures(this);
     makeNodeTextures(this);
     makeSigilTextures(this, ORDER_LIST);
+    // A crypt run cut short by a reload picks up where it was.
+    if (!current.run) current.run = restoreRun(storedRun());
     this.scene.start('Sanctum');
   }
 

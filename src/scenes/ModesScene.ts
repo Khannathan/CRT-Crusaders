@@ -9,7 +9,7 @@ export class ModesScene extends Phaser.Scene {
   }
   create() {
     const mid = current.run ? 'Return to the dark' : current.paused?.challenge && current.paused.challenge === current.challenge ? 'Return to the fight' : '';
-    drawBoard(this, 'board', 'Crusade', 'Every war the Church wages. Choose your battlefield.', mid ? { label: mid, go: () => this.scene.start('Crusade') } : undefined);
+    drawBoard(this, 'board', 'Crusade', 'Every war the Church wages. Choose your battlefield.', mid ? { label: mid, go: () => this.scene.start(current.run ? 'Crypt' : 'Crusade') } : undefined);
   }
 }
 

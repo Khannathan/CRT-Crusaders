@@ -154,3 +154,7 @@ export function filterPanel(scene: Phaser.Scene, done: () => void, opts: { roste
   redraw();
   return layer;
 }
+
+/** What an empty Sister list says: nobody sworn yet, or the filters hide everyone. */
+export const emptyListLine = (save: SaveData) =>
+  Object.keys(save.owned).length ? 'No Sister matches these filters.' : 'No Sister is sworn yet. Call them at the Sealed Altar.';
