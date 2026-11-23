@@ -88,8 +88,10 @@ export class BootScene extends Phaser.Scene {
       const pose = pick(ENEMY_URLS, `../assets/enemies/${e.id}-blasphemy`);
       if (pose) this.load.image(`${enemyKey(e.id)}-blasphemy`, pose);
       const art = e.art ?? e.id;
+      // A foe with its own figure never borrows its template's Blasphemy pose (a different creature).
+      const own = !!ENEMY_FULL_URLS[`../assets/enemy-full/${e.id}.png`];
       for (const pose of ['', '-blasphemy']) {
-        const full = ENEMY_FULL_URLS[`../assets/enemy-full/${e.id}${pose}.png`] ?? ENEMY_FULL_URLS[`../assets/enemy-full/${art}${pose}.png`];
+        const full = ENEMY_FULL_URLS[`../assets/enemy-full/${e.id}${pose}.png`] ?? (own && pose ? undefined : ENEMY_FULL_URLS[`../assets/enemy-full/${art}${pose}.png`]);
         if (full) this.load.image(`full-enemy-${e.id}${pose}`, full);
       }
     }
