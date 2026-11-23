@@ -1,3 +1,4 @@
+import { boostBag, boostMult, boostN } from './boosts';
 import { CLASSES } from '../data/classes';
 import { CRUSADERS } from '../data/crusaders';
 import { ORDER_LIST } from '../data/orders';
@@ -163,7 +164,9 @@ export function claimErrand(save: SaveData, index: number, now = Date.now()): Re
   const s = errandsOf(save, now);
   const a = s.active[index];
   if (!a || !isDone(a, now)) return undefined;
-  const r = a.boosted ? boosted(a.def.reward) : a.def.reward;
+  const r0 = a.boosted ? boosted(a.def.reward) : a.def.reward;
+  const m = boostMult('errands', now);
+  const r = m > 1 ? { ...r0, tithes: r0.tithes && Math.round(r0.tithes * m), seals: r0.seals && boostN(r0.seals, m), items: boostBag(r0.items, 'errands', now) } : r0;
   grant(save, r);
   s.active.splice(index, 1);
   return r;

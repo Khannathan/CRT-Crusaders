@@ -1,3 +1,4 @@
+import { boostMult } from './boosts';
 import type { OwnedCrusader, SaveData } from '../state/save';
 import type { Battle } from './combat';
 import { countOf, spend, type Bag, type ItemId } from './items';
@@ -71,7 +72,7 @@ export function battleExp(battle: Battle) {
 /** Gives a won battle's EXP to the Sisters standing; returns what each got and who levelled. */
 export function expBattle(save: SaveData, battle: Battle): { exp: number; levelled: string[] } {
   if (battle.outcome() !== 'victory') return { exp: 0, levelled: [] };
-  const exp = battleExp(battle);
+  const exp = Math.round(battleExp(battle) * boostMult('exp'));
   const levelled: string[] = [];
   for (const u of battle.units) if (u.side === 'party' && u.hp > 0 && save.owned[u.ref] && addExp(save, u.ref, exp)) levelled.push(u.ref);
   return { exp, levelled };
