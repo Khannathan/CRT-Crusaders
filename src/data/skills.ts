@@ -118,6 +118,28 @@ export interface SkillDef {
   purge?: boolean;
   /** Extra damage multiplier against bosses. */
   bossBonus?: number;
+
+  // ---- Order keywords (see systems/keywords.ts) ----
+  /** Adds this much Guilt to the target (Veiled Tribunal). */
+  guilt?: number;
+  /** Gains for the party's or the user's Order counters. */
+  gain?: Partial<Record<'remains' | 'tide' | 'stride' | 'scars' | 'toll', number>>;
+  /**
+   * Spends an Order counter for more effect: `n` points (all when unset), each
+   * adding `per`. Guilt is spent from the target, Scars and Stride from the user,
+   * Remains and Tide from the party.
+   */
+  spend?: { kw: 'guilt' | 'remains' | 'tide' | 'scars' | 'stride'; n?: number; per: { multPct?: number; shieldPct?: number; healPct?: number; zeal?: number; armorPierce?: number } };
+  /** Confesses the target for this many of its turns. */
+  confess?: number;
+  /** Foretold: the target's Mercy line is this much higher. */
+  foretell?: { pct: number; turns: number };
+  /** Puts the target (an ally, or the user) on Overwatch: this reaction fires at the next enemy to act. */
+  overwatch?: SkillDef;
+  /** Starts a Hymn: a party aura that re-applies its effects every round. */
+  hymn?: { name: string; rounds: number; allies?: Partial<SkillDef>; foes?: Partial<SkillDef> };
+  /** The hit can't kill: the foe is left at its Mercy line or 1 HP. */
+  cannotKill?: boolean;
 }
 
 const any: number[] = [];

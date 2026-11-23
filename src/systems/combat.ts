@@ -4,6 +4,8 @@ import type { PassiveDef } from '../data/types';
 import type { Howl } from '../data/hounds';
 import { howlShort } from './hounds';
 import type { Rng } from './gacha';
+import * as KW from './keywords';
+import { ORDER_KW, freshKeywords, type PartyKeywords } from './keywords';
 
 export type Side = 'party' | 'enemy';
 
@@ -41,6 +43,12 @@ export interface Status {
   thorns?: { pct: number; turns: number };
   /** Extra critical chance. */
   critUp?: { pct: number; turns: number };
+  /** Iron Vigil: reacts with this at the next foe to act; lapses after `turns` of her own. */
+  overwatch?: { skill: SkillDef; turns: number };
+  /** Glass Confession: crits against it Shatter. Its own turns left. */
+  confessed?: number;
+  /** Ashen Mercy: its Mercy line is this much higher. */
+  foretold?: { pct: number; turns: number };
 }
 
 /** What an enemy will do on its next turn, shown to the player in advance. */
@@ -116,6 +124,12 @@ export interface Unit {
   order?: string;
   /** Enemies: the Order whose Sisters it fears (they deal +25% and take -15% from it). */
   bane?: string;
+  /** Veiled Tribunal Guilt on a foe, 0-5. */
+  guilt?: number;
+  /** Thorn Covenant Scars on a Sister, 0-10. */
+  scars?: number;
+  /** Red Pilgrimage Stride on a Sister, 0-5. */
+  stride?: number;
 }
 
 export type BattleEvent =
@@ -277,6 +291,10 @@ export class Battle {
   roundLimit?: number;
   /** True once the round limit has passed. */
   timeUp = false;
+  /** The party's Order counters: Remains, Tide, the Bell, Hymns. */
+  kw: PartyKeywords = freshKeywords();
+  /** Per Sister: fraction toward her next Scar. */
+  private scarFrac: Record<string, number> = {};
 
   constructor(party: Unit[], enemies: Unit[], opts: { rng?: Rng; vigil?: number; zeal?: number; enemyScale?: number; mods?: Partial<BattleMods>; hound?: HoundHowl } = {}) {
     this.mods = { ...NO_MODS, ...opts.mods };
@@ -355,6 +373,7 @@ export class Battle {
     if (this.mods.roundZeal > 0 && this.alive('party').length) this.addZeal(this.mods.roundZeal, events, 'relics');
     this.howl(events);
     this.bossTraits(events);
+    this.roundKeywords(events);
     if (this.round > 1) {
       if (this.vigil > 0) {
         this.vigil -= 1;
@@ -486,6 +505,7 @@ export class Battle {
       actor.hp -= dmg;
       events.push({ type: 'damage', uid: actor.uid, amount: dmg, blocked: 0 });
       if (actor.side === 'party') this.hurtZeal(actor, dmg, events);
+      this.scar(actor, dmg, events);
       if (--st.bleed.turns <= 0) st.bleed = undefined;
       if (actor.hp <= 0) {
         this.kill(actor, events);
@@ -520,6 +540,9 @@ export class Battle {
     if (st.counter && --st.counter.turns <= 0) st.counter = undefined;
     if (st.thorns && --st.thorns.turns <= 0) st.thorns = undefined;
     if (st.critUp && --st.critUp.turns <= 0) st.critUp = undefined;
+    if (st.overwatch && --st.overwatch.turns <= 0) st.overwatch = undefined;
+    if (st.confessed && --st.confessed <= 0) st.confessed = undefined;
+    if (st.foretold && --st.foretold.turns <= 0) st.foretold = undefined;
     if (st.stun) {
       st.stun -= 1;
       if (st.stun <= 0) st.stun = undefined;
@@ -564,6 +587,14 @@ export class Battle {
 
   /** Resolves a skill. `target` is ignored for group and self skills. */
   act(actor: Unit, skill: SkillDef, target?: Unit): BattleEvent[] {
+    if (actor.side === 'enemy') {
+      const pre = this.overwatch(actor);
+      if (actor.hp <= 0) return [...pre, { type: 'intent' }];
+      if (pre.length) {
+        const again = this.enemyChoose(actor);
+        return [...pre, ...this.act(actor, again.skill, again.target)];
+      }
+    }
     if (actor.side === 'enemy' && skill.windup && !actor.status.charging) {
       actor.status.charging = true;
       actor.intent = { skillId: skill.id };
@@ -608,8 +639,10 @@ export class Battle {
       if (dmg > 0) {
         actor.hp -= dmg;
         events.push({ type: 'damage', uid: actor.uid, amount: dmg, blocked: 0 });
+        this.scar(actor, dmg, events);
       }
     }
+    if (skill.spend) skill = this.spendFor(actor, skill, target, events);
     if (skill.summon) {
       this.summon(skill.summon, events);
       return events;
@@ -629,141 +662,7 @@ export class Battle {
         this.hit(actor, t, skill, events);
       }
       if (t.hp <= 0) continue;
-      if (skill.heal || skill.healPct) {
-        const amount = Math.round((skill.heal ? actor.atk * skill.heal * this.vary() : t.maxHp * skill.healPct!) * this.healOf(t) * this.symbolHeal(actor, skill));
-        const real = Math.min(amount, t.maxHp - t.hp);
-        t.hp += real;
-        if (real >= t.maxHp * 0.05) support = true;
-        events.push({ type: 'heal', uid: t.uid, amount: real });
-      }
-      if (skill.cleanse && (t.status.poison || t.status.bleed)) {
-        t.status.poison = undefined;
-        t.status.bleed = undefined;
-        events.push({ type: 'status', uid: t.uid, label: 'Cured' });
-      }
-      if (skill.shieldPct) {
-        support = true;
-        const amount = Math.round(t.maxHp * skill.shieldPct * this.symbolHeal(actor, skill));
-        t.status.shield = amount;
-        events.push({ type: 'shield', uid: t.uid, amount });
-      }
-      if (skill.poison) {
-        const plague = actor.passive?.kind === 'plague' ? 1 + (actor.passive.value ?? 0) : 1;
-        const burn = actor.side === 'party' ? 1 + this.mods.burnMult : 1;
-        const kind = actor.classId === 'censer' || actor.classId === 'exorcist' ? 'burn' : 'poison';
-        const dmg = Math.max(1, Math.round(this.attackOf(actor) * skill.poison.mult * plague * burn * baneMult(actor, t)));
-        const old = skill.stackPoison ? t.status.poison : undefined;
-        t.status.poison = old ? { dmg: old.dmg + dmg, turns: Math.max(old.turns, skill.poison.turns), kind } : { dmg, turns: skill.poison.turns, kind };
-        events.push({ type: 'status', uid: t.uid, label: kind === 'burn' ? 'Burning' : 'Poisoned' });
-      }
-      if (skill.detonate && t.status.poison) {
-        const p = t.status.poison;
-        t.status.poison = undefined;
-        events.push({ type: 'status', uid: t.uid, label: 'Ignited!' });
-        this.pierce(t, Math.round(p.dmg * p.turns * skill.detonate * this.detonateOf(actor)), events);
-        if (t.hp <= 0) continue;
-      }
-      if (skill.spreadPoison && t.status.poison) {
-        for (const o of this.alive(t.side)) {
-          if (o === t) continue;
-          const p = t.status.poison;
-          o.status.poison = o.status.poison ? { dmg: o.status.poison.dmg + p.dmg, turns: Math.max(o.status.poison.turns, p.turns) } : { ...p };
-          events.push({ type: 'status', uid: o.uid, label: 'Infected' });
-        }
-      }
-      if (skill.pull && t.rank > 1) {
-        for (const o of this.alive(t.side)) if (o.rank < t.rank) o.rank += 1;
-        t.rank = 1;
-        events.push({ type: 'status', uid: t.uid, label: 'Dragged forward' }, { type: 'move', uid: t.uid });
-      }
-      if (skill.shove && this.moveUnit(t, skill.shove, events)) events.push({ type: 'status', uid: t.uid, label: 'Knocked back' });
-      if (skill.empower && skill.empowerTarget) {
-        t.status.empower = { ...skill.empower };
-        events.push({ type: 'status', uid: t.uid, label: 'Empowered' });
-      }
-      if (skill.weaken) {
-        t.status.weaken = { ...skill.weaken };
-        events.push({ type: 'status', uid: t.uid, label: 'Weakened' });
-      }
-      if (skill.bleed) {
-        const dmg = Math.max(1, Math.round(this.attackOf(actor) * skill.bleed.mult * baneMult(actor, t)));
-        // Bleeding doesn't stack: a fresh wound replaces a weaker one.
-        const old = t.status.bleed;
-        t.status.bleed = { dmg: Math.max(dmg, old?.dmg ?? 0), turns: Math.max(old?.turns ?? 0, skill.bleed.turns) };
-        events.push({ type: 'status', uid: t.uid, label: 'Bleeding' });
-      }
-      if (skill.sunder) {
-        t.status.sunder = { ...skill.sunder };
-        events.push({ type: 'status', uid: t.uid, label: 'Sundered' });
-      }
-      if (skill.hex) {
-        t.status.hex = { ...skill.hex };
-        events.push({ type: 'status', uid: t.uid, label: 'Hexed' });
-      }
-      if (skill.stun) {
-        if (t.boss) events.push({ type: 'status', uid: t.uid, label: 'Resists stun' });
-        else {
-          t.status.stun = Math.max(t.status.stun ?? 0, skill.stun);
-          events.push({ type: 'status', uid: t.uid, label: 'Stunned' });
-          if (t.status.charging) {
-            t.status.charging = false;
-            this.planIntent(t, t.intent?.skillId);
-            events.push({ type: 'status', uid: t.uid, label: 'Charge broken!' }, { type: 'intent' });
-          }
-        }
-      }
-      if (skill.haste) {
-        t.status.haste = Math.max(t.status.haste ?? 0, skill.haste);
-        events.push({ type: 'status', uid: t.uid, label: 'Hasted' });
-      }
-      if (skill.regen) {
-        t.status.regen = { ...skill.regen };
-        events.push({ type: 'status', uid: t.uid, label: 'Regenerating' });
-      }
-      if (skill.ward) {
-        t.status.ward = { ...skill.ward };
-        events.push({ type: 'status', uid: t.uid, label: 'Warded' });
-      }
-      if (skill.thorns) {
-        t.status.thorns = { ...skill.thorns };
-        events.push({ type: 'status', uid: t.uid, label: 'Thorned' });
-      }
-      if (skill.critUp) {
-        t.status.critUp = { ...skill.critUp };
-        events.push({ type: 'status', uid: t.uid, label: 'Keen' });
-      }
-      if (skill.purge && t.side !== actor.side) {
-        const st = t.status;
-        if (st.shield || st.empower || st.ward || st.regen || st.haste || st.thorns || st.counter || st.critUp) {
-          st.shield = 0;
-          st.empower = st.ward = st.regen = st.thorns = st.counter = st.critUp = undefined;
-          st.haste = undefined;
-          events.push({ type: 'status', uid: t.uid, label: 'Purged' });
-        }
-      }
-      if (skill.wrathDrain && t.wrath !== undefined && t.wrath > 0) {
-        t.wrath = Math.max(0, t.wrath - skill.wrathDrain);
-        events.push({ type: 'status', uid: t.uid, label: `-${skill.wrathDrain} Wrath` });
-      }
-      if (skill.accuse) {
-        t.status.accused = skill.accuse;
-        events.push({ type: 'status', uid: t.uid, label: 'Accused' });
-      }
-      if (skill.delay) {
-        const i = this.queue.indexOf(t.uid);
-        if (i >= 0) {
-          this.queue.splice(i, 1);
-          this.queue.push(t.uid);
-        } else t.status.delayed = true;
-        events.push({ type: 'status', uid: t.uid, label: 'Delayed' });
-        if (t.status.charging) {
-          t.status.charging = false;
-          this.log.push(`  ${t.name}'s charge is broken`);
-          events.push({ type: 'status', uid: t.uid, label: 'Charge broken!' });
-          this.planIntent(t, t.intent?.skillId);
-          events.push({ type: 'intent' });
-        }
-      }
+      if (this.applyEffects(actor, t, skill, events)) support = true;
     }
 
     // Skills that carry the user forward or back.
@@ -793,7 +692,150 @@ export class Battle {
       else if (!skill.rite && support) this.addZeal(ZEAL_ON_SUPPORT, events, 'support', actor);
     }
     if (actor.side === 'enemy' && actor.wrath !== undefined && !skill.rite) this.addWrath(actor, WRATH_ON_ACT, events);
+    if (actor.side === 'party') this.afterSkill(actor, skill, events);
     return events;
+  }
+
+  /** A skill's effects on one target, after its hit. True when it gave real support (Zeal). */
+  private applyEffects(actor: Unit, t: Unit, skill: SkillDef, events: BattleEvent[]): boolean {
+    let support = false;
+    if (skill.heal || skill.healPct) {
+      const amount = Math.round((skill.heal ? actor.atk * skill.heal * this.vary() : t.maxHp * skill.healPct!) * this.healOf(t) * this.symbolHeal(actor, skill));
+      const real = Math.min(amount, t.maxHp - t.hp);
+      t.hp += real;
+      if (real >= t.maxHp * 0.05) support = true;
+      events.push({ type: 'heal', uid: t.uid, amount: real });
+    }
+    if (skill.cleanse && (t.status.poison || t.status.bleed)) {
+      t.status.poison = undefined;
+      t.status.bleed = undefined;
+      events.push({ type: 'status', uid: t.uid, label: 'Cured' });
+    }
+    if (skill.shieldPct) {
+      support = true;
+      const amount = Math.round(t.maxHp * skill.shieldPct * this.symbolHeal(actor, skill));
+      t.status.shield = amount;
+      events.push({ type: 'shield', uid: t.uid, amount });
+    }
+    if (skill.poison) {
+      const plague = actor.passive?.kind === 'plague' ? 1 + (actor.passive.value ?? 0) : 1;
+      const burn = actor.side === 'party' ? 1 + this.mods.burnMult : 1;
+      const kind = actor.classId === 'censer' || actor.classId === 'exorcist' ? 'burn' : 'poison';
+      const dmg = Math.max(1, Math.round(this.attackOf(actor) * skill.poison.mult * plague * burn * baneMult(actor, t)));
+      const old = skill.stackPoison ? t.status.poison : undefined;
+      t.status.poison = old ? { dmg: old.dmg + dmg, turns: Math.max(old.turns, skill.poison.turns), kind } : { dmg, turns: skill.poison.turns, kind };
+      events.push({ type: 'status', uid: t.uid, label: kind === 'burn' ? 'Burning' : 'Poisoned' });
+    }
+    if (skill.detonate && t.status.poison) {
+      const p = t.status.poison;
+      t.status.poison = undefined;
+      events.push({ type: 'status', uid: t.uid, label: 'Ignited!' });
+      this.pierce(t, Math.round(p.dmg * p.turns * skill.detonate * this.detonateOf(actor)), events);
+      if (t.hp <= 0) return support;
+    }
+    if (skill.spreadPoison && t.status.poison) {
+      for (const o of this.alive(t.side)) {
+        if (o === t) continue;
+        const p = t.status.poison;
+        o.status.poison = o.status.poison ? { dmg: o.status.poison.dmg + p.dmg, turns: Math.max(o.status.poison.turns, p.turns) } : { ...p };
+        events.push({ type: 'status', uid: o.uid, label: 'Infected' });
+      }
+    }
+    if (skill.pull && t.rank > 1) {
+      for (const o of this.alive(t.side)) if (o.rank < t.rank) o.rank += 1;
+      t.rank = 1;
+      events.push({ type: 'status', uid: t.uid, label: 'Dragged forward' }, { type: 'move', uid: t.uid });
+    }
+    if (skill.shove && this.moveUnit(t, skill.shove, events)) events.push({ type: 'status', uid: t.uid, label: 'Knocked back' });
+    if (skill.empower && skill.empowerTarget) {
+      t.status.empower = { ...skill.empower };
+      events.push({ type: 'status', uid: t.uid, label: 'Empowered' });
+    }
+    if (skill.weaken) {
+      t.status.weaken = { ...skill.weaken };
+      events.push({ type: 'status', uid: t.uid, label: 'Weakened' });
+    }
+    if (skill.bleed) {
+      const dmg = Math.max(1, Math.round(this.attackOf(actor) * skill.bleed.mult * baneMult(actor, t)));
+      // Bleeding doesn't stack: a fresh wound replaces a weaker one.
+      const old = t.status.bleed;
+      t.status.bleed = { dmg: Math.max(dmg, old?.dmg ?? 0), turns: Math.max(old?.turns ?? 0, skill.bleed.turns) };
+      events.push({ type: 'status', uid: t.uid, label: 'Bleeding' });
+    }
+    if (skill.sunder) {
+      t.status.sunder = { ...skill.sunder };
+      events.push({ type: 'status', uid: t.uid, label: 'Sundered' });
+    }
+    if (skill.hex) {
+      t.status.hex = { ...skill.hex };
+      events.push({ type: 'status', uid: t.uid, label: 'Hexed' });
+    }
+    if (skill.stun) {
+      if (t.boss) events.push({ type: 'status', uid: t.uid, label: 'Resists stun' });
+      else {
+        t.status.stun = Math.max(t.status.stun ?? 0, skill.stun);
+        events.push({ type: 'status', uid: t.uid, label: 'Stunned' });
+        if (t.status.charging) {
+          t.status.charging = false;
+          this.planIntent(t, t.intent?.skillId);
+          events.push({ type: 'status', uid: t.uid, label: 'Charge broken!' }, { type: 'intent' });
+        }
+      }
+    }
+    if (skill.haste) {
+      t.status.haste = Math.max(t.status.haste ?? 0, skill.haste);
+      events.push({ type: 'status', uid: t.uid, label: 'Hasted' });
+    }
+    if (skill.regen) {
+      t.status.regen = { ...skill.regen };
+      events.push({ type: 'status', uid: t.uid, label: 'Regenerating' });
+    }
+    if (skill.ward) {
+      t.status.ward = { ...skill.ward };
+      events.push({ type: 'status', uid: t.uid, label: 'Warded' });
+    }
+    if (skill.thorns) {
+      t.status.thorns = { ...skill.thorns };
+      events.push({ type: 'status', uid: t.uid, label: 'Thorned' });
+    }
+    if (skill.critUp) {
+      t.status.critUp = { ...skill.critUp };
+      events.push({ type: 'status', uid: t.uid, label: 'Keen' });
+    }
+    if (skill.purge && t.side !== actor.side) {
+      const st = t.status;
+      if (st.shield || st.empower || st.ward || st.regen || st.haste || st.thorns || st.counter || st.critUp) {
+        st.shield = 0;
+        st.empower = st.ward = st.regen = st.thorns = st.counter = st.critUp = undefined;
+        st.haste = undefined;
+        events.push({ type: 'status', uid: t.uid, label: 'Purged' });
+      }
+    }
+    if (skill.wrathDrain && t.wrath !== undefined && t.wrath > 0) {
+      t.wrath = Math.max(0, t.wrath - skill.wrathDrain);
+      events.push({ type: 'status', uid: t.uid, label: `-${skill.wrathDrain} Wrath` });
+    }
+    if (skill.accuse) {
+      t.status.accused = skill.accuse;
+      events.push({ type: 'status', uid: t.uid, label: 'Accused' });
+    }
+    if (skill.delay) {
+      const i = this.queue.indexOf(t.uid);
+      if (i >= 0) {
+        this.queue.splice(i, 1);
+        this.queue.push(t.uid);
+      } else t.status.delayed = true;
+      events.push({ type: 'status', uid: t.uid, label: 'Delayed' });
+      if (t.status.charging) {
+        t.status.charging = false;
+        this.log.push(`  ${t.name}'s charge is broken`);
+        events.push({ type: 'status', uid: t.uid, label: 'Charge broken!' });
+        this.planIntent(t, t.intent?.skillId);
+        events.push({ type: 'intent' });
+      }
+    }
+    this.keywordEffects(actor, t, skill, events);
+    return support;
   }
 
   /**
@@ -951,8 +993,11 @@ export class Battle {
     if (t.status.weaken && skill.bonusIfWeak) raw *= 1 + skill.bonusIfWeak;
     if (skill.execute && t.hp < t.maxHp * EXECUTE_AT) raw *= 1 + skill.execute;
     if (actor.passive?.kind === 'executioner' && t.hp < t.maxHp / 2) raw *= 1 + (actor.passive.value ?? 0);
+    raw *= this.keywordMult(actor, t);
+    const mercyBoss = t.boss && this.isKw(actor, 'mercy') && t.hp < t.maxHp * this.mercyLine(t);
+    if (mercyBoss) raw *= 1 + KW.MERCY_BOSS;
     const crit = (t.status.accused && actor.passive?.kind === 'critOnAccused') || this.rng() < critOf(actor, skill);
-    if (crit) raw *= CRIT_MULT + (actor.critDmg ?? 0);
+    if (crit) raw *= CRIT_MULT + (actor.critDmg ?? 0) + (t.status.confessed ? KW.SHATTER : 0);
     let dmg = Math.max(1, Math.round(damageAfterArmor(raw, defenceAgainst(t, dmgOf(actor, skill)) * (1 - (skill.armorPierce ?? 0))) * this.vary() * this.guardOf(t)));
     let blocked = 0;
     if (t.status.shield && !skill.pierceShield) {
@@ -961,6 +1006,7 @@ export class Battle {
       dmg -= blocked;
     }
     dmg = Math.min(dmg, t.hp);
+    if (skill.cannotKill && t.side !== actor.side) dmg = Math.max(0, Math.min(dmg, t.hp - Math.max(1, Math.ceil(t.maxHp * this.mercyLine(t)))));
     if (dmg === t.hp && t.passive?.kind === 'unbroken' && !t.spentUnbroken) {
       t.spentUnbroken = true;
       dmg = t.hp - 1;
@@ -991,6 +1037,21 @@ export class Battle {
       events.push({ type: 'status', uid: t.uid, label: 'Riposte!' });
       this.hit(t, actor, { id: 'riposte', name: 'Riposte', desc: '', from: [], target: 'enemy', mult: counter }, events);
       this.countering = false;
+    }
+    if (mercyBoss && t.wrath) {
+      t.wrath = Math.max(0, t.wrath - KW.MERCY_WRATH);
+      events.push({ type: 'status', uid: t.uid, label: `Mercy -${KW.MERCY_WRATH} Wrath` });
+    }
+    // Guilt: a Tribunal Sister's hit on the Accused weighs on it.
+    if (t.hp > 0 && t.status.accused && this.isKw(actor, 'guilt') && skill.id !== 'riposte') this.addGuilt(t, 1, events);
+    // Mercy: a common foe left under the line is ended, and the party heals on its ash.
+    if (t.hp > 0 && !t.boss && !skill.cannotKill && this.isKw(actor, 'mercy') && t.hp < t.maxHp * this.mercyLine(t)) {
+      events.push({ type: 'status', uid: t.uid, label: 'Mercy' });
+      this.log.push(`  ${actor.name} grants ${t.name} Mercy`);
+      const rest = t.hp;
+      t.hp = 0;
+      events.push({ type: 'damage', uid: t.uid, amount: rest, blocked: 0 });
+      for (const a of this.alive('party')) this.mend(a, a.maxHp * KW.MERCY_HEAL, events);
     }
     if (t.hp <= 0) {
       this.kill(t, events);
@@ -1042,6 +1103,7 @@ export class Battle {
       if (t.status.weaken && skill.bonusIfWeak) raw *= 1 + skill.bonusIfWeak;
       if (skill.execute && t.hp < t.maxHp * EXECUTE_AT) raw *= 1 + skill.execute;
       if (actor.passive?.kind === 'executioner' && t.hp < t.maxHp / 2) raw *= 1 + (actor.passive.value ?? 0);
+      raw *= this.keywordMult(actor, t);
       const critChance = t.status.accused && actor.passive?.kind === 'critOnAccused' ? 1 : Math.min(1, critOf(actor, skill));
       raw *= 1 + critChance * (CRIT_MULT - 1 + (actor.critDmg ?? 0));
       total += damageAfterArmor(raw, defenceAgainst(t, dmgOf(actor, skill)) * (1 - (skill.armorPierce ?? 0))) * this.guardOf(t);
@@ -1061,6 +1123,14 @@ export class Battle {
 
   /** A boss below its threshold enters its second phase: harsher skills and a fresh plan. */
   private checkPhase(u: Unit, events: BattleEvent[]) {
+    if (u.boss && u.side === 'enemy') {
+      const passed = KW.REMAINS_MARKS.filter((m) => u.hp <= u.maxHp * m).length;
+      const had = this.kw.marks[u.uid] ?? 0;
+      if (passed > had) {
+        this.kw.marks[u.uid] = passed;
+        this.gainRemains(passed - had, events);
+      }
+    }
     const p2 = u.side === 'enemy' ? ENEMIES[u.ref].phase2 : undefined;
     if (!p2 || u.phase === 2 || u.hp > u.maxHp * p2.atPct) return;
     u.phase = 2;
@@ -1076,6 +1146,7 @@ export class Battle {
     u.hp = 0;
     u.status = {};
     events.push({ type: 'death', uid: u.uid });
+    this.gainRemains(1, events);
     this.queue = this.queue.filter((id) => id !== u.uid);
     this.compact(u.side);
     if (u.side === 'party' && this.mods.fallHeal > 0) {
@@ -1119,7 +1190,10 @@ export class Battle {
       events.push({ type: 'move', uid: other.uid });
       moved++;
     }
-    if (moved) events.push({ type: 'move', uid: u.uid });
+    if (moved) {
+      events.push({ type: 'move', uid: u.uid });
+      this.stride(u, events);
+    }
     return moved;
   }
 
@@ -1139,7 +1213,9 @@ export class Battle {
     [actor.rank, other.rank] = [other.rank, actor.rank];
     actor.stepped = true;
     this.log.push(`${actor.name} steps with ${other.name}`);
-    return [{ type: 'move', uid: actor.uid }, { type: 'move', uid: other.uid }];
+    const events: BattleEvent[] = [{ type: 'move', uid: actor.uid }, { type: 'move', uid: other.uid }];
+    this.stride(actor, events);
+    return events;
   }
 
   private shift(actor: Unit, events: BattleEvent[]) {
@@ -1151,6 +1227,7 @@ export class Battle {
     }
     [actor.rank, other.rank] = [other.rank, actor.rank];
     events.push({ type: 'move', uid: actor.uid }, { type: 'move', uid: other.uid });
+    this.stride(actor, events);
   }
 
   private summon(type: string, events: BattleEvent[]) {
@@ -1160,6 +1237,188 @@ export class Battle {
     this.units.push(u);
     this.planIntent(u);
     events.push({ type: 'summon', uid: u.uid });
+  }
+
+  // ---------------- Order keywords (systems/keywords.ts) ----------------
+
+  /** True when a Sister of the keyword's Order is the actor. */
+  private isKw(u: Unit | undefined, kw: KW.Keyword) {
+    return !!u && u.side === 'party' && !!u.order && ORDER_KW[u.order] === kw;
+  }
+
+  /** A living Sister of the keyword's Order is in the fight. */
+  private partyHas(kw: KW.Keyword) {
+    return this.alive('party').some((u) => this.isKw(u, kw));
+  }
+
+  /** A foe's Mercy line: the base, plus Foretold. */
+  mercyLine(t: Unit) {
+    return KW.MERCY_LINE + (t.status.foretold?.pct ?? 0);
+  }
+
+  /** Damage from Guilt on the target and the actor's Scars. */
+  private keywordMult(actor: Unit, t: Unit) {
+    let f = 1;
+    if (t.side === 'enemy' && t.guilt) f *= 1 + KW.GUILT_DMG * t.guilt;
+    if (this.isKw(actor, 'scars') && actor.scars) f *= 1 + KW.SCAR_DMG * actor.scars;
+    return f;
+  }
+
+  private addGuilt(t: Unit, n: number, events: BattleEvent[]) {
+    const before = t.guilt ?? 0;
+    t.guilt = Math.min(KW.GUILT_MAX, before + n);
+    if (t.guilt > before) events.push({ type: 'status', uid: t.uid, label: `Guilt ${t.guilt}` });
+  }
+
+  private gainRemains(n: number, events: BattleEvent[]) {
+    if (n <= 0 || !this.partyHas('remains')) return;
+    const before = this.kw.remains;
+    this.kw.remains = Math.min(this.kw.remainsMax, before + n);
+    if (this.kw.remains > before) {
+      events.push({ type: 'text', text: `Remains ${this.kw.remains}/${this.kw.remainsMax}` });
+      this.log.push(`  remains ${this.kw.remains}`);
+    }
+  }
+
+  /** Thorn Covenant: a Scar for each full step of max HP she loses to herself or bleeding. */
+  private scar(u: Unit, dmg: number, events: BattleEvent[]) {
+    if (!this.isKw(u, 'scars') || dmg <= 0) return;
+    this.scarFrac[u.uid] = (this.scarFrac[u.uid] ?? 0) + dmg / u.maxHp / KW.SCAR_STEP;
+    const whole = Math.floor(this.scarFrac[u.uid]);
+    if (!whole) return;
+    this.scarFrac[u.uid] -= whole;
+    const before = u.scars ?? 0;
+    u.scars = Math.min(KW.SCARS_MAX, before + whole);
+    if (u.scars > before) events.push({ type: 'status', uid: u.uid, label: `Scars ${u.scars}` });
+  }
+
+  /** Red Pilgrimage: Stride whenever a Pilgrim changes rank. */
+  private stride(u: Unit, events: BattleEvent[], n = 1) {
+    if (!this.isKw(u, 'stride') || u.hp <= 0) return;
+    const before = u.stride ?? 0;
+    u.stride = Math.min(KW.STRIDE_MAX, before + n);
+    if (u.stride > before) events.push({ type: 'status', uid: u.uid, label: `Stride ${u.stride}` });
+  }
+
+  /** Start of a round: the Tide rises and Hymns play. */
+  private roundKeywords(events: BattleEvent[]) {
+    if (this.partyHas('tide') && this.kw.tide < KW.TIDE_MAX) {
+      this.kw.tide += 1;
+      events.push({ type: 'text', text: `The Tide rises: ${this.kw.tide}/${KW.TIDE_MAX}` });
+    }
+    for (const h of this.kw.hymns) this.playHymn(h, events);
+    this.kw.hymns = this.kw.hymns.filter((h) => --h.rounds > 0);
+  }
+
+  /** A Hymn's verse: its effects on every living ally (and foe), lasting the round. */
+  private playHymn(h: KW.Hymn, events: BattleEvent[]) {
+    const singer = this.units.find((u) => u.uid === h.by);
+    if (!singer) return;
+    const verse = (part: Partial<SkillDef>, who: Unit[]) => {
+      const sk: SkillDef = { id: `hymn-${h.name}`, name: h.name, desc: '', from: [], target: 'ally', ...part };
+      for (const u of who) this.applyEffects(singer, u, sk, events);
+    };
+    if (h.allies) verse(h.allies, this.alive('party'));
+    if (h.foes) verse(h.foes, this.alive('enemy'));
+  }
+
+  /** Iron Vigil: every Sister on Overwatch reacts to this foe before it acts. */
+  private overwatch(foe: Unit): BattleEvent[] {
+    const events: BattleEvent[] = [];
+    for (const u of this.alive('party')) {
+      const ow = u.status.overwatch;
+      if (!ow || foe.hp <= 0) continue;
+      u.status.overwatch = undefined;
+      events.push({ type: 'status', uid: u.uid, label: 'Overwatch!' });
+      this.log.push(`  ${u.name} reacts on Overwatch`);
+      if (ow.skill.mult) this.hit(u, foe, ow.skill, events);
+      if (foe.hp > 0) this.applyEffects(u, foe, ow.skill, events);
+      if (foe.hp > 0 && foe.status.charging && foe.wrath !== undefined) {
+        foe.wrath = Math.max(0, foe.wrath - KW.OVERWATCH_WRATH);
+        events.push({ type: 'status', uid: foe.uid, label: `-${KW.OVERWATCH_WRATH} Wrath` });
+      }
+    }
+    return events;
+  }
+
+  /** Spends an Order counter: the skill comes back stronger by `per` for each point spent. */
+  private spendFor(actor: Unit, skill: SkillDef, target: Unit | undefined, events: BattleEvent[]): SkillDef {
+    const sp = skill.spend!;
+    const have = sp.kw === 'remains' ? this.kw.remains : sp.kw === 'tide' ? this.kw.tide : sp.kw === 'guilt' ? target?.guilt ?? 0 : sp.kw === 'scars' ? actor.scars ?? 0 : actor.stride ?? 0;
+    const n = Math.min(have, sp.n ?? have);
+    if (n <= 0) return skill;
+    if (sp.kw === 'remains') this.kw.remains -= n;
+    else if (sp.kw === 'tide') this.kw.tide -= n;
+    else if (sp.kw === 'guilt') target!.guilt = (target!.guilt ?? 0) - n;
+    else if (sp.kw === 'scars') actor.scars = (actor.scars ?? 0) - n;
+    else actor.stride = (actor.stride ?? 0) - n;
+    events.push({ type: 'status', uid: actor.uid, label: `${KW.KW_NAME[sp.kw as KW.Keyword]} -${n}` });
+    this.log.push(`  ${actor.name} spends ${n} ${sp.kw}`);
+    const p = sp.per;
+    return {
+      ...skill,
+      mult: skill.mult !== undefined && p.multPct ? skill.mult * (1 + p.multPct * n) : skill.mult,
+      shieldPct: p.shieldPct ? (skill.shieldPct ?? 0) + p.shieldPct * n : skill.shieldPct,
+      healPct: p.healPct ? (skill.healPct ?? 0) + p.healPct * n : skill.healPct,
+      zealGain: p.zeal ? (skill.zealGain ?? 0) + p.zeal * n : skill.zealGain,
+      armorPierce: p.armorPierce ? Math.min(1, (skill.armorPierce ?? 0) + p.armorPierce * n) : skill.armorPierce,
+    };
+  }
+
+  /** Keyword effects a skill lays on one target. */
+  private keywordEffects(actor: Unit, t: Unit, skill: SkillDef, events: BattleEvent[]) {
+    if (skill.guilt && t.side !== actor.side) this.addGuilt(t, skill.guilt, events);
+    if (skill.confess && t.side !== actor.side) {
+      t.status.confessed = Math.max(t.status.confessed ?? 0, skill.confess);
+      events.push({ type: 'status', uid: t.uid, label: 'Confessed' });
+    }
+    if (skill.foretell && t.side !== actor.side) {
+      t.status.foretold = { ...skill.foretell };
+      events.push({ type: 'status', uid: t.uid, label: 'Foretold' });
+    }
+    if (skill.overwatch && t.side === actor.side) {
+      t.status.overwatch = { skill: skill.overwatch, turns: KW.OVERWATCH_TURNS };
+      events.push({ type: 'status', uid: t.uid, label: 'Overwatch' });
+    }
+  }
+
+  /** After a Sister's skill: Hymns, counter gains, and the Bell. */
+  private afterSkill(actor: Unit, skill: SkillDef, events: BattleEvent[]) {
+    if (skill.id === 'shift') return;
+    if (skill.hymn) {
+      const choir = this.isKw(actor, 'hymn');
+      const h: KW.Hymn = { by: actor.uid, name: skill.hymn.name, rounds: skill.hymn.rounds, allies: skill.hymn.allies, foes: skill.hymn.foes, choir };
+      const others = this.kw.hymns.filter((o) => o.name !== h.name);
+      if (choir && others.some((o) => o.choir)) {
+        this.kw.hymns = [...others.filter((o) => o.choir).slice(-(KW.HYMN_MAX - 1)), h];
+        events.push({ type: 'text', text: `Harmony: ${this.kw.hymns.map((x) => x.name).join(' and ')}` });
+        this.addZeal(KW.HARMONY_ZEAL, events, 'harmony');
+      } else this.kw.hymns = [h];
+      this.playHymn(h, events);
+    }
+    const g = skill.gain;
+    if (g?.remains) this.gainRemains(g.remains, events);
+    if (g?.tide && this.partyHas('tide')) this.kw.tide = Math.min(KW.TIDE_MAX, this.kw.tide + g.tide);
+    if (g?.stride) this.stride(actor, events, g.stride);
+    if (g?.scars && this.isKw(actor, 'scars')) actor.scars = Math.min(KW.SCARS_MAX, (actor.scars ?? 0) + g.scars);
+    if (this.isKw(actor, 'toll')) this.ring(1 + (g?.toll ?? 0), events);
+  }
+
+  /** Hollow Bell: each toll rings; every third is a Peal; the twelfth is Midnight. */
+  private ring(n: number, events: BattleEvent[]) {
+    for (let i = 0; i < n; i++) {
+      this.kw.toll += 1;
+      if (this.kw.toll % KW.PEAL_EVERY === 0) {
+        events.push({ type: 'text', text: 'The Bell peals!' });
+        for (const u of this.alive('party')) if (this.isKw(u, 'toll')) this.addZeal(KW.PEAL_ZEAL, events, 'Peal', u);
+      }
+      if (this.kw.toll >= KW.MIDNIGHT_AT && !this.kw.midnight) {
+        this.kw.midnight = true;
+        events.push({ type: 'text', text: 'Midnight tolls. The faithful rise.' });
+        const bell = this.alive('party').find((u) => this.isKw(u, 'toll'));
+        if (bell) this.revive(bell, KW.MIDNIGHT_RAISE, events);
+      }
+    }
   }
 
   /** Changes Zeal for one Sister, or (no `to`) for every living Sister. */
