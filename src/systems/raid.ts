@@ -109,9 +109,10 @@ export function raidTarget(save: SaveData, boss: number, now = Date.now()) {
   return Math.max(2000, Math.round(squadPower(save, now) * RAID_SHARE[boss]));
 }
 
-function scaleFor(crypt: CryptDef, target: number) {
+/** The enemy scale at which an encounter asks `target` Power. */
+export function scaleToPower(crypt: CryptDef, target: number, encounter = crypt.boss) {
   const c = { ...crypt, power: 1 };
-  const rec = (k: number) => foePower(skirmish(EMPTY, [], crypt.boss, 0, undefined, c, k)) * CP.recommend;
+  const rec = (k: number) => foePower(skirmish(EMPTY, [], encounter, 0, undefined, c, k)) * CP.recommend;
   let v = 1;
   for (let i = 0; i < 3; i++) v *= target / rec(v);
   return v;
@@ -123,7 +124,7 @@ export function delveBattle(save: SaveData, rng?: Rng, now = Date.now()): Battle
   const d = r.delve;
   if (!d) return undefined;
   const crypt = raidCrypts(now)[d.boss];
-  const b = skirmish(save, r.squads[d.squad], crypt.boss, 0, rng, { ...crypt, power: 1 }, scaleFor(crypt, raidTarget(save, d.boss, now)));
+  const b = skirmish(save, r.squads[d.squad], crypt.boss, 0, rng, { ...crypt, power: 1 }, scaleToPower(crypt, raidTarget(save, d.boss, now)));
   const boss = b.units.find((u) => u.side === 'enemy' && u.boss);
   if (boss) boss.hp = Math.max(1, Math.round(boss.maxHp * d.hp));
   return b;

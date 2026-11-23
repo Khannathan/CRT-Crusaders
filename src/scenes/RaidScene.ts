@@ -1,6 +1,6 @@
 import Phaser from 'phaser';
 import { GAME_W, PAL } from '../config';
-import { ENEMIES } from '../data/enemies';
+import { ENCOUNTERS, ENEMIES } from '../data/enemies';
 import { commit, game } from '../state/game';
 import { current } from '../state/run';
 import { partyPower, formatPower } from '../systems/power';
@@ -27,6 +27,7 @@ import { portraitKey } from '../ui/placeholderPortrait';
 import { PAD, addFrame, text } from '../ui/theme';
 
 const fmt = (n: number) => n.toLocaleString('en-US');
+const leaderOf = (encounter: string) => ENCOUNTERS[encounter]?.[0] ?? encounter;
 
 /** The Nightmare Raid: three bosses, three Squads, wounds on the boss carry. */
 export class RaidScene extends Phaser.Scene {
@@ -58,12 +59,12 @@ export class RaidScene extends Phaser.Scene {
       const slain = d ? i < d.boss : false;
       const now = d && i === d.boss;
       addFrame(this, x, y + 90, cw, 180);
-      const key = `enemy-${c.boss}`;
+      const key = `enemy-${leaderOf(c.boss)}`;
       if (this.textures.exists(key)) {
         const img = this.add.image(x, y + 64, key).setDisplaySize(cw - 24, cw - 24);
         if (slain) img.setTint(0x444444);
       }
-      this.add.text(x, y + 126, (ENEMIES[c.boss]?.name ?? c.bossName).toUpperCase(), { ...text.hud(11, now ? 0xff8a7a : slain ? PAL.steel : 0xfff1d6), align: 'center', wordWrap: { width: cw - 12 } }).setOrigin(0.5, 0);
+      this.add.text(x, y + 126, (ENEMIES[leaderOf(c.boss)]?.name ?? c.bossName).toUpperCase(), { ...text.hud(11, now ? 0xff8a7a : slain ? PAL.steel : 0xfff1d6), align: 'center', wordWrap: { width: cw - 12 } }).setOrigin(0.5, 0);
       const hp = slain ? 0 : now ? d!.hp : 1;
       this.add.rectangle(x - (cw - 24) / 2, y + 166, cw - 24, 8, 0x000000).setOrigin(0, 0.5);
       this.add.rectangle(x - (cw - 24) / 2, y + 166, (cw - 24) * hp, 6, 0xc0392b).setOrigin(0, 0.5);
@@ -123,7 +124,7 @@ export class RaidScene extends Phaser.Scene {
     const d = raidOf(save).delve!;
     const boss = raidCrypts()[d.boss];
     current.challenge = {
-      label: `The Nightmare Raid: ${ENEMIES[boss.boss]?.name ?? boss.bossName}. Squad ${'I'.repeat(d.squad + 1)}, hold nothing back!`,
+      label: `The Nightmare Raid: ${ENEMIES[leaderOf(boss.boss)]?.name ?? boss.bossName}. Squad ${'I'.repeat(d.squad + 1)}, hold nothing back!`,
       make: (rng) => delveBattle(save, rng)!,
       finish: (outcome, battle) => {
         const st = finishDelve(save, outcome, battle);

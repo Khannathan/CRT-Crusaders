@@ -96,6 +96,7 @@ export interface SaveData {
   armory?: ArmoryState;
   /** The Chapter (offline guild with AI members). */
   chapter?: ChapterState;
+  war?: import('../systems/chapterWar').WarState;
   /** The idle Vigil: who keeps watch where, and since when. */
   vigil?: VigilState;
   /** Stigmata: raise a Sister's star tier. */

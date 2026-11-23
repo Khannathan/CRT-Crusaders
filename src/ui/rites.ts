@@ -1,3 +1,4 @@
+import { FORTS, attacksLeft, rivalName, warReady, warScore } from '../systems/chapterWar';
 import { RAID_BOSSES, delvesLeft, raidOf } from '../systems/raid';
 import { HOLD_WAVES, holdLeft, holdOf } from '../systems/holdLine';
 import { HOUNDS } from '../data/hounds';
@@ -121,6 +122,11 @@ export const RITES: RiteEntry[] = [
     label: 'Nightmare Raid', scene: 'Raid', icon: 'blade', rank: 6, home: 'board', bg: 'bg-abyssal-ossuary', ready: (s) => delvesLeft(s) > 0 || !!raidOf(s).delve,
     blurb: 'Three bosses. Three Squads. Its wounds carry!',
     status: (s) => `${raidOf(s).delve ? `Boss ${raidOf(s).delve!.boss + 1} waits` : `${delvesLeft(s)} delve left today`}  ·  week best ${raidOf(s).best}/${RAID_BOSSES}`,
+  },
+  {
+    label: 'Chapter War', scene: 'War', icon: 'blade', rank: 6, home: 'board', bg: 'bg-chapter', ready: (s) => warReady(s),
+    blurb: 'Storm a rival Chapter\'s forts for stars!',
+    status: (s) => (s.chapter ? `${warScore(s).us} to ${warScore(s).them} vs the ${rivalName(s)}  ·  ${attacksLeft(s)} storms left` : `Join the Chapter first  ·  ${FORTS.length} forts a week`),
   },
   {
     label: 'Reliquary Procession', scene: 'Procession', icon: 'flame', rank: 5, home: 'board', bg: 'bg-candle-maze', ready: (s) => processionLeft(s) > 0,

@@ -36,6 +36,7 @@ import { RankScene } from './scenes/RankScene';
 import { TrialsScene } from './scenes/TrialsScene';
 import { HoldScene } from './scenes/HoldScene';
 import { RaidScene } from './scenes/RaidScene';
+import { WarScene } from './scenes/WarScene';
 import { CampScene } from './scenes/CampScene';
 import { FeastScene } from './scenes/FeastScene';
 import { ArmoryScene } from './scenes/ArmoryScene';
@@ -100,6 +101,7 @@ function start() {
       TrialsScene,
       HoldScene,
       RaidScene,
+      WarScene,
       CampScene,
       FeastScene,
       ArmoryScene,
