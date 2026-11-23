@@ -12,7 +12,8 @@ import { addOrderSigil } from '../ui/sisterCard';
 import { drawPortraitBadges, showBadgeKey } from '../ui/portraitBadges';
 import { passes, sortControls, sortRoster, sortState } from '../ui/sisterSort';
 import type { ScrollArea } from '../ui/scroll';
-import { CLASS_SKILLS, DMG_NAME, type SkillDef } from '../data/skills';
+import { DMG_NAME, type SkillDef } from '../data/skills';
+import { KITS, kitSkills } from '../data/kits';
 import { showDetail as showSkillDetail } from '../ui/glossary';
 import { dmgTagOf } from '../data/classes';
 import { VOW_UPGRADES } from '../systems/combat';
@@ -283,7 +284,7 @@ export class RosterScene extends Phaser.Scene {
     const atCap = have.level >= levelCap(have);
     const grow = atCap ? !!nextAscension(save, c.id) && !ascendBlock(save, c.id) : feedPlan(save, c.id, 1).levels > 0;
     const vows = !(have.vow >= MAX_VOW ? tierBlock(save, have) : vowBlock(save, have, c.rarity));
-    const skills = CLASS_SKILLS[c.classId].some((_, i) => !skillBlock(save, c.id, i));
+    const skills = kitSkills(c.id, c.classId).some((_, i) => !skillBlock(save, c.id, i));
     const worn = new Set(equipped(save, c.id).map((g) => g.slot));
     const gear = GEAR_SLOTS.some((s) => !worn.has(s) && gearOf(save).some((g) => g.slot === s && !g.on));
     const symbol = (have.asc ?? 0) >= SYMBOL_ASC && !symbolBlock(save, c.id);
@@ -746,7 +747,7 @@ export class RosterScene extends Phaser.Scene {
       layer.add(b.all);
       y += 72;
     }
-    const skills = CLASS_SKILLS[c.classId];
+    const skills = kitSkills(c.id, c.classId);
     layer.add(this.add.text(left, y, 'VOW GIFTS', text.hud(12, PAL.steel)));
     y += 22;
     VOW_UPGRADES.forEach(([v, i]) => {
@@ -763,7 +764,7 @@ export class RosterScene extends Phaser.Scene {
   private skillsTab(layer: Phaser.GameObjects.Container, c: CrusaderDef, y: number): number {
     const save = game.save;
     const have = save.owned[c.id];
-    const skills = CLASS_SKILLS[c.classId];
+    const skills = kitSkills(c.id, c.classId);
     const ranks = (from: number[]) => (from.length ? `RANK${from.length > 1 ? 'S' : ''} ${from[0]}${from.length > 1 ? `-${from[from.length - 1]}` : ''}` : 'ANY RANK');
     const left = PAD + 8;
     const width = GAME_W - PAD * 2 - 16;
@@ -819,6 +820,16 @@ export class RosterScene extends Phaser.Scene {
       const p = c.passive;
       for (const o of [name, d])
         o.setInteractive({ useHandCursor: true }).on('pointerup', (ptr: Phaser.Input.Pointer) => ptr.getDistance() < 12 && showSkillDetail(this, { title: p.name, color: PAL.violet, tags: `PASSIVE · ${c.rarity} · ALWAYS ON`, desc: p.desc }, 60));
+      y += 56 + d.height;
+    }
+    const seal = KITS[c.id]?.seal;
+    if (seal) {
+      y += 14;
+      layer.add(this.add.rectangle(GAME_W / 2, y, width, 1, PAL.armorShadow));
+      const name = this.add.text(left, y + 10, seal.name, { ...text.body(20, PAL.amber), fontStyle: '600' });
+      const t = this.add.text(left, y + 38, "SAINT'S SEAL · ONCE A FIGHT", text.hud(11, PAL.steel));
+      const d = this.add.text(left, y + 56, seal.desc, { ...text.body(15, PAL.muted), wordWrap: { width } });
+      layer.add([name, t, d]);
       y += 56 + d.height;
     }
     return y + 16;

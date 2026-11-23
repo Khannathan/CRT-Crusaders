@@ -1,5 +1,6 @@
 import type { CrusaderDef } from './types';
 import { basePassive } from './passives';
+import { KITS } from './kits';
 
 /**
  * The Sisters, drawn from ROSTER_240.csv: five per Order at first (a UR, two
@@ -107,5 +108,5 @@ export const CRUSADERS: CrusaderDef[] = [
   { id: 'CC-W237', limited: true, relic: 'compact crossbow stock beside shoulder, bearing a cracked oval mother-of-pearl inset', name: 'Vivienne Bellgrave', classId: 'arbalist', title: 'Saintbound Arbalist', rarity: 'SSR', order: 'Thorn Covenant', age: 41, hook: 'She protects travelers while quietly questioning her own hierarchy.', passive: { name: 'Briar Bolt', desc: '+35% damage against foes under half HP.', kind: 'executioner', value: 0.35 } },
 ];
 
-// Every Sister carries a passive: R and SR Sisters take their class's.
-for (const c of CRUSADERS) c.passive ??= basePassive(c);
+// Every Sister carries a passive: her kit's signature (data/kits.ts), else her class's R/SR one.
+for (const c of CRUSADERS) c.passive = KITS[c.id]?.passive ?? c.passive ?? basePassive(c);

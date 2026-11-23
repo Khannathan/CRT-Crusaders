@@ -6,6 +6,7 @@ import { howlShort } from './hounds';
 import type { Rng } from './gacha';
 import * as KW from './keywords';
 import { ORDER_KW, freshKeywords, type PartyKeywords } from './keywords';
+import { KITS, type Seal, type SealKind, type Sig } from '../data/kits';
 
 export type Side = 'party' | 'enemy';
 
@@ -18,7 +19,7 @@ export interface HoundHowl {
 
 export interface Status {
   /** Burn (Fire) or Poison (Blight): damage each turn, ignoring armor. */
-  poison?: { dmg: number; turns: number; kind?: 'burn' | 'poison' };
+  poison?: { dmg: number; turns: number; kind?: 'burn' | 'poison'; by?: string; guilt?: boolean };
   /** Bleeding (Steel): damage each turn, ignoring armor. */
   bleed?: { dmg: number; turns: number };
   /** Turns left to lose. */
@@ -34,6 +35,8 @@ export interface Status {
   accused?: number;
   taunt?: number;
   shield?: number;
+  /** Who gave the shield (a Sister's uid). */
+  shieldBy?: string;
   delayed?: boolean;
   /** Enemy is winding up its planned skill; it fires next turn unless delayed. */
   charging?: boolean;
@@ -130,6 +133,14 @@ export interface Unit {
   scars?: number;
   /** Red Pilgrimage Stride on a Sister, 0-5. */
   stride?: number;
+  /** Sisters: her kit's signature rules and Saint's Seal (data/kits.ts). */
+  sig?: Sig;
+  seal?: Seal;
+  sealUsed?: boolean;
+  /** Attack she has gained for the rest of the fight. */
+  bonusAtk?: number;
+  /** Steps taken this turn. */
+  steps?: number;
 }
 
 export type BattleEvent =
@@ -153,7 +164,7 @@ export interface TurnStart {
 }
 
 /** Bump when combat numbers change, so logged runs can be compared fairly. */
-export const BALANCE_VERSION = '0.9';
+export const BALANCE_VERSION = '1.0';
 /** Execute skills hit harder below this share of max HP. */
 export const EXECUTE_AT = 0.3;
 
@@ -192,7 +203,7 @@ export function skillsFor(u: Unit): SkillDef[] {
   }
   const vow = u.vow ?? 0;
   return [
-    ...CLASS_SKILLS[u.classId!].map((s, i) => leveled(VOW_UPGRADES.some(([v, idx]) => idx === i && vow >= v) ? upgraded(s) : s, u.skillLv?.[i] ?? 1)),
+    ...(KITS[u.ref]?.skills ?? CLASS_SKILLS[u.classId!]).map((s, i) => leveled(VOW_UPGRADES.some(([v, idx]) => idx === i && vow >= v) ? upgraded(s) : s, u.skillLv?.[i] ?? 1)),
     SHIFT_SKILL,
   ];
 }
@@ -295,6 +306,16 @@ export class Battle {
   kw: PartyKeywords = freshKeywords();
   /** Per Sister: fraction toward her next Scar. */
   private scarFrac: Record<string, number> = {};
+  /** Foe kinds a Bone Archivist has Catalogued. */
+  private catalogued = new Set<string>();
+  /** Per Sister: the round her Mercy kill last gave her another action. */
+  private extraRound: Record<string, number> = {};
+  /** Sisters who rise at the start of the next round (Drowned and Returned). */
+  private pendingRise: string[] = [];
+  /** A Blasphemy being turned back: half its damage goes to the boss. */
+  private reflecting?: { boss: Unit; sum: number };
+  /** Summoned foes arrive Delayed (Lock the Crypt). */
+  private locked = false;
 
   constructor(party: Unit[], enemies: Unit[], opts: { rng?: Rng; vigil?: number; zeal?: number; enemyScale?: number; mods?: Partial<BattleMods>; hound?: HoundHowl } = {}) {
     this.mods = { ...NO_MODS, ...opts.mods };
@@ -303,11 +324,23 @@ export class Battle {
     this.units = [...party, ...enemies];
     this.rng = opts.rng ?? Math.random;
     this.vigil = opts.vigil ?? VIGIL_DEFAULT;
+    // Kits: each Sister's signature and Seal, fresh for this fight.
+    for (const u of party) {
+      const k = KITS[u.ref];
+      if (k) {
+        u.sig ??= k.sig;
+        u.seal ??= k.seal;
+      }
+      u.sealUsed = false;
+      u.bonusAtk = 0;
+      u.steps = 0;
+    }
     // Opening Zeal (Holy Symbols, the Sisters' own passives) goes to every Sister.
-    const passiveZeal = party.reduce((s, u) => s + (u.passive?.kind === 'startZeal' ? u.passive.value ?? 0 : 0), 0);
+    const passiveZeal = party.reduce((s, u) => s + (u.passive?.kind === 'startZeal' ? u.passive.value ?? 0 : 0) + (u.sig?.startZeal ?? 0), 0);
     for (const u of party) u.zeal = Math.min(ZEAL_MAX, (u.zeal ?? 0) + (opts.zeal ?? 0) + passiveZeal);
     for (const e of enemies) if (e.boss && ENEMIES[e.ref]?.blasphemy) e.wrath = e.wrath ?? 0;
     for (const e of enemies) this.planIntent(e);
+    this.openKits(party, enemies);
     // Relics that set the foes alight before the first blow.
     if (this.mods.openingBurn > 0 && party.length) {
       const avg = party.reduce((n, u) => n + u.atk, 0) / party.length;
@@ -374,6 +407,12 @@ export class Battle {
     this.howl(events);
     this.bossTraits(events);
     this.roundKeywords(events);
+    for (const uid of this.pendingRise.splice(0)) {
+      const u = this.get(uid);
+      if (u.hp > 0) continue;
+      this.raiseOne(u, 0.5, events, 'Returned!');
+      this.raiseTide(KW.TIDE_MAX, events);
+    }
     if (this.round > 1) {
       if (this.vigil > 0) {
         this.vigil -= 1;
@@ -383,6 +422,7 @@ export class Battle {
         events.push({ type: 'text', text: 'The candle is dead. The heretics grow bolder.' });
       }
     }
+    if (this.locked) for (const e of this.alive('enemy')) if (e.uid.startsWith('summon-')) e.status.delayed = true;
     const order = this.alive().sort((a, b) => {
       const da = a.status.delayed ? 1 : 0;
       const db = b.status.delayed ? 1 : 0;
@@ -399,6 +439,15 @@ export class Battle {
       if (u.status.haste && --u.status.haste <= 0) u.status.haste = undefined;
     });
     this.queue = order.map((u) => u.uid);
+    // Watchfire: the foe that acts first this round is set Burning.
+    const fire = this.sigHolder('burnFirst');
+    const first = order.find((u) => u.side === 'enemy');
+    if (fire && first) {
+      const dmg = Math.max(1, Math.round(this.attackOf(fire) * 0.45 * (1 + (fire.sig!.dotMult ?? 0)) * baneMult(fire, first)));
+      const old = first.status.poison;
+      first.status.poison = old ? { ...old, dmg: old.dmg + dmg, turns: Math.max(old.turns, fire.sig!.burnFirst!) } : { dmg, turns: fire.sig!.burnFirst!, kind: 'burn', by: fire.uid };
+      events.push({ type: 'status', uid: first.uid, label: 'Watchfire' });
+    }
   }
 
   /** The hound's howl at the start of a round: Zeal, mending, a shield on the front Sister, and the foes' scent. */
@@ -488,10 +537,13 @@ export class Battle {
     st.shield = 0;
     actor.stepped = false;
     if (st.poison) {
-      const dmg = Math.min(actor.hp, st.poison.dmg);
+      const by = st.poison.by ? this.units.find((u) => u.uid === st.poison!.by) : undefined;
+      const twice = by && by.hp > 0 && by.sig?.hymnBurnTwice && this.kw.hymns.length && st.poison.kind === 'burn' ? 2 : 1;
+      const dmg = Math.min(actor.hp, st.poison.dmg * twice);
       actor.hp -= dmg;
       events.push({ type: 'damage', uid: actor.uid, amount: dmg, blocked: 0 });
       if (actor.side === 'party') this.hurtZeal(actor, dmg, events);
+      if (st.poison.guilt && actor.hp > 0) this.addGuilt(actor, 1, events);
       st.poison.turns -= 1;
       if (st.poison.turns <= 0) st.poison = undefined;
       if (actor.hp <= 0) {
@@ -521,9 +573,11 @@ export class Battle {
       }
       if (--st.regen.turns <= 0) st.regen = undefined;
     }
+    actor.steps = 0;
     if (actor.passive?.kind === 'healAura') {
+      const aura = (actor.passive.value ?? 0) + (this.kw.remains > 0 ? actor.sig?.auraRemains ?? 0 : 0);
       for (const a of this.alive(actor.side)) {
-        const real = Math.min(a.maxHp - a.hp, Math.round(a.maxHp * (actor.passive.value ?? 0) * this.healOf(a)));
+        const real = Math.min(a.maxHp - a.hp, Math.round(a.maxHp * aura * this.healOf(a)));
         if (real > 0) {
           a.hp += real;
           events.push({ type: 'heal', uid: a.uid, amount: real });
@@ -543,6 +597,7 @@ export class Battle {
     if (st.overwatch && --st.overwatch.turns <= 0) st.overwatch = undefined;
     if (st.confessed && --st.confessed <= 0) st.confessed = undefined;
     if (st.foretold && --st.foretold.turns <= 0) st.foretold = undefined;
+    this.turnKits(actor, events);
     if (st.stun) {
       st.stun -= 1;
       if (st.stun <= 0) st.stun = undefined;
@@ -559,6 +614,12 @@ export class Battle {
     if (skill.rite && actor.side === 'enemy' && (actor.wrath ?? 0) < ZEAL_MAX) return false;
     if (skill.from.length && !skill.from.includes(actor.rank)) return false;
     if (skill.summon && this.alive('enemy').length >= 4) return false;
+    if (skill.volley && this.kw.remains <= 0) return false;
+    const sp = skill.spend;
+    if (sp?.need && !sp.orElse && sp.kw !== 'guilt') {
+      const have = sp.kw === 'remains' ? this.kw.remains : sp.kw === 'tide' ? this.kw.tide : sp.kw === 'scars' ? actor.scars ?? 0 : actor.stride ?? 0;
+      if (have < (sp.n ?? 1)) return false;
+    }
     // Enemy healers only mend when someone is actually hurt.
     if (actor.side === 'enemy' && skill.heal && !this.alive(actor.side).some((u) => u.hp < u.maxHp * 0.85)) return false;
     return this.validTargets(actor, skill).length > 0;
@@ -597,9 +658,13 @@ export class Battle {
     }
     if (actor.side === 'enemy' && skill.windup && !actor.status.charging) {
       actor.status.charging = true;
+      const pre: BattleEvent[] = [];
+      this.chargeKits(actor, pre);
+      if (actor.hp <= 0) return [...pre, { type: 'intent' }];
       actor.intent = { skillId: skill.id };
       this.log.push(`${actor.name} charges ${skill.name}`);
       return [
+        ...pre,
         { type: 'text', text: `${actor.name} begins ${skill.name}! Delay it to break the charge.` },
         { type: 'status', uid: actor.uid, label: 'Charging' },
         { type: 'intent' },
@@ -627,6 +692,7 @@ export class Battle {
     if (skill.rite && actor.side === 'enemy') {
       actor.wrath = 0;
       events.push({ type: 'phase', uid: actor.uid, text: `BLASPHEMY: ${skill.name}` });
+      this.blasphemyKits(actor, events);
     }
 
     if (skill.id === 'shift') {
@@ -643,6 +709,8 @@ export class Battle {
       }
     }
     if (skill.spend) skill = this.spendFor(actor, skill, target, events);
+    if (skill.byTide) skill = this.tideFor(skill);
+    if (actor.side === 'party') skill = this.growFor(actor, skill);
     if (skill.summon) {
       this.summon(skill.summon, events);
       return events;
@@ -651,22 +719,43 @@ export class Battle {
     if (skill.revive) this.revive(actor, skill.revive, events);
 
     const group = skill.target === 'allAllies' || skill.target === 'allEnemies';
-    const targets = group ? this.validTargets(actor, skill) : skill.target === 'self' ? [actor] : target ? [target] : [];
+    let targets = skill.volley ? this.volleyTargets(actor, skill.volley, events) : group ? this.validTargets(actor, skill) : skill.target === 'self' ? [actor] : target ? [target] : [];
+    if (group && skill.onlyRanks) targets = targets.filter((t) => skill.onlyRanks!.includes(t.rank));
     let offensive = false;
     let support = false;
 
     for (const t of targets) {
       if (t.hp <= 0) continue;
-      if (skill.mult) {
+      const sk = this.condFor(skill, t);
+      if (sk.mult) {
         offensive = true;
-        this.hit(actor, t, skill, events);
+        this.strike(actor, t, sk, events);
       }
       if (t.hp <= 0) continue;
-      if (this.applyEffects(actor, t, skill, events)) support = true;
+      if (this.applyEffects(actor, t, sk, events)) support = true;
+      if (sk.perGuilt?.partyHealPct && t.guilt && t.side !== actor.side) for (const a of this.alive(actor.side)) this.mend(a, a.maxHp * sk.perGuilt.partyHealPct * t.guilt, events);
     }
+    if (this.reflecting) {
+      const r = this.reflecting;
+      this.reflecting = undefined;
+      if (r.sum > 0 && r.boss.hp > 0) {
+        events.push({ type: 'text', text: `${r.boss.name}'s Blasphemy turns back on it!` });
+        this.pierce(r.boss, r.sum, events);
+      }
+    }
+    if (actor.side === 'party' && actor.hp > 0) this.extraKits(actor, skill, events);
 
     // Skills that carry the user forward or back.
     if (skill.move && actor.hp > 0) this.moveUnit(actor, skill.move, events);
+    if (skill.shieldBehind && actor.hp > 0) {
+      const b = this.alive(actor.side).find((u) => u.rank === actor.rank + 1);
+      if (b) {
+        const amount = Math.round(b.maxHp * skill.shieldBehind);
+        b.status.shield = Math.max(b.status.shield ?? 0, amount);
+        b.status.shieldBy = actor.uid;
+        events.push({ type: 'shield', uid: b.uid, amount });
+      }
+    }
 
     if (skill.taunt) {
       actor.status.taunt = skill.taunt;
@@ -700,38 +789,51 @@ export class Battle {
   private applyEffects(actor: Unit, t: Unit, skill: SkillDef, events: BattleEvent[]): boolean {
     let support = false;
     if (skill.heal || skill.healPct) {
-      const amount = Math.round((skill.heal ? actor.atk * skill.heal * this.vary() : t.maxHp * skill.healPct!) * this.healOf(t) * this.symbolHeal(actor, skill));
+      let amount = Math.round((skill.heal ? actor.atk * skill.heal * this.vary() : t.maxHp * skill.healPct!) * this.healOf(t) * this.symbolHeal(actor, skill));
+      if (actor.sig?.healPerGuilt) amount = Math.round(amount * (1 + actor.sig.healPerGuilt * Math.max(0, ...this.alive('enemy').map((e) => e.guilt ?? 0))));
       const real = Math.min(amount, t.maxHp - t.hp);
       t.hp += real;
       if (real >= t.maxHp * 0.05) support = true;
       events.push({ type: 'heal', uid: t.uid, amount: real });
+      if (actor.sig?.overhealShield && amount > real && t.side === actor.side) {
+        t.status.shield = Math.max(t.status.shield ?? 0, amount - real);
+        events.push({ type: 'shield', uid: t.uid, amount: amount - real });
+      }
     }
     if (skill.cleanse && (t.status.poison || t.status.bleed)) {
+      const thrown = actor.sig?.throwCures && t.side === actor.side ? { p: t.status.poison, b: t.status.bleed } : undefined;
       t.status.poison = undefined;
       t.status.bleed = undefined;
       events.push({ type: 'status', uid: t.uid, label: 'Cured' });
+      const foe = thrown && [...this.alive(actor.side === 'party' ? 'enemy' : 'party')].sort((a, b) => b.hp - a.hp)[0];
+      if (thrown && foe) {
+        if (thrown.p) {
+          const o = foe.status.poison;
+          foe.status.poison = o ? { ...o, dmg: o.dmg + thrown.p.dmg, turns: Math.max(o.turns, thrown.p.turns) } : { ...thrown.p, by: actor.uid, guilt: undefined };
+        }
+        if (thrown.b) foe.status.bleed = { dmg: Math.max(thrown.b.dmg, foe.status.bleed?.dmg ?? 0), turns: Math.max(thrown.b.turns, foe.status.bleed?.turns ?? 0) };
+        events.push({ type: 'status', uid: foe.uid, label: 'Thrown back' });
+      }
     }
     if (skill.shieldPct) {
       support = true;
-      const amount = Math.round(t.maxHp * skill.shieldPct * this.symbolHeal(actor, skill));
+      let amount = Math.round(t.maxHp * skill.shieldPct * this.symbolHeal(actor, skill));
+      if (actor.sig?.lowShield && t.hp < t.maxHp * 0.3) amount = Math.round(amount * (1 + actor.sig.lowShield));
       t.status.shield = amount;
+      t.status.shieldBy = actor.uid;
       events.push({ type: 'shield', uid: t.uid, amount });
     }
     if (skill.poison) {
       const plague = actor.passive?.kind === 'plague' ? 1 + (actor.passive.value ?? 0) : 1;
       const burn = actor.side === 'party' ? 1 + this.mods.burnMult : 1;
       const kind = actor.classId === 'censer' || actor.classId === 'exorcist' ? 'burn' : 'poison';
-      const dmg = Math.max(1, Math.round(this.attackOf(actor) * skill.poison.mult * plague * burn * baneMult(actor, t)));
+      const g = actor.sig;
+      const kit = 1 + (g?.dotMult ?? 0) + (g?.dotPerStride ?? 0) * (actor.stride ?? 0) + (g?.dotConfessed && t.status.confessed ? g.dotConfessed : 0);
+      const dmg = Math.max(1, Math.round(this.attackOf(actor) * skill.poison.mult * plague * burn * kit * baneMult(actor, t)));
       const old = skill.stackPoison ? t.status.poison : undefined;
-      t.status.poison = old ? { dmg: old.dmg + dmg, turns: Math.max(old.turns, skill.poison.turns), kind } : { dmg, turns: skill.poison.turns, kind };
+      const guilt = skill.burnGuilt || old?.guilt || undefined;
+      t.status.poison = old ? { dmg: old.dmg + dmg, turns: Math.max(old.turns, skill.poison.turns), kind, by: old.by ?? actor.uid, guilt } : { dmg, turns: skill.poison.turns, kind, by: actor.uid, guilt };
       events.push({ type: 'status', uid: t.uid, label: kind === 'burn' ? 'Burning' : 'Poisoned' });
-    }
-    if (skill.detonate && t.status.poison) {
-      const p = t.status.poison;
-      t.status.poison = undefined;
-      events.push({ type: 'status', uid: t.uid, label: 'Ignited!' });
-      this.pierce(t, Math.round(p.dmg * p.turns * skill.detonate * this.detonateOf(actor)), events);
-      if (t.hp <= 0) return support;
     }
     if (skill.spreadPoison && t.status.poison) {
       for (const o of this.alive(t.side)) {
@@ -740,6 +842,13 @@ export class Battle {
         o.status.poison = o.status.poison ? { dmg: o.status.poison.dmg + p.dmg, turns: Math.max(o.status.poison.turns, p.turns) } : { ...p };
         events.push({ type: 'status', uid: o.uid, label: 'Infected' });
       }
+    }
+    if (skill.detonate && t.status.poison) {
+      const p = t.status.poison;
+      t.status.poison = undefined;
+      events.push({ type: 'status', uid: t.uid, label: 'Ignited!' });
+      this.pierce(t, Math.round(p.dmg * p.turns * skill.detonate * this.detonateOf(actor)), events);
+      if (t.hp <= 0) return support;
     }
     if (skill.pull && t.rank > 1) {
       for (const o of this.alive(t.side)) if (o.rank < t.rank) o.rank += 1;
@@ -752,7 +861,7 @@ export class Battle {
       events.push({ type: 'status', uid: t.uid, label: 'Empowered' });
     }
     if (skill.weaken) {
-      t.status.weaken = { ...skill.weaken };
+      t.status.weaken = { ...skill.weaken, turns: skill.weaken.turns + (actor.sig?.weakenPlus ?? 0) };
       events.push({ type: 'status', uid: t.uid, label: 'Weakened' });
     }
     if (skill.bleed) {
@@ -938,8 +1047,19 @@ export class Battle {
     let atk = u.atk;
     if (u.status.weaken) atk *= 1 - u.status.weaken.pct;
     if (u.status.empower) atk *= 1 + u.status.empower.pct;
-    if (u.side === 'enemy') atk *= 1 + RAGE_STEP * this.rage;
-    else atk *= 1 + (this.hound?.howl.atk ?? 0);
+    if (u.side === 'enemy') {
+      atk *= 1 + RAGE_STEP * this.rage;
+      const bap = u.status.accused ? this.sigHolder('tideWeakAccused') : undefined;
+      if (bap) atk *= Math.max(0.5, 1 - bap.sig!.tideWeakAccused! * this.kw.tide);
+    } else {
+      atk *= 1 + (this.hound?.howl.atk ?? 0);
+      atk *= 1 + (u.bonusAtk ?? 0);
+      const g = u.sig;
+      if (g?.hymnAtk && this.kw.hymns.length) atk *= 1 + g.hymnAtk;
+      if (g?.atkPerFallen) atk *= 1 + g.atkPerFallen * this.units.filter((x) => x.side === 'party' && x.hp <= 0).length;
+      const banner = this.kw.remains > 0 ? this.sigHolder('remainsAtkAll') : undefined;
+      if (banner) atk *= 1 + banner.sig!.remainsAtkAll!;
+    }
     return atk;
   }
 
@@ -991,14 +1111,24 @@ export class Battle {
     if (skill.lowHpBonus && actor.hp < actor.maxHp / 2) raw *= 1 + skill.lowHpBonus;
     if (t.status.accused) raw *= ACCUSED_MULT * (1 + (skill.bonusIfAccused ?? 0));
     if (t.status.weaken && skill.bonusIfWeak) raw *= 1 + skill.bonusIfWeak;
-    if (skill.execute && t.hp < t.maxHp * EXECUTE_AT) raw *= 1 + skill.execute;
+    raw *= this.executeMult(actor, t, skill);
     if (actor.passive?.kind === 'executioner' && t.hp < t.maxHp / 2) raw *= 1 + (actor.passive.value ?? 0);
-    raw *= this.keywordMult(actor, t);
+    raw *= this.keywordMult(actor, t) * this.sigMult(actor, t);
     const mercyBoss = t.boss && this.isKw(actor, 'mercy') && t.hp < t.maxHp * this.mercyLine(t);
     if (mercyBoss) raw *= 1 + KW.MERCY_BOSS;
-    const crit = (t.status.accused && actor.passive?.kind === 'critOnAccused') || this.rng() < critOf(actor, skill);
-    if (crit) raw *= CRIT_MULT + (actor.critDmg ?? 0) + (t.status.confessed ? KW.SHATTER : 0);
-    let dmg = Math.max(1, Math.round(damageAfterArmor(raw, defenceAgainst(t, dmgOf(actor, skill)) * (1 - (skill.armorPierce ?? 0))) * this.vary() * this.guardOf(t)));
+    const g = actor.side === 'party' ? actor.sig : undefined;
+    const crit = (t.status.accused && actor.passive?.kind === 'critOnAccused') || (!!g?.critUnderHalf && t.hp < t.maxHp / 2) || this.rng() < critOf(actor, skill) + this.critBonus(actor);
+    const shatter = crit && !!g?.shatter && !!t.status.confessed && !!t.status.accused;
+    if (crit) {
+      raw *= CRIT_MULT + (actor.critDmg ?? 0) + (t.status.confessed ? KW.SHATTER : 0) + (shatter ? g!.shatter!.crit : 0);
+      if (g?.critConsumeGuilt && t.guilt) {
+        raw *= 1 + g.critConsumeGuilt * t.guilt;
+        events.push({ type: 'status', uid: t.uid, label: `Guilt -${t.guilt}` });
+        t.guilt = 0;
+      }
+    }
+    const pierceArmor = Math.min(1, (skill.armorPierce ?? 0) + (g?.scarPierce ?? 0) * (actor.scars ?? 0));
+    let dmg = Math.max(1, Math.round(damageAfterArmor(raw, defenceAgainst(t, dmgOf(actor, skill)) * (1 - pierceArmor)) * this.vary() * this.guardOf(t)));
     let blocked = 0;
     if (t.status.shield && !skill.pierceShield) {
       blocked = Math.min(t.status.shield, dmg);
@@ -1007,36 +1137,61 @@ export class Battle {
     }
     dmg = Math.min(dmg, t.hp);
     if (skill.cannotKill && t.side !== actor.side) dmg = Math.max(0, Math.min(dmg, t.hp - Math.max(1, Math.ceil(t.maxHp * this.mercyLine(t)))));
+    if (actor.side === 'enemy' && t.side === 'party') dmg = this.guardKits(actor, t, dmg, events);
     if (dmg === t.hp && t.passive?.kind === 'unbroken' && !t.spentUnbroken) {
       t.spentUnbroken = true;
       dmg = t.hp - 1;
       events.push({ type: 'status', uid: t.uid, label: t.passive.name });
+      if (t.sig?.unbrokenOverwatch) {
+        t.status.overwatch = { skill: KW.OVERWATCH_HIT, turns: KW.OVERWATCH_TURNS };
+        events.push({ type: 'status', uid: t.uid, label: 'Overwatch' });
+      }
+      if (t.sig?.unbrokenHeal) for (const a of this.alive('party')) if (a !== t) this.mend(a, a.maxHp * t.sig.unbrokenHeal, events);
     }
     t.hp -= dmg;
     events.push({ type: 'damage', uid: t.uid, amount: dmg, blocked, crit });
     if (t.side === 'party' && actor.side === 'enemy') this.hurtZeal(t, dmg, events);
     if (t.side === 'enemy' && actor.side === 'party') this.woundWrath(t, dmg, events);
-    if (dmg > 0 && actor.passive?.kind === 'lifesteal' && actor.hp > 0) {
-      const real = Math.min(actor.maxHp - actor.hp, Math.round(dmg * (actor.passive.value ?? 0) * this.healOf(actor)));
-      if (real > 0) {
-        actor.hp += real;
-        events.push({ type: 'heal', uid: actor.uid, amount: real });
+    if (t.side === 'party' && dmg > 0) this.struckKits(actor, t, events);
+    if (blocked > 0 && !t.status.shield && t.status.shieldBy) {
+      const by = this.units.find((u) => u.uid === t.status.shieldBy);
+      t.status.shieldBy = undefined;
+      const w = by && by.hp > 0 ? by.sig?.shieldBreakWeaken : undefined;
+      if (w && actor.hp > 0 && actor.side !== t.side) {
+        actor.status.weaken = { pct: w, turns: 2 };
+        events.push({ type: 'status', uid: actor.uid, label: 'Shield of Ash' });
       }
     }
+    const leech = (actor.passive?.kind === 'lifesteal' ? actor.passive.value ?? 0 : 0) + (g?.lifesteal ?? 0) + (g?.strideLifesteal ? g.strideLifesteal.base + g.strideLifesteal.per * (actor.stride ?? 0) : 0);
+    if (dmg > 0 && leech > 0 && actor.hp > 0) this.leech(actor, dmg * leech, events);
     if (dmg > 0 && skill.drain && actor.hp > 0) this.mend(actor, dmg * skill.drain, events);
     if (dmg > 0 && skill.lifelink) for (const a of this.alive(actor.side)) this.mend(a, dmg * skill.lifelink, events);
     const thorns = (t.passive?.kind === 'thorns' ? (t.passive.value ?? 0) : 0) + (t.status.thorns?.pct ?? 0);
     if (dmg > 0 && thorns > 0 && actor !== t && actor.hp > 0) {
       events.push({ type: 'status', uid: t.uid, label: t.status.thorns ? 'Thorns' : t.passive!.name });
       this.pierce(actor, Math.round(dmg * thorns), events);
+      if (actor.hp <= 0 && t.sig?.thornsMercy) {
+        events.push({ type: 'status', uid: actor.uid, label: 'Mercy' });
+        for (const a of this.alive('party')) this.mend(a, a.maxHp * KW.MERCY_HEAL, events);
+      }
     }
     // Riposte: a Sentinel on guard (or with the passive) strikes back once per blow.
-    const counter = (t.status.counter?.mult ?? 0) + (t.passive?.kind === 'riposte' ? (t.passive.value ?? 0) : 0);
+    let counter = (t.status.counter?.mult ?? 0) + (t.passive?.kind === 'riposte' ? (t.passive.value ?? 0) : 0);
     if (dmg > 0 && counter > 0 && !this.countering && t.hp > 0 && actor.hp > 0 && actor.side !== t.side) {
+      const tg = t.side === 'party' ? t.sig : undefined;
+      if (tg?.owCounter && t.status.overwatch) counter *= 1 + tg.owCounter;
+      if (tg?.counterPerScar && t.scars) counter *= 1 + tg.counterPerScar * t.scars;
+      const vindicate = !!tg?.guiltCounter && (actor.guilt ?? 0) >= KW.GUILT_MAX;
+      if (vindicate) {
+        counter += 0.3 * actor.guilt!;
+        actor.guilt = 0;
+      }
       this.countering = true;
-      events.push({ type: 'status', uid: t.uid, label: 'Riposte!' });
+      events.push({ type: 'status', uid: t.uid, label: vindicate ? 'Vindicate!' : 'Riposte!' });
       this.hit(t, actor, { id: 'riposte', name: 'Riposte', desc: '', from: [], target: 'enemy', mult: counter }, events);
       this.countering = false;
+      if (actor.hp > 0 && tg?.counterBleed) this.applyEffects(t, actor, { id: 'riposte', name: 'Riposte', desc: '', from: [], target: 'enemy', bleed: { mult: 0.2, turns: tg.counterBleed } }, events);
+      if (actor.hp > 0 && tg?.guiltCounter && !vindicate) this.addGuilt(actor, 1, events);
     }
     if (mercyBoss && t.wrath) {
       t.wrath = Math.max(0, t.wrath - KW.MERCY_WRATH);
@@ -1045,16 +1200,29 @@ export class Battle {
     // Guilt: a Tribunal Sister's hit on the Accused weighs on it.
     if (t.hp > 0 && t.status.accused && this.isKw(actor, 'guilt') && skill.id !== 'riposte') this.addGuilt(t, 1, events);
     // Mercy: a common foe left under the line is ended, and the party heals on its ash.
-    if (t.hp > 0 && !t.boss && !skill.cannotKill && this.isKw(actor, 'mercy') && t.hp < t.maxHp * this.mercyLine(t)) {
+    let mercy = false;
+    if (t.hp > 0 && !t.boss && !skill.cannotKill && this.isKw(actor, 'mercy') && t.hp < t.maxHp * Math.max(this.mercyLine(t), skill.mercyLine ?? 0)) {
       events.push({ type: 'status', uid: t.uid, label: 'Mercy' });
       this.log.push(`  ${actor.name} grants ${t.name} Mercy`);
       const rest = t.hp;
       t.hp = 0;
+      mercy = true;
       events.push({ type: 'damage', uid: t.uid, amount: rest, blocked: 0 });
       for (const a of this.alive('party')) this.mend(a, a.maxHp * KW.MERCY_HEAL, events);
     }
+    // Shatter: the blow splashes onto the foes beside it.
+    if (shatter && dmg > 0) {
+      const near = this.alive(t.side).filter((o) => o !== t && Math.abs(o.rank - t.rank) === 1);
+      for (const o of near) this.pierce(o, Math.round(dmg * g!.shatter!.splash), events);
+    }
     if (t.hp <= 0) {
+      const guiltLeft = t.guilt ?? 0;
       this.kill(t, events);
+      if (mercy) this.mercyKill(actor, events);
+      if (g?.passGuilt && guiltLeft > 0) {
+        const next = this.alive(t.side).sort((a, b) => a.rank - b.rank)[0];
+        if (next) this.addGuilt(next, guiltLeft, events);
+      }
       if (actor.side === 'party' && actor.passive?.kind === 'zealOnKill') this.addZeal(actor.passive.value ?? 0, events, actor.passive.name, actor);
     } else this.checkPhase(t, events);
   }
@@ -1088,8 +1256,19 @@ export class Battle {
       const g = t.traits?.guarded;
       return g && this.alive('enemy').some((u) => u !== t) ? 1 - g : 1;
     }
-    const g = this.alive('party').find((u) => u.passive?.kind === 'bulwark');
-    return (g ? 1 - (g.passive!.value ?? 0) : 1) * (1 - (this.hound?.howl.ward ?? 0)) * (1 - (t.symbol?.guard ?? 0));
+    const party = this.alive('party');
+    const g = party.find((u) => u.passive?.kind === 'bulwark');
+    let f = (g ? 1 - (g.passive!.value ?? 0) : 1) * (1 - (this.hound?.howl.ward ?? 0)) * (1 - (t.symbol?.guard ?? 0));
+    for (const u of party) {
+      const s = u.sig;
+      if (!s) continue;
+      if (s.guard) f *= 1 - s.guard;
+      if (s.remainsGuard && this.kw.remains >= 3 && Math.abs(u.rank - t.rank) <= 1) f *= 1 - s.remainsGuard;
+      if (s.rampart && u.rank === 1 && t.rank === 2) f *= 1 - s.rampart;
+      if (s.hymnTauntWard && u.status.taunt && this.kw.hymns.length) f *= 1 - s.hymnTauntWard;
+      if (s.tideGuard && this.kw.tide) f *= 1 - s.tideGuard * this.kw.tide;
+    }
+    return f;
   }
 
   /** Expected damage of a skill on one target, before shields and luck. Used by Auto and target previews. */
@@ -1101,9 +1280,9 @@ export class Battle {
       if (skill.lowHpBonus && actor.hp < actor.maxHp / 2) raw *= 1 + skill.lowHpBonus;
       if (t.status.accused) raw *= ACCUSED_MULT * (1 + (skill.bonusIfAccused ?? 0));
       if (t.status.weaken && skill.bonusIfWeak) raw *= 1 + skill.bonusIfWeak;
-      if (skill.execute && t.hp < t.maxHp * EXECUTE_AT) raw *= 1 + skill.execute;
+      raw *= this.executeMult(actor, t, skill);
       if (actor.passive?.kind === 'executioner' && t.hp < t.maxHp / 2) raw *= 1 + (actor.passive.value ?? 0);
-      raw *= this.keywordMult(actor, t);
+      raw *= this.keywordMult(actor, t) * this.sigMult(actor, t);
       const critChance = t.status.accused && actor.passive?.kind === 'critOnAccused' ? 1 : Math.min(1, critOf(actor, skill));
       raw *= 1 + critChance * (CRIT_MULT - 1 + (actor.critDmg ?? 0));
       total += damageAfterArmor(raw, defenceAgainst(t, dmgOf(actor, skill)) * (1 - (skill.armorPierce ?? 0))) * this.guardOf(t);
@@ -1158,6 +1337,8 @@ export class Battle {
         }
       }
     }
+    if (u.side === 'enemy') this.foeFellKits(events);
+    else this.sisterFellKits(u, events);
     if (u.side === 'party' && u.passive?.kind === 'martyr' && this.alive('party').length) {
       events.push({ type: 'text', text: `${u.name}'s sacrifice sets her Sisters ablaze!` });
       this.addZeal(u.passive.value ?? 0, events, u.passive.name);
@@ -1211,7 +1392,8 @@ export class Battle {
   step(actor: Unit, other: Unit): BattleEvent[] {
     if (!this.stepTargets(actor).includes(other)) return [];
     [actor.rank, other.rank] = [other.rank, actor.rank];
-    actor.stepped = true;
+    actor.steps = (actor.steps ?? 0) + 1;
+    actor.stepped = !(actor.sig?.doubleStep && actor.steps < 2);
     this.log.push(`${actor.name} steps with ${other.name}`);
     const events: BattleEvent[] = [{ type: 'move', uid: actor.uid }, { type: 'move', uid: other.uid }];
     this.stride(actor, events);
@@ -1234,6 +1416,7 @@ export class Battle {
     const line = this.alive('enemy');
     if (line.length >= 4) return;
     const u = makeEnemy(type, `summon-${++this.summons}`, line.length + 1, this.enemyScale);
+    if (this.locked) u.status.delayed = true;
     this.units.push(u);
     this.planIntent(u);
     events.push({ type: 'summon', uid: u.uid });
@@ -1253,7 +1436,7 @@ export class Battle {
 
   /** A foe's Mercy line: the base, plus Foretold. */
   mercyLine(t: Unit) {
-    return KW.MERCY_LINE + (t.status.foretold?.pct ?? 0);
+    return KW.MERCY_LINE + (t.status.foretold?.pct ?? 0) + (this.sigHolder('mercyUp')?.sig!.mercyUp ?? 0);
   }
 
   /** Damage from Guilt on the target and the actor's Scars. */
@@ -1274,9 +1457,16 @@ export class Battle {
     if (n <= 0 || !this.partyHas('remains')) return;
     const before = this.kw.remains;
     this.kw.remains = Math.min(this.kw.remainsMax, before + n);
-    if (this.kw.remains > before) {
+    const got = this.kw.remains - before;
+    if (got > 0) {
       events.push({ type: 'text', text: `Remains ${this.kw.remains}/${this.kw.remainsMax}` });
       this.log.push(`  remains ${this.kw.remains}`);
+      const rh = this.sigHolder('remainsHeal');
+      if (rh) for (const a of this.alive('party')) this.mend(a, a.maxHp * rh.sig!.remainsHeal! * got, events);
+      for (const u of this.alive('party')) {
+        if (u.sig?.remainsZeal) this.addZeal(u.sig.remainsZeal * got, events, 'Harvest', u);
+        if (u.sig?.remainsAtk) u.bonusAtk = Math.min(u.sig.remainsAtk.cap, (u.bonusAtk ?? 0) + u.sig.remainsAtk.per * got);
+      }
     }
   }
 
@@ -1287,9 +1477,7 @@ export class Battle {
     const whole = Math.floor(this.scarFrac[u.uid]);
     if (!whole) return;
     this.scarFrac[u.uid] -= whole;
-    const before = u.scars ?? 0;
-    u.scars = Math.min(KW.SCARS_MAX, before + whole);
-    if (u.scars > before) events.push({ type: 'status', uid: u.uid, label: `Scars ${u.scars}` });
+    this.addScars(u, whole, events);
   }
 
   /** Red Pilgrimage: Stride whenever a Pilgrim changes rank. */
@@ -1303,11 +1491,31 @@ export class Battle {
   /** Start of a round: the Tide rises and Hymns play. */
   private roundKeywords(events: BattleEvent[]) {
     if (this.partyHas('tide') && this.kw.tide < KW.TIDE_MAX) {
-      this.kw.tide += 1;
+      this.raiseTide(1, events);
       events.push({ type: 'text', text: `The Tide rises: ${this.kw.tide}/${KW.TIDE_MAX}` });
     }
+    const omens = this.sigHolder('tideZeal');
+    if (omens && this.kw.tide > 0) this.addZeal(omens.sig!.tideZeal! * this.kw.tide, events, 'Tide of Omens');
+    for (const u of this.alive('party')) {
+      const br = u.sig?.burnRound;
+      if (!br) continue;
+      const d = Math.min(u.hp - 1, Math.round(u.maxHp * br.hp));
+      if (d > 0) {
+        u.hp -= d;
+        events.push({ type: 'damage', uid: u.uid, amount: d, blocked: 0 });
+        this.scar(u, d, events);
+      }
+      this.addZeal(br.zeal, events, 'Burns at Both Ends');
+    }
     for (const h of this.kw.hymns) this.playHymn(h, events);
-    this.kw.hymns = this.kw.hymns.filter((h) => --h.rounds > 0);
+    this.kw.hymns = this.kw.hymns.filter((h) => {
+      if (--h.rounds > 0) return true;
+      const nh = this.sealHolder('noteHeld');
+      if (!nh) return false;
+      this.breakSeal(nh, events);
+      h.rounds = 2;
+      return true;
+    });
   }
 
   /** A Hymn's verse: its effects on every living ally (and foe), lasting the round. */
@@ -1315,8 +1523,16 @@ export class Battle {
     const singer = this.units.find((u) => u.uid === h.by);
     if (!singer) return;
     const verse = (part: Partial<SkillDef>, who: Unit[]) => {
-      const sk: SkillDef = { id: `hymn-${h.name}`, name: h.name, desc: '', from: [], target: 'ally', ...part };
-      for (const u of who) this.applyEffects(singer, u, sk, events);
+      const base: SkillDef = { id: `hymn-${h.name}`, name: h.name, desc: '', from: [], target: 'ally', ...(h.double ? doubled(part) : part) };
+      for (const u of who) {
+        // A Hymn never wears down a stronger blessing or curse already there.
+        const sk = { ...base };
+        for (const k of ['empower', 'ward', 'critUp', 'weaken', 'regen'] as const) {
+          const cur = u.status[k];
+          if (cur && sk[k] && cur.pct > sk[k]!.pct) sk[k] = undefined;
+        }
+        this.applyEffects(singer, u, sk, events);
+      }
     };
     if (h.allies) verse(h.allies, this.alive('party'));
     if (h.foes) verse(h.foes, this.alive('enemy'));
@@ -1331,12 +1547,31 @@ export class Battle {
       u.status.overwatch = undefined;
       events.push({ type: 'status', uid: u.uid, label: 'Overwatch!' });
       this.log.push(`  ${u.name} reacts on Overwatch`);
-      if (ow.skill.mult) this.hit(u, foe, ow.skill, events);
-      if (foe.hp > 0) this.applyEffects(u, foe, ow.skill, events);
-      if (foe.hp > 0 && foe.status.charging && foe.wrath !== undefined) {
-        foe.wrath = Math.max(0, foe.wrath - KW.OVERWATCH_WRATH);
-        events.push({ type: 'status', uid: foe.uid, label: `-${KW.OVERWATCH_WRATH} Wrath` });
+      if (ow.skill.target === 'ally') {
+        // A guardian's reaction: it mends the most hurt Sister.
+        const low = [...this.alive('party')].sort((a, b) => a.hp / a.maxHp - b.hp / b.maxHp)[0];
+        if (low) this.applyEffects(u, low, ow.skill, events);
+      } else {
+        const sk = this.condFor(ow.skill, foe);
+        if (sk.mult) this.hit(u, foe, sk, events);
+        if (foe.hp > 0) this.applyEffects(u, foe, sk, events);
+        const behind = u.sig?.rampart && u.rank === 1 ? this.alive('party').find((x) => x.rank === 2) : undefined;
+        if (behind && foe.hp > 0) {
+          events.push({ type: 'status', uid: behind.uid, label: 'Rampart!' });
+          this.hit(behind, foe, KW.OVERWATCH_HIT, events);
+        }
+        const so = this.sigHolder('owWeaken');
+        if (so && foe.hp > 0) {
+          foe.status.weaken = { pct: so.sig!.owWeaken!, turns: 2 };
+          events.push({ type: 'status', uid: foe.uid, label: 'Weakened' });
+        }
+        if (foe.hp > 0 && foe.status.charging && foe.wrath !== undefined) {
+          foe.wrath = Math.max(0, foe.wrath - KW.OVERWATCH_WRATH);
+          events.push({ type: 'status', uid: foe.uid, label: `-${KW.OVERWATCH_WRATH} Wrath` });
+        }
       }
+      const oz = this.sigHolder('owZeal');
+      if (oz) this.addZeal(oz.sig!.owZeal!, events, "Sentry's Omen", u);
     }
     return events;
   }
@@ -1345,9 +1580,13 @@ export class Battle {
   private spendFor(actor: Unit, skill: SkillDef, target: Unit | undefined, events: BattleEvent[]): SkillDef {
     const sp = skill.spend!;
     const have = sp.kw === 'remains' ? this.kw.remains : sp.kw === 'tide' ? this.kw.tide : sp.kw === 'guilt' ? target?.guilt ?? 0 : sp.kw === 'scars' ? actor.scars ?? 0 : actor.stride ?? 0;
+    if (sp.need && have < (sp.n ?? 1)) return sp.orElse ? { ...skill, ...sp.orElse, spend: undefined } : skill;
     const n = Math.min(have, sp.n ?? have);
     if (n <= 0) return skill;
-    if (sp.kw === 'remains') this.kw.remains -= n;
+    if (sp.kw === 'remains') {
+      this.kw.remains -= n;
+      this.spentRemains(n, events);
+    }
     else if (sp.kw === 'tide') this.kw.tide -= n;
     else if (sp.kw === 'guilt') target!.guilt = (target!.guilt ?? 0) - n;
     else if (sp.kw === 'scars') actor.scars = (actor.scars ?? 0) - n;
@@ -1355,9 +1594,11 @@ export class Battle {
     events.push({ type: 'status', uid: actor.uid, label: `${KW.KW_NAME[sp.kw as KW.Keyword]} -${n}` });
     this.log.push(`  ${actor.name} spends ${n} ${sp.kw}`);
     const p = sp.per;
+    const full = sp.kw === 'guilt' && n >= KW.GUILT_MAX ? sp.full ?? {} : {};
     return {
       ...skill,
-      mult: skill.mult !== undefined && p.multPct ? skill.mult * (1 + p.multPct * n) : skill.mult,
+      ...full,
+      mult: skill.mult !== undefined ? (skill.mult + (p.multAdd ?? 0) * n) * (1 + (p.multPct ?? 0) * n) : skill.mult,
       shieldPct: p.shieldPct ? (skill.shieldPct ?? 0) + p.shieldPct * n : skill.shieldPct,
       healPct: p.healPct ? (skill.healPct ?? 0) + p.healPct * n : skill.healPct,
       zealGain: p.zeal ? (skill.zealGain ?? 0) + p.zeal * n : skill.zealGain,
@@ -1380,6 +1621,20 @@ export class Battle {
       t.status.overwatch = { skill: skill.overwatch, turns: KW.OVERWATCH_TURNS };
       events.push({ type: 'status', uid: t.uid, label: 'Overwatch' });
     }
+    if (skill.giveStride && t.side === actor.side) this.stride(t, events, skill.giveStride);
+    if (skill.hurtAllies && t.side === actor.side) {
+      const d = Math.min(t.hp - 1, Math.round(t.maxHp * skill.hurtAllies));
+      if (d > 0) {
+        t.hp -= d;
+        events.push({ type: 'damage', uid: t.uid, amount: d, blocked: 0 });
+        this.scar(t, d, events);
+      }
+    }
+    if (skill.steal && t.side !== actor.side) this.steal(t, events);
+    if (skill.catalogue && t.side !== actor.side && !this.catalogued.has(t.ref)) {
+      this.catalogued.add(t.ref);
+      events.push({ type: 'status', uid: t.uid, label: 'Catalogued' });
+    }
   }
 
   /** After a Sister's skill: Hymns, counter gains, and the Bell. */
@@ -1398,10 +1653,26 @@ export class Battle {
     }
     const g = skill.gain;
     if (g?.remains) this.gainRemains(g.remains, events);
-    if (g?.tide && this.partyHas('tide')) this.kw.tide = Math.min(KW.TIDE_MAX, this.kw.tide + g.tide);
+    if (g?.tide) this.raiseTide(g.tide, events);
     if (g?.stride) this.stride(actor, events, g.stride);
-    if (g?.scars && this.isKw(actor, 'scars')) actor.scars = Math.min(KW.SCARS_MAX, (actor.scars ?? 0) + g.scars);
-    if (this.isKw(actor, 'toll')) this.ring(1 + (g?.toll ?? 0), events);
+    if (g?.scars) this.addScars(actor, g.scars, events);
+    if (skill.overwatch && (skill.target === 'enemy' || skill.target === 'allEnemies') && actor.hp > 0) {
+      actor.status.overwatch = { skill: skill.overwatch, turns: KW.OVERWATCH_TURNS };
+      events.push({ type: 'status', uid: actor.uid, label: 'Overwatch' });
+    }
+    if (skill.guiltWeaken) {
+      for (const e of this.alive('enemy')) {
+        if (!e.guilt) continue;
+        e.status.weaken = { pct: Math.min(0.5, skill.guiltWeaken * e.guilt), turns: 2 };
+        events.push({ type: 'status', uid: e.uid, label: 'Weakened' });
+      }
+    }
+    if (actor.sig?.singStride) for (const u of this.alive('party')) this.stride(u, events, actor.sig.singStride);
+    if (this.isKw(actor, 'toll') && actor.hp > 0) {
+      const twice = actor.sig?.doubleRingLow && actor.hp < actor.maxHp / 2 ? 2 : 1;
+      this.ring((1 + (g?.toll ?? 0)) * twice, events);
+    }
+    if (skill.pealNow) this.ring(KW.PEAL_EVERY - (this.kw.toll % KW.PEAL_EVERY), events);
   }
 
   /** Hollow Bell: each toll rings; every third is a Peal; the twelfth is Midnight. */
@@ -1411,6 +1682,7 @@ export class Battle {
       if (this.kw.toll % KW.PEAL_EVERY === 0) {
         events.push({ type: 'text', text: 'The Bell peals!' });
         for (const u of this.alive('party')) if (this.isKw(u, 'toll')) this.addZeal(KW.PEAL_ZEAL, events, 'Peal', u);
+        this.peal(events);
       }
       if (this.kw.toll >= KW.MIDNIGHT_AT && !this.kw.midnight) {
         this.kw.midnight = true;
@@ -1419,6 +1691,506 @@ export class Battle {
         if (bell) this.revive(bell, KW.MIDNIGHT_RAISE, events);
       }
     }
+  }
+
+  // ---------------- Sister kits: signatures and Seals (data/kits.ts) ----------------
+
+  /** A living Sister whose signature sets this rule. */
+  private sigHolder<K extends keyof Sig>(k: K): Unit | undefined {
+    return this.alive('party').find((u) => u.sig?.[k] !== undefined && u.sig[k] !== false);
+  }
+
+  /** A Sister whose Seal of this kind has not fired yet (alive unless `dead` is allowed). */
+  private sealHolder(kind: SealKind, dead = false): Unit | undefined {
+    return this.units.find((u) => u.side === 'party' && (dead || u.hp > 0) && u.seal?.kind === kind && !u.sealUsed);
+  }
+
+  /** Fires a Seal: marks it used and announces it. */
+  private breakSeal(u: Unit, events: BattleEvent[]) {
+    u.sealUsed = true;
+    events.push({ type: 'phase', uid: u.uid, text: `SAINT'S SEAL: ${u.seal!.name}` });
+    this.log.push(`  ${u.name}'s Seal: ${u.seal!.name}`);
+  }
+
+  /** Fight-start signatures: Tide, Remains cap, Confessed foes, an opening Overwatch, a first move. */
+  private openKits(party: Unit[], enemies: Unit[]) {
+    for (const u of party) {
+      const g = u.sig;
+      if (!g) continue;
+      if (g.tideStart && this.isKw(u, 'tide')) this.kw.tide = Math.min(KW.TIDE_MAX, Math.max(this.kw.tide, g.tideStart));
+      if (g.remainsCap) this.kw.remainsMax = Math.max(this.kw.remainsMax, g.remainsCap);
+      if (g.confessAll) for (const e of enemies) e.status.confessed = Math.max(e.status.confessed ?? 0, g.confessAll);
+      if (g.firstRound) u.status.haste = Math.max(u.status.haste ?? 0, 1);
+      if (g.openOverwatch) {
+        const fast = [...party].filter((x) => x.hp > 0).sort((a, b) => b.spd - a.spd)[0];
+        if (fast) fast.status.overwatch = { skill: KW.OVERWATCH_HIT, turns: KW.OVERWATCH_TURNS };
+      }
+    }
+  }
+
+  /** Damage from a Sister's signature for this hit (beyond attack). */
+  private sigMult(actor: Unit, t: Unit) {
+    const g = actor.sig;
+    if (!g || actor.side !== 'party') return this.catalogued.has(t.ref) && actor.side === 'party' ? 1.05 : 1;
+    let f = this.catalogued.has(t.ref) ? 1.05 : 1;
+    if (g.dmgUnderHalf && t.hp < t.maxHp / 2) f *= 1 + g.dmgUnderHalf;
+    if (g.dmgUnder30 && t.hp < t.maxHp * EXECUTE_AT) f *= 1 + g.dmgUnder30;
+    if (g.backRankDmg && actor.rank >= 3) f *= 1 + g.backRankDmg;
+    if (g.strideDmg && actor.stride) f *= 1 + g.strideDmg * actor.stride;
+    if (g.guiltDmg && t.guilt) f *= 1 + g.guiltDmg * t.guilt;
+    return f;
+  }
+
+  /** The skill with its condition met for this target. */
+  private condFor(skill: SkillDef, t: Unit): SkillDef {
+    const c = skill.cond;
+    if (!c) return skill;
+    const st = t.status;
+    const met =
+      c.if === 'confessed' ? !!st.confessed
+      : c.if === 'underHalf' ? t.hp < t.maxHp / 2
+      : c.if === 'burning' ? st.poison?.kind === 'burn'
+      : c.if === 'accused' ? !!st.accused
+      : c.if === 'boss' ? !!t.boss
+      : c.if === 'overwatch' ? !!st.overwatch
+      : this.kw.hymns.length > 0;
+    if (!met) return skill;
+    const out = { ...skill, ...c.then };
+    // A boss resists the stun the condition replaces.
+    if (c.if === 'boss' && c.then.delay) out.stun = undefined;
+    return out;
+  }
+
+  /** The skill grown by the Tide. */
+  private tideFor(skill: SkillDef): SkillDef {
+    const b = skill.byTide!;
+    const n = this.kw.tide;
+    let out: SkillDef = { ...skill };
+    const p = b.per;
+    if (p && n > 0) {
+      if (p.multPct && out.mult) out.mult *= 1 + p.multPct * n;
+      if (p.drain) out.drain = (out.drain ?? 0) + p.drain * n;
+      if (p.shieldPct) out.shieldPct = (out.shieldPct ?? 0) + p.shieldPct * n;
+      if (p.critPct) out.critUp = { pct: (out.critUp?.pct ?? 0) + p.critPct * n, turns: out.critUp?.turns ?? 2 };
+      if (p.regenPct) out.regen = { pct: (out.regen?.pct ?? 0) + p.regenPct * n, turns: out.regen?.turns ?? 2 };
+    }
+    if (b.at !== undefined && b.then && n >= b.at) out = { ...out, ...b.then };
+    return out;
+  }
+
+  /** The skill grown by the Guilt of the most guilty foe, and by the user's Stride and Scars. */
+  private growFor(actor: Unit, skill: SkillDef): SkillDef {
+    let out = skill;
+    if (skill.perGuilt) {
+      const g = Math.max(0, ...this.alive('enemy').map((e) => e.guilt ?? 0));
+      const p = skill.perGuilt;
+      out = { ...out };
+      if (p.shieldPct && out.shieldPct) out.shieldPct += p.shieldPct * g;
+      if (p.empowerPct && out.empower) out.empower = { ...out.empower, pct: out.empower.pct + p.empowerPct * g };
+    }
+    if (skill.perStride && actor.stride && out.mult) out = { ...out, mult: out.mult * (1 + skill.perStride * actor.stride) };
+    if (skill.perScar && actor.scars && out.mult) out = { ...out, mult: out.mult * (1 + skill.perScar * actor.scars) };
+    return out;
+  }
+
+  /** Random living foes for a Reliquary Volley: one per Remains spent. */
+  private volleyTargets(actor: Unit, max: number, events: BattleEvent[]): Unit[] {
+    const n = Math.min(max, this.kw.remains);
+    if (n <= 0) return [];
+    this.kw.remains -= n;
+    events.push({ type: 'status', uid: actor.uid, label: `Remains -${n}` });
+    this.spentRemains(n, events);
+    const out: Unit[] = [];
+    for (let i = 0; i < n; i++) {
+      const foes = this.alive('enemy');
+      if (foes.length) out.push(foes[Math.floor(this.rng() * foes.length)]);
+    }
+    return out;
+  }
+
+  /** Signatures that answer the party spending Remains. */
+  private spentRemains(n: number, events: BattleEvent[]) {
+    for (const u of this.alive('party')) if (u.sig?.remainsSpendHeal) this.mend(u, u.maxHp * u.sig.remainsSpendHeal * n, events);
+  }
+
+  /** Adds Scars to a Covenant Sister, with the Zeal they ring out. */
+  private addScars(u: Unit, n: number, events: BattleEvent[]) {
+    if (!this.isKw(u, 'scars') || n <= 0) return;
+    const before = u.scars ?? 0;
+    u.scars = Math.min(KW.SCARS_MAX, before + n);
+    const got = u.scars - before;
+    if (got <= 0) return;
+    events.push({ type: 'status', uid: u.uid, label: `Scars ${u.scars}` });
+    const lash = this.sigHolder('scarZeal');
+    if (lash) this.addZeal(lash.sig!.scarZeal! * got, events, 'Hymn of the Lash');
+  }
+
+  /** Sets the Tide (up to its cap), with High Water the first time it is full. */
+  private raiseTide(n: number, events: BattleEvent[]) {
+    if (!this.partyHas('tide') || n <= 0) return;
+    this.kw.tide = Math.min(KW.TIDE_MAX, this.kw.tide + n);
+    if (this.kw.tide >= KW.TIDE_MAX) {
+      const hw = this.sealHolder('highWater');
+      if (hw) {
+        this.breakSeal(hw, events);
+        this.addZeal(25, events, hw.seal!.name);
+      }
+    }
+  }
+
+  /** Raises one fallen Sister with this share of HP. */
+  private raiseOne(u: Unit, pct: number, events: BattleEvent[], label = 'Raised!') {
+    u.hp = Math.max(1, Math.round(u.maxHp * pct));
+    u.status = {};
+    u.rank = this.alive(u.side).length;
+    if (u.zeal !== undefined) u.zeal = 0;
+    this.log.push(`  ${u.name} rises`);
+    events.push({ type: 'revive', uid: u.uid }, { type: 'status', uid: u.uid, label });
+  }
+
+  /** A Mercy kill's extra rewards from signatures. */
+  private mercyKill(actor: Unit, events: BattleEvent[]) {
+    const z = this.sigHolder('mercyZeal');
+    if (z) this.addZeal(z.sig!.mercyZeal!, events, 'Mercy');
+    const c = this.sigHolder('mercyCure');
+    if (c) {
+      for (const a of this.alive('party')) {
+        this.mend(a, a.maxHp * c.sig!.mercyCure!, events);
+        if (a.status.poison || a.status.bleed) {
+          a.status.poison = a.status.bleed = undefined;
+          events.push({ type: 'status', uid: a.uid, label: 'Cured' });
+        }
+      }
+    }
+    if (actor.sig?.mercyExtra && actor.hp > 0 && this.extraRound[actor.uid] !== this.round) {
+      this.extraRound[actor.uid] = this.round;
+      this.queue = [actor.uid, ...this.queue.filter((id) => id !== actor.uid)];
+      events.push({ type: 'status', uid: actor.uid, label: 'Coup de Grâce: again!' });
+    }
+  }
+
+  /** Peals: each Bell Sister's own Peal effect. */
+  private peal(events: BattleEvent[]) {
+    for (const u of this.alive('party')) {
+      const p = u.sig?.peal;
+      if (!p) continue;
+      const foes = () => this.alive('enemy');
+      if (p.strikeAll) for (const e of foes()) this.hit(u, e, { id: 'peal', name: 'Peal', desc: '', from: [], target: 'enemy', mult: p.strikeAll }, events);
+      if (p.strikeLowest) {
+        const low = [...foes()].sort((a, b) => a.hp - b.hp)[0];
+        if (low) this.hit(u, low, { id: 'peal', name: 'Peal', desc: '', from: [], target: 'enemy', mult: p.strikeLowest }, events);
+      }
+      if (p.accuseAll) for (const e of foes()) e.status.accused = Math.max(e.status.accused ?? 0, p.accuseAll);
+      if (p.accuseAll && foes().length) events.push({ type: 'text', text: `${u.name}'s Peal: every foe is Accused.` });
+      if (p.burnAll) {
+        const dmg = Math.max(1, Math.round(this.attackOf(u) * p.burnAll));
+        for (const e of foes()) {
+          const old = e.status.poison;
+          e.status.poison = old ? { ...old, dmg: old.dmg + dmg, turns: Math.max(old.turns, 2) } : { dmg, turns: 2, kind: 'burn', by: u.uid };
+          events.push({ type: 'status', uid: e.uid, label: 'Burning' });
+        }
+      }
+      if (p.zealAll) this.addZeal(p.zealAll, events, 'Peal');
+      if (p.shieldAll) {
+        for (const a of this.alive('party')) {
+          const amount = Math.round(a.maxHp * p.shieldAll);
+          a.status.shield = Math.max(a.status.shield ?? 0, amount);
+          events.push({ type: 'shield', uid: a.uid, amount });
+        }
+      }
+      if (p.healSelf) this.mend(u, u.maxHp * p.healSelf, events);
+    }
+  }
+
+  /** Start-of-turn signatures: the Drowned Heart, its taunt, and the Overflowing Chalice's raising. */
+  private turnKits(actor: Unit, events: BattleEvent[]) {
+    const g = actor.sig;
+    if (!g || actor.side !== 'party') return;
+    if (g.tideHeal && this.kw.tide > 0) for (const a of this.alive('party')) this.mend(a, a.maxHp * g.tideHeal * this.kw.tide, events);
+    if (g.tideTaunt && this.kw.tide >= KW.TIDE_MAX) {
+      actor.status.taunt = Math.max(actor.status.taunt ?? 0, 1);
+      events.push({ type: 'status', uid: actor.uid, label: 'Taunting' });
+    }
+    if (g.raise3 && this.kw.remains >= 3) {
+      const fallen = this.units.find((u) => u.side === 'party' && u.hp <= 0);
+      if (fallen) {
+        this.kw.remains -= 3;
+        this.spentRemains(3, events);
+        events.push({ type: 'status', uid: actor.uid, label: 'Remains -3' });
+        this.raiseOne(fallen, g.raise3, events);
+      }
+    }
+  }
+
+  /** A foe starts charging: The Mirror Judges and Never Sleep answer it. */
+  private chargeKits(foe: Unit, events: BattleEvent[]) {
+    const mj = this.sigHolder('hymnWrath');
+    if (mj && this.kw.hymns.length && foe.wrath) {
+      foe.wrath = Math.max(0, foe.wrath - mj.sig!.hymnWrath!);
+      events.push({ type: 'status', uid: foe.uid, label: `-${mj.sig!.hymnWrath} Wrath` });
+    }
+    const ns = foe.boss ? this.sealHolder('neverSleep') : undefined;
+    if (ns) {
+      this.breakSeal(ns, events);
+      if (foe.wrath) foe.wrath = Math.max(0, foe.wrath - 20);
+      events.push({ type: 'status', uid: foe.uid, label: '-20 Wrath' });
+      const p = foe.status.poison;
+      if (p) {
+        foe.status.poison = undefined;
+        events.push({ type: 'status', uid: foe.uid, label: 'Ignited!' });
+        this.pierce(foe, Math.round(p.dmg * p.turns), events);
+      }
+    }
+  }
+
+  /** One strike of a skill on a target: its repeats, the Duet's echo, and what a kill brings. */
+  private strike(actor: Unit, t: Unit, sk: SkillDef, events: BattleEvent[]) {
+    const n = sk.target === 'enemy' ? sk.hits ?? 1 : 1;
+    const g = actor.side === 'party' ? actor.sig : undefined;
+    const duet = !!g?.hymnDouble && this.kw.hymns.length > 0 && sk.target === 'enemy';
+    for (let i = 0; i < n && t.hp > 0 && actor.hp > 0; i++) {
+      this.hit(actor, t, sk, events);
+      if (sk.zealPerHit) this.addZeal(sk.zealPerHit, events, sk.name);
+      if (duet) {
+        if (g!.hymnStrikeZeal) this.addZeal(g!.hymnStrikeZeal, events, 'Duet');
+        if (t.hp > 0) this.hit(actor, t, { ...sk, id: 'duet', name: 'Duet', mult: sk.mult! * g!.hymnDouble! }, events);
+      }
+    }
+    if (t.hp <= 0 && sk.onKill) {
+      const k = sk.onKill;
+      if (k.zeal) this.addZeal(k.zeal, events, sk.name, actor);
+      if (k.remains) this.gainRemains(k.remains, events);
+      if (k.toll && this.isKw(actor, 'toll')) this.ring(k.toll, events);
+    }
+  }
+
+  /** Double damage under the execute line: the skill's own, or a Drowning Bell that rises with the Tide. */
+  private executeMult(actor: Unit, t: Unit, skill: SkillDef) {
+    const et = actor.side === 'party' ? actor.sig?.executeTide : undefined;
+    const line = et ? et.base + et.per * this.kw.tide : EXECUTE_AT;
+    const ex = Math.max(skill.execute ?? 0, et ? 1 : 0);
+    return ex && t.hp < t.maxHp * line ? 1 + ex : 1;
+  }
+
+  /** Extra critical chance from a signature. */
+  private critBonus(actor: Unit) {
+    const g = actor.side === 'party' ? actor.sig : undefined;
+    return g?.critPerRemains ? g.critPerRemains * this.kw.remains : 0;
+  }
+
+  /** Heals the user (life drained); a Blood Oath turns the overflow into a shield behind her. */
+  private leech(u: Unit, amount: number, events: BattleEvent[]) {
+    const want = Math.round(amount * this.healOf(u));
+    const real = Math.min(u.maxHp - u.hp, want);
+    if (real > 0) {
+      u.hp += real;
+      events.push({ type: 'heal', uid: u.uid, amount: real });
+    }
+    const over = want - Math.max(0, real);
+    const b = over > 0 && u.sig?.overhealBehind ? this.alive(u.side).find((x) => x.rank === u.rank + 1) : undefined;
+    if (b) {
+      b.status.shield = (b.status.shield ?? 0) + over;
+      events.push({ type: 'shield', uid: b.uid, amount: over });
+    }
+  }
+
+  /**
+   * A foe's blow on a Sister, before it lands: a Blasphemy turned back, Saints who
+   * step in, and Seals that refuse a death. Returns the damage she still takes.
+   */
+  private guardKits(foe: Unit, t: Unit, dmg: number, events: BattleEvent[]): number {
+    if (this.reflecting && this.reflecting.boss === foe) {
+      const half = Math.floor(dmg / 2);
+      this.reflecting.sum += dmg - half;
+      dmg = half;
+    }
+    const ws = this.sealHolder('wallSaint');
+    if (ws && ws !== t && dmg > t.maxHp * 0.3) {
+      this.breakSeal(ws, events);
+      events.push({ type: 'status', uid: t.uid, label: 'Guarded by the Wall' });
+      this.pierce(ws, Math.round(dmg / 2), events);
+      return 0;
+    }
+    if (dmg < t.hp) return dmg;
+    const wb = this.sealHolder('walkBefore');
+    if (wb && wb !== t && wb.hp > dmg) {
+      this.breakSeal(wb, events);
+      wb.hp -= dmg;
+      events.push({ type: 'damage', uid: wb.uid, amount: dmg, blocked: 0 });
+      return 0;
+    }
+    if (t.seal?.kind === 'forbidden' && !t.sealUsed) {
+      this.breakSeal(t, events);
+      for (const e of this.alive('enemy')) this.addGuilt(e, 3, events);
+      return t.hp - 1;
+    }
+    if (t.seal?.kind === 'unbrokenMidnight' && !t.sealUsed) {
+      this.breakSeal(t, events);
+      if (!this.kw.midnight) this.ring(Math.max(1, KW.MIDNIGHT_AT - this.kw.toll), events);
+      return t.hp - 1;
+    }
+    const lr = this.sealHolder('lastRites');
+    if (lr) {
+      this.breakSeal(lr, events);
+      this.mend(t, t.maxHp * 0.3, events);
+      foe.status.foretold = { pct: 0.15, turns: 2 };
+      events.push({ type: 'status', uid: foe.uid, label: 'Foretold' });
+      return 0;
+    }
+    return dmg;
+  }
+
+  /** After a Sister is struck: Scars, Testimony's Guilt, and Unmasked. */
+  private struckKits(actor: Unit, t: Unit, events: BattleEvent[]) {
+    const g = t.sig;
+    if (g?.scarOnHit && t.hp > 0) this.addScars(t, g.scarOnHit, events);
+    if (actor.side === 'enemy' && actor.hp > 0) {
+      if (g?.guiltWhenStruck) this.addGuilt(actor, g.guiltWhenStruck, events);
+      else if (t.status.ward && this.sigHolder('guiltOnWarded')) this.addGuilt(actor, 1, events);
+    }
+    if (t.hp > 0 && t.hp < t.maxHp * 0.3 && t.seal?.kind === 'unmasked' && !t.sealUsed) {
+      this.breakSeal(t, events);
+      this.mend(t, t.maxHp * 0.25, events);
+      this.addScars(t, KW.SCARS_MAX, events);
+    }
+  }
+
+  /** A Blasphemy is about to land: Seen Before and Reflected Blasphemy. */
+  private blasphemyKits(boss: Unit, events: BattleEvent[]) {
+    const sb = this.sealHolder('seenBefore');
+    if (sb) {
+      this.breakSeal(sb, events);
+      for (const a of this.alive('party')) {
+        a.status.ward = { pct: Math.max(0.4, a.status.ward?.pct ?? 0), turns: Math.max(1, a.status.ward?.turns ?? 0) };
+        events.push({ type: 'status', uid: a.uid, label: 'Warded' });
+      }
+    }
+    const rf = this.sealHolder('reflect');
+    if (rf) {
+      this.breakSeal(rf, events);
+      this.reflecting = { boss, sum: 0 };
+    }
+  }
+
+  /** A Sister's skill, after its targets: effects on the whole field. */
+  private extraKits(actor: Unit, skill: SkillDef, events: BattleEvent[]) {
+    const wide = (part: Partial<SkillDef>, side: Side) => {
+      for (const u of this.alive(side)) {
+        const sk = this.condFor({ id: `${skill.id}-also`, name: skill.name, desc: '', from: [], target: side === actor.side ? 'ally' : 'enemy', ...part }, u);
+        if (sk.mult) this.hit(actor, u, sk, events);
+        if (u.hp > 0) this.applyEffects(actor, u, sk, events);
+      }
+    };
+    if (skill.alsoFoes) wide(skill.alsoFoes, 'enemy');
+    if (skill.alsoAllies) wide(skill.alsoAllies, 'party');
+    if (skill.delayFastest) {
+      const fast = [...this.alive('enemy')].sort((a, b) => b.spd - a.spd)[0];
+      if (fast) this.applyEffects(actor, fast, { id: 'undertow', name: skill.name, desc: '', from: [], target: 'enemy', delay: true }, events);
+    }
+    if (skill.stunSummons) {
+      for (const e of this.alive('enemy')) {
+        if (!e.uid.startsWith('summon-')) continue;
+        e.status.stun = Math.max(e.status.stun ?? 0, skill.stunSummons);
+        events.push({ type: 'status', uid: e.uid, label: 'Stunned' });
+      }
+    }
+    if (skill.lockSummons && !this.locked) {
+      this.locked = true;
+      events.push({ type: 'text', text: 'The crypt is locked: summoned foes will act last.' });
+    }
+    if (skill.mendLowest) {
+      const low = [...this.alive('party')].sort((a, b) => a.hp / a.maxHp - b.hp / b.maxHp)[0];
+      if (low) this.mend(low, low.maxHp * skill.mendLowest, events);
+    }
+    if (skill.overwatchAll) {
+      for (const a of this.alive('party')) a.status.overwatch = { skill: skill.overwatchAll, turns: KW.OVERWATCH_TURNS };
+      events.push({ type: 'text', text: 'The whole line stands on Overwatch.' });
+    }
+    if (skill.rotate) {
+      const line = this.alive('party');
+      if (line.length > 1) {
+        for (const u of line) {
+          u.rank = u.rank === 1 ? line.length : u.rank - 1;
+          events.push({ type: 'move', uid: u.uid });
+          this.stride(u, events);
+        }
+        const front = line.find((u) => u.rank === 1)!;
+        front.status.haste = Math.max(front.status.haste ?? 0, 1);
+        events.push({ type: 'status', uid: front.uid, label: 'Hasted' });
+      }
+    }
+  }
+
+  /** A Sister has fallen: gifts, guards, and the Seals that answer a death. */
+  private sisterFellKits(u: Unit, events: BattleEvent[]) {
+    const g = u.sig;
+    if (g?.fallGift && this.alive('party').length) {
+      events.push({ type: 'text', text: `${u.name}'s gift passes to her Sisters.` });
+      this.addZeal(g.fallGift.zeal, events, 'Martyr\'s Gift');
+      const share = Math.floor((u.scars ?? 0) * g.fallGift.scarsShare);
+      for (const a of this.alive('party')) {
+        a.status.empower = { pct: Math.max(g.fallGift.empower, a.status.empower?.pct ?? 0), turns: 2 };
+        this.addScars(a, share, events);
+      }
+    }
+    if (g?.hymnOnFall) for (const h of this.kw.hymns) h.double = true;
+    if (u.seal?.kind === 'drowned' && !u.sealUsed) {
+      this.breakSeal(u, events);
+      this.pendingRise.push(u.uid);
+    }
+    const bn = this.sealHolder('bellNoOne');
+    if (bn) {
+      this.breakSeal(bn, events);
+      this.stride(bn, events, KW.STRIDE_MAX);
+      bn.status.haste = Math.max(bn.status.haste ?? 0, 1);
+    }
+    const gb = this.sigHolder('guardBody');
+    if (gb) {
+      gb.status.taunt = Math.max(gb.status.taunt ?? 0, 2);
+      gb.status.counter = { mult: Math.max(0.5, gb.status.counter?.mult ?? 0), turns: 2 };
+      events.push({ type: 'status', uid: gb.uid, label: 'Guards the body' });
+    }
+    const ny = this.sealHolder('notYet');
+    if (ny && !this.pendingRise.includes(u.uid)) {
+      this.breakSeal(ny, events);
+      this.raiseOne(u, 0.25, events, 'Not yet!');
+    }
+    const living = this.alive('party');
+    const last = living.length === 1 ? living[0] : undefined;
+    if (last && last.seal?.kind === 'onlyOne' && !last.sealUsed) {
+      this.breakSeal(last, events);
+      this.mend(last, last.maxHp * 0.5, events);
+      last.status.haste = Math.max(last.status.haste ?? 0, 1);
+      last.bonusAtk = (last.bonusAtk ?? 0) + 0.4;
+    }
+  }
+
+  /** A foe has fallen: the Grave Garden. */
+  private foeFellKits(events: BattleEvent[]) {
+    const gg = this.sigHolder('foeFallHeal');
+    if (!gg) return;
+    const sg = gg.sig!;
+    for (const a of this.alive('party')) {
+      this.mend(a, a.maxHp * sg.foeFallHeal!, events);
+      if (sg.foeFallThorns && (a.status.thorns?.pct ?? 0) < sg.foeFallThorns) a.status.thorns = { pct: sg.foeFallThorns, turns: 1 };
+    }
+  }
+
+  /** Takes a foe's blessings for the party's strongest Sister. */
+  private steal(t: Unit, events: BattleEvent[]) {
+    const st = t.status;
+    if (!(st.empower || st.ward || st.haste || st.shield)) return;
+    const to = [...this.alive('party')].sort((a, b) => b.atk - a.atk)[0];
+    if (to) {
+      if (st.empower) to.status.empower = { ...st.empower };
+      if (st.ward) to.status.ward = { ...st.ward };
+      if (st.haste) to.status.haste = Math.max(to.status.haste ?? 0, st.haste);
+      if (st.shield) to.status.shield = Math.max(to.status.shield ?? 0, st.shield);
+      events.push({ type: 'status', uid: to.uid, label: 'Blessing taken' });
+    }
+    st.empower = st.ward = st.haste = undefined;
+    st.shield = 0;
+    events.push({ type: 'status', uid: t.uid, label: 'Stripped' });
   }
 
   /** Changes Zeal for one Sister, or (no `to`) for every living Sister. */
@@ -1435,6 +2207,12 @@ export class Battle {
     }
   }
 
+}
+
+/** A Hymn's verse at double strength. */
+function doubled(part: Partial<SkillDef>): Partial<SkillDef> {
+  const d = <T extends { pct: number }>(x?: T) => (x ? { ...x, pct: x.pct * 2 } : x);
+  return { ...part, empower: d(part.empower), ward: d(part.ward), critUp: d(part.critUp), weaken: d(part.weaken), regen: d(part.regen) };
 }
 
 /** Enemy HP and attack scale, tuned with balance.test.ts against the Auto player. */

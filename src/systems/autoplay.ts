@@ -80,6 +80,23 @@ export function autoChoose(b: Battle, actor: Unit, opts: { noRite?: boolean } = 
     if (s.heal) v += Math.min(missing(u), actor.atk * s.heal) * (ratio(u) < 0.7 ? 1 : 0.3);
     if (s.shieldPct && !u.status.shield) v += Math.min(threat, u.maxHp * s.shieldPct) + u.maxHp * s.shieldPct * 0.2;
     if (s.haste && !u.status.haste) v += u.atk * 0.5;
+    if (s.overwatch && !u.status.overwatch) v += avgAtk * 0.6;
+    if (s.giveStride) v += avgAtk * 0.1 * s.giveStride;
+    return v;
+  };
+  // Order keywords on a skill: a Hymn's verses, Overwatch, Zeal for the party.
+  const keywordValue = (s: SkillDef) => {
+    let v = 0;
+    const h = s.hymn;
+    if (h && !b.kw.hymns.some((x) => x.name === h.name)) {
+      const verse = { ...s, ...h.allies, empowerTarget: true } as SkillDef;
+      if (h.allies) v += allies.reduce((n, u) => n + support(verse, u), 0) * h.rounds * 0.5;
+      if (h.foes?.weaken) v += foes.reduce((n, t) => n + t.atk * h.foes!.weaken!.pct, 0) * h.rounds;
+      if (h.foes?.accuse) v += avgAtk * 0.25 * foes.length * h.rounds;
+      if (h.foes?.purge) v += foes.reduce((n, t) => n + (t.status.shield ?? 0) + (t.status.empower ? t.atk * 0.5 : 0), 0) + avgAtk * 0.3;
+      v += avgAtk * 0.3;
+    }
+    if (s.zealGain && !s.selfDmgPct) v += s.zealGain * 0.6 * (s.zealAll ? allies.length : 1);
     return v;
   };
   for (const s of skills) {
@@ -87,7 +104,7 @@ export function autoChoose(b: Battle, actor: Unit, opts: { noRite?: boolean } = 
     if (s.target === 'self') {
       if (s.zealGain && s.selfDmgPct && ratio(actor) > 0.6) consider(s, actor, actor.atk * 0.25 * 2 + s.zealGain * 0.6);
       else {
-        let v = support(s, actor);
+        let v = support(s, actor) + keywordValue(s);
         // A taunt is worth the hurt it spares weaker Sisters.
         if (s.taunt && !actor.status.taunt && ratio(actor) > 0.5) v += [...incoming.entries()].filter(([u]) => u !== actor).reduce((n, [, d]) => n + d, 0) * 0.5 + avgAtk * 0.5;
         consider(s, actor, v);
@@ -98,7 +115,7 @@ export function autoChoose(b: Battle, actor: Unit, opts: { noRite?: boolean } = 
       if (s.empowerTarget) {
         const strongest = [...allies].sort((x, y) => y.atk - x.atk)[0];
         if (!strongest.status.empower) consider(s, strongest, strongest.atk * s.empower!.pct * 2 + (s.zealGain ?? 0) * 0.6);
-      } else if (!s.shieldPct && !s.heal && (s.ward || s.thorns || s.regen)) {
+      } else if (!s.shieldPct && !s.heal && (s.ward || s.thorns || s.regen || s.overwatch)) {
         for (const u of allies) consider(s, u, support(s, u));
       }
       continue;
@@ -106,7 +123,7 @@ export function autoChoose(b: Battle, actor: Unit, opts: { noRite?: boolean } = 
     if (s.target === 'allAllies') {
       // Group shields and cures are timed by the threat check above.
       if (s.shieldPct || s.cleanse || (s.selfDmgPct && ratio(actor) < 0.5)) continue;
-      const v = allies.reduce((n, u) => n + support(s, u), 0) + (s.zealGain ?? 0) * 0.6 * (s.zealAll ? allies.length : 1);
+      const v = allies.reduce((n, u) => n + support(s, u), 0) + (s.zealGain ?? 0) * 0.6 * (s.zealAll ? allies.length : 1) + (s.hymn ? keywordValue(s) : 0);
       consider(s, undefined, v);
       continue;
     }
@@ -131,7 +148,9 @@ export function autoChoose(b: Battle, actor: Unit, opts: { noRite?: boolean } = 
       if (group) groupScore += v;
       else consider(s, t, v);
     }
-    if (group) consider(s, undefined, groupScore);
+    const watch = s.overwatch && !actor.status.overwatch ? avgAtk * 0.6 : 0;
+    if (group) consider(s, undefined, groupScore + watch);
+    else if (watch && targets.length) consider(s, targets[0], b.preview(actor, s, targets[0]) + watch);
   }
   if (best) return best;
   const other = skills.find((s) => s.id !== 'shift' && !s.rite) ?? skills[0];
