@@ -22,3 +22,18 @@ describe('suggestParty', () => {
     for (const id of rest) if (!['Tank', 'Healer'].includes(roleOf(id))) expect(sisterPowerById(s, id)).toBeLessThanOrEqual(weakestFree);
   });
 });
+
+describe('suggestParty on a fresh pull', () => {
+  it('fields a damage dealer instead of a party of Buffers', () => {
+    const s = newSave();
+    const of = (role: string) => CRUSADERS.filter((c) => CLASSES[c.classId].role === role);
+    // three strong Buffers, a Healer, and one weaker damage dealer
+    for (const c of of('Buffer').slice(0, 3)) s.owned[c.id] = { level: 20, vow: 0 } as never;
+    s.owned[of('Healer')[0].id] = { level: 20, vow: 0 } as never;
+    const dps = of('Melee DPS')[0].id;
+    s.owned[dps] = { level: 1, vow: 0 } as never;
+    const party = suggestParty(s);
+    expect(party).toContain(dps);
+    expect(party.filter((id) => roleOf(id) === 'Buffer')).toHaveLength(2);
+  });
+});

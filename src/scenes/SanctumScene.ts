@@ -109,10 +109,10 @@ export class SanctumScene extends Phaser.Scene {
     this.drawRightRail(areaTop + 104);
     this.drawVigil(PAD, stripTop, GAME_W - PAD * 2, stripH);
 
-    // Onward: always the next stage of the Pilgrim's Road.
+    // Onward: straight to the team for the next stage of the Pilgrim's Road (Back shows the map).
     const stage = vigilStage(save);
     const done = roadDone(save);
-    makeButton(this, GAME_W / 2, onward, GAME_W - PAD * 2, 64, done ? 'The Road' : `Onward!  ·  ${stage.label}`, () => this.scene.start('Campaign'), { active: !done, icon: 'blade', fontSize: 24 });
+    makeButton(this, GAME_W / 2, onward, GAME_W - PAD * 2, 64, done ? 'The Road' : `Onward!  ·  ${stage.label}`, () => this.scene.start('Campaign', done ? { mode: 'road' } : { mode: 'road', fight: stage.n }), { active: !done, icon: 'blade', fontSize: 24 });
 
     addTabBar(this, 'Sanctum');
     // What the march cleared while you were away, or why it halted.
