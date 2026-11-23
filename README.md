@@ -37,7 +37,7 @@ Every built-in drawing can be replaced by dropping a PNG into a folder; nothing 
 
 ## Music
 
-The soundtrack lives in `src/assets/audio/` as OGG (most browsers) plus an MP3 fallback (older Safari); the game picks one and fetches each track only when a screen first needs it. To replace a track, put the new original `.mp3` files in a folder and run `tools/encode-music.sh <folder>` (needs ffmpeg): it levels the loudness, trims the fade-out tails off loops (the game crossfades them), cuts the UR stinger to about 5.5 seconds, and writes both formats. Which screen plays which loop is `SCENE_MUSIC` in `src/audio/music.ts`. Music starts on the first tap (browsers block sound before that), pauses when the app is in the background, and its volume and mute live in Settings.
+The soundtrack lives in `src/assets/audio/` as OGG (most browsers) plus an MP3 fallback (older Safari); the game picks one and fetches each track only when a screen first needs it. To replace a track, put the new original `.mp3` files in a folder and run `tools/encode-music.sh <folder>` (needs ffmpeg): it levels the loudness, trims the fade-out tails off loops (the game crossfades them), keeps the short cues (victory, defeat, UR pull) whole, and writes both formats. Trim points are set per take in the script. Which screen plays which loop is `SCENE_MUSIC` in `src/audio/music.ts`. Music starts on the first tap (browsers block sound before that), pauses when the app is in the background, and its volume and mute live in Settings.
 
 ## How a fight reads
 

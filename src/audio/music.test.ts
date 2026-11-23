@@ -1,12 +1,9 @@
 import { describe, expect, it } from 'vitest';
-import { resolveTrack } from './music';
+import { resolveTrack, type LoopId } from './music';
 
-describe('round 9 tracks', () => {
-  it('borrow an older loop until their own file arrives', () => {
-    expect(resolveTrack('sanctum')).toBe('sanctum');
-    expect(resolveTrack('armory')).toBe('altar');
-    expect(resolveTrack('tower')).toBe('sanctum');
-    expect(resolveTrack('deep-battle')).toBe('battle');
-    expect(resolveTrack('heretic')).toBe('boss');
+describe('soundtrack', () => {
+  it('every loop, including the round 9 tracks, plays its own file', () => {
+    const loops: LoopId[] = ['sanctum', 'altar', 'crypt', 'battle', 'boss', 'armory', 'chapter', 'tower', 'deep-crypt', 'deep-battle', 'deep-boss', 'hunt', 'heretic'];
+    for (const id of loops) expect(resolveTrack(id)).toBe(id);
   });
 });
