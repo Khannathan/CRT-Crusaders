@@ -1,7 +1,10 @@
 import Phaser from 'phaser';
-import { DISPLAY_FONT, FONT, GAME_W, HUD_FONT, PAL, hex } from '../config';
+import { FONT, GAME_W, HUD_FONT, PAL, hex } from '../config';
 import { commit, game } from '../state/game';
-import { formatPower } from '../systems/power';
+import { accountPower, formatPower } from '../systems/power';
+import { ROMAN_RANK, giftsWaiting, rankInfo } from '../systems/rank';
+import { keeperOf } from '../systems/keeper';
+import { hasFullBody, hasSplash, portraitKey } from './placeholderPortrait';
 import { notePower } from '../systems/powerGrowth';
 import { giltOf } from '../systems/currency';
 import { addFullscreenButton } from './fullscreen';
@@ -32,14 +35,22 @@ export function addCurrencyBar(scene: Phaser.Scene) {
     scene.add.rectangle(GAME_W / 2, h - 0.5, GAME_W, 1, PAL.armorShadow).setDepth(5);
   }
 
-  // logo.png (the title art, about 97 x 50) replaces the crest and the drawn title
-  if (scene.textures.exists('logo')) {
-    const logo = scene.add.image(12, mid, 'logo').setOrigin(0, 0.5).setDepth(5);
-    if (logo.height > h - 6) logo.setScale((h - 6) / logo.height);
-  } else {
-    addIcon(scene, 28, mid, 'sigil', 30, PAL.amber).setDepth(5);
-    scene.add.text(50, mid - 9, 'CRT', { fontFamily: HUD_FONT, fontSize: '12px', color: '#d79e6f' }).setOrigin(0, 0.5).setDepth(5);
-    scene.add.text(50, mid + 7, 'CRUSADERS', { fontFamily: DISPLAY_FONT, fontStyle: 'bold', fontSize: '13px', color: hex(PAL.amber) }).setOrigin(0, 0.5).setDepth(5);
+  // The crest (top left): your Keeper's face, Rank of Faith and Power. Tap it for your crest
+  // sheet (Rank, Settings, Chronicle, save tools). The logo lives on the title screen now.
+  const save = game.save;
+  const keeper = keeperOf(save, (id) => hasSplash(id) || hasFullBody(id));
+  const cx = 10 + 22;
+  scene.add.rectangle(cx, mid - 4, 44, 44, 0x000000).setStrokeStyle(2, PAL.goldEdge).setDepth(5);
+  if (keeper && scene.textures.exists(portraitKey(keeper.id))) scene.add.image(cx, mid - 4, portraitKey(keeper.id)).setDisplaySize(40, 40).setDepth(5);
+  else addIcon(scene, cx, mid - 4, 'sigil', 28, PAL.amber).setDepth(5);
+  const rank = scene.add.text(cx, mid + 18, ROMAN_RANK(rankInfo(save).rank), { fontFamily: HUD_FONT, fontSize: '11px', color: hex(0xfff1d6), backgroundColor: '#6b1a24', padding: { x: 3, y: 1 } }).setOrigin(0.5, 0.5).setDepth(6);
+  if (giftsWaiting(save).length) scene.add.circle(cx + 22, mid - 24, 5, PAL.amber).setStrokeStyle(2, 0x1b121c).setDepth(6);
+  scene.add.text(62, mid - 10, 'POWER', { fontFamily: HUD_FONT, fontSize: '11px', color: hex(PAL.steel) }).setOrigin(0, 0.5).setDepth(5);
+  const power = scene.add.text(62, mid + 8, formatPower(accountPower(save)), { fontFamily: HUD_FONT, fontSize: '16px', color: hex(PAL.amber) }).setOrigin(0, 0.5).setDepth(5);
+  const crestW = Math.max(108, 62 + power.width + 6, rank.x + rank.width / 2 + 4);
+  if (scene.scene.key !== 'Profile') {
+    const hit = scene.add.zone(crestW / 2, mid, crestW, CURRENCY_BAR_H).setDepth(6).setInteractive({ useHandCursor: true });
+    hit.on('pointerup', () => scene.scene.start('Profile'));
   }
 
   /** A framed chip; layout(value, right) sizes it and pins its right edge. Returns its left edge. */
@@ -71,8 +82,8 @@ export function addCurrencyBar(scene: Phaser.Scene) {
   const gilt = chip('gilt', 0xf2d27a, 'Gilt', 'gilt');
   // full-screen toggle in the top-right corner, chips to its left
   addFullscreenButton(scene, GAME_W - 22, mid, 20);
-  // the logo ends about here; if the chips would run under it, drop their word labels (the icons stay)
-  const logoRight = scene.textures.exists('logo') ? 112 : 130;
+  // the crest ends about here; if the chips would run under it, drop their word labels (the icons stay)
+  const logoRight = crestW + 4;
   const refresh = () => {
     const lay = (named: boolean) => gilt(giltOf(game.save), seals(game.save.seals, tithes(game.save.tithes, GAME_W - 42, named) - 6, named) - 6, named);
     if (lay(true) < logoRight) lay(false);

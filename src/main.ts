@@ -49,7 +49,9 @@ import { InventoryScene } from './scenes/InventoryScene';
 import { ShopScene } from './scenes/ShopScene';
 import { ReliquaryScene } from './scenes/ReliquaryScene';
 import './fonts.css';
-import { AltarScene, CloisterScene, ModesScene } from './scenes/ModesScene';
+import { AltarScene, CloisterScene, ModesScene, WingAbyssScene, WingContestScene, WingCryptsScene, WingLaborsScene } from './scenes/ModesScene';
+import { ProfileScene } from './scenes/ProfileScene';
+import { TitleScene } from './scenes/TitleScene';
 import { CampaignScene } from './scenes/CampaignScene';
 
 /**
@@ -88,7 +90,9 @@ function start() {
     },
     scene: [
       BootScene,
+      TitleScene,
       SanctumScene,
+      ProfileScene,
       PenanceScene,
       NovitiateScene,
       DeedsScene,
@@ -120,6 +124,10 @@ function start() {
       RivalsScene,
       RosterScene,
       ModesScene,
+      WingLaborsScene,
+      WingCryptsScene,
+      WingContestScene,
+      WingAbyssScene,
       CampaignScene,
       ErrandsScene,
       KennelScene,

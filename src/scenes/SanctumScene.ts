@@ -1,177 +1,132 @@
 import Phaser from 'phaser';
-import { FONT, GAME_H, GAME_W, PAL, hex } from '../config';
+import { GAME_H, GAME_W, PAL, hex } from '../config';
 import { CRUSADERS } from '../data/crusaders';
-import { applyCrt } from '../fx/crt';
-import { commit, game, resetGame } from '../state/game';
-import { current } from '../state/run';
-import { showExport, showImport } from '../ui/saveTransfer';
-import { drawAlmostThere } from '../ui/almostThere';
-import { drawFlame } from '../ui/flame';
+import { commit, game } from '../state/game';
 import { tendFlame } from '../systems/flame';
-import { saveSettings, settings } from '../state/settings';
-import { music } from '../audio/music';
-import { toggleFullscreen } from '../ui/fullscreen';
 import { FieldBattle } from '../systems/field';
 import { FieldView } from '../ui/fieldView';
-import { VIGIL_CAP_HOURS, VIGIL_SIZE, vigilHours, claimVigil, ensureVigil, fastReward, setVigil, vigilPending, vigilRates, vigilStage, type VigilClaim, type VigilState } from '../systems/vigil';
-import { CHAPTERS, FAST_HOURS, campaignOf, fastCost, roadDone, stageBattle, stageRecommended } from '../systems/campaign';
-import { vigilExpRate } from '../systems/exp';
+import { VIGIL_CAP_HOURS, VIGIL_SIZE, vigilHours, claimVigil, ensureVigil, fastReward, setVigil, vigilPending, vigilStage, type VigilClaim, type VigilState } from '../systems/vigil';
+import { CHAPTERS, FAST_HOURS, fastCost, roadDone, stageBattle, stageRecommended } from '../systems/campaign';
 import { giltOf } from '../systems/currency';
 import { partyPower } from '../systems/power';
 import { makeButton } from '../ui/button';
 import { bagEmpty, bagText } from '../systems/items';
 import { CURRENCY_BAR_H, addCurrencyBar } from '../ui/currencyBar';
-import { ROMAN_RANK, giftsWaiting, rankInfo } from '../systems/rank';
-import { nextMilestone } from '../systems/powerGrowth';
-import { accountPower, formatPower } from '../systems/power';
-import { drawRites } from '../ui/rites';
+import { giftsWaiting } from '../systems/rank';
 import { KEEPER_BOND, blessingReady, chooseKeeper, keeperLines, keeperOf, visitKeeper, type KeeperNudges } from '../systems/keeper';
 import { anyDeedReady } from '../systems/deeds';
-import { noviceReady } from '../systems/novitiate';
+import { noviceDay, noviceOpen, noviceReady, NOVITIATE_DAYS } from '../systems/novitiate';
 import { anyClaimable } from '../systems/tasks';
-import { ORDERS } from '../data/orders';
-import { hasFullBody, hasSplash, portraitKey } from '../ui/placeholderPortrait';
+import { matinsReady } from '../systems/matins';
+import { passReady } from '../systems/pass';
+import { chapterReady } from '../systems/chapter';
+import { feastName, feastReady } from '../systems/feast';
+import { limitedWindow, timeLeft } from '../systems/limited';
+import { chooseLimited } from '../systems/gacha';
+import { roundsReady } from '../systems/rounds';
+import { hasFullBody, hasSplash, queueSplash, splashKey } from '../ui/placeholderPortrait';
 import { toast } from '../ui/modeScreen';
 import { drawMarchToggle, marchLine, marchUi, showMarchSummary } from '../ui/marchUi';
 import { marchOf } from '../systems/march';
-import { NOVICE_TASKS, NOVITIATE_DAYS, noviceDay, noviceMarks, noviceOpen, taskClaimable } from '../systems/novitiate';
-import { morningRounds, roundsReady, roundsTotal, type RoundsReport } from '../systems/rounds';
+import { GROUPS, groupReady } from '../ui/nav';
+import { runRounds } from '../ui/roundsSheet';
 import { TAB_BAR_H, addTabBar } from '../ui/tabBar';
-import { addPageScroll } from '../ui/pageScroll';
 import { pickParty } from '../ui/partyPicker';
-import { PAD, addBackdrop, addFrame, addHeading, addScreenGlow, fitLine, text } from '../ui/theme';
+import { PAD, addBackdrop, addFrame, addIcon, addScreenGlow, fitLine, text, textWash } from '../ui/theme';
 
-/** Home screen: the Vigil (idle auto-battle and offline gathering), destinations and the tab bar. */
+/** A gold dot. */
+const dotAt = (scene: Phaser.Scene, x: number, y: number) =>
+  scene.textures.exists('ui-ready-dot') ? scene.add.image(x, y, 'ui-ready-dot').setDisplaySize(16, 16).setDepth(4) : scene.add.circle(x, y, 6, PAL.amber).setStrokeStyle(2, 0x1b121c).setDepth(4);
+
+/**
+ * Home screen, the lobby (the Cathedral layout, 2026-11-23): your Keeper fills
+ * the screen (tap her to talk), daily things sit on the left rail, timed events
+ * on the right, the Vigil fights at the bottom, and Onward! always leads to the
+ * next Road stage.
+ */
 export class SanctumScene extends Phaser.Scene {
   private refreshBar?: () => void;
-  /** Where the page was scrolled to, kept across visits and redraws. */
-  private static scrollY = 0;
 
   constructor() {
     super('Sanctum');
   }
 
-  create() {
-    addScreenGlow(this);
-    const before = new Set(this.children.list);
-    this.refreshBar = addCurrencyBar(this);
-    const topBar = this.children.list.filter((o) => !before.has(o));
-    const top = addHeading(this, 'The Sanctum', CURRENCY_BAR_H + 16);
-    // A title earned in the Order Book, worn under the heading.
-    if (game.save.title) this.add.text(PAD + 128, top - 6, game.save.title.toUpperCase(), text.hud(10, PAL.amber)).setOrigin(0, 0.5);
-    // Rank of Faith badge, top right; a dot when a rank gift waits.
-    const ri = rankInfo(game.save);
-    const rb = makeButton(this, GAME_W - PAD - 62, CURRENCY_BAR_H + 38, 124, 46, `Rank ${ROMAN_RANK(ri.rank)}`, () => this.scene.start('Rank'), { fontSize: 17, icon: 'sigil' });
-    if (giftsWaiting(game.save).length) this.add.circle(rb.box.x + 56, rb.box.y - 18, 6, PAL.amber).setStrokeStyle(2, 0x1b121c);
-    // Account power: the strongest four Sisters
-    const ap = accountPower(game.save);
-    if (ap) {
-      this.add.text(rb.box.x - 76, rb.box.y - 16, 'POWER', text.hud(11, PAL.steel)).setOrigin(1, 0);
-      this.add.text(rb.box.x - 76, rb.box.y, formatPower(ap), text.hud(16, PAL.amber)).setOrigin(1, 0);
-      // The next Power milestone (its Gilt pays the moment it is crossed).
-      const nm = nextMilestone(game.save);
-      if (nm) this.add.text(rb.box.x - 76, rb.box.y + 20, `NEXT ${formatPower(nm.at)}`, text.hud(10, PAL.steel)).setOrigin(1, 0);
-    }
+  private keeper() {
+    const save = game.save;
+    const c = keeperOf(save, (id) => hasSplash(id) || hasFullBody(id));
+    // The first Keeper shown stays until the player changes her.
+    if (c && save.keeper?.id !== c.id) chooseKeeper(save, c.id);
+    return c;
+  }
 
-    const owned = CRUSADERS.filter((c) => game.save.owned[c.id]);
-    const fw = GAME_W - PAD * 2;
-    const fh = owned.length ? 486 : 420;
-    const fx = GAME_W / 2;
-    const fy = top + 14 + fh / 2;
-    const bottom = fy + fh / 2;
+  preload() {
+    const c = Object.keys(game.save.owned).length ? this.keeper() : undefined;
+    if (c) queueSplash(this, c.id);
+  }
+
+  create() {
+    const save = game.save;
+    const owned = CRUSADERS.filter((c) => save.owned[c.id]);
+    const areaTop = CURRENCY_BAR_H;
+    const areaBot = GAME_H - TAB_BAR_H;
+    const areaH = areaBot - areaTop;
+    const c = owned.length ? this.keeper() : undefined;
+
+    // Her splash fills the lobby; without one, her figure stands in the great hall.
+    this.add.rectangle(GAME_W / 2, GAME_H / 2, GAME_W, GAME_H, 0x0e0a10);
+    if (c && this.textures.exists(splashKey(c.id))) {
+      // the whole painting, scaled to cover the lobby from the top down, so her face sits clear of the Vigil
+      const img = this.add.image(GAME_W / 2, areaTop, splashKey(c.id)).setOrigin(0.5, 0);
+      img.setScale(Math.max(GAME_W / img.width, areaH / img.height));
+    }
+    else {
+      addBackdrop(this, owned.length ? 'bg-hall' : 'bg-altar', GAME_W / 2, areaTop + areaH / 2, GAME_W, areaH, { alpha: 0.85, fade: 0.3, fadeColor: 0x0e0a10 });
+      if (c && this.textures.exists(`full-${c.id}`)) this.add.image(GAME_W / 2, areaTop + areaH * 0.62, `full-${c.id}`).setScale(3).setOrigin(0.5, 1);
+    }
+    // dark bands keep the name, the rails and the Vigil readable over any art
+    const g = this.add.graphics();
+    for (let i = 0; i < 10; i++) g.fillStyle(0x0e0a10, 0.7 - i * 0.07).fillRect(0, areaTop + i * 12, GAME_W, 12);
+    for (let i = 0; i < 24; i++) g.fillStyle(0x0e0a10, Math.min(0.94, 0.04 * (i + 1))).fillRect(0, areaBot - 380 + i * 12, GAME_W, 12);
+    g.fillStyle(0x0e0a10, 0.94).fillRect(0, areaBot - 92, GAME_W, 92);
+    addScreenGlow(this);
+    this.refreshBar = addCurrencyBar(this);
 
     if (!owned.length) {
-      addBackdrop(this, 'bg-altar', fx, fy, fw, fh, { alpha: 0.75, fade: 0.7 });
-      addFrame(this, fx, fy, fw, fh);
       this.add
-        .text(PAD + 24, bottom - 156, 'The Sanctum stands empty. No Sister keeps the vigil!', { ...text.display(26, 0xfff1d6), wordWrap: { width: fw - 48 } })
-        .setOrigin(0, 1)
+        .text(PAD + 8, areaBot - 260, 'The Sanctum stands empty. No Sister keeps the vigil!', { ...text.display(26, 0xfff1d6), wordWrap: { width: GAME_W - PAD * 2 - 16 } })
         .setShadow(0, 2, '#000000', 9, false, true);
-      this.add.text(PAD + 24, bottom - 146, 'Ten Sisters await your call\nat the Sealed Altar.', { ...text.body(20, 0xd8c2bc), fontStyle: 'italic' });
-      makeButton(this, PAD + 24 + 130, bottom - 56, 260, 64, 'To the Altar!', () => this.scene.start('Recruit'), { active: true, icon: 'seal' });
-    } else {
-      this.drawVigil(fx, fy, fw, fh);
+      this.add.text(PAD + 8, areaBot - 160, 'Ten Sisters await your call\nat the Sealed Altar.', { ...text.body(20, 0xd8c2bc), fontStyle: 'italic' });
+      makeButton(this, GAME_W / 2, areaBot - 52, GAME_W - PAD * 2, 64, 'To the Altar!', () => this.scene.start('Recruit'), { active: true, icon: 'seal', fontSize: 22 });
+      addTabBar(this, 'Sanctum');
+      return;
     }
 
-    // The closest real goals, then the Rites (daily duties).
-    let below = bottom;
-    if (owned.length) {
-      this.add.text(PAD, bottom + 10, 'ALMOST THERE', text.hud(13, PAL.amber));
-      below = drawAlmostThere(this, game.save, bottom + 28);
-    }
-    // The Novitiate: a new player's first fortnight, one tap away.
-    if (noviceOpen(game.save)) {
-      const ready = NOVICE_TASKS.filter((t) => taskClaimable(game.save, t)).length;
-      const day = Math.min(NOVITIATE_DAYS, noviceDay(game.save));
-      const sy = below + 34;
-      const bar = this.add
-        .rectangle(GAME_W / 2, sy, GAME_W - PAD * 2, 44, ready ? 0x3a2228 : 0x1b121c)
-        .setStrokeStyle(ready ? 2 : 1, ready ? PAL.amber : PAL.armorShadow)
-        .setInteractive({ useHandCursor: true });
-      bar.on('pointerup', () => this.scene.start('Novitiate'));
-      this.add.text(PAD + 14, sy, `THE NOVITIATE  ·  DAY ${day} OF ${NOVITIATE_DAYS}`, text.hud(13, PAL.amber)).setOrigin(0, 0.5);
-      this.add.text(GAME_W - PAD - 14, sy, ready ? `${ready} TO CLAIM ›` : `${noviceMarks(game.save)} / ${NOVICE_TASKS.length} MARKS ›`, text.hud(12, ready ? 0xfff1d6 : PAL.steel)).setOrigin(1, 0.5);
-      below = sy + 22;
-    }
-    this.add.text(PAD, below + 18, 'DAILY RITES', text.hud(13, PAL.amber));
-    // Morning Rounds: every daily chore that needs no choice, in one tap.
-    if (owned.length) {
-      const ready = roundsReady(game.save);
-      makeButton(this, GAME_W - PAD - 84, below + 24, 168, 30, ready ? 'Collect all' : 'All collected', () => {
-        const r = morningRounds(game.save);
-        commit();
-        this.showRounds(r);
-      }, { fontSize: 15, active: ready, icon: 'flame' });
-    }
-    let ritesBottom = drawRites(this, game.save, below + 44);
-    if (owned.length) ritesBottom = this.drawKeeper(ritesBottom + 14);
+    const onward = areaBot - 12 - 32;
+    const stripH = 196;
+    const stripTop = onward - 32 - 10 - stripH;
+    this.drawKeeperTalk(c, areaTop, stripTop);
+    this.drawLeftRail(areaTop + 104, stripTop);
+    this.drawRightRail(areaTop + 104);
+    this.drawVigil(PAD, stripTop, GAME_W - PAD * 2, stripH);
 
-    // Prototype-only: settings, and wiping the save to replay the first-time flow.
-    const linkY = ritesBottom + 24;
-    this.textLink(PAD + 4, linkY, 'Settings', () => this.showSettings());
-    this.textLink(GAME_W - PAD - 4, linkY, 'Reset save', () => this.confirmReset(), 1);
+    // Onward: always the next stage of the Pilgrim's Road.
+    const stage = vigilStage(save);
+    const done = roadDone(save);
+    makeButton(this, GAME_W / 2, onward, GAME_W - PAD * 2, 64, done ? 'The Road' : `Onward!  ·  ${stage.label}`, () => this.scene.start('Campaign'), { active: !done, icon: 'blade', fontSize: 24 });
 
-    const tabBar = addTabBar(this, 'Sanctum');
-    // The page runs taller than the screen: it scrolls between the bars.
-    addPageScroll(this, {
-      top: CURRENCY_BAR_H,
-      bottom: GAME_H - TAB_BAR_H,
-      contentBottom: linkY + 20,
-      fixed: [...topBar, ...tabBar],
-      start: SanctumScene.scrollY,
-      onScroll: (y) => (SanctumScene.scrollY = y),
-    });
+    addTabBar(this, 'Sanctum');
     // What the march cleared while you were away, or why it halted.
-    if (owned.length && (marchUi.away || marchOf(game.save)?.stopped)) showMarchSummary(this, !!marchUi.away);
+    if (marchUi.away || marchOf(save)?.stopped) showMarchSummary(this, !!marchUi.away);
     marchUi.away = false;
   }
 
-  /**
-   * The Keeper of the Sanctum: the chosen Sister's bust and what she says.
-   * Tap her for the next line; the first word each day adds a little bond.
-   * Returns the bottom edge.
-   */
-  private drawKeeper(top: number): number {
+  /** Her name top left; tap her for her next line (the first word each day adds bond). */
+  private drawKeeperTalk(c: ReturnType<typeof keeperOf>, areaTop: number, stripTop: number) {
+    if (!c) return;
     const save = game.save;
-    const c = keeperOf(save, (id) => hasSplash(id) || hasFullBody(id));
-    if (!c) return top - 14;
-    // The first Keeper shown stays until the player changes her.
-    if (save.keeper?.id !== c.id) chooseKeeper(save, c.id);
-    const h = 136;
-    const fw = GAME_W - PAD * 2;
-    const tint = ORDERS[c.order]?.color ?? PAL.bronze;
-    addFrame(this, GAME_W / 2, top + h / 2, fw, h, { fill: 0x1b121c, edge: PAL.armorShadow });
-    const bust = this.add.image(PAD + 12 + 56, top + h / 2, portraitKey(c.id)).setDisplaySize(112, 112).setInteractive({ useHandCursor: true });
-    this.add.rectangle(bust.x, bust.y, 116, 116).setStrokeStyle(2, tint);
-    const tx = PAD + 140;
-    this.add.text(tx, top + 12, 'KEEPER OF THE SANCTUM', text.hud(11, PAL.steel));
-    fitLine(this.add.text(tx, top + 28, c.name, text.display(19, 0xfff1d6)), fw - 260);
-    makeButton(this, GAME_W - PAD - 52, top + 26, 88, 32, 'Change', () => {
-      pickParty(this, save, { title: 'Keeper of the Sanctum', sub: 'Who keeps your Sanctum?', initial: [c.id], max: 1, min: 1, confirm: 'Choose', hound: false }, (ids) => {
-        if (ids[0] && chooseKeeper(save, ids[0])) commit();
-        this.scene.restart();
-      });
-    }, { fontSize: 14 });
+    this.add.text(PAD, areaTop + 12, 'KEEPER OF THE SANCTUM', text.hud(11, PAL.steel)).setShadow(0, 1, '#000000', 3, false, true);
+    fitLine(this.add.text(PAD, areaTop + 28, c.name, text.display(22, 0xfff1d6)).setShadow(0, 2, '#000000', 8, false, true), GAME_W - PAD * 2 - 170);
+    const hint = this.add.text(PAD, areaTop + 62, '', text.hud(11, 0xe0607a)).setShadow(0, 1, '#000000', 3, false, true);
     const nudges: KeeperNudges = {
       vigilFull: !!save.vigil && vigilHours(save.vigil, Date.now()) >= VIGIL_CAP_HOURS,
       novitiate: noviceReady(save),
@@ -179,128 +134,181 @@ export class SanctumScene extends Phaser.Scene {
       penance: anyClaimable(save),
     };
     const lines = keeperLines(save, c, nudges);
-    const say = this.add.text(tx, top + 58, '', { ...text.body(16, PAL.ivory), fontStyle: 'italic', wordWrap: { width: fw - 150 }, lineSpacing: -2 });
-    const hint = this.add.text(tx, top + h - 12, '', text.hud(10, PAL.amber)).setOrigin(0, 1);
+    // the speech bubble sits between the rails, under her name
+    const bx = 92;
+    const bw = GAME_W - bx - PAD;
+    const say = this.add.text(bx + 12, 0, '', { ...text.body(18, 0xfff1d6), fontStyle: 'italic', wordWrap: { width: bw - 24 }, lineSpacing: -2 }).setDepth(6);
+    const bubble = this.add.rectangle(bx, 0, bw, 10, 0x0e0a10, 0.92).setOrigin(0, 0).setStrokeStyle(2, PAL.goldEdge).setDepth(5);
     let i = 0;
-    const show = () => {
-      say.setText(`"${lines[i % lines.length]}"`);
-      hint.setText(blessingReady(save) ? `TAP HER  ·  +${KEEPER_BOND} BOND TODAY` : '');
+    let timer: Phaser.Time.TimerEvent | undefined;
+    const show = (line: string) => {
+      // the bubble sits low, over her hands, so her face stays clear
+      say.setText(`"${line}"`).setAlpha(1);
+      bubble.setSize(bw, say.height + 20).setAlpha(1).setY(stripTop - 14 - say.height - 20);
+      say.setY(bubble.y + 10);
+      bubble.setStrokeStyle(2, PAL.goldEdge);
+      hint.setText(blessingReady(save) ? `TAP HER  ·  +${KEEPER_BOND} BOND TODAY` : 'TAP HER TO SPEAK');
+      timer?.remove();
+      timer = this.time.delayedCall(4200, () => this.tweens.add({ targets: [say, bubble], alpha: 0, duration: 400 }));
     };
-    show();
-    bust.on('pointerup', () => {
+    show(lines[0]);
+    const zone = this.add.zone(GAME_W / 2, (areaTop + 96 + stripTop) / 2, GAME_W - 200, stripTop - areaTop - 96).setInteractive({ useHandCursor: true });
+    zone.on('pointerup', () => {
       const gained = visitKeeper(save);
       if (gained) commit();
       i += 1;
-      show();
-      this.tweens.add({ targets: bust, scaleX: bust.scaleX * 1.05, scaleY: bust.scaleY * 1.05, yoyo: true, duration: 90 });
+      show(lines[i % lines.length]);
       if (gained) toast(this, `${c.name.split(' ')[0]} draws closer. +${gained} bond.`);
     });
-    return top + h;
+  }
+
+  /** Daily things: Duties, Matins, the Pass, the Chapter, and Collect when chores wait. */
+  private drawLeftRail(top: number, bottom: number) {
+    const save = game.save;
+    const duty = GROUPS.duties.find((t) => (t.shown?.(save) ?? true) && t.ready?.(save)) ?? GROUPS.duties[0];
+    const items: { label: string; icon: string; go: () => void; ready: boolean }[] = [
+      { label: 'Duties', icon: 'book', go: () => this.scene.start(duty.scene, duty.data ?? {}), ready: groupReady(save, 'duties') },
+      { label: 'Matins', icon: 'matins', go: () => this.scene.start('Matins'), ready: matinsReady(save) },
+      { label: 'Pass', icon: 'sigil', go: () => this.scene.start('Pass'), ready: passReady(save) },
+      { label: 'Chapter', icon: 'chapter', go: () => this.scene.start('Chapter'), ready: chapterReady(save) },
+    ];
+    if (roundsReady(save)) items.push({ label: 'Collect', icon: 'tithe', go: () => runRounds(this), ready: true });
+    const step = Math.min(82, (bottom - top - 10) / items.length);
+    items.forEach((it, k) => {
+      const x = PAD + 26;
+      const y = top + 28 + k * step;
+      const box = this.add.rectangle(x, y, 54, 54, 0x0e0a10, 0.85).setStrokeStyle(2, PAL.bronze).setDepth(3);
+      // rail-icons art (ui-rail-<name>.png) replaces the menu icons once it lands
+      const icon = this.textures.exists(`ui-rail-${it.label.toLowerCase()}`) ? `rail-${it.label.toLowerCase()}` : it.icon === 'matins' ? 'flame' : it.icon === 'chapter' ? 'roster' : it.icon;
+      addIcon(this, x, y, icon, 32, PAL.amber).setDepth(3);
+      this.add.text(x, y + 30, it.label, { ...text.body(15, 0xfff1d6), fontStyle: '600' }).setOrigin(0.5, 0).setShadow(0, 1, '#000000', 4, false, true).setDepth(3);
+      if (it.ready) dotAt(this, x + 24, y - 24);
+      box.setInteractive({ useHandCursor: true }).on('pointerup', it.go);
+    });
+  }
+
+  /** Timed things: the Feast, the Limited Saint, the Novitiate, a Rank gift. */
+  private drawRightRail(top: number) {
+    const save = game.save;
+    const win = limitedWindow();
+    const items: { title: string; sub: string; art: string; go: () => void; ready?: boolean }[] = [
+      { title: feastName(win), sub: `${timeLeft(win.ends)} LEFT`, art: 'bg-candle-maze', go: () => this.scene.start('Feast'), ready: feastReady(save) },
+      {
+        title: 'Limited Saint',
+        sub: `${win.saint.name.split(' ')[0]} · ${timeLeft(win.ends)}`,
+        art: 'banner-limited',
+        go: () => {
+          chooseLimited(save);
+          commit();
+          this.scene.start('Recruit');
+        },
+      },
+    ];
+    if (noviceOpen(save)) items.push({ title: 'Novitiate', sub: `DAY ${Math.min(NOVITIATE_DAYS, noviceDay(save))} OF ${NOVITIATE_DAYS}`, art: 'bg-altar', go: () => this.scene.start('Novitiate'), ready: noviceReady(save) });
+    if (giftsWaiting(save).length) items.push({ title: 'Rank gift', sub: 'CLAIM IT', art: 'bg-hall', go: () => this.scene.start('Rank'), ready: true });
+    const w = 158;
+    const h = 64;
+    const x = GAME_W - PAD - w / 2;
+    items.forEach((it, k) => {
+      const y = top + h / 2 + k * (h + 10);
+      if (this.textures.exists(it.art)) addBackdrop(this, it.art, x, y, w, h, { fade: 0.25, fadeColor: 0x0e0a10, focusY: 0.4 });
+      textWash(this, x - w / 2, y - h / 2, w, h);
+      if (this.textures.exists('ui-event-plaque')) this.add.nineslice(x, y, 'ui-event-plaque', undefined, w, h, 12, 12, 12, 12);
+      else this.add.rectangle(x, y, w, h).setStrokeStyle(2, PAL.bronze);
+      fitLine(this.add.text(x - w / 2 + 8, y - h / 2 + 6, it.title, { ...text.body(18, 0xfff1d6), fontStyle: '700' }).setShadow(0, 2, '#000000', 5, false, true), w - 16);
+      fitLine(this.add.text(x - w / 2 + 8, y + h / 2 - 8, it.sub.toUpperCase(), text.hud(11, PAL.amber)).setOrigin(0, 1), w - 16);
+      if (it.ready) dotAt(this, x + w / 2 - 6, y - h / 2 + 6);
+      this.add.zone(x, y, w, h).setInteractive({ useHandCursor: true }).on('pointerup', it.go);
+    });
   }
 
   /**
-   * The Vigil card: the chosen Sisters fight the chosen crypt's horrors on a
-   * loop (real combat, played by the Auto player), and below it what the Vigil
-   * has gathered since it was last claimed.
+   * The Vigil strip: the chosen Sisters fight the stage's horrors on a loop
+   * (real combat, played by the Auto player), what the Vigil has gathered,
+   * and Claim, Fast, Sisters and March.
    */
-  private drawVigil(fx: number, fy: number, fw: number, fh: number) {
+  private drawVigil(left: number, top: number, fw: number, fh: number) {
     const save = game.save;
     const v = ensureVigil(save, Date.now())!;
     commit();
     const stage = vigilStage(save);
     const crypt = CHAPTERS[stage.chapter].crypt;
-    const top = fy - fh / 2;
-    const left = fx - fw / 2;
-    const zoneH = 300;
-    const art = this.textures.exists(`bg-${crypt.id}`) ? `bg-${crypt.id}` : 'bg-hall';
-    addBackdrop(this, art, fx, top + zoneH / 2, fw, zoneH, { alpha: 0.55, fade: 0.35, fadeColor: 0x140e16 });
-    this.add.rectangle(fx, top + zoneH + (fh - zoneH) / 2, fw, fh - zoneH, 0x1b121c);
-    this.add.rectangle(fx, top + zoneH, fw, 1, PAL.armorShadow);
-    addFrame(this, fx, fy, fw, fh);
+    const zoneH = 130;
+    const fx = left + fw / 2;
+    const art = this.textures.exists('lobby-vigil-strip') ? 'lobby-vigil-strip' : this.textures.exists(`bg-${crypt.id}`) ? `bg-${crypt.id}` : 'bg-hall';
+    addBackdrop(this, art, fx, top + zoneH / 2, fw, zoneH, { alpha: 0.75, fade: 0.25, fadeColor: 0x140e16, focusY: 0.6 });
+    textWash(this, left, top, fw * 0.6, zoneH);
+    this.add.rectangle(fx, top + zoneH + (fh - zoneH) / 2, fw, fh - zoneH, 0x1b121c, 0.96);
+    addFrame(this, fx, top + fh / 2, fw, fh);
 
-    // Header: where on the Pilgrim's Road the Vigil stands, and the way to push on.
-    const stageText = this.add.text(left + 18, top + 16, `THE VIGIL  ·  STAGE ${stage.label}`, text.hud(13, PAL.amber));
-    this.add.text(left + 18, top + 34, CHAPTERS[stage.chapter].name, { ...text.display(19, 0xfff1d6) }).setShadow(0, 2, '#000000', 6, false, true);
-    const road = makeButton(this, left + fw - 74, top + 34, 124, 40, roadDone(save) ? 'The Road' : 'Challenge', () => this.scene.start('Campaign'), { fontSize: 16, active: !roadDone(save), icon: 'blade' });
-    if (!roadDone(save) && stageRecommended(save, stage.n) <= partyPower(save, v.party.filter((id) => save.owned[id]))) this.add.circle(road.box.x + 56, road.box.y - 16, 6, PAL.amber).setStrokeStyle(2, 0x1b121c);
+    const stageText = this.add.text(left + 14, top + 12, '', text.hud(12, PAL.amber)).setDepth(5);
+    const gotText = this.add.text(left + 14, top + 30, '', { ...text.body(19, 0xfff1d6), fontStyle: '600', wordWrap: { width: fw * 0.5 } }).setDepth(5);
+    const timeText = this.add.text(left + 14, top + zoneH - 30, '', text.hud(11, PAL.steel)).setDepth(5);
+    const marchText = this.add.text(left + 14, top + zoneH - 14, '', text.hud(11, PAL.amber)).setDepth(5);
+    marchText.setInteractive({ useHandCursor: true }).on('pointerup', () => showMarchSummary(this));
     // The Vigil Flame: a candle that grows a step for each day you keep the vigil.
     const tended = tendFlame(save);
     commit();
-    drawFlame(this, left + 30, top + zoneH - 24, save).forEach((o) => (o as unknown as Phaser.GameObjects.Components.Depth).setDepth(4));
     if (tended && save.flame!.level > 1) {
       const lines = [`The Vigil Flame grows: ${save.flame!.level} days`];
       if (tended.graced) lines.push(`Grace kept it for ${tended.graced} missed day${tended.graced > 1 ? 's' : ''}`);
       if (tended.dimmed) lines.push(`It dimmed ${tended.dimmed} step${tended.dimmed > 1 ? 's' : ''} while you were away`);
       for (const t of tended.titles) lines.push(`New title: "${t}"`);
-      const toast = this.add.text(left + 56, top + zoneH - 30, lines.join('\n'), { ...text.body(14, PAL.amber), backgroundColor: '#1b121ccc', padding: { x: 8, y: 5 } }).setOrigin(0, 1).setDepth(5);
-      this.tweens.add({ targets: toast, alpha: 0, delay: 3500, duration: 600, onComplete: () => toast.destroy() });
+      toast(this, lines.join('\n'), top - 40);
     }
     this.purged = 0;
-    this.purgedText = this.add.text(left + fw - 16, top + zoneH - 14, '', text.hud(12, PAL.muted)).setOrigin(1, 1);
-    // Tap the field to watch the fight up close (the real-time battle demo).
-    if (v.party.some((id) => save.owned[id])) {
-      this.add.zone(fx, top + 64 + (zoneH - 64) / 2, fw, zoneH - 64).setInteractive({ useHandCursor: true }).on('pointerup', () => this.scene.start('Field', {}));
-      this.add.text(fx, top + zoneH - 14, 'TAP TO WATCH UP CLOSE', text.hud(11, PAL.steel)).setOrigin(0.5, 1).setAlpha(0.8);
-    }
-    // The March: the Vigil pushes on along the road by itself, on every screen and while you are away.
-    if (!roadDone(save) || marchOf(save)) drawMarchToggle(this, left + fw - 74, top + 84, 124, 36, 14);
-    const marchText = this.add.text(left + 18, top + 64, '', { ...text.hud(12, PAL.amber), backgroundColor: '#140e16cc', padding: { x: 4, y: 2 } }).setDepth(5);
-    marchText.setInteractive({ useHandCursor: true }).on('pointerup', () => showMarchSummary(this));
+    this.purgedText = undefined;
+    // Tap the fight to watch it up close.
+    if (v.party.some((id) => save.owned[id])) this.add.zone(left + fw * 0.7, top + zoneH / 2, fw * 0.6, zoneH).setInteractive({ useHandCursor: true }).on('pointerup', () => this.scene.start('Field', {}));
 
-    // Gathering
-    const rateText = this.add.text(left + 18, top + zoneH + 14, '', text.body(16, PAL.muted));
-    const gotText = this.add.text(left + 18, top + zoneH + 40, '', { ...text.body(19, PAL.amber), fontStyle: '600' });
-    const barW = fw - 36;
-    this.add.rectangle(left + 18, top + zoneH + 82, barW, 8, PAL.deepShadow).setOrigin(0, 0.5);
-    const bar = this.add.rectangle(left + 18, top + zoneH + 82, 1, 8, PAL.amber).setOrigin(0, 0.5);
-    const timeText = this.add.text(left + 18, top + zoneH + 96, '', text.hud(12, PAL.steel));
-    const bw = (fw - 36 - 16) / 3;
-    const bx = (i: number) => left + 18 + bw / 2 + i * (bw + 8);
-    const claim = makeButton(this, bx(0), top + fh - 42, bw, 54, 'Claim', () => {
+    const bw = (fw - 28 - 18) / 4;
+    const bx = (i: number) => left + 14 + bw / 2 + i * (bw + 6);
+    const by = top + fh - 34;
+    const claim = makeButton(this, bx(0), by, bw, 46, 'Claim', () => {
       this.showClaim(claimVigil(save, Date.now()));
       commit();
       this.refreshBar?.();
       update();
-    }, { active: true, fontSize: 18, icon: 'tithe' });
+    }, { active: true, fontSize: 17, icon: 'tithe' });
     const cost = fastCost(save);
     makeButton(
       this,
       bx(1),
-      top + fh - 42,
+      by,
       bw,
-      54,
-      cost === null ? 'Fast: done' : cost ? `Fast · ${cost} Gilt` : 'Fast · Free',
+      46,
+      cost === null ? 'Fast: done' : cost ? `Fast ${cost}` : 'Fast: free',
       () => {
-        const c = fastReward(save, Date.now());
-        if (!c) return;
-        this.showClaim(c, `Hasten the Vigil: ${FAST_HOURS} hours at once`);
+        const got = fastReward(save, Date.now());
+        if (!got) return;
+        this.showClaim(got, `Hasten the Vigil: ${FAST_HOURS} hours at once`);
         commit();
         this.scene.restart();
       },
-      { fontSize: cost ? 15 : 17, disabled: cost === null || giltOf(save) < (cost ?? 0), icon: 'flame' },
+      { fontSize: 15, disabled: cost === null || giltOf(save) < (cost ?? 0), icon: 'flame' },
     );
-    makeButton(this, bx(2), top + fh - 42, bw, 54, 'Sisters', () => this.choosePartyFor(), { fontSize: 18, icon: 'roster' });
+    makeButton(this, bx(2), by, bw, 46, 'Sisters', () => this.choosePartyFor(), { fontSize: 16, icon: 'roster' });
+    if (!roadDone(save) || marchOf(save)) drawMarchToggle(this, bx(3), by, bw, 46, 14);
+    else makeButton(this, bx(3), by, bw, 46, 'Watch', () => this.scene.start('Field', {}), { fontSize: 16 });
+    if (!roadDone(save) && stageRecommended(save, stage.n) <= partyPower(save, v.party.filter((id) => save.owned[id]))) dotAt(this, GAME_W - PAD - 8, top + fh + 8);
 
     const update = () => {
       const now = Date.now();
       const ml = marchLine();
-      marchText.setText(ml.text).setColor(hex(ml.good ? PAL.amber : 0xe58a8a)).setVisible(!!ml.text);
-      stageText.setText(`THE VIGIL  ·  STAGE ${vigilStage(save).label}`);
-      const r = vigilRates(save, v);
+      marchText.setText(ml.text.toUpperCase()).setColor(hex(ml.good ? PAL.amber : 0xe58a8a)).setVisible(!!ml.text);
+      const flame = save.flame?.level ?? 0;
+      stageText.setText(`THE VIGIL  ·  ${vigilStage(save).label}${flame > 1 ? `  ·  FLAME ${flame}` : ''}`);
       const p = vigilPending(save, v, now);
-      const every = (perHour: number) => (perHour <= 0 ? 'never' : perHour >= 1 ? `${perHour.toFixed(1)}/h` : `every ${Math.round(1 / perHour)}h`);
-      rateText.setText(`${Math.round(r.tithes)} Tithes/h · ${Math.round(vigilExpRate(campaignOf(save).best))} EXP/h · gear ${every(r.gear)} · Seal ${every(r.seals)}`);
       const parts = [`${p.tithes} Tithes`, ...(p.gear ? [`${p.gear} gear`] : []), ...(p.seals ? [`${p.seals} Seal${p.seals > 1 ? 's' : ''}`] : [])];
-      gotText.setText(`Gathered: ${parts.join(' · ')}`);
-      bar.setSize(Math.max(1, barW * (p.hours / VIGIL_CAP_HOURS)), 8);
-      const hm = (h: number) => `${Math.floor(h)}h ${String(Math.floor((h % 1) * 60)).padStart(2, '0')}m`;
-      timeText.setText(p.full ? `FULL · CLAIM TO KEEP GATHERING` : `${hm(p.hours).toUpperCase()} / ${VIGIL_CAP_HOURS}H`);
+      gotText.setText(parts.join(' · '));
+      const hm = (h: number) => `${Math.floor(h)}H ${String(Math.floor((h % 1) * 60)).padStart(2, '0')}M`;
+      timeText.setText(p.full ? 'FULL · CLAIM TO KEEP GATHERING' : `${hm(p.hours)} OF ${VIGIL_CAP_HOURS}H GATHERED`);
       claim.box.setAlpha(p.tithes > 0 ? 1 : 0.5);
     };
     update();
     this.time.addEvent({ delay: 1000, loop: true, callback: update });
 
-    this.startSkirmish(v, left, top, fw);
+    this.startSkirmish(v, left + fw * 0.42, top, fw * 0.58);
   }
 
   private purged = 0;
@@ -322,17 +330,17 @@ export class SanctumScene extends Phaser.Scene {
     this.field = undefined;
     const party = v.party.filter((id) => save.owned[id]);
     if (!party.length) {
-      this.skirmish.push(this.add.text(left + fw / 2, top + 160, 'No Sister keeps this vigil.\nPost the watch!', { ...text.body(19, PAL.muted), align: 'center' }).setOrigin(0.5));
+      this.skirmish.push(this.add.text(left + fw / 2, top + 64, 'No Sister keeps watch.\nPost one!', { ...text.body(18, PAL.muted), align: 'center' }).setOrigin(0.5));
       return;
     }
     const battle = stageBattle(save, party, vigilStage(save).n);
     // The field: feet stand between y = top + 110 and the bottom of the art.
-    const fieldTop = top + 108;
-    const fb = new FieldBattle(battle, { w: fw, h: 184, carry, enemiesEnter: !!carry });
+    const fieldTop = top + 78;
+    const fb = new FieldBattle(battle, { w: fw, h: 44, carry, enemiesEnter: !!carry });
     const view = new FieldView(this, fb, {
       x: left,
       y: fieldTop,
-      scale: 0.5,
+      scale: 0.4,
       compact: true,
       depth: 3,
       onDeath: (u) => {
@@ -354,7 +362,7 @@ export class SanctumScene extends Phaser.Scene {
       const won = end.outcome === 'victory';
       if (won) view.cheer();
       const msg = this.add
-        .text(left + fw / 2, top + 165, won ? 'PURGED. THE VIGIL HOLDS.' : 'THE SISTERS FALL BACK AND PRAY.', { ...text.hud(15, won ? PAL.amber : PAL.oxblood), stroke: '#000000', strokeThickness: 4 })
+        .text(left + fw / 2, top + 24, won ? 'PURGED. THE VIGIL HOLDS.' : 'THE SISTERS FALL BACK AND PRAY.', { ...text.hud(12, won ? PAL.amber : PAL.oxblood), stroke: '#000000', strokeThickness: 4 })
         .setOrigin(0.5)
         .setDepth(6);
       this.skirmish.push(msg);
@@ -379,25 +387,6 @@ export class SanctumScene extends Phaser.Scene {
     this.tweens.add({ targets: box, alpha: 0, delay: 2600, duration: 600, onComplete: () => box.destroy() });
   }
 
-  /** What Morning Rounds did, what it gathered, and what still needs you. */
-  private showRounds(r: RoundsReport) {
-    const layer = this.add.container(0, 0).setDepth(30);
-    layer.add(this.add.rectangle(GAME_W / 2, GAME_H / 2, GAME_W, GAME_H, 0x09060b, 0.9).setInteractive());
-    const total = roundsTotal(r);
-    const lines = [
-      r.done.length ? r.done.map((d) => `✓ ${d}`).join('\n') : 'Every rite is already kept. Well done, faithful.',
-      total ? `\nGathered: ${total}` : '',
-      r.left.length ? `\nRites still unkept:\n${r.left.map((d) => `· ${d}`).join('\n')}` : '',
-    ].filter(Boolean).join('\n');
-    const t = this.add.text(GAME_W / 2, 200, lines, { ...text.body(17, PAL.ivory), align: 'left', lineSpacing: 4, wordWrap: { width: GAME_W - 100 } }).setOrigin(0.5, 0);
-    const h = t.height + 120;
-    layer.add(addFrame(this, GAME_W / 2, 140 + h / 2, GAME_W - 40, h, { fill: 0x241925 }));
-    layer.add(this.add.text(GAME_W / 2, 166, 'MORNING ROUNDS', text.display(24, PAL.amber)).setOrigin(0.5));
-    layer.add(t);
-    const done = makeButton(this, GAME_W / 2, 140 + h + 44, 220, 56, 'Done', () => this.scene.restart());
-    layer.add(done.all);
-  }
-
   /** Pick up to four Sisters for the Vigil. Changing the watch claims what was gathered. */
   private choosePartyFor() {
     const save = game.save;
@@ -412,155 +401,5 @@ export class SanctumScene extends Phaser.Scene {
         this.scene.restart();
       },
     );
-  }
-
-  /** The preview's underlined gold text button. */
-  private textLink(x: number, y: number, label: string, onTap: () => void, originX = 0) {
-    const t = this.add.text(x, y, label, text.body(20, PAL.amber)).setOrigin(originX, 0.5);
-    const line = this.add.rectangle(t.x - t.width * originX, y + 13, t.width, 1, 0x926642).setOrigin(0, 0.5);
-    t.setInteractive({ useHandCursor: true, hitArea: new Phaser.Geom.Rectangle(-10, -14, t.width + 20, t.height + 28), hitAreaCallback: Phaser.Geom.Rectangle.Contains });
-    t.on('pointerup', onTap);
-    return [t, line];
-  }
-
-  private confirmReset() {
-    const layer = this.add.container(0, 0).setDepth(20);
-    const style = { fontFamily: FONT, color: hex(PAL.ivory), align: 'center' };
-    layer.add(this.add.rectangle(GAME_W / 2, GAME_H / 2, GAME_W, GAME_H, 0x09060b, 0.9).setInteractive());
-    layer.add(addFrame(this, GAME_W / 2, 480, GAME_W - 40, 440, { fill: 0x241925 }));
-    layer.add(
-      this.add
-        .text(GAME_W / 2, 360, 'Burn the records?\n\nEvery Sister, Seal, Tithe and\ncrusade will be forgotten.', { ...style, fontSize: '22px' })
-        .setOrigin(0.5),
-    );
-    const yes = makeButton(this, GAME_W / 2, 520, 300, 76, 'Burn it all', () => {
-      resetGame();
-      this.scene.restart();
-    }, { active: true });
-    const no = makeButton(this, GAME_W / 2, 620, 300, 76, 'Keep my progress', () => layer.destroy());
-    layer.add([...yes.all, ...no.all]);
-  }
-
-  private showSettings() {
-    const layer = this.add.container(0, 0).setDepth(20);
-    const style = { fontFamily: FONT, color: hex(PAL.ivory), align: 'center' };
-    const draw = () => {
-      layer.removeAll(true);
-      layer.add(this.add.rectangle(GAME_W / 2, GAME_H / 2, GAME_W, GAME_H, 0x09060b, 0.88).setInteractive());
-      layer.add(addFrame(this, GAME_W / 2, 470, GAME_W - 40, 800, { fill: 0x241925 }));
-      layer.add(this.add.text(GAME_W / 2, 130, 'Settings', text.display(30, PAL.amber)).setOrigin(0.5));
-      layer.add(this.add.text(GAME_W / 2, 200, 'Music', { ...style, fontSize: '22px' }).setOrigin(0.5));
-      this.musicSlider(layer, 260);
-      const mute = makeButton(this, GAME_W - 104, 260, 128, 56, settings.musicMuted ? 'Muted' : 'Mute', () => {
-        music.setMuted(!settings.musicMuted);
-        draw();
-      }, { active: settings.musicMuted, fontSize: 19 });
-      layer.add(mute.all);
-      const fxBtn = makeButton(this, GAME_W / 2, 316, 240, 44, settings.sfx ? 'Sound effects: On' : 'Sound effects: Off', () => {
-        settings.sfx = !settings.sfx;
-        saveSettings();
-        draw();
-      }, { active: settings.sfx, fontSize: 17 });
-      layer.add(fxBtn.all);
-      layer.add(this.add.text(GAME_W / 2, 366, 'CRT screen effect', { ...style, fontSize: '22px' }).setOrigin(0.5));
-      const toggle = (on: boolean) => () => {
-        settings.crt = on;
-        saveSettings();
-        applyCrt(this);
-        draw();
-      };
-      for (const [i, on] of [true, false].entries()) {
-        const b = makeButton(this, GAME_W / 2 + (i ? 90 : -90), 420, 160, 64, on ? 'On' : 'Off', toggle(on), { active: settings.crt === on });
-        layer.add(b.all);
-      }
-      layer.add(this.add.text(GAME_W / 2, 510, 'Strength', { ...style, fontSize: '22px', color: hex(settings.crt ? PAL.ivory : PAL.steel) }).setOrigin(0.5));
-      const levels: [string, number][] = [['Subtle', 0.35], ['Standard', 0.6], ['Heavy', 1]];
-      levels.forEach(([label, v], i) => {
-        const b = makeButton(
-          this,
-          GAME_W / 2 + (i - 1) * 168,
-          570,
-          156,
-          64,
-          label,
-          () => {
-            settings.crtStrength = v;
-            saveSettings();
-            applyCrt(this);
-            draw();
-          },
-          { active: settings.crt && settings.crtStrength === v, disabled: !settings.crt, fontSize: 19 },
-        );
-        layer.add(b.all);
-      });
-      layer.add(
-        this.add
-          .text(GAME_W / 2, 640, 'Scanlines, colour bleed and screen curve.', { ...style, fontSize: '16px', color: hex(PAL.steel) })
-          .setOrigin(0.5),
-      );
-      const fs = makeButton(this, GAME_W / 2 - 112, 702, 208, 52, this.scale.isFullscreen ? 'Leave full screen' : 'Full screen', () => {
-        toggleFullscreen(this);
-        layer.destroy();
-      }, { fontSize: 18 });
-      const shakeBtn = makeButton(this, GAME_W / 2 + 112, 702, 208, 52, settings.screenShake ? 'Screen shake: On' : 'Screen shake: Off', () => {
-        settings.screenShake = !settings.screenShake;
-        saveSettings();
-        draw();
-      }, { active: settings.screenShake, fontSize: 18 });
-      layer.add([...fs.all, ...shakeBtn.all]);
-      const backup = makeButton(this, GAME_W / 2 - 112, 764, 208, 52, 'Back up save', () => {
-        commit();
-        showExport(game.save);
-      }, { fontSize: 18 });
-      const restore = makeButton(this, GAME_W / 2 + 112, 764, 208, 52, 'Restore save', () => {
-        showImport((save) => {
-          game.save = save;
-          current.run = undefined;
-          current.paused = undefined;
-          current.challenge = undefined;
-          commit();
-          this.scene.restart();
-        });
-      }, { fontSize: 18 });
-      layer.add([...backup.all, ...restore.all]);
-      const close = makeButton(this, GAME_W / 2, 834, 240, 60, 'Done', () => layer.destroy());
-      layer.add(close.all);
-    };
-    draw();
-  }
-
-  /** A draggable volume bar; changes are heard straight away. */
-  private musicSlider(layer: Phaser.GameObjects.Container, y: number) {
-    const x0 = 56;
-    const w = 300;
-    const off = settings.musicMuted;
-    layer.add(this.add.rectangle(x0, y, w, 10, PAL.deepShadow).setOrigin(0, 0.5).setStrokeStyle(2, PAL.armorShadow));
-    const fill = this.add.rectangle(x0, y, 0, 10, off ? PAL.steel : PAL.amber).setOrigin(0, 0.5);
-    const knob = this.add.circle(x0, y, 14, off ? PAL.steel : PAL.ivory).setStrokeStyle(3, PAL.oxblood);
-    const label = this.add.text(x0 + w, y - 30, '', text.body(18, off ? PAL.steel : PAL.ivory)).setOrigin(1, 0.5);
-    const show = () => {
-      const v = settings.musicVolume;
-      fill.width = w * v;
-      knob.x = x0 + w * v;
-      label.setText(`${Math.round(v * 100)}%`);
-    };
-    const set = (px: number) => {
-      const v = Math.round(Phaser.Math.Clamp((px - x0) / w, 0, 1) * 20) / 20;
-      if (v === settings.musicVolume && !settings.musicMuted) return;
-      const wasMuted = settings.musicMuted;
-      music.setVolume(v);
-      if (wasMuted !== settings.musicMuted) {
-        // unmuted by dragging: recolour
-        fill.setFillStyle(PAL.amber);
-        knob.setFillStyle(PAL.ivory);
-        label.setColor(hex(PAL.ivory));
-      }
-      show();
-    };
-    const hit = this.add.zone(x0 - 20, y, w + 40, 56).setOrigin(0, 0.5).setInteractive({ useHandCursor: true, draggable: true });
-    hit.on('pointerdown', (p: Phaser.Input.Pointer) => set(p.x));
-    hit.on('drag', (p: Phaser.Input.Pointer) => set(p.x));
-    layer.add([fill, label, hit, knob]);
-    show();
   }
 }

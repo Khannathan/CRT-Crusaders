@@ -96,7 +96,7 @@ export class CampaignScene extends Phaser.Scene {
   create() {
     const save = game.save;
     const mode = this.mode;
-    const { top } = modeScreen(this, mode === 'road' ? "The Pilgrim's Road" : HARD_NAME[mode], mode === 'road' ? 'Each stage won quickens the Vigil.' : mode === 'penitent' ? 'The road again, through deeper dark.' : 'Only the damned walk it twice.', 'Sanctum');
+    const { top } = modeScreen(this, mode === 'road' ? "The Pilgrim's Road" : HARD_NAME[mode], mode === 'road' ? 'Each stage won quickens the Vigil.' : mode === 'penitent' ? 'The road again, through deeper dark.' : 'Only the damned walk it twice.', 'Modes');
     const next = this.nextOf();
     const best = this.bestOf();
     if (!this.sel) this.sel = next;

@@ -8,13 +8,11 @@ import { chapterLevel, chapterReady, siegeBeast } from '../systems/chapter';
 import { ENEMIES } from '../data/enemies';
 import { HUNT_ENTRIES, huntEntriesLeft, huntOn } from '../systems/hunts';
 import { freeWhistle, houndsOf } from '../systems/hounds';
-import Phaser from 'phaser';
-import { GAME_W, PAL } from '../config';
 import type { SaveData } from '../state/save';
 import { matinsReady } from '../systems/matins';
 import { passReady } from '../systems/pass';
 import { BRACKET, LEAGUES, ORDEALS_PER_DAY, bracket, ordealsLeft, ordealsOf, ordealsReady } from '../systems/ordeals';
-import { ROMAN_RANK, unlocked } from '../systems/rank';
+import { unlocked } from '../systems/rank';
 import { anyClaimable } from '../systems/tasks';
 import { noviceOpen, noviceReady } from '../systems/novitiate';
 import { anyDeedReady, deedPoints } from '../systems/deeds';
@@ -33,10 +31,8 @@ import { rotation, totalBrands } from '../systems/inquisition';
 import { untilText } from './modeScreen';
 import { nextStage, roadRates, stageDef } from '../systems/campaign';
 import { ORDER_LIST } from '../data/orders';
-import { makeButton } from './button';
 import { ERRAND_SLOTS, anyErrandDone, errandsOf, openErrands } from '../systems/errands';
 import { ladder, renownOf } from '../systems/rivals';
-import { PAD } from './theme';
 import { feastName, feastOf, feastReady } from '../systems/feast';
 import { limitedUnseen, limitedWindow, timeLeft } from '../systems/limited';
 import { countOf } from '../systems/items';
@@ -74,72 +70,73 @@ export interface RiteEntry {
   bg?: string;
 }
 
-export type RiteHome = 'sanctum' | 'board' | 'cloister' | 'altar';
+/** Where it lives (see ui/nav.ts): a Crusade wing, the Road card, the event strip, the lobby rail, a sub-tab strip, the Altar or the Market. */
+export type RiteHome = 'labors' | 'crypts' | 'contest' | 'abyss' | 'road' | 'event' | 'lobby' | 'duties' | 'sisters' | 'altar' | 'market';
 
 export const RITES: RiteEntry[] = [
   // The Crusade board: every mode you fight in. The Feast (a two-week event) leads it.
   {
-    label: 'Feast', scene: 'Feast', icon: 'flame', rank: 1, home: 'board', bg: 'bg-altar', ready: (s) => feastReady(s),
+    label: 'Feast', scene: 'Feast', icon: 'flame', rank: 1, home: 'event', bg: 'bg-altar', ready: (s) => feastReady(s),
     blurb: 'Win Candles for the Saint\'s feast table.',
     status: (s) => `${feastName()}  ·  ${feastOf(s).candles} Candles  ·  ends in ${timeLeft(limitedWindow().ends)}`,
   },
   {
-    label: 'Crypts', scene: 'Crusade', icon: 'blade', rank: 1, home: 'board', bg: 'bg-drowned-ossuary', boost: 'crusade',
+    label: 'Crypts', scene: 'Crusade', icon: 'blade', rank: 1, home: 'crypts', bg: 'bg-drowned-ossuary', boost: 'crusade',
     blurb: 'Descend and purge the crypt\'s heart.',
     status: (s) => `${CRYPTS.filter((c) => cryptUnlocked(s, c)).length} of ${CRYPTS.length} crypts open  ·  Pilgrimage ${pilgrimageLeft(s)}/${PILGRIMAGE_CLEARS} today`,
   },
   {
-    label: "Pilgrim's Road", scene: 'Campaign', icon: 'flame', rank: 1, home: 'board', bg: 'bg-weeping-cloister', boost: 'vigil',
+    label: "Pilgrim's Road", scene: 'Campaign', icon: 'flame', rank: 1, home: 'road', bg: 'bg-weeping-cloister', boost: 'vigil',
     blurb: 'Each stage won quickens the Vigil.',
     status: (s) => `Stage ${stageDef(nextStage(s)).label}  ·  Vigil ${Math.round(roadRates(s).tithes)} Tithes/h`,
   },
   {
-    label: 'Holy Errands', scene: 'Errands', icon: 'book', rank: 1, home: 'board', bg: 'bg-altar', boost: 'errands', ready: (s) => anyErrandDone(s),
+    label: 'Holy Errands', scene: 'Errands', icon: 'book', rank: 1, home: 'labors', bg: 'bg-altar', boost: 'errands', ready: (s) => anyErrandDone(s),
     blurb: 'Send Sisters on the Church\'s work.',
     status: (s) => `${errandsOf(s).active.length} of ${ERRAND_SLOTS} away  ·  ${openErrands(s).length} errands on offer`,
   },
   {
-    label: 'Hallowed Hunts', scene: 'Hunt', icon: 'blade', rank: 4, home: 'board', bg: 'bg-battle', ready: (s) => huntEntriesLeft(s) > 0,
+    label: 'Hallowed Hunts', scene: 'Hunt', icon: 'blade', rank: 4, home: 'labors', bg: 'bg-battle', ready: (s) => huntEntriesLeft(s) > 0,
     blurb: 'One beast a day. Wound it for Grace!',
     status: (s) => `Today: ${ENEMIES[huntOn().boss].name}  ·  ${huntEntriesLeft(s)}/${HUNT_ENTRIES} hunts left`,
   },
   {
-    label: 'The Ordeals', scene: 'Ordeals', icon: 'blade', rank: 3, home: 'board', bg: 'bg-hall', ready: (s) => ordealsReady(s),
+    label: 'The Ordeals', scene: 'Ordeals', icon: 'blade', rank: 3, home: 'contest', bg: 'bg-hall', ready: (s) => ordealsReady(s),
     blurb: 'Twenty Orders a week. Top four rise!',
     status: (s) => `${LEAGUES[ordealsOf(s).league]} League  ·  place ${bracket(s).place}/${BRACKET}  ·  ${ordealsLeft(s)}/${ORDEALS_PER_DAY} today`,
   },
   {
-    label: 'Relic Trials', scene: 'Trials', icon: 'shield', rank: 3, home: 'board', bg: 'bg-iron-oubliette', boost: 'trials', ready: (s) => entriesLeft(s) > 0,
+    label: 'Relic Trials', scene: 'Trials', icon: 'shield', rank: 3, home: 'labors', bg: 'bg-iron-oubliette', boost: 'trials', ready: (s) => entriesLeft(s) > 0,
     blurb: 'The dead guard a new spoil each dawn.',
     status: (s) => `${entriesLeft(s)} of ${TRIAL_ENTRIES} entries left today`,
   },
   {
-    label: 'Hold the Line', scene: 'Hold', icon: 'shield', rank: 4, home: 'board', bg: 'bg-candle-maze', ready: (s) => holdLeft(s) > 0 || !!holdOf(s).stand,
+    label: 'Hold the Line', scene: 'Hold', icon: 'shield', rank: 4, home: 'crypts', bg: 'bg-candle-maze', ready: (s) => holdLeft(s) > 0 || !!holdOf(s).stand,
     blurb: 'Ten waves. Wounds carry. Hold!',
     status: (s) => `${holdOf(s).stand ? `Wave ${holdOf(s).stand!.held + 1} waits` : `${holdLeft(s)} stand left today`}  ·  best ${holdOf(s).best}/${HOLD_WAVES}`,
   },
   {
-    label: 'Nightmare Raid', scene: 'Raid', icon: 'blade', rank: 6, home: 'board', bg: 'bg-abyssal-ossuary', ready: (s) => delvesLeft(s) > 0 || !!raidOf(s).delve,
+    label: 'Nightmare Raid', scene: 'Raid', icon: 'blade', rank: 6, home: 'abyss', bg: 'bg-abyssal-ossuary', ready: (s) => delvesLeft(s) > 0 || !!raidOf(s).delve,
     blurb: 'Three bosses. Three Squads. Its wounds carry!',
     status: (s) => `${raidOf(s).delve ? `Boss ${raidOf(s).delve!.boss + 1} waits` : `${delvesLeft(s)} delve left today`}  ·  week best ${raidOf(s).best}/${RAID_BOSSES}`,
   },
   {
-    label: 'Chapter War', scene: 'War', icon: 'blade', rank: 6, home: 'board', bg: 'bg-chapter', ready: (s) => warReady(s),
+    label: 'Chapter War', scene: 'War', icon: 'blade', rank: 6, home: 'contest', bg: 'bg-chapter', ready: (s) => warReady(s),
     blurb: 'Storm a rival Chapter\'s forts for stars!',
     status: (s) => (s.chapter ? `${warScore(s).us} to ${warScore(s).them} vs the ${rivalName(s)}  ·  ${attacksLeft(s)} storms left` : `Join the Chapter first  ·  ${FORTS.length} forts a week`),
   },
   {
-    label: 'Reliquary Procession', scene: 'Procession', icon: 'flame', rank: 5, home: 'board', bg: 'bg-candle-maze', ready: (s) => processionLeft(s) > 0,
+    label: 'Reliquary Procession', scene: 'Procession', icon: 'flame', rank: 5, home: 'labors', bg: 'bg-candle-maze', ready: (s) => processionLeft(s) > 0,
     blurb: 'Guard the relics. Win offerings.',
     status: (s) => `${processionLeft(s)} of ${PROCESSION_ENTRIES} entries left  ·  honours the ${honouredToday().name}`,
   },
   {
-    label: 'Bell Tower', scene: 'Tower', icon: 'sanctum', rank: 6, home: 'board', bg: 'bg-tower', boost: 'tower',
+    label: 'Bell Tower', scene: 'Tower', icon: 'sanctum', rank: 6, home: 'crypts', bg: 'bg-tower', boost: 'tower',
     blurb: 'Climb without end. Ring every bell!',
     status: (s) => `Best floor ${towerOf(s).best}${towerOf(s).best ? `  ·  Vigil +${towerOf(s).best}%` : ''}  ·  Order floors ${Object.values(towerOf(s).orders ?? {}).reduce((a, b) => a + b, 0)}`,
   },
   {
-    label: 'Inquisition', scene: 'Inquisition', icon: 'blade', rank: 8, home: 'board', bg: 'bg-confessional',
+    label: 'Inquisition', scene: 'Inquisition', icon: 'blade', rank: 8, home: 'abyss', bg: 'bg-confessional',
     blurb: 'Judge the heretics. Each Sister fights once.',
     status: (s) => `${totalBrands(s)} of ${BRAND_MAX} Brands  ·  ends in ${untilText(rotation().ends - Date.now())}`,
   },
@@ -164,44 +161,44 @@ export const RITES: RiteEntry[] = [
   },
   // The Cloister: growth and spending.
   {
-    label: 'Rival Orders', scene: 'Rivals', icon: 'sigil', rank: 1, home: 'board', bg: 'bg-hall',
+    label: 'Rival Orders', scene: 'Rivals', icon: 'sigil', rank: 1, home: 'contest', bg: 'bg-hall',
     blurb: 'Outshine the lesser Orders.',
     status: (s) => `Place ${ladder(s).place} of ${ladder(s).rows.length}  ·  Renown ${renownOf(s)}`,
   },
   {
-    label: 'Deeds', scene: 'Deeds', icon: 'sigil', rank: 1, home: 'cloister', bg: 'bg-hall', ready: (s) => anyDeedReady(s),
+    label: 'Deeds', scene: 'Deeds', icon: 'sigil', rank: 1, home: 'duties', bg: 'bg-hall', ready: (s) => anyDeedReady(s),
     blurb: 'Great works, remembered. Earn Gilt and titles!',
     status: (s) => `${deedPoints(s)} Deed points  ·  ${(s.titles ?? []).length} titles`,
   },
-  { label: 'Inventory', scene: 'Inventory', icon: 'shield', art: 'inventory', rank: 1, home: 'cloister', bg: 'bg-hall', blurb: 'What your Sisters carried home.' },
+  { label: 'Inventory', scene: 'Inventory', icon: 'shield', art: 'inventory', rank: 1, home: 'sisters', bg: 'bg-hall', blurb: 'What your Sisters carried home.' },
   {
-    label: 'The Chapter', scene: 'Chapter', icon: 'roster', rank: 1, home: 'cloister', bg: 'bg-hall', ready: (s) => chapterReady(s),
+    label: 'The Chapter', scene: 'Chapter', icon: 'roster', rank: 1, home: 'lobby', bg: 'bg-hall', ready: (s) => chapterReady(s),
     blurb: 'Tithe daily. Besiege a beast each week.',
     status: (s) => (s.chapter ? `Level ${chapterLevel(s.chapter.xp)}  ·  Siege ${Math.min(100, Math.round((s.chapter.siege.dealt / siegeBeast(s).pool) * 100))}%  ·  ${s.chapter.marks} Marks` : 'Not yet joined'),
   },
-  { label: 'Shop', scene: 'Shop', icon: 'seal', art: 'shop', rank: 1, home: 'cloister', bg: 'bg-shop', blurb: 'The Church sells what it can spare.' },
+  { label: 'Shop', scene: 'Shop', icon: 'seal', art: 'shop', rank: 1, home: 'market', bg: 'bg-shop', blurb: 'The Church sells what it can spare.' },
   {
-    label: 'Reliquary', scene: 'Reliquary', icon: 'flame', art: 'reliquary', rank: 1, home: 'cloister', bg: 'bg-reliquary', data: { tab: 'relics' },
+    label: 'Reliquary', scene: 'Reliquary', icon: 'flame', art: 'reliquary', rank: 1, home: 'sisters', bg: 'bg-reliquary', data: { tab: 'relics' },
     ready: (s) => RELICS.some((r) => !relicBlock(s, r.id)),
     blurb: 'Light the relics. Lift every Sister.',
   },
   {
-    label: 'Order Codex', scene: 'Reliquary', icon: 'book', rank: 1, home: 'cloister', bg: 'bg-altar', data: { tab: 'codex' },
+    label: 'Order Codex', scene: 'Reliquary', icon: 'book', rank: 1, home: 'sisters', bg: 'bg-altar', data: { tab: 'codex' },
     ready: (s) => ORDER_LIST.some((o) => !codexBlock(s, o.id)),
     blurb: 'Raise an Order and all its Sisters.',
   },
   // The Sanctum's rail: daily duties.
   {
-    label: 'Order Book', scene: 'OrderBook', icon: 'book', rank: 1, home: 'cloister', bg: 'bg-hall',
+    label: 'Order Book', scene: 'OrderBook', icon: 'book', rank: 1, home: 'sisters', bg: 'bg-hall',
     ready: (s) => setsClaimable(s).length > 0,
     blurb: 'Gather each Order. Earn Seals and titles.',
     status: (s) => `${SETS.filter((x) => (s.sets ?? []).includes(x.id)).length} of ${SETS.length} sets complete`,
   },
-  { label: 'Novitiate', scene: 'Novitiate', icon: 'sigil', rank: 1, home: 'sanctum', noRail: true, shown: (s) => noviceOpen(s), ready: (s) => noviceReady(s) },
-  { label: 'Matins', scene: 'Matins', icon: 'flame', rank: 1, home: 'sanctum', ready: (s) => matinsReady(s) },
-  { label: 'Pass', scene: 'Pass', icon: 'sigil', rank: 1, home: 'sanctum', ready: (s) => passReady(s) },
-  { label: 'Penance', scene: 'Penance', icon: 'book', rank: 2, home: 'sanctum', ready: (s) => anyClaimable(s) },
-  { label: 'Confession', scene: 'Confession', icon: 'book', rank: 5, home: 'sanctum', ready: (s) => anyUnheard(s) || anyBondRewards(s) || (Object.keys(s.owned).length > 0 && candleReady(s)) },
+  { label: 'Novitiate', scene: 'Novitiate', icon: 'sigil', rank: 1, home: 'duties', noRail: true, shown: (s) => noviceOpen(s), ready: (s) => noviceReady(s) },
+  { label: 'Matins', scene: 'Matins', icon: 'flame', rank: 1, home: 'lobby', ready: (s) => matinsReady(s) },
+  { label: 'Pass', scene: 'Pass', icon: 'sigil', rank: 1, home: 'lobby', ready: (s) => passReady(s) },
+  { label: 'Penance', scene: 'Penance', icon: 'book', rank: 2, home: 'duties', ready: (s) => anyClaimable(s) },
+  { label: 'Confession', scene: 'Confession', icon: 'book', rank: 5, home: 'sisters', ready: (s) => anyUnheard(s) || anyBondRewards(s) || (Object.keys(s.owned).length > 0 && candleReady(s)) },
 ];
 
 /** The Rite (or board) a scene belongs to, for its tab and its Back button. */
@@ -209,27 +206,3 @@ export const homeOf = (sceneKey: string): RiteHome | undefined => RITES.find((r)
 
 /** True when a Rite in `home` has something to claim (for a dot on its tab). */
 export const anyReady = (save: SaveData, home: RiteHome) => RITES.some((r) => r.home === home && (r.shown?.(save) ?? true) && unlocked(save, r.rank) && r.ready?.(save));
-
-/** Draws the Sanctum's rail of daily Rites from `top`; returns its bottom edge. */
-export function drawRites(scene: Phaser.Scene, save: SaveData, top: number, home: RiteHome = 'sanctum'): number {
-  const list = RITES.filter((r) => r.home === home && !r.noRail && (r.shown?.(save) ?? true));
-  const cols = 3;
-  const gap = 10;
-  const w = (GAME_W - PAD * 2 - gap * (cols - 1)) / cols;
-  const h = 58;
-  list.forEach((r, i) => {
-    const x = PAD + w / 2 + (i % cols) * (w + gap);
-    const y = top + h / 2 + Math.floor(i / cols) * (h + gap);
-    if (!unlocked(save, r.rank)) {
-      makeButton(scene, x, y, w, h, `${r.label}\nRANK ${ROMAN_RANK(r.rank)}`, () => scene.scene.start('Rank'), { fontSize: 17, icon: 'lock', disabled: true, skin: 'ui-rite-tile' });
-      return;
-    }
-    // ui-rite-tile.png skins each tile; ui-ready-dot.png marks one with something to claim
-    makeButton(scene, x, y, w, h, r.label, () => scene.scene.start(r.scene, r.data ?? {}), { fontSize: 18, icon: r.art && scene.textures.exists(`ui-${r.art}`) ? r.art : r.icon, skin: 'ui-rite-tile' });
-    if (r.ready?.(save)) {
-      if (scene.textures.exists('ui-ready-dot')) scene.add.image(x + w / 2 - 10, y - h / 2 + 10, 'ui-ready-dot').setDisplaySize(16, 16);
-      else scene.add.circle(x + w / 2 - 10, y - h / 2 + 10, 6, PAL.amber).setStrokeStyle(2, 0x1b121c);
-    }
-  });
-  return top + Math.ceil(list.length / cols) * (h + gap) - gap;
-}

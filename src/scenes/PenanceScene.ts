@@ -1,11 +1,28 @@
 import Phaser from 'phaser';
 import { GAME_W, PAL } from '../config';
 import { commit, game } from '../state/game';
-import { MARKS, TASKS, claimMark, claimable, devotion, maxDevotion, rewardText, tasksOf, type Period } from '../systems/tasks';
+import { MARKS, TASKS, claimMark, claimable, devotion, maxDevotion, rewardText, tasksOf, type Period, type TaskEvent } from '../systems/tasks';
 import { Bar } from '../ui/skin';
 import { makeButton } from '../ui/button';
 import { modeScreen, progressBar, untilText } from '../ui/modeScreen';
 import { PAD, addFrame, text } from '../ui/theme';
+
+/** Where each kind of task is done, for its Go button. */
+const GO_TO: Partial<Record<TaskEvent, string>> = {
+  fightWon: 'Campaign',
+  eliteWon: 'Campaign',
+  bossWon: 'Campaign',
+  cryptCleared: 'Crusade',
+  pull: 'Recruit',
+  enhance: 'Roster',
+  levelUp: 'Roster',
+  takeVow: 'Roster',
+  vigilClaim: 'Sanctum',
+  trialWon: 'Trials',
+  towerFloor: 'Tower',
+  inquisitionWon: 'Inquisition',
+  ordealWon: 'Ordeals',
+};
 
 /** Daily Penance and the weekly Litany: tasks, the Devotion bar and its three marks. */
 export class PenanceScene extends Phaser.Scene {
@@ -89,9 +106,12 @@ export class PenanceScene extends Phaser.Scene {
       const h = 66;
       this.add.rectangle(GAME_W / 2, y + h / 2, bw, h, done ? 0x241a1c : 0x1b131d).setStrokeStyle(1, done ? PAL.bronze : PAL.armorShadow);
       this.add.text(PAD + 14, y + 12, t.text, text.body(18, done ? PAL.muted : PAL.ivory));
-      progressBar(this, PAD + 14, y + 48, bw - 140, have / t.need, done ? PAL.bronze : PAL.amber, 6);
-      this.add.text(PAD + bw - 120, y + 42, `${have}/${t.need}`, text.hud(12, PAL.steel));
-      this.add.text(PAD + bw - 14, y + h / 2, done ? 'DONE' : `+${t.devotion}`, text.hud(14, done ? PAL.bronze : PAL.amber)).setOrigin(1, 0.5);
+      progressBar(this, PAD + 14, y + 48, bw - 200, have / t.need, done ? PAL.bronze : PAL.amber, 6);
+      this.add.text(PAD + bw - 178, y + 42, `${have}/${t.need}`, text.hud(12, PAL.steel));
+      const go = GO_TO[t.event];
+      this.add.text(PAD + bw - (done || !go ? 14 : 92), y + h / 2, done ? 'DONE' : `+${t.devotion}`, text.hud(14, done ? PAL.bronze : PAL.amber)).setOrigin(1, 0.5);
+      // Go: straight to where the work is done
+      if (!done && go) makeButton(this, PAD + bw - 42, y + h / 2, 68, 40, 'Go', () => this.scene.start(go), { fontSize: 17 });
       y += h + 8;
     }
   }

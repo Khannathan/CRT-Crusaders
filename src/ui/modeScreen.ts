@@ -2,15 +2,16 @@ import Phaser from 'phaser';
 import { GAME_H, GAME_W, PAL } from '../config';
 import { makeButton } from './button';
 import { CURRENCY_BAR_H, addCurrencyBar } from './currencyBar';
-import { addTabBar, tabOf } from './tabBar';
+import { addTabBar, backOf } from './tabBar';
+import { addGroupStrip, groupOf, isRootScreen, isTabRoot } from './nav';
 import { PAD, addBackdrop, addHeading, addScreenGlow, noOrphan, text } from './theme';
 
 /**
  * The shared frame for a Rite screen: glow, currency bar, heading with a line
- * of flavour, a Back button to the screen it was reached from (Sanctum, Crusade board or Cloister), and the tab bar. Returns the y where
+ * of flavour (or its group's sub-tabs), a Back button to the screen it was reached from (its wing, the hub or the lobby), and the tab bar. Returns the y where
  * content may start and the currency bar's refresh.
  */
-export function modeScreen(scene: Phaser.Scene, title: string, sub: string, back = tabOf(scene.scene.key), bg?: string) {
+export function modeScreen(scene: Phaser.Scene, title: string, sub: string, back = backOf(scene.scene.key), bg?: string) {
   // A double tap on the button that opened this screen (Done, Back, a tab) must not land on
   // whatever sits under the finger here, so taps are held off for a moment after it opens.
   settleTaps(scene);
@@ -18,8 +19,15 @@ export function modeScreen(scene: Phaser.Scene, title: string, sub: string, back
   if (bg && scene.textures.exists(bg)) addBackdrop(scene, bg, GAME_W / 2, GAME_H / 2, GAME_W, GAME_H, { alpha: 0.28, fade: 0.6, fadeColor: 0x0e0d11 });
   addScreenGlow(scene);
   const refresh = addCurrencyBar(scene);
-  const top = addHeading(scene, title, CURRENCY_BAR_H + 10, sub);
-  makeButton(scene, GAME_W - PAD - 44, CURRENCY_BAR_H + 34, 88, 40, 'Back', () => scene.scene.start(back, {}), { fontSize: 16 });
+  // A screen in a group (Duties, Sisters, the Altar) shows its sub-tabs where the title sits;
+  // a screen reached straight from a tab needs no Back button.
+  const key = scene.scene.key;
+  let top: number;
+  if (groupOf(key) && back !== key) {
+    top = addGroupStrip(scene, CURRENCY_BAR_H + 4, title);
+    if (sub) top = scene.add.text(PAD, top, noOrphan(sub), text.body(18, PAL.muted)).setWordWrapWidth(GAME_W - PAD * 2).getBottomRight().y + 4;
+  } else top = addHeading(scene, title, CURRENCY_BAR_H + 10, sub);
+  if (!isRootScreen(key) || (back === key && !isTabRoot(key))) makeButton(scene, GAME_W - PAD - 44, CURRENCY_BAR_H + 34, 88, 40, 'Back', () => scene.scene.start(back, {}), { fontSize: 16 });
   addTabBar(scene, scene.scene.key);
   return { top: top + 12, refresh };
 }
