@@ -32,6 +32,8 @@ import { anyClaimable } from '../systems/tasks';
 import { ORDERS } from '../data/orders';
 import { hasFullBody, hasSplash, portraitKey } from '../ui/placeholderPortrait';
 import { toast } from '../ui/modeScreen';
+import { drawMarchToggle, marchLine, marchUi, showMarchSummary } from '../ui/marchUi';
+import { marchOf } from '../systems/march';
 import { NOVICE_TASKS, NOVITIATE_DAYS, noviceDay, noviceMarks, noviceOpen, taskClaimable } from '../systems/novitiate';
 import { morningRounds, roundsReady, roundsTotal, type RoundsReport } from '../systems/rounds';
 import { addTabBar } from '../ui/tabBar';
@@ -125,6 +127,9 @@ export class SanctumScene extends Phaser.Scene {
     this.textLink(GAME_W - PAD - 4, linkY, 'Reset save', () => this.confirmReset(), 1);
 
     addTabBar(this, 'Sanctum');
+    // What the march cleared while you were away, or why it halted.
+    if (owned.length && (marchUi.away || marchOf(game.save)?.stopped)) showMarchSummary(this, !!marchUi.away);
+    marchUi.away = false;
   }
 
   /**
@@ -200,7 +205,7 @@ export class SanctumScene extends Phaser.Scene {
     addFrame(this, fx, fy, fw, fh);
 
     // Header: where on the Pilgrim's Road the Vigil stands, and the way to push on.
-    this.add.text(left + 18, top + 16, `THE VIGIL  ·  STAGE ${stage.label}`, text.hud(13, PAL.amber));
+    const stageText = this.add.text(left + 18, top + 16, `THE VIGIL  ·  STAGE ${stage.label}`, text.hud(13, PAL.amber));
     this.add.text(left + 18, top + 34, CHAPTERS[stage.chapter].name, { ...text.display(19, 0xfff1d6) }).setShadow(0, 2, '#000000', 6, false, true);
     const road = makeButton(this, left + fw - 74, top + 34, 124, 40, roadDone(save) ? 'The Road' : 'Challenge', () => this.scene.start('Campaign'), { fontSize: 16, active: !roadDone(save), icon: 'blade' });
     if (!roadDone(save) && stageRecommended(save, stage.n) <= partyPower(save, v.party.filter((id) => save.owned[id]))) this.add.circle(road.box.x + 56, road.box.y - 16, 6, PAL.amber).setStrokeStyle(2, 0x1b121c);
@@ -223,6 +228,10 @@ export class SanctumScene extends Phaser.Scene {
       this.add.zone(fx, top + 64 + (zoneH - 64) / 2, fw, zoneH - 64).setInteractive({ useHandCursor: true }).on('pointerup', () => this.scene.start('Field', {}));
       this.add.text(fx, top + zoneH - 14, 'TAP TO WATCH UP CLOSE', text.hud(11, PAL.steel)).setOrigin(0.5, 1).setAlpha(0.8);
     }
+    // The March: the Vigil pushes on along the road by itself, on every screen and while you are away.
+    if (!roadDone(save) || marchOf(save)) drawMarchToggle(this, left + fw - 74, top + 84, 124, 36, 14);
+    const marchText = this.add.text(left + 18, top + 64, '', { ...text.hud(12, PAL.amber), backgroundColor: '#140e16cc', padding: { x: 4, y: 2 } }).setDepth(5);
+    marchText.setInteractive({ useHandCursor: true }).on('pointerup', () => showMarchSummary(this));
 
     // Gathering
     const rateText = this.add.text(left + 18, top + zoneH + 14, '', text.body(16, PAL.muted));
@@ -260,6 +269,9 @@ export class SanctumScene extends Phaser.Scene {
 
     const update = () => {
       const now = Date.now();
+      const ml = marchLine();
+      marchText.setText(ml.text).setColor(hex(ml.good ? PAL.amber : 0xe58a8a)).setVisible(!!ml.text);
+      stageText.setText(`THE VIGIL  ·  STAGE ${vigilStage(save).label}`);
       const r = vigilRates(save, v);
       const p = vigilPending(save, v, now);
       const every = (perHour: number) => (perHour <= 0 ? 'never' : perHour >= 1 ? `${perHour.toFixed(1)}/h` : `every ${Math.round(1 / perHour)}h`);

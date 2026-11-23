@@ -1,3 +1,4 @@
+import type { MarchState } from './march';
 import type { SaveData } from '../state/save';
 import type { Battle } from './combat';
 import { CRYPTS, skirmish, type CryptDef } from './crusade';
@@ -92,6 +93,8 @@ export interface CampaignState {
   /** Highest stage cleared (0 = none). */
   best: number;
   fast?: FastState;
+  /** The Vigil marching on by itself (march.ts). */
+  march?: MarchState;
 }
 
 export const campaignOf = (save: SaveData): CampaignState => (save.campaign ??= { best: 0 });

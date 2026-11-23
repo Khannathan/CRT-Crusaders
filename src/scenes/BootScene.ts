@@ -3,6 +3,7 @@ import { storedRun } from '../state/game';
 import { restoreRun } from '../systems/crusade';
 import { playOutStoredFight } from '../systems/settle';
 import { announceSettled } from '../ui/bgFight';
+import { catchUpMarch } from '../ui/marchUi';
 import Phaser from 'phaser';
 import { FONT, GAME_H, GAME_W, PAL, hex } from '../config';
 import { CRUSADERS } from '../data/crusaders';
@@ -108,6 +109,8 @@ export class BootScene extends Phaser.Scene {
     if (!current.run) current.run = restoreRun(storedRun());
     // A fight that was under way plays out to its end, as if skipped.
     const settled = playOutStoredFight();
+    // The Vigil's march catches up the time the game was closed.
+    catchUpMarch();
     this.scene.start('Sanctum');
     if (settled) window.setTimeout(() => announceSettled(settled), 900);
   }
