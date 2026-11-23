@@ -57,6 +57,8 @@ import { drawItemIcon } from '../ui/itemIcon';
 import { ascend, ascendBlock, costLine, nextAscension } from '../systems/ascension';
 import { SYMBOL_ASC, SYMBOL_MAX, WAKE_COST, WAKE_TITHES, raiseSymbol, symbolBlock, symbolName, symbolPerks, symbolStatMult, upgradeCost } from '../systems/symbols';
 import { ROMAN_RANK } from '../systems/rank';
+import { CANON_STAT, MAX_CANON, PATHS, TRAITS, canCanonize, canonBlock, canonCost, canonOf, canonize, pointsLeft, resetTraits, takeTrait, traitBlock, traitPoints, traitsOf } from '../systems/canon';
+import { MAX_LEVEL } from '../systems/stats';
 import { countOf, itemDef, type ItemId } from '../systems/items';
 import { MAX_SKILL_LEVEL, nextSkillStep, raiseSkill, skillBlock, skillLevels, stepText } from '../systems/skillLevels';
 import { makeButton } from '../ui/button';
@@ -70,13 +72,14 @@ import { showSources, tapCost, tapForSources } from '../ui/sources';
 import { TAB_BAR_H, addTabBar } from '../ui/tabBar';
 import { PAD, addArt, addBackdrop, addBadge, addFrame, addHeading, addScreenGlow, fade, noOrphan, text } from '../ui/theme';
 
-type Tab = 'grow' | 'vows' | 'skills' | 'gear' | 'symbol';
+type Tab = 'grow' | 'vows' | 'skills' | 'gear' | 'symbol' | 'canon';
 const TABS: [Tab, string][] = [
   ['grow', 'Grow'],
   ['vows', 'Vows'],
   ['skills', 'Skills'],
   ['gear', 'Gear'],
   ['symbol', 'Symbol'],
+  ['canon', 'Canon'],
 ];
 const STAT_LABEL = { atk: 'ATK', hp: 'HP', armor: 'ARM', spd: 'SPD' } as const;
 
@@ -257,7 +260,8 @@ export class RosterScene extends Phaser.Scene {
     const worn = new Set(equipped(save, c.id).map((g) => g.slot));
     const gear = GEAR_SLOTS.some((s) => !worn.has(s) && gearOf(save).some((g) => g.slot === s && !g.on));
     const symbol = (have.asc ?? 0) >= SYMBOL_ASC && !symbolBlock(save, c.id);
-    return { grow, vows, skills, gear, symbol };
+    const canon = canCanonize(have) && (!canonBlock(save, c.id) || pointsLeft(have) > 0);
+    return { grow, vows, skills, gear, symbol, canon };
   }
 
   /**
@@ -410,7 +414,7 @@ export class RosterScene extends Phaser.Scene {
     });
     const list = addScrollArea(this, SHEET_Y + 54, GAME_H - 10, { parent: layer });
     const y0 = SHEET_Y + 62;
-    const end = tab === 'grow' ? this.growTab(list, c, y0) : tab === 'vows' ? this.vowsTab(list, c, y0) : tab === 'skills' ? this.skillsTab(list.content, c, y0) : tab === 'symbol' ? this.symbolTab(list, c, y0) : this.gearTab(list.content, c, y0);
+    const end = tab === 'grow' ? this.growTab(list, c, y0) : tab === 'vows' ? this.vowsTab(list, c, y0) : tab === 'skills' ? this.skillsTab(list.content, c, y0) : tab === 'symbol' ? this.symbolTab(list, c, y0) : tab === 'canon' ? this.canonTab(list, c, y0) : this.gearTab(list.content, c, y0);
     list.fit(end);
   }
 
@@ -661,6 +665,94 @@ export class RosterScene extends Phaser.Scene {
     }, { disabled: !!block, active: !block, fontSize: 18 });
     layer.add(b.all);
     return y + 80;
+  }
+
+  /** Canonization: ranks past level 50, then her trait tree (three paths of five). */
+  private canonTab(list: ScrollArea, c: CrusaderDef, y: number): number {
+    const save = game.save;
+    const have = save.owned[c.id];
+    const layer = list.content;
+    const bw = GAME_W - PAD * 2 - 16;
+    const left = PAD + 8;
+    const rank = canonOf(have);
+    layer.add(this.add.text(left, y, `CANON ${rank ? ROMAN_RANK(rank) : '0'} / ${ROMAN_RANK(MAX_CANON)}`, text.hud(15, rank ? PAL.amber : PAL.steel)));
+    layer.add(this.add.text(GAME_W - PAD - 8, y, `ALL STATS +${Math.round(CANON_STAT * rank * 1000) / 10}%`, text.hud(13, PAL.ivory)).setOrigin(1, 0));
+    y += 28;
+    // The rank track: twenty pips, a gold ring on each trait-point rank.
+    for (let r = 1; r <= MAX_CANON; r++) {
+      const x = left + 8 + ((r - 1) * (bw - 16)) / (MAX_CANON - 1);
+      layer.add(this.add.circle(x, y + 8, 6, r <= rank ? 0xe8e0c8 : PAL.deepShadow).setStrokeStyle(r % 2 === 0 ? 2 : 1, r % 2 === 0 ? PAL.amber : PAL.armorShadow));
+    }
+    y += 30;
+    if (!canCanonize(have)) {
+      const t = this.add.text(left, y, `She may be raised to the Canon once she reaches level ${MAX_LEVEL}, fully ascended. Each rank lifts all her stats; every second rank gives a trait point.`, { ...text.body(15, PAL.steel), wordWrap: { width: bw } });
+      layer.add(t);
+      return y + t.height + 20;
+    }
+    // Materials held (tap for sources).
+    const uw = bw / 3;
+    (['canon1', 'canon2', 'canon3'] as const).forEach((g, i) => {
+      const x = left + i * uw;
+      layer.add(drawItemIcon(this, x + 20, y + 18, g, 36));
+      layer.add(tapForSources(this, this.add.text(x + 44, y + 4, `×${countOf(save, g)}\n${itemDef(g).name}`, text.body(13, countOf(save, g) ? PAL.ivory : PAL.steel)), g));
+    });
+    y += 50;
+    if (rank < MAX_CANON) {
+      const cost = canonCost(rank);
+      const block = canonBlock(save, c.id);
+      layer.add(tapCost(this, this.add.text(left, y, `To Canon ${ROMAN_RANK(rank + 1)}: ${costLine(save, cost)}  ›`, { ...text.body(14, block ? PAL.steel : PAL.amber), wordWrap: { width: bw } }), cost.items, cost.tithes));
+      y += 30;
+      const b = makeButton(this, GAME_W / 2, y + 28, bw, 56, `Canonize: rank ${ROMAN_RANK(rank + 1)}${(rank + 1) % 2 === 0 ? ' (+1 trait point)' : ''}`, () => {
+        if (list.dragging) return;
+        if (canonize(save, c.id)) {
+          commit();
+          this.reopen(c, 'canon');
+        }
+      }, { disabled: !!block, active: !block, fontSize: 17 });
+      layer.add(b.all);
+      y += 76;
+    } else {
+      layer.add(this.add.text(left, y, 'She is wholly canonized. Saints will pray to her.', text.body(16, PAL.amber)));
+      y += 36;
+    }
+    // Traits.
+    const left_ = pointsLeft(have);
+    layer.add(this.add.text(left, y, `TRAITS · ${left_} OF ${traitPoints(have)} POINTS LEFT`, text.hud(14, left_ > 0 ? PAL.amber : PAL.steel)));
+    if (traitsOf(have).length) {
+      const r = makeButton(this, GAME_W - PAD - 58, y + 8, 100, 32, 'Reset', () => {
+        if (list.dragging) return;
+        resetTraits(save, c.id);
+        commit();
+        this.reopen(c, 'canon');
+      }, { fontSize: 14 });
+      layer.add(r.all);
+    }
+    y += 34;
+    for (const p of PATHS) {
+      layer.add(this.add.text(left, y, p.name.toUpperCase(), text.hud(13, PAL.ivory)));
+      layer.add(this.add.text(left, y + 18, p.desc, text.body(13, PAL.muted)));
+      y += 42;
+      for (const t of TRAITS.filter((x) => x.path === p.id)) {
+        const on = traitsOf(have).includes(t.id);
+        const can = !traitBlock(have, t.id);
+        const row = this.add.rectangle(GAME_W / 2, y + 22, bw, 44, on ? 0x2a1e24 : 0x150e17).setStrokeStyle(can ? 2 : 1, on || can ? PAL.amber : PAL.armorShadow);
+        layer.add(row);
+        layer.add(this.add.text(left + 10, y + 4, `${on ? '✓ ' : ''}${t.name.toUpperCase()}`, text.hud(12, on ? PAL.amber : can ? 0xfff1d6 : PAL.steel)));
+        layer.add(this.add.text(left + 10, y + 22, t.desc, text.body(14, on ? PAL.ivory : PAL.muted)));
+        if (can) {
+          row.setInteractive({ useHandCursor: true }).on('pointerup', () => {
+            if (list.dragging) return;
+            if (takeTrait(save, c.id, t.id)) {
+              commit();
+              this.reopen(c, 'canon');
+            }
+          });
+        }
+        y += 50;
+      }
+      y += 8;
+    }
+    return y + 20;
   }
 
   /** The star track, copies and Stigmata, and Take Vow or Tier Up with a before and after. */

@@ -160,6 +160,11 @@ const FAMILY_SOURCES: Record<string, Record<1 | 2 | 3, Source[]>> = {
     2: [{ text: 'The Kennel: one free whistle a day, and 5 the first time', scene: 'Kennel' }, { text: 'Hunts: milestones', scene: 'Hunt' }, { text: 'Feast stall', scene: 'Feast' }, { text: 'Shop: Gilt counter', scene: 'Shop', data: { counter: 'gilt' } }, TITHE_SHOP, ALMONRY],
     3: [{ text: 'Hunts: the highest milestones', scene: 'Hunt' }],
   },
+  canon: {
+    1: [{ text: 'Bell Tower: boss floors', scene: 'Tower' }, { text: "Pilgrim's Road: chapter chests from chapter 4", scene: 'Campaign' }, GILT_SHOP, TITHE_SHOP],
+    2: [{ text: 'Bell Tower: boss floors from 30', scene: 'Tower' }, INQ, ALMONRY, REFINE('Vellum Scraps')],
+    3: [INQ, REFINE('Hagiographies')],
+  },
   writ: {
     1: [{ text: 'Bell Tower: every fifth floor', scene: 'Tower' }, { text: 'Crusades: bosses', scene: 'Crusade' }, WEEKLY, TITHE_SHOP],
     2: [{ text: 'Bell Tower: boss floors', scene: 'Tower' }, INQ, WEEKLY, ALMONRY, REFINE('Writs of Passage')],
@@ -167,7 +172,7 @@ const FAMILY_SOURCES: Record<string, Record<1 | 2 | 3, Source[]>> = {
   },
 };
 
-const isItem = (id: ResourceId): id is ItemId => /^(ash|page|iron|incense|writ|unction|grace|armory|kennel)[123]$/.test(id);
+const isItem = (id: ResourceId): id is ItemId => /^(ash|page|iron|incense|writ|unction|grace|armory|kennel|canon)[123]$/.test(id);
 
 export function resourceInfo(id: ResourceId): ResourceInfo {
   if (!isItem(id)) return CURRENCIES[id];

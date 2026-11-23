@@ -129,7 +129,7 @@ export function stageReward(n: number): StageReward {
 /** A chapter's chest, opened by its boss. */
 export function chapterChest(chapter: number): StageReward {
   const step = chapter + 1;
-  return { tithes: 0, seals: 3 + step, gilt: 60 + 40 * step, stigmata: 1 + Math.floor(step / 2), items: { ash2: step, page2: step, unction3: step, ...(step >= 3 ? { incense2: step - 1 } : {}) } };
+  return { tithes: 0, seals: 3 + step, gilt: 60 + 40 * step, stigmata: 1 + Math.floor(step / 2), items: { ash2: step, page2: step, unction3: step, ...(step >= 3 ? { incense2: step - 1 } : {}), ...(step >= 4 ? { canon1: 2 * step } : {}) } };
 }
 
 export interface StageResult {

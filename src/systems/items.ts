@@ -6,7 +6,7 @@ import type { Rng } from './gacha';
  * family feeds one growth system, so a player can tell at a glance what a drop
  * is for. Five of a tier refine into one of the next.
  */
-export type Family = 'ash' | 'page' | 'iron' | 'incense' | 'writ' | 'unction' | 'grace' | 'armory' | 'kennel';
+export type Family = 'ash' | 'page' | 'iron' | 'incense' | 'writ' | 'unction' | 'grace' | 'armory' | 'kennel' | 'canon';
 export type Tier = 1 | 2 | 3;
 export type ItemId = `${Family}${Tier}`;
 export type Bag = Partial<Record<ItemId, number>>;
@@ -29,6 +29,7 @@ export const FAMILIES: FamilyDef[] = [
   { id: 'unction', name: 'Unction', use: 'Sister EXP: fed on her Grow tab', color: 0x7fc4a0 },
   { id: 'armory', name: "The Saints' Armory", use: 'UR gear: forge it, or pull for it', color: 0xe19cc4 },
   { id: 'kennel', name: 'The Kennel', use: 'Hounds: whistle for them, or adopt the one you want', color: 0xc9a46a },
+  { id: 'canon', name: 'Canon', use: 'Canonization: raises a level 50 Sister past her cap', color: 0xe8e0c8 },
 ];
 
 export interface ItemDef {
@@ -70,6 +71,9 @@ export const ITEMS: ItemDef[] = [
   def('kennel', 1, 'Marrow Bone', 'Left by every hound that answers. Enough of them buy the hound you want.'),
   def('kennel', 2, 'Hound Whistle', 'Carved from a saint\'s shin. One call at the Kennel.'),
   def('kennel', 3, "Saint's Leash", 'Blessed braided leather. Adopt any hound you choose.'),
+  def('canon', 1, 'Vellum Scrap', 'A strip of a saint\'s life, in a hand no one can read.'),
+  def('canon', 2, 'Hagiography', 'Her miracles, numbered and witnessed. Some witnesses recanted.'),
+  def('canon', 3, 'Canon Seal', 'The last word of the Synod. Wax the colour of old blood.'),
 ];
 
 /** Families that never refine into their next tier. */

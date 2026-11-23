@@ -30,6 +30,8 @@ export interface OwnedCrusader {
   asc?: number;
   /** Holy Symbol level: undefined while it sleeps, 0-15 once woken (systems/symbols.ts). */
   symbol?: number;
+  /** Canonization past level 50: rank 0-20 and the traits taken (systems/canon.ts). */
+  canon?: { rank: number; traits: string[] };
   /** Crusades left to sit out after falling (0 = ready). Tithes can revive early. */
   recovering?: number;
 }
