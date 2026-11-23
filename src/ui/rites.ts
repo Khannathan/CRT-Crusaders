@@ -1,3 +1,4 @@
+import { RAID_BOSSES, delvesLeft, raidOf } from '../systems/raid';
 import { HOLD_WAVES, holdLeft, holdOf } from '../systems/holdLine';
 import { HOUNDS } from '../data/hounds';
 import type { BoostKind } from '../systems/boosts';
@@ -115,6 +116,11 @@ export const RITES: RiteEntry[] = [
     label: 'Hold the Line', scene: 'Hold', icon: 'shield', rank: 4, home: 'board', bg: 'bg-candle-maze', ready: (s) => holdLeft(s) > 0 || !!holdOf(s).stand,
     blurb: 'Ten waves. Wounds carry. Hold!',
     status: (s) => `${holdOf(s).stand ? `Wave ${holdOf(s).stand!.held + 1} waits` : `${holdLeft(s)} stand left today`}  ·  best ${holdOf(s).best}/${HOLD_WAVES}`,
+  },
+  {
+    label: 'Nightmare Raid', scene: 'Raid', icon: 'blade', rank: 6, home: 'board', bg: 'bg-abyssal-ossuary', ready: (s) => delvesLeft(s) > 0 || !!raidOf(s).delve,
+    blurb: 'Three bosses. Three Squads. Its wounds carry!',
+    status: (s) => `${raidOf(s).delve ? `Boss ${raidOf(s).delve!.boss + 1} waits` : `${delvesLeft(s)} delve left today`}  ·  week best ${raidOf(s).best}/${RAID_BOSSES}`,
   },
   {
     label: 'Reliquary Procession', scene: 'Procession', icon: 'flame', rank: 5, home: 'board', bg: 'bg-candle-maze', ready: (s) => processionLeft(s) > 0,

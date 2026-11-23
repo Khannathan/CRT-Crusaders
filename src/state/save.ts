@@ -41,6 +41,8 @@ export interface OwnedCrusader {
 export interface SaveData {
   /** Relic Rites (systems/relicRites.ts): daily entries, best levels, Motes and Sanctified steps per Sister. */
   relicRites?: { day: string; used: number; best: Record<string, number>; motes: Record<string, number>; sanct: Record<string, number> };
+  /** The Nightmare Raid (systems/raid.ts): Squads, today's delve, the week's best. */
+  raid?: import('../systems/raid').RaidState;
   /** Hold the Line (systems/holdLine.ts): today's stand, best waves held. */
   holdLine?: import('../systems/holdLine').HoldState;
   /** Hosanna picks: per party (sorted Sister ids joined by +) and the last one picked. */
