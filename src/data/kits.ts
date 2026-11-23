@@ -209,7 +209,7 @@ K('CC-W040', (own) => ({
     own({ name: 'The Wall Is Lit', desc: 'LITANY: every enemy Burns for 3 turns (stacks), and every Sister goes on Overwatch.', target: 'allEnemies', mult: 0.5, poison: { mult: 0.5, turns: 3 }, stackPoison: true, overwatchAll: OVERWATCH_HIT, rite: true }),
   ],
   seal: { name: 'Never Sleep', desc: 'The first time a boss starts charging, every burn on it ignites at once and it loses 20 Wrath.', kind: 'neverSleep' },
-  shines: ['Choirmaster Hunt', 'Pilgrim\'s Road and crypt waves', 'Chapter Siege'],
+  shines: ['Rot-Mother Hunt', 'Choirmaster Hunt', "Pilgrim's Road and crypt waves", 'Chapter Siege'],
 }));
 
 K('CC-W049', (own) => ({
@@ -221,7 +221,7 @@ K('CC-W049', (own) => ({
     own({ name: 'Night Shift', desc: 'Every ally +15% attack for 2 turns; allies on Overwatch +30% instead. Cooldown 3.', target: 'allAllies', empower: { pct: 0.15, turns: 2 }, empowerTarget: true, cond: { if: 'overwatch', then: { empower: { pct: 0.3, turns: 2 } } }, cooldown: 3 }),
     own({ name: 'Watchtower Omen', desc: 'LITANY: every Sister goes on Overwatch with a strong reaction (0.9x) and gains Haste.', target: 'allAllies', overwatchAll: ow(0.9), haste: 1, rite: true }),
   ],
-  shines: ['Red Cardinal Hunt', 'Iron Vigil Order Tower', 'Real-time field'],
+  shines: ['Flayed Saint Hunt', 'Iron Abbot Hunt', 'Iron Vigil Order Tower', 'Real-time field'],
 }));
 
 K('CC-W058', (own) => ({
@@ -233,7 +233,7 @@ K('CC-W058', (own) => ({
     own({ name: 'Hold the Gate', desc: 'Overwatch: the next foe to act is struck and Stunned (bosses are Delayed instead). Cooldown 3.', target: 'self', overwatch: ow(0.8, { stun: 1, cond: { if: 'boss', then: { delay: true } } }), cooldown: 3 }),
     own({ name: 'Walls of Iron', desc: 'LITANY: shield every ally for 25% of max HP, draw every attack for 2 turns, and every Sister gains 10 Zeal.', target: 'allAllies', shieldPct: 0.25, taunt: 2, zealGain: 10, zealAll: true, rite: true }),
   ],
-  shines: ['Guarding the back rank (Choir Below, Colossus Hunt)', 'Iron Vigil Order Tower'],
+  shines: ['Guarding the back rank (The Choir Below)', 'Iron Vigil Order Tower'],
 }));
 
 K('CC-W094', (own) => ({
@@ -301,7 +301,7 @@ K('CC-W050', (own) => ({
     own({ name: 'Absolution', desc: 'LITANY: heavy magic damage on every enemy; any common foe left under 30% HP is granted Mercy at once.', target: 'allEnemies', mult: 1.3, mercyLine: 0.3, rite: true }),
   ],
   seal: { name: 'Last Rites Heard', desc: 'The first time a Sister would fall, she is healed 30% instead and her attacker is Foretold.', kind: 'lastRites' },
-  shines: ['Waves and summons', "Pilgrim's Road", 'Crypt runs'],
+  shines: ['Flayed Saint Hunt', 'Choirmaster Hunt', 'Waves and summons', "Pilgrim's Road", 'Crypt runs'],
 }));
 
 K('CC-W059', (own) => ({
@@ -313,7 +313,7 @@ K('CC-W059', (own) => ({
     own({ name: 'Merciful Stand', desc: 'Draw attacks for 2 turns; every foe under half HP is Weakened (-25% attack) for 2 turns. Cooldown 2.', target: 'self', taunt: 2, alsoFoes: { cond: { if: 'underHalf', then: { weaken: { pct: 0.25, turns: 2 } } } }, cooldown: 2 }),
     own({ name: 'Ashen Wall', desc: 'LITANY: shield every ally for 25% of max HP and Ward them (-15% damage taken) for 2 turns.', target: 'allAllies', shieldPct: 0.25, ward: { pct: 0.15, turns: 2 }, rite: true }),
   ],
-  shines: ['Red Cardinal and Rot-Mother Hunts', 'Crypt runs'],
+  shines: ['Crypt runs'],
 }));
 
 K('CC-W077', (own) => ({
@@ -391,7 +391,7 @@ K('CC-W060', (own) => ({
     own({ name: 'Sealed Testimony', desc: "LITANY: shield every ally for 25% of max HP; every foe's Guilt Weakens it (-5% attack per Guilt) for 2 turns.", target: 'allAllies', shieldPct: 0.25, guiltWeaken: 0.05, rite: true }),
   ],
   seal: { name: 'Forbidden Testimony', desc: 'The first time she would fall, she stays at 1 HP and every foe gains 3 Guilt.', kind: 'forbidden' },
-  shines: ['Chapter Siege', 'Colossus Hunt', 'Veiled Tribunal Order Tower'],
+  shines: ['Twofold Reliquary Hunt', 'Chapter Siege', 'Veiled Tribunal Order Tower'],
 }));
 
 K('CC-W069', (own) => ({
@@ -404,7 +404,7 @@ K('CC-W069', (own) => ({
     own({ name: 'Judgment of the Wall', desc: 'LITANY: Ward every ally (-25% damage) for 2 turns; she draws every attack and counters at full attack.', target: 'allAllies', ward: { pct: 0.25, turns: 2 }, taunt: 2, counter: { mult: 1.0, turns: 2 }, rite: true }),
   ],
   seal: { name: 'Saint of the Wall', desc: 'Once a fight, when a Sister would take a hit worth over 30% of her max HP, Isolde steps in and takes it at half damage.', kind: 'wallSaint' },
-  shines: ['One-shot bosses in the deeper crypts', 'Inquisition trials', 'Her Feast'],
+  shines: ['Flayed Saint Hunt', 'Twofold Reliquary Hunt', 'One-shot bosses in the deeper crypts', 'Inquisition trials', 'Her Feast'],
 }));
 
 K('CC-W180', (own) => ({
@@ -416,7 +416,7 @@ K('CC-W180', (own) => ({
     st('veilblade', 'hamstring'),
     own({ name: 'Execution', desc: 'LITANY: a savage blow on any enemy, +50% critical chance; spends all its Guilt for +25% damage each.', target: 'enemy', mult: 1.9, critChance: 0.5, spend: { kw: 'guilt', per: { multPct: 0.25 } }, rite: true }),
   ],
-  shines: ['Back-rank priority foes', 'Red Cardinal burst check'],
+  shines: ['Flayed Saint Hunt', 'Back-rank priority foes', 'Red Cardinal burst check'],
 }));
 
 K('CC-W198', (own) => ({
@@ -481,7 +481,7 @@ K('CC-W070', (own) => ({
     own({ name: 'None Shall Wake', desc: 'LITANY: Ward every ally (-25%) for 2 turns, draw every attack and counter; summoned foes lose their next turn.', target: 'allAllies', ward: { pct: 0.25, turns: 2 }, taunt: 2, counter: { mult: 0.9, turns: 2 }, stunSummons: 1, rite: true }),
   ],
   seal: { name: 'The Only One Home', desc: 'If she is the last Sister standing, she heals 50%, gains Haste and +40% attack for the rest of the fight.', kind: 'onlyOne' },
-  shines: ['Summoner bosses', 'Add-heavy deeper crypts', 'Sepulcher Watch Order Tower'],
+  shines: ['Red Cardinal Hunt', 'Rot-Mother Hunt', 'Summoner bosses', 'Add-heavy deeper crypts', 'Sepulcher Watch Order Tower'],
 }));
 
 K('CC-W199', (own) => ({
@@ -494,7 +494,7 @@ K('CC-W199', (own) => ({
     own({ name: 'Chalice of Bones', desc: 'LITANY: raise every fallen Sister with 40% HP, heal every ally 30%, and the party gains 2 Remains.', target: 'allAllies', revive: 0.4, healPct: 0.3, gain: { remains: 2 }, rite: true }),
   ],
   seal: { name: 'Not Yet', desc: 'The first Sister to fall each fight is raised at once with 25% HP.', kind: 'notYet' },
-  shines: ['Bell Tower and Heresy', 'Hunts', 'Her Feast'],
+  shines: ['Red Cardinal Hunt', 'Flayed Saint Hunt', 'Bell Tower and Heresy', 'Hunts', 'Her Feast'],
 }));
 
 K('CC-W079', (own) => ({
@@ -518,7 +518,7 @@ K('CC-W088', (own) => ({
     st('sentinel', 'tomb-stance'),
     st('sentinel', 'sealed-sepulcher'),
   ],
-  shines: ['Colossus Hunt', 'Summoner bosses'],
+  shines: ['Choirmaster Hunt', 'Summoner bosses'],
 }));
 
 K('CC-W235', (own) => ({
@@ -530,7 +530,7 @@ K('CC-W235', (own) => ({
     own({ name: 'Reliquary Volley', desc: 'Spend up to 4 Remains: one bolt (1.1x, through 15% of its Armor) at a random foe for each. Cooldown 2.', target: 'allEnemies', mult: 1.1, armorPierce: 0.15, volley: 4, cooldown: 2 }),
     own({ name: 'Ossuary Ballista', desc: 'LITANY: a crushing bolt through shields and 30% of its Armor; spends every Remains for more.', target: 'enemy', mult: 2.4, armorPierce: 0.3, pierceShield: true, spend: { kw: 'remains', per: { multPct: 0.2, armorPierce: 0.15 } }, rite: true }),
   ],
-  shines: ['Flayed Saint Hunt', 'Bosses with adds'],
+  shines: ['Bosses with adds'],
 }));
 
 K('CC-W106', (own) => ({
@@ -542,7 +542,7 @@ K('CC-W106', (own) => ({
     st('abbess', 'briar-mantle'),
     st('abbess', 'garden-of-thorns'),
   ],
-  shines: ['Rot-Mother Hunt', 'Flayed Saint Hunt', 'Crypt runs'],
+  shines: ['Choirmaster Hunt', 'Font Leviathan Hunt', 'Crypt runs'],
 }));
 
 K('CC-W022', (own) => ({
@@ -590,7 +590,7 @@ K('CC-W080', (own) => ({
     own({ name: 'Crescendo', desc: 'LITANY: five strikes on any enemy at 0.45x each; each one gives the party 4 Zeal.', target: 'enemy', mult: 0.45, hits: 5, zealPerHit: 4, rite: true }),
   ],
   seal: { name: 'The Note Held', desc: 'The first time a Hymn would end, it plays 2 more rounds.', kind: 'noteHeld' },
-  shines: ['Red Cardinal Hunt', 'Hunt damage scores', 'Candle Choir Order Tower'],
+  shines: ['Rot-Mother Hunt', 'Hunt damage scores', 'Candle Choir Order Tower'],
 }));
 
 K('CC-W209', (own) => ({
@@ -603,7 +603,7 @@ K('CC-W209', (own) => ({
     own({ name: 'Final Judgment', desc: 'LITANY: every enemy is Weakened (-30%) for 3 turns and loses 50 Wrath.', target: 'allEnemies', mult: 0.9, weaken: { pct: 0.3, turns: 3 }, wrathDrain: 50, rite: true }),
   ],
   seal: { name: 'Reflected Blasphemy', desc: 'Once a fight, a Blasphemy is turned back: the Sisters take half, and the boss takes the other half.', kind: 'reflect' },
-  shines: ["Every boss's Blasphemy", 'Chapter Siege', 'Her Feast'],
+  shines: ['Twofold Reliquary Hunt', 'Red Cardinal Hunt', "Every boss's Blasphemy", 'Chapter Siege', 'Her Feast'],
 }));
 
 K('CC-W089', (own) => ({
@@ -615,7 +615,7 @@ K('CC-W089', (own) => ({
     st('sentinel', 'funeral-bash'),
     own({ name: 'Choir of Stone', desc: 'LITANY: Ward every ally (-25%) for 2 turns, draw every attack, and start Hold the Note.', target: 'allAllies', ward: { pct: 0.25, turns: 2 }, taunt: 2, hymn: { name: 'Hold the Note', rounds: 3, allies: { ward: { pct: 0.1, turns: HYMN } } }, rite: true }),
   ],
-  shines: ['Hit-everyone bosses', 'The Choir Below'],
+  shines: ['Colossus Hunt', 'Hit-everyone bosses', 'The Choir Below'],
 }));
 
 K('CC-W098', (own) => ({
@@ -639,7 +639,7 @@ K('CC-W134', (own) => ({
     own({ name: 'Hymn of Unmaking', desc: "A Hymn for 3 rounds: each round strips every foe's shield and blessings. Cooldown 3.", target: 'self', hymn: { name: 'Hymn of Unmaking', rounds: 3, foes: { purge: true } }, cooldown: 3 }),
     st('exorcist', 'banishment'),
   ],
-  shines: ['Choirmaster Hunt', 'Shielded and warded foes', 'Twofold Reliquary'],
+  shines: ['Rot-Mother Hunt', 'Colossus Hunt', 'Shielded and warded foes'],
 }));
 
 K('CC-W014', (own) => ({
@@ -683,7 +683,7 @@ K('CC-W090', (own) => ({
     own({ name: 'Thicket', desc: 'LITANY: every ally gains Thorns (30% back) for 2 turns; she draws every attack.', target: 'allAllies', thorns: { pct: 0.3, turns: 2 }, taunt: 2, rite: true }),
   ],
   seal: { name: 'Unmasked', desc: 'The first time she drops under 30% HP, she heals 25% and goes to 10 Scars.', kind: 'unmasked' },
-  shines: ['Flayed Saint Hunt', 'Thorn Covenant Order Tower', 'Rivals'],
+  shines: ['Rot-Mother Hunt', 'Choirmaster Hunt', 'Thorn Covenant Order Tower', 'Rivals'],
 }));
 
 K('CC-W099', (own) => ({
@@ -695,7 +695,7 @@ K('CC-W099', (own) => ({
     st('martyr', 'blood-oath'),
     own({ name: 'Dawn of Thorns', desc: 'LITANY: burn every enemy with light, heal 50% of the damage, and draw attacks for 2 turns.', target: 'allEnemies', mult: 0.85, drain: 0.5, taunt: 2, rite: true }),
   ],
-  shines: ['Rivals', 'Inquisition trials', 'Thorn Covenant Order Tower'],
+  shines: ['Colossus Hunt', 'Rivals', 'Inquisition trials', 'Thorn Covenant Order Tower'],
 }));
 
 K('CC-W117', (own) => ({
@@ -707,7 +707,7 @@ K('CC-W117', (own) => ({
     st('cantor', 'psalm-of-blades'),
     st('cantor', 'requiem-chorus'),
   ],
-  shines: ['Flayed Saint Hunt', 'Twofold Reliquary'],
+  shines: ['Font Leviathan Hunt'],
 }));
 
 K('CC-W006', (own) => ({
@@ -767,7 +767,7 @@ K('CC-W100', (own) => ({
     own({ name: 'Flood Tide', desc: 'LITANY: hit every enemy and heal for 50% of the damage; the Tide rises to 5.', target: 'allEnemies', mult: 0.85, drain: 0.5, gain: { tide: 5 }, rite: true }),
   ],
   seal: { name: 'Drowned and Returned', desc: 'The first time she falls, she rises at the start of the next round with 50% HP, and the Tide goes to 5.', kind: 'drowned' },
-  shines: ['Hunt damage scores', 'Chapter Siege', 'Deep Bell Tower floors'],
+  shines: ['Colossus Hunt', 'Font Leviathan Hunt', 'Hunt damage scores', 'Chapter Siege', 'Deep Bell Tower floors'],
 }));
 
 K('CC-W229', (own) => ({
@@ -780,7 +780,7 @@ K('CC-W229', (own) => ({
     own({ name: 'Deluge Omen', desc: 'LITANY: heavy magic damage on every enemy, +10% per Tide.', target: 'allEnemies', mult: 1.3, byTide: { per: { multPct: 0.1 } }, rite: true }),
   ],
   seal: { name: 'High Water', desc: 'The first time the Tide reaches 5, every Sister gains 25 Zeal.', kind: 'highWater' },
-  shines: ['Litany-chain parties', 'Red Cardinal Hunt', 'Her Feast'],
+  shines: ['Choirmaster Hunt', 'Iron Abbot Hunt', 'Litany-chain parties', 'Her Feast'],
 }));
 
 K('CC-W220', (own) => ({
@@ -792,7 +792,7 @@ K('CC-W220', (own) => ({
     st('inquisitor', 'sentence'),
     st('inquisitor', 'verdict'),
   ],
-  shines: ['Finishing Hunt bosses', "Pilgrim's Road chapter bosses"],
+  shines: ['Font Leviathan Hunt', 'Choirmaster Hunt', 'Finishing Hunt bosses', "Pilgrim's Road chapter bosses"],
 }));
 
 K('CC-W007', (own) => ({
@@ -804,7 +804,7 @@ K('CC-W007', (own) => ({
     st('inquisitor', 'sentence'),
     own({ name: 'Last Baptism', desc: 'LITANY: Ebb: a crushing blow on any enemy, +15% per Tide spent.', target: 'enemy', mult: 1.8, bonusIfAccused: 0.5, spend: { kw: 'tide', per: { multPct: 0.15 } }, rite: true }),
   ],
-  shines: ['Red Cardinal Hunt', 'Bosses that grow stronger'],
+  shines: ['Font Leviathan Hunt', 'Bosses that grow stronger'],
 }));
 
 K('CC-W043', (own) => ({
@@ -864,7 +864,7 @@ K('CC-W230', (own) => ({
     own({ name: 'Shattered Confession', desc: 'LITANY: heavy magic damage on every enemy; their blessings pass to your strongest Sister.', target: 'allEnemies', mult: 1.3, steal: true, rite: true }),
   ],
   seal: { name: 'Seen Before', desc: 'The first time a Blasphemy lands, she saw it coming: every Sister is Warded (-40%) against it.', kind: 'seenBefore' },
-  shines: ['Twofold Reliquary', 'Inquisition trials', 'Self-buffing bosses'],
+  shines: ['Colossus Hunt', 'Inquisition trials', 'Self-buffing bosses'],
 }));
 
 K('CC-W110', (own) => ({
@@ -876,7 +876,7 @@ K('CC-W110', (own) => ({
     own({ name: 'Briar Mirror', desc: 'Every ally gains Thorns (35% back) and is Warded (-10%) for 2 turns. Cooldown 2.', target: 'allAllies', thorns: { pct: 0.35, turns: 2 }, ward: { pct: 0.1, turns: 2 }, cooldown: 2 }),
     own({ name: 'Garden of Glass', desc: 'LITANY: cure every ally (each cure is thrown back), heal every ally 25%, and rake every enemy (Bleeding 2 turns).', target: 'allAllies', cleanse: true, healPct: 0.25, alsoFoes: { mult: 0.6, bleed: { mult: 0.2, turns: 2 } }, rite: true }),
   ],
-  shines: ['Rot-Mother Hunt', 'Flayed Saint Hunt'],
+  shines: ['Flayed Saint Hunt', 'Twofold Reliquary Hunt'],
 }));
 
 K('CC-W008', (own) => ({
@@ -888,7 +888,7 @@ K('CC-W008', (own) => ({
     st('inquisitor', 'sentence'),
     own({ name: 'Mirror Verdict', desc: 'LITANY: a crushing blow on any enemy, doubled against the Accused; always a crit against the Confessed.', target: 'enemy', mult: 1.8, bonusIfAccused: 1, cond: { if: 'confessed', then: { critChance: 1 } }, rite: true }),
   ],
-  shines: ['Rivals', 'Glass Confession Order Tower', 'Packed foes'],
+  shines: ['Colossus Hunt', 'Rivals', 'Glass Confession Order Tower', 'Packed foes'],
 }));
 
 K('CC-W035', (own) => ({
@@ -939,7 +939,7 @@ K('CC-W009', (own) => ({
     own({ name: "Pilgrim's Verdict", desc: 'LITANY: spend all Stride: a crushing blow on any enemy, 1.6x plus 0.3x per Stride, doubled against the Accused.', target: 'enemy', mult: 1.6, bonusIfAccused: 1, spend: { kw: 'stride', per: { multAdd: 0.3 } }, rite: true }),
   ],
   seal: { name: 'The Bell No One Hears', desc: 'The first time a Sister falls, Ysabet gains 5 Stride and Haste.', kind: 'bellNoOne' },
-  shines: ['Free-movement Vigil and real-time field', 'Red Cardinal Hunt', 'Red Pilgrimage Order Tower'],
+  shines: ['Colossus Hunt', 'Red Cardinal Hunt', 'Free-movement Vigil and real-time field', 'Red Pilgrimage Order Tower'],
 }));
 
 K('CC-W129', (own) => ({
@@ -976,7 +976,7 @@ K('CC-W018', (own) => ({
     st('warsister', 'penitent-blow'),
     own({ name: 'Road of Martyrs', desc: 'LITANY: strike every enemy, Bleeding for 2 turns; +10% per Stride.', target: 'allEnemies', mult: 0.95, bleed: { mult: 0.25, turns: 2 }, perStride: 0.1, rite: true }),
   ],
-  shines: ['Bell Tower and Heresy', 'Last-stand fights'],
+  shines: ['Rot-Mother Hunt', 'Bell Tower and Heresy', 'Last-stand fights'],
 }));
 
 K('CC-W054', (own) => ({
@@ -1036,7 +1036,7 @@ K('CC-W019', (own) => ({
     own({ name: 'Midnight Toll', desc: 'LITANY: strike every enemy; the Bell rings three times.', target: 'allEnemies', mult: 0.95, gain: { toll: 2 }, rite: true }),
   ],
   seal: { name: 'Unbroken Vow', desc: 'The first killing blow leaves her at 1 HP, and Midnight comes at once if it has not yet.', kind: 'unbrokenMidnight' },
-  shines: ['Choirmaster Hunt', 'Bell Tower', 'Hollow Bell Order Tower'],
+  shines: ['Iron Abbot Hunt', 'Rot-Mother Hunt', 'Bell Tower', 'Hollow Bell Order Tower'],
 }));
 
 K('CC-W010', (own) => ({
@@ -1048,7 +1048,7 @@ K('CC-W010', (own) => ({
     st('inquisitor', 'sentence'),
     own({ name: 'Last Peal', desc: 'LITANY: a crushing blow on any enemy, doubled against the Accused, then the Bell Peals at once.', target: 'enemy', mult: 1.8, bonusIfAccused: 1, pealNow: true, rite: true }),
   ],
-  shines: ['Chapter Siege', 'Crypt waves'],
+  shines: ['Colossus Hunt', 'Chapter Siege', 'Crypt waves'],
 }));
 
 K('CC-W047', (own) => ({
@@ -1060,7 +1060,7 @@ K('CC-W047', (own) => ({
     own({ name: 'Toll the Hour', desc: 'The Bell rings twice and every Sister gains 6 Zeal. Cooldown 3.', target: 'self', gain: { toll: 1 }, zealGain: 6, zealAll: true, cooldown: 3 }),
     own({ name: 'Vespers', desc: 'LITANY: heavy damage on every enemy; every Sister gains 15 Zeal.', target: 'allEnemies', mult: 1.15, zealGain: 15, zealAll: true, rite: true }),
   ],
-  shines: ['The Choir Below', 'Red Cardinal Hunt'],
+  shines: ['Choirmaster Hunt', 'Colossus Hunt', 'The Choir Below'],
 }));
 
 K('CC-W175', (own) => ({
@@ -1072,7 +1072,7 @@ K('CC-W175', (own) => ({
     st('veilblade', 'hamstring'),
     own({ name: 'Funeral Knife', desc: 'LITANY: a savage blow on any enemy, double damage under 30% HP.', target: 'enemy', mult: 1.9, execute: 1, rite: true }),
   ],
-  shines: ['Back-rank healers in deeper crypts', 'Bell Tower boss floors'],
+  shines: ['Choirmaster Hunt', 'Back-rank healers in deeper crypts', 'Bell Tower boss floors'],
 }));
 
 K('CC-W055', (own) => ({
@@ -1108,7 +1108,7 @@ K('CC-W078', (own) => ({
     own({ name: 'Weighed and Found Wanting', desc: 'Strike rank 1-3, spending its Guilt for +25% damage each. Cooldown 2.', from: [1, 2], target: 'enemy', reach: [1, 2, 3], mult: 1.0, spend: { kw: 'guilt', per: { multPct: 0.25 } }, cooldown: 2 }),
     own({ name: 'Penance of the Court', desc: 'LITANY: strike every enemy, add 1 Guilt and leave them Bleeding for 2 turns.', target: 'allEnemies', mult: 0.9, guilt: 1, bleed: { mult: 0.25, turns: 2 }, rite: true }),
   ],
-  shines: ['Chapter Siege', 'Veiled Tribunal Order Tower'],
+  shines: ['Flayed Saint Hunt', 'Twofold Reliquary Hunt', 'Chapter Siege', 'Veiled Tribunal Order Tower'],
 }));
 
 K('CC-W187', (own) => ({
@@ -1120,7 +1120,7 @@ K('CC-W187', (own) => ({
     st('adjudicator', 'censure'),
     own({ name: 'Judgment at the Gate', desc: 'LITANY: every Sister goes on Overwatch, and every foe loses 30 Wrath.', target: 'allAllies', overwatchAll: OVERWATCH_HIT, alsoFoes: { wrathDrain: 30 }, rite: true }),
   ],
-  shines: ['Blasphemy bosses', 'Iron Vigil Order Tower'],
+  shines: ['Rot-Mother Hunt', 'Flayed Saint Hunt', 'Blasphemy bosses', 'Iron Vigil Order Tower'],
 }));
 
 K('CC-W147', (own) => ({
@@ -1132,7 +1132,7 @@ K('CC-W147', (own) => ({
     own({ name: 'Ember Retreat', desc: 'Set a foe Burning for 3 turns (stacks) and step a rank back. Cooldown 1.', target: 'enemy', mult: 0.5, poison: { mult: 0.4, turns: 3 }, stackPoison: true, move: 1, cooldown: 1 }),
     own({ name: 'Road of Ash', desc: 'LITANY: burn every enemy for 3 turns (stacks); spends her Stride for +10% each.', target: 'allEnemies', mult: 0.8, poison: { mult: 0.4, turns: 3 }, stackPoison: true, spend: { kw: 'stride', per: { multPct: 0.1 } }, rite: true }),
   ],
-  shines: ['Real-time field', 'Red Pilgrimage Order Tower'],
+  shines: ['Flayed Saint Hunt', 'Twofold Reliquary Hunt', 'Real-time field', 'Red Pilgrimage Order Tower'],
 }));
 
 K('CC-W197', (own) => ({
@@ -1168,7 +1168,7 @@ K('CC-W137', (own) => ({
     own({ name: 'Mirror Flame', desc: 'Ignite all the burn on one foe at once for 1.5x; 2x on the Confessed. Cooldown 2.', target: 'enemy', mult: 0.3, detonate: 1.5, cond: { if: 'confessed', then: { detonate: 2 } }, cooldown: 2 }),
     own({ name: 'Pane of Fire', desc: 'LITANY: burn every enemy for 3 turns (stacks) and Confess them.', target: 'allEnemies', mult: 0.8, confess: 2, poison: { mult: 0.4, turns: 3 }, stackPoison: true, rite: true }),
   ],
-  shines: ['Self-buffing bosses', 'Glass Confession Order Tower'],
+  shines: ['Iron Abbot Hunt', 'Choirmaster Hunt', 'Self-buffing bosses', 'Glass Confession Order Tower'],
 }));
 
 K('CC-W217', (own) => ({
@@ -1180,7 +1180,7 @@ K('CC-W217', (own) => ({
     own({ name: 'Bone Sentence', desc: 'Drag any foe to the front and strike it, double under 30% HP; spends up to 2 Remains for +25% each. Cooldown 2.', from: [1, 2, 3], target: 'enemy', mult: 1.0, execute: 1, pull: true, spend: { kw: 'remains', n: 2, per: { multPct: 0.25 } }, cooldown: 2 }),
     own({ name: 'Judgment of the Ossuary', desc: 'LITANY: a crushing blow on any enemy, doubled against the Accused; spends every Remains for +15% each.', target: 'enemy', mult: 1.6, bonusIfAccused: 1, spend: { kw: 'remains', per: { multPct: 0.15 } }, rite: true }),
   ],
-  shines: ['Summoner bosses', 'Sepulcher Watch Order Tower'],
+  shines: ['Twofold Reliquary Hunt', 'Red Cardinal Hunt', 'Summoner bosses', 'Sepulcher Watch Order Tower'],
 }));
 
 K('CC-W148', (own) => ({
@@ -1192,7 +1192,7 @@ K('CC-W148', (own) => ({
     own({ name: 'Cracked Bell Rite', desc: 'Strip the shield and blessings of every enemy. Cooldown 3.', target: 'allEnemies', mult: 0.4, purge: true, cooldown: 3 }),
     own({ name: 'Vespers of Flame', desc: 'LITANY: searing light on every enemy, then the Bell Peals at once.', target: 'allEnemies', mult: 0.9, pealNow: true, rite: true }),
   ],
-  shines: ['Bell Tower', 'Hollow Bell Order Tower'],
+  shines: ['Flayed Saint Hunt', 'Twofold Reliquary Hunt', 'Bell Tower', 'Hollow Bell Order Tower'],
 }));
 
 K('CC-W127', (own) => ({
@@ -1216,10 +1216,38 @@ K('CC-W237', (own) => ({
     own({ name: 'Briar Bolt', desc: 'A bolt that leaves any foe Bleeding for 3 turns. Cooldown 2.', target: 'enemy', mult: 1.0, bleed: { mult: 0.3, turns: 3 }, cooldown: 2 }),
     own({ name: 'Penitent Ballista', desc: 'LITANY: a crushing bolt through shields; spends her Scars for +8% each.', target: 'enemy', mult: 2.0, pierceShield: true, spend: { kw: 'scars', per: { multPct: 0.08 } }, rite: true }),
   ],
-  shines: ['Flayed Saint Hunt', 'Thorn Covenant Order Tower'],
+  shines: ['Thorn Covenant Order Tower'],
 }));
 
 /** Her four skills: her kit's, or her class's until she has one. */
 export function kitSkills(id: string, classId: string): [SkillDef, SkillDef, SkillDef, SkillDef] {
   return KITS[id]?.skills ?? CLASS_SKILLS[classId];
+}
+
+/**
+ * Holy Symbol +10 for a Sister with a signature: every share in it (the
+ * fractions: damage, guard, heal and the like) and every Zeal or Wrath amount
+ * grows by `f`. Counts and turns stay as they are. Returns undefined when there
+ * is nothing to raise (her +10 is then the class blessing).
+ */
+const EXALT_AMOUNTS = new Set(['owZeal', 'scarZeal', 'startZeal', 'zealAll', 'tideZeal', 'hymnWrath', 'remainsZeal', 'mercyZeal', 'hymnStrikeZeal', 'zeal']);
+export function exaltSig(sig: Sig | undefined, f: number): Sig | undefined {
+  let raised = false;
+  const grow = (v: unknown, key = ''): unknown => {
+    if (typeof v === 'number') {
+      if (EXALT_AMOUNTS.has(key) && v >= 1) {
+        raised = true;
+        return Math.round(v * f);
+      }
+      if (v > 0 && v < 1) {
+        raised = true;
+        return Math.round(v * f * 1000) / 1000;
+      }
+      return v;
+    }
+    if (v && typeof v === 'object' && !Array.isArray(v)) return Object.fromEntries(Object.entries(v).map(([k, x]) => [k, grow(x, k)]));
+    return v;
+  };
+  const out = grow(sig) as Sig | undefined;
+  return raised ? out : undefined;
 }

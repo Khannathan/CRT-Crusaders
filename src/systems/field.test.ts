@@ -2,7 +2,10 @@ import { describe, expect, it } from 'vitest';
 import { newSave } from '../state/save';
 import { autoBattle } from './autoplay';
 import { stageBattle } from './campaign';
-import { FieldBattle, reachOf, simulateField } from './field';
+import { CRUSADERS } from '../data/crusaders';
+import { Battle, makeEnemy, skillsFor, type Unit } from './combat';
+import { EXTRA_SEC, FieldBattle, SWING_SEC, reachOf, simulateField, type FieldEvent } from './field';
+import { partyFor } from './niche';
 import { seeded } from './rng';
 
 const STARTER = ['CC-W013', 'CC-W052', 'CC-W001', 'CC-W022'];
@@ -71,5 +74,55 @@ describe('real-time field combat', () => {
     const e = f.castLitany(sister.uid);
     expect(e?.kind).toBe('act');
     expect(sister.zeal).toBeLessThan(100);
+  });
+});
+
+describe('real-time field: Sister kits', () => {
+  const sis = (id: string, rank = 1): Unit => {
+    const c = CRUSADERS.find((x) => x.id === id)!;
+    return { uid: id, side: 'party', name: c.name, ref: id, classId: c.classId, order: c.order, rank, maxHp: 1000, hp: 1000, atk: 100, armor: 0, mres: 0, crit: 0, spd: 10, status: {}, passive: c.passive };
+  };
+  const perform = (f: FieldBattle, u: Unit, name: string, target?: Unit) => {
+    const out: FieldEvent[] = [];
+    (f as unknown as { perform: (...a: unknown[]) => void }).perform(u, f.bodies.get(u.uid), skillsFor(u).find((s) => s.name === name), target?.uid, out);
+    return out;
+  };
+
+  it('Coup de Grâce: a Mercy kill lets Mirelle Bellgrave strike again right after the swing', () => {
+    const m = sis('CC-W077');
+    const foes = [makeEnemy('husk', 'e0', 1), makeEnemy('husk', 'e1', 2)];
+    foes[0].maxHp = 10000;
+    foes[0].hp = 1550;
+    const f = new FieldBattle(new Battle([m], foes, { rng: () => 0.99 }), { w: 540, h: 600, rng: seeded(1) });
+    perform(f, m, 'Riposte Thrust', foes[0]);
+    expect(foes[0].hp).toBe(0);
+    const body = f.bodies.get(m.uid)!;
+    expect(body.timer).toBeLessThanOrEqual(SWING_SEC + EXTRA_SEC);
+    expect(f.battle.queue).toEqual([]);
+    // Only once a round.
+    foes[1].maxHp = 10000;
+    foes[1].hp = 1550;
+    perform(f, m, 'Riposte Thrust', foes[1]);
+    expect(body.timer).toBeGreaterThan(SWING_SEC + EXTRA_SEC);
+  });
+
+  it('Processional: when ranks turn over, the formation moves with them', () => {
+    const c = sis('CC-W120', 1);
+    const p = sis('CC-W009', 2);
+    const f = new FieldBattle(new Battle([c, p], [makeEnemy('golem', 'e0', 1)], { rng: () => 0.99 }), { w: 540, h: 600, rng: seeded(1) });
+    const before = f.bodies.get(c.uid)!.homeY;
+    perform(f, c, 'Processional');
+    expect(c.rank).toBe(2);
+    expect(f.bodies.get(c.uid)!.homeY).toBeGreaterThan(before);
+  });
+
+  it('every Sister fights a whole field battle with her kit', () => {
+    for (const c of CRUSADERS) {
+      const party = partyFor(c.id);
+      const save = newSave();
+      for (const p of party) save.owned[p] = { level: 10, vow: 0 };
+      const r = simulateField(stageBattle(save, party, 3, seeded(7)), { rng: seeded(8) });
+      expect(r.outcome, c.name).not.toBe('stalled');
+    }
   });
 });

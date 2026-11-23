@@ -97,3 +97,15 @@ export function rankIn(rows: NicheRow[], id: string, hunt: string): number {
   const me = rows.find((r) => r.id === id)!;
   return rows.filter((r) => r.role === me.role && r.rel[hunt] > me.rel[hunt]).length + 1;
 }
+
+/** How a hunt is named in a Sister's "Shines in" list. */
+export const SHINE_LABEL: Record<string, string> = {
+  'flayed-saint': 'Flayed Saint Hunt',
+  'twofold-reliquary': 'Twofold Reliquary Hunt',
+  colossus: 'Colossus Hunt',
+  'rot-mother': 'Rot-Mother Hunt',
+  choirmaster: 'Choirmaster Hunt',
+  'red-cardinal': 'Red Cardinal Hunt',
+  'font-leviathan': 'Font Leviathan Hunt',
+  'iron-abbot': 'Iron Abbot Hunt',
+};
