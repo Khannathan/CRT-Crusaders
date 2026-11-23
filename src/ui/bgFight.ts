@@ -6,6 +6,7 @@ import { makeButton } from './button';
 import type { RunState } from '../systems/crusade';
 import { autoChoose, autoStep } from '../systems/autoplay';
 import type { Battle, Unit } from '../systems/combat';
+import { advanceField, screenField, type FieldBattle } from '../systems/field';
 import { newSeed, seeded } from '../systems/rng';
 import { settleBattle, type Settled } from '../systems/settle';
 
@@ -22,6 +23,8 @@ interface Running {
   challenge?: Challenge;
   /** A turn begun on screen but not yet acted. */
   pending?: Unit;
+  /** Fought on the open field: it plays on in real time with no screen. */
+  field?: FieldBattle;
   timer: ReturnType<typeof setTimeout>;
 }
 
@@ -34,6 +37,17 @@ export const bgFight: {
 
 /** Milliseconds between background turns: about the pace of the screen. */
 const TURN_MS = 900;
+
+/** Seconds of field fight per background step (a step every FIELD_MS). */
+const FIELD_MS = 250;
+
+/** Hands an Auto field fight to the background: it plays on in real time. */
+export function runFieldInBackground(field: FieldBattle, vigilMax: number) {
+  stopBackground();
+  bgFight.done = undefined;
+  field.opts.manualLitany = false;
+  bgFight.running = { battle: field.battle, field, vigilMax, run: current.run, challenge: current.challenge, timer: schedule(true) };
+}
 
 /** Hands an Auto fight to the background. */
 export function runInBackground(battle: Battle, vigilMax: number, pending?: Unit) {
@@ -81,6 +95,15 @@ export function stopAuto(): string {
   clearTimeout(r.timer);
   settings.autoBattle = false;
   saveSettings();
+  if (r.field) {
+    // A field fight simply waits where it stands, Litanies back in the player's hands.
+    r.field.opts.manualLitany = true;
+    bgFight.running = undefined;
+    current.challenge = r.challenge;
+    if (r.run) current.run = r.run;
+    current.paused = { battle: r.battle, field: r.field, actorUid: '', vigilMax: r.vigilMax, run: r.challenge ? undefined : r.run, floor: r.run?.floor, at: r.run?.at, challenge: r.challenge };
+    return 'Auto halted. The fight waits on the Crusade tab.';
+  }
   const b = r.battle;
   let actor = r.pending;
   // Enemy turns play out until a Sister is up.
@@ -103,13 +126,19 @@ export function stopAuto(): string {
   return 'Auto halted. The fight waits on the Crusade tab.';
 }
 
-function schedule() {
-  return setTimeout(tick, TURN_MS / (settings.battleSpeed || 1));
+function schedule(field = false) {
+  return field ? setTimeout(tick, FIELD_MS) : setTimeout(tick, TURN_MS / (settings.battleSpeed || 1));
 }
 
 function tick() {
   const r = bgFight.running;
   if (!r) return;
+  if (r.field) {
+    const outcome = advanceField(r.field, (FIELD_MS / 1000) * (settings.battleSpeed || 1));
+    if (outcome) return finish(r, outcome);
+    r.timer = schedule(true);
+    return;
+  }
   const b = r.battle;
   let actor = r.pending;
   r.pending = undefined;
@@ -136,7 +165,8 @@ function finish(r: Running, outcome: 'victory' | 'defeat') {
     r.battle = current.challenge.make(seeded(newSeed()));
     r.vigilMax = r.battle.vigil;
     r.challenge = current.challenge;
-    r.timer = schedule();
+    if (r.field) r.field = screenField(r.battle, false);
+    r.timer = schedule(!!r.field);
     return;
   }
   bgFight.running = undefined;

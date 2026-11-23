@@ -1,9 +1,9 @@
+import { simulateField } from './field';
 import { commit, game } from '../state/game';
 import { current } from '../state/run';
 import { bondBattle } from './bonds';
 import type { Battle } from './combat';
 import { absorbBattle, currentNode, finishRun, makeBattle, winRoom } from './crusade';
-import { autoBattle } from './autoplay';
 import { newSeed, seeded } from './rng';
 import { expBattle } from './exp';
 
@@ -56,6 +56,7 @@ export function playOutStoredFight(): Settled | undefined {
   const node = run && currentNode(run);
   if (!run || !node?.encounter || current.challenge) return undefined;
   const battle = makeBattle(game.save, run, node.encounter, seeded(newSeed()));
-  const outcome = autoBattle(battle) === 'victory' ? 'victory' : 'defeat';
+  // Crypt fights are fought on the field, so they play out there too.
+  const outcome = simulateField(battle, {}, 600).outcome === 'victory' ? 'victory' : 'defeat';
   return settleBattle(battle, outcome);
 }

@@ -4,7 +4,7 @@ import { autoBattle } from './autoplay';
 import { stageBattle } from './campaign';
 import { CRUSADERS } from '../data/crusaders';
 import { Battle, makeEnemy, skillsFor, type Unit } from './combat';
-import { EXTRA_SEC, FieldBattle, HYMN_RADIUS, SWING_SEC, reachOf, simulateField, type FieldEvent } from './field';
+import { EXTRA_SEC, FieldBattle, HYMN_RADIUS, advanceField, screenField, SWING_SEC, reachOf, simulateField, type FieldEvent } from './field';
 import { partyFor } from './niche';
 import { seeded } from './rng';
 
@@ -236,5 +236,17 @@ describe('real-time field: the player\'s hand', () => {
     const e = f.castLitany(sister.uid, pick.uid);
     expect(e?.kind).toBe('act');
     if (e?.kind === 'act') expect(e.targetUid).toBe(pick.uid);
+  });
+});
+
+describe('real-time field: played with no screen', () => {
+  it('a fight left on Auto plays on in steps to its end, the same as watching it', () => {
+    const save = newSave();
+    for (const id of STARTER) save.owned[id] = { level: 10, vow: 0 };
+    const f = screenField(stageBattle(save, STARTER, 5, seeded(9)), false);
+    let outcome: string | undefined;
+    for (let i = 0; i < 2000 && !outcome; i++) outcome = advanceField(f, 0.25);
+    expect(outcome).toBe('victory');
+    expect(f.time).toBeGreaterThan(5);
   });
 });

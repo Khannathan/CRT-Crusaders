@@ -1,3 +1,4 @@
+import type { FieldBattle } from '../systems/field';
 import type { Battle } from '../systems/combat';
 import type { RunState } from '../systems/crusade';
 import type { Rng } from '../systems/gacha';
@@ -20,6 +21,8 @@ export interface Challenge {
  */
 export interface PausedBattle {
   battle: Battle;
+  /** Fought on the open field: where everyone stands, kept as it was. */
+  field?: FieldBattle;
   actorUid: string;
   /** Candle length at the start, for the candle display. */
   vigilMax: number;

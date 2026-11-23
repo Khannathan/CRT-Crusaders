@@ -153,6 +153,13 @@ export class BattleScene extends Phaser.Scene {
     // A fight left from the Menu picks up where it stopped, if it is this same fight.
     const p = current.paused;
     const resume = p && (challenge ? p.challenge === challenge : !p.challenge && p.run === run && p.floor === run!.floor && p.at === run!.at) ? p : undefined;
+    // A field fight (left on Auto, or paused) goes back onto the field as it stood.
+    const field = away?.field ?? resume?.field;
+    if (field) {
+      if (resume?.field) current.paused = undefined;
+      this.scene.start('Field', { field, vigilMax: away?.vigilMax ?? resume?.vigilMax });
+      return;
+    }
     if (away) {
       this.battle = away.battle;
     } else if (resume) {
