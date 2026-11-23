@@ -65,6 +65,9 @@ interface Card {
  * - from a Crypt fight (always), or any fight when "Real-time battles" is on:
  *   the same fight, paid out as usual
  */
+/** Seconds the formation waits before a manual fight starts by itself (a swap stops the clock). */
+export const DEPLOY_WAIT = 4.5;
+
 export class FieldScene extends Phaser.Scene {
   private field!: FieldBattle;
   private view!: FieldView;
@@ -95,6 +98,8 @@ export class FieldScene extends Phaser.Scene {
   /** Seconds before the fight begins on its own (none once the player swaps). */
   private deployLeft?: number;
   private deployLayer: Phaser.GameObjects.GameObject[] = [];
+  /** The Begin! label, which counts down while the fight waits to start by itself. */
+  private beginText?: Phaser.GameObjects.Text;
   /** The Sister picked to trade places with the next one tapped. */
   private picked?: string;
   /** Real seconds the fight freezes for a heavy blow. */
@@ -137,8 +142,8 @@ export class FieldScene extends Phaser.Scene {
     this.drag = undefined;
     this.zoneGfx = undefined;
     this.zonesSeen = 0;
-    // On Auto the fight starts by itself after a moment, unless the player starts swapping.
-    this.deployLeft = settings.autoBattle ? 2.2 : undefined;
+    // The fight starts by itself after a moment (sooner on Auto), unless the player starts swapping.
+    this.deployLeft = settings.autoBattle ? 2.2 : DEPLOY_WAIT;
     const save = game.save;
     let battle = data.field?.battle ?? data.battle;
     let bg = data.bg;
@@ -193,7 +198,7 @@ export class FieldScene extends Phaser.Scene {
     this.timeText = this.add.text(14, 36, '', text.hud(13, PAL.steel)).setDepth(41);
     this.drawToggles();
     this.logText = this.add
-      .text(GAME_W / 2, 96, 'Tap two Sisters to trade places, then Begin!', { ...text.body(18, PAL.ivory), align: 'center', wordWrap: { width: GAME_W - 40 }, stroke: '#000000', strokeThickness: 4 })
+      .text(GAME_W / 2, 96, 'Tap two Sisters to trade places. Tap one to hold the charge!', { ...text.body(18, PAL.ivory), align: 'center', wordWrap: { width: GAME_W - 40 }, stroke: '#000000', strokeThickness: 4 })
       .setOrigin(0.5)
       .setDepth(41);
 
@@ -267,6 +272,7 @@ export class FieldScene extends Phaser.Scene {
   private drawDeploy() {
     const y = FIELD_Y + FIELD_H * 0.47;
     const begin = makeButton(this, GAME_W / 2, y, 200, 56, 'Begin!', () => this.begin(), { active: true, icon: 'blade' });
+    this.beginText = begin.text;
     this.deployLayer = [...begin.all];
     this.deployLayer.forEach((o) => (o as unknown as Phaser.GameObjects.Components.Depth).setDepth(45));
   }
@@ -452,6 +458,7 @@ export class FieldScene extends Phaser.Scene {
     this.refreshCards();
     if (this.phase === 'deploy') {
       if (this.deployLeft !== undefined && (this.deployLeft -= real) <= 0) this.begin();
+      else if (this.beginText?.active) this.beginText.setText(this.deployLeft !== undefined ? `Begin!  ${Math.ceil(this.deployLeft)}` : 'Begin!');
       return;
     }
     if (this.paused) return;

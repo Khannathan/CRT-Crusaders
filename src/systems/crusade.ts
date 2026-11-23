@@ -817,8 +817,9 @@ export function revive(save: SaveData, id: string): boolean {
 }
 
 /**
- * The strongest party by Power, kept whole: the best Tank and the best Healer
- * if she has them, then the strongest of the rest. Ranks: Tank in front, Melee
+ * The strongest party by Power, kept whole: the best Tank, Healer and damage
+ * dealer if she has them, then the strongest of the rest (at most one Buffer
+ * while others can stand in). Ranks: Tank in front, Melee
  * DPS next, then Ranged DPS and Buffers, the Healer at the back.
  */
 export function suggestParty(save: SaveData): string[] {
@@ -827,10 +828,15 @@ export function suggestParty(save: SaveData): string[] {
   const power = new Map(ready.map((c) => [c.id, sisterPower(save, c)]));
   const byPower = [...ready].sort((a, b) => power.get(b.id)! - power.get(a.id)!);
   const picked: typeof ready = [];
-  for (const role of ['Tank', 'Healer'] as (keyof typeof order)[]) {
-    const best = byPower.find((c) => CLASSES[c.classId].role === role && !picked.includes(c));
+  const roleOf = (c: (typeof ready)[number]) => CLASSES[c.classId].role;
+  const dps = (c: (typeof ready)[number]) => roleOf(c) === 'Melee DPS' || roleOf(c) === 'Ranged DPS';
+  for (const want of [(c: (typeof ready)[number]) => roleOf(c) === 'Tank', (c: (typeof ready)[number]) => roleOf(c) === 'Healer', dps]) {
+    const best = byPower.find((c) => want(c) && !picked.includes(c));
     if (best) picked.push(best);
   }
+  // The rest by Power, but never a party of Buffers: one Buffer while anyone else can stand in.
+  const buffers = () => picked.filter((c) => roleOf(c) === 'Buffer').length;
+  for (const c of byPower) if (picked.length < MAX_PARTY && !picked.includes(c) && (roleOf(c) !== 'Buffer' || buffers() < 1)) picked.push(c);
   for (const c of byPower) if (picked.length < MAX_PARTY && !picked.includes(c)) picked.push(c);
   return picked
     .slice(0, MAX_PARTY)
