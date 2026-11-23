@@ -1,3 +1,4 @@
+import { sfx } from '../audio/sfx';
 import Phaser from 'phaser';
 import { NOVICE_COST, noviceTensLeft } from '../systems/novitiate';
 import { FONT, GAME_H, GAME_W, PAL, hex } from '../config';
@@ -110,6 +111,7 @@ export class RevealScene extends Phaser.Scene {
     if (!r || !seal) return;
     this.revealed = i;
     const high = rankOf(r) >= RARITY_ORDER.indexOf('SSR');
+    sfx(high ? 'sealRare' : 'seal', r.crusader.rarity === 'UR' ? 2 : 1);
     if (!quick && r.crusader.rarity === 'UR') music.stinger('ur', 'duck');
     if (quick) {
       seal.destroy();
@@ -217,6 +219,7 @@ export class RevealScene extends Phaser.Scene {
     const seal = card.list[0] as Phaser.GameObjects.Image;
     const high = r.crusader.rarity === 'SSR' || r.crusader.rarity === 'UR';
     this.revealed = this.index;
+    sfx(high ? 'sealRare' : 'seal', r.crusader.rarity === 'UR' ? 2 : 1);
     if (r.crusader.rarity === 'UR') music.stinger('ur', 'duck');
     this.busy = true;
     this.hint.setText('');

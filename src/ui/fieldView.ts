@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import { FONT, HP_PARTY, PAL, hex } from '../config';
+import { FONT, HP_PARTY, HUD_FONT, PAL, hex } from '../config';
 import type { SkillDef } from '../data/skills';
 import { ZEAL_MAX, type BattleEvent, type Unit } from '../systems/combat';
 import type { Body, FieldBattle, FieldEvent } from '../systems/field';
@@ -8,6 +8,10 @@ import { portraitKey } from './placeholderPortrait';
 import { shake } from './juice';
 import { SKILL_FX, burstFx, fxForEnemy, makeFxTextures, type Fx } from './portraitFx';
 import { SisterSprite, fullKey, FIGURE_H } from './sisterSprite';
+import { ICONED_LABELS, RIM_FOE, RIM_PARTY, pixelShadow, rimKey, statusIconKey, statusIconsOf } from './pixelFx';
+import { damageSize } from './juice';
+import { dmgOf } from '../systems/combat';
+import { sfx } from '../audio/sfx';
 
 /**
  * Draws a FieldBattle: figures that walk, strike, cast and fall where the
@@ -94,13 +98,15 @@ class SheetFigure implements FieldFigure {
     x: number,
     y: number,
     private s: number,
+    private rimmed = true,
   ) {
-    const shadow = scene.add.ellipse(0, 0, 70 * s, 12 * s, 0x000000, 0.5);
-    this.img = scene.add.sprite(0, 8 * s, fullKey(id)).setOrigin(0.5, 1).setScale(s);
+    const shadow = rimmed ? pixelShadow(scene, 80 * s) : scene.add.ellipse(0, 0, 70 * s, 12 * s, 0x000000, 0.5);
+    this.img = scene.add.sprite(0, 8 * s, this.key(fullKey(id))).setOrigin(0.5, 1).setScale(s);
     this.root = scene.add.container(x, y, [shadow, this.img]);
     for (const a of ANIMS) {
-      const key = animKey(id, a);
-      if (!scene.textures.exists(key) || scene.anims.exists(key)) continue;
+      if (!scene.textures.exists(animKey(id, a))) continue;
+      const key = this.key(animKey(id, a));
+      if (scene.anims.exists(key)) continue;
       const once = a !== 'idle' && a !== 'run';
       scene.anims.create({ key, frames: scene.anims.generateFrameNumbers(key, { start: 0, end: 3 }), frameRate: a === 'idle' ? 4 : a === 'run' ? 10 : a === 'hit' ? 14 : 9, repeat: once ? 0 : -1 });
     }
@@ -114,22 +120,26 @@ class SheetFigure implements FieldFigure {
   get height() {
     return (FIGURE_H - 24) * this.s;
   }
+  /** The gold-rimmed copy of a texture. */
+  private key(k: string) {
+    return this.rimmed ? rimKey(this.scene, k, RIM_PARTY) : k;
+  }
   private has(a: AnimName) {
-    return this.scene.anims.exists(animKey(this.id, a));
+    return this.scene.anims.exists(this.key(animKey(this.id, a)));
   }
   private play(a: AnimName, fallback?: () => void) {
     if (this.has(a)) {
       this.busy = a !== 'idle' && a !== 'run';
-      this.img.play(animKey(this.id, a), true);
+      this.img.play(this.key(animKey(this.id, a)), true);
     } else fallback?.();
   }
   private loop() {
     if (this.dead || this.busy) return;
     const a: AnimName = this.moving ? 'run' : 'idle';
-    if (this.has(a)) this.img.play(animKey(this.id, a), true);
+    if (this.has(a)) this.img.play(this.key(animKey(this.id, a)), true);
     else {
       this.img.stop();
-      this.img.setTexture(fullKey(this.id));
+      this.img.setTexture(this.key(fullKey(this.id)));
     }
   }
   face(dir: 1 | -1) {
@@ -161,7 +171,7 @@ class SheetFigure implements FieldFigure {
     if (this.dead) return;
     this.dead = true;
     if (this.has('death')) {
-      this.img.play(animKey(this.id, 'death'));
+      this.img.play(this.key(animKey(this.id, 'death')));
       this.scene.tweens.add({ targets: this.root, alpha: 0.35, delay: 900, duration: 500, onComplete: () => done?.() });
     } else this.scene.tweens.add({ targets: this.root, alpha: 0, duration: 500, onComplete: () => done?.() });
   }
@@ -194,17 +204,22 @@ class EnemyFigure implements FieldFigure {
     x: number,
     y: number,
     s: number,
+    private rimmed = true,
   ) {
     this.s = s * (u.boss ? 1.4 : 1);
-    const shadow = scene.add.ellipse(0, 0, 76 * this.s, 13 * this.s, 0x000000, 0.55);
+    const shadow = rimmed ? pixelShadow(scene, 84 * this.s, 0.65) : scene.add.ellipse(0, 0, 76 * this.s, 13 * this.s, 0x000000, 0.55);
     const ring = scene.add.ellipse(0, 0, 96 * this.s, 20 * this.s).setStrokeStyle(2 * s, u.boss ? 0xc0392b : PAL.oxblood, 0.6);
-    this.img = scene.add.image(0, 8 * this.s, enemyFullKey(u.ref)).setOrigin(0.5, 1).setScale(this.s);
+    this.img = scene.add.image(0, 8 * this.s, this.tex(enemyFullKey(u.ref))).setOrigin(0.5, 1).setScale(this.s);
     this.pose = scene.add.container(0, 0, [this.img]);
     this.root = scene.add.container(x, y, [ring, shadow, this.pose]);
     this.bob = scene.tweens.add({ targets: this.img, y: this.img.y - 2 * this.s, duration: 600 + Math.random() * 300, yoyo: true, repeat: -1, ease: 'Sine.inOut' });
   }
   get height() {
     return (FIGURE_H - 24) * this.s;
+  }
+  /** The crimson-rimmed copy of a texture (battle screen only). */
+  private tex(k: string) {
+    return this.rimmed ? rimKey(this.scene, k, RIM_FOE) : k;
   }
   face(dir: 1 | -1) {
     this.facing = dir;
@@ -237,7 +252,7 @@ class EnemyFigure implements FieldFigure {
   charge(on: boolean) {
     if (this.dead) return;
     const pose = `${enemyFullKey(this.u.ref)}-blasphemy`;
-    this.img.setTexture(on && this.scene.textures.exists(pose) ? pose : enemyFullKey(this.u.ref));
+    this.img.setTexture(this.tex(on && this.scene.textures.exists(pose) ? pose : enemyFullKey(this.u.ref)));
   }
   pulse(color: number) {
     if (this.dead) return;
@@ -369,6 +384,8 @@ interface View {
   /** Second Vows: a crimson-gold ring round her feet. */
   aura?: Phaser.GameObjects.Ellipse;
   barW: number;
+  /** Status glyphs in a row over the health bar (battle screen only). */
+  icons?: Phaser.GameObjects.Image[];
 }
 
 export interface FieldViewOpts {
@@ -419,10 +436,10 @@ export class FieldView {
     let fig: FieldFigure;
     if (u.side === 'party' && this.scene.textures.exists(fullKey(u.ref))) {
       const sheets = ANIMS.some((a) => this.scene.textures.exists(animKey(u.ref, a)));
-      fig = sheets ? new SheetFigure(this.scene, u.ref, x, y, s) : new StillFigure(new SisterSprite(this.scene, u.ref, x, y, s, PAL.amber));
+      fig = sheets ? new SheetFigure(this.scene, u.ref, x, y, s, !this.o.compact) : new StillFigure(new SisterSprite(this.scene, u.ref, x, y, s, PAL.amber, this.o.compact ? undefined : RIM_PARTY));
     } else if (u.side === 'party') {
       fig = new PortraitFigure(this.scene, u, x, y, s);
-    } else fig = this.scene.textures.exists(enemyFullKey(u.ref)) ? new EnemyFigure(this.scene, u, x, y, s) : new EnemyToken(this.scene, u, x, y, s);
+    } else fig = this.scene.textures.exists(enemyFullKey(u.ref)) ? new EnemyFigure(this.scene, u, x, y, s, !this.o.compact) : new EnemyToken(this.scene, u, x, y, s);
     fig.face(body.face);
     const barW = Math.round((u.boss ? 110 : 58) * (this.o.compact ? 0.8 : 1) * (s / 0.75 > 1 ? 1.15 : 1));
     const bh = this.o.compact ? 4 : 6;
@@ -432,6 +449,10 @@ export class FieldView {
     const hasMeter = u.side === 'party' || u.wrath !== undefined;
     const meter = hasMeter ? this.scene.add.rectangle(0, 0, 0, this.o.compact ? 2 : 3, u.side === 'party' ? PAL.amber : 0xff5a3a).setOrigin(0, 0.5) : undefined;
     const v: View = { fig, hpBack, hp, shield, meter, barW };
+    if (!this.o.compact) {
+      v.icons = Array.from({ length: 4 }, () => this.scene.add.image(0, 0, '__WHITE').setOrigin(0, 1).setScale(2).setVisible(false));
+      this.objects.push(...v.icons);
+    }
     if (this.o.rings) {
       const rw = (u.boss ? 74 : 42) * (s / 0.75);
       v.ring = this.scene.add.ellipse(x, y, rw, rw * 0.34).setStrokeStyle(2, u.side === 'party' ? PAL.amber : 0xd0402a, 0.75).setFillStyle(u.side === 'party' ? PAL.amber : 0xd0402a, 0.12);
@@ -478,6 +499,14 @@ export class FieldView {
       v.hp.setPosition(left, top).setSize(Math.max(0, (v.barW * u.hp) / u.maxHp), v.hp.height).setVisible(alive).setDepth(d);
       const sh = u.status.shield ?? 0;
       v.shield.setPosition(left, top - v.hp.height / 2 - 1).setSize(Math.min(v.barW, (v.barW * sh) / u.maxHp), 2).setVisible(alive && sh > 0).setDepth(d);
+      if (v.icons) {
+        const icons = alive ? statusIconsOf(u.status).slice(0, v.icons.length) : [];
+        v.icons.forEach((img, i) => {
+          const ic = icons[i];
+          if (!ic) return void img.setVisible(false);
+          img.setTexture(statusIconKey(this.scene, ic)).setPosition(Math.round(left - 1 + i * 20), Math.round(top - v.hp.height / 2 - 4)).setVisible(true).setDepth(d);
+        });
+      }
       if (v.meter) {
         const m = u.side === 'party' ? u.zeal ?? 0 : u.wrath ?? 0;
         v.meter.setPosition(left, top + v.hp.height / 2 + 2).setSize((v.barW * Math.min(m, ZEAL_MAX)) / ZEAL_MAX, v.meter.height).setVisible(alive).setDepth(d);
@@ -533,7 +562,7 @@ export class FieldView {
       this.scene.tweens.add({ targets: v.charge, scaleX: 1.25, scaleY: 1.25, alpha: 0.5, duration: 500, yoyo: true, repeat: -1 });
       this.objects.push(v.charge);
       this.o.onUltimate?.(u, s, true);
-      this.show(e.events);
+      this.show(e.events, { u, skill: s });
       return;
     }
     if (e.litany) {
@@ -578,7 +607,7 @@ export class FieldView {
       const foe = this.b.get(id)?.side !== u.side;
       burstFx(this.scene, p.x, p.y, (this.o.compact ? 40 : 80) * (this.o.scale / 0.75) * (foe ? 1 : 0.7), { ...fx, power: (fx.power ?? 1) * (foe ? 0.7 : 0.5) }, this.depth + 1);
     }
-    this.show(e.events);
+    this.show(e.events, { u, skill: e.skill });
   }
 
   private bolt(x0: number, y0: number, x1: number, y1: number, color: number, ms: number) {
@@ -624,12 +653,17 @@ export class FieldView {
   }
 
   private floatStack = new Map<string, { at: number; n: number }>();
+  /** Damage each Sister dealt to foes this fight (for the win card's Most Zealous). */
+  readonly dealt = new Map<string, number>();
 
-  private float(uid: string, label: string, color: number, big = false) {
+  private float(uid: string, label: string, color: number, big = false, px?: number) {
     if (!this.field.bodies.get(uid)) return;
     const p = this.pos(uid);
     const v = this.views.get(uid);
-    const size = (this.o.compact ? 14 : 20) + (big ? 6 : 0);
+    const size = px ?? (this.o.compact ? 14 : 20) + (big ? 6 : 0);
+    // Numbers in the pixel font (outlined hard), words in the book face.
+    const numeric = /^[-+0-9,!]+$/.test(label);
+    const family = numeric && !this.o.compact ? HUD_FONT : FONT;
     // several pops on one body at once stack upward instead of printing over each other
     const now = this.scene.time.now;
     const prev = this.floatStack.get(uid);
@@ -637,7 +671,7 @@ export class FieldView {
     this.floatStack.set(uid, { at: now, n });
     const y = p.feet - (v?.fig.height ?? 60) - (this.o.compact ? 10 : 18) - (n % 4) * (size + 4);
     const t = this.scene.add
-      .text(p.x + Phaser.Math.Between(-10, 10), y, label, { fontFamily: FONT, fontSize: `${size}px`, color: hex(color), stroke: '#000000', strokeThickness: this.o.compact ? 3 : 5 })
+      .text(Math.round(p.x + Phaser.Math.Between(-10, 10)), Math.round(y), label, { fontFamily: family, fontSize: `${size}px`, color: hex(color), stroke: '#09060b', strokeThickness: this.o.compact ? 3 : numeric ? 6 : 5 })
       .setOrigin(0.5)
       .setDepth(this.depth + 3)
       .setScale(big ? 1.4 : 1);
@@ -645,30 +679,50 @@ export class FieldView {
     this.scene.tweens.add({ targets: t, y: y - (this.o.compact ? 24 : 40), alpha: 0, delay: 250, duration: 650, onComplete: () => t.destroy() });
   }
 
-  private show(events: BattleEvent[]) {
+  private show(events: BattleEvent[], by?: { u: Unit; skill: SkillDef }) {
     if (this.gone) return;
     for (const e of events) {
       const v = 'uid' in e && e.uid ? this.views.get(e.uid) : undefined;
       switch (e.type) {
-        case 'damage':
-          this.float(e.uid, e.amount ? `${e.amount}` : 'BLOCKED', e.crit ? PAL.amber : PAL.ivory, !!e.crit);
+        case 'damage': {
+          if (this.o.compact) {
+            this.float(e.uid, e.amount ? `${e.amount}` : 'BLOCKED', e.crit ? PAL.amber : PAL.ivory, !!e.crit);
+          } else if (!e.amount) {
+            this.float(e.uid, 'BLOCKED', PAL.steel, false, 18);
+            sfx('block');
+          }
+          else {
+            // Colour says what kind of hit it was; size says how much it hurt.
+            const t = this.b.get(e.uid);
+            const onSister = t?.side === 'party';
+            if (by?.u.side === 'party' && !onSister) this.dealt.set(by.u.uid, (this.dealt.get(by.u.uid) ?? 0) + e.amount);
+            const color = e.crit ? 0xffd75a : !by ? 0xff9a3a : onSister ? 0xff6a5a : dmgOf(by.u, by.skill) === 'magic' ? 0xd2b8ff : 0xf2e6c9;
+            const size = Math.min(48, damageSize(e.amount, t?.maxHp ?? e.amount, !!e.crit) - (by ? 2 : 8));
+            this.float(e.uid, e.crit ? `${e.amount.toLocaleString('en-US')}!` : `${e.amount}`, color, !!e.crit, Math.max(16, Math.round(size / 2) * 2));
+            sfx(e.crit ? 'crit' : !by ? 'dot' : onSister ? 'hurt' : dmgOf(by.u, by.skill) === 'magic' ? 'hitMagic' : 'hit');
+          }
           v?.fig.hit(e.amount > 0);
           if (e.crit && !this.o.compact) shake(this.scene, 'crit');
           break;
+        }
         case 'heal':
           this.float(e.uid, `+${e.amount}`, 0x9ad08a);
           v?.fig.pulse(0x9ad08a);
+          if (!this.o.compact) sfx('heal');
           break;
         case 'shield':
           this.float(e.uid, `+${e.amount}`, 0x8fb6d8);
           v?.fig.pulse(0x8fb6d8);
+          if (!this.o.compact) sfx('shield');
           break;
         case 'status':
-          if (!this.o.compact) this.float(e.uid, e.label, PAL.steel);
+          // Lasting statuses show as icons over the bar; only the rest float up as words.
+          if (!this.o.compact && !ICONED_LABELS.has(e.label)) this.float(e.uid, e.label, e.label.endsWith('!') ? PAL.amber : PAL.steel, false, 18);
           break;
         case 'death': {
           const u = this.b.get(e.uid);
           v?.fig.die();
+          if (!this.o.compact && u) sfx(u.side === 'party' ? 'fall' : 'kill');
           if (u) this.o.onDeath?.(u);
           break;
         }
@@ -710,7 +764,7 @@ export class FieldView {
 
   destroy() {
     this.gone = true;
-    for (const v of this.views.values()) [v.fig.root, v.hpBack, v.hp, v.shield, v.meter, v.charge, v.ring].forEach((o) => o?.destroy());
+    for (const v of this.views.values()) [v.fig.root, v.hpBack, v.hp, v.shield, v.meter, v.charge, v.ring, ...(v.icons ?? [])].forEach((o) => o?.destroy());
     this.focusMark?.destroy();
     this.views.clear();
   }

@@ -3,7 +3,8 @@ import { chronicle, pendingAfter, pendingBefore } from '../systems/story';
 import { GAME_H, GAME_W, PAL } from '../config';
 import { ENCOUNTERS, ENEMIES } from '../data/enemies';
 import { commit, game } from '../state/game';
-import { current, type Challenge } from '../state/run';
+import { current, type Challenge, type WinCard } from '../state/run';
+import { CANDLE_GILT, lightCandles, stageCandles, takeFight, totalCandles } from '../systems/candles';
 import { saveSettings, settings } from '../state/settings';
 import { CHAPTERS, STAGES_PER_CHAPTER, TOTAL_STAGES, campaignOf, chapterChest, finishStage, nextStage, roadDone, roadRates, stageBattle, stageDef, stageRecommended, stageReward, type StageReward } from '../systems/campaign';
 import { bagText } from '../systems/items';
@@ -48,11 +49,12 @@ export class CampaignScene extends Phaser.Scene {
     super('Campaign');
   }
 
-  init(data: { notice?: string; fight?: number; mode?: RoadMode }) {
+  init(data: { notice?: string; fight?: number; mode?: RoadMode; sel?: number }) {
     if (data.mode) CampaignScene.mode = data.mode;
     this.notice = data.notice;
     this.fight = data.fight;
-    this.sel = 0;
+    // A tapped stage stays picked across the restart that redraws the map.
+    this.sel = data.sel ?? 0;
   }
 
   private get mode(): RoadMode {
@@ -157,7 +159,7 @@ export class CampaignScene extends Phaser.Scene {
       if (n <= next) {
         list.tap(ring, () => {
           this.sel = n;
-          this.time.delayedCall(0, () => this.scene.restart({}));
+          this.time.delayedCall(0, () => this.scene.restart({ sel: n }));
         });
       }
     }
@@ -198,8 +200,14 @@ export class CampaignScene extends Phaser.Scene {
     const done = n <= best;
     const firstPay = mode === 'road' ? stageReward(n) : hardReward(mode, n);
     const chest = mode === 'road' ? chapterChest(s.chapter) : hardChest(mode, s.chapter);
-    const pay = (done ? 'Cleared. Its first-clear reward is yours.' : `First clear: ${rewardText(firstPay)}${s.boss ? `\nChapter chest: ${rewardText(chest)}` : ''}`);
-    this.add.text(left, y0 + 126, pay, { ...text.body(15, done ? PAL.steel : PAL.ivory), wordWrap: { width: w - 32 } });
+    const lit = mode === 'road' ? stageCandles(save, n).filter(Boolean).length : 0;
+    const candleLine = `Candles ${lit}/3 lit (road ${totalCandles(save)}/${3 * best}). New ones pay ${CANDLE_GILT} Gilt; all three, a Seal!`;
+    const pay = done
+      ? mode === 'road'
+        ? candleLine
+        : 'Cleared. Its first-clear reward is yours.'
+      : `First clear: ${rewardText(firstPay)}${s.boss ? `\nChapter chest: ${rewardText(chest)}` : ''}`;
+    this.add.text(left, y0 + 126, pay, { ...text.body(15, done && mode !== 'road' ? PAL.steel : PAL.ivory), wordWrap: { width: w - 32 } });
     // The March: the Vigil's Sisters push on along the Pilgrim's Road by themselves, on every screen and while you are away.
     if (mode === 'road' && (!roadDone(save) || marchOf(save))) drawMarchToggle(this, GAME_W - PAD - 80, y0 + 28, 132, 36, 14);
     else this.add.text(GAME_W - PAD - 16, y0 + 14, `VIGIL ${Math.round(roadRates(save).tithes)} TITHES/H`, text.hud(11, PAL.steel)).setOrigin(1, 0);
@@ -208,6 +216,8 @@ export class CampaignScene extends Phaser.Scene {
       makeButton(this, GAME_W / 2 - 104, y0 + PANEL_H - 34, 200, 52, 'Challenge', () => this.challenge(n), { active: true, icon: 'blade', fontSize: 18 });
       makeButton(this, GAME_W / 2 + 104, y0 + PANEL_H - 34, 200, 52, 'Auto-push', () => this.challenge(n, true), { fontSize: 18 });
     } else if (can) makeButton(this, GAME_W / 2, y0 + PANEL_H - 34, 260, 52, 'Keep the vow', () => this.challenge(n), { active: true, icon: 'blade', fontSize: 18 });
+    else if (mode === 'road' && done)
+      makeButton(this, GAME_W / 2, y0 + PANEL_H - 34, 260, 52, lit < 3 ? 'Light the Candles' : 'Fight again', () => this.challenge(n), { active: lit < 3, icon: 'flame', fontSize: 18 });
     else makeButton(this, GAME_W / 2, y0 + PANEL_H - 34, 260, 52, done ? 'Cleared' : 'Clear the stage before', () => {}, { disabled: true, fontSize: 18 });
   }
 
@@ -257,6 +267,9 @@ export class CampaignScene extends Phaser.Scene {
       make: (rng) => stageBattle(save, party, n, rng),
       finish: (outcome) => {
         const r = finishStage(save, n, outcome);
+        // The stage's three Candles, lit by how it was won.
+        const stats = takeFight();
+        const candles = r.won && stats ? lightCandles(save, n, stats) : undefined;
         commit();
         CampaignScene.listY = undefined;
         if (pushed) {
@@ -276,8 +289,13 @@ export class CampaignScene extends Phaser.Scene {
             ? `Stage ${s.label} cleared: ${rewardText(r.reward!)}${r.chest ? `\nChapter chest: ${rewardText(r.chest)}` : ''}\nThe Vigil quickens!`
             : `Stage ${s.label} won again.`;
         const after = r.first ? pendingAfter(save, n) : undefined;
-        if (after) return { scene: 'Story', data: { id: after.id, next: { scene: 'Campaign', data: { notice } } } };
-        return { scene: 'Campaign', data: { notice } };
+        // A win gets its own card on the battle screen, so the map needs no toast.
+        const win: WinCard | undefined = r.won
+          ? { stage: s.label, name: CHAPTERS[s.chapter].name, candles, reward: r.first ? r.reward : undefined, chest: r.chest, again: n, onward: n < TOTAL_STAGES ? n + 1 : undefined }
+          : undefined;
+        const mapData = win ? {} : { notice };
+        if (after) return { scene: 'Story', data: { id: after.id, next: { scene: 'Campaign', data: mapData } }, win };
+        return { scene: 'Campaign', data: mapData, win };
       },
     };
   }
