@@ -75,11 +75,11 @@ export const rewardText = (r: FeastReward, saint?: CrusaderDef) =>
 
 /** Paid on reaching each total of Candles earned this Feast. */
 export const FEAST_MARKS: { at: number; reward: FeastReward }[] = [
-  { at: 200, reward: { seals: 2, tithes: 500 } },
+  { at: 200, reward: { seals: 1, tithes: 500 } },
   { at: 500, reward: { favor: 10, gilt: 50 } },
-  { at: 1000, reward: { seals: 4, items: { ash2: 3, page2: 3 } } },
+  { at: 1000, reward: { seals: 2, items: { ash2: 3, page2: 3 } } },
   { at: 1800, reward: { favor: 15, stigmata: 2 } },
-  { at: 2800, reward: { seals: 6, gilt: 100 } },
+  { at: 2800, reward: { seals: 3, gilt: 100 } },
   { at: 4000, reward: { favor: 25, title: true } },
 ];
 
@@ -94,7 +94,7 @@ export interface StallItem {
 
 export const FEAST_STALL: StallItem[] = [
   { id: 'favor', name: "Saint's Favor ×10", cost: 250, stock: 5, reward: { favor: 10 } },
-  { id: 'seal', name: 'Seal', cost: 80, stock: 15, reward: { seals: 1 } },
+  { id: 'seal', name: 'Seal', cost: 80, stock: 5, reward: { seals: 1 } },
   { id: 'stigmata', name: 'Stigmata', cost: 150, stock: 5, reward: { stigmata: 1 } },
   { id: 'ash', name: "Martyr's Ash III", cost: 200, stock: 3, reward: { items: { ash3: 1 } } },
   { id: 'page', name: 'Psalter Pages III', cost: 200, stock: 3, reward: { items: { page3: 1 } } },

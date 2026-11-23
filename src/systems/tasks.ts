@@ -72,13 +72,13 @@ export const TASKS: Record<Period, TaskDef[]> = {
 export const MARKS: Record<Period, Mark[]> = {
   daily: [
     { at: 40, reward: { tithes: 120, alms: 10, items: { incense1: 5 } } },
-    { at: 70, reward: { seals: 1, tithes: 80, alms: 10, items: { page1: 4 } } },
-    { at: 100, reward: { seals: 2, alms: 20, items: { incense1: 5, ash1: 4 } } },
+    { at: 70, reward: { tithes: 150, alms: 15, items: { page1: 4 } } },
+    { at: 100, reward: { seals: 1, alms: 20, items: { incense1: 5, ash1: 4 } } },
   ],
   weekly: [
-    { at: 40, reward: { seals: 2, tithes: 300, alms: 30, items: { incense2: 3 } } },
-    { at: 80, reward: { seals: 3, gilt: 40, items: { writ1: 3 } } },
-    { at: 120, reward: { seals: 5, gilt: 80, items: { incense2: 3, writ2: 1 } } },
+    { at: 40, reward: { seals: 1, tithes: 300, alms: 30, items: { incense2: 3 } } },
+    { at: 80, reward: { seals: 2, gilt: 40, items: { writ1: 3 } } },
+    { at: 120, reward: { seals: 3, gilt: 80, items: { incense2: 3, writ2: 1 } } },
   ],
 };
 

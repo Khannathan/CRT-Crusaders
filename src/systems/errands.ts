@@ -75,7 +75,7 @@ export function errandReward(family: Family, hours: Hours): Reward {
   const items: Partial<Record<ItemId, number>> = { [`${family}1`]: t1 };
   if (t2) items[`${family}2` as ItemId] = t2;
   if (t3) items[`${family}3` as ItemId] = t3;
-  return { tithes: 40 * hours, alms: 2 * hours, items, ...(hours === 20 ? { seals: 1 } : {}) };
+  return { tithes: 40 * hours, alms: 2 * hours + (hours === 20 ? 20 : 0), items };
 }
 
 /** The spoils with the bonus Sister along. */

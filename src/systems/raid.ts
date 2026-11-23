@@ -135,7 +135,7 @@ export const BOSS_REWARD: { tithes: number; gilt: number; items: Bag }[] = [
   { tithes: 5000, gilt: 20, items: { canon2: 1, ash3: 1 } },
   { tithes: 8000, gilt: 40, items: { canon2: 2, canon3: 1 } },
 ];
-export const CLEAR_CHEST = { seals: 5, gilt: 60, items: { canon3: 1 } as Bag };
+export const CLEAR_CHEST = { seals: 3, gilt: 60, items: { canon3: 1 } as Bag };
 
 export interface DelveStep {
   won: boolean;

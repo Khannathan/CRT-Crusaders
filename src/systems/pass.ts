@@ -22,7 +22,7 @@ export const DAILY_STEP_CAP = 240;
 /** Gilt to swear to the season's Sworn lane. */
 export const SWORN_COST = 600;
 /** Each Overflow chest past the last tier. */
-export const OVERFLOW: Reward = { seals: 1, tithes: 500 };
+export const OVERFLOW: Reward = { tithes: 500, alms: 20 };
 
 /** Seasons count from this local date. */
 const EPOCH = new Date(2026, 10, 16).getTime();
