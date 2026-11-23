@@ -1,20 +1,7 @@
 import { saveSettings, settings } from '../state/settings';
-import altarMp3 from '../assets/audio/altar.mp3?url';
-import altarOgg from '../assets/audio/altar.ogg?url';
-import battleMp3 from '../assets/audio/battle.mp3?url';
-import battleOgg from '../assets/audio/battle.ogg?url';
-import bossMp3 from '../assets/audio/boss.mp3?url';
-import bossOgg from '../assets/audio/boss.ogg?url';
-import cryptMp3 from '../assets/audio/crypt.mp3?url';
-import cryptOgg from '../assets/audio/crypt.ogg?url';
-import defeatMp3 from '../assets/audio/defeat.mp3?url';
-import defeatOgg from '../assets/audio/defeat.ogg?url';
-import sanctumMp3 from '../assets/audio/sanctum.mp3?url';
-import sanctumOgg from '../assets/audio/sanctum.ogg?url';
-import urMp3 from '../assets/audio/ur-stinger.mp3?url';
-import urOgg from '../assets/audio/ur-stinger.ogg?url';
-import victoryMp3 from '../assets/audio/victory.mp3?url';
-import victoryOgg from '../assets/audio/victory.ogg?url';
+
+/** Every encoded track in src/assets/audio, by file name: altar.ogg, altar.mp3 and so on. */
+const AUDIO_URLS = import.meta.glob<string>('../assets/audio/*.{ogg,mp3}', { eager: true, query: '?url', import: 'default' });
 
 /**
  * The soundtrack. Loops crossfade between screens and into themselves, stingers
@@ -22,29 +9,44 @@ import victoryOgg from '../assets/audio/victory.ogg?url';
  * rules). Files are fetched only when first needed so the first load stays light;
  * the originals are re-encoded by tools/encode-music.sh.
  */
-export type LoopId = 'sanctum' | 'altar' | 'crypt' | 'battle' | 'boss';
+export type LoopId =
+  | 'sanctum' | 'altar' | 'crypt' | 'battle' | 'boss'
+  // Round 9 tracks. Each falls back to an older loop until its file arrives (see FALLBACK).
+  | 'armory' | 'chapter' | 'tower' | 'deep-crypt' | 'deep-battle' | 'deep-boss' | 'hunt' | 'heretic';
 export type StingerId = 'victory' | 'defeat' | 'ur';
 type TrackId = LoopId | StingerId;
 
-const FILES: Record<TrackId, { ogg: string; mp3: string }> = {
-  sanctum: { ogg: sanctumOgg, mp3: sanctumMp3 },
-  altar: { ogg: altarOgg, mp3: altarMp3 },
-  crypt: { ogg: cryptOgg, mp3: cryptMp3 },
-  battle: { ogg: battleOgg, mp3: battleMp3 },
-  boss: { ogg: bossOgg, mp3: bossMp3 },
-  victory: { ogg: victoryOgg, mp3: victoryMp3 },
-  defeat: { ogg: defeatOgg, mp3: defeatMp3 },
-  ur: { ogg: urOgg, mp3: urMp3 },
+/** The loop a newer track borrows until its own file is in src/assets/audio. */
+const FALLBACK: Partial<Record<LoopId, LoopId>> = {
+  armory: 'altar',
+  chapter: 'sanctum',
+  tower: 'sanctum',
+  'deep-crypt': 'crypt',
+  'deep-battle': 'battle',
+  'deep-boss': 'boss',
+  hunt: 'boss',
+  heretic: 'deep-boss',
 };
 
-/** Which loop each screen plays. Battle picks its own (normal or boss). */
-const SCENE_MUSIC: Record<string, LoopId> = {
+const fileOf = (id: TrackId, ext: 'ogg' | 'mp3') => AUDIO_URLS[`../assets/audio/${id === 'ur' ? 'ur-stinger' : id}.${ext}`];
+const hasTrack = (id: TrackId) => !!fileOf(id, 'mp3');
+/** The track that actually plays for an id: its own file, else its fallback's. */
+export function resolveTrack(id: LoopId): LoopId {
+  let at: LoopId | undefined = id;
+  while (at && !hasTrack(at)) at = FALLBACK[at];
+  return at ?? id;
+}
+
+/** Which loop each screen plays. Battle picks its own (see battleLoop), and a screen may pick by state (see setSceneMusic). */
+const SCENE_MUSIC: Record<string, LoopId | (() => LoopId)> = {
   Sanctum: 'sanctum',
   Penance: 'sanctum',
   Matins: 'sanctum',
   Rank: 'sanctum',
   Trials: 'sanctum',
-  Tower: 'sanctum',
+  Tower: 'tower',
+  Armory: 'armory',
+  Chapter: 'chapter',
   Inquisition: 'sanctum',
   Confession: 'sanctum',
   Inventory: 'sanctum',
@@ -124,13 +126,15 @@ class Music {
 
   /** Plays the loop for a screen, if it has one. */
   forScene(key: string) {
-    const id = SCENE_MUSIC[key];
+    const pick = SCENE_MUSIC[key];
+    const id = typeof pick === 'function' ? pick() : pick;
     if (id) this.play(id);
   }
 
   /** Crossfades to a loop. Asking for the loop already playing does nothing. */
-  play(id: LoopId) {
+  play(want: LoopId) {
     if (!this.ctx) return;
+    const id = resolveTrack(want);
     if (this.wanted === id) return;
     this.wanted = id;
     const req = ++this.request;
@@ -278,9 +282,8 @@ class Music {
   private load(id: TrackId): Promise<AudioBuffer | undefined> {
     let b = this.buffers.get(id);
     if (!b) {
-      const files = FILES[id];
       const ogg = new Audio().canPlayType('audio/ogg; codecs="vorbis"') !== '';
-      const order = ogg ? [files.ogg, files.mp3] : [files.mp3];
+      const order = (ogg ? [fileOf(id, 'ogg'), fileOf(id, 'mp3')] : [fileOf(id, 'mp3')]).filter((u): u is string => !!u);
       b = (async () => {
         for (const url of order) {
           try {
@@ -303,3 +306,8 @@ class Music {
 }
 
 export const music = new Music();
+
+/** Lets a screen choose its loop from game state when it opens (for example, the deeper crypts). */
+export function setSceneMusic(key: string, pick: () => LoopId) {
+  SCENE_MUSIC[key] = pick;
+}

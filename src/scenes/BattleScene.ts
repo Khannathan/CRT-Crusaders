@@ -1,5 +1,6 @@
 import { keywordLine } from '../systems/keywords';
 import Phaser from 'phaser';
+import { battleLoop } from '../audio/battleMusic';
 import { music } from '../audio/music';
 import { FONT, GAME_W, PAL, hex } from '../config';
 import { addTabBar } from '../ui/tabBar';
@@ -141,7 +142,7 @@ export class BattleScene extends Phaser.Scene {
         return;
       }
     }
-    music.play(this.battle.units.some((u) => u.side === 'enemy' && u.boss) ? 'boss' : 'battle');
+    music.play(battleLoop(this.battle));
     music.preload('victory', 'defeat');
     this.leaveFor = undefined;
     this.ended = false;

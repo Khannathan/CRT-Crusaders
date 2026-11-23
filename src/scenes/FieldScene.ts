@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import { battleLoop } from '../audio/battleMusic';
 import { music } from '../audio/music';
 import { GAME_H, GAME_W, PAL } from '../config';
 import type { SkillDef } from '../data/skills';
@@ -89,7 +90,7 @@ export class FieldScene extends Phaser.Scene {
 
   create() {
     const b = this.field.battle;
-    music.play(b.units.some((u) => u.side === 'enemy' && u.boss) ? 'boss' : 'battle');
+    music.play(battleLoop(b));
     music.preload('victory', 'defeat');
     this.cameras.main.setBackgroundColor(0x0e0d11);
     addBackdrop(this, this.registry.get('field-bg'), GAME_W / 2, (FIELD_Y + FIELD_H) / 2 + 20, GAME_W, FIELD_Y + FIELD_H + 40, { alpha: 0.6, fade: 0.25, fadeColor: 0x0e0d11 });

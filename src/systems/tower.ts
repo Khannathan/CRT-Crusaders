@@ -1,4 +1,5 @@
 import { boostBag, boostMult } from './boosts';
+import { DEEP_HOSTS } from '../data/deepFoes';
 import { CRUSADERS } from '../data/crusaders';
 import { earn } from './currency';
 import { ENCOUNTERS, ENEMIES } from '../data/enemies';
@@ -47,9 +48,16 @@ export interface FloorDef {
 const POOL = ['ossuary-1', 'ossuary-2', 'ossuary-3', 'ossuary-4', 'ossuary-5', 'belfry-1', 'belfry-2', 'belfry-3', 'belfry-4', 'belfry-5'];
 const ELITES = ['ossuary-elite-1', 'ossuary-elite-2', 'belfry-elite-1', 'belfry-elite-2'];
 
+/** Above floor 20 the tower climbs through the deeper crypts' hosts, a crypt every ten floors. */
+const deepAt = (floor: number) => DEEP_HOSTS[Math.floor((floor - 21) / 10) % DEEP_HOSTS.length].crypt;
+
 export function floorDef(floor: number): FloorDef {
   const boss = floor % 10 === 0;
-  const encounter = boss ? (floor % 20 === 10 ? 'choir' : 'abbess') : floor % 3 === 0 ? ELITES[(floor / 3) % ELITES.length] : POOL[(floor * 7) % POOL.length];
+  let encounter = boss ? (floor % 20 === 10 ? 'choir' : 'abbess') : floor % 3 === 0 ? ELITES[(floor / 3) % ELITES.length] : POOL[(floor * 7) % POOL.length];
+  if (floor > 20) {
+    const crypt = deepAt(floor);
+    encounter = boss ? `${crypt}-boss` : floor % 3 === 0 ? `${crypt}-elite-${1 + ((floor / 3) % 2)}` : `${crypt}-${1 + ((floor * 7) % 5)}`;
+  }
   let rule: FloorRule;
   if (!boss && floor % 10 === 8) rule = { kind: 'humble' };
   // Gentler under an Order lock: the player's pool is narrower.

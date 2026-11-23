@@ -61,7 +61,7 @@ export class ChapterScene extends Phaser.Scene {
     const save = game.save;
     const c = chapterOf(save);
     if (c) commit();
-    const { top } = modeScreen(this, 'The Chapter', c ? `The ${c.name}. Tithe, besiege, and grow together.` : 'A house of Sisters who pray, tithe and fight as one.');
+    const { top } = modeScreen(this, 'The Chapter', c ? `The ${c.name}. Tithe, besiege, and grow together.` : 'A house of Sisters who pray, tithe and fight as one.', undefined, 'bg-chapter');
     const bw = GAME_W - PAD * 2;
     if (!c) {
       addPanel(this, PAD, top, bw, 420);

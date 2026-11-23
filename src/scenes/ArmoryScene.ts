@@ -50,7 +50,7 @@ export class ArmoryScene extends Phaser.Scene {
     if (gifted) commit();
     const a = armoryOf(save);
     const { set, ends } = featuredSet();
-    const { top } = modeScreen(this, "The Saints' Armory", 'UR gear is never found on the road. Pull for it here, or forge it from Saint\'s Fragments.', this.back);
+    const { top } = modeScreen(this, "The Saints' Armory", 'UR gear is never found on the road. Pull for it here, or forge it from Saint\'s Fragments.', this.back, 'bg-armory');
     const bw = GAME_W - PAD * 2;
     let y = top;
 

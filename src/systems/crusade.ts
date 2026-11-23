@@ -1,3 +1,4 @@
+import { DEEP_HOSTS } from '../data/deepFoes';
 import { boostBag, boostMult } from './boosts';
 import { roman } from './roman';
 import { activeHowl } from './hounds';
@@ -128,9 +129,9 @@ export const BELFRY: CryptDef = {
 };
 
 /**
- * The deeper crypts, one ramp step each. Until their own enemies and art
- * arrive they reuse the Ossuary and Belfry hosts, made stronger by `power`.
- * Names are placeholders.
+ * The deeper crypts, one ramp step each, made stronger by `power`. Each has
+ * its own foes, elite and boss (data/deepFoes.ts) built on the Ossuary's or
+ * the Belfry's. Names are placeholders.
  */
 const DEEP: [string, string, string, string][] = [
   ['weeping-cloister', 'The Weeping Cloister', 'Nuns who never stopped praying, long after they stopped breathing.', 'Sister Lament'],
@@ -153,11 +154,19 @@ const DEEP: [string, string, string, string][] = [
 const DEEP_CRYPTS: CryptDef[] = DEEP.map(([id, name, blurb, warden], i) => {
   const step = i + 2; // the Ossuary and the Belfry are steps 0 and 1
   const like = i % 2 === 0 ? OSSUARY : BELFRY;
+  // Its own foes and boss (data/deepFoes.ts), laid out like the crypt it was patterned on.
+  const host = DEEP_HOSTS[i];
+  const own = (enc: string) => `${id}${enc.slice(enc.indexOf('-'))}`;
   return {
     ...like,
     id,
     name,
     blurb,
+    early: like.early.map(own),
+    late: like.late.map(own),
+    elites: like.elites.map(own),
+    boss: `${id}-boss`,
+    bossName: host.boss.name,
     floors: RAMP[step],
     unlockAfter: i === 0 ? BELFRY.id : DEEP[i - 1][0],
     power: Math.round(Math.pow(1.17, step - 1) * 100) / 100,
@@ -284,7 +293,11 @@ export function generateMap(crypt: CryptDef, rng: Rng = Math.random, floors = cr
     }
     if (last) map.push([{ kind: 'boss', encounter: crypt.boss, next: [], act, name: crypt.bossName }]);
     else {
-      const others = ACT_BOSSES.filter((b) => b !== crypt.boss);
+      // An earlier act ends on a boss of a crypt already behind you, most recent first:
+      // one of the other pattern (Choir-like crypts alternate with Abbess-like ones).
+      const k = CRYPTS.findIndex((c) => c.id === crypt.id);
+      const earlier = CRYPTS.slice(0, Math.max(0, k)).filter((_, j) => j % 2 !== k % 2).map((c) => c.boss).reverse();
+      const others = earlier.length ? earlier : ACT_BOSSES.filter((b) => b !== crypt.boss);
       const enc = others[a % others.length] ?? crypt.boss;
       const foe = ENEMIES[ENCOUNTERS[enc][0]]?.name ?? 'The Keeper';
       map.push([{ kind: 'boss', encounter: enc, next: [], act, actEnd: true, name: foe }]);

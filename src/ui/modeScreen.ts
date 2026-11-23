@@ -3,14 +3,16 @@ import { GAME_H, GAME_W, PAL } from '../config';
 import { makeButton } from './button';
 import { CURRENCY_BAR_H, addCurrencyBar } from './currencyBar';
 import { addTabBar, tabOf } from './tabBar';
-import { PAD, addHeading, addScreenGlow, text } from './theme';
+import { PAD, addBackdrop, addHeading, addScreenGlow, text } from './theme';
 
 /**
  * The shared frame for a Rite screen: glow, currency bar, heading with a line
  * of flavour, a Back button to the screen it was reached from (Sanctum, Crusade board or Cloister), and the tab bar. Returns the y where
  * content may start and the currency bar's refresh.
  */
-export function modeScreen(scene: Phaser.Scene, title: string, sub: string, back = tabOf(scene.scene.key)) {
+export function modeScreen(scene: Phaser.Scene, title: string, sub: string, back = tabOf(scene.scene.key), bg?: string) {
+  // An optional faint backdrop, shown only once its art is in src/assets/ui.
+  if (bg && scene.textures.exists(bg)) addBackdrop(scene, bg, GAME_W / 2, GAME_H / 2, GAME_W, GAME_H, { alpha: 0.28, fade: 0.6, fadeColor: 0x0e0d11 });
   addScreenGlow(scene);
   const refresh = addCurrencyBar(scene);
   const top = addHeading(scene, title, CURRENCY_BAR_H + 10, sub);
