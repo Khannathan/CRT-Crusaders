@@ -95,6 +95,8 @@ export interface CampaignState {
   fast?: FastState;
   /** The Vigil marching on by itself (march.ts). */
   march?: MarchState;
+  /** The Penitent and Damned roads (systems/hardRoad.ts). */
+  hard?: Partial<Record<'penitent' | 'damned', { best: number; unbroken: number[] }>>;
 }
 
 export const campaignOf = (save: SaveData): CampaignState => (save.campaign ??= { best: 0 });
