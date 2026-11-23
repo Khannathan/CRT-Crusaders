@@ -613,6 +613,9 @@ export class RosterScene extends Phaser.Scene {
     const left = PAD + 8;
     const lv = have.symbol;
     const woke = lv !== undefined;
+    // symbol-<id>.png: her own Holy Symbol, dark while it sleeps
+    const art = addArt(this, `symbol-${c.id}`, GAME_W - PAD - 44, y + 30, 64);
+    if (art) layer.add(woke ? art : art.setTint(0x4a3c48));
     layer.add(this.add.text(left, y, woke ? `HOLY SYMBOL  +${lv} / ${SYMBOL_MAX}` : 'HOLY SYMBOL  ·  SLEEPING', text.hud(15, woke ? PAL.amber : PAL.steel)));
     y += 26;
     layer.add(this.add.text(left, y, symbolName(c), text.display(20, woke ? 0xfff1d6 : PAL.muted)));
@@ -822,10 +825,14 @@ export class RosterScene extends Phaser.Scene {
       layer.add(this.add.text(left, y - 46, `${SLOT_NAME[slot].toUpperCase()} · ${SLOT_HINT[slot].toUpperCase()}`, text.hud(12, PAL.steel)));
       if (set) layer.add(this.add.text(GAME_W - 168, y - 46, `${set.name.toUpperCase()} SET`, text.hud(12, set.color)).setOrigin(1, 0));
       if (item) {
+        // gear-<slot>-<rarity>.png beside the piece's lines
+        const art = addArt(this, `gear-${slot}-${item.rarity}`, left + 26, y + 2, 52);
+        const tx = art ? left + 62 : left;
+        if (art) layer.add(art);
         layer.add([
-          this.add.text(left, y - 28, `${item.name}${item.level ? ` +${item.level}` : ''}`, { ...text.body(19, RARITY_COLOR[item.rarity]), fontStyle: '600' }),
-          this.add.text(left, y + 0, `${item.rarity} · ${formatStat(item.main, mainValue(item))} · +${formatPower(gearPower(save, c, item))} power`, text.body(15, PAL.ivory)),
-          this.add.text(left, y + 22, item.subs.map((s) => formatStat(s.stat, s.value)).join('  ') || 'No substats', text.body(14, PAL.muted)),
+          this.add.text(tx, y - 28, `${item.name}${item.level ? ` +${item.level}` : ''}`, { ...text.body(19, RARITY_COLOR[item.rarity]), fontStyle: '600' }),
+          this.add.text(tx, y + 0, `${item.rarity} · ${formatStat(item.main, mainValue(item))} · +${formatPower(gearPower(save, c, item))} power`, text.body(15, PAL.ivory)),
+          this.add.text(tx, y + 22, item.subs.map((s) => formatStat(s.stat, s.value)).join('  ') || 'No substats', text.body(14, PAL.muted)),
         ]);
         const can = !enhanceBlock(save, item) || !rerollBlock(save, item);
         const forge = makeButton(this, GAME_W - PAD - 76, y - 24, 120, 44, 'Forge', () => this.forge(c, item), { active: can, fontSize: 16 });

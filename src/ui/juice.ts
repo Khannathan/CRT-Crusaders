@@ -118,11 +118,30 @@ export function staticDeath(scene: Phaser.Scene, box: Phaser.GameObjects.Contain
 }
 
 /** A Rite's name stamped across the screen while the camera leans in. */
-export function riteCard(scene: Phaser.Scene, name: string, who: string, onDone: () => void, verb = 'INVOKES') {
+export function riteCard(scene: Phaser.Scene, name: string, who: string, onDone: () => void, verb = 'INVOKES', bossIcon?: string) {
   const y = 430;
   const cam = scene.cameras.main;
   cam.zoomTo(1.08, 220, 'Quad.easeOut');
+  const boss = verb !== 'INVOKES';
   const band = scene.add.rectangle(GAME_W / 2, y, GAME_W, 120, 0x0c0709, 0.9).setDepth(40).setScale(1, 0);
+  // Art behind the words: a Litany's pillar of light, or the Blasphemy's torn warning banner
+  const art: Phaser.GameObjects.Image[] = [];
+  const add = (key: string, x: number, ay: number, w: number, h: number, depth = 41) => {
+    if (!scene.textures.exists(key)) return undefined;
+    const img = scene.add.image(x, ay, key).setDisplaySize(w, h).setDepth(depth).setAlpha(0);
+    art.push(img);
+    return img;
+  };
+  if (boss) {
+    add('ui-blasphemy-warning', GAME_W / 2, y + 6, GAME_W + 20, 150);
+    add('fx-blasphemy-sigil', GAME_W / 2, y, 200, 200, 40);
+    if (bossIcon) add(bossIcon, 64, y + 10, 72, 72, 43);
+  } else {
+    add('fx-litany-pillar', GAME_W / 2, y - 40, 220, 300, 40);
+    add('fx-litany-halo', GAME_W / 2, y - 6, 200, 200, 40);
+    add('icon-litany', 56, y + 10, 64, 64, 43);
+  }
+  art.forEach((o, i) => scene.tweens.add({ targets: o, alpha: o.depth === 40 ? 0.55 : 1, delay: 60 + i * 40, duration: 180 }));
   const edgeA = scene.add.rectangle(GAME_W / 2, y - 60, GAME_W, 3, PAL.amber).setDepth(41).setScale(0, 1);
   const edgeB = scene.add.rectangle(GAME_W / 2, y + 60, GAME_W, 3, PAL.amber).setDepth(41).setScale(0, 1);
   const sub = scene.add.text(GAME_W / 2, y - 30, `${who.toUpperCase()} ${verb}`, { fontFamily: FONT, fontSize: '18px', color: hex(PAL.bronze) }).setOrigin(0.5).setDepth(42).setAlpha(0);
@@ -132,7 +151,7 @@ export function riteCard(scene: Phaser.Scene, name: string, who: string, onDone:
     .setDepth(42)
     .setScale(2.2)
     .setAlpha(0);
-  const parts = [band, edgeA, edgeB, sub, title];
+  const parts: Phaser.GameObjects.GameObject[] = [band, edgeA, edgeB, sub, title, ...art];
   scene.tweens.add({ targets: band, scaleY: 1, duration: 140, ease: 'Quad.out' });
   scene.tweens.add({ targets: [edgeA, edgeB], scaleX: 1, duration: 220, ease: 'Quad.out' });
   scene.tweens.add({ targets: sub, alpha: 1, delay: 80, duration: 160 });

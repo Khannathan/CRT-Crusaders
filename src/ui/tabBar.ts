@@ -13,9 +13,9 @@ export const TAB_BAR_H = 88;
 const TABS = [
   { label: 'Sanctum', scene: 'Sanctum', icon: 'sanctum', home: 'sanctum' },
   { label: 'Roster', scene: 'Roster', icon: 'roster' },
-  { label: 'Crusade', scene: 'Modes', icon: 'blade', home: 'board' },
-  { label: 'Altar', scene: 'Recruit', icon: 'seal' },
-  { label: 'Cloister', scene: 'Cloister', icon: 'book', home: 'cloister' },
+  { label: 'Crusade', scene: 'Modes', icon: 'blade', art: 'crusade', home: 'board' },
+  { label: 'Altar', scene: 'Recruit', icon: 'seal', art: 'altar' },
+  { label: 'Cloister', scene: 'Cloister', icon: 'book', art: 'cloister', home: 'cloister' },
 ] as const;
 
 /** Screens reached through the Crusade board that light its tab. */
@@ -75,7 +75,8 @@ export function addTabBar(scene: Phaser.Scene, current: string, depth = 5, onTab
       keep(scene.add.rectangle(cx, cy, bw, bh, on ? 0x3a1d29 : 0x24161f).setStrokeStyle(1, PAL.goldEdge).setDepth(depth));
     }
     const box = keep(scene.add.rectangle(cx, cy, bw, bh, on ? 0x3a1d29 : 0x000000, on ? 1 : 0.001).setDepth(depth));
-    const skin = on ? nine(scene, 'ui-tab-active', cx, cy, bw, bh) : null;
+    // ui-tab-active.png glows gold; it is dimmed so the tab's label stays readable on it
+    const skin = on ? nine(scene, 'ui-tab-active', cx, cy, bw, bh)?.setTint(0x7a5a44) ?? null : null;
     if (skin) {
       keep(skin.setDepth(depth));
       box.setFillStyle(0x000000, 0.001);
@@ -83,7 +84,7 @@ export function addTabBar(scene: Phaser.Scene, current: string, depth = 5, onTab
       box.setStrokeStyle(1, 0x694041);
       keep(scene.add.rectangle(cx, cy - bh / 2 + 1, bw, 3, PAL.goldEdge).setDepth(depth));
     }
-    keep(addIcon(scene, cx, cy - 13, t.icon, centre ? 30 : 24, on ? PAL.amber : 0xae8b73).setDepth(depth));
+    keep(addIcon(scene, cx, cy - 13, 'art' in t && t.art && scene.textures.exists(`ui-${t.art}`) ? t.art : t.icon, centre ? 30 : 24, on ? PAL.amber : 0xae8b73).setDepth(depth));
     keep(
       scene.add
         .text(cx, cy + 17, t.label, { fontFamily: FONT, fontSize: centre ? '21px' : '18px', color: hex(on ? PAL.amber : PAL.muted) })

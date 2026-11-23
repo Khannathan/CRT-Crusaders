@@ -22,6 +22,14 @@ const portraitUrl = (id: string) => pick(PORTRAIT_URLS, `../assets/portraits/${i
 const ENEMY_URLS = import.meta.glob<string>('../assets/enemies/*.{png,webp}', { eager: true, query: '?url', import: 'default' });
 
 /**
+ * Full-body enemy figures: src/assets/enemy-full/<enemy id>.png (128 x 192, feet
+ * 8 rows above the bottom edge, like the Sisters' figures), plus
+ * <enemy id>-blasphemy.png for a boss's Blasphemy pose. Keys: full-enemy-<id>
+ * and full-enemy-<id>-blasphemy.
+ */
+const ENEMY_FULL_URLS = import.meta.glob<string>('../assets/enemy-full/*.png', { eager: true, query: '?url', import: 'default' });
+
+/**
  * UI art: src/assets/ui/<texture key>.png, for example icon-attack.png. Any file
  * whose name matches a built-in texture key replaces that drawing.
  */
@@ -55,6 +63,14 @@ export class BootScene extends Phaser.Scene {
     for (const e of Object.values(ENEMIES)) {
       const url = pick(ENEMY_URLS, `../assets/enemies/${e.id}`) ?? (e.art ? pick(ENEMY_URLS, `../assets/enemies/${e.art}`) : undefined);
       if (url) this.load.image(enemyKey(e.id), url);
+      // A boss's bust in its Blasphemy pose (enemies/<id>-blasphemy.png), cropped like its plain bust.
+      const pose = pick(ENEMY_URLS, `../assets/enemies/${e.id}-blasphemy`);
+      if (pose) this.load.image(`${enemyKey(e.id)}-blasphemy`, pose);
+      const art = e.art ?? e.id;
+      for (const pose of ['', '-blasphemy']) {
+        const full = ENEMY_FULL_URLS[`../assets/enemy-full/${e.id}${pose}.png`] ?? ENEMY_FULL_URLS[`../assets/enemy-full/${art}${pose}.png`];
+        if (full) this.load.image(`full-enemy-${e.id}${pose}`, full);
+      }
     }
     const ui = new Map<string, string>();
     for (const [path, url] of Object.entries(UI_URLS)) {
@@ -87,12 +103,14 @@ export class BootScene extends Phaser.Scene {
   }
 
   /**
-   * True pixel art (128px or smaller) stays crisp with nearest-neighbour. Larger
-   * painted art is shown smaller than its file, where smoothing avoids shimmer.
+   * All in-game art is now true pixel art at its native size (busts 128, scenes
+   * 192 x 128, backdrops 256 x 384), so it stays crisp with nearest-neighbour.
+   * Only an old painted file larger than 400px gets smoothing. (Splash art is
+   * loaded on its own, with smoothing.)
    */
   private setFilter(key: string) {
     const tex = this.textures.get(key);
-    const big = tex.getSourceImage().width > 160;
-    tex.setFilter(big ? Phaser.Textures.FilterMode.LINEAR : Phaser.Textures.FilterMode.NEAREST);
+    const painted = tex.getSourceImage().width > 400;
+    tex.setFilter(painted ? Phaser.Textures.FilterMode.LINEAR : Phaser.Textures.FilterMode.NEAREST);
   }
 }
