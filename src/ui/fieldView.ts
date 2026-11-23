@@ -35,6 +35,8 @@ export interface FieldFigure {
   hit(hurt: boolean): void;
   die(done?: () => void): void;
   cheer(delay?: number): void;
+  /** A boss winding up its Blasphemy (its Blasphemy pose, where it has one). */
+  charge?(on: boolean): void;
   /** Height on screen, feet to crown. */
   readonly height: number;
 }
@@ -172,7 +174,97 @@ class SheetFigure implements FieldFigure {
 }
 
 /**
- * A foe on the field. Until enemies have full-body art, its portrait is cut into
+ * A foe with full-body art (src/assets/enemy-full/<id>.png, loaded as
+ * full-enemy-<id>, 128 x 192 with feet 8 rows up). Bosses stand larger and
+ * take their Blasphemy pose while they wind it up.
+ */
+const enemyFullKey = (ref: string) => `full-enemy-${ref}`;
+
+class EnemyFigure implements FieldFigure {
+  root: Phaser.GameObjects.Container;
+  dead = false;
+  private pose: Phaser.GameObjects.Container;
+  private img: Phaser.GameObjects.Image;
+  private bob: Phaser.Tweens.Tween;
+  private s: number;
+  private facing: 1 | -1 = -1;
+  constructor(
+    private scene: Phaser.Scene,
+    private u: Unit,
+    x: number,
+    y: number,
+    s: number,
+  ) {
+    this.s = s * (u.boss ? 1.4 : 1);
+    const shadow = scene.add.ellipse(0, 0, 76 * this.s, 13 * this.s, 0x000000, 0.55);
+    const ring = scene.add.ellipse(0, 0, 96 * this.s, 20 * this.s).setStrokeStyle(2 * s, u.boss ? 0xc0392b : PAL.oxblood, 0.6);
+    this.img = scene.add.image(0, 8 * this.s, enemyFullKey(u.ref)).setOrigin(0.5, 1).setScale(this.s);
+    this.pose = scene.add.container(0, 0, [this.img]);
+    this.root = scene.add.container(x, y, [ring, shadow, this.pose]);
+    this.bob = scene.tweens.add({ targets: this.img, y: this.img.y - 2 * this.s, duration: 600 + Math.random() * 300, yoyo: true, repeat: -1, ease: 'Sine.inOut' });
+  }
+  get height() {
+    return (FIGURE_H - 24) * this.s;
+  }
+  face(dir: 1 | -1) {
+    this.facing = dir;
+    this.pose.scaleX = dir; // the art is drawn facing the viewer, so either way reads
+  }
+  walk(on: boolean) {
+    if (this.dead) return;
+    this.bob.timeScale = on ? 3 : 1;
+    this.pose.setAngle(on ? Math.sin(this.scene.time.now / 90) * 2 : 0);
+  }
+  strike(nx: number, ny: number) {
+    if (this.dead) return;
+    const s = this.s;
+    this.scene.tweens.killTweensOf(this.pose);
+    this.pose.setPosition(0, 0);
+    this.scene.tweens.chain({
+      targets: this.pose,
+      tweens: [
+        { x: -nx * 5 * s, y: -ny * 5 * s, duration: 90, ease: 'Quad.out' },
+        { x: nx * 24 * s, y: ny * 24 * s, duration: 80, ease: 'Quad.in' },
+        { x: 0, y: 0, duration: 200, ease: 'Quad.out' },
+      ],
+    });
+  }
+  cast(color: number, big = false) {
+    if (this.dead) return;
+    this.img.setTint(color);
+    this.scene.tweens.add({ targets: this.pose, y: (big ? -14 : -8) * this.s, duration: 160, yoyo: true, hold: big ? 360 : 160, onComplete: () => !this.dead && this.img.clearTint() });
+  }
+  charge(on: boolean) {
+    if (this.dead) return;
+    const pose = `${enemyFullKey(this.u.ref)}-blasphemy`;
+    this.img.setTexture(on && this.scene.textures.exists(pose) ? pose : enemyFullKey(this.u.ref));
+  }
+  pulse(color: number) {
+    if (this.dead) return;
+    this.img.setTint(color);
+    this.scene.time.delayedCall(180, () => !this.dead && this.img.clearTint());
+  }
+  hit(hurt: boolean) {
+    if (this.dead || !hurt) return;
+    this.img.setTintFill(0xffffff);
+    this.scene.time.delayedCall(60, () => !this.dead && this.img.setTint(0xff7070));
+    this.scene.time.delayedCall(200, () => !this.dead && this.img.clearTint());
+    this.scene.tweens.add({ targets: this.img, x: { from: -4 * this.s, to: 4 * this.s }, duration: 40, yoyo: true, repeat: 2, onComplete: () => this.img.setX(0) });
+  }
+  die(done?: () => void) {
+    if (this.dead) return;
+    this.dead = true;
+    this.bob.remove();
+    this.img.setTintFill(0xffffff);
+    this.scene.time.delayedCall(80, () => this.img.setTint(0x6a6070));
+    this.scene.tweens.add({ targets: this.pose, scaleY: 0.3, scaleX: 1.15 * this.facing, alpha: 0, delay: 160, duration: 480, ease: 'Quad.in' });
+    this.scene.tweens.add({ targets: this.root, alpha: 0, delay: 600, duration: 250, onComplete: () => done?.() });
+  }
+  cheer() {}
+}
+
+/**
+ * A foe on the field without full-body art: its portrait is cut into
  * a round reliquary medallion that bobs over its shadow.
  */
 class EnemyToken implements FieldFigure {
@@ -324,7 +416,7 @@ export class FieldView {
       fig = sheets ? new SheetFigure(this.scene, u.ref, x, y, s) : new StillFigure(new SisterSprite(this.scene, u.ref, x, y, s, PAL.amber));
     } else if (u.side === 'party') {
       fig = new PortraitFigure(this.scene, u, x, y, s);
-    } else fig = new EnemyToken(this.scene, u, x, y, s);
+    } else fig = this.scene.textures.exists(enemyFullKey(u.ref)) ? new EnemyFigure(this.scene, u, x, y, s) : new EnemyToken(this.scene, u, x, y, s);
     fig.face(body.face);
     const barW = Math.round((u.boss ? 110 : 58) * (this.o.compact ? 0.8 : 1) * (s / 0.75 > 1 ? 1.15 : 1));
     const bh = this.o.compact ? 4 : 6;
@@ -368,6 +460,7 @@ export class FieldView {
       if (v.charge) {
         v.charge.setPosition(x, y).setDepth(this.depth - 0.5);
         if (!u.status.charging || !alive) {
+          v.fig.charge?.(false);
           v.charge.destroy();
           v.charge = undefined;
         }
@@ -407,6 +500,7 @@ export class FieldView {
     if (e.charge) {
       // The Blasphemy winds up: a red ring grows under the boss until it lands.
       v.fig.cast(0xff3a2a, true);
+      v.fig.charge?.(true);
       const r = (u.boss ? 90 : 60) * this.o.scale * 1.4;
       v.charge?.destroy();
       v.charge = this.scene.add.ellipse(from.x, from.feet, r * 2, r * 0.7).setStrokeStyle(3, 0xff3a2a, 0.9).setFillStyle(0xff3a2a, 0.12);
