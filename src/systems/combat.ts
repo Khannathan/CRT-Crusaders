@@ -164,7 +164,7 @@ export interface TurnStart {
 }
 
 /** Bump when combat numbers change, so logged runs can be compared fairly. */
-export const BALANCE_VERSION = '1.0';
+export const BALANCE_VERSION = '1.1';
 /** Execute skills hit harder below this share of max HP. */
 export const EXECUTE_AT = 0.3;
 

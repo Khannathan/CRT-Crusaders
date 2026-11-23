@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { newSave } from '../state/save';
-import { autoBattle } from './autoplay';
+import { FieldBattle, SCREEN_FIELD } from './field';
+import type { Battle } from './combat';
 import { BALANCE_VERSION } from './combat';
 import {
   BELFRY,
@@ -34,7 +35,7 @@ import { seeded } from './rng';
  * - the first Rite of the boss fight arrives around rounds 4-6.
  */
 const STARTER = ['CC-W013', 'CC-W052', 'CC-W001', 'CC-W022'];
-const N = 300;
+const N = 120;
 
 /** A plain path policy: rest when hurt, take elites only when healthy, events by their first option. */
 function pickNode(save: SaveData, run: RunState): number {
@@ -53,6 +54,18 @@ function pickNode(save: SaveData, run: RunState): number {
   return [...open].sort((a, b) => rank(a) - rank(b))[0];
 }
 
+/** Plays a fight on the open field (every fight in the game is fought there), noting each Sister Litany's round. */
+function fightOnField(b: Battle, onRite: (round: number) => void): 'victory' | 'defeat' | 'stalled' {
+  const f = new FieldBattle(b, { ...SCREEN_FIELD, rng: seeded(b.units.length * 7919 + b.units[0].hp) });
+  for (let t = 0; t < 400; t += 0.05) {
+    for (const e of f.update(0.05)) {
+      if (e.kind === 'act' && e.litany && b.get(e.uid).side === 'party') onRite(b.round);
+      if (e.kind === 'end') return e.outcome;
+    }
+  }
+  return 'stalled';
+}
+
 function playCrypt(seed: number, level: number, crypt: CryptDef = OSSUARY, heresy = 0) {
   const save = newSave();
   for (const id of STARTER) save.owned[id] = { level, vow: 0 };
@@ -67,7 +80,7 @@ function playCrypt(seed: number, level: number, crypt: CryptDef = OSSUARY, heres
     else if (node.kind === 'reliquary') takeRelic(save, run, relicOffer(run, rng)[0]?.id ?? 'knucklebone');
     else {
       const b = makeBattle(save, run, currentNode(run)!.encounter!, rng);
-      const res = autoBattle(b, 400, (round) => {
+      const res = fightOnField(b, (round) => {
         if (node.kind === 'boss' && firstRite === undefined) firstRite = round;
       });
       absorbBattle(run, b);
