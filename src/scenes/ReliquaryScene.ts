@@ -49,7 +49,7 @@ export class ReliquaryScene extends Phaser.Scene {
 
     // What the lit relics give, and the Incense on hand
     const total = relicBonusText(reliquaryBonus(save));
-    this.add.text(GAME_W / 2, top, total ? `All Sisters: ${total}` : 'No relic lit yet.', { ...text.body(16, total ? PAL.amber : PAL.muted), align: 'center', wordWrap: { width: bw } }).setOrigin(0.5, 0);
+    this.add.text(GAME_W / 2, top, total ? `All Sisters: ${total}` : 'No relic burns yet. Light the first!', { ...text.body(16, total ? PAL.amber : PAL.muted), align: 'center', wordWrap: { width: bw } }).setOrigin(0.5, 0);
     itemIds('incense').forEach((id, i) => {
       const x = GAME_W / 2 + (i - 1) * 164;
       drawItemIcon(this, x - 36, top + 38, id, 26);
@@ -95,7 +95,7 @@ export class ReliquaryScene extends Phaser.Scene {
     const lit = litOf(save).length;
     if (!this.pick) {
       this.add
-        .text(GAME_W / 2, panelTop + panelH / 2, `${lit} of ${RELICS.length} relics lit. Tap a relic to read it. Each branch is lit in order, and the Crown needs all fifteen.`, {
+        .text(GAME_W / 2, panelTop + panelH / 2, `${lit} of ${RELICS.length} relics lit. Tap one to read it. Each branch lights in order; the Crown needs all fifteen.`, {
           ...text.body(16, PAL.muted),
           align: 'center',
           wordWrap: { width: bw - 40 },
@@ -114,7 +114,7 @@ export class ReliquaryScene extends Phaser.Scene {
       makeButton(this, GAME_W / 2, panelTop + panelH - 32, 280, 46, done ? 'Lit' : block ?? 'Consecrate', () => {
         if (consecrate(save, n.id)) {
           commit();
-          this.scene.restart({ pick: n.id, notice: `${n.name} is lit. ${relicBonusText(n.bonus)} for every Sister.` });
+          this.scene.restart({ pick: n.id, notice: `${n.name} is lit. ${relicBonusText(n.bonus)} for every Sister!` });
         }
       }, { fontSize: 16, disabled: !!block, active: !block });
     }
@@ -148,7 +148,7 @@ export class ReliquaryScene extends Phaser.Scene {
       makeButton(this, GAME_W - PAD - 58, y, 104, 40, cost ? `Lv ${lv + 1}` : 'Complete', () => {
         if (raiseCodex(save, o.id)) {
           commit();
-          this.scene.restart({ tab: 'codex', notice: `${o.name} rises to level ${lv + 1}. Its Sisters gain ${pct(CODEX_STEP)} ATK, HP and armor.` });
+          this.scene.restart({ tab: 'codex', notice: `${o.name} rises to level ${lv + 1}. Its Sisters gain ${pct(CODEX_STEP)} ATK, HP and armor!` });
         }
       }, { fontSize: 15, disabled: !!block, active: !block });
     });

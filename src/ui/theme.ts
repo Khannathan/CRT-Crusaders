@@ -145,7 +145,7 @@ export function addHeading(scene: Phaser.Scene, title: string, y: number, sub?: 
   }
   let bottom = lineY + 4;
   if (sub) {
-    const s = scene.add.text(PAD, lineY + 10, sub, text.body(18, PAL.muted)).setWordWrapWidth(GAME_W - PAD * 2);
+    const s = scene.add.text(PAD, lineY + 10, noOrphan(sub), text.body(18, PAL.muted)).setWordWrapWidth(GAME_W - PAD * 2);
     bottom = lineY + 10 + s.height;
   }
   return bottom;
@@ -216,3 +216,6 @@ export function textWash(scene: Phaser.Scene, left: number, top: number, w: numb
   for (let i = 0; i < steps; i++) g.fillStyle(0x120a12, strength * (1 - i / steps)).fillRect(left + (w * i) / steps, top, w / steps + 1, h);
   return g;
 }
+
+/** Joins the last two words with a no-break space, so a wrapped paragraph never ends on one lonely word. */
+export const noOrphan = (s: string) => s.replace(/ (\S+)$/, '\u00a0$1');

@@ -37,7 +37,7 @@ export class InquisitionScene extends Phaser.Scene {
     const now = Date.now();
     const rot = rotation(now);
     const st = inquisitionOf(save, now);
-    const { top } = modeScreen(this, 'The Inquisition', 'A new Edict every fortnight.');
+    const { top } = modeScreen(this, 'The Inquisition', 'A new Edict every fortnight. Show no mercy!');
     const bw = GAME_W - PAD * 2;
 
     // The Edict
@@ -107,12 +107,12 @@ export class InquisitionScene extends Phaser.Scene {
       },
       (party) => {
         current.challenge = {
-          label: `${a.name}. ${rot.edict.name} is upon you.`,
+          label: `${a.name}. ${rot.edict.name} is upon you!`,
           make: (rng) => inquisitionBattle(save, party, act, rng),
           finish: (_o, battle) => {
             const r = finishAct(save, act, battle);
             let notice = 'Judgment failed. Try again.';
-            if (r.brands) notice = r.gained ? `${r.brands} Brand${r.brands > 1 ? 's' : ''} earned` : `${r.brands} Brand${r.brands > 1 ? 's' : ''}, no better than before`;
+            if (r.brands) notice = r.gained ? `${r.brands} Brand${r.brands > 1 ? 's' : ''} earned!` : `${r.brands} Brand${r.brands > 1 ? 's' : ''}, no better than before`;
             for (const m of r.paid) notice += `\nMark ${m.at}: ${markText(m)}`;
             for (const g of r.gear) notice += `\n${g.name} (${g.rarity})`;
             const rec = r.gained ? noteBrands(save, totalBrands(save)) : undefined;

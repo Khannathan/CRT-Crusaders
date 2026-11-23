@@ -58,7 +58,7 @@ export class HuntScene extends Phaser.Scene {
     const hunt = huntOn();
     const s = huntsOf(save);
     const boss = ENEMIES[hunt.boss];
-    const { top, refresh } = modeScreen(this, 'Hallowed Hunts', 'Twelve rounds to hurt the beast. Your daily best pays Grace.');
+    const { top, refresh } = modeScreen(this, 'Hallowed Hunts', 'Twelve rounds to wound the beast. Your daily best pays Grace.');
     const bw = GAME_W - PAD * 2;
     const tier = Math.min(HuntScene.tier ?? s.tier, s.tier);
     const list = addScrollArea(this, top - 4, GAME_H - TAB_BAR_H, { start: HuntScene.listY, onScroll: (y) => (HuntScene.listY = y) });
@@ -196,7 +196,7 @@ export class HuntScene extends Phaser.Scene {
       (party) => {
         save.lastParty = party;
         current.challenge = {
-          label: `The hunt begins: ${ENEMIES[hunt.boss].name}, tier ${tierLabel(tier)}. ${HUNT_ROUNDS} rounds to wound it.`,
+          label: `The hunt begins: ${ENEMIES[hunt.boss].name}, tier ${tierLabel(tier)}. ${HUNT_ROUNDS} rounds to wound it!`,
           make: (rng) => huntBattle(save, party, hunt, tier, rng),
           finish: (_o, battle) => {
             const r = finishHunt(save, hunt, tier, battle);

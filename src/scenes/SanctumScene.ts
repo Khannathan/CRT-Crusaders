@@ -69,11 +69,11 @@ export class SanctumScene extends Phaser.Scene {
       addBackdrop(this, 'bg-altar', fx, fy, fw, fh, { alpha: 0.75, fade: 0.7 });
       addFrame(this, fx, fy, fw, fh);
       this.add
-        .text(PAD + 24, bottom - 156, 'The Sanctum stands empty. No Sister keeps the vigil.', { ...text.display(26, 0xfff1d6), wordWrap: { width: fw - 48 } })
+        .text(PAD + 24, bottom - 156, 'The Sanctum stands empty. No Sister keeps the vigil!', { ...text.display(26, 0xfff1d6), wordWrap: { width: fw - 48 } })
         .setOrigin(0, 1)
         .setShadow(0, 2, '#000000', 9, false, true);
-      this.add.text(PAD + 24, bottom - 146, 'Your first ten Sisters await\nat the Sealed Altar.', { ...text.body(20, 0xd8c2bc), fontStyle: 'italic' });
-      makeButton(this, PAD + 24 + 130, bottom - 56, 260, 64, 'Go to the altar', () => this.scene.start('Recruit'), { active: true, icon: 'seal' });
+      this.add.text(PAD + 24, bottom - 146, 'Ten Sisters await your call\nat the Sealed Altar.', { ...text.body(20, 0xd8c2bc), fontStyle: 'italic' });
+      makeButton(this, PAD + 24 + 130, bottom - 56, 260, 64, 'To the Altar!', () => this.scene.start('Recruit'), { active: true, icon: 'seal' });
     } else {
       this.drawVigil(fx, fy, fw, fh);
     }
@@ -175,7 +175,7 @@ export class SanctumScene extends Phaser.Scene {
       () => {
         const c = fastReward(save, Date.now());
         if (!c) return;
-        this.showClaim(c, `Fast Reward: ${FAST_HOURS} hours at once`);
+        this.showClaim(c, `Hasten the Vigil: ${FAST_HOURS} hours at once`);
         commit();
         this.scene.restart();
       },
@@ -221,7 +221,7 @@ export class SanctumScene extends Phaser.Scene {
     this.field = undefined;
     const party = v.party.filter((id) => save.owned[id]);
     if (!party.length) {
-      this.skirmish.push(this.add.text(left + fw / 2, top + 160, 'No Sister keeps this vigil.\nTap Sisters to post a watch.', { ...text.body(19, PAL.muted), align: 'center' }).setOrigin(0.5));
+      this.skirmish.push(this.add.text(left + fw / 2, top + 160, 'No Sister keeps this vigil.\nPost the watch!', { ...text.body(19, PAL.muted), align: 'center' }).setOrigin(0.5));
       return;
     }
     const battle = stageBattle(save, party, vigilStage(save).n);
@@ -267,7 +267,7 @@ export class SanctumScene extends Phaser.Scene {
   }
 
   /** A short notice of what a claim paid. */
-  private showClaim(c?: VigilClaim, title = 'The Vigil yields:') {
+  private showClaim(c?: VigilClaim, title = 'The Vigil yields its tithe:') {
     if (!c || (!c.tithes && !c.seals && !c.gear.length && bagEmpty(c.items))) return;
     const parts = [`+${c.tithes} Tithes`, ...(c.exp ? [`+${c.exp} EXP to each Sister`] : []), ...(c.seals ? [`+${c.seals} Seal${c.seals > 1 ? 's' : ''}`] : []), ...(bagEmpty(c.items) ? [] : [bagText(c.items)]), ...c.gear.map((g) => `${g.name} (${g.rarity})`)];
     if (c.melted) parts.push(`armory full: +${c.melted} Tithes`);
@@ -284,9 +284,9 @@ export class SanctumScene extends Phaser.Scene {
     layer.add(this.add.rectangle(GAME_W / 2, GAME_H / 2, GAME_W, GAME_H, 0x09060b, 0.9).setInteractive());
     const total = roundsTotal(r);
     const lines = [
-      r.done.length ? r.done.map((d) => `✓ ${d}`).join('\n') : 'Nothing was waiting. Every rite is already kept.',
+      r.done.length ? r.done.map((d) => `✓ ${d}`).join('\n') : 'Every rite is already kept. Well done, faithful.',
       total ? `\nGathered: ${total}` : '',
-      r.left.length ? `\nStill yours to do:\n${r.left.map((d) => `· ${d}`).join('\n')}` : '',
+      r.left.length ? `\nRites still unkept:\n${r.left.map((d) => `· ${d}`).join('\n')}` : '',
     ].filter(Boolean).join('\n');
     const t = this.add.text(GAME_W / 2, 200, lines, { ...text.body(17, PAL.ivory), align: 'left', lineSpacing: 4, wordWrap: { width: GAME_W - 100 } }).setOrigin(0.5, 0);
     const h = t.height + 120;
@@ -304,7 +304,7 @@ export class SanctumScene extends Phaser.Scene {
     pickParty(
       this,
       save,
-      { title: 'Post the Watch', sub: `Choose up to ${VIGIL_SIZE} Sisters, or tap Suggest. They may still crusade.`, initial: v.party, max: VIGIL_SIZE, confirm: 'Keep watch' },
+      { title: 'Post the Watch', sub: `Up to ${VIGIL_SIZE} Sisters. They may still crusade.`, initial: v.party, max: VIGIL_SIZE, confirm: 'Keep watch' },
       (party) => {
         this.showClaim(setVigil(save, Date.now(), { party }));
         commit();
@@ -329,7 +329,7 @@ export class SanctumScene extends Phaser.Scene {
     layer.add(addFrame(this, GAME_W / 2, 480, GAME_W - 40, 440, { fill: 0x241925 }));
     layer.add(
       this.add
-        .text(GAME_W / 2, 360, 'Burn the records?\n\nSisters, Seals, Tithes and every\ncrusade will be forgotten.', { ...style, fontSize: '22px' })
+        .text(GAME_W / 2, 360, 'Burn the records?\n\nEvery Sister, Seal, Tithe and\ncrusade will be forgotten.', { ...style, fontSize: '22px' })
         .setOrigin(0.5),
     );
     const yes = makeButton(this, GAME_W / 2, 520, 300, 76, 'Burn it all', () => {
@@ -388,7 +388,7 @@ export class SanctumScene extends Phaser.Scene {
       });
       layer.add(
         this.add
-          .text(GAME_W / 2, 640, 'Scanlines, colour bleed and screen curve.\nPortrait art is never changed underneath.', { ...style, fontSize: '16px', color: hex(PAL.steel) })
+          .text(GAME_W / 2, 640, 'Scanlines, colour bleed and screen curve.', { ...style, fontSize: '16px', color: hex(PAL.steel) })
           .setOrigin(0.5),
       );
       const fs = makeButton(this, GAME_W / 2 - 112, 702, 208, 52, this.scale.isFullscreen ? 'Leave full screen' : 'Full screen', () => {

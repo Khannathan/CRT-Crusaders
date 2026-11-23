@@ -67,7 +67,7 @@ import { nine } from '../ui/skin';
 import { addScrollArea } from '../ui/scroll';
 import { showSources, tapCost, tapForSources } from '../ui/sources';
 import { TAB_BAR_H, addTabBar } from '../ui/tabBar';
-import { PAD, addArt, addBackdrop, addBadge, addFrame, addHeading, addIcon, addScreenGlow, fade, text } from '../ui/theme';
+import { PAD, addArt, addBackdrop, addBadge, addFrame, addHeading, addIcon, addScreenGlow, fade, noOrphan, text } from '../ui/theme';
 
 type Tab = 'grow' | 'vows' | 'skills' | 'gear' | 'symbol';
 const TABS: [Tab, string][] = [
@@ -141,7 +141,7 @@ export class RosterScene extends Phaser.Scene {
       if (sample) showBadgeKey(this, sample, game.save);
     }, { fontSize: 20 });
     key.all.forEach((o) => (o as unknown as Phaser.GameObjects.Components.Depth).setDepth?.(20));
-    if (!sorted.length) this.add.text(GAME_W / 2, top + 140, 'No Sister matches these filters.', text.body(18, PAL.muted)).setOrigin(0.5);
+    if (!sorted.length) this.add.text(GAME_W / 2, top + 140, 'No Sister answers these filters.', text.body(18, PAL.muted)).setOrigin(0.5);
 
     // Cards as in the preview: portrait, rarity badge, name and level underneath.
     const cols = 3;
@@ -406,7 +406,7 @@ export class RosterScene extends Phaser.Scene {
     ]);
     const sigil = addOrderSigil(this, PAD + 16, NAME_Y + 44, c.order, 26);
     if (sigil) layer.add(sigil);
-    layer.add(this.add.text(PAD + (sigil ? 36 : 4), NAME_Y + 44, `${c.order}${have ? '' : '  ·  her seal waits at the Altar'}`, text.body(15, PAL.muted)).setOrigin(0, 0.5));
+    layer.add(this.add.text(PAD + (sigil ? 36 : 4), NAME_Y + 44, `${c.order}${have ? '' : '  ·  her seal waits at the Altar!'}`, text.body(15, PAL.muted)).setOrigin(0, 0.5));
     const emblem = addArt(this, classIconFor(this, c.classId), GAME_W - PAD - 26, NAME_Y - 12, 44);
     if (emblem) layer.add(emblem);
     if (have) {
@@ -421,7 +421,7 @@ export class RosterScene extends Phaser.Scene {
         this.add.text(GAME_W / 2, STATS_Y + 20, cls.summary, { ...text.body(18, PAL.ivory), align: 'center', wordWrap: { width: bw } }).setOrigin(0.5, 0),
         this.add.text(GAME_W / 2, STATS_Y + 110, `"${c.hook}"`, { ...text.body(16, PAL.steel), fontStyle: 'italic', align: 'center', wordWrap: { width: bw } }).setOrigin(0.5, 0),
       ]);
-      const go = makeButton(this, GAME_W / 2, GAME_H - 70, 260, 56, 'Go to the Altar', () => this.scene.start('Recruit'), { fontSize: 18, active: true });
+      const go = makeButton(this, GAME_W / 2, GAME_H - 70, 260, 56, 'To the Altar!', () => this.scene.start('Recruit'), { fontSize: 18, active: true });
       layer.add(go.all);
       return;
     }
@@ -536,7 +536,7 @@ export class RosterScene extends Phaser.Scene {
     const into = Math.min(expOf(have), need);
     layer.add(this.add.rectangle(left, y + 6, bw, 12, 0x150e17).setOrigin(0, 0.5).setStrokeStyle(1, PAL.armorShadow));
     if (into) layer.add(this.add.rectangle(left + 1, y + 6, (bw - 2) * (into / need), 10, 0x7fc4a0).setOrigin(0, 0.5));
-    layer.add(this.add.text(left, y + 16, atCap ? (into >= need ? 'EXP full: Ascend to keep growing' : `EXP ${into.toLocaleString('en-US')} / ${need.toLocaleString('en-US')} banked at her cap`) : `EXP ${into.toLocaleString('en-US')} / ${need.toLocaleString('en-US')}`, text.body(13, PAL.muted)));
+    layer.add(this.add.text(left, y + 16, atCap ? (into >= need ? 'EXP full. Ascend her to grow!' : `EXP ${into.toLocaleString('en-US')} / ${need.toLocaleString('en-US')} banked at her cap`) : `EXP ${into.toLocaleString('en-US')} / ${need.toLocaleString('en-US')}`, text.body(13, PAL.muted)));
     y += 40;
     if (!atCap) {
       // Unction held: tap one to choose it, hold for where to get more.
@@ -579,7 +579,7 @@ export class RosterScene extends Phaser.Scene {
       y += 72;
       const block = usePlan(save, c.id, pick, 1).block;
       if (block) {
-        layer.add(tapForSources(this, this.add.text(left, y, block === 'unction' ? 'Short of Unction: battles, the Vigil and the road give EXP too. Tap for sources ›' : 'Short of Tithes: tap to see where to get more ›', { ...text.body(14, PAL.amber), wordWrap: { width: bw } }), block === 'unction' ? 'unction1' : 'tithes'));
+        layer.add(tapForSources(this, this.add.text(left, y, block === 'unction' ? 'Short of Unction. Battles, the Vigil and the Road give EXP too ›' : 'Short of Tithes. Where to earn more ›', { ...text.body(14, PAL.amber), wordWrap: { width: bw } }), block === 'unction' ? 'unction1' : 'tithes'));
         y += 44;
       } else {
         layer.add(this.add.text(left, y, '1 Tithe per 10 EXP. Nothing spills past her cap.', { ...text.body(13, PAL.muted), wordWrap: { width: bw } }));
@@ -589,7 +589,7 @@ export class RosterScene extends Phaser.Scene {
       const step = nextAscension(save, c.id);
       if (step) {
         const block = ascendBlock(save, c.id);
-        layer.add(this.add.text(left, y, `Level ${cap} is her cap. Ascend to raise it to ${cap + 10}.`, { ...text.body(15, PAL.ivory), wordWrap: { width: bw } }));
+        layer.add(this.add.text(left, y, `Level ${cap} is her cap. Ascend her to ${cap + 10}!`, { ...text.body(15, PAL.ivory), wordWrap: { width: bw } }));
         y += 26;
         layer.add(tapCost(this, this.add.text(left, y, `Ascension ${ROMAN_RANK((have.asc ?? 0) + 1)}: ${costLine(save, step)}  ›`, { ...text.body(14, block ? PAL.steel : PAL.amber), wordWrap: { width: bw } }), step.items, step.tithes));
         y += 30;
@@ -603,7 +603,7 @@ export class RosterScene extends Phaser.Scene {
         layer.add(b.all);
         y += 70;
       } else {
-        layer.add(this.add.text(left, y, 'She stands at the highest level there is.', text.body(15, PAL.ivory)));
+        layer.add(this.add.text(left, y, 'She stands at the summit of the faith.', text.body(15, PAL.ivory)));
         y += 30;
       }
     }
@@ -619,11 +619,11 @@ export class RosterScene extends Phaser.Scene {
     layer.add(parts[0]);
     y += parts[0].height + 10;
     if (orderTier) {
-      const t = this.add.text(left, y, `${c.order} blessing, by Sisters of the Order in the party:\n${ORDERS[c.order].tiers.map((x) => `${x.need}: ${x.desc}`).join('\n')}`, { ...text.body(15, PAL.muted), wordWrap: { width: bw } });
+      const t = this.add.text(left, y, `${c.order} blessing, by her Order's Sisters in the party:\n${ORDERS[c.order].tiers.map((x) => `${x.need}: ${x.desc}`).join('\n')}`, { ...text.body(15, PAL.muted), wordWrap: { width: bw } });
       layer.add(t);
       y += t.height + 10;
     }
-    const hook = this.add.text(left, y, `"${c.hook}"  ·  age ${c.age}`, { ...text.body(15, PAL.steel), fontStyle: 'italic', wordWrap: { width: bw } });
+    const hook = this.add.text(left, y, `Age ${c.age}  ·  "${noOrphan(c.hook)}"`, { ...text.body(15, PAL.steel), fontStyle: 'italic', wordWrap: { width: bw } });
     layer.add(hook);
     return y + hook.height + 16;
   }
@@ -673,11 +673,11 @@ export class RosterScene extends Phaser.Scene {
     y += 50;
     const block = symbolBlock(save, c.id);
     if (woke && lv! >= SYMBOL_MAX) {
-      layer.add(this.add.text(left, y, 'Her Symbol is fully sanctified.', text.body(16, PAL.amber)));
+      layer.add(this.add.text(left, y, 'Her Symbol is wholly sanctified!', text.body(16, PAL.amber)));
       return y + 40;
     }
     if (!woke && (have.asc ?? 0) < SYMBOL_ASC) {
-      layer.add(this.add.text(left, y, 'Her Symbol wakes once she has ascended (Grow tab, at her level cap).', { ...text.body(15, PAL.steel), wordWrap: { width: bw } }));
+      layer.add(this.add.text(left, y, 'Her Symbol wakes once she ascends (Grow tab, at her cap).', { ...text.body(15, PAL.steel), wordWrap: { width: bw } }));
       return y + 50;
     }
     const cost = woke ? upgradeCost(lv! + 1) : { items: WAKE_COST, tithes: WAKE_TITHES };
@@ -725,7 +725,7 @@ export class RosterScene extends Phaser.Scene {
     const atFive = have.vow >= MAX_VOW;
     const done = oathComplete(have) || (atFive && tier >= MAX_TIER);
     const line = done
-      ? 'Every tier and Vow is taken. She is wholly given.'
+      ? 'Every tier and Vow is taken. She is wholly given!'
       : atFive
         ? `Five Vows kept. Tier up for ${TIER_STIGMATA[tier]} Stigmata (you hold ${stig}) and ${tierTithes(tier).toLocaleString('en-US')} Tithes.  ›`
         : `Next Vow: ${need} cop${need > 1 ? 'ies' : 'y'} of her (you hold ${tokens}) and ${vowCost(have)} Tithes.${si.stigmata ? ` Stigmata stand in for the ${si.short} missing: ${si.stigmata} (you hold ${stig}).` : ''}  ›`;
@@ -755,7 +755,7 @@ export class RosterScene extends Phaser.Scene {
       layer.add(this.add.text(left, y, `${got ? '✓' : '·'}  Vow ${v}: ${skills[i].name}+ (+25%, shorter cooldown)`, text.body(15, got ? PAL.amber : PAL.muted)));
       y += 24;
     });
-    const t = this.add.text(left, y + 6, `Each Vow: +${Math.round(VOW_BONUS * 100)}% stats. Each tier: +${Math.round(TIER_BONUS * 100)}% more, and the stars change colour. Vows start again on each tier and ask one more copy each, at most two more. From tier ${ROMAN_RANK(STAND_IN_TIER)}, Stigmata stand in for copies she lacks (${STIGMATA_PER_COPY[c.rarity]} each for ${c.rarity === 'UR' ? 'a' : 'an'} ${c.rarity}).`, { ...text.body(14, PAL.steel), wordWrap: { width: bw } });
+    const t = this.add.text(left, y + 6, `Each Vow: +${Math.round(VOW_BONUS * 100)}% stats. Each tier: +${Math.round(TIER_BONUS * 100)}% more, and new star colours. Each tier's Vows ask one more copy (at most two more). From tier ${ROMAN_RANK(STAND_IN_TIER)}, Stigmata stand in for copies she lacks (${STIGMATA_PER_COPY[c.rarity]} each for ${c.rarity === 'UR' ? 'a' : 'an'} ${c.rarity}).`, { ...text.body(14, PAL.steel), wordWrap: { width: bw } });
     layer.add(t);
     return y + t.height + 20;
   }
@@ -781,7 +781,7 @@ export class RosterScene extends Phaser.Scene {
       const tx = icon ? left + 44 : left;
       const name = this.add.text(tx, y, `${s.name}${isUp ? '+' : ''}`, { ...text.body(20, s.rite ? PAL.amber : PAL.ivory), fontStyle: '600' });
       const t = this.add.text(tx, y + 28, tag, text.hud(11, isUp ? PAL.amber : PAL.steel));
-      const d = this.add.text(left, y + 46, descNoCooldown(s.desc), { ...text.body(15, PAL.muted), wordWrap: { width } });
+      const d = this.add.text(left, y + 46, noOrphan(descNoCooldown(s.desc)), { ...text.body(15, PAL.muted), wordWrap: { width } });
       layer.add([...(icon ? [icon] : []), name, t, d]);
       // Tap the skill for its full description, with every effect explained.
       const open = () => showSkillDetail(this, { title: `${s.name}${isUp ? '+' : ''}`, color: s.rite ? PAL.amber : PAL.ivory, tags: tag, desc: descNoCooldown(s.desc), facts: skillFacts(c, s, skillLevels(save, c.id)[i], isUp) }, 60);
@@ -815,7 +815,7 @@ export class RosterScene extends Phaser.Scene {
       layer.add(this.add.rectangle(GAME_W / 2, y, width, 1, PAL.armorShadow));
       const name = this.add.text(left, y + 10, c.passive.name, { ...text.body(20, PAL.violet), fontStyle: '600' });
       const t = this.add.text(left, y + 38, `PASSIVE · ${c.rarity}`, text.hud(11, PAL.steel));
-      const d = this.add.text(left, y + 56, c.passive.desc, { ...text.body(15, PAL.muted), wordWrap: { width } });
+      const d = this.add.text(left, y + 56, noOrphan(c.passive.desc), { ...text.body(15, PAL.muted), wordWrap: { width } });
       layer.add([name, t, d]);
       const p = c.passive;
       for (const o of [name, d])
@@ -828,7 +828,7 @@ export class RosterScene extends Phaser.Scene {
       layer.add(this.add.rectangle(GAME_W / 2, y, width, 1, PAL.armorShadow));
       const name = this.add.text(left, y + 10, seal.name, { ...text.body(20, PAL.amber), fontStyle: '600' });
       const t = this.add.text(left, y + 38, "SAINT'S SEAL · ONCE A FIGHT", text.hud(11, PAL.steel));
-      const d = this.add.text(left, y + 56, seal.desc, { ...text.body(15, PAL.muted), wordWrap: { width } });
+      const d = this.add.text(left, y + 56, noOrphan(seal.desc), { ...text.body(15, PAL.muted), wordWrap: { width } });
       layer.add([name, t, d]);
       y += 56 + d.height;
     }
@@ -894,7 +894,7 @@ export class RosterScene extends Phaser.Scene {
       .map((x) => `${x.set.name} ×${x.count}`);
     const y = y0 + 110 + GEAR_SLOTS.length * 122 - 50;
     const t = this.add
-      .text(GAME_W / 2, y, parts.length ? `Gear: ${parts.join('  ')}${sets.length ? `\nSets: ${sets.join(', ')}` : ''}` : 'Crusades yield gear up to SSR. Elites and bosses always do. UR gear comes from the Saints\' Armory.', {
+      .text(GAME_W / 2, y, parts.length ? `Gear: ${parts.join('  ')}${sets.length ? `\nSets: ${sets.join(', ')}` : ''}` : 'The dead yield gear up to SSR, and elites and bosses always do. UR gear comes from the Saints\' Armory.', {
         ...text.body(15, parts.length ? PAL.amber : PAL.muted),
         align: 'center',
         wordWrap: { width: GAME_W - 70 },
@@ -932,7 +932,7 @@ export class RosterScene extends Phaser.Scene {
     const set = gearSet(item.set);
     section(
       'SET',
-      set ? `${set.name}. Wear two or four ${set.name} pieces.\n${setText(set)}` : 'None. Pieces found from now on belong to a set.',
+      set ? `${set.name}. Wear two or four ${set.name} pieces.\n${setText(set)}` : 'None. Gear found from now on belongs to a set.',
       set ? set.color : PAL.muted,
     );
 
@@ -963,8 +963,8 @@ export class RosterScene extends Phaser.Scene {
     const subText = section(
       'SUBSTATS',
       item.subs.length
-        ? `${item.subs.map((s) => formatStat(s.stat, s.value)).join('   ')}\nReroll gives each a new stat and keeps its strength. Cost: ${ironText(REROLL_COST.items)} and ${REROLL_COST.tithes} Tithes.`
-        : 'R pieces have no substats.',
+        ? `${item.subs.map((s) => formatStat(s.stat, s.value)).join('   ')}\nReroll: new stats, same strength. Cost: ${ironText(REROLL_COST.items)} and ${REROLL_COST.tithes} Tithes.`
+        : 'R gear has no substats.',
       PAL.ivory,
     );
     if (item.subs.length) tapCost(this, subText, REROLL_COST.items, REROLL_COST.tithes);
@@ -1001,7 +1001,7 @@ export class RosterScene extends Phaser.Scene {
     const listBottom = GAME_H - 100;
     const list = addScrollArea(this, listTop, listBottom, { parent: layer });
     const inList = () => !list.dragging && this.input.activePointer.y >= listTop && this.input.activePointer.y <= listBottom;
-    if (!shown.length) layer.add(this.add.text(GAME_W / 2, 200, 'No pieces for this slot yet.\nCrusade, and the dead will provide.', { ...text.body(18, PAL.muted), align: 'center' }).setOrigin(0.5));
+    if (!shown.length) layer.add(this.add.text(GAME_W / 2, 200, 'Nothing for this slot.\nCrusade, and the dead will arm you!', { ...text.body(18, PAL.muted), align: 'center' }).setOrigin(0.5));
     shown.forEach((g, i) => {
       const y = 140 + i * 92;
       const row = this.add.rectangle(GAME_W / 2, y, GAME_W - 56, 84, 0x1b131d).setStrokeStyle(1, RARITY_COLOR[g.rarity]);

@@ -197,10 +197,10 @@ export class BattleScene extends Phaser.Scene {
       this.logText.setText('The fight went on without you.');
       this.time.delayedCall(400, () => (away.pending ? this.resumeTurn(away.pending.uid) : this.step()));
     } else if (resume) {
-      this.logText.setText('The fight resumes.');
+      this.logText.setText('The fight resumes!');
       this.time.delayedCall(400, () => this.resumeTurn(resume.actorUid));
     } else {
-      this.logText.setText(challenge ? challenge.label : 'The dark stirs. Steel yourselves, Sisters.');
+      this.logText.setText(challenge ? challenge.label : 'The dark stirs. Steel yourselves, Sisters!');
       this.time.delayedCall(600, () => this.step());
     }
   }
@@ -223,7 +223,7 @@ export class BattleScene extends Phaser.Scene {
     }
     if (this.actor?.side === 'party' && (this.mode === 'skill' || this.mode === 'target')) return this.pauseAndGo(key);
     this.leaveFor = key;
-    this.descText.setText('The fight will wait at your next turn.');
+    this.descText.setText('The fight waits for your next turn.');
   }
 
   private pauseAndGo(key: string) {
@@ -413,7 +413,7 @@ export class BattleScene extends Phaser.Scene {
       });
       this.skillButtons.push(box, label);
     });
-    if (!this.chosen) this.descText.setText('Choose a skill');
+    if (!this.chosen) this.descText.setText('Choose her skill');
   }
 
   private pickSkill(s: SkillDef, usable: boolean) {
@@ -422,7 +422,7 @@ export class BattleScene extends Phaser.Scene {
     if (s.id === 'shift') return this.pickStep(usable);
     if (!usable) {
       const cd = actor.cooldowns?.[s.id] ?? 0;
-      const why = cd > 0 ? `Cooling down: ready in ${cd} turn${cd > 1 ? 's' : ''}.` : s.rite && (actor.zeal ?? 0) < ZEAL_MAX ? `Needs her own Zeal full (${actor.zeal ?? 0}/${ZEAL_MAX}).` : s.from.length ? `Usable from rank ${s.from.map((r) => ROMAN[r - 1]).join(', ')}.` : 'No target in reach.';
+      const why = cd > 0 ? `Cooling down: ready in ${cd} turn${cd > 1 ? 's' : ''}.` : s.rite && (actor.zeal ?? 0) < ZEAL_MAX ? `Her Zeal must burn full (${actor.zeal ?? 0}/${ZEAL_MAX}).` : s.from.length ? `Usable from rank ${s.from.map((r) => ROMAN[r - 1]).join(', ')}.` : 'No target in reach.';
       this.descText.setText(`${s.name}: ${s.desc}\n${why}`);
       return;
     }
@@ -435,7 +435,7 @@ export class BattleScene extends Phaser.Scene {
     this.mode = 'target';
     const targets = this.battle.validTargets(actor, s);
     const group = s.target === 'allEnemies' || s.target === 'allAllies' || s.target === 'self';
-    this.descText.setText(`${s.name}: ${s.desc}\n${group ? 'Tap again, or tap a glowing card, to confirm.' : 'Tap a glowing target.'}`);
+    this.descText.setText(`${s.name}: ${s.desc}\n${group ? 'Tap again, or a glowing card, to confirm.' : 'Tap a glowing target.'}`);
     this.showSkills();
     this.refresh(targets);
   }
@@ -445,7 +445,7 @@ export class BattleScene extends Phaser.Scene {
     const actor = this.actor!;
     const s = skillsFor(actor).find((x) => x.id === 'shift')!;
     if (!usable) {
-      this.descText.setText(actor.stepped ? 'She has already stepped this turn. Choose a skill.' : 'No Sister stands beside her.');
+      this.descText.setText(actor.stepped ? 'She has already stepped this turn. Choose her skill.' : 'No Sister stands beside her.');
       return;
     }
     if (this.chosen === s) {
@@ -458,7 +458,7 @@ export class BattleScene extends Phaser.Scene {
     }
     this.chosen = s;
     this.mode = 'target';
-    this.descText.setText(`Step: ${s.desc.split('. ')[0]}.\nTap the glowing Sister to trade places with her.`);
+    this.descText.setText(`Step: ${s.desc.split('. ')[0]}.\nTap the glowing Sister to trade places.`);
     this.showSkills();
     this.refresh(this.battle.stepTargets(actor));
   }
@@ -508,9 +508,9 @@ export class BattleScene extends Phaser.Scene {
     if (!view || this.mode === 'busy') return;
     const who = view.targets.length === 1 ? view.targets[0].name : 'all your Sisters';
     let text: string;
-    if (view.kind === 'summon') text = `${u.name} will call another abomination into the line.`;
-    else if (view.kind === 'buff') text = `${u.name} will use ${view.skill.name}: ${view.skill.desc || 'it strengthens its side.'}`;
-    else if (view.kind === 'charge' && !view.charging) text = `${u.name} will start charging ${view.skill.name}: about ${view.estimate} to each of you the turn after. Delay it to break the charge.`;
+    if (view.kind === 'summon') text = `${u.name} will call another abomination into the line!`;
+    else if (view.kind === 'buff') text = `${u.name} will use ${view.skill.name}: ${view.skill.desc || 'it strengthens the damned.'}`;
+    else if (view.kind === 'charge' && !view.charging) text = `${u.name} will start charging ${view.skill.name}: about ${view.estimate} to each Sister the turn after. Delay it to break the charge!`;
     else text = `${u.name} will use ${view.skill.name} on ${who} for about ${view.estimate}${view.skill.target === 'allEnemies' ? ' each' : ''}.`;
     if (view.skill.weaken) text += ' It also Weakens.';
     if (view.skill.poison) text += ' It also Poisons.';
@@ -524,7 +524,7 @@ export class BattleScene extends Phaser.Scene {
     // Which defence is thin, and which Order it fears.
     const thin = u.mres < u.armor * 0.6 ? 'Magic' : u.armor < u.mres * 0.6 ? 'Physical' : '';
     text += ` ${thin ? `Weak to ${thin} damage.` : 'Armor and Magic Resist alike.'}`;
-    if (u.bane) text += ` Fears the ${u.bane}: her Sisters deal +25% to it.`;
+    if (u.bane) text += ` Fears the ${u.bane}: her Sisters deal +25% to it!`;
     text += ` It deals ${u.dmg === 'magic' ? 'Magic' : 'Physical'} damage.`;
     if (view.kind === 'attack' || view.kind === 'debuff') text += ' A Taunt pulls it away, and a free Step can move out of its reach.';
     this.descText.setText(text);
@@ -721,7 +721,7 @@ export class BattleScene extends Phaser.Scene {
     this.zealText.setText(
       who
         ? z >= ZEAL_MAX
-          ? `${who.name.split(' ')[0]}'s ZEAL ABLAZE: her Litany is ready`
+          ? `${who.name.split(' ')[0]}'s ZEAL ABLAZE! Her Litany is ready`
           : `${who.name.split(' ')[0]}'s Zeal ${z} / ${ZEAL_MAX}${ready ? `  ·  ${ready} Litan${ready > 1 ? 'ies' : 'y'} ready` : ''}`
         : ready
           ? `${ready} Litan${ready > 1 ? 'ies' : 'y'} ready`
@@ -833,7 +833,7 @@ export class BattleScene extends Phaser.Scene {
     this.houndImg = img;
     this.add.text(36, 464, 'HOUND', text.hud(9, PAL.steel)).setOrigin(0.5, 0);
     img.setInteractive({ useHandCursor: true }).on('pointerup', () =>
-      showDetail(this, { title: def.name, color: RARITY_COLOR[def.rarity], tags: `${def.rarity} HOUND`, desc: `${h.howlName}, at the start of every round: ${howlParts(h.howl).join('; ')}.`, facts: ['Change hounds in the Kennel or under any party.'] }),
+      showDetail(this, { title: def.name, color: RARITY_COLOR[def.rarity], tags: `${def.rarity} HOUND`, desc: `${h.howlName}, at the start of every round: ${howlParts(h.howl).join('; ')}.`, facts: ['Change hounds in the Kennel or at the Muster.'] }),
     );
   }
 
@@ -912,7 +912,7 @@ export class BattleScene extends Phaser.Scene {
       case 'summon': {
         const u = this.battle.get(e.uid);
         this.makeCard(u);
-        this.logText.setText(`${u.name} rises from the water.`);
+        this.logText.setText(`${u.name} rises from the water!`);
         this.refresh();
         break;
       }
@@ -921,7 +921,7 @@ export class BattleScene extends Phaser.Scene {
         this.cards.get(e.uid)?.box.destroy();
         this.cards.delete(e.uid);
         this.makeCard(u);
-        this.logText.setText(`${u.name} rises again.`);
+        this.logText.setText(`${u.name} rises again!`);
         this.refresh();
         break;
       }

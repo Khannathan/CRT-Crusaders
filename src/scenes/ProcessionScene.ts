@@ -81,7 +81,7 @@ export class ProcessionScene extends Phaser.Scene {
       y += h + 8;
     });
 
-    this.add.text(PAD, y + 4, 'A loss spends no entry. Give offerings to Sisters in Confession.', { ...text.body(14, PAL.muted), wordWrap: { width: bw } });
+    this.add.text(PAD, y + 4, 'A loss costs nothing. Give offerings to Sisters in Confession.', { ...text.body(14, PAL.muted), wordWrap: { width: bw } });
     if (this.notice) toast(this, this.notice);
   }
 
@@ -91,15 +91,15 @@ export class ProcessionScene extends Phaser.Scene {
     pickParty(
       this,
       save,
-      { title: t.name, sub: 'Tap Sisters in rank order; the first stands in front.', initial: save.lastParty, confirm: 'Walk', rec: processionRecommended(save, tier) },
+      { title: t.name, sub: 'Tap in rank order. The first stands in front.', initial: save.lastParty, confirm: 'Walk', rec: processionRecommended(save, tier) },
       (party) => {
         current.challenge = {
-          label: `${t.name}. The relics pass, and the dead rise to take them back.`,
+          label: `${t.name}. The relics pass, and the dead rise to take them back!`,
           make: (rng) => processionBattle(save, party, tier, rng),
           finish: (_outcome, battle) => {
             const r = finishProcession(save, tier, battle);
             commit();
-            const notice = r.won ? `The relics are safe. Offerings: ${offeringsText(r.offerings)}` : 'The procession is driven back. No entry was spent.';
+            const notice = r.won ? `The relics are safe. Offerings: ${offeringsText(r.offerings)}` : 'The procession is driven back. Nothing was spent.';
             return { scene: 'Procession', data: { notice } };
           },
         };

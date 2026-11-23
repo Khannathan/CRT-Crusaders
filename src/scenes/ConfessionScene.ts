@@ -108,7 +108,7 @@ export class ConfessionScene extends Phaser.Scene {
     const after = (gave: boolean, what: string) => {
       if (gave) commit();
       const now = bondInfo(save, id);
-      this.scene.restart({ id, notice: !gave ? what : now.level > b.level ? `Bond ${ROMAN_RANK(now.level)}. She has something to tell you.` : what });
+      this.scene.restart({ id, notice: !gave ? what : now.level > b.level ? `Bond ${ROMAN_RANK(now.level)}. She has something to confess.` : what });
     };
 
     let y = top + 140;
@@ -132,7 +132,7 @@ export class ConfessionScene extends Phaser.Scene {
 
     // The free candle: one a day, for any Sister.
     const ready = candleReady(save);
-    makeButton(this, GAME_W / 2, y + 23, bw, 46, b.max ? 'Her bond is complete' : ready ? `Light the free candle · +${BOND_XP.candle} bond` : 'Candle lit today · another at dawn', () => {
+    makeButton(this, GAME_W / 2, y + 23, bw, 46, b.max ? 'Her bond is complete!' : ready ? `Light the free candle · +${BOND_XP.candle} bond` : 'Candle lit today · another at dawn', () => {
       if (list.dragging) return;
       after(lightCandle(save, id), 'The candle burns. She notices.');
     }, { fontSize: 16, icon: 'flame', active: ready && !b.max, disabled: !ready || b.max });
@@ -143,7 +143,7 @@ export class ConfessionScene extends Phaser.Scene {
     this.add.text(PAD, y, 'OFFERINGS', text.hud(13, PAL.amber));
     tapForSources(this, this.add.text(GAME_W - PAD, y, `HELD ${offeringsHeld(save)}  ·  WHERE TO GET MORE`, text.hud(11, PAL.steel)).setOrigin(1, 0), 'offerings');
     y += 20;
-    this.add.text(PAD, y, `The ${c.order} favours ${fav.map((f) => offeringDef(f).name).join(' and ')}: double bond.`, { ...text.body(14, PAL.muted), wordWrap: { width: bw } });
+    this.add.text(PAD, y, `The ${c.order} favours ${fav.map((f) => offeringDef(f).name).join(' and ')}: double bond!`, { ...text.body(14, PAL.muted), wordWrap: { width: bw } });
     y += 30;
     const cols = 4;
     const cw = bw / cols;
@@ -162,7 +162,7 @@ export class ConfessionScene extends Phaser.Scene {
       const hit = this.add.rectangle(x, cy + 50, cw - 6, ch - 6, 0, 0);
       list.tap(hit, () => {
         if (b.max) return after(false, 'Her bond is already complete.');
-        if (!held) return after(false, `No ${o.name} held. Win them in the Reliquary Procession.`);
+        if (!held) return after(false, `No ${o.name} held. Win them in the Procession.`);
         after(offer(save, id, o.id), `${o.name} given${isFav ? ', and she treasures it' : ''}. +${offeringXp(id, o.id)} bond.`);
       });
     });

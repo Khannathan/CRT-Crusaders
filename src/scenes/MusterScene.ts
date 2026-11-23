@@ -88,7 +88,7 @@ export class MusterScene extends Phaser.Scene {
     // Order bonuses this party turns on
     const orders = this.party.map((id) => CRUSADERS.find((c) => c.id === id)!.order);
     if (orderBonuses(orders).length || orders.length) drawOrderChips(this, GAME_W / 2, 314, orders, 5);
-    if (!orderBonuses(orders).length) this.add.text(GAME_W / 2, 332, 'Two Sisters of one Order kneel together for its blessing. Tap for details.', text.body(13, PAL.muted)).setOrigin(0.5, 0);
+    if (!orderBonuses(orders).length) this.add.text(GAME_W / 2, 332, 'Two Sisters of one Order kneel together for its blessing ›', text.body(13, PAL.muted)).setOrigin(0.5, 0);
     this.add.rectangle(GAME_W / 2, 344, GAME_W - 32, 1, PAL.armorShadow);
     makeButton(this, GAME_W - 70, 314, 104, 34, 'Presets', () => {
       openPresets(this, game.save, [...this.party], 40, (ids) => {

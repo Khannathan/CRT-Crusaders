@@ -10,7 +10,7 @@ import { levelCap, sisterStats, statsFor } from '../systems/stats';
 import { makeButton } from './button';
 import { sigilKey } from './icons';
 import { portraitKey } from './placeholderPortrait';
-import { addFrame, text } from './theme';
+import { addFrame, noOrphan, text } from './theme';
 
 /** How long a press must last to count as a hold. */
 export const HOLD_MS = 420;
@@ -122,7 +122,7 @@ export function showSisterCard(scene: Phaser.Scene, id: string, opts: { roster?:
   y = top + 24 + ps + 22;
   const facts = own
     ? `Level ${own.level} / ${levelCap(own)}    ${tierOf(own) ? `Tier ${tierOf(own)} · ` : ''}Vows ${own.vow} / ${MAX_VOW}${own.tokens ? ` (${own.tokens} cop${own.tokens > 1 ? 'ies' : 'y'})` : ''}${own.asc ? `    Asc ${own.asc}` : ''}`
-    : 'Not yet sworn to you.';
+    : 'Not yet sworn to you. Call her at the Altar!';
   layer.add(scene.add.text(left, y, facts, text.body(16, own && tierOf(own) ? TIER_COLOR[tierOf(own)] : PAL.ivory)));
   if (own?.recovering) layer.add(scene.add.text(left, y + 24, `Wounded: sits out ${own.recovering} more crusade${own.recovering > 1 ? 's' : ''}`, text.body(15, 0xe58a8a)));
 
@@ -150,7 +150,7 @@ export function showSisterCard(scene: Phaser.Scene, id: string, opts: { roster?:
   // Passive and class
   if (c.passive) {
     layer.add(scene.add.text(left, y, `PASSIVE · ${c.passive.name.toUpperCase()}`, text.hud(12, PAL.amber)));
-    const d = scene.add.text(left, y + 20, c.passive.desc, { ...text.body(16, PAL.ivory), wordWrap: { width: w - 44 } });
+    const d = scene.add.text(left, y + 20, noOrphan(c.passive.desc), { ...text.body(16, PAL.ivory), wordWrap: { width: w - 44 } });
     layer.add(d);
     y = d.y + d.height + 14;
   }
@@ -160,7 +160,7 @@ export function showSisterCard(scene: Phaser.Scene, id: string, opts: { roster?:
     layer.add(d);
     y = d.y + d.height + 14;
   }
-  const hook = scene.add.text(left, y, c.hook, { ...text.body(15, PAL.steel), fontStyle: 'italic', wordWrap: { width: w - 44 } });
+  const hook = scene.add.text(left, y, noOrphan(c.hook), { ...text.body(15, PAL.steel), fontStyle: 'italic', wordWrap: { width: w - 44 } });
   layer.add(hook.setCrop(0, 0, w - 44, Math.max(0, top + h - 92 - y)));
 
   // Buttons

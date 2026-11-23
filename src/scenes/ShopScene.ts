@@ -66,7 +66,7 @@ export class ShopScene extends Phaser.Scene {
       makeButton(this, GAME_W - PAD - 80, y + 6, 160, 34, cost ? `Refresh · ${REFRESH_GILT} Gilt` : 'Refresh · free', () => {
         if (refreshAlmonry(save)) {
           commit();
-          this.scene.restart({ counter: 'almonry', notice: 'The almoner lays out new wares.' });
+          this.scene.restart({ counter: 'almonry', notice: 'The almoner lays out new wares!' });
         }
       }, { fontSize: 13, disabled: giltOf(save) < cost });
     }
@@ -123,9 +123,9 @@ export class ShopScene extends Phaser.Scene {
     if (!o.goods.vowToken) return done();
     const can = new Set(vowCandidates(save).map((c) => c.id));
     if (!can.size) {
-      toast(this, 'Every Sister has all her Vows.');
+      toast(this, 'Every Sister has taken all her Vows!');
       return;
     }
-    pickParty(this, save, { title: 'A Vow token for…', sub: 'Choose the Sister who receives it.', initial: [], max: 1, allow: (c) => can.has(c.id), why: 'Her Vows are full', confirm: 'Give it' }, (ids) => ids[0] && done(ids[0]));
+    pickParty(this, save, { title: 'A Vow token for…', sub: 'Choose the Sister who receives it.', initial: [], max: 1, allow: (c) => can.has(c.id), why: 'Her Vows are full', confirm: 'Bestow' }, (ids) => ids[0] && done(ids[0]));
   }
 }

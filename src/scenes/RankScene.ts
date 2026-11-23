@@ -25,7 +25,7 @@ export class RankScene extends Phaser.Scene {
 
   create() {
     const save = game.save;
-    const { top, refresh } = modeScreen(this, 'Rank of Faith', 'Rise to open more of the war.');
+    const { top, refresh } = modeScreen(this, 'Rank of Faith', 'Rise, and more of the war opens to you!');
     const info = rankInfo(save);
     const bw = GAME_W - PAD * 2;
 
@@ -50,7 +50,7 @@ export class RankScene extends Phaser.Scene {
       }, { active: true, fontSize: 19, icon: 'seal' });
     } else {
       const next = rankGift(info.rank + 1);
-      this.add.text(PAD, gy - 14, info.rank >= MAX_RANK ? 'Every gift is claimed.' : `Next rank gift: ${next.seals} Seals + ${next.tithes.toLocaleString('en-US')} Tithes + ${next.gilt} Gilt`, text.body(18, PAL.muted));
+      this.add.text(PAD, gy - 14, info.rank >= MAX_RANK ? 'Every gift is claimed. Rise higher!' : `Next rank gift: ${next.seals} Seals + ${next.tithes.toLocaleString('en-US')} Tithes + ${next.gilt} Gilt`, text.body(18, PAL.muted));
     }
 
     let y = gy + 84;

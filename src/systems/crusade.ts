@@ -102,7 +102,7 @@ export function cryptFloors(crypt: CryptDef, heresy = 0): number {
 export const OSSUARY: CryptDef = {
   id: 'drowned-ossuary',
   name: 'The Drowned Ossuary',
-  blurb: 'A flooded charnel house. The drowned still sing.',
+  blurb: 'A flooded charnel house. The drowned still sing. Silence them!',
   floors: 5,
   early: ['ossuary-1', 'ossuary-2'],
   late: ['ossuary-3', 'ossuary-4', 'ossuary-5'],
@@ -116,7 +116,7 @@ export const OSSUARY: CryptDef = {
 export const BELFRY: CryptDef = {
   id: 'sunken-belfry',
   name: 'The Sunken Belfry',
-  blurb: 'A belfry in the marsh, still ringing for vespers.',
+  blurb: 'A belfry in the marsh, still ringing for vespers. Cut the rope!',
   floors: 6,
   early: ['belfry-1', 'belfry-2'],
   late: ['belfry-3', 'belfry-4', 'belfry-5'],
@@ -135,21 +135,21 @@ export const BELFRY: CryptDef = {
  */
 const DEEP: [string, string, string, string][] = [
   ['weeping-cloister', 'The Weeping Cloister', 'Nuns who never stopped praying, long after they stopped breathing.', 'Sister Lament'],
-  ['ash-scriptorium', 'The Ash Scriptorium', 'The copyists burned with their books. The ink still moves.', 'The Unbound Scribe'],
+  ['ash-scriptorium', 'The Ash Scriptorium', 'The copyists burned with their books. The ink still moves. Burn it again!', 'The Unbound Scribe'],
   ['hanging-chapel', 'The Hanging Chapel', 'A chapel slung beneath a bridge, swaying over black water.', 'The Hanged Deacon'],
-  ['bone-orchard', 'The Bone Orchard', 'An orchard planted in a plague pit. The fruit is pale.', 'The Gardener'],
+  ['bone-orchard', 'The Bone Orchard', 'An orchard planted in a plague pit. Put it to the torch!', 'The Gardener'],
   ['salt-catacomb', 'The Salt Catacomb', 'Bodies packed in salt, waiting to be remembered.', 'The Salt Matron'],
   ['flooded-nave', 'The Flooded Nave', 'A cathedral sunk to its rafters. The bells ring underwater.', 'The Drowned Verger'],
   ['iron-oubliette', 'The Iron Oubliette', 'A prison for the unrepentant, and for what they became.', 'The Jailer'],
-  ['candle-maze', 'The Candle Maze', 'Ten thousand candles, and each one is a soul.', 'The Wick-Keeper'],
+  ['candle-maze', 'The Candle Maze', 'Ten thousand candles, and each one a damned soul.', 'The Wick-Keeper'],
   ['red-refectory', 'The Red Refectory', 'The brothers still sit down to dinner. Do not ask what is served.', 'The Cellarer'],
   ['choir-loft', 'The Endless Choir Loft', 'A stair of pews that climbs into the dark, singing.', 'The Cantor'],
-  ['penitent-well', "The Penitent's Well", 'Pilgrims threw their sins down here. The sins climbed back.', 'The Well-Warden'],
+  ['penitent-well', "The Penitent's Well", 'Pilgrims threw their sins down here. The sins climbed back. Cast them down!', 'The Well-Warden'],
   ['thorned-sacristy', 'The Thorned Sacristy', 'Vestments of briar, chalices of rust, a priest of thorns.', 'The Thorn Priest'],
   ['mirror-crypt', 'The Mirror Crypt', 'Every Sister who enters meets herself, and she is hungry.', 'The Reflection'],
-  ['plague-hospice', 'The Plague Hospice', 'The sick were walled in to save the city. The walls are thin now.', 'The Physician'],
+  ['plague-hospice', 'The Plague Hospice', 'The sick were walled in to save the city. The walls grow thin. Hold them!', 'The Physician'],
   ['abyssal-ossuary', 'The Abyssal Ossuary', 'Below the first Ossuary, older bones arranged in older prayers.', 'The Bone Choir'],
-  ['last-altar', 'The Last Altar', 'Where the heresy began. Where it will end.', 'The First Heretic'],
+  ['last-altar', 'The Last Altar', 'Where the heresy began. Where you will end it!', 'The First Heretic'],
 ];
 const DEEP_CRYPTS: CryptDef[] = DEEP.map(([id, name, blurb, warden], i) => {
   const step = i + 2; // the Ossuary and the Belfry are steps 0 and 1

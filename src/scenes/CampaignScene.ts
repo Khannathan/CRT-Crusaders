@@ -45,7 +45,7 @@ export class CampaignScene extends Phaser.Scene {
 
   create() {
     const save = game.save;
-    const { top } = modeScreen(this, "The Pilgrim's Road", 'Every stage cleared makes the Vigil gather faster.', 'Sanctum');
+    const { top } = modeScreen(this, "The Pilgrim's Road", 'Each stage won quickens the Vigil.', 'Sanctum');
     const next = nextStage(save);
     const best = campaignOf(save).best;
     if (!this.sel) this.sel = next;
@@ -133,7 +133,7 @@ export class CampaignScene extends Phaser.Scene {
     const party = (v?.party ?? []).filter((id) => save.owned[id]);
     drawRecommended(this, left, y0 + 104, stageRecommended(save, n), partyPower(save, party), { size: 13, label: 'VIGIL' });
     const done = n <= best;
-    const pay = done ? 'Cleared. Its first-clear reward is taken.' : `First clear: ${rewardText(stageReward(n))}${s.boss ? `\nChapter chest: ${rewardText(chapterChest(s.chapter))}` : ''}`;
+    const pay = done ? 'Cleared. Its first-clear reward is yours.' : `First clear: ${rewardText(stageReward(n))}${s.boss ? `\nChapter chest: ${rewardText(chapterChest(s.chapter))}` : ''}`;
     this.add.text(left, y0 + 126, pay, { ...text.body(15, done ? PAL.steel : PAL.ivory), wordWrap: { width: w - 32 } });
     const rates = roadRates(save);
     this.add.text(GAME_W - PAD - 16, y0 + 14, `VIGIL ${Math.round(rates.tithes)} TITHES/H`, text.hud(11, PAL.steel)).setOrigin(1, 0);
@@ -157,7 +157,7 @@ export class CampaignScene extends Phaser.Scene {
       save,
       {
         title: push ? `Auto-push from ${s.label}` : `Stage ${s.label}`,
-        sub: push ? 'They fight on Auto, stage after stage, until they fall. Switch Auto off to stop after a fight.' : 'The Vigil\'s Sisters are picked. Tap in rank order.',
+        sub: push ? 'They fight on Auto, stage after stage, until they fall. Switch Auto off to halt.' : 'The Vigil\'s Sisters are picked. Tap in rank order.',
         initial: v?.party ?? save.lastParty,
         max: VIGIL_SIZE,
         confirm: push ? 'March' : 'Fight',
@@ -179,7 +179,7 @@ export class CampaignScene extends Phaser.Scene {
     const save = game.save;
     const s = stageDef(n);
     return {
-      label: `Stage ${s.label} of the Pilgrim's Road. ${s.boss ? 'The road ends at something vast.' : 'Pilgrims never walk alone.'}`,
+      label: `Stage ${s.label} of the Pilgrim's Road. ${s.boss ? 'The road ends at something vast!' : 'Pilgrims never walk alone.'}`,
       make: (rng) => stageBattle(save, party, n, rng),
       finish: (outcome) => {
         const r = finishStage(save, n, outcome);
@@ -193,13 +193,13 @@ export class CampaignScene extends Phaser.Scene {
             return { scene: 'Battle' };
           }
           const cleared = pushed.length ? `Auto-push cleared ${pushed.length} stage${pushed.length === 1 ? '' : 's'} (${pushed[0]}${pushed.length > 1 ? ` to ${pushed[pushed.length - 1]}` : ''}).` : 'Auto-push won no stages.';
-          const why = !r.won ? `Stopped at ${s.label}: the Sisters were driven back.` : n >= TOTAL_STAGES ? 'The road is walked to its end.' : 'Stopped: Auto was switched off.';
+          const why = !r.won ? `Stopped at ${s.label}: the Sisters were driven back.` : n >= TOTAL_STAGES ? 'The road is walked to its end. Glory!' : 'Stopped: Auto was switched off.';
           return { scene: 'Campaign', data: { notice: `${cleared}\n${why}` } };
         }
         const notice = !r.won
-          ? 'Driven back. Strengthen the Sisters and walk on.'
+          ? 'Driven back. Strengthen your Sisters and walk on.'
           : r.first
-            ? `Stage ${s.label} cleared: ${rewardText(r.reward!)}${r.chest ? `\nChapter chest: ${rewardText(r.chest)}` : ''}\nThe Vigil gathers faster.`
+            ? `Stage ${s.label} cleared: ${rewardText(r.reward!)}${r.chest ? `\nChapter chest: ${rewardText(r.chest)}` : ''}\nThe Vigil quickens!`
             : `Stage ${s.label} won again.`;
         return { scene: 'Campaign', data: { notice } };
       },

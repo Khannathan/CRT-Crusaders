@@ -36,7 +36,7 @@ export class MatinsScene extends Phaser.Scene {
 
   create() {
     const save = game.save;
-    const { top, refresh } = modeScreen(this, 'Matins', 'One candle each dawn. A missed day just waits.');
+    const { top, refresh } = modeScreen(this, 'Matins', 'One candle each dawn. A missed day simply waits.');
     const m = matinsOf(save);
     const ready = matinsReady(save);
     const cols = 7;
@@ -82,7 +82,7 @@ export class MatinsScene extends Phaser.Scene {
     const by = top + 10 + 4 * (ch + gap) + 30;
     const day = m.lit + 1;
     this.add
-      .text(GAME_W / 2, by, ready ? `Dawn ${day} of ${MATINS_DAYS}: ${matinsText(MATINS[m.lit])}` : 'Your candle burns. Return at the next dawn.', {
+      .text(GAME_W / 2, by, ready ? `Dawn ${day} of ${MATINS_DAYS}: ${matinsText(MATINS[m.lit])}` : 'Your candle burns. Return at dawn!', {
         ...text.body(19, ready ? PAL.amber : PAL.muted),
         align: 'center',
       })
@@ -91,7 +91,7 @@ export class MatinsScene extends Phaser.Scene {
       if (MATINS[m.lit].vowToken && vowCandidates(save).length) return this.pickSister((id) => this.done(lightCandle(save, Date.now(), id), refresh));
       this.done(lightCandle(save), refresh);
     };
-    makeButton(this, GAME_W / 2, by + 60, 300, 70, ready ? 'Light the candle' : 'Lit for today', light, { active: ready, disabled: !ready, fontSize: 20, icon: 'flame' });
+    makeButton(this, GAME_W / 2, by + 60, 300, 70, ready ? 'Light the candle!' : 'Lit for today', light, { active: ready, disabled: !ready, fontSize: 20, icon: 'flame' });
     if (this.notice) this.toast(this.notice);
   }
 
@@ -116,13 +116,13 @@ export class MatinsScene extends Phaser.Scene {
     layer.add(this.add.rectangle(GAME_W / 2, GAME_H / 2, GAME_W, GAME_H, 0x09060b, 0.95).setInteractive());
     layer.add(addFrame(this, GAME_W / 2, GAME_H / 2, GAME_W - 24, GAME_H - 40, { fill: 0x241925 }));
     layer.add(this.add.text(GAME_W / 2, 66, 'WHOSE VOW?', text.display(22, PAL.ivory)).setOrigin(0.5));
-    layer.add(this.add.text(GAME_W / 2, 100, 'The last candle grants one Vow token.', text.body(17, PAL.muted)).setOrigin(0.5));
+    layer.add(this.add.text(GAME_W / 2, 100, 'The last candle grants a Vow token!', text.body(17, PAL.muted)).setOrigin(0.5));
     const cands = sortAndFilter(save, vowCandidates(save));
     layer.add(sortControls(this, GAME_W / 2, 146, GAME_W - 60, () => {
       layer.destroy();
       this.pickSister(then);
     }, { depth: 20, h: 36 }));
-    if (!cands.length) layer.add(this.add.text(GAME_W / 2, 250, 'No Sister matches these filters.', text.body(17, PAL.muted)).setOrigin(0.5));
+    if (!cands.length) layer.add(this.add.text(GAME_W / 2, 250, 'No Sister answers these filters.', text.body(17, PAL.muted)).setOrigin(0.5));
     const list = addScrollArea(this, 168, GAME_H - 104, { parent: layer });
     cands.forEach((c, i) => {
         const x = GAME_W / 2 + ((i % 4) - 1.5) * 112;

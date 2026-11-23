@@ -54,8 +54,8 @@ export class CrusadeScene extends Phaser.Scene {
     // A Rite fight left from its Menu
     if (current.paused?.challenge && current.paused.challenge === current.challenge) {
       this.add.text(GAME_W / 2, top + 40, current.challenge.label, { ...text.body(18, PAL.muted), align: 'center', wordWrap: { width: GAME_W - 60 } }).setOrigin(0.5);
-      makeButton(this, GAME_W / 2, top + 120, 360, 80, 'Return to the fight', () => this.scene.start('Battle'), { active: true, icon: 'blade' });
-      makeButton(this, GAME_W / 2, top + 220, 360, 56, 'Abandon it (costs nothing)', () => {
+      makeButton(this, GAME_W / 2, top + 120, 360, 80, 'Return to the fight!', () => this.scene.start('Battle'), { active: true, icon: 'blade' });
+      makeButton(this, GAME_W / 2, top + 220, 360, 56, 'Abandon it (no cost)', () => {
         current.paused = undefined;
         current.challenge = undefined;
         this.scene.restart({});
@@ -66,7 +66,7 @@ export class CrusadeScene extends Phaser.Scene {
 
     // Resume a run left mid-way (e.g. after switching tabs)
     if (current.run) {
-      makeButton(this, GAME_W / 2, top + 90, 360, 80, 'Return to the dark', () => this.scene.start('Crypt'), { active: true, icon: 'blade' });
+      makeButton(this, GAME_W / 2, top + 90, 360, 80, 'Return to the dark!', () => this.scene.start('Crypt'), { active: true, icon: 'blade' });
       addTabBar(this, 'Crusade');
       return;
     }
@@ -162,7 +162,7 @@ export class CrusadeScene extends Phaser.Scene {
       bottom = cardBottom;
     });
     if (!Object.keys(s.owned).length) {
-      this.add.text(GAME_W / 2, bottom + 30, 'Swear in Sisters at the Sealed Altar first.', { ...style, fontSize: '18px', color: hex(PAL.muted) }).setOrigin(0.5);
+      this.add.text(GAME_W / 2, bottom + 30, 'Swear in Sisters at the Sealed Altar first!', { ...style, fontSize: '18px', color: hex(PAL.muted) }).setOrigin(0.5);
     }
 
     const resting = CRUSADERS.filter((c) => s.owned[c.id]?.recovering);
@@ -213,7 +213,7 @@ export class CrusadeScene extends Phaser.Scene {
       layer.add(this.add.text(GAME_W / 2, y0 + 30, 'SWEEP THE CRYPT', text.display(22, PAL.ivory)).setOrigin(0.5));
       layer.add(
         this.add
-          .text(GAME_W / 2, y0 + 64, `${crypt.name}${heresy ? `, Heresy ${ROMAN[heresy - 1]}` : ''}. Your Sisters march on Auto: real fights, real spoils, real wounds. They stop at the first defeat.`, {
+          .text(GAME_W / 2, y0 + 64, `${crypt.name}${heresy ? `, Heresy ${ROMAN[heresy - 1]}` : ''}. Your Sisters march on Auto: real fights, real spoils, real wounds. They halt at the first defeat.`, {
             ...text.body(16, PAL.muted),
             align: 'center',
             wordWrap: { width: GAME_W - 80 },
@@ -227,7 +227,7 @@ export class CrusadeScene extends Phaser.Scene {
       });
       layer.add(
         makeButton(this, GAME_W / 2, y0 + 270, 200, 44, 'Change Sisters', () =>
-          pickParty(this, s, { title: 'Who marches?', sub: 'Tap in rank order; the first stands in front.', initial: party, allow: (c) => canMuster(s, c.id), why: 'Wounded Sisters cannot march.', confirm: 'These four', rec: cryptRecommended(s, crypt, heresy) }, (ids) => {
+          pickParty(this, s, { title: 'Who marches?', sub: 'Tap in rank order. The first stands in front.', initial: party, allow: (c) => canMuster(s, c.id), why: 'Wounded Sisters cannot march.', confirm: 'These four', rec: cryptRecommended(s, crypt, heresy) }, (ids) => {
             party = ids;
             draw();
           }),
@@ -261,7 +261,7 @@ export class CrusadeScene extends Phaser.Scene {
       const fallen = r.fallen.length ? `, ${r.fallen.length} fell` : '';
       return `${i + 1}. ${r.outcome === 'victory' ? 'Purified' : 'Driven back'}: +${r.tithes} Tithes, +${r.seals} Seals${gear}${fallen}`;
     });
-    if (results.length < times && results.every((r) => r.outcome === 'victory')) lines.push('No Sister was left able to march.');
+    if (results.length < times && results.every((r) => r.outcome === 'victory')) lines.push('No Sister is left able to march.');
     layer.add(this.add.text(PAD + 20, y0 + 70, lines.join('\n'), { ...text.body(17, PAL.ivory), lineSpacing: 6, wordWrap: { width: GAME_W - 80 } }));
     const t = results.reduce((a, r) => ({ tithes: a.tithes + r.tithes, seals: a.seals + r.seals, gear: a.gear + r.gear.length }), { tithes: 0, seals: 0, gear: 0 });
     layer.add(

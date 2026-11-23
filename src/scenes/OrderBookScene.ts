@@ -36,7 +36,7 @@ export class OrderBookScene extends Phaser.Scene {
     // The worn title, and a way to change it.
     const titles = save.titles ?? [];
     this.add.text(PAD, top + 4, `${owned} of ${total} Sisters sworn`, text.body(17, PAL.muted));
-    this.add.text(PAD, top + 30, titles.length ? `Title: ${save.title ?? 'none'}` : 'Titles: finish a set to earn one', text.body(16, titles.length ? PAL.amber : PAL.steel));
+    this.add.text(PAD, top + 30, titles.length ? `Title: ${save.title ?? 'none'}` : 'Finish a set to earn its title', text.body(16, titles.length ? PAL.amber : PAL.steel));
     if (titles.length) {
       makeButton(this, GAME_W - PAD - 60, top + 30, 120, 38, 'Change', () => {
         const all: (string | undefined)[] = [...titles, undefined];

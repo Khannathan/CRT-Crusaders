@@ -82,6 +82,6 @@ export function growTarget(save: SaveData, party?: string[]): GrowTarget | undef
           ? 'Raise her skills'
           : (o.symbol ?? -1) < SYMBOL_MAX
             ? 'Raise her Holy Symbol'
-            : 'Take her Vows, and gear her';
+            : 'Take her Vows, and arm her';
   return { id: weakest.id, name: weakest.name.split(' ')[0], hint };
 }

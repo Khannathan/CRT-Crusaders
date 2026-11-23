@@ -81,7 +81,7 @@ export class RevealScene extends Phaser.Scene {
 
   private layTable() {
     this.add.text(GAME_W / 2, 100, 'Ten oaths, sealed in wax', { fontFamily: FONT, fontSize: '26px', color: hex(PAL.amber) }).setOrigin(0.5);
-    this.add.text(GAME_W / 2, 134, 'Each seal is the true colour of what it holds.', { fontFamily: FONT, fontSize: '16px', color: hex(PAL.steel) }).setOrigin(0.5);
+    this.add.text(GAME_W / 2, 134, 'Each seal burns the colour of the soul within.', { fontFamily: FONT, fontSize: '16px', color: hex(PAL.steel) }).setOrigin(0.5);
     this.busy = true;
     this.results.forEach((r, i) => {
       const seal = this.add.image(cellX(i), cellY(i) - 60, sealKey(r.crusader.rarity)).setDisplaySize(84, 84).setAlpha(0);
@@ -90,7 +90,7 @@ export class RevealScene extends Phaser.Scene {
     });
     this.time.delayedCall(this.results.length * 90 + 300, () => {
       this.busy = false;
-      this.hint.setText('Tap to break the seals in order');
+      this.hint.setText('Break the seals!');
     });
     this.skipBest = makeButton(this, GAME_W / 2, GAME_H - 70, 260, 64, 'Skip to best', () => this.skipToBest(), { fontSize: 19 });
     this.skipBest.all.forEach((o) => (o as unknown as Phaser.GameObjects.Components.Depth).setDepth?.(10));
@@ -204,7 +204,7 @@ export class RevealScene extends Phaser.Scene {
     const seal = this.add.image(0, 0, sealKey(r.crusader.rarity)).setDisplaySize(192, 192);
     this.card = this.add.container(GAME_W / 2, CY, [seal]).setData('stage', 'seal');
     this.tweens.add({ targets: seal, y: -10, duration: 900, yoyo: true, repeat: -1, ease: 'Sine.inOut' });
-    this.hint.setText('Tap to break the seal');
+    this.hint.setText('Break the seal!');
   }
 
   private breakSeal() {
@@ -307,7 +307,7 @@ export class RevealScene extends Phaser.Scene {
     });
 
     const style = { fontFamily: FONT, color: hex(PAL.ivory), align: 'center' };
-    const tag = r.isNew ? 'NEWLY SWORN' : r.tithes ? `Every copy held: +${r.stigmata ?? 0} Stigmata, +${r.tithes} Tithes` : `A copy of her (${r.tokens} held): Vows in the Roster`;
+    const tag = r.isNew ? 'NEWLY SWORN' : r.tithes ? `Every copy held: +${r.stigmata ?? 0} Stigmata, +${r.tithes} Tithes` : `Another oath from her (${r.tokens} held). Take her Vow in the Roster.`;
     // Words sit under the art, however tall it is.
     const textY = Math.max(SIZE / 2, fy + h / 2 + 6);
     const texts = [
@@ -367,7 +367,7 @@ export class RevealScene extends Phaser.Scene {
 
     const hist = this.add.text(24, 56, 'Oath Record ›', { fontFamily: FONT, fontSize: '17px', color: hex(PAL.steel) }).setOrigin(0, 0.5).setInteractive({ useHandCursor: true });
     hist.on('pointerup', () => this.scene.start('PullHistory'));
-    makeButton(this, GAME_W / 2 - 128, GAME_H - 80, 236, 68, 'Back to altar', () => this.scene.start('Recruit', {}), { fontSize: 19 });
+    makeButton(this, GAME_W / 2 - 128, GAME_H - 80, 236, 68, 'To the Altar', () => this.scene.start('Recruit', {}), { fontSize: 19 });
     makeButton(this, GAME_W / 2 + 128, GAME_H - 80, 236, 68, 'See roster', () => this.scene.start('Roster', {}), { fontSize: 19 });
   }
 

@@ -89,7 +89,7 @@ export function morningRounds(save: SaveData, now = Date.now(), rng: Rng = Math.
 
   // Matins, unless today's candle asks for a Sister.
   if (matinsReady(save, now)) {
-    if (needsVowPick(save)) r.left.push('Matins: today’s candle holds a Vow token. Choose who gets it.');
+    if (needsVowPick(save)) r.left.push('Matins: today’s candle holds a Vow token. Choose who receives it.');
     else {
       const m = lightCandle(save, now, undefined, rng);
       if (m) r.done.push(`Matins day ${m.day} lit`);

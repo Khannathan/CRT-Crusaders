@@ -100,7 +100,7 @@ export function stopAuto(): string {
   current.challenge = r.challenge;
   if (r.run) current.run = r.run;
   current.paused = { battle: b, actorUid: actor!.uid, vigilMax: r.vigilMax, run: r.challenge ? undefined : r.run, floor: r.run?.floor, at: r.run?.at, challenge: r.challenge };
-  return 'Auto stopped. The fight waits on the Crusade tab.';
+  return 'Auto halted. The fight waits on the Crusade tab.';
 }
 
 function schedule() {
@@ -142,7 +142,7 @@ function finish(r: Running, outcome: 'victory' | 'defeat') {
   bgFight.running = undefined;
   bgFight.done = s;
   const notice = (s.data as { notice?: string } | undefined)?.notice;
-  const head = s.won ? 'Auto fight won' : 'Auto fight lost';
+  const head = s.won ? 'Auto fight won!' : 'Auto fight lost';
   toast(`${head}. ${notice ?? s.line.trim()}`, s.won);
 }
 

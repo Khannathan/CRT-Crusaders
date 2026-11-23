@@ -58,7 +58,7 @@ export class ErrandsScene extends Phaser.Scene {
     this.add.text(PAD, y, `AWAY ${s.active.length}/${ERRAND_SLOTS}`, text.hud(14, s.active.length ? PAL.amber : PAL.steel));
     y += 26;
     if (!s.active.length) {
-      this.add.text(PAD, y, 'No one is away. Pick an errand below.', text.body(16, PAL.muted));
+      this.add.text(PAD, y, 'No Sister is away. Send one below!', text.body(16, PAL.muted));
       y += 34;
     }
     s.active.forEach((a, i) => {
@@ -132,8 +132,8 @@ export class ErrandsScene extends Phaser.Scene {
     for (const t of this.timers) {
       const left = t.end - now;
       if (left <= 0) {
-        if (t.label.text && t.label.text !== 'Home. Claim it.') return this.scene.restart({});
-        t.label.setText('Home. Claim it.');
+        if (t.label.text && t.label.text !== 'Home! Claim it.') return this.scene.restart({});
+        t.label.setText('Home! Claim it.');
         t.bar.width = t.w;
         continue;
       }
@@ -174,7 +174,7 @@ export class ErrandsScene extends Phaser.Scene {
         if (block) return toast(this, block);
         sendErrand(save, e, ids);
         commit();
-        this.scene.restart({ notice: `Sent. Back in ${e.hours}h.` });
+        this.scene.restart({ notice: `Sent forth! Back in ${e.hours}h.` });
       },
     );
   }
@@ -183,7 +183,7 @@ export class ErrandsScene extends Phaser.Scene {
     const r = claimErrand(game.save, i);
     if (!r) return;
     commit();
-    this.scene.restart({ notice: `Home with ${rewardText(r)}.` });
+    this.scene.restart({ notice: `Home with ${rewardText(r)}!` });
   }
 
   private recall(i: number) {
@@ -193,8 +193,8 @@ export class ErrandsScene extends Phaser.Scene {
     const layer = this.add.container(0, 0).setDepth(50);
     layer.add(this.add.rectangle(GAME_W / 2, GAME_H / 2, GAME_W, GAME_H, 0x09060b, 0.8).setInteractive());
     layer.add(this.add.rectangle(GAME_W / 2, GAME_H / 2, GAME_W - 60, 220, 0x241925).setStrokeStyle(2, PAL.goldEdge));
-    layer.add(this.add.text(GAME_W / 2, GAME_H / 2 - 50, `Call the Sisters home from ${a.def.name}?\nThey bring nothing back, and the errand is gone for today.`, { ...text.body(18, PAL.ivory), align: 'center', wordWrap: { width: GAME_W - 100 } }).setOrigin(0.5));
-    const keep = makeButton(this, GAME_W / 2 - 110, GAME_H / 2 + 60, 190, 52, 'Keep going', () => layer.destroy(), { fontSize: 17 });
+    layer.add(this.add.text(GAME_W / 2, GAME_H / 2 - 50, `Call the Sisters home from ${a.def.name}?\nThey bring nothing back, and the errand is lost for today.`, { ...text.body(18, PAL.ivory), align: 'center', wordWrap: { width: GAME_W - 100 } }).setOrigin(0.5));
+    const keep = makeButton(this, GAME_W / 2 - 110, GAME_H / 2 + 60, 190, 52, 'Keep at it', () => layer.destroy(), { fontSize: 17 });
     const go = makeButton(this, GAME_W / 2 + 110, GAME_H / 2 + 60, 190, 52, 'Recall', () => {
       recallErrand(game.save, i);
       commit();
