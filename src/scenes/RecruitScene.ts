@@ -4,10 +4,10 @@ import { FONT, GAME_H, GAME_W, PAL, hex } from '../config';
 import { RARITY_COLOR } from '../data/classes';
 import { CLASSES } from '../data/classes';
 import { CRUSADERS } from '../data/crusaders';
-import { ORDERS, ORDER_LIST } from '../data/orders';
+import { ORDERS } from '../data/orders';
 import { sigilKey } from '../ui/icons';
 import { commit, game } from '../state/game';
-import { COST_ONE, COST_TEN, PITY_LIMIT, RARITY_ORDER, RATES, bannerPool, boostedSSRs, chooseLimited, SPARK, UR_HARD, UR_SOFT, canPull, claimSpark, pull, shardsOf, sparkKey, syncBanner, urPityLeft, type PullKind } from '../systems/gacha';
+import { BOOSTED_SSRS, COST_ONE, COST_TEN, PITY_LIMIT, RARITY_ORDER, RATES, bannerPool, boostedSSRs, chooseLimited, chooseStandard, customizeBanner, defaultSSRs, standardSSRs, standardURs, SPARK, UR_HARD, UR_SOFT, canPull, claimSpark, pull, shardsOf, sparkKey, syncBanner, urPityLeft, type PullKind } from '../systems/gacha';
 import { isStandard, limitedUnseen, limitedWindow, markLimitedSeen, timeLeft, upcoming } from '../systems/limited';
 import { makeButton } from '../ui/button';
 import { CURRENCY_BAR_H, addCurrencyBar } from '../ui/currencyBar';
@@ -59,15 +59,13 @@ export class RecruitScene extends Phaser.Scene {
     if (splash) this.add.rectangle(GAME_W / 2, by, bw, bh, 0x140b12, 0.4);
     this.add.rectangle(GAME_W / 2, by, bw, bh, limited ? RARITY_COLOR.UR : ord.color, 0.12);
     addFrame(this, GAME_W / 2, by, bw, bh, { edge: limited ? RARITY_COLOR.UR : ord.color });
-    const page = limited ? 0 : ORDER_LIST.indexOf(ord) + 1;
-    const pages = ORDER_LIST.length + 1;
+    // Two banners: the Limited Saint's (fixed) and the standard one the player sets up.
+    const page = limited ? 0 : 1;
+    const pages = 2;
     const step = (d: number) => {
       const next = (page + d + pages) % pages;
       if (next === 0) chooseLimited(s);
-      else {
-        const o = ORDER_LIST[next - 1];
-        s.banner = { order: o.name, target: CRUSADERS.find((c) => c.order === o.name && c.rarity === 'UR' && isStandard(c))!.id };
-      }
+      else chooseStandard(s);
       commit();
       this.scene.restart();
     };
@@ -88,13 +86,13 @@ export class RecruitScene extends Phaser.Scene {
         .setShadow(0, 1, '#000000', 4, false, true)
         .setOrigin(0.5, 0);
     } else {
-      this.add.rectangle(GAME_W / 2, bTop + 100, bw - 110, 72, 0x120a12, 0.5);
-      this.add.image(GAME_W / 2, bTop + 34, sigilKey(ord.id)).setDisplaySize(44, 44);
-      this.add.text(GAME_W / 2, bTop + 72, ord.name.toUpperCase(), text.display(22, 0xfff1d6)).setOrigin(0.5).setShadow(0, 2, '#000000', 8, false, true);
+      this.add.rectangle(GAME_W / 2, bTop + 96, bw - 110, 72, 0x120a12, 0.6);
+      addBadge(this, GAME_W / 2 - 40, bTop + 14, 'STANDARD', PAL.steel, 14);
+      this.add.text(GAME_W / 2, bTop + 72, 'YOUR CALLING', text.display(22, 0xfff1d6)).setOrigin(0.5).setShadow(0, 2, '#000000', 8, false, true);
       this.add
-        .text(GAME_W / 2, bTop + 100, `"${ord.creed}"`, { ...text.body(17, 0xe1cabf), fontStyle: 'italic', align: 'center', wordWrap: { width: bw - 120 } })
+        .text(GAME_W / 2, bTop + 100, 'You choose the UR and two SSRs called louder here.', { ...text.body(16, 0xe1cabf), fontStyle: 'italic', align: 'center', wordWrap: { width: bw - 120 } })
         .setOrigin(0.5, 0)
-        .setShadow(0, 1, "#000000", 4, false, true);
+        .setShadow(0, 1, '#000000', 4, false, true);
     }
     this.add.text(GAME_W / 2, bTop + 144, `BANNER ${page + 1} / ${pages}`, { ...text.hud(12, PAL.muted), stroke: '#0b070c', strokeThickness: 4 }).setOrigin(0.5);
 
@@ -102,7 +100,7 @@ export class RecruitScene extends Phaser.Scene {
     const urs = CRUSADERS.filter((c) => c.id === banner.target);
     const ssrs = boostedSSRs(s);
     const cards: { c: (typeof CRUSADERS)[number]; x: number; size: number; label: string }[] = [
-      ...urs.slice(0, 1).map((c) => ({ c, x: GAME_W / 2, size: 168, label: 'TARGET' })),
+      ...urs.slice(0, 1).map((c) => ({ c, x: GAME_W / 2, size: 168, label: limited ? 'SAINT' : 'TARGET' })),
       ...ssrs.slice(0, 2).map((c, k) => ({ c, x: GAME_W / 2 + (k === 0 ? -1 : 1) * 168, size: 108, label: 'SSR UP' })),
     ];
     for (const { c, x, size, label } of cards) {
@@ -116,7 +114,7 @@ export class RecruitScene extends Phaser.Scene {
       const img = this.add.image(x, y, portraitKey(c.id)).setDisplaySize(size, size);
       holdForCard(this, img, c.id);
       addBadge(this, x - size / 2 + 4, y - size / 2 + 4, label, ur ? PAL.amber : RARITY_COLOR.SSR, ur ? 12 : 10);
-      if (!ur && limited) this.add.image(x + size / 2 - 14, y - size / 2 + 14, sigilKey(ORDERS[c.order].id)).setDisplaySize(24, 24);
+      if (!ur || !limited) this.add.image(x + size / 2 - 14, y - size / 2 + 14, sigilKey(ORDERS[c.order].id)).setDisplaySize(24, 24);
       this.add.text(x, y + size / 2 + 14, ur ? c.name : c.name.split(' ')[0], { ...text.body(ur ? 18 : 15, ur ? 0xfff1d6 : PAL.ivory), fontStyle: '600' }).setOrigin(0.5);
       this.add.text(x, y + size / 2 + 26, c.title ?? CLASSES[c.classId].name, { ...text.body(16, PAL.muted), align: 'center', wordWrap: { width: size + 50 }, lineSpacing: -4 }).setOrigin(0.5, 0);
     }
@@ -124,6 +122,8 @@ export class RecruitScene extends Phaser.Scene {
     if (limited) {
       const next = upcoming()[0];
       makeButton(this, GAME_W / 2, bTop + bh - 26, 300, 36, `Next Saint: ${next.saint.name.split(' ')[0]} in ${timeLeft(next.starts)}`, () => this.showComing(), { fontSize: 15 });
+    } else {
+      makeButton(this, GAME_W / 2, bTop + bh - 28, 300, 40, 'Choose your rate-up', () => this.customize(), { fontSize: 16, active: true });
     }
 
     // Banner rules and pity
@@ -225,6 +225,80 @@ export class RecruitScene extends Phaser.Scene {
     layer.add(back.all);
   }
 
+  /** The standard banner's rate-up picker: one UR, then two SSRs. */
+  private customize() {
+    const s = game.save;
+    const b = this.currentBanner();
+    let ur = b.target;
+    let ssrs = [...(b.ssrs ?? defaultSSRs(ur))];
+    const layer = this.add.container(0, 0).setDepth(20);
+    const draw = () => {
+      layer.removeAll(true);
+      layer.add(this.add.rectangle(GAME_W / 2, GAME_H / 2, GAME_W, GAME_H, 0x09060b, 0.94).setInteractive());
+      layer.add(addFrame(this, GAME_W / 2, GAME_H / 2, GAME_W - 24, GAME_H - 40, { fill: 0x241925 }));
+      layer.add(this.add.text(GAME_W / 2, 60, 'CHOOSE YOUR RATE-UP', text.display(24, PAL.amber)).setOrigin(0.5));
+      layer.add(
+        this.add
+          .text(GAME_W / 2, 84, 'Tap one UR and two SSRs. A UR here is your pick half the time and always after one that strays. Pity and Relic Shards carry over. Hold a portrait for her stats.', { ...text.body(15, PAL.muted), align: 'center', wordWrap: { width: GAME_W - 70 } })
+          .setOrigin(0.5, 0),
+      );
+      const list = addScrollArea(this, 160, GAME_H - 130, { parent: layer, depth: 20 });
+      const cols = 5;
+      const cell = (GAME_W - 60) / cols;
+      let y = 170;
+      const grid = (title: string, pool: (typeof CRUSADERS)[number][], picked: (id: string) => boolean, onTap: (id: string) => void) => {
+        list.content.add(this.add.text(36, y, title, text.hud(13, PAL.amber)));
+        y += 26;
+        pool.forEach((c, i) => {
+          const x = 30 + cell / 2 + (i % cols) * cell;
+          const cy = y + Math.floor(i / cols) * 122 + 40;
+          const on = picked(c.id);
+          makePlaceholderPortrait(this, c);
+          const frame = this.add.rectangle(x, cy, 80, 80, 0x170f1b).setStrokeStyle(on ? 4 : 1, on ? PAL.amber : RARITY_COLOR[c.rarity]);
+          const img = this.add.image(x, cy, portraitKey(c.id)).setDisplaySize(72, 72).setAlpha(on ? 1 : 0.7);
+          holdForCard(this, img, c.id);
+          list.tap(img, () => {
+            if (justHeld()) return;
+            onTap(c.id);
+          });
+          const sig = this.add.image(x + 30, cy - 30, sigilKey(ORDERS[c.order].id)).setDisplaySize(22, 22);
+          const name = this.add.text(x, cy + 44, c.name.split(' ')[0], text.body(13, on ? PAL.amber : PAL.ivory)).setOrigin(0.5, 0);
+          list.content.add([frame, img, sig, name]);
+          if (on) list.content.add([...addBadge(this, x - 38, cy - 38, 'UP', PAL.amber, 10)]);
+          if (s.owned[c.id]) list.content.add(this.add.text(x, cy + 62, 'OWNED', text.hud(10, PAL.steel)).setOrigin(0.5, 0));
+        });
+        y += Math.ceil(pool.length / cols) * 122 + 16;
+      };
+      grid('TARGET UR · PICK 1', standardURs(), (id) => id === ur, (id) => {
+        ur = id;
+        draw();
+      });
+      grid(`BOOSTED SSRS · PICK ${BOOSTED_SSRS}`, standardSSRs(), (id) => ssrs.includes(id), (id) => {
+        if (ssrs.includes(id)) ssrs = ssrs.filter((x) => x !== id);
+        else ssrs = [...ssrs, id].slice(-BOOSTED_SSRS);
+        draw();
+      });
+      list.fit(y);
+      const ready = ssrs.length === BOOSTED_SSRS;
+      const w3 = (GAME_W - 60) / 3;
+      layer.add(makeButton(this, 30 + w3 / 2, GAME_H - 84, w3 - 8, 56, 'Cancel', () => layer.destroy(), { fontSize: 16 }).all);
+      layer.add(
+        makeButton(this, 30 + w3 * 1.5, GAME_H - 84, w3 - 8, 56, "Her Order's\nSSRs", () => {
+          ssrs = defaultSSRs(ur);
+          draw();
+        }, { fontSize: 15 }).all,
+      );
+      layer.add(
+        makeButton(this, 30 + w3 * 2.5, GAME_H - 84, w3 - 8, 56, ready ? 'Raise it' : `Pick ${BOOSTED_SSRS - ssrs.length} more`, () => {
+          if (!customizeBanner(s, ur, ssrs)) return;
+          commit();
+          this.scene.restart();
+        }, { fontSize: 16, active: ready, disabled: !ready }).all,
+      );
+    };
+    draw();
+  }
+
   /** Every Sister this banner can give, by rarity, with her chance per pull. */
   private showPool() {
     const s = game.save;
@@ -235,7 +309,7 @@ export class RecruitScene extends Phaser.Scene {
     layer.add(this.add.text(GAME_W / 2, 60, 'EVERY SISTER ON THIS BANNER', text.display(22, PAL.amber)).setOrigin(0.5));
     layer.add(
       this.add
-        .text(GAME_W / 2, 84, `${banner.order} banner. Gold frames are boosted here. Chances are per pull, before pity. Hold a portrait for her stats.`, { ...text.body(14, PAL.muted), align: 'center', wordWrap: { width: GAME_W - 70 } })
+        .text(GAME_W / 2, 84, `${banner.limited !== undefined ? 'Limited' : 'Standard'} banner. Gold frames are boosted here. Chances are per pull, before pity. Hold a portrait for her stats.`, { ...text.body(14, PAL.muted), align: 'center', wordWrap: { width: GAME_W - 70 } })
         .setOrigin(0.5, 0),
     );
     const list = addScrollArea(this, 130, GAME_H - 110, { parent: layer, depth: 20 });
@@ -310,7 +384,7 @@ export class RecruitScene extends Phaser.Scene {
       .text(
         GAME_W / 2,
         590,
-        `A UR is the targeted Sister half the time,\nand always after a UR that strays.\nHalf of SSRs are the banner's boosted pair.\n×10 always includes an SR or better.\nThe ${PITY_LIMIT}th pull without an SSR or UR gives one.\nUR chance climbs after pull ${UR_SOFT}; pull ${UR_HARD} is a UR.\nUR and SSR pity carry across all banners.\nEach pull gives a Relic Shard of its Order\n(or Saint's Favor on the Limited banner);\n${SPARK} buy that banner's UR.\nDuplicates add a Vow rank (max 5), then pay Tithes.`,
+        `A UR is the targeted Sister half the time,\nand always after a UR that strays.\nHalf of SSRs are the banner's boosted pair.\nOn the standard banner you choose the UR\nand the two SSRs.\n×10 always includes an SR or better.\nThe ${PITY_LIMIT}th pull without an SSR or UR gives one.\nUR chance climbs after pull ${UR_SOFT}; pull ${UR_HARD} is a UR.\nUR and SSR pity carry across all banners.\nEach pull gives a Relic Shard of the target's Order\n(or Saint's Favor on the Limited banner);\n${SPARK} buy that banner's UR.\nDuplicates add a Vow rank (max 5), then pay Tithes.`,
         { ...style, fontSize: '16px', color: hex(PAL.steel), align: 'center', lineSpacing: 4 },
       )
       .setOrigin(0.5);
