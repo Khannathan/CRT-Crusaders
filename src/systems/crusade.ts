@@ -1,3 +1,4 @@
+import { boostBag, boostMult } from './boosts';
 import { roman } from './roman';
 import { activeHowl } from './hounds';
 import { symbolCombat } from './symbols';
@@ -732,6 +733,7 @@ export function finishRun(save: SaveData, run: RunState, outcome: RunResult['out
   } else if (outcome === 'defeat') {
     tithes = keepOnDefeat(tithes, run.banked?.tithes ?? 0);
   }
+  tithes = Math.round(tithes * boostMult('crusade'));
 
   for (const [id, o] of Object.entries(save.owned)) {
     if (!run.party.includes(id) && o.recovering) o.recovering -= 1;
@@ -746,6 +748,7 @@ export function finishRun(save: SaveData, run: RunState, outcome: RunResult['out
     const kept = outcome === 'defeat' ? keepOnDefeat(n, run.banked?.items[id] ?? 0) : n;
     if (kept) items[id] = kept;
   }
+  Object.assign(items, boostBag(items, 'crusade'));
   give(save, items);
   earn(save, gilt);
   save.tithes += tithes;

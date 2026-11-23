@@ -28,6 +28,8 @@ const BREATH = [0, 0, 1, 1, 2, 2, 2, 1, 1, 0];
 const BEAT_MS = 150;
 
 export const fullKey = (id: string) => `full-${id}`;
+/** Same key as fieldView's animKey: an animation sheet loaded by BootScene from src/assets/anim. */
+const sheetKey = (id: string, a: string) => `anim-${id}-${a}`;
 
 export class SisterSprite {
   readonly root: Phaser.GameObjects.Container;
@@ -43,9 +45,12 @@ export class SisterSprite {
   private active = false;
   dead = false;
 
+  /** Her animation sheet frames, shown in place of the still while one plays. */
+  private sheet?: Phaser.GameObjects.Sprite;
+
   constructor(
     private scene: Phaser.Scene,
-    id: string,
+    private id: string,
     x: number,
     y: number,
     /** Whole-number scales keep the pixels square; 1 = 128 x 192. */
@@ -80,6 +85,37 @@ export class SisterSprite {
     this.upper.y = (FOOT_PAD + BREATH[this.beat]) * this.s;
   }
 
+  /**
+   * Plays one of her animation sheets (attack, skill, litany...) over her still, when
+   * src/assets/anim/<id>_<anim>.png exists. Returns false when she has no such sheet.
+   */
+  private playSheet(a: string) {
+    const key = sheetKey(this.id, a);
+    if (!this.scene.textures.exists(key)) return false;
+    if (!this.scene.anims.exists(key)) {
+      this.scene.anims.create({ key, frames: this.scene.anims.generateFrameNumbers(key, { start: 0, end: 3 }), frameRate: 9, repeat: 0 });
+    }
+    if (!this.sheet) {
+      this.sheet = this.scene.add.sprite(0, FOOT_PAD * this.s, key, 0).setOrigin(0.5, 1).setScale(this.s).setVisible(false);
+      this.pose.addAt(this.sheet, this.pose.getIndex(this.upper));
+      this.sheet.on(Phaser.Animations.Events.ANIMATION_COMPLETE, () => this.stopSheet());
+      // The coloured halo follows her pose frame by frame
+      this.sheet.on(Phaser.Animations.Events.ANIMATION_UPDATE, (_a: unknown, frame: Phaser.Animations.AnimationFrame) => this.halo.setTexture(frame.textureKey, frame.textureFrame));
+    }
+    this.upper.setVisible(false);
+    this.legs.setVisible(false);
+    this.sheet.setVisible(true).play(key);
+    this.halo.setTexture(key, 0);
+    return true;
+  }
+
+  private stopSheet() {
+    this.sheet?.stop().setVisible(false);
+    this.halo.setTexture(fullKey(this.id));
+    this.upper.setVisible(true);
+    this.legs.setVisible(true);
+  }
+
   private kill(...targets: object[]) {
     for (const t of targets) this.scene.tweens.killTweensOf(t);
   }
@@ -98,6 +134,7 @@ export class SisterSprite {
   attack(dir = -1) {
     if (this.dead) return;
     this.kill(this.pose);
+    this.playSheet('attack');
     const s = this.s;
     this.pose.setPosition(0, 0).setScale(this.facing, 1).setAngle(0);
     this.scene.tweens.chain({
@@ -117,6 +154,7 @@ export class SisterSprite {
     this.kill(this.pose, this.halo);
     const s = this.s;
     this.pose.setPosition(0, 0).setScale(this.facing, 1).setAngle(0);
+    this.playSheet(big ? 'litany' : 'skill');
     this.halo.setTintFill(color).setAlpha(0).setScale(s * 1.04);
     this.scene.tweens.add({ targets: this.pose, y: (big ? -16 : -9) * s, duration: 160, yoyo: true, hold: big ? 420 : 220, ease: 'Quad.out' });
     this.scene.tweens.add({ targets: this.halo, alpha: big ? 0.9 : 0.65, scale: s * (big ? 1.16 : 1.1), duration: 200, yoyo: true, hold: big ? 380 : 180 });
@@ -149,6 +187,7 @@ export class SisterSprite {
   die(done?: () => void) {
     if (this.dead) return;
     this.dead = true;
+    this.stopSheet();
     this.setActiveOff();
     const s = this.s;
     const parts = [this.upper, this.legs];
@@ -237,6 +276,7 @@ export class SisterSprite {
   strike(nx: number, ny: number) {
     if (this.dead) return;
     this.kill(this.pose);
+    this.playSheet('attack');
     const s = this.s;
     const f = this.facing;
     this.pose.setPosition(0, 0).setScale(f, 1).setAngle(0);

@@ -5,6 +5,8 @@ import { ROMAN_RANK, unlocked } from '../systems/rank';
 import { makeButton } from './button';
 import { CURRENCY_BAR_H, addCurrencyBar } from './currencyBar';
 import { RITES, type RiteHome } from './rites';
+import { BOOST_INFO, DAY_FEAST, WEEK_BOOSTS, boostLines, boostPct, dayName, nextTurn } from '../systems/boosts';
+import { untilText } from './modeScreen';
 import { addScrollArea } from './scroll';
 import { TAB_BAR_H, addTabBar } from './tabBar';
 import { PAD, textWash, addBackdrop, addFrame, addHeading, addIcon, addScreenGlow, text } from './theme';
@@ -26,6 +28,12 @@ export function drawBoard(scene: Phaser.Scene, home: RiteHome, title: string, su
   if (resume) {
     makeButton(scene, GAME_W / 2, top + 34, GAME_W - PAD * 2, 64, resume.label, resume.go, { active: true, icon: 'blade', fontSize: 20 });
     top += 82;
+  }
+  if (home === 'board') {
+    // Today's blessings: what the weekly schedule boosts today; tap for the whole week.
+    const lines = boostLines();
+    makeButton(scene, GAME_W / 2, top + 26, GAME_W - PAD * 2, 52, `${dayName().toUpperCase()}: ${lines.join(' · ')}`, () => showWeek(scene), { fontSize: 14, icon: 'flame' });
+    top += 64;
   }
   const save = game.save;
   const bottom = GAME_H - TAB_BAR_H;
@@ -51,6 +59,12 @@ export function drawBoard(scene: Phaser.Scene, home: RiteHome, title: string, su
     const status = open ? r.status?.(save) : `Opens at Rank ${ROMAN_RANK(r.rank)}`;
     if (status) scene.add.text(left, y0 + CARD_H - 30, status.toUpperCase(), text.hud(12, open ? PAL.amber : PAL.steel)).setShadow(0, 1, '#000000', 3, false, true);
     if (open) scene.add.text(PAD + w - 22, cy, '›', text.display(40, PAL.amber)).setOrigin(1, 0.5);
+    const pct = r.boost ? boostPct(r.boost) : 0;
+    if (open && pct) {
+      const tag = scene.add.text(PAD + w - 32, y0 + 10, `+${pct}% TODAY`, text.hud(12, 0x1b121c)).setOrigin(1, 0);
+      scene.add.rectangle(tag.x - tag.width / 2, tag.y + tag.height / 2, tag.width + 14, tag.height + 8, PAL.amber);
+      scene.children.bringToTop(tag);
+    }
     if (open && r.ready?.(save)) {
       if (scene.textures.exists('ui-ready-dot')) scene.add.image(PAD + w - 16, y0 + 16, 'ui-ready-dot').setDisplaySize(16, 16);
       else scene.add.circle(PAD + w - 16, y0 + 16, 7, PAL.amber).setStrokeStyle(2, 0x1b121c);
@@ -65,3 +79,26 @@ export function drawBoard(scene: Phaser.Scene, home: RiteHome, title: string, su
 
 /** Where each board was scrolled to, kept across visits. */
 const scrollOf: Partial<Record<RiteHome, number>> = {};
+
+/** The whole week of blessings, today marked. */
+function showWeek(scene: Phaser.Scene) {
+  const layer = scene.add.container(0, 0).setDepth(40);
+  layer.add(scene.add.rectangle(GAME_W / 2, GAME_H / 2, GAME_W, GAME_H, 0x09060b, 0.95).setInteractive());
+  layer.add(addFrame(scene, GAME_W / 2, GAME_H / 2, GAME_W - 24, GAME_H - 40, { fill: 0x241925 }));
+  layer.add(scene.add.text(GAME_W / 2, 64, 'THE WEEK OF BLESSINGS', text.display(22, PAL.ivory)).setOrigin(0.5));
+  layer.add(scene.add.text(GAME_W / 2, 96, `The same every week. Today turns in ${untilText(nextTurn() - Date.now())}.`, text.body(16, PAL.muted)).setOrigin(0.5, 0));
+  const today = new Date().getDay();
+  let y = 136;
+  // Monday first, as the week reads.
+  [1, 2, 3, 4, 5, 6, 0].forEach((d) => {
+    const on = d === today;
+    const rows = WEEK_BOOSTS[d].map((b) => `+${Math.round(b.pct * 100)}% ${BOOST_INFO[b.kind].name}`);
+    const h = 30 + rows.length * 22;
+    layer.add(scene.add.rectangle(GAME_W / 2, y + h / 2, GAME_W - 64, h, on ? 0x3a2030 : 0x1b131d).setStrokeStyle(on ? 2 : 1, on ? PAL.amber : PAL.armorShadow));
+    const name = ['SUNDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY'][d];
+    layer.add(scene.add.text(46, y + 8, `${name} · ${DAY_FEAST[d].toUpperCase()}${on ? ' · TODAY' : ''}`, text.hud(12, on ? PAL.amber : PAL.steel)));
+    layer.add(scene.add.text(46, y + 26, rows.join('\n'), { ...text.body(16, on ? PAL.ivory : PAL.muted), lineSpacing: 2 }));
+    y += h + 8;
+  });
+  layer.add(makeButton(scene, GAME_W / 2, GAME_H - 72, 240, 60, 'Close', () => layer.destroy(), { fontSize: 19 }).all);
+}

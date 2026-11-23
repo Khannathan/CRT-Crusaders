@@ -68,10 +68,26 @@ const pickFrom = (rng: Rng, pool: CrusaderDef[]) => pool[Math.floor(rng() * pool
 /** Sisters of a rarity that any banner can give at random (limited Saints only come as a target). */
 const standardOf = (rarity: Rarity) => CRUSADERS.filter((c) => c.rarity === rarity && isStandard(c));
 
+/** Standard URs: the ones a standard banner can target. */
+export const standardURs = () => standardOf('UR');
+/** Standard SSRs: the ones a standard banner can boost. */
+export const standardSSRs = () => standardOf('SSR');
+/** How many SSRs a standard banner boosts. */
+export const BOOSTED_SSRS = 2;
+
+/** The two SSRs a standard banner boosts before the player picks: the target's Order's first two. */
+export const defaultSSRs = (urId: string) => {
+  const ur = CRUSADERS.find((c) => c.id === urId);
+  const mine = standardSSRs().filter((c) => c.order === ur?.order);
+  const rest = standardSSRs().filter((c) => c.order !== ur?.order);
+  return [...mine, ...rest].slice(0, BOOSTED_SSRS).map((c) => c.id);
+};
+
 /**
  * Points the saved banner at what is on offer now: a Limited banner from an
- * earlier window moves to this window's Saint; a missing or stale Order banner
- * falls back to that Order's (or the first Order's) UR.
+ * earlier window moves to this window's Saint; a standard banner keeps the
+ * player's picks while they are still standard Sisters, and falls back to a
+ * default UR or SSR pair for any that are not.
  */
 export function syncBanner(save: SaveData, now = Date.now()) {
   const b = save.banner;
@@ -80,16 +96,48 @@ export function syncBanner(save: SaveData, now = Date.now()) {
     if (b.limited !== w.index || b.target !== w.saint.id) save.banner = { order: w.saint.order, target: w.saint.id, limited: w.index };
     return save.banner!;
   }
-  const urOf = (order: string) => CRUSADERS.find((c) => c.order === order && c.rarity === 'UR' && isStandard(c));
-  if (!b || !urOf(b.order)) {
-    const first = CRUSADERS.find((c) => c.rarity === 'UR' && isStandard(c))!;
-    save.banner = { order: first.order, target: first.id };
-  } else if (b.target !== urOf(b.order)!.id) b.target = urOf(b.order)!.id;
-  return save.banner!;
+  const urs = standardURs();
+  // Older saves named an Order: start from its UR.
+  const ur = urs.find((c) => c.id === b?.target) ?? urs.find((c) => c.order === b?.order) ?? urs[0];
+  const ssrIds = new Set(standardSSRs().map((c) => c.id));
+  let ssrs = (b?.ssrs ?? []).filter((id, i, a) => ssrIds.has(id) && a.indexOf(id) === i);
+  if (ssrs.length !== BOOSTED_SSRS) ssrs = defaultSSRs(ur.id);
+  save.banner = { order: ur.order, target: ur.id, ssrs };
+  return save.banner;
+}
+
+/** The standard banner the player last set up (or the default one), without switching to it. */
+export function standardBanner(save: SaveData): { target: string; ssrs: string[] } {
+  const b = save.banner;
+  if (b && b.limited === undefined) return { target: b.target, ssrs: b.ssrs ?? defaultSSRs(b.target) };
+  const keep = save.standardPick;
+  return { target: keep?.target ?? standardURs()[0].id, ssrs: keep?.ssrs ?? defaultSSRs(keep?.target ?? standardURs()[0].id) };
+}
+
+/** Puts the standard banner up at the Altar, with the player's last picks. */
+export function chooseStandard(save: SaveData) {
+  const { target, ssrs } = standardBanner(save);
+  save.banner = { order: '', target, ssrs };
+  return syncBanner(save);
+}
+
+/**
+ * Sets the standard banner's rate-up: one standard UR and BOOSTED_SSRS
+ * standard SSRs. Returns false (and changes nothing) if a pick is not allowed.
+ * Pity, the UR guarantee and Relic Shards all carry over.
+ */
+export function customizeBanner(save: SaveData, urId: string, ssrIds: string[]): boolean {
+  const ur = standardURs().find((c) => c.id === urId);
+  const ok = new Set(standardSSRs().map((c) => c.id));
+  if (!ur || ssrIds.length !== BOOSTED_SSRS || new Set(ssrIds).size !== BOOSTED_SSRS || !ssrIds.every((id) => ok.has(id))) return false;
+  save.banner = { order: ur.order, target: ur.id, ssrs: [...ssrIds] };
+  save.standardPick = { target: ur.id, ssrs: [...ssrIds] };
+  return true;
 }
 
 /** Puts the Limited banner up at the Altar. */
 export function chooseLimited(save: SaveData, now = Date.now()) {
+  if (save.banner && save.banner.limited === undefined) save.standardPick = standardBanner(save);
   const w = limitedWindow(now);
   save.banner = { order: w.saint.order, target: w.saint.id, limited: w.index };
 }
@@ -98,15 +146,17 @@ export function chooseLimited(save: SaveData, now = Date.now()) {
 function targetOf(save: SaveData): CrusaderDef | undefined {
   const b = save.banner;
   if (!b) return undefined;
-  return CRUSADERS.find((c) => c.id === b.target && c.rarity === 'UR' && (b.limited !== undefined ? !!c.limited : c.order === b.order && isStandard(c)));
+  return CRUSADERS.find((c) => c.id === b.target && c.rarity === 'UR' && (b.limited !== undefined ? !!c.limited : isStandard(c)));
 }
 
-/** The SSRs this banner boosts: the Order's two, or the Limited window's pair. */
+/** The SSRs this banner boosts: the player's two picks, or the Limited window's pair. */
 export function boostedSSRs(save: SaveData, now = Date.now()): CrusaderDef[] {
   const b = save.banner;
   if (!b) return [];
   if (b.limited !== undefined) return limitedWindow(now).ssrs;
-  return standardOf('SSR').filter((c) => c.order === b.order);
+  const ids = b.ssrs ?? defaultSSRs(b.target);
+  const pool = standardOf('SSR');
+  return ids.map((id) => pool.find((c) => c.id === id)).filter((c): c is CrusaderDef => !!c);
 }
 
 /** Where a pull's Relic Shards (or Saint's Favor) go, and what spends them. */
@@ -199,7 +249,7 @@ export const PULL_LOG_MAX = 200;
 
 function logPull(save: SaveData, r: PullResult) {
   const log = (save.pullLog ??= []);
-  log.push({ id: r.crusader.id, at: Date.now(), banner: save.banner?.limited !== undefined ? 'Limited' : save.banner?.order, isNew: r.isNew || undefined });
+  log.push({ id: r.crusader.id, at: Date.now(), banner: save.banner?.limited !== undefined ? 'Limited' : save.banner ? 'Standard' : undefined, isNew: r.isNew || undefined });
   if (log.length > PULL_LOG_MAX) log.splice(0, log.length - PULL_LOG_MAX);
 }
 

@@ -1,3 +1,4 @@
+import { boostMult } from './boosts';
 import { CLASSES } from '../data/classes';
 import { CRUSADERS } from '../data/crusaders';
 import { ORDER_LIST } from '../data/orders';
@@ -146,6 +147,7 @@ export const bondStatsOf = (save: SaveData, id: string) => bondStats(bondLevel(b
 export function addBond(save: SaveData, ids: string[], xp: number): string[] {
   const up: string[] = [];
   if (xp <= 0) return up;
+  xp = Math.round(xp * boostMult('bond'));
   const all = bondsOf(save);
   for (const id of new Set(ids)) {
     if (!save.owned[id]) continue;

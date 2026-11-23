@@ -81,9 +81,12 @@ const splashUrl = (id: string) => SPLASH_URLS[`../assets/splash/${id}.png`] ?? S
 export const splashKey = (id: string) => `splash-${id}`;
 export const hasSplash = (id: string) => !!splashUrl(id);
 
-/** Smooth filtering: splash art is painted, and is drawn smaller than its pixels. */
-const smooth = (scene: Phaser.Scene, key: string) => {
-  if (scene.textures.exists(key)) scene.textures.get(key).setFilter(Phaser.Textures.FilterMode.LINEAR);
+/**
+ * Smooth filtering for painted splash art (.webp/.jpg), which is drawn smaller than
+ * its pixels. Pixel-art splashes (.png, stored at 2x their 256 x 384 grid) stay crisp.
+ */
+const smooth = (scene: Phaser.Scene, key: string, url: string) => {
+  if (scene.textures.exists(key) && !url.endsWith('.png')) scene.textures.get(key).setFilter(Phaser.Textures.FilterMode.LINEAR);
 };
 
 /** In a scene's preload(): queue her splash so it is ready in create(). */
@@ -91,7 +94,7 @@ export function queueSplash(scene: Phaser.Scene, id: string) {
   const key = splashKey(id);
   const url = splashUrl(id);
   if (!url || scene.textures.exists(key)) return;
-  scene.load.once(`filecomplete-image-${key}`, () => smooth(scene, key));
+  scene.load.once(`filecomplete-image-${key}`, () => smooth(scene, key, url));
   scene.load.image(key, url);
 }
 
@@ -105,7 +108,7 @@ export function loadSplash(scene: Phaser.Scene, id: string): Promise<string | un
     const done = () => {
       scene.load.off(`filecomplete-image-${key}`, done);
       scene.load.off(Phaser.Loader.Events.COMPLETE, done);
-      smooth(scene, key);
+      smooth(scene, key, url);
       resolve(scene.textures.exists(key) ? key : undefined);
     };
     scene.load.once(`filecomplete-image-${key}`, done);

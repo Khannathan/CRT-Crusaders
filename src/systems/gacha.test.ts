@@ -188,3 +188,71 @@ describe('bannerPool', () => {
     expect(pool.find((p) => p.c.id === 'CC-W040')!.chance).toBeCloseTo(0.0075, 6);
   });
 });
+
+describe('standard banner rate-up', () => {
+  it('the player picks any standard UR and two SSRs; pulls follow the picks', async () => {
+    const { customizeBanner, standardURs, standardSSRs, boostedSSRs, bannerPool, syncBanner } = await import('./gacha');
+    const save = newSave();
+    save.seals = 1e6;
+    save.freeTenUsed = true;
+    const ur = standardURs()[3];
+    const ssrs = standardSSRs().filter((c) => c.order !== ur.order).slice(0, 2);
+    expect(customizeBanner(save, ur.id, ssrs.map((c) => c.id))).toBe(true);
+    syncBanner(save);
+    expect(save.banner!.target).toBe(ur.id);
+    expect(save.banner!.order).toBe(ur.order);
+    expect(boostedSSRs(save).map((c) => c.id)).toEqual(ssrs.map((c) => c.id));
+    const pool = bannerPool(save);
+    expect(pool.reduce((a, p) => a + p.chance, 0)).toBeCloseTo(1, 6);
+    expect(pool.filter((p) => p.featured).map((p) => p.c.id).sort()).toEqual([ur.id, ...ssrs.map((c) => c.id)].sort());
+    const rng = seeded(21);
+    let up = 0;
+    let ssrN = 0;
+    for (let i = 0; i < 2000; i++)
+      for (const r of pull(save, 'ten', rng)) {
+        if (r.crusader.rarity !== 'SSR') continue;
+        ssrN++;
+        if (ssrs.some((c) => c.id === r.crusader.id)) up++;
+      }
+    // half of SSRs are the boosted pair, plus their share of the other half
+    expect(up / ssrN).toBeGreaterThan(0.5);
+    expect(up / ssrN).toBeLessThan(0.6);
+    // Relic Shards go to the target's Order
+    expect(shardsOf(save, ur.order)).toBe(20_000);
+  });
+
+  it('rejects limited Sisters, wrong rarities, and duplicate SSRs', async () => {
+    const { customizeBanner, standardURs, standardSSRs } = await import('./gacha');
+    const save = newSave();
+    const ur = standardURs()[0].id;
+    const [a, b] = standardSSRs().map((c) => c.id);
+    const saint = CRUSADERS.find((c) => c.limited)!.id;
+    expect(customizeBanner(save, saint, [a, b])).toBe(false);
+    expect(customizeBanner(save, a, [ur, b])).toBe(false);
+    expect(customizeBanner(save, ur, [a, a])).toBe(false);
+    expect(customizeBanner(save, ur, [a])).toBe(false);
+    expect(save.banner).toBeUndefined();
+  });
+
+  it('picks are kept while the Limited banner is up', async () => {
+    const { customizeBanner, chooseLimited, chooseStandard, standardURs, standardSSRs } = await import('./gacha');
+    const save = newSave();
+    const ur = standardURs()[5].id;
+    const ssrs = standardSSRs().slice(4, 6).map((c) => c.id);
+    customizeBanner(save, ur, ssrs);
+    chooseLimited(save);
+    expect(save.banner!.limited).toBeDefined();
+    chooseStandard(save);
+    expect(save.banner).toEqual(expect.objectContaining({ target: ur, ssrs }));
+  });
+
+  it('an old Order banner save moves to that Order UR with its SSR pair', async () => {
+    const { syncBanner, boostedSSRs } = await import('./gacha');
+    const save = newSave();
+    save.banner = { order: 'Candle Choir', target: 'nobody' };
+    syncBanner(save);
+    const ur = CRUSADERS.find((c) => c.order === 'Candle Choir' && c.rarity === 'UR' && !c.limited)!;
+    expect(save.banner!.target).toBe(ur.id);
+    expect(boostedSSRs(save).every((c) => c.order === 'Candle Choir')).toBe(true);
+  });
+});
