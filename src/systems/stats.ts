@@ -18,6 +18,8 @@ export interface Stats {
   spd: number;
   /** Chance for a hit to deal CRIT_MULT damage. */
   crit: number;
+  /** Extra critical damage on top of CRIT_MULT (gear). */
+  critDmg?: number;
 }
 
 /** Level-1 R-rarity stats per class. */
@@ -67,9 +69,10 @@ export function statsFor(c: CrusaderDef, owned: OwnedCrusader, gear: GearItem[] 
     hp: Math.round(base.hp * mult * (1 + g.hpPct)),
     atk: Math.round(base.atk * mult * (1 + g.atkPct)),
     armor: Math.round(base.armor * mult * (1 + g.armorPct)),
-    mres: Math.round(base.mres * mult * (1 + g.armorPct)),
+    mres: Math.round(base.mres * mult * (1 + g.mresPct)),
     spd: base.spd + gearSpeed(g.spd), // class speed plus gear (soft-capped), so turn order stays readable
     crit: Math.min(1, base.crit + g.crit),
+    critDmg: g.critDmg,
   };
 }
 
@@ -89,6 +92,7 @@ export function sisterStats(save: SaveData, c: CrusaderDef): Stats {
     mres: Math.round(st.mres * (1 + bd.mres) * k * (1 + r.armorPct)),
     spd: st.spd + r.spd,
     crit: Math.min(1, st.crit + r.crit + bd.crit),
+    critDmg: st.critDmg,
   };
 }
 

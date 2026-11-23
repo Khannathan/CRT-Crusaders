@@ -19,10 +19,10 @@ function play(b: Battle) {
 const party = CRUSADERS.filter((c) => c.rarity === 'R').slice(0, 4).map((c) => c.id);
 
 describe('Relic Trials', () => {
-  it('weekdays open one or two trials, weekends all seven', () => {
+  it('weekdays open one or two trials, weekends all of them', () => {
     expect(openTrials(new Date(2026, 10, 16).getTime()).map((t) => t.kind)).toEqual(['blade', 'ash']); // Monday
-    expect(openTrials(new Date(2026, 10, 18).getTime()).map((t) => t.kind)).toEqual(['rosary']); // Wednesday
-    expect(openTrials(new Date(2026, 10, 21).getTime()).length).toBe(7); // Saturday
+    expect(openTrials(new Date(2026, 10, 18).getTime()).map((t) => t.kind)).toEqual(['rosary', 'sabatons']); // Wednesday
+    expect(openTrials(new Date(2026, 10, 21).getTime()).length).toBe(9); // Saturday
   });
 
   it('a strong party wins with stars, pays, and three stars unlock sweep', () => {

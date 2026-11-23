@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
 import { GAME_H, GAME_W, PAL } from '../config';
 import { commit, game } from '../state/game';
-import { FAMILIES, REFINE, countOf, itemDef, itemIds, refine, type ItemId } from '../systems/items';
+import { FAMILIES, NO_REFINE, REFINE, countOf, itemDef, itemIds, refine, type ItemId } from '../systems/items';
 import { MAX_GEAR } from '../systems/gear';
 import { almsOf, giltOf } from '../systems/currency';
 import { makeButton } from '../ui/button';
@@ -61,21 +61,23 @@ export class InventoryScene extends Phaser.Scene {
     // Materials, one row per family
     let y = top + 54;
     const cell = bw / 3;
-    const rowH = 84;
+    // rows shrink a little so every family fits above the tab bar
+    const rowH = Math.min(84, Math.floor((GAME_H - TAB_BAR_H - 40 - y) / FAMILIES.length));
+    const cellH = rowH - 24;
     for (const f of FAMILIES) {
       this.add.text(PAD, y, f.name.toUpperCase(), text.hud(12, f.color));
       this.add.text(GAME_W - PAD, y, f.use, text.body(13, PAL.muted)).setOrigin(1, 0);
       itemIds(f.id).forEach((id, i) => {
         const cx = PAD + cell * i;
-        const cy = y + 50;
+        const cy = y + 18 + cellH / 2;
         const on = this.pick === id;
-        const hit = this.add.rectangle(cx + cell / 2, cy, cell - 6, 58, on ? 0x2a1d2b : 0x18111a).setStrokeStyle(1, on ? PAL.amber : PAL.armorShadow);
+        const hit = this.add.rectangle(cx + cell / 2, cy, cell - 6, cellH, on ? 0x2a1d2b : 0x18111a).setStrokeStyle(1, on ? PAL.amber : PAL.armorShadow);
         hit.setInteractive({ useHandCursor: true }).on('pointerup', () => this.scene.restart({ pick: id }));
-        drawItemIcon(this, cx + 30, cy, id, 50);
+        drawItemIcon(this, cx + 30, cy, id, Math.min(50, cellH - 6));
         const n = countOf(save, id);
         // name may take two lines; the count sits on the icon like a stack badge
         this.add.text(cx + 60, cy, itemDef(id).name, { ...text.body(16, n ? PAL.ivory : PAL.steel), wordWrap: { width: cell - 66 }, lineSpacing: -4 }).setOrigin(0, 0.5);
-        this.add.text(cx + 54, cy + 26, `×${n}`, { ...text.hud(14, n ? PAL.amber : PAL.steel), stroke: '#0b070c', strokeThickness: 4 }).setOrigin(1, 1);
+        this.add.text(cx + 54, cy + cellH / 2 - 2, `×${n}`, { ...text.hud(14, n ? PAL.amber : PAL.steel), stroke: '#0b070c', strokeThickness: 4 }).setOrigin(1, 1);
       });
       y += rowH;
     }
@@ -97,7 +99,9 @@ export class InventoryScene extends Phaser.Scene {
       const pick = this.pick;
       makeButton(this, GAME_W - PAD - 78, panelTop + 28, 136, 40, 'Where to get', () => showSources(this, pick), { fontSize: 15 });
       this.add.text(PAD + 16, panelTop + 56, d.flavor, { ...text.body(16, PAL.muted), fontStyle: 'italic', wordWrap: { width: bw - 32 } });
-      if (d.tier < 3) {
+      if (NO_REFINE.includes(d.family)) {
+        makeButton(this, GAME_W / 2, panelTop + panelH - 34, 280, 46, "Open the Saints' Armory", () => this.scene.start('Armory', { back: 'Inventory' }), { fontSize: 15, active: true });
+      } else if (d.tier < 3) {
         const next = itemDef(`${d.family}${d.tier + 1}` as ItemId);
         const most = Math.floor(n / REFINE);
         const by = panelTop + panelH - 34;

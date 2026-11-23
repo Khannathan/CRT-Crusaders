@@ -109,15 +109,17 @@ describe('the Forge', () => {
     expect(rerollBlock(save, item)).toBeTruthy();
   });
 
-  it('two and three pieces of a set add their bonuses', () => {
+  it('two and four pieces of a set add their bonuses', () => {
     const set = GEAR_SETS[0];
     const mk = (slot: GearItem['slot']): GearItem => ({ uid: slot, slot, rarity: 'R', name: '', level: 0, main: 'hpPct', subs: [], set: set.id });
     const one = gearBonus([mk('blade')]);
     const two = gearBonus([mk('blade'), mk('habit')]);
     const three = gearBonus([mk('blade'), mk('habit'), mk('rosary')]);
+    const four = gearBonus([mk('blade'), mk('habit'), mk('rosary'), mk('veil')]);
     expect(one.atkPct).toBe(0);
     expect(two.atkPct).toBeCloseTo(set.two.atkPct!);
-    expect(three.crit).toBeCloseTo(set.three.crit!);
+    expect(three.crit).toBe(0);
+    expect(four.crit).toBeCloseTo(set.four.crit!);
     expect(makeGear(Math.random, 'SR').set).toBeDefined();
   });
 });
@@ -126,5 +128,37 @@ describe('gear Speed soft cap', () => {
   it('counts in full up to 4, half after, and never past 8', async () => {
     const { gearSpeed } = await import('./stats');
     expect([0, 3, 4, 6, 12, 20].map(gearSpeed)).toEqual([0, 3, 4, 5, 8, 8]);
+  });
+});
+
+describe("the Saints' Armory", () => {
+  it('pulls never miss a UR past the pity count, and leave Fragments', async () => {
+    const { PITY, pullArmory, giftWrits, armoryOf } = await import('./armory');
+    const save = newSave();
+    save.gear = [];
+    expect(giftWrits(save)).toBe(true);
+    expect(giftWrits(save)).toBe(false);
+    save.gilt = 1e6;
+    const got: GearItem[] = [];
+    for (let i = 0; i < PITY / 10; i++) got.push(...pullArmory(save, 10, i === 0 ? 'writ' : 'gilt', () => 0.99));
+    expect(got.length).toBe(PITY);
+    expect(got.filter((g) => g.rarity === 'UR').length).toBe(1);
+    expect(got.every((g) => g.rarity !== 'R')).toBe(true);
+    expect(save.items?.armory2).toBe(0);
+    expect(save.items?.armory1).toBe(PITY);
+    expect(armoryOf(save).pity).toBe(0);
+  });
+
+  it('the featured set turns weekly; the forge pours a chosen UR', async () => {
+    const { featuredSet, forgeUR, FORGE_FRAGMENTS } = await import('./armory');
+    const mon = new Date(2026, 10, 16).getTime();
+    expect(featuredSet(mon).set.id).toBe(featuredSet(mon + 5 * 864e5).set.id);
+    expect(featuredSet(mon).set.id).not.toBe(featuredSet(mon + 7 * 864e5).set.id);
+    const save = newSave();
+    expect(forgeUR(save, 'veil', 'choir', 'fragments')).toBeUndefined();
+    save.items = { armory1: FORGE_FRAGMENTS };
+    const ur = forgeUR(save, 'veil', 'choir', 'fragments')!;
+    expect([ur.rarity, ur.slot, ur.set]).toEqual(['UR', 'veil', 'choir']);
+    expect(save.items.armory1).toBe(0);
   });
 });

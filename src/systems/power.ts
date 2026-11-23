@@ -46,7 +46,7 @@ export const CP = {
   risky: 0.8,
 };
 
-export const offenseOf = (s: Stats) => s.atk * (1 + Math.min(1, s.crit) * (CRIT_MULT - 1)) * (s.spd / CP.speedBase);
+export const offenseOf = (s: Stats) => s.atk * (1 + Math.min(1, s.crit) * (CRIT_MULT - 1 + (s.critDmg ?? 0))) * (s.spd / CP.speedBase);
 /** Armor and Magic Resist count half each: a foe hits with one or the other. */
 export const defenseOf = (s: Pick<Stats, 'hp' | 'armor'> & { mres?: number }) => s.hp * CP.hp + ((s.armor + (s.mres ?? s.armor)) / 2) * CP.armor;
 

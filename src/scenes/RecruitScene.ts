@@ -136,7 +136,7 @@ export class RecruitScene extends Phaser.Scene {
     // Pity counters: UR (shared by every banner) and SSR
     const toPity = PITY_LIMIT - s.pity;
     const urLeft = urPityLeft(s);
-    this.add.text(px + 16, y + 66, `UR within ${urLeft} · SSR+ within ${toPity}`, text.body(18, PAL.amber)).setFontStyle('600');
+    this.add.text(px + 16, y + 66, `UR within ${urLeft} · SSR+ within ${toPity} · x10: SR+`, text.body(18, PAL.amber)).setFontStyle('600');
     // Relic Shards for this Order: SPARK buys one of its URs
     const key = sparkKey(target);
     const shards = shardsOf(s, key);
@@ -151,8 +151,7 @@ export class RecruitScene extends Phaser.Scene {
     y += poolH + 8;
     const offerH = GAME_H - TAB_BAR_H - 10 - y;
     addPanel(this, GAME_W / 2 - pw / 2, y, pw, offerH);
-    this.add.text(px + 16, y + 8, '×10: an SR or better.', text.body(17, PAL.muted));
-
+    makeButton(this, GAME_W - PAD - 16 - 312, y + 20, 116, 36, 'UR Gear', () => this.scene.start('Armory', { back: 'Recruit' }), { fontSize: 15, icon: 'shield' });
     makeButton(this, GAME_W - PAD - 16 - 186, y + 20, 128, 36, 'All Sisters', () => this.showPool(), { fontSize: 15, icon: 'roster' });
     makeButton(this, GAME_W - PAD - 16 - 60, y + 20, 120, 36, 'View rates', () => this.showRates(), { fontSize: 15, icon: 'book' });
     const btnY = y + offerH - 50;

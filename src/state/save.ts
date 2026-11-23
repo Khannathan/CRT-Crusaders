@@ -5,6 +5,7 @@ import type { RankState } from '../systems/rank';
 import type { TowerState } from '../systems/tower';
 import type { InquisitionState } from '../systems/inquisition';
 import type { BondState } from '../systems/bonds';
+import type { ArmoryState } from '../systems/armory';
 import type { TrialState } from '../systems/trials';
 import type { TaskState } from '../systems/tasks';
 import type { VigilState } from '../systems/vigil';
@@ -73,6 +74,8 @@ export interface SaveData {
   /** Every piece of gear owned; `on` says who wears it. */
   gear?: GearItem[];
   nextGearId?: number;
+  /** The Saints' Armory: UR gear banner pity and pulls. */
+  armory?: ArmoryState;
   /** The idle Vigil: who keeps watch where, and since when. */
   vigil?: VigilState;
   /** Stigmata: raise a Sister's star tier. */

@@ -435,6 +435,7 @@ export function makeBattle(save: SaveData, run: RunState, encounter: string, rng
       vow: skillVow(save.owned[id]),
       skillLv: save.owned[id].skills,
       crit: st.crit + relics.reduce((n, r) => n + (r.critAdd ?? 0), 0) + (sym?.crit ?? 0),
+      critDmg: st.critDmg,
       symbol: sym,
       passive: c.passive,
       order: c.order,
