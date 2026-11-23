@@ -24,3 +24,20 @@ describe('Sister names', () => {
     }
   });
 });
+
+describe('Chapter log from before the rename', () => {
+  it('drops lines naming the old members and keeps the rest', async () => {
+    const { chapterOf } = await import('../systems/chapter');
+    const { newSave } = await import('../state/save');
+    const save = newSave();
+    const now = Date.now();
+    save.chapter = { name: 'x', seed: 1, xp: 0, marks: 0, simDay: '', day: '', strikes: 0, siege: { week: '', dealt: 0, by: {}, paid: [] }, bought: {}, log: [
+      { day: 'd', text: 'Perpetua the Penitent gave a reliquary to the Chapter.' },
+      { day: 'd', text: '9 Sisters struck the beast for 1,000. Scholastica of the Nails struck hardest (300).' },
+      { day: 'd', text: 'You took your vows before the Chapter.' },
+    ] };
+    const log = chapterOf(save, now)!.log.map((l) => l.text);
+    expect(log).toContain('You took your vows before the Chapter.');
+    expect(log.some((l) => /Perpetua the|Scholastica of/.test(l))).toBe(false);
+  });
+});

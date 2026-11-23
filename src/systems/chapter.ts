@@ -79,6 +79,8 @@ export interface ChapterState {
 
 // Latin first names no Sister uses (project files: names/latin-name-library.md), so a Chapter member is never mistaken for one.
 const FIRST = ['Agnes', 'Annia', 'Cocceia', 'Crescentia', 'Cyrilla', 'Domnina', 'Euphemia', 'Fannia', 'Galeria', 'Jucunda', 'Margarita', 'Melania', 'Nigrina', 'Ovinia', 'Plancia', 'Pomponia', 'Popillia', 'Prisca', 'Roscia', 'Salvia', 'Scribonia', 'Sempronia'];
+/** The members' first names before the Latin rename (2026-11-23), for cleaning old logs. */
+const OLD_MEMBER_LINE = new RegExp(`\\b(${['Agathe', 'Odile', 'Maren', 'Ysolde', 'Benedetta', 'Clothilde', 'Ilse', 'Perpetua', 'Sabine', 'Ottilie', 'Hroswitha', 'Lucia', 'Ermengarde', 'Felicitas', 'Gisela', 'Radegund', 'Walburga', 'Scholastica', 'Brunhild', 'Theodora', 'Cunegonde', 'Adelais'].join('|')}) (the |of |Ash|Lamp|Bell|Grave|Thorn|Candle)`);
 const EPITHET = ['the Penitent', 'of the Nails', 'Ashhand', 'the Unbowed', 'Lampwright', 'of Seven Sorrows', 'the Quiet', 'Bellrope', 'the Scourged', 'Gravewarden', 'of the Last Psalm', 'Thornveil', 'the Unshriven', 'Candlewick'];
 const TITLES = ['Prioress', 'Subprioress', 'Cellaress', 'Sacristan', 'Novice Mistress', 'Sister', 'Sister', 'Sister', 'Sister', 'Sister', 'Sister', 'Novice', 'Novice', 'Novice'];
 const CHAPTER_NAMES = ['Chapter of the Weeping Nail', 'Chapter of the Ninth Bell', 'Chapter of Ash and Vigil', 'Chapter of the Drowned Lamp', 'Chapter of the Iron Psalter'];
@@ -241,6 +243,9 @@ function hashDay(day: string) {
 export function chapterOf(save: SaveData, now = Date.now()): ChapterState | undefined {
   const c = save.chapter;
   if (!c) return undefined;
+  // Saves from before the Latin rename: drop log lines naming the old members
+  // (some of those names, like Perpetua, now belong to Sisters).
+  c.log = c.log.filter((l) => !OLD_MEMBER_LINE.test(l.text));
   const today = dayKey(now);
   if (c.simDay === today) return c;
   // Walk forward a day at a time from the last simulated day.
