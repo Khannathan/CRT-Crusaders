@@ -16,6 +16,7 @@ import type { CrusaderDef } from '../data/types';
 import { TAB_BAR_H, addTabBar } from '../ui/tabBar';
 import { PAD, addBackdrop, addBadge, addFrame, addPanel, addScreenGlow, fade, text } from '../ui/theme';
 import { holdForCard, justHeld } from '../ui/sisterCard';
+import { cardGridBottom, cardSlot, drawRosterCard } from '../ui/rosterCard';
 import { addScrollArea } from '../ui/scroll';
 import { makePlaceholderPortrait } from '../ui/placeholderPortrait';
 import { settleTaps } from '../ui/modeScreen';
@@ -284,31 +285,25 @@ export class RecruitScene extends Phaser.Scene {
           .setOrigin(0.5, 0),
       );
       const list = addScrollArea(this, 160, GAME_H - 130, { parent: layer, depth: 20 });
-      const cols = 5;
-      const cell = (GAME_W - 60) / cols;
       let y = 170;
+      // The Roster's cards, at the Roster's size; chosen ones wear a gold border and UP.
       const grid = (title: string, pool: (typeof CRUSADERS)[number][], picked: (id: string) => boolean, onTap: (id: string) => void) => {
-        list.content.add(this.add.text(36, y, title, text.hud(13, PAL.amber)));
+        list.content.add(this.add.text(PAD, y, title, text.hud(13, PAL.amber)));
         y += 26;
         pool.forEach((c, i) => {
-          const x = 30 + cell / 2 + (i % cols) * cell;
-          const cy = y + Math.floor(i / cols) * 122 + 40;
+          const { left, top, x } = cardSlot(i, y);
           const on = picked(c.id);
           makePlaceholderPortrait(this, c);
-          const frame = this.add.rectangle(x, cy, 80, 80, 0x170f1b).setStrokeStyle(on ? 4 : 1, on ? PAL.amber : RARITY_COLOR[c.rarity]);
-          const img = this.add.image(x, cy, portraitKey(c.id)).setDisplaySize(72, 72).setAlpha(on ? 1 : 0.7);
-          holdForCard(this, img, c.id);
-          list.tap(img, () => {
+          const card = drawRosterCard(this, left, top, c, s, { reveal: true, picked: on, note: s.owned[c.id] ? 'OWNED' : undefined, noteColor: PAL.steel });
+          holdForCard(this, card.hit, c.id);
+          list.tap(card.hit, () => {
             if (justHeld()) return;
             onTap(c.id);
           });
-          const sig = this.add.image(x + 30, cy - 30, sigilKey(ORDERS[c.order].id)).setDisplaySize(22, 22);
-          const name = this.add.text(x, cy + 44, c.name.split(' ')[0], text.body(13, on ? PAL.amber : PAL.ivory)).setOrigin(0.5, 0);
-          list.content.add([frame, img, sig, name]);
-          if (on) list.content.add([...addBadge(this, x - 38, cy - 38, 'UP', PAL.amber, 10)]);
-          if (s.owned[c.id]) list.content.add(this.add.text(x, cy + 62, 'OWNED', text.hud(10, PAL.steel)).setOrigin(0.5, 0));
+          list.content.add(card.parts);
+          if (on) list.content.add([...addBadge(this, x - 22, top + 6, 'UP', PAL.amber, 12)]);
         });
-        y += Math.ceil(pool.length / cols) * 122 + 16;
+        y = cardGridBottom(pool.length, y) + 12;
       };
       grid('TARGET UR · PICK 1', standardURs(), (id) => id === ur, (id) => {
         ur = id;
