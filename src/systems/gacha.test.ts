@@ -1,3 +1,4 @@
+import { weekKey } from './tasks';
 import { describe, expect, it } from 'vitest';
 import { newSave } from '../state/save';
 import { CRUSADERS } from '../data/crusaders';
@@ -31,6 +32,7 @@ describe('gacha', () => {
   it('first 10-pull is free, later ones cost 10 Seals', () => {
     const save = newSave();
     save.seals = 10;
+    save.discountWeek = weekKey(Date.now()); // this week's discount already used (see packs.test.ts)
     expect(pull(save, 'ten', seeded(2))).toHaveLength(10);
     expect(save.seals).toBe(10);
     expect(pull(save, 'ten', seeded(3))).toHaveLength(10);

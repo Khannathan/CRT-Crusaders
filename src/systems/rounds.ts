@@ -13,6 +13,7 @@ import { claimGifts, giftsWaiting, unlocked } from './rank';
 import { claimMark, claimable, type Period } from './tasks';
 import { TIERS, bestStars, entriesLeft, openTrials, spoilsText, sweep, type TrialKind } from './trials';
 import { claimVigil, ensureVigil, fastReward, vigilHours } from './vigil';
+import { blessingReady, claimBlessing } from './packs';
 
 /**
  * Morning Rounds: one tap does every daily chore that needs no choice from
@@ -44,6 +45,7 @@ export function roundsReady(save: SaveData, now = Date.now()) {
     (matinsReady(save, now) && !needsVowPick(save)) ||
     claimable(save, 'daily', now).length + claimable(save, 'weekly', now).length > 0 ||
     giftsWaiting(save).length > 0 ||
+    blessingReady(save, now) ||
     anyBondRewards(save) ||
     (save.errands?.active ?? []).some((a) => isDone(a, now)) ||
     sweepableTrial(save, now) !== undefined ||
@@ -97,6 +99,7 @@ export function morningRounds(save: SaveData, now = Date.now(), rng: Rng = Math.
   }
 
   // Rank gifts and Penance marks.
+  if (claimBlessing(save, now)) r.done.push("The Abbess's Blessing claimed");
   if (giftsWaiting(save).length) {
     claimGifts(save);
     r.done.push('Rank gifts claimed');

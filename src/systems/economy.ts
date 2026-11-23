@@ -13,6 +13,8 @@ import { CLEAR_CHEST } from './raid';
 import { BOARD_SIZE, DURATIONS, ERRAND_SLOTS, errandReward } from './errands';
 import { ALMONRY_POOL, ALMONRY_SLOTS, GILT_OFFERS, TITHE_OFFERS } from './shop';
 import { PILGRIMAGE_BONUS, PILGRIMAGE_CLEARS } from './crusade';
+import { BLESSING } from './packs';
+import { COST_TEN, DISCOUNT_TEN } from './gacha';
 
 /**
  * The Seal ledger: how many Seals (one Seal = one pull) a steady free player
@@ -21,7 +23,8 @@ import { PILGRIMAGE_BONUS, PILGRIMAGE_CLEARS } from './crusade';
  *
  * The player: logs in daily, clears every daily and weekly duty, claims the
  * Vigil twice a day, keeps all errand slots on 20-hour errands, and spends
- * Gilt and Alms on Seals first. Everything here is per week.
+ * Gilt and Alms on the Blessing and Seals first. Everything here is per week.
+ * One-time Rank packs and the welcome-back gift are left out (not weekly).
  */
 export interface Player {
   /** Highest Pilgrim's Road stage cleared. */
@@ -73,6 +76,10 @@ export function sealLedger(p: Player = STEADY): Line[] {
     { source: 'Raid clear chest', seals: CLEAR_CHEST.seals, gilt: CLEAR_CHEST.gilt },
     { source: 'Weekly Pilgrimage (blessed crypt clears)', seals: 7 * PILGRIMAGE_CLEARS * PILGRIMAGE_BONUS.seals },
     { source: 'Shop: Tithe Exchange', seals: sum(TITHE_OFFERS, (o) => (o.goods.seals ?? 0) * o.limit) },
+    // The Abbess's Blessing, kept up all month: its price is Gilt spent, its daily Gilt comes back.
+    { source: "The Abbess's Blessing", seals: perWeek((BLESSING.now.seals ?? 0) + BLESSING.days * (BLESSING.daily.seals ?? 0), BLESSING.days), gilt: perWeek(BLESSING.days * BLESSING.dailyGilt - BLESSING.price, BLESSING.days) },
+    // The weekly discounted 10-pull saves its difference in Seals.
+    { source: 'Weekly discounted 10-pull', seals: COST_TEN - DISCOUNT_TEN },
     { source: 'Shop: Almonry (when it stocks Seals)', seals: 7 * (ALMONRY_SLOTS / ALMONRY_POOL.length) * sum(ALMONRY_POOL, (o) => o.goods.seals ?? 0) },
   ];
   // Gilt from the lines above plus other sources, spent on single Seals at the Gilt counter.

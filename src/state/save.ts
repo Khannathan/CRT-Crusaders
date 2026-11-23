@@ -115,6 +115,12 @@ export interface SaveData {
   novitiate?: import('../systems/novitiate').NovitiateState;
   /** The Pilgrim's Pass for this season (systems/pass.ts). */
   pass?: import('../systems/pass').PassState;
+  /** Rank packs and the Abbess's Blessing (systems/packs.ts). */
+  packs?: import('../systems/packs').PacksState;
+  /** Welcome back: last seen and the Homecoming week (systems/welcome.ts). */
+  welcome?: import('../systems/welcome').WelcomeState;
+  /** Week key of the week's discounted 10-pull, once used (systems/gacha.ts). */
+  discountWeek?: string;
   /** Missives: letters with rewards and news (systems/missives.ts). */
   missives?: import('../systems/missives').MissivesState;
   /** The weekly Ordeals league (systems/ordeals.ts). */
