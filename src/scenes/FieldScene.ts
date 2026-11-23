@@ -485,7 +485,7 @@ export class FieldScene extends Phaser.Scene {
     if (settings.autoBattle) runFieldInBackground(this.field, this.vigilMax);
     else {
       const run = current.challenge ? undefined : current.run;
-      current.paused = { battle: this.field.battle, field: this.field, actorUid: '', vigilMax: this.vigilMax, run, floor: run?.floor, at: run?.at, challenge: current.challenge };
+      current.paused = { battle: this.field.battle, field: this.field, vigilMax: this.vigilMax, run, floor: run?.floor, at: run?.at, challenge: current.challenge };
     }
     this.tweens.timeScale = 1;
     this.time.timeScale = 1;
