@@ -1072,7 +1072,7 @@ K('CC-W175', (own) => ({
     st('veilblade', 'hamstring'),
     own({ name: 'Funeral Knife', desc: 'LITANY: a savage blow on any enemy, double damage under 30% HP.', target: 'enemy', mult: 1.9, execute: 1, rite: true }),
   ],
-  shines: ['Choirmaster Hunt', 'Back-rank healers in deeper crypts', 'Bell Tower boss floors'],
+  shines: ['Font Leviathan Hunt', 'Back-rank healers in deeper crypts', 'Bell Tower boss floors'],
 }));
 
 K('CC-W055', (own) => ({

@@ -56,6 +56,17 @@ export const EXTRA_SEC = 0.15;
 /** Seconds a unit stands still after acting (the swing), and after a Litany. */
 export const SWING_SEC = 0.45;
 export const LITANY_SEC = 0.9;
+/**
+ * Litany Chains: a Litany cast within CHAIN_SEC of the last one links to it.
+ * Each link hits harder (CHAIN_BONUS by link number) and kindles CHAIN_ZEAL in
+ * every other Sister, so a player who holds full Litanies and fires them
+ * together beats one who fires each the moment it is ready.
+ */
+export const CHAIN_SEC = 3.5;
+export const CHAIN_BONUS = [0, 0, 0.15, 0.3, 0.5];
+export const CHAIN_ZEAL = 8;
+export const chainBonus = (link: number) => CHAIN_BONUS[Math.min(link, CHAIN_BONUS.length - 1)] ?? 0;
+
 /** Field size the reach and speed numbers are tuned for. */
 const BASE_W = 540;
 
@@ -147,6 +158,8 @@ export class FieldBattle {
   private engaged = false;
   private done = false;
   private k: number;
+  /** Litany Chain: links so far, when the last link was cast, and the longest this fight. */
+  chain = { count: 0, at: -99, best: 0 };
   /** The foe the player marked: every Sister who can hit it turns on it. */
   focusUid?: string;
   private rng: () => number;
@@ -436,7 +449,17 @@ export class FieldBattle {
     const charge = u.side === 'enemy' && !!skill.windup && !u.status.charging;
     if (target && target !== u) me.face = this.bodies.get(target.uid)!.x >= me.x ? 1 : -1;
     this.engaged = true;
+    const litany = !!skill.rite && u.side === 'party';
+    const link = litany ? this.chainLeft() > 0 ? this.chain.count + 1 : 1 : 0;
+    if (litany) b.chainMult = 1 + chainBonus(link);
     const events = b.act(u, skill, target && target.hp > 0 ? target : undefined);
+    b.chainMult = 1;
+    if (litany) {
+      this.chain.count = link;
+      this.chain.at = this.time;
+      this.chain.best = Math.max(this.chain.best, link);
+      if (link >= 2) events.push({ type: 'text', text: `CHAIN x${link}!` }, ...b.kindle(CHAIN_ZEAL, u));
+    }
     me.lock = skill.rite ? LITANY_SEC : SWING_SEC;
     // A tapped Litany is a free action: her own clock carries on.
     if (!free) {
@@ -636,6 +659,11 @@ export class FieldBattle {
     if (me.entering && me.x >= m && me.x <= this.opts.w - m) me.entering = false;
     if (!me.entering) me.x = Math.max(m, Math.min(this.opts.w - m, me.x));
     me.y = Math.min(this.opts.h - 6, Math.max(Math.max(36 * this.k, this.opts.h * 0.14), me.y));
+  }
+
+  /** Seconds left to link the next Litany into the Chain (0 = no Chain open). */
+  chainLeft() {
+    return this.chain.count > 0 ? Math.max(0, CHAIN_SEC - (this.time - this.chain.at)) : 0;
   }
 
   /** True when a Sister's Litany can be cast now (manual mode). */

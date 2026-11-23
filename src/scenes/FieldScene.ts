@@ -8,7 +8,7 @@ import { current } from '../state/run';
 import { nextSpeed, saveSettings, settings } from '../state/settings';
 import { CHAPTERS, STAGES_PER_CHAPTER, nextStage, stageBattle, stageDef } from '../systems/campaign';
 import { ZEAL_MAX, skillsFor, type Battle, type Unit } from '../systems/combat';
-import { FieldBattle, screenField } from '../systems/field';
+import { CHAIN_SEC, FieldBattle, chainBonus, screenField } from '../systems/field';
 import { runFieldInBackground } from '../ui/bgFight';
 import { keywordLine } from '../systems/keywords';
 import { settleBattle } from '../systems/settle';
@@ -74,6 +74,8 @@ export class FieldScene extends Phaser.Scene {
   private toggles: Phaser.GameObjects.GameObject[] = [];
   private cardUntil = 0;
   private kwText!: Phaser.GameObjects.Text;
+  /** Litany Chain readout above the cards: count, draining window bar, last count shown. */
+  private chainUi?: { text: Phaser.GameObjects.Text; bar: Phaser.GameObjects.Rectangle; w: number; shown: number };
   /** Before the fight (formation swaps), the fight, or paused. */
   private phase: 'deploy' | 'fight' = 'deploy';
   private paused = false;
@@ -185,6 +187,7 @@ export class FieldScene extends Phaser.Scene {
     });
 
     this.drawCards();
+    this.drawChain();
     this.applySpeed();
     if (this.phase === 'deploy') this.drawDeploy();
     else this.log('Back into the fight!');
@@ -411,7 +414,43 @@ export class FieldScene extends Phaser.Scene {
     });
   }
 
+  // ---------- Litany Chain ----------
+
+  private drawChain() {
+    const w = 170;
+    const y = CARD_Y - 126;
+    const text_ = this.add
+      .text(GAME_W - 14, y, '', { ...text.hud(16, 0xfff1d6), stroke: '#000000', strokeThickness: 5, align: 'right' })
+      .setOrigin(1, 0.5)
+      .setDepth(41)
+      .setAlpha(0);
+    const bar = this.add.rectangle(GAME_W - 14 - w, y + 16, 0, 4, PAL.amber).setOrigin(0, 0.5).setDepth(41);
+    this.chainUi = { text: text_, bar, w, shown: 0 };
+  }
+
+  private refreshChain() {
+    const c = this.chainUi;
+    if (!c) return;
+    const left = this.field.chainLeft();
+    const n = left > 0 ? this.field.chain.count : 0;
+    c.bar.setSize((c.w * left) / CHAIN_SEC, 4);
+    if (n === c.shown) return;
+    c.shown = n;
+    this.tweens.killTweensOf(c.text);
+    if (!n) {
+      this.tweens.add({ targets: c.text, alpha: 0, duration: 300 });
+      return;
+    }
+    const next = Math.round(chainBonus(n + 1) * 100);
+    c.text.setText(n >= 2 ? `CHAIN x${n}!  NEXT +${next}%` : `CHAIN OPEN · NEXT +${next}%`).setAlpha(1).setScale(n >= 2 ? 1.35 : 1);
+    if (n >= 2) {
+      this.tweens.add({ targets: c.text, scale: 1, duration: 260, ease: 'Back.easeOut' });
+      shake(this, 'crit');
+    }
+  }
+
   private refreshCards() {
+    this.refreshChain();
     for (const c of this.cards) {
       const u = c.u;
       const alive = u.hp > 0;
@@ -420,6 +459,9 @@ export class FieldScene extends Phaser.Scene {
       c.img.setTint(alive ? 0xffffff : 0x333333);
       const ready = alive && this.field.litanyReady(u);
       c.ready.setVisible(ready);
+      // While a Chain is open, a ready card says what linking it is worth.
+      const link = this.field.chainLeft() > 0 ? Math.round(chainBonus(this.field.chain.count + 1) * 100) : 0;
+      if (ready) c.ready.setText(link ? `LINK +${link}%` : (skillsFor(u).find((s) => s.rite)?.name ?? '').toUpperCase());
       c.zeal.setFillStyle(ready ? 0xfff1d6 : PAL.amber);
       if (ready && !c.wasReady) {
         c.frame.setStrokeStyle(3, PAL.amber);

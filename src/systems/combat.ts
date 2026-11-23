@@ -285,6 +285,8 @@ export class Battle {
   log: string[] = [];
   private rng: Rng;
   private summons = 0;
+  /** Litany Chain bonus on the Litany being cast now (1 = none); set by the field. */
+  chainMult = 1;
   /** True while a riposte resolves, so ripostes never chain. */
   private countering = false;
   /** Per Sister (uid): fraction toward the next wound Zeal, and wound Zeal taken this round. */
@@ -371,15 +373,16 @@ export class Battle {
     const m = this.mods;
     const fallen = this.units.filter((u) => u.side === 'party' && u.hp <= 0).length;
     let f = (1 + fallen * m.fallenAtk + (actor.hp < actor.maxHp / 2 ? m.lowHpAtk : 0)) * (actor.symbol?.mult ?? 1);
-    if (skill.rite) f *= (1 + m.riteMult) * (1 + (actor.symbol?.rite ?? 0));
+    if (skill.rite) f *= (1 + m.riteMult) * (1 + (actor.symbol?.rite ?? 0)) * this.chainMult;
     return f;
   }
 
   /** Holy Symbol: +10% at +5, a Confessor's +20% at +10, and the Rite bonus at +15. */
   private symbolHeal(actor: Unit, skill: SkillDef) {
+    const chain = skill.rite && actor.side === 'party' ? this.chainMult : 1;
     const sy = actor.symbol;
-    if (!sy) return 1;
-    return sy.mult * sy.heal * (skill.rite ? 1 + sy.rite : 1);
+    if (!sy) return chain;
+    return sy.mult * sy.heal * (skill.rite ? 1 + sy.rite : 1) * chain;
   }
 
   private detonateOf(actor: Unit) {
@@ -2203,6 +2206,13 @@ export class Battle {
     st.empower = st.ward = st.haste = undefined;
     st.shield = 0;
     events.push({ type: 'status', uid: t.uid, label: 'Stripped' });
+  }
+
+  /** A Litany Chain grows: every other living Sister gains a little Zeal. */
+  kindle(n: number, caster: Unit): BattleEvent[] {
+    const events: BattleEvent[] = [];
+    for (const u of this.alive('party')) if (u !== caster) this.addZeal(n, events, 'chain', u);
+    return events;
   }
 
   /** Changes Zeal for one Sister, or (no `to`) for every living Sister. */
