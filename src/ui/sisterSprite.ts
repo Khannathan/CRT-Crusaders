@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import { pixelShadow, rimKey } from './pixelFx';
 
 /**
  * A Sister's full-body pixel figure, brought to life with sprite-style motion
@@ -56,10 +57,12 @@ export class SisterSprite {
     /** Whole-number scales keep the pixels square; 1 = 128 x 192. */
     private s = 1,
     ringColor = 0x8a7a66,
+    /** A 1-px outline baked round her (the battle screen's gold team rim). */
+    private rim?: number,
   ) {
-    const key = fullKey(id);
+    const key = this.still();
     this.ringColor = ringColor;
-    const shadow = scene.add.ellipse(0, 0, 80 * s, 14 * s, 0x000000, 0.55);
+    const shadow = rim !== undefined ? pixelShadow(scene, 80 * s) : scene.add.ellipse(0, 0, 80 * s, 14 * s, 0x000000, 0.55);
     this.ring = scene.add.ellipse(0, 0, 100 * s, 22 * s).setStrokeStyle(2 * s, ringColor, 0.55);
     const img = () => scene.add.image(0, FOOT_PAD * s, key).setOrigin(0.5, 1).setScale(s);
     this.halo = img().setTintFill(0xffffff).setBlendMode(Phaser.BlendModes.ADD).setAlpha(0).setScale(s * 1.06);
@@ -72,6 +75,11 @@ export class SisterSprite {
     this.beat = Phaser.Math.Between(0, BREATH.length - 1);
     this.breath = scene.time.addEvent({ delay: BEAT_MS + Phaser.Math.Between(-15, 25), loop: true, callback: () => this.breathe() });
     this.root.once(Phaser.GameObjects.Events.DESTROY, () => this.breath?.remove());
+  }
+
+  /** Her still's texture (rimmed when she has a rim). */
+  private still() {
+    return this.rim !== undefined ? rimKey(this.scene, fullKey(this.id), this.rim) : fullKey(this.id);
   }
 
   /** Height of the figure on screen, feet to crown. */
@@ -90,8 +98,9 @@ export class SisterSprite {
    * src/assets/anim/<id>_<anim>.png exists. Returns false when she has no such sheet.
    */
   private playSheet(a: string) {
-    const key = sheetKey(this.id, a);
-    if (!this.scene.textures.exists(key)) return false;
+    const raw = sheetKey(this.id, a);
+    if (!this.scene.textures.exists(raw)) return false;
+    const key = this.rim !== undefined ? rimKey(this.scene, raw, this.rim) : raw;
     if (!this.scene.anims.exists(key)) {
       this.scene.anims.create({ key, frames: this.scene.anims.generateFrameNumbers(key, { start: 0, end: 3 }), frameRate: 9, repeat: 0 });
     }
@@ -111,7 +120,7 @@ export class SisterSprite {
 
   private stopSheet() {
     this.sheet?.stop().setVisible(false);
-    this.halo.setTexture(fullKey(this.id));
+    this.halo.setTexture(this.still());
     this.upper.setVisible(true);
     this.legs.setVisible(true);
   }

@@ -95,6 +95,8 @@ export interface CampaignState {
   fast?: FastState;
   /** The Vigil marching on by itself (march.ts). */
   march?: MarchState;
+  /** Candles lit per stage, a bitmask of the three (systems/candles.ts). */
+  candles?: Record<number, number>;
   /** The Penitent and Damned roads (systems/hardRoad.ts). */
   hard?: Partial<Record<'penitent' | 'damned', { best: number; unbroken: number[] }>>;
 }

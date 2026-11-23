@@ -1,3 +1,5 @@
+import type { CandleResult } from '../systems/candles';
+import type { StageReward } from '../systems/campaign';
 import type { FieldBattle } from '../systems/field';
 import type { Battle } from '../systems/combat';
 import type { RunState } from '../systems/crusade';
@@ -12,7 +14,21 @@ export interface Challenge {
   /** Shown as the battle's opening line. */
   label: string;
   make: (rng: Rng) => Battle;
-  finish: (outcome: 'victory' | 'defeat', battle: Battle) => { scene: string; data?: object; /** Closing line, in place of the default. */ line?: string };
+  finish: (outcome: 'victory' | 'defeat', battle: Battle) => { scene: string; data?: object; /** Closing line, in place of the default. */ line?: string; /** A won stage: shown as the battle screen's win card. */ win?: WinCard };
+}
+
+/** What a won stage's win card shows (FieldScene.winCard). */
+export interface WinCard {
+  /** Stage label, e.g. "2-5", and its name. */
+  stage: string;
+  name?: string;
+  candles?: CandleResult;
+  /** First-clear spoils (and a chapter chest). */
+  reward?: StageReward;
+  chest?: StageReward;
+  /** Stage numbers for the Again and Onward buttons. */
+  again?: number;
+  onward?: number;
 }
 
 /**
