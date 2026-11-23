@@ -832,6 +832,16 @@ export class RosterScene extends Phaser.Scene {
       layer.add([name, t, d]);
       y += 56 + d.height;
     }
+    // Where she shines: hunt entries are checked against the niche sim.
+    const shines = KITS[c.id]?.shines;
+    if (shines?.length) {
+      y += 14;
+      layer.add(this.add.rectangle(GAME_W / 2, y, width, 1, PAL.armorShadow));
+      layer.add(this.add.text(left, y + 12, 'SHINES IN', text.hud(11, PAL.steel)));
+      const d = this.add.text(left, y + 30, shines.map((s) => `• ${s}`).join('\n'), { ...text.body(15, PAL.ivory), wordWrap: { width }, lineSpacing: 4 });
+      layer.add(d);
+      y += 30 + d.height;
+    }
     return y + 16;
   }
 

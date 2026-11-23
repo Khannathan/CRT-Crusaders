@@ -6,7 +6,7 @@ import { howlShort } from './hounds';
 import type { Rng } from './gacha';
 import * as KW from './keywords';
 import { ORDER_KW, freshKeywords, type PartyKeywords } from './keywords';
-import { KITS, type Seal, type SealKind, type Sig } from '../data/kits';
+import { KITS, exaltSig, type Seal, type SealKind, type Sig } from '../data/kits';
 
 export type Side = 'party' | 'enemy';
 
@@ -328,7 +328,7 @@ export class Battle {
     for (const u of party) {
       const k = KITS[u.ref];
       if (k) {
-        u.sig ??= k.sig;
+        u.sig ??= (u.symbol?.exalt && exaltSig(k.sig, u.symbol.exalt)) || k.sig;
         u.seal ??= k.seal;
       }
       u.sealUsed = false;

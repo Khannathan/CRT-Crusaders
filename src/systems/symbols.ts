@@ -1,4 +1,5 @@
 import { CLASSES } from '../data/classes';
+import { KITS, exaltSig } from '../data/kits';
 import type { CrusaderDef } from '../data/types';
 import type { SaveData } from '../state/save';
 import { bagText, hasAll, spend, type Bag } from './items';
@@ -7,7 +8,9 @@ import { bagText, hasAll, spend, type Bag } from './items';
  * Holy Symbols: each Sister's own relic, like an exclusive weapon. It wakes
  * once she has ascended, then rises +1 to +15 on Grace (Embers for +1 to +5,
  * Tears for +6 to +10, Crowns for +11 to +15). Every level lifts her stats,
- * and +5, +10 and +15 each add a blessing; the one at +10 depends on her class.
+ * and +5, +10 and +15 each add a blessing. The one at +10 is her own: a Sister
+ * with a signature has it Exalted (its shares 25% stronger); the rest take a
+ * blessing by class.
  */
 export const SYMBOL_MAX = 15;
 /** All stats when the Symbol wakes, and per level after. */
@@ -39,6 +42,12 @@ export interface SymbolPerk {
   desc: string;
 }
 
+/** How much stronger an Exalted signature's shares are. */
+export const EXALT = 1.25;
+
+/** Whether her +10 blessing Exalts her signature (an SSR or UR whose signature has a share to raise). */
+export const exalts = (c: CrusaderDef): boolean => (c.rarity === 'SSR' || c.rarity === 'UR') && !!exaltSig(KITS[c.id]?.sig, EXALT);
+
 /** The +10 blessing by class. */
 const CLASS_PERK: Record<string, { name: string; desc: string }> = {
   hierophant: { name: 'Unbroken Relic', desc: 'She takes 12% less damage.' },
@@ -59,7 +68,7 @@ const CLASS_PERK: Record<string, { name: string; desc: string }> = {
 };
 
 export function symbolPerks(c: CrusaderDef): SymbolPerk[] {
-  const k = CLASS_PERK[c.classId] ?? CLASS_PERK.warsister;
+  const k = exalts(c) ? { name: `Exalted ${c.passive!.name}`, desc: `${c.passive!.name} is 25% stronger.` } : CLASS_PERK[c.classId] ?? CLASS_PERK.warsister;
   return [
     { at: 5, name: 'Awakened', desc: 'Her skills deal and heal 10% more.' },
     { at: 10, name: k.name, desc: k.desc },
@@ -80,13 +89,16 @@ export interface SymbolCombat {
   rite: number;
   crit: number;
   zeal: number;
+  /** Her signature's shares grow by this (Exalted at +10). */
+  exalt?: number;
 }
 
 export function symbolCombat(c: CrusaderDef, level: number | undefined): SymbolCombat | undefined {
   if (level === undefined) return undefined;
   const out: SymbolCombat = { mult: 1, heal: 1, guard: 0, rite: 0, crit: 0, zeal: 0 };
   if (level >= 5) out.mult = 1.1;
-  if (level >= 10) {
+  if (level >= 10 && exalts(c)) out.exalt = EXALT;
+  else if (level >= 10) {
     const role = CLASSES[c.classId]?.role;
     if (role === 'Tank') out.guard = 0.12;
     else if (role === 'Healer') out.heal = 1.2;

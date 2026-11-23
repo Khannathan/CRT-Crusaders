@@ -6,9 +6,11 @@ import { OSSUARY, skirmish } from './crusade';
 import { give } from './items';
 import { seeded } from './rng';
 import { sisterStats } from './stats';
-import { SYMBOL_MAX, raiseSymbol, symbolBlock, symbolCombat, symbolName, upgradeCost } from './symbols';
+import { KITS, exaltSig } from '../data/kits';
+import { Battle, makeEnemy, type Unit } from './combat';
+import { EXALT, SYMBOL_MAX, exalts, raiseSymbol, symbolBlock, symbolCombat, symbolName, symbolPerks, upgradeCost } from './symbols';
 
-const hiero = CRUSADERS.find((c) => c.classId === 'hierophant')!;
+const hiero = CRUSADERS.find((c) => c.classId === 'hierophant' && c.rarity === 'R')!;
 
 describe('Holy Symbols', () => {
   it('every Sister has a relic to name her Symbol', () => {
@@ -61,5 +63,37 @@ describe('Holy Symbols', () => {
     const full = rate(SYMBOL_MAX);
     console.log(`[symbols] Ossuary boss at level 1: none ${none}, all +15 ${full}`);
     expect(full).toBeGreaterThan(none);
+  });
+
+  it('at +10 a Sister with a signature has it Exalted; R and SR keep the class blessing', () => {
+    const isolde = CRUSADERS.find((c) => c.id === 'CC-W040')!;
+    expect(exalts(isolde)).toBe(true);
+    expect(symbolPerks(isolde)[1].name).toBe(`Exalted ${isolde.passive!.name}`);
+    expect(symbolCombat(isolde, 9)!.exalt).toBeUndefined();
+    expect(symbolCombat(isolde, 10)!.exalt).toBe(EXALT);
+    expect(symbolCombat(isolde, 10)!.mult).toBe(1.1);
+    expect(exalts(hiero)).toBe(false);
+    expect(symbolPerks(hiero)[1].name).toBe('Unbroken Relic');
+    // Most SSR and UR signatures have a share to raise; the rest keep the class blessing.
+    const high = CRUSADERS.filter((c) => c.rarity === 'SSR' || c.rarity === 'UR');
+    expect(high.filter(exalts).length).toBeGreaterThanOrEqual(high.length * 0.7);
+    expect(CRUSADERS.filter((c) => c.rarity === 'R' || c.rarity === 'SR').some(exalts)).toBe(false);
+  });
+
+  it('Exalting raises shares, not counts or turns', () => {
+    const s = exaltSig({ burnFirst: 2, dotMult: 0.2, remainsAtk: { per: 0.04, cap: 0.2 }, mercyExtra: true, owZeal: 10 }, 1.25)!;
+    expect(s).toEqual({ burnFirst: 2, dotMult: 0.25, remainsAtk: { per: 0.05, cap: 0.25 }, mercyExtra: true, owZeal: 13 });
+    expect(exaltSig({ mercyExtra: true }, 1.25)).toBeUndefined();
+  });
+
+  it('an Exalted Sister fights with the stronger signature', () => {
+    const c = CRUSADERS.find((x) => x.id === 'CC-W040')!;
+    const unit = (lv?: number): Unit => ({ uid: c.id, side: 'party' as const, name: c.name, ref: c.id, classId: c.classId, order: c.order, rank: 1, maxHp: 1000, hp: 1000, atk: 100, armor: 0, mres: 0, crit: 0, spd: 10, status: {}, passive: c.passive, symbol: symbolCombat(c, lv) });
+    const plain = unit(9);
+    const high = unit(10);
+    new Battle([plain], [makeEnemy('husk', 'e0', 1)]);
+    new Battle([high], [makeEnemy('husk', 'e1', 1)]);
+    expect(plain.sig).toBe(KITS[c.id].sig);
+    expect(high.sig!.dotMult).toBeCloseTo(KITS[c.id].sig!.dotMult! * EXALT);
   });
 });
