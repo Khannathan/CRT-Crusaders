@@ -44,8 +44,13 @@ export interface SaveData {
   owned: Record<string, OwnedCrusader>;
   /** Crypt ids cleared at least once (first-clear bonus). */
   cleared: string[];
-  /** Order banner chosen at the Sealed Altar, and the UR it targets. */
-  banner?: { order: string; target: string; limited?: number };
+  /**
+   * The banner up at the Sealed Altar: the UR it targets (and her Order), the
+   * SSRs it boosts on a standard banner, or the Limited window it belongs to.
+   */
+  banner?: { order: string; target: string; ssrs?: string[]; limited?: number };
+  /** The player's standard banner picks, kept while the Limited banner is up. */
+  standardPick?: { target: string; ssrs: string[] };
   /** The Feast event running beside the limited Saint (systems/feast.ts). */
   feast?: import('../systems/feast').FeastState;
   /** The Limited banner window last looked at (systems/limited.ts). */
