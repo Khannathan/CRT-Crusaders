@@ -13,7 +13,7 @@ import { music } from '../audio/music';
 import { toggleFullscreen } from '../ui/fullscreen';
 import { FieldBattle } from '../systems/field';
 import { FieldView } from '../ui/fieldView';
-import { VIGIL_CAP_HOURS, VIGIL_SIZE, claimVigil, ensureVigil, fastReward, setVigil, vigilPending, vigilRates, vigilStage, type VigilClaim, type VigilState } from '../systems/vigil';
+import { VIGIL_CAP_HOURS, VIGIL_SIZE, vigilHours, claimVigil, ensureVigil, fastReward, setVigil, vigilPending, vigilRates, vigilStage, type VigilClaim, type VigilState } from '../systems/vigil';
 import { CHAPTERS, FAST_HOURS, campaignOf, fastCost, roadDone, stageBattle, stageRecommended } from '../systems/campaign';
 import { vigilExpRate } from '../systems/exp';
 import { giltOf } from '../systems/currency';
@@ -25,11 +25,18 @@ import { ROMAN_RANK, giftsWaiting, rankInfo } from '../systems/rank';
 import { nextMilestone } from '../systems/powerGrowth';
 import { accountPower, formatPower } from '../systems/power';
 import { drawRites } from '../ui/rites';
+import { KEEPER_BOND, blessingReady, chooseKeeper, keeperLines, keeperOf, visitKeeper, type KeeperNudges } from '../systems/keeper';
+import { anyDeedReady } from '../systems/deeds';
+import { noviceReady } from '../systems/novitiate';
+import { anyClaimable } from '../systems/tasks';
+import { ORDERS } from '../data/orders';
+import { hasFullBody, hasSplash, portraitKey } from '../ui/placeholderPortrait';
+import { toast } from '../ui/modeScreen';
 import { NOVICE_TASKS, NOVITIATE_DAYS, noviceDay, noviceMarks, noviceOpen, taskClaimable } from '../systems/novitiate';
 import { morningRounds, roundsReady, roundsTotal, type RoundsReport } from '../systems/rounds';
 import { addTabBar } from '../ui/tabBar';
 import { pickParty } from '../ui/partyPicker';
-import { PAD, addBackdrop, addFrame, addHeading, addScreenGlow, text } from '../ui/theme';
+import { PAD, addBackdrop, addFrame, addHeading, addScreenGlow, fitLine, text } from '../ui/theme';
 
 /** Home screen: the Vigil (idle auto-battle and offline gathering), destinations and the tab bar. */
 export class SanctumScene extends Phaser.Scene {
@@ -109,7 +116,8 @@ export class SanctumScene extends Phaser.Scene {
         this.showRounds(r);
       }, { fontSize: 15, active: ready, icon: 'flame' });
     }
-    const ritesBottom = drawRites(this, game.save, below + 44);
+    let ritesBottom = drawRites(this, game.save, below + 44);
+    if (owned.length) ritesBottom = this.drawKeeper(ritesBottom + 14);
 
     // Prototype-only: settings, and wiping the save to replay the first-time flow.
     const linkY = ritesBottom + 24;
@@ -117,6 +125,58 @@ export class SanctumScene extends Phaser.Scene {
     this.textLink(GAME_W - PAD - 4, linkY, 'Reset save', () => this.confirmReset(), 1);
 
     addTabBar(this, 'Sanctum');
+  }
+
+  /**
+   * The Keeper of the Sanctum: the chosen Sister's bust and what she says.
+   * Tap her for the next line; the first word each day adds a little bond.
+   * Returns the bottom edge.
+   */
+  private drawKeeper(top: number): number {
+    const save = game.save;
+    const c = keeperOf(save, (id) => hasSplash(id) || hasFullBody(id));
+    if (!c) return top - 14;
+    // The first Keeper shown stays until the player changes her.
+    if (save.keeper?.id !== c.id) chooseKeeper(save, c.id);
+    const h = 136;
+    const fw = GAME_W - PAD * 2;
+    const tint = ORDERS[c.order]?.color ?? PAL.bronze;
+    addFrame(this, GAME_W / 2, top + h / 2, fw, h, { fill: 0x1b121c, edge: PAL.armorShadow });
+    const bust = this.add.image(PAD + 12 + 56, top + h / 2, portraitKey(c.id)).setDisplaySize(112, 112).setInteractive({ useHandCursor: true });
+    this.add.rectangle(bust.x, bust.y, 116, 116).setStrokeStyle(2, tint);
+    const tx = PAD + 140;
+    this.add.text(tx, top + 12, 'KEEPER OF THE SANCTUM', text.hud(11, PAL.steel));
+    fitLine(this.add.text(tx, top + 28, c.name, text.display(19, 0xfff1d6)), fw - 260);
+    makeButton(this, GAME_W - PAD - 52, top + 26, 88, 32, 'Change', () => {
+      pickParty(this, save, { title: 'Keeper of the Sanctum', sub: 'Who keeps your Sanctum?', initial: [c.id], max: 1, min: 1, confirm: 'Choose', hound: false }, (ids) => {
+        if (ids[0] && chooseKeeper(save, ids[0])) commit();
+        this.scene.restart();
+      });
+    }, { fontSize: 14 });
+    const nudges: KeeperNudges = {
+      vigilFull: !!save.vigil && vigilHours(save.vigil, Date.now()) >= VIGIL_CAP_HOURS,
+      novitiate: noviceReady(save),
+      deeds: anyDeedReady(save),
+      penance: anyClaimable(save),
+    };
+    const lines = keeperLines(save, c, nudges);
+    const say = this.add.text(tx, top + 58, '', { ...text.body(16, PAL.ivory), fontStyle: 'italic', wordWrap: { width: fw - 150 }, lineSpacing: -2 });
+    const hint = this.add.text(tx, top + h - 12, '', text.hud(10, PAL.amber)).setOrigin(0, 1);
+    let i = 0;
+    const show = () => {
+      say.setText(`"${lines[i % lines.length]}"`);
+      hint.setText(blessingReady(save) ? `TAP HER  ·  +${KEEPER_BOND} BOND TODAY` : '');
+    };
+    show();
+    bust.on('pointerup', () => {
+      const gained = visitKeeper(save);
+      if (gained) commit();
+      i += 1;
+      show();
+      this.tweens.add({ targets: bust, scaleX: bust.scaleX * 1.05, scaleY: bust.scaleY * 1.05, yoyo: true, duration: 90 });
+      if (gained) toast(this, `${c.name.split(' ')[0]} draws closer. +${gained} bond.`);
+    });
+    return top + h;
   }
 
   /**
