@@ -129,6 +129,9 @@ export function track(save: SaveData, event: TaskEvent, n = 1, now = Date.now())
   gainFaith(save, event, n);
   trickle(save, event, n, now);
   noviceTrack(save, event, n, now);
+  // Lifetime counts for Deeds (systems/deeds.ts).
+  const deeds = (save.deeds ??= { counts: {}, claimed: {} });
+  deeds.counts[event] = (deeds.counts[event] ?? 0) + n;
   const st = tasksOf(save, now);
   const dailyWasDone = devotion(save, 'daily', now) >= maxDevotion('daily');
   for (const p of ['daily', 'weekly'] as Period[]) {
