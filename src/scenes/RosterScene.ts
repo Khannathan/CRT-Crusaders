@@ -60,7 +60,7 @@ import { MAX_SKILL_LEVEL, nextSkillStep, raiseSkill, skillBlock, skillLevels, st
 import { makeButton } from '../ui/button';
 import { CURRENCY_BAR_H, addCurrencyBar } from '../ui/currencyBar';
 import { addSplash, hasSplash, loadFullBody, loadSplash, portraitKey } from '../ui/placeholderPortrait';
-import { SisterSprite } from '../ui/sisterSprite';
+import { SisterSprite, fullKey } from '../ui/sisterSprite';
 import { nine } from '../ui/skin';
 import { addScrollArea } from '../ui/scroll';
 import { showSources, tapCost, tapForSources } from '../ui/sources';
@@ -85,6 +85,9 @@ const HERO_H = 470;
 const FIGURE_H = 384;
 const FIGURE_Y = 250;
 const NAME_Y = 400;
+/** Where her pixel figure stands in front of her splash: lower right, feet just above her name. */
+const STEP_X = GAME_W - 104;
+const STEP_FEET = NAME_Y - 26;
 const STATS_Y = 506;
 const SHEET_Y = 544;
 
@@ -325,6 +328,12 @@ export class RosterScene extends Phaser.Scene {
         const top = this.add.graphics();
         for (let i = 0; i < 14; i++) top.fillStyle(0x0d090f, 0.06 * (14 - i)).fillRect(0, i * 10, GAME_W, 10);
         layer.addAt([...parts, top], layer.getIndex(bust));
+        // Her pixel figure steps out in front of the splash, at the lower right (as on the pull reveal).
+        if (this.textures.exists(fullKey(c.id))) {
+          figure = new SisterSprite(this, c.id, STEP_X, STEP_FEET, 1, order?.color ?? tint);
+          layer.addAt(figure.root, layer.getIndex(bust));
+          this.tweens.add({ targets: figure.root, alpha: { from: 0, to: 1 }, x: { from: GAME_W + 40, to: STEP_X }, duration: 380, delay: 200, ease: 'Quad.out' });
+        }
         bust.destroy();
       });
     }
@@ -348,7 +357,7 @@ export class RosterScene extends Phaser.Scene {
     swipe.on('pointerdown', (p: Phaser.Input.Pointer) => (downX = p.x));
     swipe.on('pointerup', (p: Phaser.Input.Pointer) => {
       if (Math.abs(p.x - downX) > 60) this.step(c, p.x < downX ? 1 : -1, tab);
-      else if (splash) this.viewSplash(splash);
+      else if (splash && !(figure && p.x > STEP_X - 64 && p.y > STEP_FEET - 180 && p.y < STEP_FEET + 10)) this.viewSplash(splash);
       else if (figure && have) poses++ % 2 ? figure.cast(order?.color ?? tint) : figure.attack(-1);
     });
     layer.add(swipe);
