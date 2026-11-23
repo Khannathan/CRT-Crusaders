@@ -73,7 +73,7 @@ export class WarScene extends Phaser.Scene {
 
     // The six forts, two by three.
     const cw = (bw - 10) / 2;
-    const ch = 168;
+    const ch = 158;
     FORTS.forEach((name, i) => {
       const x = PAD + cw / 2 + (i % 2) * (cw + 10);
       const fy = y + Math.floor(i / 2) * (ch + 10);
@@ -89,13 +89,13 @@ export class WarScene extends Phaser.Scene {
       const strong = i === FORTS.length - 1;
       this.add.text(x - cw / 2 + 98, fy + 14, name.toUpperCase(), text.hud(13, strong ? 0xff8a7a : 0xfff1d6));
       this.add.text(x - cw / 2 + 98, fy + 34, ENEMIES[lead]?.name ?? '', { ...text.body(13, PAL.muted), wordWrap: { width: cw - 108 } });
-      this.add.text(x - cw / 2 + 98, fy + 80, stars(got), text.hud(20, got ? 0xffd75a : PAL.steel));
-      this.add.text(x - cw / 2 + 98, fy + 108, `≈${formatPower(fortTarget(save, i))}`, text.hud(12, PAL.steel));
+      this.add.text(x - cw / 2 + 98, fy + 64, stars(got), text.hud(20, got ? 0xffd75a : PAL.steel));
+      this.add.text(x - cw / 2 + 98, fy + 94, `≈${formatPower(fortTarget(save, i))}`, text.hud(12, PAL.steel));
       const can = left > 0 && got < 3;
       makeButton(this, x, fy + ch - 24, cw - 20, 36, got === 3 ? 'Taken' : 'Storm!', () => can && this.storm(i), { active: can && i === w.stars.findIndex((s) => s < 3), disabled: !can, fontSize: 15, icon: can ? 'blade' : undefined });
     });
     y += 3 * (ch + 10) + 4;
-    this.add.text(PAD, y, `Each new star pays ${STAR_REWARD.tithes} Tithes and ${STAR_REWARD.marks} Marks. Three stars: no Sister falls. Two: one falls.\nPlayed offline: both Chapters' AI Sisters win points each day; your storms are real fights.`, { ...text.body(14, PAL.muted), wordWrap: { width: bw } });
+    this.add.text(PAD, y, `Each new star pays ${STAR_REWARD.tithes} Tithes and ${STAR_REWARD.marks} Marks. Three stars: no Sister falls. Played offline: AI Sisters on both sides win points daily.`, { ...text.body(14, PAL.muted), wordWrap: { width: bw } });
     if (w.last && !this.notice) {
       this.notice = w.last.won ? `Last week's war is won, ${w.last.us} to ${w.last.them}! The spoils are yours.` : `Last week's war is lost, ${w.last.us} to ${w.last.them}. Rise and avenge it!`;
       w.last = undefined;

@@ -92,7 +92,7 @@ export class CampScene extends Phaser.Scene {
     // Morale.
     const morale = moraleOf(party, this.talks);
     const buff = moraleBuff(morale);
-    const my = 620;
+    const my = 660;
     const bw = GAME_W - PAD * 2;
     this.add.text(PAD, my, `MORALE ${morale} / ${MORALE_MAX}`, text.hud(15, PAL.amber));
     this.add.text(GAME_W - PAD, my, buff.atkPct ? `${buff.name.toUpperCase()}: ATK +${Math.round(buff.atkPct * 100)}%, +${buff.zeal} ZEAL` : '50 FOR A BLESSING', text.hud(12, buff.atkPct ? 0xf2d27a : PAL.steel)).setOrigin(1, 0);
