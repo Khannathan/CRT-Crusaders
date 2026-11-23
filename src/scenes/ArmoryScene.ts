@@ -21,13 +21,16 @@ import {
   type PullPay,
 } from '../systems/armory';
 import { giltOf } from '../systems/currency';
-import { GEAR_SETS, GEAR_SLOTS, SLOT_HINT, SLOT_NAME, formatStat, gearSet, mainValue, setText, type GearItem, type GearSetId, type GearSlot } from '../systems/gear';
+import { GEAR_SETS, GEAR_SLOTS, MAX_GEAR, SLOT_HINT, SLOT_NAME, formatStat, gearOf, gearSet, mainValue, setText, type GearItem, type GearSetId, type GearSlot } from '../systems/gear';
 import { countOf } from '../systems/items';
 import { timeLeft } from '../systems/limited';
 import { makeButton } from '../ui/button';
 import { modeScreen, progressBar, toast } from '../ui/modeScreen';
+import { TAB_BAR_H } from '../ui/tabBar';
 import { PAD, addFrame, addPanel, text } from '../ui/theme';
 
+// Overlay buttons sit above the tab bar, so a double tap on Done cannot fall through to a tab.
+const BTN_Y = GAME_H - TAB_BAR_H - 46;
 const pct = (n: number) => `${Math.round(n * 1000) / 10}%`;
 
 /** The Saints' Armory: the UR gear banner (weekly featured set) and the UR forge. */
@@ -96,7 +99,9 @@ export class ArmoryScene extends Phaser.Scene {
     btn(PAD + half / 2, y + 104, 1, 'gilt');
     btn(GAME_W - PAD - half / 2, y + 104, 10, 'gilt');
     y += 146;
-    this.add.text(GAME_W / 2, y, 'Every pull also leaves a Saint\'s Fragment.', text.body(15, PAL.muted)).setOrigin(0.5, 0);
+    // A full armory greys out every pull: say why, or the buttons just look dead.
+    const full = gearOf(save).length + 1 > MAX_GEAR;
+    this.add.text(GAME_W / 2, y, full ? `The armory is full: ${MAX_GEAR} pieces! Melt gear to pull again.` : 'Every pull also leaves a Saint\'s Fragment.', text.body(15, full ? PAL.amber : PAL.muted)).setOrigin(0.5, 0);
     y += 34;
 
     // The forge
@@ -134,10 +139,10 @@ export class ArmoryScene extends Phaser.Scene {
 
   private showPulls(got: GearItem[]) {
     const layer = this.overlay(got.some((g) => g.rarity === 'UR') ? 'A SAINT ANSWERS' : 'FROM THE ARMORY');
-    const h = got.length > 1 ? 62 : 90;
+    const h = got.length > 1 ? 56 : 90;
     got.forEach((g, i) => this.pieceRow(layer, g, 120 + h / 2 + i * (h + 6), h));
-    layer.add(this.add.text(GAME_W / 2, GAME_H - 132, `+${got.length} Saint's Fragment${got.length > 1 ? 's' : ''}. Arm a Sister from her Gear tab.`, { ...text.body(15, PAL.muted), align: 'center', wordWrap: { width: GAME_W - 90 } }).setOrigin(0.5));
-    layer.add(makeButton(this, GAME_W / 2, GAME_H - 72, 240, 60, 'Done', () => this.scene.restart(), { fontSize: 19, active: true }).all);
+    layer.add(this.add.text(GAME_W / 2, BTN_Y - 60, `+${got.length} Saint's Fragment${got.length > 1 ? 's' : ''}. Arm a Sister from her Gear tab.`, { ...text.body(15, PAL.muted), align: 'center', wordWrap: { width: GAME_W - 90 } }).setOrigin(0.5));
+    layer.add(makeButton(this, GAME_W / 2, BTN_Y, 240, 60, 'Done', () => this.scene.restart(), { fontSize: 19, active: true }).all);
   }
 
   private showRates() {
@@ -153,7 +158,7 @@ export class ArmoryScene extends Phaser.Scene {
     ];
     const t = this.add.text(48, 110, lines.join('\n\n'), { ...text.body(17, PAL.ivory), wordWrap: { width: GAME_W - 96 } });
     layer.add(t);
-    layer.add(makeButton(this, GAME_W / 2, GAME_H - 72, 240, 60, 'Close', () => layer.destroy(), { fontSize: 19 }).all);
+    layer.add(makeButton(this, GAME_W / 2, BTN_Y, 240, 60, 'Close', () => layer.destroy(), { fontSize: 19 }).all);
   }
 
   private showForge(slot: GearSlot = 'blade', setId: GearSetId = featuredSet().set.id) {
@@ -196,6 +201,6 @@ export class ArmoryScene extends Phaser.Scene {
     const half = (GAME_W - PAD * 2 - 20 - 8) / 2;
     layer.add(makeButton(this, PAD + 10 + half / 2, y + 30, half, 60, `Forge\n${countOf(save, 'armory1')}/${FORGE_FRAGMENTS} Fragments`, () => forge('fragments'), { active: !fb, disabled: !!fb, fontSize: 15 }).all);
     layer.add(makeButton(this, GAME_W - PAD - 10 - half / 2, y + 30, half, 60, `Forge\n${countOf(save, 'armory3')} Mould${countOf(save, 'armory3') === 1 ? '' : 's'}`, () => forge('mould'), { active: !mb, disabled: !!mb, fontSize: 15 }).all);
-    layer.add(makeButton(this, GAME_W / 2, GAME_H - 72, 240, 60, 'Back', () => layer.destroy(), { fontSize: 19 }).all);
+    layer.add(makeButton(this, GAME_W / 2, BTN_Y, 240, 60, 'Back', () => layer.destroy(), { fontSize: 19 }).all);
   }
 }

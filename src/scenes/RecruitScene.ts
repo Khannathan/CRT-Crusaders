@@ -18,6 +18,7 @@ import { PAD, addBackdrop, addBadge, addFrame, addPanel, addScreenGlow, fade, te
 import { holdForCard, justHeld } from '../ui/sisterCard';
 import { addScrollArea } from '../ui/scroll';
 import { makePlaceholderPortrait } from '../ui/placeholderPortrait';
+import { settleTaps } from '../ui/modeScreen';
 
 /** The Sealed Altar: rates, pity counter, and the pull buttons. */
 export class RecruitScene extends Phaser.Scene {
@@ -32,6 +33,7 @@ export class RecruitScene extends Phaser.Scene {
 
   create() {
     addScreenGlow(this);
+    settleTaps(this);
     music.preload('ur');
     addCurrencyBar(this);
     const s = game.save;
