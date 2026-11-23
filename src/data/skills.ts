@@ -211,8 +211,8 @@ const any: number[] = [];
 /** Three skills and a Litany per class. Combos: Weakened, Accused, poison and burns feed each other. */
 export const CLASS_SKILLS: Record<string, [SkillDef, SkillDef, SkillDef, SkillDef]> = {
   warsister: [
-    { id: 'penitent-blow', name: 'Penitent Blow', desc: 'Heavy strike on rank 1-2 that leaves it Bleeding for 2 turns. +40% while she is under half HP.', from: [1, 2], target: 'enemy', reach: [1, 2], mult: 1.25, lowHpBonus: 0.4, bleed: { mult: 0.2, turns: 2 }},
-    { id: 'blood-for-zeal', name: 'Blood for Zeal', desc: 'Lose 10% HP. +30 of her own Zeal and +25% attack for 2 turns. Cooldown 2.', from: any, target: 'self', selfDmgPct: 0.1, zealGain: 30, empower: { pct: 0.25, turns: 2 }, cooldown: 2 },
+    { id: 'penitent-blow', name: 'Penitent Blow', desc: 'Smite rank 1-2 hard and leave it Bleeding for 2 turns. +40% while she is under half HP.', from: [1, 2], target: 'enemy', reach: [1, 2], mult: 1.25, lowHpBonus: 0.4, bleed: { mult: 0.2, turns: 2 }},
+    { id: 'blood-for-zeal', name: 'Blood for Zeal', desc: 'Sacrifice 10% HP. +30 of her own Zeal and +25% attack for 2 turns. Cooldown 2.', from: any, target: 'self', selfDmgPct: 0.1, zealGain: 30, empower: { pct: 0.25, turns: 2 }, cooldown: 2 },
     { id: 'flagellants-charge', name: "Flagellant's Charge", desc: 'Crash into rank 1-3 and charge a rank forward. +60% against the Weakened. Cooldown 2.', from: [1, 2], target: 'enemy', reach: [1, 2, 3], mult: 1.35, bonusIfWeak: 0.6, cooldown: 2, move: -1},
     { id: 'martyrs-fury', name: "Martyr's Fury", desc: 'LITANY: strike every enemy and leave them Bleeding for 2 turns.', from: any, target: 'allEnemies', mult: 0.95, rite: true, bleed: { mult: 0.25, turns: 2 }},
   ],
@@ -230,7 +230,7 @@ export const CLASS_SKILLS: Record<string, [SkillDef, SkillDef, SkillDef, SkillDe
   ],
   confessor: [
     { id: 'remedy', name: 'Remedy', desc: 'Heal one ally, cure poison, burns and bleeding, and let her Regenerate 3% a turn for 2 turns.', from: any, target: 'ally', heal: 2.4, cleanse: true , regen: { pct: 0.03, turns: 2 }},
-    { id: 'miasma', name: 'Miasma', desc: 'Hit on rank 1-3 that Poisons for 3 turns. Stacks on poison or burns.', from: any, target: 'enemy', reach: [1, 2, 3], mult: 0.4, poison: { mult: 0.6, turns: 3 }, stackPoison: true},
+    { id: 'miasma', name: 'Miasma', desc: 'Smite rank 1-3 and Poison it for 3 turns. Stacks on poison or burns.', from: any, target: 'enemy', reach: [1, 2, 3], mult: 0.4, poison: { mult: 0.6, turns: 3 }, stackPoison: true},
     { id: 'contagion', name: 'Contagion', desc: "Spread one enemy's poison or burn to every other enemy. Cooldown 3.", from: any, target: 'enemy', mult: 0.3, spreadPoison: true, cooldown: 3},
     { id: 'last-rites', name: 'Last Rites', desc: 'LITANY: heal every ally 30% of max HP, cure poison, burns and bleeding, and Regenerate 5% a turn for 3 turns.', from: any, target: 'allAllies', healPct: 0.3, cleanse: true, rite: true , regen: { pct: 0.05, turns: 3 }},
   ],
@@ -238,11 +238,11 @@ export const CLASS_SKILLS: Record<string, [SkillDef, SkillDef, SkillDef, SkillDe
     { id: 'incense-cloud', name: 'Incense Cloud', desc: 'Smoke every enemy and fall back a rank: small damage, -25% attack for 2 turns.', from: [2, 3, 4], target: 'allEnemies', mult: 0.35, weaken: { pct: 0.25, turns: 2 }, move: 1},
     { id: 'burning-thurible', name: 'Burning Thurible', desc: 'Step a rank forward, swing at rank 1-2 and set it Burning for 2 turns. Stacks on poison.', from: [1, 2, 3], target: 'enemy', reach: [1, 2], mult: 0.9, poison: { mult: 0.45, turns: 2 }, stackPoison: true, move: -1},
     { id: 'fan-the-flames', name: 'Fan the Flames', desc: 'Ignite all the poison or burn on one enemy at once, for 1.5x. Cooldown 2.', from: any, target: 'enemy', mult: 0.3, detonate: 1.5, cooldown: 2},
-    { id: 'choking-smoke', name: 'Choking Smoke', desc: 'LITANY: damage every enemy, -30% attack for 2 turns.', from: any, target: 'allEnemies', mult: 0.6, weaken: { pct: 0.3, turns: 2 }, rite: true},
+    { id: 'choking-smoke', name: 'Choking Smoke', desc: 'LITANY: smite every enemy, -30% attack for 2 turns.', from: any, target: 'allEnemies', mult: 0.6, weaken: { pct: 0.3, turns: 2 }, rite: true},
   ],
   oracle: [
-    { id: 'ash-bolt', name: 'Ash Bolt', desc: 'Heavy damage on any rank. The recoil throws her a rank back.', from: [3, 4], target: 'enemy', mult: 1.45, move: 1},
-    { id: 'foresight', name: 'Foresight', desc: 'Hit any enemy, push its turn to the end and Hex it (-25% Magic Resist) for 2 turns. Breaks a charge. Cooldown 2.', from: any, target: 'enemy', mult: 0.5, delay: true, cooldown: 2, hex: { pct: 0.25, turns: 2 }},
+    { id: 'ash-bolt', name: 'Ash Bolt', desc: 'Smite any rank hard. The recoil throws her a rank back.', from: [3, 4], target: 'enemy', mult: 1.45, move: 1},
+    { id: 'foresight', name: 'Foresight', desc: 'Smite any enemy, push its turn to the end and Hex it (-25% Magic Resist) for 2 turns. Breaks a charge. Cooldown 2.', from: any, target: 'enemy', mult: 0.5, delay: true, cooldown: 2, hex: { pct: 0.25, turns: 2 }},
     { id: 'grim-augury', name: 'Grim Augury', desc: 'Grant an ally +30% attack for 2 turns and Haste (acts first next round), and every Sister 10 Zeal. Cooldown 3.', from: any, target: 'ally', empower: { pct: 0.3, turns: 2 }, empowerTarget: true, zealGain: 10, zealAll: true, cooldown: 3 , haste: 1},
     { id: 'omen-of-ash', name: 'Omen of Ash', desc: 'LITANY: heavy damage on every enemy.', from: any, target: 'allEnemies', mult: 1.15, rite: true},
   ],
@@ -255,7 +255,7 @@ export const CLASS_SKILLS: Record<string, [SkillDef, SkillDef, SkillDef, SkillDe
   martyr: [
     { id: 'radiant-smite', name: 'Radiant Smite', desc: 'Strike rank 1-2 and heal for 35% of the damage dealt.', from: [1, 2], target: 'enemy', reach: [1, 2], mult: 1.1, drain: 0.35 },
     { id: 'intercession', name: 'Intercession', desc: 'Draw enemy attacks for 2 turns, Ward herself (-20% damage) and Regenerate 5% a turn. Cooldown 2.', from: any, target: 'self', taunt: 2, ward: { pct: 0.2, turns: 2 }, regen: { pct: 0.05, turns: 2 }, cooldown: 2 },
-    { id: 'blood-oath', name: 'Blood Oath', desc: 'Lose 12% HP. Every ally gains +20% attack for 2 turns. Cooldown 3.', from: any, target: 'allAllies', selfDmgPct: 0.12, empower: { pct: 0.2, turns: 2 }, empowerTarget: true, cooldown: 3 },
+    { id: 'blood-oath', name: 'Blood Oath', desc: 'Sacrifice 12% HP. Every ally gains +20% attack for 2 turns. Cooldown 3.', from: any, target: 'allAllies', selfDmgPct: 0.12, empower: { pct: 0.2, turns: 2 }, empowerTarget: true, cooldown: 3 },
     { id: 'dawnbreak', name: 'Dawnbreak', desc: 'LITANY: burn every enemy with light, heal for 50% of the damage dealt and draw attacks for 2 turns.', from: any, target: 'allEnemies', mult: 0.8, drain: 0.5, rite: true, taunt: 2 },
   ],
   hospitaller: [
@@ -272,12 +272,12 @@ export const CLASS_SKILLS: Record<string, [SkillDef, SkillDef, SkillDef, SkillDe
   ],
   cantor: [
     { id: 'hymn-of-iron', name: 'Hymn of Iron', desc: 'Every ally gains +30% attack for 2 turns. Cooldown 2.', from: any, target: 'allAllies', empower: { pct: 0.3, turns: 2 }, empowerTarget: true, cooldown: 2 },
-    { id: 'keening-note', name: 'Keening Note', desc: 'Hit any enemy: Sundered (-20% armor) and Hexed (-20% Magic Resist) for 2 turns.', from: any, target: 'enemy', mult: 1.35, sunder: { pct: 0.2, turns: 2 }, hex: { pct: 0.2, turns: 2 } },
+    { id: 'keening-note', name: 'Keening Note', desc: 'Smite any enemy: Sundered (-20% armor) and Hexed (-20% Magic Resist) for 2 turns.', from: any, target: 'enemy', mult: 1.35, sunder: { pct: 0.2, turns: 2 }, hex: { pct: 0.2, turns: 2 } },
     { id: 'psalm-of-blades', name: 'Psalm of Blades', desc: 'Every ally gains +20% critical chance for 2 turns, and every Sister 8 Zeal. Cooldown 3.', from: any, target: 'allAllies', critUp: { pct: 0.2, turns: 2 }, zealGain: 8, zealAll: true, cooldown: 3 },
     { id: 'requiem-chorus', name: 'Requiem Chorus', desc: 'LITANY: every ally gains +30% attack and +25% critical chance for 2 turns, and Haste.', from: any, target: 'allAllies', empower: { pct: 0.3, turns: 2 }, empowerTarget: true, critUp: { pct: 0.25, turns: 2 }, haste: 1, rite: true },
   ],
   adjudicator: [
-    { id: 'reflected-sentence', name: 'Reflected Sentence', desc: 'Hit any enemy: -25% attack for 2 turns. Drains 15 Wrath from a boss.', from: any, target: 'enemy', mult: 0.7, weaken: { pct: 0.25, turns: 2 }, wrathDrain: 15 },
+    { id: 'reflected-sentence', name: 'Reflected Sentence', desc: 'Smite any enemy: -25% attack for 2 turns. Drains 15 Wrath from a boss.', from: any, target: 'enemy', mult: 0.7, weaken: { pct: 0.25, turns: 2 }, wrathDrain: 15 },
     { id: 'mirror-ward', name: 'Mirror Ward', desc: 'Ward an ally (-25% damage) and give her thorns (30% back) for 2 turns. Cooldown 2.', from: any, target: 'ally', ward: { pct: 0.25, turns: 2 }, thorns: { pct: 0.3, turns: 2 }, cooldown: 2 },
     { id: 'censure', name: 'Censure', desc: 'Every enemy: -20% attack and Sundered (-15% armor) for 2 turns. Cooldown 3.', from: any, target: 'allEnemies', mult: 0.3, weaken: { pct: 0.2, turns: 2 }, sunder: { pct: 0.15, turns: 2 }, cooldown: 3 },
     { id: 'final-judgment', name: 'Final Judgment', desc: 'LITANY: every enemy is Weakened (-30% attack) for 2 turns and loses 40 Wrath.', from: any, target: 'allEnemies', mult: 0.6, weaken: { pct: 0.3, turns: 2 }, wrathDrain: 40, rite: true },
@@ -289,13 +289,13 @@ export const CLASS_SKILLS: Record<string, [SkillDef, SkillDef, SkillDef, SkillDe
     { id: 'thousand-cuts', name: 'Thousand Cuts', desc: 'LITANY: savage blow on any enemy, +50% critical chance, double damage under 30% HP.', from: any, target: 'enemy', mult: 1.9, critChance: 0.5, execute: 1, rite: true },
   ],
   arbalist: [
-    { id: 'blessed-bolt', name: 'Blessed Bolt', desc: 'Heavy bolt on any rank that ignores 30% of its Armor.', from: [2, 3, 4], target: 'enemy', mult: 1.25, armorPierce: 0.3 },
+    { id: 'blessed-bolt', name: 'Blessed Bolt', desc: 'A heavy bolt on any rank that ignores 30% of its Armor.', from: [2, 3, 4], target: 'enemy', mult: 1.25, armorPierce: 0.3 },
     { id: 'marking-shot', name: 'Marking Shot', desc: 'Light bolt that Accuses any foe (+25% damage taken) for 2 turns. Cooldown 1.', from: any, target: 'enemy', mult: 0.6, accuse: 2, cooldown: 1 },
     { id: 'shieldbreaker', name: 'Shieldbreaker', desc: 'A bolt through any shield: Sundered (-30% armor) for 2 turns. Cooldown 2.', from: any, target: 'enemy', mult: 1.0, pierceShield: true, sunder: { pct: 0.3, turns: 2 }, cooldown: 2 },
     { id: 'saints-ballista', name: "Saint's Ballista", desc: 'LITANY: a crushing bolt on any enemy, through shields and half its Armor.', from: any, target: 'enemy', mult: 2.3, armorPierce: 0.5, pierceShield: true, rite: true },
   ],
   exorcist: [
-    { id: 'lantern-flare', name: 'Lantern Flare', desc: 'Hit any enemy and strip its shield and blessings. +30% against bosses.', from: any, target: 'enemy', mult: 0.9, purge: true, bossBonus: 0.3 },
+    { id: 'lantern-flare', name: 'Lantern Flare', desc: 'Smite any enemy and strip its shield and blessings. +30% against bosses.', from: any, target: 'enemy', mult: 0.9, purge: true, bossBonus: 0.3 },
     { id: 'witchfire', name: 'Witchfire', desc: 'Set any enemy Burning for 3 turns. Stacks on poison or burns.', from: any, target: 'enemy', mult: 0.45, poison: { mult: 0.42, turns: 3 }, stackPoison: true },
     { id: 'rite-of-expulsion', name: 'Rite of Expulsion', desc: 'Strip the shield and blessings of every enemy. Cooldown 3.', from: any, target: 'allEnemies', mult: 0.4, purge: true, cooldown: 3 },
     { id: 'banishment', name: 'Banishment', desc: 'LITANY: searing light on any enemy, stripping its blessings. +60% against bosses.', from: any, target: 'enemy', mult: 1.6, purge: true, bossBonus: 0.6, rite: true },
@@ -307,3 +307,6 @@ export const CLASS_SKILLS: Record<string, [SkillDef, SkillDef, SkillDef, SkillDe
  * or behind), then still act. It is not a skill turn; the battle screen handles it.
  */
 export const SHIFT_SKILL: SkillDef = { id: 'shift', name: 'Step', desc: 'Free, once a turn: swap with the Sister beside you, then still act. Tap Step, then the Sister to trade places with.', from: any, target: 'self' };
+
+/** A skill's description without its closing "Cooldown N.", for places that already show the cooldown as a tag. */
+export const descNoCooldown = (desc: string) => desc.replace(/\s*Cooldown \d+\.\s*$/, '');

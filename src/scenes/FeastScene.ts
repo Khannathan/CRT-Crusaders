@@ -52,7 +52,7 @@ export class FeastScene extends Phaser.Scene {
     const w = limitedWindow();
     const f = feastOf(save);
     const saint = w.saint;
-    const { top } = modeScreen(this, feastName(w), `${saint.name} holds the Altar. Win Candles at the Feast, spend them at the stall. Ends in ${timeLeft(w.ends)}.`);
+    const { top } = modeScreen(this, feastName(w), `Ends in ${timeLeft(w.ends)}.`);
     const bw = GAME_W - PAD * 2;
     let y = top;
 
@@ -73,7 +73,7 @@ export class FeastScene extends Phaser.Scene {
       const x = PAD + 14 + barW * Math.min(1, m.at / FEAST_MARKS[FEAST_MARKS.length - 1].at);
       this.add.rectangle(x, y + 42, 2, 16, f.paid.includes(m.at) ? PAL.steel : PAL.ivory);
     });
-    this.add.text(PAD + 14, y + 54, next ? `Next: ${rewardText(next.reward, saint)}` : 'Every milestone paid.', { ...text.body(15, PAL.ivory), wordWrap: { width: barW } });
+    this.add.text(PAD + 14, y + 54, next ? `Next: ${rewardText(next.reward, saint)}` : 'Every milestone paid. Praise be!', { ...text.body(15, PAL.ivory), wordWrap: { width: barW } });
     makeButton(this, GAME_W - PAD - 70, y + 44, 116, 48, ready.length ? `Claim ${ready.length}` : 'Claim', () => {
       const got = claimMarks(save);
       if (!got.length) return;
@@ -103,7 +103,7 @@ export class FeastScene extends Phaser.Scene {
       const won = f.won.includes(i);
       this.add.rectangle(GAME_W / 2, y + h / 2, bw, h, open ? 0x1e1520 : 0x151017).setStrokeStyle(1, won ? PAL.bronze : PAL.armorShadow);
       this.add.text(PAD + 12, y + 8, `${ROMAN[i]} · ${st.name}`, text.body(17, open ? 0xfff1d6 : PAL.steel)).setFontStyle('600');
-      this.add.text(PAD + 12, y + 34, open ? (won ? `Won · repeat pays ${st.repeat} Candles` : `First win pays ${st.first} Candles`) : 'Win the stage before it.', text.body(14, won ? PAL.muted : PAL.amber));
+      this.add.text(PAD + 12, y + 34, open ? (won ? `Won · repeat pays ${st.repeat} Candles` : `First win pays ${st.first} Candles`) : 'Locked', text.body(14, won ? PAL.muted : PAL.amber));
       if (open) {
         makeButton(this, GAME_W - PAD - 150, y + h / 2, 84, 44, 'Fight', () => this.fight(i), { active: !won, fontSize: 16 });
         makeButton(this, GAME_W - PAD - 52, y + h / 2, 84, 44, 'Sweep', () => {
@@ -119,7 +119,7 @@ export class FeastScene extends Phaser.Scene {
     makeButton(this, GAME_W / 2, Math.min(y + 34, GAME_H - 88 - 36), 260, 52, 'The Feast Stall', () => this.showStall(), { active: true, fontSize: 18 });
 
     if (f.melted) {
-      toast(this, `Last Feast's Candles melted into ${f.melted} Alms.`);
+      toast(this, `The last Feast's Candles melt into ${f.melted} Alms!`);
       f.melted = undefined;
       commit();
     } else if (this.notice) toast(this, this.notice);
@@ -131,7 +131,7 @@ export class FeastScene extends Phaser.Scene {
     pickParty(
       this,
       save,
-      { title: st.name, sub: 'Bonus Sisters earn more Candles. Tap Sisters in rank order; the first stands in front.', initial: save.lastParty, confirm: 'To the Feast' },
+      { title: st.name, sub: 'Bonus Sisters earn more Candles. Tap in rank order. The first stands in front.', initial: save.lastParty, confirm: 'To the Feast!' },
       (party) => {
         current.challenge = {
           label: `${feastName()}: ${st.name}.`,
@@ -139,7 +139,7 @@ export class FeastScene extends Phaser.Scene {
           finish: (outcome) => {
             const n = finishStage(save, i, party, outcome === 'victory');
             const bonus = featuredBonus(party);
-            const notice = outcome !== 'victory' ? 'The Feast turns you away. Nothing was spent.' : n ? `Victory: +${n} Candles${bonus ? ` (bonus +${Math.round(bonus * 100)}%)` : ''}` : 'Victory. No repeat payouts left today.';
+            const notice = outcome !== 'victory' ? 'The Feast turns you away. Nothing was spent.' : n ? `Victory: +${n} Candles${bonus ? ` (bonus +${Math.round(bonus * 100)}%)` : ''}` : 'Victory! No repeat payouts left today.';
             return { scene: 'Feast', data: { notice } };
           },
         };
@@ -156,7 +156,7 @@ export class FeastScene extends Phaser.Scene {
     layer.add(this.add.rectangle(GAME_W / 2, GAME_H / 2, GAME_W, GAME_H, 0x09060b, 0.93).setInteractive());
     layer.add(addFrame(this, GAME_W / 2, GAME_H / 2 - 20, GAME_W - 30, GAME_H - 150, { fill: 0x241925 }));
     layer.add(this.add.text(GAME_W / 2, 110, 'THE FEAST STALL', text.display(26, PAL.amber)).setOrigin(0.5));
-    layer.add(this.add.text(GAME_W / 2, 140, `${f.candles} Candles. Stock lasts the whole Feast; unspent Candles melt into Alms when it ends.`, { ...text.body(15, PAL.muted), align: 'center', wordWrap: { width: GAME_W - 90 } }).setOrigin(0.5, 0));
+    layer.add(this.add.text(GAME_W / 2, 140, `${f.candles} Candles. Stock lasts the whole Feast. Unspent Candles melt into Alms.`, { ...text.body(15, PAL.muted), align: 'center', wordWrap: { width: GAME_W - 90 } }).setOrigin(0.5, 0));
     let y = 196;
     for (const item of FEAST_STALL) {
       const left = stockLeft(save, item);

@@ -18,7 +18,7 @@ import { beatenText } from '../systems/records';
 import { portraitKey } from '../ui/placeholderPortrait';
 import { holdForCard } from '../ui/sisterCard';
 
-const TITLES = { victory: 'The crypt is purified', defeat: 'The crusade is broken', retreat: 'You fall back to the Sanctum' };
+const TITLES = { victory: 'The crypt is purified!', defeat: 'The crusade is broken', retreat: 'You fall back to the Sanctum' };
 
 /** One bar's journey: from (level, fraction) to (level, fraction). */
 interface Track {
@@ -75,7 +75,7 @@ export class ResultsScene extends Phaser.Scene {
 
     // Bars toward what this run moved (pushed down when the materials run long).
     let y = Math.max(418, matsBottom + 48);
-    this.reveal(this.add.text(GAME_W / 2, y - 26, 'What this crusade moved', { ...style, fontSize: '18px', color: hex(PAL.steel) }).setOrigin(0.5));
+    this.reveal(this.add.text(GAME_W / 2, y - 26, 'Spoils of this crusade', { ...style, fontSize: '18px', color: hex(PAL.steel) }).setOrigin(0.5));
     for (const t of this.tracks(save)) {
       this.bar(26, y + 10, GAME_W - 52, t);
       y += 50;
@@ -85,12 +85,12 @@ export class ResultsScene extends Phaser.Scene {
     // Notes, then the nearest real goal beside March again.
     const notes: string[] = [];
     if (r.pilgrimage) notes.push(`Pilgrimage blessing: +${r.pilgrimage.seals} Seals, +${r.pilgrimage.tithes} Tithes. ${r.pilgrimage.left} blessed clear${r.pilgrimage.left === 1 ? '' : 's'} left today.`);
-    if (r.melted) notes.push(`The armory is full: spare gear melted for +${r.melted} Tithes.`);
-    if (r.firstClear) notes.push('First clear! Heresy I is now open for this crypt.');
+    if (r.melted) notes.push(`Armory full: spare gear melted for +${r.melted} Tithes.`);
+    if (r.firstClear) notes.push('First clear! Heresy I is open.');
     if (r.heresyCleared) notes.push(`Heresy ${ROMAN[r.heresyCleared - 1]} cleared: +${HERESY_FIRST_CLEAR_SEALS} Seals. Heresy ${ROMAN[r.heresyCleared]} is open.`);
-    if (r.outcome === 'defeat') notes.push('You keep your Seals, your gear, everything banked at a Sanctuary, and most of the rest.');
-    if (r.outcome === 'retreat') notes.push('You kept everything you found. The completion reward waits for a cleared crypt.');
-    if (r.fallen.length) notes.push('The fallen mend for one crusade, or can be absolved early with Tithes.');
+    if (r.outcome === 'defeat') notes.push('You keep Seals, gear, Sanctuary banks and most of the rest.');
+    if (r.outcome === 'retreat') notes.push('You keep your spoils. Purify the crypt for its full reward.');
+    if (r.fallen.length) notes.push('The fallen sit out one crusade, or pay Tithes to absolve them.');
     let notesEnd = 738;
     if (notes.length) {
       const n = this.add.text(GAME_W / 2, Math.max(738, sistersEnd + 8), notes.join('\n'), { ...style, fontSize: '15px', color: hex(PAL.steel), align: 'center', wordWrap: { width: GAME_W - 50 }, lineSpacing: 2 }).setOrigin(0.5, 0);
@@ -109,7 +109,7 @@ export class ResultsScene extends Phaser.Scene {
     }
 
     makeButton(this, GAME_W / 2 - 128, GAME_H - 56, 236, 76, 'Sanctum', () => this.scene.start('Sanctum'));
-    makeButton(this, GAME_W / 2 + 128, GAME_H - 56, 236, 76, 'March again', () => this.scene.start('Crusade'), { active: true });
+    makeButton(this, GAME_W / 2 + 128, GAME_H - 56, 236, 76, 'March again!', () => this.scene.start('Crusade'), { active: true });
 
     if (r.record) {
       const rec = r.record;
@@ -154,7 +154,7 @@ export class ResultsScene extends Phaser.Scene {
   private gear(y: number) {
     const items = this.result.gear;
     if (!items.length) {
-      this.reveal(this.add.text(GAME_W / 2, y, 'No gear this time', { fontFamily: FONT, fontSize: '17px', color: hex(PAL.steel) }).setOrigin(0.5));
+      this.reveal(this.add.text(GAME_W / 2, y, 'The dead gave no gear', { fontFamily: FONT, fontSize: '17px', color: hex(PAL.steel) }).setOrigin(0.5));
       this.wait(200);
       return;
     }

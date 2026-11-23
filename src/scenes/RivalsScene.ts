@@ -16,7 +16,7 @@ export class RivalsScene extends Phaser.Scene {
 
   create() {
     const save = game.save;
-    const { top } = modeScreen(this, 'Rival Orders', 'Computer-run Sisterhoods. Their Renown creeps up each day; yours rises with what you do.');
+    const { top } = modeScreen(this, 'Rival Orders', 'Lesser Sisterhoods (AI). Outshine them all!');
     const { rows, place } = ladder(save);
     const seen = save.ladderSeen;
     save.ladderSeen = place;
@@ -49,8 +49,8 @@ export class RivalsScene extends Phaser.Scene {
     this.add.text(PAD, y, `Renown ${renownOf(save)}  ·  place ${place} of ${rows.length}`, text.display(22, 0xfff1d6));
     const above = rows[place - 2];
     const note = [
-      climbed > 0 ? `You climbed ${climbed} place${climbed > 1 ? 's' : ''} since you last looked.` : climbed < 0 ? `Rivals slipped past you: down ${-climbed}.` : '',
-      above ? `${above.renown - renownOf(save) + 1} Renown to pass ${above.name}.` : 'No Sisterhood stands above you.',
+      climbed > 0 ? `You climbed ${climbed} place${climbed > 1 ? 's' : ''} since you last looked!` : climbed < 0 ? `Rivals slipped past you: down ${-climbed}.` : '',
+      above ? `${above.renown - renownOf(save) + 1} Renown to pass ${above.name}.` : 'No Sisterhood stands above you. Glory!',
     ].filter(Boolean);
     this.add.text(PAD, y + 34, note.join('\n'), text.body(16, PAL.amber));
     y += 34 + note.length * 22 + 10;

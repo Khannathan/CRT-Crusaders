@@ -24,10 +24,10 @@ export function openPresets(scene: Phaser.Scene, save: SaveData, current: string
     layer.add(scene.add.rectangle(GAME_W / 2, GAME_H / 2, GAME_W, GAME_H, 0x09060b, 0.96).setInteractive());
     layer.add(addFrame(scene, GAME_W / 2, GAME_H / 2, GAME_W - 24, GAME_H - 40, { fill: 0x241925 }));
     layer.add(scene.add.text(GAME_W / 2, 62, 'PARTY PRESETS', text.display(22, PAL.ivory)).setOrigin(0.5));
-    layer.add(scene.add.text(GAME_W / 2, 88, `Load a saved party in one tap. A preset's icon shows on the portraits of its Sisters. Tap an icon to change it. ${list.length}/${PRESET_MAX} saved.`, { ...text.body(15, PAL.muted), align: 'center', wordWrap: { width: GAME_W - 70 } }).setOrigin(0.5, 0));
+    layer.add(scene.add.text(GAME_W / 2, 88, `Muster a saved party in one tap. Its icon marks its Sisters' portraits; tap an icon to change it. ${list.length}/${PRESET_MAX} saved.`, { ...text.body(15, PAL.muted), align: 'center', wordWrap: { width: GAME_W - 70 } }).setOrigin(0.5, 0));
     const area = addScrollArea(scene, 150, GAME_H - 150, { parent: layer, start: scroll, onScroll: (y) => (scroll = y) });
     const rh = 118;
-    if (!list.length) layer.add(scene.add.text(GAME_W / 2, 220, 'No presets yet. Pick a party, then save it here.', text.body(17, PAL.muted)).setOrigin(0.5));
+    if (!list.length) layer.add(scene.add.text(GAME_W / 2, 220, 'No presets yet. Pick a party, then save it here!', text.body(17, PAL.muted)).setOrigin(0.5));
     list.forEach((p, i) => {
       const y = 160 + i * (rh + 8) + rh / 2;
       area.content.add(scene.add.rectangle(GAME_W / 2, y, GAME_W - 60, rh, 0x1a1219).setStrokeStyle(1, PAL.armorShadow));

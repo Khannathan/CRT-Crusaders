@@ -22,7 +22,7 @@ export class PenanceScene extends Phaser.Scene {
   create() {
     const save = game.save;
     const now = Date.now();
-    const { top, refresh } = modeScreen(this, 'Penance', 'Small devotions, kept daily. The faithful are paid in wax.');
+    const { top, refresh } = modeScreen(this, 'Penance', '');
     const st = tasksOf(save, now)[this.period];
 
     // Daily / weekly switch

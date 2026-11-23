@@ -65,7 +65,7 @@ export const GLOSSARY: Record<string, Term> = {
   confess: { title: 'Confess', color: DEBUFF, match: ['confess', 'confessed', 'shatter'], text: 'Glass Confession. Critical hits against a Confessed foe Shatter for +20% critical damage.' },
   stride: { title: 'Stride', color: BUFF, match: ['stride'], text: 'Red Pilgrimage. A Pilgrim gains 1 Stride each time she changes rank (a skill, a Step, a push or a pull), up to 5. Skills spend it.' },
   toll: { title: 'Toll', color: PAL.amber, match: ['toll', 'tolls', 'peal', 'midnight', 'bell rings'], text: 'Hollow Bell. Every skill a Bell Sister uses rings the Bell. Every 3rd toll is a Peal: each Bell Sister gains 5 Zeal. The 12th toll is Midnight: once a fight, every fallen Sister rises with 20% HP. Some Bell Sisters add their own Peal effect.' },
-  seal: { title: "Saint's Seal", color: PAL.amber, match: ["saint's seal", 'seal'], text: 'A UR Sister\'s once-a-fight miracle. It fires on its own the first time its moment comes, then is spent until the next fight.' },
+  seal: { title: "Saint's Seal", color: PAL.amber, match: ["saint's seal", 'seal'], text: 'A UR Sister\'s once-a-fight miracle. It fires on its own the first time its moment comes.' },
   ebb: { title: 'Ebb', color: PAL.amber, match: ['ebb'], text: 'Drowned Litany. An Ebb skill spends the whole Tide at once, and grows with every point spent.' },
   cooldown: { title: 'Cooldown', color: PAL.steel, match: ['cooldown'], text: 'Her own turns to wait before using the skill again.' },
 };

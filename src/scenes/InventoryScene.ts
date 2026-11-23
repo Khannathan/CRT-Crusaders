@@ -28,7 +28,7 @@ export class InventoryScene extends Phaser.Scene {
 
   create() {
     const save = game.save;
-    const { top } = modeScreen(this, 'Inventory', 'Every relic, ash and page your Sisters have carried home.');
+    const { top } = modeScreen(this, 'Inventory', '');
     const bw = GAME_W - PAD * 2;
 
     // Currencies
@@ -114,7 +114,7 @@ export class InventoryScene extends Phaser.Scene {
         makeButton(this, PAD + 120, by, 220, 46, `Refine ${REFINE} → 1 ${next.name}`, go(1), { fontSize: 14, disabled: most < 1, active: most >= 1 });
         makeButton(this, GAME_W - PAD - 110, by, 200, 46, most > 1 ? `Refine all (${most})` : 'Refine all', go(most), { fontSize: 14, disabled: most < 2 });
       } else {
-        this.add.text(PAD + 16, panelTop + panelH - 40, 'The highest of its kind.', text.body(15, PAL.amber));
+        this.add.text(PAD + 16, panelTop + panelH - 40, 'The holiest of its kind.', text.body(15, PAL.amber));
       }
     }
     if (this.notice) toast(this, this.notice);

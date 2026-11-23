@@ -48,7 +48,7 @@ export class TrialsScene extends Phaser.Scene {
 
   create() {
     const save = game.save;
-    const { top, refresh } = modeScreen(this, 'Relic Trials', 'Each dawn the dead guard a different spoil. Three victories a day; a loss costs nothing.');
+    const { top, refresh } = modeScreen(this, 'Relic Trials', 'A loss costs nothing.');
     const open = openTrials();
     const trial = open.find((t) => t.kind === this.kind) ?? open[0];
     const left = entriesLeft(save);
@@ -80,7 +80,7 @@ export class TrialsScene extends Phaser.Scene {
       this.add.rectangle(GAME_W / 2, y + h / 2, bw, h, unlocked ? 0x1e1520 : 0x151017).setStrokeStyle(1, stars === 3 ? PAL.bronze : PAL.armorShadow);
       this.add.text(PAD + 14, y + 12, `TIER ${TIER_NAME[tier]}`, text.hud(14, unlocked ? PAL.amber : PAL.steel));
       drawStars(this, PAD + 112, y + 20, stars, 8);
-      this.add.text(PAD + 14, y + 40, unlocked ? spoilsPreview(trial.kind, tier) : 'Win the tier below to open it.', { ...text.body(15, unlocked ? PAL.ivory : PAL.steel), wordWrap: { width: bw - 230 } });
+      this.add.text(PAD + 14, y + 40, unlocked ? spoilsPreview(trial.kind, tier) : 'Locked', { ...text.body(15, unlocked ? PAL.ivory : PAL.steel), wordWrap: { width: bw - 230 } });
       if (unlocked) {
         const canSweep = stars >= 3 && left > 0;
         makeButton(this, GAME_W - PAD - 160, y + h / 2, 96, 50, 'Fight', () => this.fight(trial, tier), { active: left > 0, disabled: left <= 0, fontSize: 17 });
@@ -103,14 +103,14 @@ export class TrialsScene extends Phaser.Scene {
     pickParty(
       this,
       save,
-      { title: trial.name, sub: `Tier ${TIER_NAME[tier]}. Tap Sisters in rank order; the first stands in front.`, initial: save.lastParty, confirm: 'Enter the trial' },
+      { title: trial.name, sub: `Tier ${TIER_NAME[tier]}. Tap in rank order. The first stands in front.`, initial: save.lastParty, confirm: 'Enter the trial!' },
       (party) => {
         current.challenge = {
-          label: `${trial.name}, Tier ${TIER_NAME[tier]}. The dead rise to guard their spoils.`,
+          label: `${trial.name}, Tier ${TIER_NAME[tier]}. The dead rise to guard their spoils!`,
           make: (rng) => trialBattle(save, party, tier, rng),
           finish: (_outcome, battle) => {
             const r = finishTrial(save, trial.kind, tier, battle);
-            const notice = r.spoils ? `${'★'.repeat(r.stars)} Victory: ${spoilsText(r.spoils)}` : 'The trial repels you. No entry was spent.';
+            const notice = r.spoils ? `${'★'.repeat(r.stars)} Victory: ${spoilsText(r.spoils)}` : 'The trial repels you. Nothing was spent.';
             return { scene: 'Trials', data: { kind: trial.kind, notice } };
           },
         };

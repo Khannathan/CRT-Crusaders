@@ -103,7 +103,7 @@ export class FieldScene extends Phaser.Scene {
     this.timeText = this.add.text(14, 32, '', text.hud(18, PAL.steel)).setDepth(41);
     this.drawToggles();
     this.logText = this.add
-      .text(GAME_W / 2, 96, this.practice ? 'Tap a Sister when her Zeal is full to cast her Litany.' : 'The dark stirs. Steel yourselves, Sisters.', { ...text.body(18, PAL.ivory), align: 'center', wordWrap: { width: GAME_W - 40 }, stroke: '#000000', strokeThickness: 4 })
+      .text(GAME_W / 2, 96, this.practice ? 'When her Zeal burns full, tap a Sister to cast her Litany!' : 'The dark stirs. Steel yourselves, Sisters!', { ...text.body(18, PAL.ivory), align: 'center', wordWrap: { width: GAME_W - 40 }, stroke: '#000000', strokeThickness: 4 })
       .setOrigin(0.5)
       .setDepth(41);
 

@@ -185,7 +185,7 @@ export class RecruitScene extends Phaser.Scene {
     const poolH = 116;
     addPanel(this, GAME_W / 2 - pw / 2, y, pw, poolH);
     const first = target.name.split(' ')[0];
-    this.add.text(px + 16, y + 10, s.urGuaranteed ? `The next UR is ${first}, sworn.` : `A UR here is ${first} half the time, and always after one that strays.`, { ...text.body(17, PAL.ivory), fontStyle: '600', wordWrap: { width: pw - 32 } });
+    this.add.text(px + 16, y + 10, s.urGuaranteed ? `The next UR is ${first}. It is sworn!` : `A UR here is ${first} half the time, or always after a miss.`, { ...text.body(17, PAL.ivory), fontStyle: '600', wordWrap: { width: pw - 32 } });
     // Pity counters: UR (shared by every banner) and SSR
     const toPity = PITY_LIMIT - s.pity;
     const urLeft = urPityLeft(s);
@@ -239,7 +239,7 @@ export class RecruitScene extends Phaser.Scene {
     layer.add(addFrame(this, GAME_W / 2, GAME_H / 2 - 40, GAME_W - 40, 560, { fill: 0x241925 }));
     layer.add(this.add.text(GAME_W / 2, 230, c.limited ? 'CLAIM THE SAINT' : 'CLAIM A UR', text.display(26, PAL.amber)).setOrigin(0.5));
     const cost = c.limited ? `${SPARK} Saint's Favor` : `${SPARK} Relic Shards of the ${c.order}`;
-    layer.add(this.add.text(GAME_W / 2, 268, `${cost}. Tap her to swear her in.`, { ...text.body(17, PAL.muted), align: 'center', wordWrap: { width: GAME_W - 90 } }).setOrigin(0.5));
+    layer.add(this.add.text(GAME_W / 2, 268, `${cost}. Tap her to swear her in!`, { ...text.body(17, PAL.muted), align: 'center', wordWrap: { width: GAME_W - 90 } }).setOrigin(0.5));
     {
       const x = GAME_W / 2;
       const y = 420;
@@ -257,7 +257,7 @@ export class RecruitScene extends Phaser.Scene {
       layer.add([
         img,
         this.add.text(x, y + 108, c.name, { ...text.body(18, PAL.ivory), fontStyle: '600' }).setOrigin(0.5),
-        this.add.text(x, y + 130, owned ? 'Owned: adds a copy for Vows' : 'Not yet sworn', text.hud(11, owned ? PAL.steel : PAL.amber)).setOrigin(0.5),
+        this.add.text(x, y + 130, owned ? 'Sworn: adds a copy for Vows' : 'Not yet sworn', text.hud(11, owned ? PAL.steel : PAL.amber)).setOrigin(0.5),
       ]);
     }
     const back = makeButton(this, GAME_W / 2, 640, 200, 56, 'Not now', () => layer.destroy(), { fontSize: 18 });
@@ -278,7 +278,7 @@ export class RecruitScene extends Phaser.Scene {
       layer.add(this.add.text(GAME_W / 2, 60, 'CHOOSE YOUR RATE-UP', text.display(24, PAL.amber)).setOrigin(0.5));
       layer.add(
         this.add
-          .text(GAME_W / 2, 84, 'Tap one UR and two SSRs. A UR here is your pick half the time and always after one that strays. Pity and Relic Shards carry over. Hold a portrait for her stats.', { ...text.body(15, PAL.muted), align: 'center', wordWrap: { width: GAME_W - 70 } })
+          .text(GAME_W / 2, 84, 'Choose one UR and two SSRs to call. Pity and Relic Shards carry over. Hold a portrait for her stats.', { ...text.body(15, PAL.muted), align: 'center', wordWrap: { width: GAME_W - 70 } })
           .setOrigin(0.5, 0),
       );
       const list = addScrollArea(this, 160, GAME_H - 130, { parent: layer, depth: 20 });
@@ -348,7 +348,7 @@ export class RecruitScene extends Phaser.Scene {
     layer.add(this.add.text(GAME_W / 2, 60, 'EVERY SISTER ON THIS BANNER', text.display(22, PAL.amber)).setOrigin(0.5));
     layer.add(
       this.add
-        .text(GAME_W / 2, 84, `${banner.limited !== undefined ? 'Limited' : 'Standard'} banner. Gold frames are boosted here. Chances are per pull, before pity. Hold a portrait for her stats.`, { ...text.body(14, PAL.muted), align: 'center', wordWrap: { width: GAME_W - 70 } })
+        .text(GAME_W / 2, 84, `${banner.limited !== undefined ? 'Limited' : 'Standard'} banner. Gold frames are boosted. Chances are per pull, before pity.`, { ...text.body(14, PAL.muted), align: 'center', wordWrap: { width: GAME_W - 70 } })
         .setOrigin(0.5, 0),
     );
     const list = addScrollArea(this, 130, GAME_H - 110, { parent: layer, depth: 20 });
@@ -388,7 +388,7 @@ export class RecruitScene extends Phaser.Scene {
     layer.add(this.add.text(GAME_W / 2, 60, 'LIMITED BANNERS', text.display(24, PAL.amber)).setOrigin(0.5));
     layer.add(
       this.add
-        .text(GAME_W / 2, 84, `Each runs a Saint and two SSRs for two weeks. Nobody on them is on the standard banner until ${GRADUATE_AFTER} more Limited banners have passed; then they join their Order's standard pool for good.`, { ...text.body(15, PAL.muted), align: 'center', wordWrap: { width: GAME_W - 70 } })
+        .text(GAME_W / 2, 84, `Each raises a Saint and two SSRs for two weeks. They join their Order's standard pool after ${GRADUATE_AFTER} more Limited banners.`, { ...text.body(15, PAL.muted), align: 'center', wordWrap: { width: GAME_W - 70 } })
         .setOrigin(0.5, 0),
     );
     const list = addScrollArea(this, 170, GAME_H - 120, { parent: layer, depth: 20 });
@@ -418,7 +418,7 @@ export class RecruitScene extends Phaser.Scene {
       y += 180;
     });
     if (!upcoming().length) {
-      list.content.add(this.add.text(GAME_W / 2, y + 10, 'More Saints are being canonized. This banner stays up until they arrive.', { ...text.body(15, PAL.muted), align: 'center', wordWrap: { width: GAME_W - 90 } }).setOrigin(0.5, 0));
+      list.content.add(this.add.text(GAME_W / 2, y + 10, 'More Saints await canonization. This banner holds until they come.', { ...text.body(15, PAL.muted), align: 'center', wordWrap: { width: GAME_W - 90 } }).setOrigin(0.5, 0));
       y += 60;
     }
     list.fit(y);
@@ -445,12 +445,12 @@ export class RecruitScene extends Phaser.Scene {
         GAME_W / 2,
         450,
         [
-          'A UR is the banner\'s target half the time, and always after one that strays. Half of SSRs are its boosted pair.',
+          'A UR is the banner\'s target half the time, or always after a miss. Half of SSRs are its boosted pair.',
           'On the standard banner you choose the UR and the two SSRs.',
           `×10 always has an SR or better. Pull ${PITY_LIMIT} without an SSR or UR gives one. UR chance climbs after pull ${UR_SOFT}; pull ${UR_HARD} is a UR. Pity carries across every banner.`,
           `Each pull gives a Relic Shard of the target's Order (Saint's Favor on the Limited banner). ${SPARK} buy that UR.`,
           `Limited Sisters join the standard pool after ${GRADUATE_AFTER} more Limited banners.`,
-          'Duplicates add a Vow rank, then pay Tithes.',
+          'Duplicates add a Vow, then pay Tithes.',
         ].join('\n'),
         { ...style, fontSize: '16px', color: hex(PAL.steel), align: 'center', lineSpacing: 2, wordWrap: { width: GAME_W - 100 } },
       )

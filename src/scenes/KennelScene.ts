@@ -44,8 +44,8 @@ export class KennelScene extends Phaser.Scene {
     const s = houndsOf(save);
     const gifted = giftWhistles(save);
     if (gifted) commit();
-    const { top, refresh } = modeScreen(this, 'Kennel', 'The Church\'s war-dogs, called with Hound Whistles. One goes into every fight and howls each round.');
-    if (gifted) toast(this, `The kennel-master gives you ${FIRST_WHISTLES} Hound Whistles.`);
+    const { top, refresh } = modeScreen(this, 'Kennel', '');
+    if (gifted) toast(this, `The kennel-master gives you ${FIRST_WHISTLES} Hound Whistles!`);
     const bw = GAME_W - PAD * 2;
     const list = addScrollArea(this, top - 4, GAME_H - TAB_BAR_H, { start: KennelScene.listY, onScroll: (y) => (KennelScene.listY = y) });
     const before = this.children.list.length;
@@ -63,7 +63,7 @@ export class KennelScene extends Phaser.Scene {
       this.add.text(GAME_W - PAD - 12, y + 12, `${def.rarity}  LV ${lv}/${HOUND_MAX}`, text.hud(13, RARITY_COLOR[def.rarity])).setOrigin(1, 0);
       this.add.text(PAD + 136, y + 60, `${def.howlName}, every round:`, text.body(15, PAL.amber));
       this.add.text(PAD + 136, y + 82, howlParts(howlAt(def, lv)).map((p) => `• ${p}`).join('\n'), { ...text.body(15, PAL.ivory), wordWrap: { width: bw - 150 } });
-    } else this.add.text(PAD + 16, y + 60, 'No hound goes with your Sisters. Tap one below.', text.body(16, PAL.muted));
+    } else this.add.text(PAD + 16, y + 60, 'No hound runs with your Sisters. Choose one below!', text.body(16, PAL.muted));
     y += ch + 14;
 
     // The whistle: free once a day, then Hound Whistles (the Kennel's own currency), then Gilt.
@@ -88,7 +88,7 @@ export class KennelScene extends Phaser.Scene {
     list.tap(bA.box, () => (ab ? toast(this, ab) : this.adopt()));
     y += 74;
     const rates = (['R', 'SR', 'SSR', 'UR'] as const).map((r) => `${r} ${Math.round(HOUND_RATES[r] * 100)}%`).join('  ·  ');
-    this.add.text(GAME_W / 2, y, `${rates}\nAn SSR or UR hound within ${HOUND_PITY - (s.pity ?? 0)} calls. Every call leaves a Marrow Bone; ${HOUND_SPARK} adopt any hound. A hound you have grows a level (to ${HOUND_MAX}), each 10% stronger.`, { ...text.body(14, PAL.muted), align: 'center', wordWrap: { width: bw - 20 } }).setOrigin(0.5, 0);
+    this.add.text(GAME_W / 2, y, `${rates}\nSSR+ within ${HOUND_PITY - (s.pity ?? 0)} calls. Each call leaves a Marrow Bone; ${HOUND_SPARK} adopt any hound. Repeats level a hound (max ${HOUND_MAX}, +10% each).`, { ...text.body(14, PAL.muted), align: 'center', wordWrap: { width: bw - 20 } }).setOrigin(0.5, 0);
     y += 84;
 
     // Every hound: tap one you have to bring it.
@@ -201,7 +201,7 @@ export class KennelScene extends Phaser.Scene {
     layer.add(this.add.text(GAME_W / 2, GAME_H / 2 + 190, `"${h.flavor}"`, { ...text.body(15, PAL.muted), fontStyle: 'italic', align: 'center', wordWrap: { width: GAME_W - 110 } }).setOrigin(0.5, 0));
     const close = () => this.scene.restart();
     const ok = makeButton(this, GAME_W / 2 - 110, GAME_H - 200, 190, 56, 'Kennel', close, { fontSize: 18 });
-    const bring = makeButton(this, GAME_W / 2 + 110, GAME_H - 200, 190, 56, 'Bring it', () => {
+    const bring = makeButton(this, GAME_W / 2 + 110, GAME_H - 200, 190, 56, 'Bring it!', () => {
       setHound(game.save, h.id);
       commit();
       close();

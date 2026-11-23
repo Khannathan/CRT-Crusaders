@@ -29,14 +29,14 @@ export class OrderBookScene extends Phaser.Scene {
 
   create() {
     const save = game.save;
-    const { top, refresh } = modeScreen(this, 'Order Book', 'Every Sister of every Order. Finish an Order\'s R and SR Sisters for Seals and a title.');
+    const { top, refresh } = modeScreen(this, 'Order Book', 'Collect an Order\'s R and SR Sisters for Seals and a title.');
     const owned = Object.keys(save.owned).length;
     const total = ORDER_LIST.reduce((n, o) => n + orderCount(save, o.id).of, 0);
 
     // The worn title, and a way to change it.
     const titles = save.titles ?? [];
     this.add.text(PAD, top + 4, `${owned} of ${total} Sisters sworn`, text.body(17, PAL.muted));
-    this.add.text(PAD, top + 30, titles.length ? `Title: ${save.title ?? 'none'}` : 'Titles: finish a set to earn one', text.body(16, titles.length ? PAL.amber : PAL.steel));
+    this.add.text(PAD, top + 30, titles.length ? `Title: ${save.title ?? 'none'}` : 'Finish a set to earn its title', text.body(16, titles.length ? PAL.amber : PAL.steel));
     if (titles.length) {
       makeButton(this, GAME_W - PAD - 60, top + 30, 120, 38, 'Change', () => {
         const all: (string | undefined)[] = [...titles, undefined];

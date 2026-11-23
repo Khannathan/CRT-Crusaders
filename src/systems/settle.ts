@@ -35,7 +35,7 @@ export function settleBattle(battle: Battle, outcome: 'victory' | 'defeat'): Set
   }
   const run = current.run!;
   absorbBattle(run, battle);
-  const line = won ? `The heretics are purged.${expLine}` : 'Your Sisters have fallen. The dark takes its tithe.';
+  const line = won ? `The heretics are purged!${expLine}` : 'Your Sisters have fallen. The dark takes its tithe.';
   if (won) {
     winRoom(run, game.save);
     commit();

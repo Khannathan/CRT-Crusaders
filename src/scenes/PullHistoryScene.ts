@@ -18,13 +18,13 @@ export class PullHistoryScene extends Phaser.Scene {
   }
 
   create() {
-    const { top } = modeScreen(this, 'Oath Record', `Your last ${PULL_LOG_MAX} pulls, newest first. Nothing is hidden.`, 'Recruit');
+    const { top } = modeScreen(this, 'Oath Record', `Your last ${PULL_LOG_MAX} pulls, newest first.`, 'Recruit');
     const log = [...(game.save.pullLog ?? [])].reverse();
     const count = (r: string) => log.filter((p) => CRUSADERS.find((c) => c.id === p.id)?.rarity === r).length;
     const sinceUR = log.findIndex((p) => CRUSADERS.find((c) => c.id === p.id)?.rarity === 'UR');
     const summary = log.length
       ? `${log.length} pulls · UR ${count('UR')} · SSR ${count('SSR')} · SR ${count('SR')} · R ${count('R')}\n${sinceUR < 0 ? 'No UR in this record yet' : sinceUR === 0 ? 'Your last pull was a UR' : `${sinceUR} pulls since your last UR`}`
-      : 'No pulls recorded yet. Oaths sworn from now on appear here.';
+      : 'No oaths recorded yet. Go and call your Sisters!';
     this.add.text(PAD, top, summary, { ...text.body(17, PAL.muted), lineSpacing: 4 });
 
     const listTop = top + 62;

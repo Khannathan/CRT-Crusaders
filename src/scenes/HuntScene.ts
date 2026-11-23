@@ -58,7 +58,7 @@ export class HuntScene extends Phaser.Scene {
     const hunt = huntOn();
     const s = huntsOf(save);
     const boss = ENEMIES[hunt.boss];
-    const { top, refresh } = modeScreen(this, 'Hallowed Hunts', 'One great beast a day. Twelve rounds to hurt it as much as you can; your best score each day pays Grace for Holy Symbols.');
+    const { top, refresh } = modeScreen(this, 'Hallowed Hunts', 'Twelve rounds to wound the beast. Your daily best pays Grace.');
     const bw = GAME_W - PAD * 2;
     const tier = Math.min(HuntScene.tier ?? s.tier, s.tier);
     const list = addScrollArea(this, top - 4, GAME_H - TAB_BAR_H, { start: HuntScene.listY, onScroll: (y) => (HuntScene.listY = y) });
@@ -95,7 +95,7 @@ export class HuntScene extends Phaser.Scene {
     list.tap(next.box, () => this.setTier(tier + 1));
     this.add.text(GAME_W - PAD, y + 8, `x${tierScale(tier).toFixed(1)}`, text.hud(12, PAL.muted)).setOrigin(1, 0);
     y += 40;
-    this.add.text(PAD, y, `Fell the beast to open the next tier (highest: ${tierLabel(s.tier)}). Harder tiers make bigger scores.`, { ...text.body(14, PAL.muted), wordWrap: { width: bw } });
+    this.add.text(PAD, y, `Fell the beast to open the next tier. Harder tiers score more.`, { ...text.body(14, PAL.muted), wordWrap: { width: bw } });
     y += 40;
 
     // Mechanics.
@@ -196,7 +196,7 @@ export class HuntScene extends Phaser.Scene {
       (party) => {
         save.lastParty = party;
         current.challenge = {
-          label: `The hunt begins: ${ENEMIES[hunt.boss].name}, tier ${tierLabel(tier)}. ${HUNT_ROUNDS} rounds to wound it.`,
+          label: `The hunt begins: ${ENEMIES[hunt.boss].name}, tier ${tierLabel(tier)}. ${HUNT_ROUNDS} rounds to wound it!`,
           make: (rng) => huntBattle(save, party, hunt, tier, rng),
           finish: (_o, battle) => {
             const r = finishHunt(save, hunt, tier, battle);

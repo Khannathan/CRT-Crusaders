@@ -60,7 +60,7 @@ const stamp = () => new Date().toISOString().slice(0, 10);
 export function showExport(save: SaveData) {
   const code = exportSave(save);
   const { box, close } = panel('Back up your save');
-  box.appendChild(note('Copy this code or download the file and keep it somewhere safe. Import it on any browser or device to pick up where you left off.'));
+  box.appendChild(note('Copy this code or download the file, and keep it safe. Restore it on any device to continue.'));
   const t = area(code);
   t.readOnly = true;
   box.appendChild(t);
@@ -123,7 +123,7 @@ export function showImport(onLoad: (save: SaveData) => void) {
     }
     const s = importSave(t.value);
     if (!s) {
-      status.textContent = 'That is not a save code from this game.';
+      status.textContent = 'That is not a save from this game.';
       status.style.color = '#d65f5f';
       return;
     }

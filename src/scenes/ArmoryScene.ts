@@ -50,7 +50,7 @@ export class ArmoryScene extends Phaser.Scene {
     if (gifted) commit();
     const a = armoryOf(save);
     const { set, ends } = featuredSet();
-    const { top } = modeScreen(this, "The Saints' Armory", 'UR gear is never found on the road. Pull for it here, or forge it from Saint\'s Fragments.', this.back, 'bg-armory');
+    const { top } = modeScreen(this, "The Saints' Armory", '', this.back, 'bg-armory');
     const bw = GAME_W - PAD * 2;
     let y = top;
 
@@ -68,7 +68,7 @@ export class ArmoryScene extends Phaser.Scene {
     makeButton(this, GAME_W - PAD - 56, y + 8, 112, 34, 'Details', () => this.showRates(), { fontSize: 14, icon: 'book' });
     y += 32;
     const left = PITY - a.pity;
-    this.add.text(PAD, y, `A UR is certain within ${left} pull${left === 1 ? '' : 's'}. The count carries across weeks.`, text.body(15, PAL.ivory));
+    this.add.text(PAD, y, `UR within ${left} pull${left === 1 ? '' : 's'}. Carries across weeks.`, text.body(15, PAL.ivory));
     y += 30;
     progressBar(this, PAD, y, bw, a.pity / PITY, RARITY_COLOR.UR, 10);
     y += 24;
@@ -104,13 +104,13 @@ export class ArmoryScene extends Phaser.Scene {
     const moulds = countOf(save, 'armory3');
     addPanel(this, PAD, y, bw, 132);
     this.add.text(PAD + 14, y + 12, 'THE UR FORGE', text.hud(13, PAL.steel));
-    this.add.text(PAD + 14, y + 32, `Pour a UR piece of the slot and set you choose: ${FORGE_FRAGMENTS} Saint's Fragments or one Reliquary Mould.`, { ...text.body(15, PAL.ivory), wordWrap: { width: bw - 28 } });
+    this.add.text(PAD + 14, y + 32, `Any slot and set: ${FORGE_FRAGMENTS} Saint's Fragments or 1 Reliquary Mould.`, { ...text.body(15, PAL.ivory), wordWrap: { width: bw - 28 } });
     progressBar(this, PAD + 14, y + 84, bw - 200, frags / FORGE_FRAGMENTS, PAL.amber, 10);
     this.add.text(PAD + 14, y + 98, `Fragments ${frags}/${FORGE_FRAGMENTS}${moulds ? `  ·  Moulds ${moulds}` : ''}`, text.hud(12, PAL.amber));
     const canForge = !forgeBlock(save, 'fragments') || !forgeBlock(save, 'mould');
     makeButton(this, GAME_W - PAD - 82, y + 92, 140, 48, 'Forge a UR', () => this.showForge(), { active: canForge, fontSize: 16 });
 
-    if (gifted) toast(this, `A gift for your first visit: ${FIRST_WRITS} Armory Writs.`);
+    if (gifted) toast(this, `The Saints bless your first visit: ${FIRST_WRITS} Armory Writs!`);
     else if (this.notice) toast(this, this.notice);
   }
 
@@ -136,7 +136,7 @@ export class ArmoryScene extends Phaser.Scene {
     const layer = this.overlay(got.some((g) => g.rarity === 'UR') ? 'A SAINT ANSWERS' : 'FROM THE ARMORY');
     const h = got.length > 1 ? 62 : 90;
     got.forEach((g, i) => this.pieceRow(layer, g, 120 + h / 2 + i * (h + 6), h));
-    layer.add(this.add.text(GAME_W / 2, GAME_H - 132, `+${got.length} Saint's Fragment${got.length > 1 ? 's' : ''}. Wear them from any Sister's Gear tab.`, { ...text.body(15, PAL.muted), align: 'center', wordWrap: { width: GAME_W - 90 } }).setOrigin(0.5));
+    layer.add(this.add.text(GAME_W / 2, GAME_H - 132, `+${got.length} Saint's Fragment${got.length > 1 ? 's' : ''}. Arm a Sister from her Gear tab.`, { ...text.body(15, PAL.muted), align: 'center', wordWrap: { width: GAME_W - 90 } }).setOrigin(0.5));
     layer.add(makeButton(this, GAME_W / 2, GAME_H - 72, 240, 60, 'Done', () => this.scene.restart(), { fontSize: 19, active: true }).all);
   }
 
@@ -146,7 +146,7 @@ export class ArmoryScene extends Phaser.Scene {
     const lines = [
       `UR: ${pct(UR_RATE)} a pull. ${Math.round(FEATURED_SHARE * 100)}% of URs are from the featured set (${set.name} this week); the rest from any of the ${GEAR_SETS.length} sets.`,
       `SSR: ${pct(SSR_RATE)}.  SR: ${pct(1 - UR_RATE - SSR_RATE)}. The Armory never gives R pieces.`,
-      `A UR is certain on the ${PITY}th pull since your last one. The count never resets with the week.`,
+      `A UR is certain on the ${PITY}th pull since your last. The count never resets.`,
       `UR pieces: double the main stat of an R, three substats, and the full +15 refine.`,
       `Writs come from the Feast stall, the Shop (Gilt and the Almonry), bonds at levels 15 and 25, the Inquisition and every 50th Bell Tower floor.`,
       `Fragments come from Crusade bosses, Bell Tower boss floors, Relic Trials tier 3 and up, the Inquisition, melting SSR and UR gear, and every pull here.`,

@@ -84,7 +84,7 @@ export class CryptScene extends Phaser.Scene {
     this.drawParty();
     this.drawBuild();
     addTabBar(this, 'Crusade');
-    makeButton(this, GAME_W / 2, GAME_H - TAB_BAR_H - 28, 260, 48, 'Retreat (keep Tithes)', () => this.finish('retreat'), { fontSize: 17 });
+    makeButton(this, GAME_W / 2, GAME_H - TAB_BAR_H - 28, 260, 48, 'Retreat (keep spoils)', () => this.finish('retreat'), { fontSize: 17 });
 
     // Resume whatever the current node still needs.
     const node = currentNode(run);
@@ -93,7 +93,7 @@ export class CryptScene extends Phaser.Scene {
     else if (node?.kind === 'reliquary') this.showRelics();
     else if (node?.encounter) this.scene.start('Battle');
     else if (run.sanctuary) this.showSanctuary(run.sanctuary);
-    else this.prompt(choices(run).length ? 'Choose your path through the dark.' : '');
+    else this.prompt(choices(run).length ? 'Choose your path through the dark!' : '');
   }
 
   /** Between acts: the Sisters have been healed; go deeper or leave with everything. */
@@ -109,7 +109,7 @@ export class CryptScene extends Phaser.Scene {
         .text(
           GAME_W / 2,
           330,
-          `A Sanctuary. Every Sister standing heals ${Math.round(SANCTUARY_HEAL * 100)}%.\n\nAct ${ROMAN[act]} of ${acts}${next ? `, ${next},` : ''} lies below, and its foes are stronger.\n\nYour spoils are banked: ${run.tithes} Tithes, ${run.seals} Seals, ${run.loot.length} gear, safe even if you fall.`,
+          `A Sanctuary! Every Sister standing heals ${Math.round(SANCTUARY_HEAL * 100)}%.\n\nAct ${ROMAN[act]} of ${acts}${next ? `, ${next},` : ''} lies below. Its foes are stronger.\n\nSpoils banked, safe even if you fall: ${run.tithes} Tithes, ${run.seals} Seals, ${run.loot.length} gear.`,
           { ...style, fontSize: '21px', lineSpacing: 4 },
         )
         .setOrigin(0.5),
@@ -119,7 +119,7 @@ export class CryptScene extends Phaser.Scene {
       commit();
       this.scene.restart();
     }, { active: true, fontSize: 22 });
-    const leave = makeButton(this, GAME_W / 2, 620, GAME_W - 100, 64, 'Leave with everything found', () => this.finish('retreat'), { fontSize: 19 });
+    const leave = makeButton(this, GAME_W / 2, 620, GAME_W - 100, 64, 'Leave with your spoils', () => this.finish('retreat'), { fontSize: 19 });
     layer.add([...go.all, ...leave.all]);
   }
 
@@ -230,7 +230,7 @@ export class CryptScene extends Phaser.Scene {
     const ahead = floor - run.floor;
     const style = { fontFamily: FONT, color: hex(PAL.ivory), align: 'center', wordWrap: { width: GAME_W - 40 } };
     this.info.push(this.add.text(GAME_W / 2, 530, `${KIND_NAME[node.kind]}  ·  ${ahead} floor${ahead === 1 ? '' : 's'} ahead\n${this.describe(node)}`, { ...style, fontSize: '19px', lineSpacing: 2 }).setOrigin(0.5));
-    this.info.push(this.add.text(GAME_W / 2, 592, 'Out of reach for now. Tap a glowing room to move.', { ...style, fontSize: '16px', color: hex(PAL.steel) }).setOrigin(0.5));
+    this.info.push(this.add.text(GAME_W / 2, 592, 'Out of reach. March to a glowing room.', { ...style, fontSize: '16px', color: hex(PAL.steel) }).setOrigin(0.5));
   }
 
   private describe(node: MapNode): string {
@@ -240,19 +240,19 @@ export class CryptScene extends Phaser.Scene {
       case 'fight':
         return `${foes(node.encounter!)}. +${Math.round(REWARDS.fightTithes * m)} Tithes.`;
       case 'elite':
-        return `${foes(node.encounter!)}. A greater horror. Its death yields a relic, +${REWARDS.eliteSeals} Seal.`;
+        return `${foes(node.encounter!)}. A greater horror! Its death yields a relic and +${REWARDS.eliteSeals} Seal.`;
       case 'boss':
-        if (node.warden) return `${node.name}, Warden of this act. A lesser boss: boss spoils.`;
-        if (node.actEnd) return `${node.name} bars the way down. Beat it to reach a Sanctuary.`;
-        return `${node.name ?? current.run!.crypt.bossName}. Destroy it and the crypt is purified.`;
+        if (node.warden) return `${node.name}, Warden of this act. Slay it for boss spoils!`;
+        if (node.actEnd) return `${node.name} bars the way down. Slay it to reach a Sanctuary.`;
+        return `${node.name ?? current.run!.crypt.bossName}. Destroy it and purify the crypt!`;
       case 'event':
         return 'Something waits in the dark. A temptation, not a fight.';
       case 'shrine':
-        return `Kneel and pray: every Sister heals ${REWARDS.shrineHealPct * 100}%.`;
+        return `Kneel and pray. Every Sister heals ${REWARDS.shrineHealPct * 100}%.`;
       case 'reliquary':
-        return 'Claim one holy relic for this crusade.';
+        return 'Claim one holy relic for this crusade!';
       case 'miracle':
-        return `A Miracle. Every Sister, fallen or not, rises whole. +${MIRACLE_SEALS} Seals and a relic of your choice.`;
+        return `A Miracle! Every Sister, fallen or not, rises whole. +${MIRACLE_SEALS} Seals and a relic of your choice.`;
     }
   }
 

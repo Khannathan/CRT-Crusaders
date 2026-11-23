@@ -51,7 +51,7 @@ export function showFlame(scene: Phaser.Scene, save: SaveData) {
   layer.add(drawFlame(scene, GAME_W / 2, 310, save, false));
   const lines = [
     `${tier.name}  ·  ${f.level} day${f.level === 1 ? '' : 's'} lit`,
-    next ? `${next.at - f.level} more day${next.at - f.level === 1 ? '' : 's'} to the ${next.name}` : 'The flame burns as high as it can.',
+    next ? `${next.at - f.level} more day${next.at - f.level === 1 ? '' : 's'} to the ${next.name}` : 'The flame burns as high as it can. Glory!',
     `Grace this week: ${f.grace} of ${GRACE_PER_WEEK}`,
   ];
   layer.add(scene.add.text(GAME_W / 2, 350, lines.join('\n'), { ...text.body(19, PAL.ivory), align: 'center', lineSpacing: 6 }).setOrigin(0.5, 0));
@@ -60,7 +60,7 @@ export function showFlame(scene: Phaser.Scene, save: SaveData) {
       .text(
         GAME_W / 2,
         462,
-        'Each day you keep the vigil, the candle grows a step. A missed day is covered by grace first; past that it dims one step. It never goes out, and it never grants power: only titles.',
+        'Each day you keep the vigil, the flame grows a step. Grace covers a missed day; past that it dims a step. It never goes out. It grants titles, never power.',
         { ...text.body(15, PAL.steel), align: 'center', wordWrap: { width: GAME_W - 90 } },
       )
       .setOrigin(0.5, 0),

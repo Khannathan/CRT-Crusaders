@@ -3,7 +3,7 @@ import { GAME_H, GAME_W, PAL } from '../config';
 import { makeButton } from './button';
 import { CURRENCY_BAR_H, addCurrencyBar } from './currencyBar';
 import { addTabBar, tabOf } from './tabBar';
-import { PAD, addBackdrop, addHeading, addScreenGlow, text } from './theme';
+import { PAD, addBackdrop, addHeading, addScreenGlow, noOrphan, text } from './theme';
 
 /**
  * The shared frame for a Rite screen: glow, currency bar, heading with a line
@@ -38,7 +38,7 @@ export function progressBar(scene: Phaser.Scene, left: number, y: number, w: num
 
 /** A framed notice over the lower screen that fades after a few seconds. */
 export function toast(scene: Phaser.Scene, msg: string, y = GAME_H - 190) {
-  const t = scene.add.text(GAME_W / 2, y, msg, { ...text.body(19, PAL.ivory), align: 'center', wordWrap: { width: GAME_W - 80 } }).setOrigin(0.5).setDepth(31);
+  const t = scene.add.text(GAME_W / 2, y, msg.split('\n').map(noOrphan).join('\n'), { ...text.body(19, PAL.ivory), align: 'center', wordWrap: { width: GAME_W - 80 } }).setOrigin(0.5).setDepth(31);
   const bg = scene.add.rectangle(GAME_W / 2, y, t.width + 40, t.height + 26, 0x1b121c, 0.97).setStrokeStyle(1, PAL.amber).setDepth(30);
   scene.tweens.add({ targets: [t, bg], alpha: 0, delay: 3200, duration: 700, onComplete: () => (t.destroy(), bg.destroy()) });
 }

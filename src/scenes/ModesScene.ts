@@ -8,8 +8,8 @@ export class ModesScene extends Phaser.Scene {
     super('Modes');
   }
   create() {
-    const mid = current.run ? 'Return to the dark' : current.paused?.challenge && current.paused.challenge === current.challenge ? 'Return to the fight' : '';
-    drawBoard(this, 'board', 'Crusade', 'Every war the Church wages. Choose your battlefield.', mid ? { label: mid, go: () => this.scene.start(current.run ? 'Crypt' : 'Crusade') } : undefined);
+    const mid = current.run ? 'Return to the dark!' : current.paused?.challenge && current.paused.challenge === current.challenge ? 'Return to the fight!' : '';
+    drawBoard(this, 'board', 'Crusade', '', mid ? { label: mid, go: () => this.scene.start(current.run ? 'Crypt' : 'Crusade') } : undefined);
   }
 }
 
@@ -19,7 +19,7 @@ export class CloisterScene extends Phaser.Scene {
     super('Cloister');
   }
   create() {
-    drawBoard(this, 'cloister', 'The Cloister', 'Where the faithful grow stronger, and spend what they earned.');
+    drawBoard(this, 'cloister', 'The Cloister', '');
   }
 }
 
@@ -29,6 +29,6 @@ export class AltarScene extends Phaser.Scene {
     super('Altar');
   }
   create() {
-    drawBoard(this, 'altar', 'The Sealed Altar', 'Call Sisters, saints\' arms and hounds to the faith.');
+    drawBoard(this, 'altar', 'The Sealed Altar', '');
   }
 }
