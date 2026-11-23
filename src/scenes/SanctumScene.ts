@@ -36,13 +36,16 @@ import { drawMarchToggle, marchLine, marchUi, showMarchSummary } from '../ui/mar
 import { marchOf } from '../systems/march';
 import { NOVICE_TASKS, NOVITIATE_DAYS, noviceDay, noviceMarks, noviceOpen, taskClaimable } from '../systems/novitiate';
 import { morningRounds, roundsReady, roundsTotal, type RoundsReport } from '../systems/rounds';
-import { addTabBar } from '../ui/tabBar';
+import { TAB_BAR_H, addTabBar } from '../ui/tabBar';
+import { addPageScroll } from '../ui/pageScroll';
 import { pickParty } from '../ui/partyPicker';
 import { PAD, addBackdrop, addFrame, addHeading, addScreenGlow, fitLine, text } from '../ui/theme';
 
 /** Home screen: the Vigil (idle auto-battle and offline gathering), destinations and the tab bar. */
 export class SanctumScene extends Phaser.Scene {
   private refreshBar?: () => void;
+  /** Where the page was scrolled to, kept across visits and redraws. */
+  private static scrollY = 0;
 
   constructor() {
     super('Sanctum');
@@ -50,7 +53,9 @@ export class SanctumScene extends Phaser.Scene {
 
   create() {
     addScreenGlow(this);
+    const before = new Set(this.children.list);
     this.refreshBar = addCurrencyBar(this);
+    const topBar = this.children.list.filter((o) => !before.has(o));
     const top = addHeading(this, 'The Sanctum', CURRENCY_BAR_H + 16);
     // A title earned in the Order Book, worn under the heading.
     if (game.save.title) this.add.text(PAD + 128, top - 6, game.save.title.toUpperCase(), text.hud(10, PAL.amber)).setOrigin(0, 0.5);
@@ -126,7 +131,16 @@ export class SanctumScene extends Phaser.Scene {
     this.textLink(PAD + 4, linkY, 'Settings', () => this.showSettings());
     this.textLink(GAME_W - PAD - 4, linkY, 'Reset save', () => this.confirmReset(), 1);
 
-    addTabBar(this, 'Sanctum');
+    const tabBar = addTabBar(this, 'Sanctum');
+    // The page runs taller than the screen: it scrolls between the bars.
+    addPageScroll(this, {
+      top: CURRENCY_BAR_H,
+      bottom: GAME_H - TAB_BAR_H,
+      contentBottom: linkY + 20,
+      fixed: [...topBar, ...tabBar],
+      start: SanctumScene.scrollY,
+      onScroll: (y) => (SanctumScene.scrollY = y),
+    });
     // What the march cleared while you were away, or why it halted.
     if (owned.length && (marchUi.away || marchOf(game.save)?.stopped)) showMarchSummary(this, !!marchUi.away);
     marchUi.away = false;
