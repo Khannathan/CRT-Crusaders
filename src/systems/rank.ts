@@ -22,6 +22,7 @@ export const RANK_XP: Record<TaskEvent, number> = {
   trialWon: 15,
   towerFloor: 12,
   inquisitionWon: 25,
+  ordealWon: 15,
 };
 
 export const MAX_RANK = 30;
@@ -111,6 +112,7 @@ export const UNLOCKS: Unlock[] = [
   { rank: 1, name: 'Matins', desc: 'A candle each dawn, and gifts that never reset.' },
   { rank: 2, name: 'Penance', desc: 'Daily and weekly devotions that pay in wax.' },
   { rank: 3, name: 'Relic Trials', desc: 'A daily spoil. Sweep what you have mastered.' },
+  { rank: 3, name: 'The Ordeals', desc: 'A weekly league of twenty Orders. Rise, or be cast down!' },
   { rank: 4, name: 'Hallowed Hunts', desc: 'A great beast each day. Your best pays Grace.' },
   { rank: 4, name: 'Sweep', desc: 'Clear a beaten crypt again on Auto, several times over.' },
   { rank: 5, name: 'Confession', desc: 'Give offerings to raise bonds. Each level adds strength and a confession.' },

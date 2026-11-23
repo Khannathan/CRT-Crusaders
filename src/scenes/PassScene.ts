@@ -142,4 +142,5 @@ const STEP_NAME: Record<string, string> = {
   inquisitionWon: 'an Inquisition won',
   eliteWon: 'an elite slain',
   towerFloor: 'a Tower floor',
+  ordealWon: 'an Ordeal won',
 };

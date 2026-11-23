@@ -11,6 +11,7 @@ import { GAME_W, PAL } from '../config';
 import type { SaveData } from '../state/save';
 import { matinsReady } from '../systems/matins';
 import { passReady } from '../systems/pass';
+import { BRACKET, LEAGUES, ORDEALS_PER_DAY, bracket, ordealsLeft, ordealsOf, ordealsReady } from '../systems/ordeals';
 import { ROMAN_RANK, unlocked } from '../systems/rank';
 import { anyClaimable } from '../systems/tasks';
 import { noviceOpen, noviceReady } from '../systems/novitiate';
@@ -99,6 +100,11 @@ export const RITES: RiteEntry[] = [
     label: 'Hallowed Hunts', scene: 'Hunt', icon: 'blade', rank: 4, home: 'board', bg: 'bg-battle', ready: (s) => huntEntriesLeft(s) > 0,
     blurb: 'One beast a day. Wound it for Grace!',
     status: (s) => `Today: ${ENEMIES[huntOn().boss].name}  ·  ${huntEntriesLeft(s)}/${HUNT_ENTRIES} hunts left`,
+  },
+  {
+    label: 'The Ordeals', scene: 'Ordeals', icon: 'blade', rank: 3, home: 'board', bg: 'bg-hall', ready: (s) => ordealsReady(s),
+    blurb: 'Twenty Orders a week. Top four rise!',
+    status: (s) => `${LEAGUES[ordealsOf(s).league]} League  ·  place ${bracket(s).place}/${BRACKET}  ·  ${ordealsLeft(s)}/${ORDEALS_PER_DAY} today`,
   },
   {
     label: 'Relic Trials', scene: 'Trials', icon: 'shield', rank: 3, home: 'board', bg: 'bg-iron-oubliette', boost: 'trials', ready: (s) => entriesLeft(s) > 0,

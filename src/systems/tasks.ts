@@ -25,7 +25,8 @@ export type TaskEvent =
   | 'dailyDone'
   | 'trialWon'
   | 'towerFloor'
-  | 'inquisitionWon';
+  | 'inquisitionWon'
+  | 'ordealWon';
 
 export interface TaskDef {
   id: string;

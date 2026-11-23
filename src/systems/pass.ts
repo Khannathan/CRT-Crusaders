@@ -43,6 +43,7 @@ export const STEPS: Record<TaskEvent, number> = {
   trialWon: 12,
   towerFloor: 6,
   inquisitionWon: 12,
+  ordealWon: 8,
 };
 
 export interface PassState {
