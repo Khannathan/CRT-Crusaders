@@ -10,6 +10,7 @@ import { CHAPTERS, STAGES_PER_CHAPTER, nextStage, stageBattle, stageDef } from '
 import { ZEAL_MAX, skillsFor, type Battle, type Unit } from '../systems/combat';
 import { CHAIN_SEC, FieldBattle, chainBonus, screenField } from '../systems/field';
 import { runFieldInBackground } from '../ui/bgFight';
+import { HOSANNAS, HOSANNA_MAX, battleHosanna, hosannaOpen, pickHosanna } from '../systems/hosanna';
 import { keywordLine } from '../systems/keywords';
 import { settleBattle } from '../systems/settle';
 import { makeButton } from '../ui/button';
@@ -75,6 +76,9 @@ export class FieldScene extends Phaser.Scene {
   private cardUntil = 0;
   private kwText!: Phaser.GameObjects.Text;
   /** Litany Chain readout above the cards: count, draining window bar, last count shown. */
+  /** Hosanna bar above the cards (left), and the picker shown before the fight. */
+  private hosUi?: { name: Phaser.GameObjects.Text; bar: Phaser.GameObjects.Rectangle; frame: Phaser.GameObjects.Rectangle; w: number; full: boolean };
+  private hosPicker: Phaser.GameObjects.GameObject[] = [];
   private chainUi?: { text: Phaser.GameObjects.Text; bar: Phaser.GameObjects.Rectangle; w: number; shown: number };
   /** Before the fight (formation swaps), the fight, or paused. */
   private phase: 'deploy' | 'fight' = 'deploy';
@@ -108,6 +112,8 @@ export class FieldScene extends Phaser.Scene {
     this.slowLeft = 0;
     this.cardUntil = 0;
     this.toggles = [];
+    this.hosUi = undefined;
+    this.hosPicker = [];
     this.phase = 'deploy';
     this.paused = false;
     this.pauseLayer = undefined;
@@ -138,7 +144,7 @@ export class FieldScene extends Phaser.Scene {
       this.field.opts.manualLitany = !settings.autoBattle;
       this.phase = 'fight';
       this.deployLeft = undefined;
-    } else this.field = screenField(battle, !settings.autoBattle);
+    } else this.field = screenField(battle, !settings.autoBattle, battleHosanna(save, battle));
   }
 
   create() {
@@ -188,6 +194,7 @@ export class FieldScene extends Phaser.Scene {
 
     this.drawCards();
     this.drawChain();
+    this.drawHosanna();
     this.applySpeed();
     if (this.phase === 'deploy') this.drawDeploy();
     else this.log('Back into the fight!');
@@ -244,6 +251,8 @@ export class FieldScene extends Phaser.Scene {
     this.view.mark([]);
     this.deployLayer.forEach((o) => o.destroy());
     this.deployLayer = [];
+    this.closeHosannaPicker();
+    this.refreshHosanna(true);
     this.log(this.practice ? 'Tap a foe to Focus it. Tap a Sister when her Zeal burns full!' : 'The dark stirs. Steel yourselves, Sisters!');
   }
 
@@ -383,6 +392,7 @@ export class FieldScene extends Phaser.Scene {
       return;
     }
     this.cardUntil = this.time.now + 1300;
+    if (s.id.startsWith('hosanna-')) return riteCard(this, s.name, 'THE SISTERHOOD', () => {}, 'SINGS A HOSANNA');
     riteCard(this, s.name, u.name, () => {}, u.side === 'party' ? 'INVOKES' : 'UNLEASHES A BLASPHEMY');
   }
 
@@ -428,6 +438,82 @@ export class FieldScene extends Phaser.Scene {
     this.chainUi = { text: text_, bar, w, shown: 0 };
   }
 
+  // ---------- Hosanna ----------
+
+  private drawHosanna() {
+    const h = this.field.opts.hosanna;
+    if (!h) return;
+    const w = 190;
+    const x = 14;
+    const y = CARD_Y - 126;
+    const frame = this.add.rectangle(x - 4, y - 16, w + 8, 44, 0x000000, 0.001).setOrigin(0, 0).setDepth(41);
+    const name = this.add.text(x, y - 12, '', { ...text.hud(12, PAL.amber), stroke: '#000000', strokeThickness: 4 }).setDepth(42);
+    this.add.rectangle(x, y + 14, w, 8, 0x000000, 0.85).setOrigin(0, 0.5).setDepth(41);
+    const bar = this.add.rectangle(x + 1, y + 14, 0, 6, 0xd9c27a).setOrigin(0, 0.5).setDepth(42);
+    frame.setInteractive({ useHandCursor: true }).on('pointerdown', () => this.hosannaTap());
+    this.hosUi = { name, bar, frame, w, full: false };
+    this.refreshHosanna(true);
+  }
+
+  private refreshHosanna(force = false) {
+    const c = this.hosUi;
+    const h = this.field.opts.hosanna;
+    if (!c || !h) return;
+    c.bar.setSize(((c.w - 2) * this.field.hosanna) / HOSANNA_MAX, 6);
+    const full = this.field.hosannaReady();
+    if (full === c.full && !force) return;
+    c.full = full;
+    const where = this.phase === 'deploy' ? ' (TAP TO CHANGE)' : '';
+    c.name.setText(full ? `TAP TO SING: ${h.name.toUpperCase()}` : `${h.name.toUpperCase()}${where}`);
+    c.bar.setFillStyle(full ? 0xfff1d6 : 0xd9c27a);
+    this.tweens.killTweensOf(c.name);
+    c.name.setAlpha(1);
+    if (full) this.tweens.add({ targets: c.name, alpha: 0.45, duration: 380, yoyo: true, repeat: -1 });
+  }
+
+  private hosannaTap() {
+    if (this.ended || this.paused) return;
+    if (this.phase === 'deploy') return this.openHosannaPicker();
+    const e = this.field.castHosanna();
+    if (e) this.view.handle([e]);
+  }
+
+  /** Before the fight: pick this party's Hosanna (kept for this exact party). */
+  private openHosannaPicker() {
+    this.deployLeft = undefined;
+    if (this.hosPicker.length) return this.closeHosannaPicker();
+    const save = game.save;
+    const ids = this.field.battle.units.filter((u) => u.side === 'party').map((u) => u.ref);
+    const rowH = 62;
+    const top = 190;
+    const bg = this.add.rectangle(GAME_W / 2, top + (HOSANNAS.length * rowH) / 2 + 30, GAME_W - 30, HOSANNAS.length * rowH + 80, 0x0e0d11, 0.97).setStrokeStyle(2, PAL.bronze).setDepth(60).setInteractive();
+    const head = this.add.text(GAME_W / 2, top + 8, 'CHOOSE THIS PARTY\'S HOSANNA', text.hud(14, PAL.amber)).setOrigin(0.5).setDepth(61);
+    this.hosPicker.push(bg, head);
+    HOSANNAS.forEach((h, i) => {
+      const y = top + 40 + i * rowH;
+      const open = hosannaOpen(save, h);
+      const chosen = this.field.opts.hosanna?.id === h.id;
+      const row = this.add.rectangle(GAME_W / 2, y + rowH / 2 - 4, GAME_W - 50, rowH - 6, chosen ? 0x3a2430 : 0x1a1319).setStrokeStyle(chosen ? 2 : 1, chosen ? PAL.amber : 0x3a2c33).setDepth(61);
+      const t1 = this.add.text(36, y + 2, open ? h.name : `${h.name} · Rank of Faith ${h.rank}`, text.hud(13, open ? 0xfff1d6 : 0x77707a)).setDepth(62);
+      const t2 = this.add.text(36, y + 22, h.desc, { ...text.body(13, open ? PAL.steel : 0x55505a), wordWrap: { width: GAME_W - 80 } }).setDepth(62);
+      this.hosPicker.push(row, t1, t2);
+      if (!open) return;
+      row.setInteractive({ useHandCursor: true }).on('pointerdown', () => {
+        pickHosanna(save, ids, h.id);
+        commit();
+        this.field.opts.hosanna = h;
+        this.closeHosannaPicker();
+        this.refreshHosanna(true);
+        this.log(`This party will sing ${h.name}.`);
+      });
+    });
+  }
+
+  private closeHosannaPicker() {
+    this.hosPicker.forEach((o) => o.destroy());
+    this.hosPicker = [];
+  }
+
   private refreshChain() {
     const c = this.chainUi;
     if (!c) return;
@@ -451,6 +537,7 @@ export class FieldScene extends Phaser.Scene {
 
   private refreshCards() {
     this.refreshChain();
+    this.refreshHosanna();
     for (const c of this.cards) {
       const u = c.u;
       const alive = u.hp > 0;

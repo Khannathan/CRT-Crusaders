@@ -35,6 +35,8 @@ export interface OwnedCrusader {
 }
 
 export interface SaveData {
+  /** Hosanna picks: per party (sorted Sister ids joined by +) and the last one picked. */
+  hosanna?: { byParty?: Record<string, string>; last?: string };
   version: 1;
   seals: number;
   tithes: number;

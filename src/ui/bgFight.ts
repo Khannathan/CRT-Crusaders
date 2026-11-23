@@ -1,10 +1,12 @@
 import Phaser from 'phaser';
 import { FONT, GAME_W, PAL, hex } from '../config';
+import { game } from '../state/game';
 import { current, type Challenge } from '../state/run';
 import { saveSettings, settings } from '../state/settings';
 import { makeButton } from './button';
 import type { RunState } from '../systems/crusade';
 import type { Battle } from '../systems/combat';
+import { battleHosanna } from '../systems/hosanna';
 import { advanceField, screenField, type FieldBattle } from '../systems/field';
 import { newSeed, seeded } from '../systems/rng';
 import { settleBattle, type Settled } from '../systems/settle';
@@ -112,7 +114,7 @@ function finish(r: Running, outcome: 'victory' | 'defeat') {
     r.battle = current.challenge.make(seeded(newSeed()));
     r.vigilMax = r.battle.vigil;
     r.challenge = current.challenge;
-    r.field = screenField(r.battle, false);
+    r.field = screenField(r.battle, false, battleHosanna(game.save, r.battle));
     r.timer = schedule();
     return;
   }

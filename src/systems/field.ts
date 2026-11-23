@@ -3,6 +3,7 @@ import { ENEMIES } from '../data/enemies';
 import type { SkillDef } from '../data/skills';
 import { autoChoose, autoStep } from './autoplay';
 import { Battle, ZEAL_MAX, skillsFor, type BattleEvent, type Unit } from './combat';
+import { HOSANNA_MAX, HOSANNA_PER_ACT, HOSANNA_PER_LITANY, castHosanna, hosannaWorthIt, type HosannaDef } from './hosanna';
 
 /**
  * Real-time combat on an open field, built on top of the turn-based Battle.
@@ -113,7 +114,7 @@ export interface Body {
 }
 
 export type FieldEvent =
-  | { kind: 'act'; uid: string; skill: SkillDef; targetUid?: string; events: BattleEvent[]; ranged: boolean; litany: boolean; charge: boolean }
+  | { kind: 'act'; uid: string; skill: SkillDef; targetUid?: string; events: BattleEvent[]; ranged: boolean; litany: boolean; charge: boolean; hosanna?: boolean }
   /** Start-of-action ticks (poison, regen, stun) and round effects. */
   | { kind: 'tick'; events: BattleEvent[] }
   | { kind: 'spawn'; uid: string }
@@ -130,6 +131,8 @@ export interface FieldOpts {
   bodyScale?: number;
   /** Enemies walk in from beyond the side edges. */
   enemiesEnter?: boolean;
+  /** The party's Hosanna (none: no Hosanna bar, as in old sims and practice tests). */
+  hosanna?: HosannaDef;
   rng?: () => number;
 }
 
@@ -158,6 +161,9 @@ export class FieldBattle {
   private engaged = false;
   private done = false;
   private k: number;
+  /** Hosanna bar, 0-HOSANNA_MAX, and how many were sung this fight. */
+  hosanna = 0;
+  hosannas = 0;
   /** Litany Chain: links so far, when the last link was cast, and the longest this fight. */
   chain = { count: 0, at: -99, best: 0 };
   /** The foe the player marked: every Sister who can hit it turns on it. */
@@ -372,6 +378,12 @@ export class FieldBattle {
       if (events.length) out.push({ kind: 'tick', events });
     }
 
+    // Auto sings the Hosanna when it is full and worth it.
+    if (!this.opts.manualLitany && this.hosannaReady() && hosannaWorthIt(b, this.opts.hosanna!)) {
+      const e = this.castHosanna();
+      if (e) out.push(e);
+    }
+
     for (const u of b.alive()) {
       const me = this.bodies.get(u.uid);
       if (!me) continue;
@@ -454,6 +466,7 @@ export class FieldBattle {
     if (litany) b.chainMult = 1 + chainBonus(link);
     const events = b.act(u, skill, target && target.hp > 0 ? target : undefined);
     b.chainMult = 1;
+    if (u.side === 'party' && this.opts.hosanna) this.hosanna = Math.min(HOSANNA_MAX, this.hosanna + (litany ? HOSANNA_PER_LITANY : HOSANNA_PER_ACT));
     if (litany) {
       this.chain.count = link;
       this.chain.at = this.time;
@@ -666,6 +679,26 @@ export class FieldBattle {
     return this.chain.count > 0 ? Math.max(0, CHAIN_SEC - (this.time - this.chain.at)) : 0;
   }
 
+  /** The party's Hosanna bar is full. */
+  hosannaReady() {
+    return !!this.opts.hosanna && this.hosanna >= HOSANNA_MAX && !this.done && this.battle.alive('party').length > 0;
+  }
+
+  /** Sings the Hosanna (tap, or Auto): the bar empties and the strongest Sister leads it. */
+  castHosanna(): FieldEvent | undefined {
+    if (!this.hosannaReady()) return undefined;
+    const r = castHosanna(this.battle, this.opts.hosanna!);
+    if (!r) return undefined;
+    this.hosanna = 0;
+    this.hosannas++;
+    this.engaged = true;
+    const me = this.bodies.get(r.caster.uid)!;
+    me.lock = Math.max(me.lock, LITANY_SEC);
+    if (r.events.some((e) => e.type === 'move')) this.reform();
+    this.applyDelays();
+    return { kind: 'act', uid: r.caster.uid, skill: { ...r.skill, rite: true }, targetUid: r.targetUid, events: r.events, ranged: true, litany: true, charge: false, hosanna: true };
+  }
+
   /** True when a Sister's Litany can be cast now (manual mode). */
   litanyReady(u: Unit) {
     const rite = skillsFor(u).find((s) => s.rite);
@@ -736,8 +769,8 @@ export class FieldBattle {
 /** The battle screen's field (540 x 450, figures at 1.45): also played headless in the background. */
 export const SCREEN_FIELD = { w: 540, h: 450, bodyScale: 1.45 };
 
-export function screenField(battle: Battle, manualLitany: boolean) {
-  return new FieldBattle(battle, { ...SCREEN_FIELD, manualLitany });
+export function screenField(battle: Battle, manualLitany: boolean, hosanna?: HosannaDef) {
+  return new FieldBattle(battle, { ...SCREEN_FIELD, manualLitany, hosanna });
 }
 
 /** Steps a field fight forward by `sec` seconds in small steps. Returns the outcome if it ended. */
