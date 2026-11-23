@@ -11,7 +11,7 @@ import { ZEAL_MAX, skillsFor, type Battle, type Unit } from '../systems/combat';
 import { CHAIN_SEC, FieldBattle, chainBonus, screenField } from '../systems/field';
 import { runFieldInBackground } from '../ui/bgFight';
 import { HOSANNAS, HOSANNA_MAX, battleHosanna, hosannaOpen, pickHosanna } from '../systems/hosanna';
-import { keywordLine } from '../systems/keywords';
+import { KW_ORDER, keywordLine, type Keyword } from '../systems/keywords';
 import { settleBattle } from '../systems/settle';
 import { makeButton } from '../ui/button';
 import { FieldView } from '../ui/fieldView';
@@ -80,6 +80,9 @@ export class FieldScene extends Phaser.Scene {
   private toggles: Phaser.GameObjects.GameObject[] = [];
   private cardUntil = 0;
   private kwText!: Phaser.GameObjects.Text;
+  /** The party's Order mechanic icons (kw-<keyword>), rebuilt when the set of Orders changes. */
+  private kwIcons?: Phaser.GameObjects.Container;
+  private kwShown = '';
   /** Litany Chain readout above the cards: count, draining window bar, last count shown. */
   /** Hosanna bar above the cards (left), and the picker shown before the fight. */
   private hosUi?: { name: Phaser.GameObjects.Text; bar: Phaser.GameObjects.Rectangle; frame: Phaser.GameObjects.Rectangle; w: number; full: boolean };
@@ -430,6 +433,19 @@ export class FieldScene extends Phaser.Scene {
     this.pauseLayer = layer;
   }
 
+  /** A small row of the Order mechanic icons in play, under the counters line. */
+  private showKwIcons(orders: string[]) {
+    const kws = (Object.keys(KW_ORDER) as Keyword[]).filter((k) => orders.includes(KW_ORDER[k]) && this.textures.exists(`kw-${k}`));
+    const key = kws.join(',');
+    if (key === this.kwShown) return;
+    this.kwShown = key;
+    this.kwIcons?.destroy();
+    const size = 24;
+    const gap = 6;
+    const x0 = GAME_W / 2 - ((kws.length - 1) * (size + gap)) / 2;
+    this.kwIcons = this.add.container(0, 0, kws.map((k, i) => this.add.image(x0 + i * (size + gap), 190, `kw-${k}`).setDisplaySize(size, size))).setDepth(41);
+  }
+
   update(_t: number, delta: number) {
     if (this.ended) return;
     const real = Math.min(0.1, delta / 1000);
@@ -439,7 +455,9 @@ export class FieldScene extends Phaser.Scene {
       return;
     }
     if (this.paused) return;
-    this.kwText.setText(keywordLine(this.field.battle.kw, this.field.battle.alive('party').map((u) => u.order ?? '')));
+    const orders = this.field.battle.alive('party').map((u) => u.order ?? '');
+    this.kwText.setText(keywordLine(this.field.battle.kw, orders));
+    this.showKwIcons(orders);
     // A heavy blow (a crit, a kill) freezes the fight for a blink.
     if (this.hitStop > 0) {
       this.hitStop -= real;
@@ -498,7 +516,9 @@ export class FieldScene extends Phaser.Scene {
       const chain = this.field.chainLeft() > 0 ? this.field.chain.count : 0;
       return litanyCutIn(this, u.ref, s.name, u.name, chain);
     }
-    riteCard(this, s.name, u.name, () => {}, u.side === 'party' ? 'INVOKES' : 'UNLEASHES A BLASPHEMY');
+    // A boss's Blasphemy shows its own icon (ui/blasphemy-<boss id>.png) when it has one.
+    const icon = u.side === 'enemy' && this.textures.exists(`blasphemy-${u.ref}`) ? `blasphemy-${u.ref}` : undefined;
+    riteCard(this, s.name, u.name, () => {}, u.side === 'party' ? 'INVOKES' : 'UNLEASHES A BLASPHEMY', icon);
   }
 
   // ---------- Sister cards (Litanies) ----------
