@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # Re-encodes the soundtrack for the web build.
 # Usage: tools/encode-music.sh <folder with the original .mp3 files>
+# Tracks missing from the folder are skipped, so new ones can arrive a few at a time.
 # Each track is levelled to about -16 LUFS, loops lose their fade-out tail (the
 # game crossfades them instead), the UR stinger is cut to ~5.5 s, and every track
 # is written as OGG Vorbis (~96 kbps) plus an MP3 fallback for Safari.
@@ -19,11 +20,20 @@ boss|Boss_battle.mp3|0|1
 victory|Victory.mp3|0|0
 defeat|Defeat.mp3|0|0
 ur-stinger|UR_Stinger.mp3|5.5|1.5
+armory|Saints_Armory.mp3|0|2
+chapter|Chapter_House.mp3|0|2
+tower|Bell_Tower.mp3|0|2
+deep-crypt|Deep_Crypts.mp3|0|2
+deep-battle|Deep_Battle.mp3|0|1.5
+deep-boss|Deep_Boss.mp3|0|1
+hunt|Hallowed_Hunt.mp3|0|1
+heretic|First_Heretic.mp3|0|1
 "
 
 for row in $TRACKS; do
   IFS='|' read -r name file end fade <<<"$row"
-  in=$(ls "$SRC"/*"$file" | head -1)
+  in=$(ls "$SRC"/*"$file" 2>/dev/null | head -1 || true)
+  if [ -z "$in" ]; then echo "$name: no $file, skipped"; continue; fi
   dur=$(ffprobe -v error -show_entries format=duration -of csv=p=0 "$in")
   [ "$end" = 0 ] && end=$dur
   filt="atrim=0:$end"

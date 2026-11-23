@@ -63,7 +63,7 @@ export class TowerScene extends Phaser.Scene {
 
   create() {
     const sub = this.view === 'bell' ? 'Bells that ring for no one living, floor upon floor without end. Any Sisters may climb.' : this.order ? `The ${this.order}'s own tower. Fifty floors, climbed only by four of its Sisters.` : 'Ten towers, one for each Order. Only a full party of the Order may climb, and each pays its Writs.';
-    const { top } = modeScreen(this, this.view === 'bell' ? 'The Bell Tower' : this.order ?? 'The Order Towers', sub);
+    const { top } = modeScreen(this, this.view === 'bell' ? 'The Bell Tower' : this.order ?? 'The Order Towers', sub, undefined, this.towerBg());
     const half = (GAME_W - PAD * 2 - 8) / 2;
     makeButton(this, PAD + half / 2, top + 20, half, 40, 'Bell Tower', () => this.scene.restart({ view: 'bell' }), { active: this.view === 'bell', fontSize: 16 });
     makeButton(this, GAME_W - PAD - half / 2, top + 20, half, 40, 'Order Towers', () => this.scene.restart({ view: 'orders', order: undefined }), { active: this.view === 'orders', fontSize: 16 });
@@ -75,6 +75,12 @@ export class TowerScene extends Phaser.Scene {
     else this.orderList(y0);
     if (this.notice) toast(this, this.notice);
     if (this.record) recordBanner(this, this.record);
+  }
+
+  /** Each Order Tower's own backdrop (bg-tower-<order id>), else the Bell Tower's. */
+  private towerBg() {
+    const o = this.order && ORDER_LIST.find((x) => x.name === this.order);
+    return o && this.textures.exists(`bg-tower-${o.id}`) ? `bg-tower-${o.id}` : 'bg-tower';
   }
 
   private bell(top: number) {
