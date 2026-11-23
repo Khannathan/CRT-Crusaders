@@ -100,7 +100,7 @@ export class HoldScene extends Phaser.Scene {
         if (hp <= 0) img.setTint(0x555555).setAlpha(0.6);
         this.add.text(rx, y + 88, c.name.split(' ')[0].toUpperCase(), text.hud(12, hp > 0 ? 0xfff1d6 : PAL.steel)).setOrigin(0.5);
         this.add.rectangle(rx, y + 104, 80, 8, 0x000000);
-        this.add.rectangle(rx - 40, y + 104, (80 * hp) / max, 6, HP_PARTY).setOrigin(0, 0.5);
+        this.add.rectangle(rx - 40, y + 104, (80 * Math.min(hp, max)) / max, 6, HP_PARTY).setOrigin(0, 0.5);
         if (hp <= 0) this.add.text(rx, y + 40, 'FALLEN', text.hud(13, 0xff6a5a)).setOrigin(0.5);
       });
       y += 124;

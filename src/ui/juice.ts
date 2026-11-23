@@ -222,7 +222,9 @@ export function litanyCutIn(scene: Phaser.Scene, id: string, name: string, who: 
   const dim = scene.add.rectangle(GAME_W / 2, GAME_H / 2, GAME_W, GAME_H, 0x000000, 0).setDepth(39);
   const band = scene.add.container(-GAME_W, y).setDepth(40).setAngle(-7);
   band.add(scene.add.rectangle(0, 0, W, H, 0x2a0e14));
-  const art = addSplash(scene, id, 70, 0, W - 140, H - 8, 'hero');
+  // Her splash on the right two-thirds; the words sit on the dark left.
+  const aw = Math.round(W * 0.62);
+  const art = addSplash(scene, id, W / 2 - aw / 2 - 50, 0, aw, H - 8, 'hero');
   band.add(art);
   // Dark wash on the left so the words read over her picture.
   const wash = scene.add.graphics();
