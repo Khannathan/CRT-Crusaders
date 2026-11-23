@@ -21,6 +21,8 @@ export interface VigilState {
   party: string[];
   /** When gathering started (ms since epoch). */
   since: number;
+  /** Part of a Seal gathered but not yet whole (carried to the next claim). */
+  sealCarry?: number;
 }
 
 export const VIGIL_CAP_HOURS = 12;
@@ -42,7 +44,10 @@ export function vigilHours(v: VigilState, now: number) {
 export function vigilPending(save: SaveData, v: VigilState, now: number) {
   const hours = vigilHours(v, now);
   const r = vigilRates(save, v);
-  return gatherFor(hours, r);
+  const p = gatherFor(hours, r);
+  // Count the part-Seal carried from the last claim, as claiming will.
+  p.seals = Math.floor(hours * r.seals + (v.sealCarry ?? 0));
+  return p;
 }
 
 function gatherFor(hours: number, r: ReturnType<typeof roadRates>) {
@@ -73,6 +78,12 @@ export interface VigilClaim {
 function payOut(save: SaveData, hours: number, party: string[], rng: Rng): VigilClaim {
   const r = vigilRates(save);
   const p = gatherFor(hours, r);
+  // Seals come slowly: the part of one not yet whole waits for the next claim.
+  if (save.vigil) {
+    const due = hours * r.seals + (save.vigil.sealCarry ?? 0);
+    p.seals = Math.floor(due);
+    save.vigil.sealCarry = due - p.seals;
+  }
   const luck = Math.min(0.2, chaptersCleared(save) * 0.04);
   const gear = Array.from({ length: p.gear }, () => makeGear(rng, rollGearRarity(rng, luck)));
   const melted = claimGear(save, gear);

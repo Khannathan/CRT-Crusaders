@@ -30,8 +30,8 @@ export const FORTS = ['Gatehouse', 'Bell Ward', 'Ossuary', 'Cloister', 'Scriptor
 /** Each fort asks this share of your strongest four's Power. */
 export const FORT_SHARE = [0.9, 1.15, 1.4, 1.65, 1.95, 2.3];
 export const STAR_REWARD: Reward & { marks: number } = { tithes: 1200, marks: 15 };
-export const WAR_WIN: Reward & { marks: number } = { seals: 8, gilt: 40, marks: 200 };
-export const WAR_LOSS: Reward & { marks: number } = { seals: 2, marks: 60 };
+export const WAR_WIN: Reward & { marks: number } = { seals: 4, gilt: 40, marks: 200 };
+export const WAR_LOSS: Reward & { marks: number } = { seals: 1, marks: 60 };
 
 const RIVALS = ['Chapter of the Red Rosary', 'Chapter of the Hollow Choir', 'Chapter of the Black Lantern', 'Chapter of the Salt Vigil', 'Chapter of the Broken Censer', 'Chapter of the Seventh Wound'];
 

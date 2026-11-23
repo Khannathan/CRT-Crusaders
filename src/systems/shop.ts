@@ -91,7 +91,7 @@ export const ALMONRY_POOL: Offer[] = [
   { id: 'a-whistle', name: '3 Hound Whistles', price: 110, currency: 'alms', goods: { items: { kennel2: 3 } }, limit: 1 },
   { id: 'a-ssr', name: 'SSR gear', price: 150, currency: 'alms', goods: { gear: 'SSR' }, limit: 1 },
   { id: 'a-vow', name: 'Vow token of your choice', price: 400, currency: 'alms', goods: { vowToken: true }, limit: 1 },
-  { id: 'a-seal', name: '2 Wax Seals', price: 160, currency: 'alms', goods: { seals: 2 }, limit: 1 },
+  { id: 'a-seal', name: '1 Wax Seal', price: 90, currency: 'alms', goods: { seals: 1 }, limit: 1 },
   { id: 'a-stigmata', name: '2 Stigmata', price: 220, currency: 'alms', goods: { stigmata: 2 }, limit: 1 },
 ];
 

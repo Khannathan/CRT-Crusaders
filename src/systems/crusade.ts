@@ -687,7 +687,7 @@ export function takeRelic(save: SaveData, run: RunState, relicId: string) {
  * victories each day (local midnight reset) pay a blessed bonus on top.
  */
 export const PILGRIMAGE_CLEARS = 1;
-export const PILGRIMAGE_BONUS = { seals: 4, tithes: 200 };
+export const PILGRIMAGE_BONUS = { seals: 1, tithes: 400 };
 
 export interface PilgrimageState {
   /** Local day of the clears counted (older saves kept a week key here). */

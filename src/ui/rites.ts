@@ -10,6 +10,7 @@ import { HUNT_ENTRIES, huntEntriesLeft, huntOn } from '../systems/hunts';
 import { freeWhistle, houndsOf } from '../systems/hounds';
 import type { SaveData } from '../state/save';
 import { matinsReady } from '../systems/matins';
+import { missivesReady } from '../systems/missives';
 import { passReady } from '../systems/pass';
 import { BRACKET, LEAGUES, ORDEALS_PER_DAY, bracket, ordealsLeft, ordealsOf, ordealsReady } from '../systems/ordeals';
 import { unlocked } from '../systems/rank';
@@ -195,6 +196,8 @@ export const RITES: RiteEntry[] = [
     status: (s) => `${SETS.filter((x) => (s.sets ?? []).includes(x.id)).length} of ${SETS.length} sets complete`,
   },
   { label: 'Novitiate', scene: 'Novitiate', icon: 'sigil', rank: 1, home: 'duties', noRail: true, shown: (s) => noviceOpen(s), ready: (s) => noviceReady(s) },
+  { label: 'Missives', scene: 'Missives', icon: 'book', rank: 1, home: 'lobby', ready: (s) => missivesReady(s) },
+  { label: 'Calendar', scene: 'Calendar', icon: 'book', rank: 1, home: 'lobby' },
   { label: 'Matins', scene: 'Matins', icon: 'flame', rank: 1, home: 'lobby', ready: (s) => matinsReady(s) },
   { label: 'Pass', scene: 'Pass', icon: 'sigil', rank: 1, home: 'lobby', ready: (s) => passReady(s) },
   { label: 'Penance', scene: 'Penance', icon: 'book', rank: 2, home: 'duties', ready: (s) => anyClaimable(s) },

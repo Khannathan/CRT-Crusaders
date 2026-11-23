@@ -7,6 +7,7 @@ import { saveSettings, settings } from '../state/settings';
 import { music } from '../audio/music';
 import { makeButton } from './button';
 import { toggleFullscreen } from './fullscreen';
+import { canInstall, installed, promptInstall } from './install';
 import { showExport, showImport } from './saveTransfer';
 import { addFrame, text } from './theme';
 
@@ -87,10 +88,15 @@ export function showSettings(scene: Phaser.Scene) {
         .text(GAME_W / 2, 640, 'Scanlines, colour bleed and screen curve.', { ...style, fontSize: '16px', color: hex(PAL.steel) })
         .setOrigin(0.5),
     );
-    const fs = makeButton(scene, GAME_W / 2 - 112, 702, 208, 52, scene.scale.isFullscreen ? 'Leave full screen' : 'Full screen', () => {
-      toggleFullscreen(scene);
-      layer.destroy();
-    }, { fontSize: 18 });
+    // Where the browser offers it, installing beats full screen: it opens full screen and loads from the phone.
+    const fs = canInstall() && !installed()
+      ? makeButton(scene, GAME_W / 2 - 112, 702, 208, 52, 'Add to home screen', () => {
+          void promptInstall().then(() => draw());
+        }, { fontSize: 17, active: true })
+      : makeButton(scene, GAME_W / 2 - 112, 702, 208, 52, scene.scale.isFullscreen ? 'Leave full screen' : 'Full screen', () => {
+          toggleFullscreen(scene);
+          layer.destroy();
+        }, { fontSize: 18 });
     const shakeBtn = makeButton(scene, GAME_W / 2 + 112, 702, 208, 52, settings.screenShake ? 'Screen shake: On' : 'Screen shake: Off', () => {
       settings.screenShake = !settings.screenShake;
       saveSettings();
