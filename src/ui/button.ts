@@ -1,3 +1,4 @@
+import { sfx } from '../audio/sfx';
 import Phaser from 'phaser';
 import { FONT, HUD_FONT, PAL, hex } from '../config';
 import { type SkinKey, hasSkin, nine } from './skin';
@@ -100,6 +101,7 @@ export function makeButton(
     box.on('pointerout', () => pressed(false));
     box.on('pointerup', () => {
       pressed(false);
+      sfx('tap');
       onTap();
     });
   }

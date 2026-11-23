@@ -17,7 +17,11 @@ import { makeButton } from '../ui/button';
 import { FieldView } from '../ui/fieldView';
 import { litanyCutIn, riteCard, shake } from '../ui/juice';
 import { portraitKey, queueSplash, splashKey } from '../ui/placeholderPortrait';
-import { addBackdrop, text } from '../ui/theme';
+import { fade, text } from '../ui/theme';
+import { sfx } from '../audio/sfx';
+import { ditherVignette } from '../ui/pixelFx';
+import { showWinCard } from '../ui/winCard';
+import { noteFight } from '../systems/candles';
 
 /** Where the field sits on screen: feet stand between FIELD_Y and FIELD_Y + FIELD_H. */
 let FIELD_Y = 290;
@@ -161,7 +165,18 @@ export class FieldScene extends Phaser.Scene {
     music.play(battleLoop(b));
     music.preload('victory', 'defeat');
     this.cameras.main.setBackgroundColor(0x0e0d11);
-    addBackdrop(this, this.registry.get('field-bg'), GAME_W / 2, (FIELD_Y + FIELD_H) / 2 + 20, GAME_W, FIELD_Y + FIELD_H + 40, { alpha: 0.6, fade: 0.25, fadeColor: 0x0e0d11 });
+    // The arena at a whole-number zoom so its pixels stay square, dimmed, with a
+    // dithered vignette that pulls the eye to the fight (no blur, DOS Dungeon rule).
+    const arenaH = FIELD_Y + FIELD_H + 40;
+    const arenaY = arenaH / 2;
+    const bgKey = this.registry.get('field-bg') as string;
+    if (this.textures.exists(bgKey)) {
+      const src = this.textures.get(bgKey).getSourceImage();
+      const z = Math.max(1, Math.round(Math.max(GAME_W / src.width, arenaH / src.height)));
+      this.add.image(Math.round(GAME_W / 2), Math.round(arenaY), bgKey).setScale(z).setAlpha(0.55);
+    }
+    fade(this, GAME_W / 2, arenaY, GAME_W, arenaH, 0.25, 0x0e0d11);
+    ditherVignette(this, GAME_W / 2, arenaY, GAME_W, arenaH, 0x0e0d11, 0.6).setDepth(1);
     // A floor glow where the fight happens.
     this.add.ellipse(GAME_W / 2, FIELD_Y + FIELD_H * 0.5, GAME_W * 1.1, FIELD_H * 0.75, 0x000000, 0.25);
 
@@ -193,7 +208,8 @@ export class FieldScene extends Phaser.Scene {
     this.view = new FieldView(this, this.field, {
       x: 0,
       y: FIELD_Y,
-      scale: 0.75,
+      // Whole-pixel figures: 0.75 smeared the pixel art.
+      scale: 1,
       depth: 10,
       rings: true,
       onText: (t) => this.log(t),
@@ -354,6 +370,7 @@ export class FieldScene extends Phaser.Scene {
     }
     if (this.field.moveTo(d.uid, p.x, Phaser.Math.Clamp(p.y, FIELD_Y, FIELD_Y + FIELD_H) - FIELD_Y)) {
       const z = this.field.zones.length;
+      sfx('dodge');
       this.log(z ? `${this.field.battle.get(d.uid).name} runs for it!` : `${this.field.battle.get(d.uid).name} takes her ground.`);
     }
   }
@@ -456,9 +473,11 @@ export class FieldScene extends Phaser.Scene {
     if (charging) {
       this.log(`${u.name} begins ${s.name}! Strike hard or Delay it.`);
       shake(this, 'boss');
+      sfx('blasphemy');
       return;
     }
     this.slowLeft = 0.7;
+    sfx(u.side === 'party' ? 'litany' : 'blasphemy');
     // One name card at a time; a Litany cast while one shows gets a smaller stamp.
     if (this.time.now < this.cardUntil) {
       this.log(`${u.name}: ${s.name}!`);
@@ -598,6 +617,7 @@ export class FieldScene extends Phaser.Scene {
     const n = left > 0 ? this.field.chain.count : 0;
     c.bar.setSize((c.w * left) / CHAIN_SEC, 4);
     if (n === c.shown) return;
+    if (n > c.shown && n >= 2) sfx('chain', n);
     c.shown = n;
     this.tweens.killTweensOf(c.text);
     if (!n) {
@@ -714,8 +734,34 @@ export class FieldScene extends Phaser.Scene {
     if (won) this.view.cheer();
     if (!this.practice) {
       // A real fight: paid out exactly like the turn-based screen.
-      const next = settleBattle(this.field.battle, outcome);
+      const b = this.field.battle;
+      noteFight({ fallen: b.units.filter((u) => u.side === 'party' && u.hp <= 0).length, chainBest: this.field.chain.best, secs: this.field.time });
+      const next = settleBattle(b, outcome);
       this.log(next.line);
+      const win = won ? next.win : undefined;
+      if (win) {
+        // A won Road stage: its own card, with Onward one tap away.
+        const go = (scene: string, data: object) => {
+          this.tweens.timeScale = 1;
+          this.time.timeScale = 1;
+          this.scene.start(scene, data);
+        };
+        this.time.delayedCall(900, () => {
+          this.tweens.timeScale = 1;
+          this.time.timeScale = 1;
+          showWinCard(this, {
+            win,
+            battle: b,
+            dealt: this.view.dealt,
+            exp: next.exp,
+            story: next.scene !== 'Campaign',
+            onMap: () => go(next.scene, next.data ?? {}),
+            onAgain: win.again ? () => go('Campaign', { fight: win.again }) : undefined,
+            onOnward: win.onward ? () => go('Campaign', { fight: win.onward }) : undefined,
+          });
+        });
+        return;
+      }
       this.time.delayedCall(1400, () => {
         this.tweens.timeScale = 1;
         this.time.timeScale = 1;
