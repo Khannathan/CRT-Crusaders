@@ -1,3 +1,4 @@
+import { boostBag, boostMult } from './boosts';
 import { CRUSADERS } from '../data/crusaders';
 import { earn } from './currency';
 import { ENCOUNTERS, ENEMIES } from '../data/enemies';
@@ -101,7 +102,8 @@ export function finishFloor(save: SaveData, floor: number, battle: Battle, rng: 
   if (!won || floor !== t.best + 1) return { won };
   t.best = floor;
   track(save, 'towerFloor');
-  const reward = floorReward(floor);
+  const base = floorReward(floor);
+  const reward = { ...base, tithes: Math.round(base.tithes * boostMult('tower')), items: boostBag(base.items, 'tower') };
   save.tithes += reward.tithes;
   save.seals += reward.seals;
   give(save, reward.items);

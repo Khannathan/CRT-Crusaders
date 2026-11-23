@@ -1,10 +1,11 @@
+import { boostBag, boostMult, boostN } from './boosts';
 import type { SaveData } from '../state/save';
 import { BELFRY, OSSUARY, skirmish, type CryptDef } from './crusade';
 import type { Battle } from './combat';
 import type { Rng } from './gacha';
 import { claimGear, makeGear, rollGearRarity, type GearItem, type GearSlot } from './gear';
 import { dayKey, track } from './tasks';
-import { bagText, give, type Bag } from './items';
+import { addBags, bagText, give, type Bag } from './items';
 
 /**
  * Relic Trials: one short fight a day per kind of spoil. Each weekday opens
@@ -139,6 +140,21 @@ function pay(save: SaveData, kind: TrialKind, tier: number, rng: Rng): TrialSpoi
     out.gear = (save.gear ?? []).slice(before);
     // The two hardest tiers leave a Saint's Fragment, toward UR gear.
     if (tier >= 3) give(save, (out.items = { armory1: tier - 2 }));
+  }
+  // Daily blessing: more of everything (materials were given above, so top them up).
+  const m = boostMult('trials');
+  if (m > 1) {
+    const extra = boostBag(out.items, 'trials');
+    for (const [id, n] of Object.entries(extra) as [keyof Bag, number][]) extra[id] = n - (out.items?.[id] ?? 0);
+    give(save, extra);
+    if (out.items) out.items = addBags(out.items, extra);
+    out.tithes = Math.round(out.tithes * m);
+    out.seals = boostN(out.seals, m);
+    if (out.gear.length) {
+      const before = save.gear?.length ?? 0;
+      claimGear(save, [makeGear(rng, rollGearRarity(rng, 0.05 * tier), kind as GearSlot)]);
+      out.gear.push(...(save.gear ?? []).slice(before));
+    }
   }
   save.tithes += out.tithes;
   save.seals += out.seals;

@@ -1,4 +1,6 @@
 import { HOUNDS } from '../data/hounds';
+import type { BoostKind } from '../systems/boosts';
+import { armoryOf, featuredSet, PITY } from '../systems/armory';
 import { ENEMIES } from '../data/enemies';
 import { HUNT_ENTRIES, huntEntriesLeft, huntOn } from '../systems/hunts';
 import { freeWhistle, houndsOf } from '../systems/hounds';
@@ -53,6 +55,8 @@ export interface RiteEntry {
   blurb?: string;
   /** A short live status for its card (entries left, best floor...). */
   status?: (save: SaveData) => string;
+  /** The daily blessing that boosts it (systems/boosts.ts), shown on its card. */
+  boost?: BoostKind;
   /** Card art (a bg-* key); falls back to the hall. */
   bg?: string;
 }
@@ -67,17 +71,17 @@ export const RITES: RiteEntry[] = [
     status: (s) => `${feastName()}  ·  ${feastOf(s).candles} Candles  ·  ends in ${timeLeft(limitedWindow().ends)}`,
   },
   {
-    label: 'Crypts', scene: 'Crusade', icon: 'blade', rank: 1, home: 'board', bg: 'bg-drowned-ossuary',
+    label: 'Crypts', scene: 'Crusade', icon: 'blade', rank: 1, home: 'board', bg: 'bg-drowned-ossuary', boost: 'crusade',
     blurb: 'The core crusade: a branching descent, act by act, to the crypt\'s heart.',
     status: (s) => `${CRYPTS.filter((c) => cryptUnlocked(s, c)).length} of ${CRYPTS.length} crypts open  ·  Pilgrimage ${pilgrimageLeft(s)}/${PILGRIMAGE_CLEARS} today`,
   },
   {
-    label: "Pilgrim's Road", scene: 'Campaign', icon: 'flame', rank: 1, home: 'board', bg: 'bg-weeping-cloister',
+    label: "Pilgrim's Road", scene: 'Campaign', icon: 'flame', rank: 1, home: 'board', bg: 'bg-weeping-cloister', boost: 'vigil',
     blurb: 'The Vigil\'s campaign. Every stage cleared makes your Sisters gather faster while you are away.',
     status: (s) => `Stage ${stageDef(nextStage(s)).label}  ·  Vigil ${Math.round(roadRates(s).tithes)} Tithes/h`,
   },
   {
-    label: 'Holy Errands', scene: 'Errands', icon: 'book', rank: 1, home: 'board', bg: 'bg-altar', ready: (s) => anyErrandDone(s),
+    label: 'Holy Errands', scene: 'Errands', icon: 'book', rank: 1, home: 'board', bg: 'bg-altar', boost: 'errands', ready: (s) => anyErrandDone(s),
     blurb: 'Send Sisters away on timed duties, an hour to most of a day. They come home with materials.',
     status: (s) => `${errandsOf(s).active.length} of ${ERRAND_SLOTS} away  ·  ${openErrands(s).length} errands on offer`,
   },
@@ -87,7 +91,7 @@ export const RITES: RiteEntry[] = [
     status: (s) => `Today: ${ENEMIES[huntOn().boss].name}  ·  ${huntEntriesLeft(s)}/${HUNT_ENTRIES} hunts left`,
   },
   {
-    label: 'Relic Trials', scene: 'Trials', icon: 'shield', rank: 3, home: 'board', bg: 'bg-iron-oubliette', ready: (s) => entriesLeft(s) > 0,
+    label: 'Relic Trials', scene: 'Trials', icon: 'shield', rank: 3, home: 'board', bg: 'bg-iron-oubliette', boost: 'trials', ready: (s) => entriesLeft(s) > 0,
     blurb: 'A different spoil each dawn: gear, Tithes, Seals, ash or pages.',
     status: (s) => `${entriesLeft(s)} of ${TRIAL_ENTRIES} entries left today`,
   },
@@ -97,7 +101,7 @@ export const RITES: RiteEntry[] = [
     status: (s) => `${processionLeft(s)} of ${PROCESSION_ENTRIES} entries left  ·  honours the ${honouredToday().name}`,
   },
   {
-    label: 'Bell Tower', scene: 'Tower', icon: 'sanctum', rank: 6, home: 'board', bg: 'bg-tower',
+    label: 'Bell Tower', scene: 'Tower', icon: 'sanctum', rank: 6, home: 'board', bg: 'bg-tower', boost: 'tower',
     blurb: 'Sixty floors, each a set fight. Some floors take only one Order.',
     status: (s) => `Best floor ${towerOf(s).best}${towerOf(s).best ? `  ·  Vigil +${towerOf(s).best}%` : ''}`,
   },
@@ -118,6 +122,11 @@ export const RITES: RiteEntry[] = [
     status: (s) => `${Object.keys(houndsOf(s).owned).length} of ${HOUNDS.length} hounds  ·  ${freeWhistle(s) ? 'free whistle ready' : 'whistled today'}`,
   },
   { label: 'Inventory', scene: 'Inventory', icon: 'shield', art: 'inventory', rank: 1, home: 'cloister', bg: 'bg-hall', blurb: 'Every relic, ash, page and writ your Sisters carried home. Refine and use them.' },
+  {
+    label: "Saints' Armory", scene: 'Armory', icon: 'shield', rank: 1, home: 'cloister', bg: 'bg-altar', data: { back: 'Cloister' }, boost: 'fragments',
+    blurb: 'UR gear: a banner with a new featured set each week, and a forge for Saint\'s Fragments.',
+    status: (s) => `${featuredSet().set.name} set featured  ·  UR within ${PITY - armoryOf(s).pity} pulls`,
+  },
   { label: 'Shop', scene: 'Shop', icon: 'seal', art: 'shop', rank: 1, home: 'cloister', bg: 'bg-shop', blurb: 'Seals, crates, the Almonry and the Tithe Exchange. Stock turns daily and weekly.' },
   {
     label: 'Reliquary', scene: 'Reliquary', icon: 'flame', art: 'reliquary', rank: 1, home: 'cloister', bg: 'bg-reliquary', data: { tab: 'relics' },

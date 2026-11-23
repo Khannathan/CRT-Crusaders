@@ -1,3 +1,4 @@
+import { boostBag, boostMult } from './boosts';
 import { BOND_XP, addBond } from './bonds';
 import { addExp, vigilExpRate } from './exp';
 import { give, vigilDrops, type Bag } from './items';
@@ -75,12 +76,14 @@ function payOut(save: SaveData, hours: number, party: string[], rng: Rng): Vigil
   const luck = Math.min(0.2, chaptersCleared(save) * 0.04);
   const gear = Array.from({ length: p.gear }, () => makeGear(rng, rollGearRarity(rng, luck)));
   const melted = claimGear(save, gear);
+  const m = boostMult('vigil');
+  p.tithes = Math.round(p.tithes * m);
   save.tithes += p.tithes;
   save.seals += p.seals;
-  const items = vigilDrops(p.hours * r.items * 2, rng);
+  const items = boostBag(vigilDrops(p.hours * r.items * 2, rng), 'vigil');
   give(save, items);
   addBond(save, party, Math.floor(p.hours * BOND_XP.vigilHour));
-  const exp = Math.floor(p.hours * vigilExpRate(campaignOf(save).best));
+  const exp = Math.floor(p.hours * vigilExpRate(campaignOf(save).best) * m);
   for (const id of party) addExp(save, id, exp);
   return { tithes: p.tithes, seals: p.seals, gear, melted, items, exp };
 }
