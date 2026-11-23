@@ -175,7 +175,7 @@ export function addArt(scene: Phaser.Scene, key: string, x: number, y: number, s
 
 /** Small pixel-font tag with a dark fill and a coloured edge, like the preview's rarity badges. */
 export function addBadge(scene: Phaser.Scene, x: number, y: number, label: string, color: number, size = 14) {
-  const t = scene.add.text(x + 6, y + 4, label, text.hud(size, color)).setOrigin(0, 0);
+  const t = scene.add.text(x + 6, y + 4, label, { ...text.hud(size, color), stroke: '#0b070c', strokeThickness: 3 }).setOrigin(0, 0);
   const bw = t.width + 12;
   const bh = t.height + 8;
   // ui-badge.png is tinted with the rarity colour, so draw it in white/greys
@@ -195,5 +195,24 @@ export function addScreenGlow(scene: Phaser.Scene) {
     const r = i / steps;
     g.fillStyle(0x2c1b25, 0.09).fillEllipse(GAME_W * 0.53, -60, GAME_W * 1.9 * r, 900 * r);
   }
+  return g;
+}
+
+/** Shortens a one-line text with "…" until it fits `width` (for names and lists that can run long). */
+export function fitLine<T extends Phaser.GameObjects.Text>(t: T, width: number): T {
+  if (t.width <= width) return t;
+  let s = t.text;
+  while (s.length > 1 && t.width > width) {
+    s = s.slice(0, -1).trimEnd();
+    t.setText(`${s.replace(/[,·:]$/, '')}…`);
+  }
+  return t;
+}
+
+/** A dark wash fading from the left edge of a card, so text laid over painted art stays readable. */
+export function textWash(scene: Phaser.Scene, left: number, top: number, w: number, h: number, strength = 0.6) {
+  const g = scene.add.graphics();
+  const steps = 16;
+  for (let i = 0; i < steps; i++) g.fillStyle(0x120a12, strength * (1 - i / steps)).fillRect(left + (w * i) / steps, top, w / steps + 1, h);
   return g;
 }

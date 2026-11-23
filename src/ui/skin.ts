@@ -49,10 +49,24 @@ export function nine(scene: Phaser.Scene, key: SkinKey, x: number, y: number, w:
   if (!hasSkin(scene, key)) return null;
   const src = scene.textures.get(key).getSourceImage();
   if (SKINS[key] === 0) return scene.add.nineslice(x, y, key, undefined, w, h, 0, 0, 0, 0);
+  // Thick-bordered skins are drawn at half scale, so their borders take 15-20 px instead of 30-40
+  // and leave the text inside the box clear of the ornament.
+  const k = EDGE_SCALE[key] ?? 1;
+  // ui-panel's art has transparent margins round a thick border; drawing it a little outside the box
+  // puts the border's inner edge about 10 px in, where the layouts expect it
+  const out = OUTSET[key] ?? 0;
+  const bw = (w + out * 2) / k;
+  const bh = (h + out * 2) / k;
   // corners can't be bigger than half the box or half the source image
-  const c = Math.max(1, Math.floor(Math.min(SKINS[key] ?? 12, w / 2, h / 2, src.width / 2, src.height / 2)));
-  return scene.add.nineslice(x, y, key, undefined, w, h, c, c, c, c);
+  const c = Math.max(1, Math.floor(Math.min(SKINS[key] ?? 12, bw / 2, bh / 2, src.width / 2, src.height / 2)));
+  const ns = scene.add.nineslice(x, y, key, undefined, bw, bh, c, c, c, c);
+  return k === 1 ? ns : ns.setScale(k);
 }
+
+/** Skins whose borders are drawn smaller than their source art (screen px per source px). */
+const EDGE_SCALE: Record<string, number> = { 'ui-panel': 0.5, 'ui-frame': 0.5 };
+/** Screen px a skin is drawn beyond each side of its box. */
+const OUTSET: Record<string, number> = { 'ui-panel': 10 };
 
 /** A plain stretched image (bars and backgrounds that need no corners), or null. */
 export function stretch(scene: Phaser.Scene, key: string, x: number, y: number, w: number, h: number) {

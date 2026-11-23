@@ -570,12 +570,19 @@ export class FieldView {
     }
   }
 
+  private floatStack = new Map<string, { at: number; n: number }>();
+
   private float(uid: string, label: string, color: number, big = false) {
     if (!this.field.bodies.get(uid)) return;
     const p = this.pos(uid);
     const v = this.views.get(uid);
     const size = (this.o.compact ? 14 : 20) + (big ? 6 : 0);
-    const y = p.feet - (v?.fig.height ?? 60) - (this.o.compact ? 10 : 18);
+    // several pops on one body at once stack upward instead of printing over each other
+    const now = this.scene.time.now;
+    const prev = this.floatStack.get(uid);
+    const n = prev && now - prev.at < 450 ? prev.n + 1 : 0;
+    this.floatStack.set(uid, { at: now, n });
+    const y = p.feet - (v?.fig.height ?? 60) - (this.o.compact ? 10 : 18) - (n % 4) * (size + 4);
     const t = this.scene.add
       .text(p.x + Phaser.Math.Between(-10, 10), y, label, { fontFamily: FONT, fontSize: `${size}px`, color: hex(color), stroke: '#000000', strokeThickness: this.o.compact ? 3 : 5 })
       .setOrigin(0.5)

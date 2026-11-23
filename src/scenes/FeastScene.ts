@@ -65,13 +65,13 @@ export class FeastScene extends Phaser.Scene {
     const next = FEAST_MARKS.find((m) => !f.paid.includes(m.at));
     const ready = marksReady(save);
     const goal = next?.at ?? FEAST_MARKS[FEAST_MARKS.length - 1].at;
-    this.add.text(PAD + 14, y + 10, next ? `EARNED ${f.earned} · NEXT MILESTONE AT ${goal}` : `EARNED ${f.earned}`, text.hud(12, PAL.steel));
+    this.add.text(PAD + 14, y + 14, next ? `EARNED ${f.earned} · NEXT MILESTONE AT ${goal}` : `EARNED ${f.earned}`, text.hud(12, PAL.steel));
     const barW = bw - 28 - 130;
-    this.add.rectangle(PAD + 14, y + 38, barW, 10, PAL.deepShadow).setOrigin(0, 0.5);
-    this.add.rectangle(PAD + 14, y + 38, Math.max(1, barW * Math.min(1, f.earned / FEAST_MARKS[FEAST_MARKS.length - 1].at)), 10, PAL.amber).setOrigin(0, 0.5);
+    this.add.rectangle(PAD + 14, y + 42, barW, 10, PAL.deepShadow).setOrigin(0, 0.5);
+    this.add.rectangle(PAD + 14, y + 42, Math.max(1, barW * Math.min(1, f.earned / FEAST_MARKS[FEAST_MARKS.length - 1].at)), 10, PAL.amber).setOrigin(0, 0.5);
     FEAST_MARKS.forEach((m) => {
       const x = PAD + 14 + barW * Math.min(1, m.at / FEAST_MARKS[FEAST_MARKS.length - 1].at);
-      this.add.rectangle(x, y + 38, 2, 16, f.paid.includes(m.at) ? PAL.steel : PAL.ivory);
+      this.add.rectangle(x, y + 42, 2, 16, f.paid.includes(m.at) ? PAL.steel : PAL.ivory);
     });
     this.add.text(PAD + 14, y + 54, next ? `Next: ${rewardText(next.reward, saint)}` : 'Every milestone paid.', { ...text.body(15, PAL.ivory), wordWrap: { width: barW } });
     makeButton(this, GAME_W - PAD - 70, y + 44, 116, 48, ready.length ? `Claim ${ready.length}` : 'Claim', () => {

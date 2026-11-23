@@ -98,7 +98,7 @@ export class FieldScene extends Phaser.Scene {
 
     // Top bar
     this.add.rectangle(GAME_W / 2, 34, GAME_W, 68, 0x0e0d11, 0.85).setDepth(40);
-    this.add.text(14, 12, this.practice ? `REAL-TIME DEMO · STAGE ${stageDef(this.stageN).label}` : 'REAL-TIME DEMO', text.hud(12, PAL.amber)).setDepth(41);
+    this.add.text(14, 12, this.practice ? `DEMO · STAGE ${stageDef(this.stageN).label}` : 'REAL-TIME DEMO', text.hud(12, PAL.amber)).setDepth(41);
     this.timeText = this.add.text(14, 32, '', text.hud(18, PAL.steel)).setDepth(41);
     this.drawToggles();
     this.logText = this.add

@@ -7,7 +7,7 @@ import { CURRENCY_BAR_H, addCurrencyBar } from './currencyBar';
 import { RITES, type RiteHome } from './rites';
 import { addScrollArea } from './scroll';
 import { TAB_BAR_H, addTabBar } from './tabBar';
-import { PAD, addBackdrop, addFrame, addHeading, addIcon, addScreenGlow, text } from './theme';
+import { PAD, textWash, addBackdrop, addFrame, addHeading, addIcon, addScreenGlow, text } from './theme';
 
 const CARD_H = 138;
 const GAP = 12;
@@ -39,15 +39,17 @@ export function drawBoard(scene: Phaser.Scene, home: RiteHome, title: string, su
     const art = r.bg && scene.textures.exists(r.bg) ? r.bg : 'bg-hall';
     const bd = addBackdrop(scene, art, GAME_W / 2, cy, w, CARD_H, { fade: 0.82, fadeColor: 0x180d17, focusY: 0.5 });
     if (!open) bd.forEach((o) => (o as unknown as Phaser.GameObjects.Components.AlphaSingle).setAlpha?.(0.3));
+    // a dark wash from the left keeps the blurb readable over busy art
+    textWash(scene, PAD, cy - CARD_H / 2, w * 0.75, CARD_H);
     addFrame(scene, GAME_W / 2, cy, w, CARD_H);
     const left = PAD + 20;
     const y0 = cy - CARD_H / 2;
     const icon = r.art && scene.textures.exists(`ui-${r.art}`) ? r.art : r.icon;
     addIcon(scene, left + 14, y0 + 30, open ? icon : 'lock', 28, open ? PAL.amber : PAL.steel);
     scene.add.text(left + 40, y0 + 14, r.label.toUpperCase(), text.display(22, open ? 0xfff1d6 : PAL.muted)).setShadow(0, 2, '#000000', 8, false, true);
-    if (r.blurb) scene.add.text(left, y0 + 52, r.blurb, { ...text.body(16, open ? 0xe1cabf : PAL.muted), wordWrap: { width: w - 120 } });
+    if (r.blurb) scene.add.text(left, y0 + 52, r.blurb, { ...text.body(16, open ? 0xe1cabf : PAL.muted), wordWrap: { width: w - 120 } }).setShadow(0, 1, '#000000', 4, false, true);
     const status = open ? r.status?.(save) : `Opens at Rank ${ROMAN_RANK(r.rank)}`;
-    if (status) scene.add.text(left, y0 + CARD_H - 30, status.toUpperCase(), text.hud(12, open ? PAL.amber : PAL.steel));
+    if (status) scene.add.text(left, y0 + CARD_H - 30, status.toUpperCase(), text.hud(12, open ? PAL.amber : PAL.steel)).setShadow(0, 1, '#000000', 3, false, true);
     if (open) scene.add.text(PAD + w - 22, cy, '›', text.display(40, PAL.amber)).setOrigin(1, 0.5);
     if (open && r.ready?.(save)) {
       if (scene.textures.exists('ui-ready-dot')) scene.add.image(PAD + w - 16, y0 + 16, 'ui-ready-dot').setDisplaySize(16, 16);

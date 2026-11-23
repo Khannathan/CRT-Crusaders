@@ -83,17 +83,17 @@ export class SanctumScene extends Phaser.Scene {
       this.add.text(PAD, bottom + 10, 'ALMOST THERE', text.hud(13, PAL.amber));
       below = drawAlmostThere(this, game.save, bottom + 28);
     }
-    this.add.text(PAD, below + 10, 'DAILY RITES', text.hud(13, PAL.amber));
+    this.add.text(PAD, below + 18, 'DAILY RITES', text.hud(13, PAL.amber));
     // Morning Rounds: every daily chore that needs no choice, in one tap.
     if (owned.length) {
       const ready = roundsReady(game.save);
-      makeButton(this, GAME_W - PAD - 84, below + 12, 168, 30, ready ? 'Collect all' : 'All collected', () => {
+      makeButton(this, GAME_W - PAD - 84, below + 24, 168, 30, ready ? 'Collect all' : 'All collected', () => {
         const r = morningRounds(game.save);
         commit();
         this.showRounds(r);
       }, { fontSize: 15, active: ready, icon: 'flame' });
     }
-    const ritesBottom = drawRites(this, game.save, below + 28);
+    const ritesBottom = drawRites(this, game.save, below + 44);
 
     // Prototype-only: settings, and wiping the save to replay the first-time flow.
     const linkY = ritesBottom + 24;

@@ -12,6 +12,13 @@ import type { ResourceId } from '../systems/sources';
 
 export const CURRENCY_BAR_H = 56;
 
+/** Chip numbers stay short: 64150, 123K, 1.23M. */
+export function chipNumber(n: number) {
+  if (n < 100_000) return String(n);
+  if (n < 1_000_000) return `${Math.floor(n / 1000)}K`;
+  return `${(Math.floor(n / 10_000) / 100).toFixed(2)}M`;
+}
+
 /**
  * The preview's status bar: sigil and title on the left, Gilt, Seals and Tithes as
  * framed chips on the right. Returns a refresh function.
@@ -46,9 +53,10 @@ export function addCurrencyBar(scene: Phaser.Scene) {
     const ic = addIcon(scene, 0, mid, icon, 18, tint).setDepth(5);
     const num = scene.add.text(0, mid + 1, '', { fontFamily: HUD_FONT, fontSize: '16px', color: hex(PAL.ivory) }).setOrigin(0, 0.5).setDepth(5);
     const name = scene.add.text(0, mid, label, { fontFamily: FONT, fontSize: '18px', color: '#cab4a8' }).setOrigin(0, 0.5).setDepth(5);
-    return (value: number, right: number) => {
-      num.setText(String(value));
-      const w = 10 + 18 + 7 + num.width + 7 + name.width + 10;
+    return (value: number, right: number, named = true) => {
+      num.setText(chipNumber(value));
+      name.setVisible(named);
+      const w = 10 + 18 + 7 + num.width + (named ? 7 + name.width : 0) + 10;
       bg.setPosition(right, mid).setSize(w, 38);
       hit.setPosition(right - w / 2, mid).setSize(w, 38);
       const left = right - w;
@@ -63,10 +71,11 @@ export function addCurrencyBar(scene: Phaser.Scene) {
   const gilt = chip('gilt', 0xf2d27a, 'Gilt', 'gilt');
   // full-screen toggle in the top-right corner, chips to its left
   addFullscreenButton(scene, GAME_W - 22, mid, 20);
+  // the logo ends about here; if the chips would run under it, drop their word labels (the icons stay)
+  const logoRight = scene.textures.exists('logo') ? 112 : 130;
   const refresh = () => {
-    const left = tithes(game.save.tithes, GAME_W - 42);
-    const l2 = seals(game.save.seals, left - 6);
-    gilt(giltOf(game.save), l2 - 6);
+    const lay = (named: boolean) => gilt(giltOf(game.save), seals(game.save.seals, tithes(game.save.tithes, GAME_W - 42, named) - 6, named) - 6, named);
+    if (lay(true) < logoRight) lay(false);
   };
   refresh();
   // Power you can feel: a rise since the last screen pops under the bar, and a

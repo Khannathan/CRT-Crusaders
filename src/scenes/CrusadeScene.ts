@@ -17,7 +17,7 @@ import { CURRENCY_BAR_H, addCurrencyBar } from '../ui/currencyBar';
 import { portraitKey } from '../ui/placeholderPortrait';
 import { addScrollArea } from '../ui/scroll';
 import { TAB_BAR_H, addTabBar } from '../ui/tabBar';
-import { PAD, addBackdrop, addFrame, addHeading, addScreenGlow, text } from '../ui/theme';
+import { PAD, textWash, addBackdrop, addFrame, addHeading, addScreenGlow, text } from '../ui/theme';
 import { holdForCard } from '../ui/sisterCard';
 
 /** Rank of Faith needed to repeat a cleared crypt on Auto. */
@@ -97,6 +97,7 @@ export class CrusadeScene extends Phaser.Scene {
       const art = this.textures.exists(`bg-${crypt.id}`) ? `bg-${crypt.id}` : 'bg-hall';
       const backdrop = addBackdrop(this, art, GAME_W / 2, hy, hw, hh, { fade: 0.85, fadeColor: 0x180d17, focusY: crypt === CRYPTS[0] ? 0.3 : 0.7 });
       if (!open) backdrop.forEach((o) => (o as unknown as Phaser.GameObjects.Components.AlphaSingle).setAlpha?.(0.35));
+      if (open) textWash(this, PAD, hy - hh / 2, hw * 0.8, hh);
       addFrame(this, GAME_W / 2, hy, hw, hh);
       // the blessed-clear badge on each open crypt while blessed clears are left this week
       if (open && left && this.textures.exists('ui-badge-blessed')) this.add.image(PAD + hw - 26, hy - hh / 2 + 26, 'ui-badge-blessed').setDisplaySize(32, 32);
@@ -112,7 +113,7 @@ export class CrusadeScene extends Phaser.Scene {
         ...text.body(17, open ? 0xe1cabf : PAL.muted),
         lineSpacing: 2,
         wordWrap: { width: hw - 36 },
-      });
+      }).setShadow(0, 1, '#000000', 4, false, true);
       const best = s.heresy?.[crypt.id] ?? 0;
       const note = !open
         ? `Clear ${prior?.name} to open`
