@@ -1,3 +1,4 @@
+import { sfx } from '../audio/sfx';
 import Phaser from 'phaser';
 import { bagEmpty, bagText, type Bag, type ItemId } from '../systems/items';
 import { FONT, GAME_H, GAME_W, PAL, hex } from '../config';
@@ -250,6 +251,7 @@ export class ResultsScene extends Phaser.Scene {
   }
 
   private stamp(x: number, y: number, text: string, color: number) {
+    if (text === 'RANK UP') sfx('rankUp');
     const s = this.add
       .text(x, y, text, { fontFamily: FONT, fontSize: '22px', color: hex(color), stroke: '#000000', strokeThickness: 5 })
       .setOrigin(0.5)

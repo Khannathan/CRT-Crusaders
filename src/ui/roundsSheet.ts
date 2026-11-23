@@ -1,3 +1,4 @@
+import { sfx } from '../audio/sfx';
 import Phaser from 'phaser';
 import { GAME_H, GAME_W, PAL } from '../config';
 import { commit, game } from '../state/game';
@@ -12,6 +13,7 @@ import { addFrame, text } from './theme';
  */
 export function runRounds(scene: Phaser.Scene) {
   const r = morningRounds(game.save);
+  sfx('bell');
   commit();
   showRounds(scene, r);
 }

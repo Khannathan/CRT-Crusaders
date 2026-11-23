@@ -1,3 +1,4 @@
+import { sfx } from '../audio/sfx';
 import Phaser from 'phaser';
 import { saveSettings, settings } from '../state/settings';
 import { GAME_H, GAME_W, PAL } from '../config';
@@ -577,6 +578,7 @@ export class RosterScene extends Phaser.Scene {
         const b = makeButton(this, left + w / 2 + i * (w + 8), y + 30, w, 58, `${label}${can && n === Infinity ? ` (${plan.count})` : ''}\n${sub}`, () => {
           if (list.dragging || !can) return;
           if (useUnction(save, c.id, pick, n, lv) >= 0) {
+            sfx('unction');
             commit();
             this.reopen(c, 'grow');
           }
@@ -603,6 +605,7 @@ export class RosterScene extends Phaser.Scene {
         const b = makeButton(this, GAME_W / 2, y + 28, bw, 56, `Ascend  ·  cap ${cap} → ${cap + 10}`, () => {
           if (list.dragging) return;
           if (ascend(save, c.id)) {
+            sfx('ascend');
             commit();
             this.reopen(c, 'grow');
           }
@@ -739,6 +742,7 @@ export class RosterScene extends Phaser.Scene {
       const b = makeButton(this, GAME_W / 2, y + 28, bw, 56, `Canonize: rank ${ROMAN_RANK(rank + 1)}${(rank + 1) % 2 === 0 ? ' (+1 trait point)' : ''}`, () => {
         if (list.dragging) return;
         if (canonize(save, c.id)) {
+          sfx('ascend');
           commit();
           this.reopen(c, 'canon');
         }
@@ -962,6 +966,7 @@ export class RosterScene extends Phaser.Scene {
       const b = makeButton(this, GAME_W / 2, y + 28, bw, 56, atFive ? `Tier Up  ·  ${TIER_STIGMATA[tier]} Stigmata` : si.stigmata ? `Take Vow  ·  ${need - si.short} cop${need - si.short === 1 ? 'y' : 'ies'} + ${si.stigmata} Stigmata` : `Take Vow  ·  ${need} cop${need > 1 ? 'ies' : 'y'}`, () => {
         if (list.dragging) return;
         if (atFive ? tierUp(save, c.id) : takeVow(save, c.id, c.rarity)) {
+          sfx('ascend');
           commit();
           this.reopen(c, 'vows');
         }
@@ -1176,6 +1181,7 @@ export class RosterScene extends Phaser.Scene {
     const leap = !eb && goal > item.level + 1;
     const enh = makeButton(this, leap ? GAME_W / 2 - 108 : GAME_W / 2, y + 10, leap ? 236 : 300, 52, maxed ? 'Fully refined' : eb ?? (item.level >= MAX_GEAR_LEVEL ? `Refine to +${next.level}` : `Enhance to +${next.level}`), () => {
       if (enhance(save, item)) {
+        sfx('forge');
         commit();
         layer.destroy();
         this.forge(c, item);
@@ -1186,6 +1192,7 @@ export class RosterScene extends Phaser.Scene {
       const up = makeButton(this, GAME_W / 2 + 128, y + 10, 196, 52, `Up to +${goal}`, () => {
         const n = enhanceTo(save, item, goal);
         if (!n) return;
+        sfx('forge');
         commit();
         layer.destroy();
         this.forge(c, item);

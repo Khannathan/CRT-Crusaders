@@ -1,3 +1,4 @@
+import { sfx } from '../audio/sfx';
 import Phaser from 'phaser';
 import { TAB_BAR_H, addTabBar } from '../ui/tabBar';
 import { FONT, GAME_H, GAME_W, PAL, hex } from '../config';
@@ -260,6 +261,7 @@ export class CryptScene extends Phaser.Scene {
     const run = current.run!;
     if (this.selected === undefined) return;
     const node = enterNode(run, this.selected);
+    sfx('step');
     commit(); // a reload from here on knows which room was entered
     if (node.kind === 'shrine') {
       shrine(game.save, run);
@@ -392,6 +394,7 @@ export class CryptScene extends Phaser.Scene {
       const synergy = r.family && n >= 2 && n <= 3 ? `  ·  ${n}${n === 2 ? 'nd' : 'rd'} ${FAMILY_NAME[r.family]}: ${FAMILY_BONUS[r.family][n - 2].name.split(' (')[0]}!` : r.family ? `  ·  ${FAMILY_NAME[r.family]}` : '';
       const b = makeButton(this, GAME_W / 2, y, GAME_W - 80, 110, `${r.name}${synergy}\n${r.desc}`, () => {
         takeRelic(game.save, run, r.id);
+        sfx('chest');
         commit();
         this.scene.restart();
       }, { fontSize: 21 });

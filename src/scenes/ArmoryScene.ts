@@ -1,3 +1,4 @@
+import { sfx } from '../audio/sfx';
 import Phaser from 'phaser';
 import { GAME_H, GAME_W, PAL } from '../config';
 import { RARITY_COLOR } from '../data/classes';
@@ -86,6 +87,7 @@ export class ArmoryScene extends Phaser.Scene {
     const pull = (n: 1 | 10, pay: PullPay) => {
       const got = pullArmory(save, n, pay);
       if (!got.length) return;
+      sfx('pull');
       commit();
       this.showPulls(got);
     };
@@ -192,6 +194,7 @@ export class ArmoryScene extends Phaser.Scene {
     const forge = (pay: 'fragments' | 'mould') => {
       const g = forgeUR(save, slot, setId, pay);
       if (!g) return;
+      sfx('forge');
       commit();
       layer.destroy();
       this.showPulls([g]);

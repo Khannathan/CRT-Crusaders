@@ -290,6 +290,7 @@ export class FieldScene extends Phaser.Scene {
   private begin() {
     if (this.phase !== 'deploy') return;
     this.phase = 'fight';
+    sfx('fightStart');
     this.picked = undefined;
     this.view.mark([]);
     this.deployLayer.forEach((o) => o.destroy());
@@ -390,6 +391,7 @@ export class FieldScene extends Phaser.Scene {
     const zs = this.field.zones;
     if (zs.length > this.zonesSeen) {
       this.zonesSeen = zs.length;
+      sfx('telegraph');
       this.log(`${zs[zs.length - 1].skillName} is coming! Drag your Sisters out of the red!`);
     } else if (!zs.length) this.zonesSeen = 0;
     const pulse = 0.5 + 0.5 * Math.sin(this.time.now / 90);

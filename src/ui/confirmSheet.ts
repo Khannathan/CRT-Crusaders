@@ -1,3 +1,4 @@
+import { sfx } from '../audio/sfx';
 import Phaser from 'phaser';
 import { GAME_H, GAME_W, PAL } from '../config';
 import { makeButton } from './button';
@@ -11,6 +12,7 @@ import { text } from './theme';
 export function confirmSheet(scene: Phaser.Scene, title: string, lines: string[], ok: string, onOk: () => void, footer?: string, max = 8) {
   const shown = lines.length > max ? [...lines.slice(0, max - 1), `…and ${lines.length - max + 1} more`] : [...lines];
   if (footer) shown.push('', footer);
+  sfx('open');
   const layer = scene.add.container(0, 0).setDepth(60);
   const body = scene.add.text(GAME_W / 2, 0, shown.join('\n'), { ...text.body(16, PAL.ivory), align: 'center', wordWrap: { width: GAME_W - 110 }, lineSpacing: 4 }).setOrigin(0.5, 0);
   const h = Math.max(220, body.height + 170);

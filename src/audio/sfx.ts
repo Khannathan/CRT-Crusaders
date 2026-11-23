@@ -1,12 +1,12 @@
 import { settings } from '../state/settings';
 
 /**
- * Sound effects, synthesized in the browser: square waves, triangles and
- * noise, like an old sound chip. No files to load, so every hit, crit, Litany,
- * coin and seal has a voice today.
+ * Sound effects. Each cue plays its recording from src/assets/sfx/<cue>.ogg
+ * (or .mp3): dark chip sounds through an old TV's speaker, made by
+ * tools/make-sfx.py. Any cue can be swapped by dropping in a new file.
  *
- * Own recordings can replace any cue later: drop `src/assets/sfx/<cue>.ogg`
- * (or .mp3) in and it plays instead of the synthesized one.
+ * Until a file has loaded (the first moments after the first tap), a small
+ * synthesized chip sound stands in.
  */
 
 export type Cue =
@@ -31,11 +31,62 @@ export type Cue =
   | 'levelUp'
   | 'slam'
   | 'seal'
-  | 'sealRare';
+  | 'sealRare'
+  // Recordings only (a stand-in cue plays until the file loads):
+  | 'tab'
+  | 'open'
+  | 'close'
+  | 'deny'
+  | 'claim'
+  | 'fightStart'
+  | 'telegraph'
+  | 'delay'
+  | 'unction'
+  | 'bossAppear'
+  | 'pull'
+  | 'urReveal'
+  | 'ascend'
+  | 'forge'
+  | 'powerUp'
+  | 'rankUp'
+  | 'bell'
+  | 'chest'
+  | 'step'
+  | 'whistle';
+
+type SynthCue = Exclude<Cue, keyof typeof STAND_IN>;
+
+/** What plays for a recordings-only cue while its file loads. */
+const STAND_IN = {
+  tab: 'tap',
+  open: 'tap',
+  close: 'tap',
+  deny: 'block',
+  claim: 'coin',
+  fightStart: 'slam',
+  telegraph: 'block',
+  delay: 'crit',
+  unction: 'heal',
+  bossAppear: 'blasphemy',
+  pull: 'litany',
+  urReveal: 'sealRare',
+  ascend: 'levelUp',
+  forge: 'block',
+  powerUp: 'coin',
+  rankUp: 'levelUp',
+  bell: 'candle',
+  chest: 'coin',
+  step: 'tap',
+  whistle: 'dodge',
+} as const satisfies Record<string, Cue>;
 
 /** Recorded replacements, if any were dropped into src/assets/sfx/. */
 const FILES = import.meta.glob('../assets/sfx/*.{ogg,mp3}', { eager: true, query: '?url', import: 'default' }) as Record<string, string>;
-const fileFor = (cue: Cue) => Object.entries(FILES).find(([p]) => p.split('/').pop()!.replace(/\.(ogg|mp3)$/, '') === cue)?.[1];
+let useOgg: boolean | undefined;
+function fileFor(cue: Cue) {
+  useOgg ??= typeof Audio !== 'undefined' && new Audio().canPlayType('audio/ogg; codecs="vorbis"') !== '';
+  return (useOgg && FILES[`../assets/sfx/${cue}.ogg`]) || FILES[`../assets/sfx/${cue}.mp3`];
+}
 const buffers = new Map<string, AudioBuffer | null>();
 
 let ctx: AudioContext | undefined;
@@ -120,7 +171,7 @@ function hiss(c: AudioContext, out: AudioNode, t0: number, dur: number, vol = 0.
 }
 
 /** How each cue is built. `n` nudges pitch (chain count, rarity...). */
-const RECIPES: Record<Cue, (c: AudioContext, o: AudioNode, t: number, n: number) => number> = {
+const RECIPES: Record<SynthCue, (c: AudioContext, o: AudioNode, t: number, n: number) => number> = {
   tap: (c, o, t) => (tone(c, o, t, { f0: 1320, dur: 0.03, vol: 0.18 }), 0.03),
   hit: (c, o, t) => {
     hiss(c, o, t, 0.06, 0.45, 0, 1800);
@@ -227,31 +278,65 @@ const RECIPES: Record<Cue, (c: AudioContext, o: AudioNode, t: number, n: number)
 };
 
 /** Shortest gap between two plays of one cue, so a flurry stays a rattle, not a roar. */
-const GAP: Partial<Record<Cue, number>> = { hit: 45, hitMagic: 45, hurt: 60, dot: 90, block: 80, heal: 90, shield: 90, coin: 40, tap: 30 };
+const GAP: Partial<Record<Cue, number>> = { hit: 45, hitMagic: 45, hurt: 60, dot: 90, block: 80, heal: 90, shield: 90, coin: 40, tap: 30, tab: 30, step: 60, telegraph: 150, powerUp: 200, chain: 60, kill: 50 };
 const MAX_VOICES = 10;
 
-function playFile(c: AudioContext, url: string) {
-  const cached = buffers.get(url);
-  if (cached === null) return false;
-  if (cached) {
-    const src = c.createBufferSource();
-    src.buffer = cached;
-    src.connect(master!);
-    src.start();
-    return true;
-  }
-  buffers.set(url, null);
+/** Pitch of a recording per `n`: each Chain step climbs a semitone, each Candle a third. */
+function rateOf(cue: Cue, n: number) {
+  if (cue === 'chain') return Math.pow(2, Math.min(Math.max(0, n - 2), 12) / 12);
+  if (cue === 'candle') return [1, 1.26, 1.5][Math.max(0, Math.min(2, n))];
+  return 1;
+}
+
+function load(c: AudioContext, url: string) {
+  if (buffers.has(url) || loading.has(url)) return;
+  loading.add(url);
   fetch(url)
     .then((r) => r.arrayBuffer())
     .then((b) => c.decodeAudioData(b))
     .then((buf) => buffers.set(url, buf))
-    .catch(() => buffers.set(url, null));
-  return false; // first time: the synth plays while the file loads
+    .catch(() => buffers.set(url, null))
+    .finally(() => loading.delete(url));
+}
+const loading = new Set<string>();
+
+/** Plays the cue's recording; false when it has not loaded (or cannot). */
+function playFile(c: AudioContext, url: string, rate: number) {
+  const buf = buffers.get(url);
+  if (!buf) {
+    if (buf === undefined) load(c, url);
+    return false;
+  }
+  const src = c.createBufferSource();
+  src.buffer = buf;
+  src.playbackRate.value = rate;
+  src.connect(master!);
+  src.start();
+  voices++;
+  window.setTimeout(() => voices--, (buf.duration / rate) * 1000 + 30);
+  return true;
 }
 
-/** Plays a cue now. `n` nudges it (chain length, rarity rank, candle number). */
-export function sfx(cue: Cue, n = 0) {
+let soft: number | undefined;
+
+/**
+ * Plays a cue now. `n` nudges it (chain length, rarity rank, candle number).
+ * A `soft` cue (a button's tap) waits a moment and gives way if the tap's own
+ * action plays a sound of its own, so a Claim or an Ascend is not doubled.
+ */
+export function sfx(cue: Cue, n = 0, opts: { soft?: boolean } = {}) {
   if (!settings.sfx) return;
+  if (opts.soft) {
+    window.clearTimeout(soft);
+    soft = window.setTimeout(() => ((soft = undefined), play(cue, n)), 0);
+    return;
+  }
+  window.clearTimeout(soft);
+  soft = undefined;
+  play(cue, n);
+}
+
+function play(cue: Cue, n: number) {
   const c = audio();
   if (!c || !master || c.state !== 'running') return;
   const now = performance.now();
@@ -259,13 +344,18 @@ export function sfx(cue: Cue, n = 0) {
   if (voices >= MAX_VOICES) return;
   lastAt.set(cue, now);
   const url = fileFor(cue);
-  if (url && playFile(c, url)) return;
+  if (url && playFile(c, url, rateOf(cue, n))) return;
+  const synth: SynthCue = cue in STAND_IN ? STAND_IN[cue as keyof typeof STAND_IN] : (cue as SynthCue);
   voices++;
-  const len = RECIPES[cue](c, master, c.currentTime + 0.005, n);
+  const len = RECIPES[synth](c, master, c.currentTime + 0.005, n);
   window.setTimeout(() => voices--, len * 1000 + 30);
 }
 
-/** Wakes the audio on the first tap (browsers keep it asleep until then). */
+/** Wakes the audio on the first tap (browsers keep it asleep until then) and loads every recording. */
 export function unlockSfx() {
-  audio();
+  const c = audio();
+  if (!c || preloaded) return;
+  preloaded = true;
+  for (const url of new Set((Object.keys(STAND_IN) as Cue[]).concat(Object.keys(RECIPES) as Cue[]).map(fileFor))) if (url) load(c, url);
 }
+let preloaded = false;
