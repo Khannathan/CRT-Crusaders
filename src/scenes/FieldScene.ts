@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
 import { battleLoop } from '../audio/battleMusic';
 import { music } from '../audio/music';
-import { GAME_H, GAME_W, PAL } from '../config';
+import { BASE_H, GAME_H, GAME_W, PAL } from '../config';
 import type { SkillDef } from '../data/skills';
 import { commit, game } from '../state/game';
 import { current } from '../state/run';
@@ -17,10 +17,20 @@ import { portraitKey } from '../ui/placeholderPortrait';
 import { addBackdrop, text } from '../ui/theme';
 
 /** Where the field sits on screen: feet stand between FIELD_Y and FIELD_Y + FIELD_H. */
-const FIELD_Y = 290;
+let FIELD_Y = 290;
 const FIELD_H = 450;
 const CARD = 104;
-const CARD_Y = 846;
+let CARD_Y = 846;
+/**
+ * Laid out for a 960-high screen. On taller phones the cards stay at the
+ * bottom and the field moves down to the middle of the extra space. The field
+ * itself keeps its size, since the fight is simulated in it.
+ */
+function spreadRows() {
+  const extra = GAME_H - BASE_H;
+  FIELD_Y = 290 + Math.round(extra / 2);
+  CARD_Y = 846 + extra;
+}
 
 interface Card {
   u: Unit;
@@ -89,6 +99,7 @@ export class FieldScene extends Phaser.Scene {
   }
 
   create() {
+    spreadRows();
     const b = this.field.battle;
     music.play(battleLoop(b));
     music.preload('victory', 'defeat');
@@ -299,10 +310,12 @@ export class FieldScene extends Phaser.Scene {
     const secs = Math.round(this.field.time);
     const layer = this.add.container(0, 0).setDepth(60);
     layer.add(this.add.rectangle(GAME_W / 2, GAME_H / 2, GAME_W, GAME_H, 0x09060b, 0.6));
-    layer.add(this.add.rectangle(GAME_W / 2, 440, GAME_W - 60, 300, 0x241925).setStrokeStyle(2, PAL.bronze));
-    layer.add(this.add.text(GAME_W / 2, 340, won ? 'PURGED' : 'THE SISTERS FALL BACK', text.display(32, won ? PAL.amber : 0xd06060)).setOrigin(0.5));
-    layer.add(this.add.text(GAME_W / 2, 392, `${secs} seconds · ${this.field.battle.round} rounds\nPractice: no rewards, nothing lost.`, { ...text.body(18, PAL.steel), align: 'center' }).setOrigin(0.5));
-    const all = makeButton(this, GAME_W / 2, 458, 380, 48, settings.realtimeBattles ? 'Real-time for all battles: On' : 'Real-time for all battles: Off', () => {
+    // the box sits over the middle of the field, which moves down on tall screens
+    const dy = Math.round((GAME_H - BASE_H) / 2);
+    layer.add(this.add.rectangle(GAME_W / 2, 440 + dy, GAME_W - 60, 300, 0x241925).setStrokeStyle(2, PAL.bronze));
+    layer.add(this.add.text(GAME_W / 2, 340 + dy, won ? 'PURGED' : 'THE SISTERS FALL BACK', text.display(32, won ? PAL.amber : 0xd06060)).setOrigin(0.5));
+    layer.add(this.add.text(GAME_W / 2, 392 + dy, `${secs} seconds · ${this.field.battle.round} rounds\nPractice: no rewards, nothing lost.`, { ...text.body(18, PAL.steel), align: 'center' }).setOrigin(0.5));
+    const all = makeButton(this, GAME_W / 2, 458 + dy, 380, 48, settings.realtimeBattles ? 'Real-time for all battles: On' : 'Real-time for all battles: Off', () => {
       settings.realtimeBattles = !settings.realtimeBattles;
       saveSettings();
       all.text.setText(settings.realtimeBattles ? 'Real-time for all battles: On' : 'Real-time for all battles: Off');
@@ -310,10 +323,10 @@ export class FieldScene extends Phaser.Scene {
     const n = this.stageN;
     const bossN = Math.ceil(n / STAGES_PER_CHAPTER) * STAGES_PER_CHAPTER;
     const bw = 150;
-    const again = makeButton(this, GAME_W / 2 - bw - 10, 530, bw, 56, 'Again', () => this.scene.restart({ stage: n }), { active: true, fontSize: 18 });
+    const again = makeButton(this, GAME_W / 2 - bw - 10, 530 + dy, bw, 56, 'Again', () => this.scene.restart({ stage: n }), { active: true, fontSize: 18 });
     // The chapter's boss, to see a Blasphemy (or the next chapter's, from a boss).
-    const boss = makeButton(this, GAME_W / 2, 530, bw, 56, 'Boss fight', () => this.scene.restart({ stage: n === bossN ? Math.min(bossN + STAGES_PER_CHAPTER, CHAPTERS.length * STAGES_PER_CHAPTER) : bossN }), { fontSize: 18 });
-    const back = makeButton(this, GAME_W / 2 + bw + 10, 530, bw, 56, 'Sanctum', () => this.leave(), { fontSize: 18 });
+    const boss = makeButton(this, GAME_W / 2, 530 + dy, bw, 56, 'Boss fight', () => this.scene.restart({ stage: n === bossN ? Math.min(bossN + STAGES_PER_CHAPTER, CHAPTERS.length * STAGES_PER_CHAPTER) : bossN }), { fontSize: 18 });
+    const back = makeButton(this, GAME_W / 2 + bw + 10, 530 + dy, bw, 56, 'Sanctum', () => this.leave(), { fontSize: 18 });
     layer.add([...all.all, ...again.all, ...boss.all, ...back.all]);
     this.tweens.timeScale = 1;
     this.time.timeScale = 1;

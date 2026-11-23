@@ -10,9 +10,23 @@
     <link rel="manifest" href="manifest.webmanifest" />
     <title>CRT Crusaders</title>
     <style>
-      html, body { margin: 0; height: 100%; background: #0a090c; overflow: hidden; touch-action: none; }
-      #game { width: 100vw; height: 100dvh; }
-      canvas { image-rendering: pixelated; image-rendering: crisp-edges; }
+      html, body { margin: 0; height: 100%; background: #0a090c; overflow: hidden; touch-action: none; overscroll-behavior: none; }
+      /*
+        The game box fills the screen minus the safe area (notch, rounded corners,
+        gesture bar), so nothing important hides under them. dvh follows Android
+        Chrome's URL bar as it shows and hides; vh is the fallback for old browsers.
+        src/ui/screenFit.ts reads this box to pick the game's height.
+      */
+      #game {
+        position: fixed;
+        top: env(safe-area-inset-top, 0px);
+        left: env(safe-area-inset-left, 0px);
+        right: env(safe-area-inset-right, 0px);
+        height: calc(100vh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px));
+        height: calc(100dvh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px));
+      }
+      /* nearest-neighbour scaling keeps the pixel art sharp */
+      canvas { image-rendering: pixelated; image-rendering: crisp-edges; display: block; }
     </style>
   </head>
   <body>
