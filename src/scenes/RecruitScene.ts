@@ -35,8 +35,7 @@ export class RecruitScene extends Phaser.Scene {
     music.preload('ur');
     addCurrencyBar(this);
     const s = game.save;
-    // A compact header leaves the banner room for the Sisters to stand at full height.
-    this.add.text(PAD + 4, CURRENCY_BAR_H + 28, 'SISTERS', text.display(24, PAL.amber)).setOrigin(0, 0.5);
+    // A compact header (the banner's name) leaves the banner room for her splash and the Sisters.
     makeButton(this, GAME_W - PAD - 44, CURRENCY_BAR_H + 28, 88, 40, 'Back', () => this.scene.start('Altar'), { fontSize: 16 });
     makeButton(this, GAME_W - PAD - 96 - 58, CURRENCY_BAR_H + 28, 108, 40, 'Record', () => this.scene.start('PullHistory'), { fontSize: 15, icon: 'book' });
     const top = CURRENCY_BAR_H + 50;
@@ -57,6 +56,10 @@ export class RecruitScene extends Phaser.Scene {
     const edge = limited ? RARITY_COLOR.UR : ord.color;
     const target = CRUSADERS.find((c) => c.id === banner.target)!;
     const ssrs = boostedSSRs(s);
+    this.add.text(PAD + 4, CURRENCY_BAR_H + 28, limited ? `${win.saint.name.split(' ')[0].toUpperCase()}'S VIGIL` : 'YOUR CALLING', text.display(22, PAL.amber)).setOrigin(0, 0.5);
+    // Her splash fills the upper part of the banner; the Sisters stand on the floor below it, never over her.
+    const splashH = bh - 206;
+    const splashY = bTop + splashH / 2;
 
     // Background: the chosen Sister's splash (the target's at first), behind everything on the banner.
     const back = this.add.container(0, 0);
@@ -66,18 +69,16 @@ export class RecruitScene extends Phaser.Scene {
       back.removeAll(true);
       const c = CRUSADERS.find((x) => x.id === id)!;
       const o = ORDERS[c.order];
-      if (this.textures.exists(splashKey(id))) {
-        back.add(addSplash(this, id, GAME_W / 2, by, bw, bh, 'hero'));
-        // her splash is busy; dim it so the figures and words stand out in front
-        back.add(this.add.rectangle(GAME_W / 2, by, bw, bh, 0x140b12, 0.35));
-      } else {
+      // the floor the Sisters stand on
+      back.add(this.add.rectangle(GAME_W / 2, by, bw, bh, 0x140b12, 1));
+      back.add(this.add.rectangle(GAME_W / 2, by, bw, bh, edge, 0.08));
+      if (this.textures.exists(splashKey(id))) back.add(addSplash(this, id, GAME_W / 2, splashY, bw, splashH, 'hero'));
+      else {
         const art = this.textures.exists(`banner-${o.id}`) ? `banner-${o.id}` : limited && this.textures.exists('banner-limited') ? 'banner-limited' : 'bg-altar';
-        back.add(addBackdrop(this, art, GAME_W / 2, by, bw, bh, { focusY: 0.35 }) as Phaser.GameObjects.GameObject[]);
-        back.add(this.add.rectangle(GAME_W / 2, by, bw, bh, 0x140b12, 0.3));
+        back.add(addBackdrop(this, art, GAME_W / 2, splashY, bw, splashH, { focusY: 0.35 }) as Phaser.GameObjects.GameObject[]);
       }
-      // a floor of shadow for the figures to stand on, and a little colour of the banner
-      back.add(fade(this, GAME_W / 2, by, bw, bh, 0.5, 0x140b12));
-      back.add(this.add.rectangle(GAME_W / 2, by, bw, bh, edge, 0.1));
+      // her splash melts into the floor at its foot
+      back.add(fade(this, GAME_W / 2, splashY, bw, splashH, 0.3, 0x140b12));
       back.list.forEach((o) => (o as Phaser.GameObjects.Image).setAlpha?.(0));
       this.tweens.add({ targets: back.list, alpha: { from: 0, to: 1 }, duration: 260 });
       // the dimming layers keep their own alpha
@@ -98,12 +99,12 @@ export class RecruitScene extends Phaser.Scene {
       this.scene.restart();
     };
 
-    // Foreground: the three featured Sisters stand on the banner, the UR in front.
+    // Foreground: the three featured Sisters stand in a row on the floor, the UR in the middle.
     const feet = bTop + bh - 76;
-    const sideX = 96;
+    const sideX = 160;
     const figures: { c: CrusaderDef; x: number; feet: number; scale: number; sprite?: SisterSprite; parts: Phaser.GameObjects.GameObject[] }[] = [
-      ...ssrs.slice(0, 2).map((c, k) => ({ c, x: k === 0 ? PAD + sideX : GAME_W - PAD - sideX, feet: feet - 34, scale: 1, parts: [] })),
-      { c: target, x: GAME_W / 2, feet, scale: 2, parts: [] },
+      ...ssrs.slice(0, 2).map((c, k) => ({ c, x: GAME_W / 2 + (k === 0 ? -sideX : sideX), feet: feet - 6, scale: 1, parts: [] })),
+      { c: target, x: GAME_W / 2, feet, scale: 1, parts: [] },
     ];
     let chosen = target.id;
     const select = (id: string) => {
@@ -128,7 +129,7 @@ export class RecruitScene extends Phaser.Scene {
       } else {
         // no full-body art yet: her portrait, framed, stands in her place
         makePlaceholderPortrait(this, f.c);
-        const size = ur ? 200 : 112;
+        const size = 112;
         f.parts.push(
           this.add.ellipse(f.x, f.feet, size * 0.8, 16, 0x000000, 0.5),
           this.add.rectangle(f.x, f.feet - size / 2 - 6, size + 8, size + 8, 0x170f1b).setStrokeStyle(2, RARITY_COLOR[f.c.rarity]),
@@ -136,7 +137,7 @@ export class RecruitScene extends Phaser.Scene {
         );
         hitH = size + 12;
       }
-      const w = ur ? 220 : 120;
+      const w = 140;
       const hit = this.add.rectangle(f.x, f.feet - hitH / 2, w, hitH, 0, 0.001).setInteractive({ useHandCursor: true });
       holdForCard(this, hit, f.c.id);
       hit.on('pointerup', () => {
@@ -145,10 +146,10 @@ export class RecruitScene extends Phaser.Scene {
       });
       // her name plate under her feet
       const ny = f.feet + 10;
-      this.add.text(f.x, ny, ur ? f.c.name : f.c.name.split(' ')[0], { ...text.body(ur ? 19 : 16, ur ? 0xfff1d6 : PAL.ivory), fontStyle: '600', stroke: '#0b070c', strokeThickness: 4 }).setOrigin(0.5, 0);
+      this.add.text(f.x, ny, f.c.name.split(' ')[0], { ...text.body(ur ? 18 : 16, ur ? 0xfff1d6 : PAL.ivory), fontStyle: '600', stroke: '#0b070c', strokeThickness: 4 }).setOrigin(0.5, 0);
       const tag = ur ? (limited ? 'LIMITED SAINT' : 'TARGET UR') : limited ? 'LIMITED SSR' : 'SSR UP';
-      this.add.text(f.x, ny + 24, tag, { ...text.hud(11, ur ? PAL.amber : RARITY_COLOR.SSR), stroke: '#0b070c', strokeThickness: 4 }).setOrigin(0.5, 0);
-      this.add.image(f.x + (ur ? 70 : 44), f.feet - hitH + 18, sigilKey(ORDERS[f.c.order].id)).setDisplaySize(ur ? 30 : 24, ur ? 30 : 24);
+      this.add.text(f.x, ny + 22, tag, { ...text.hud(11, ur ? PAL.amber : RARITY_COLOR.SSR), stroke: '#0b070c', strokeThickness: 4 }).setOrigin(0.5, 0);
+      this.add.image(f.x + 48, f.feet - hitH + 18, sigilKey(ORDERS[f.c.order].id)).setDisplaySize(24, 24);
     }
     figures.find((f) => f.c.id === chosen)?.sprite?.setActive(true);
     showBack(target.id);
@@ -162,11 +163,10 @@ export class RecruitScene extends Phaser.Scene {
       this.add.image(PAD + 30, bTop + 34, 'ui-arrow').setDisplaySize(22, 22).setFlipX(true);
       this.add.image(GAME_W - PAD - 30, bTop + 34, 'ui-arrow').setDisplaySize(22, 22);
     }
-    const head = limited ? `${win.saint.name.split(' ')[0].toUpperCase()}'S VIGIL` : 'YOUR CALLING';
-    const sub = limited ? `Limited · leaves in ${timeLeft(win.ends)}` : `Standard · banner ${page + 1} of ${pages}`;
-    this.add.text(GAME_W / 2, bTop + 26, head, text.display(22, 0xfff1d6)).setOrigin(0.5).setShadow(0, 2, '#000000', 8, false, true);
-    this.add.text(GAME_W / 2, bTop + 52, sub, { ...text.hud(12, limited ? PAL.amber : PAL.steel), stroke: '#0b070c', strokeThickness: 4 }).setOrigin(0.5);
-    this.add.text(GAME_W / 2, bTop + bh - 6, 'Tap a Sister for her splash · hold for her card', { ...text.body(14, PAL.muted), stroke: '#0b070c', strokeThickness: 3 }).setOrigin(0.5, 1);
+    const sub = limited ? `LIMITED · LEAVES IN ${timeLeft(win.ends).toUpperCase()}` : `STANDARD · BANNER ${page + 1} OF ${pages}`;
+    const subText = this.add.text(GAME_W / 2, bTop + 14, sub, { ...text.hud(11, limited ? PAL.amber : PAL.ivory), stroke: '#0b070c', strokeThickness: 4 }).setOrigin(0.5, 0).setDepth(1);
+    this.add.rectangle(GAME_W / 2, subText.y + subText.height / 2, subText.width + 20, subText.height + 6, 0x0b070c, 0.6);
+    this.add.text(GAME_W / 2, bTop + bh - 4, 'Tap a Sister for her splash · hold for her card', { ...text.body(14, PAL.muted), stroke: '#0b070c', strokeThickness: 3 }).setOrigin(0.5, 1);
 
     // Under the banner: what you can do with it
     const px = PAD;
