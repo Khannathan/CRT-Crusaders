@@ -25,6 +25,7 @@ import { ROMAN_RANK, giftsWaiting, rankInfo } from '../systems/rank';
 import { nextMilestone } from '../systems/powerGrowth';
 import { accountPower, formatPower } from '../systems/power';
 import { drawRites } from '../ui/rites';
+import { NOVICE_TASKS, NOVITIATE_DAYS, noviceDay, noviceMarks, noviceOpen, taskClaimable } from '../systems/novitiate';
 import { morningRounds, roundsReady, roundsTotal, type RoundsReport } from '../systems/rounds';
 import { addTabBar } from '../ui/tabBar';
 import { pickParty } from '../ui/partyPicker';
@@ -83,6 +84,20 @@ export class SanctumScene extends Phaser.Scene {
     if (owned.length) {
       this.add.text(PAD, bottom + 10, 'ALMOST THERE', text.hud(13, PAL.amber));
       below = drawAlmostThere(this, game.save, bottom + 28);
+    }
+    // The Novitiate: a new player's first fortnight, one tap away.
+    if (noviceOpen(game.save)) {
+      const ready = NOVICE_TASKS.filter((t) => taskClaimable(game.save, t)).length;
+      const day = Math.min(NOVITIATE_DAYS, noviceDay(game.save));
+      const sy = below + 34;
+      const bar = this.add
+        .rectangle(GAME_W / 2, sy, GAME_W - PAD * 2, 44, ready ? 0x3a2228 : 0x1b121c)
+        .setStrokeStyle(ready ? 2 : 1, ready ? PAL.amber : PAL.armorShadow)
+        .setInteractive({ useHandCursor: true });
+      bar.on('pointerup', () => this.scene.start('Novitiate'));
+      this.add.text(PAD + 14, sy, `THE NOVITIATE  ·  DAY ${day} OF ${NOVITIATE_DAYS}`, text.hud(13, PAL.amber)).setOrigin(0, 0.5);
+      this.add.text(GAME_W - PAD - 14, sy, ready ? `${ready} TO CLAIM ›` : `${noviceMarks(game.save)} / ${NOVICE_TASKS.length} MARKS ›`, text.hud(12, ready ? 0xfff1d6 : PAL.steel)).setOrigin(1, 0.5);
+      below = sy + 22;
     }
     this.add.text(PAD, below + 18, 'DAILY RITES', text.hud(13, PAL.amber));
     // Morning Rounds: every daily chore that needs no choice, in one tap.

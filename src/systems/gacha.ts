@@ -4,6 +4,7 @@ import type { CrusaderDef, Rarity } from '../data/types';
 import type { SaveData } from '../state/save';
 import { track } from './tasks';
 import { STIGMATA_FOR_COPY, addStigmata, copiesLeft } from './tiers';
+import { NOVICE_COST, NOVICE_TENS, noviceOpen, novitiateOf } from './novitiate';
 import { SAINTS, isLimitedNow, isStandard, limitedWindow } from './limited';
 
 export const RATES: Record<Rarity, number> = { R: 0.6, SR: 0.3, SSR: 0.085, UR: 0.015 };
@@ -238,12 +239,12 @@ export const urPityLeft = (save: SaveData) => UR_HARD - (save.urPity ?? 0);
 export const shardsOf = (save: SaveData, order: string) => save.shards?.[order] ?? 0;
 
 /** One pull: applies pity, adds the Sister (or a Vow token) to the save. Does not spend Seals. */
-function pullOnce(save: SaveData, rng: Rng, floor: Rarity): PullResult {
+function pullOnce(save: SaveData, rng: Rng, floor: Rarity, novice = false): PullResult {
   save.pity += 1;
   save.totalPulls += 1;
   save.urPity = (save.urPity ?? 0) + 1;
   const target = targetOf(save);
-  if (target) (save.shards ??= {})[sparkKey(target)] = shardsOf(save, sparkKey(target)) + 1;
+  if (target && !novice) (save.shards ??= {})[sparkKey(target)] = shardsOf(save, sparkKey(target)) + 1;
   const pityFloor: Rarity = save.pity >= PITY_LIMIT ? 'SSR' : 'R';
   const lo = rank(pityFloor) > rank(floor) ? pityFloor : floor;
   // Past soft pity the UR check comes first, at its raised chance.
@@ -252,17 +253,17 @@ function pullOnce(save: SaveData, rng: Rng, floor: Rarity): PullResult {
   if (rank(rarity) >= rank('SSR')) save.pity = 0;
   if (rarity === 'UR') save.urPity = 0;
 
-  const result = grantSister(save, pickCrusader(save, rng, rarity));
-  logPull(save, result);
+  const result = grantSister(save, novice ? pickFrom(rng, standardOf(rarity)) : pickCrusader(save, rng, rarity));
+  logPull(save, result, novice ? 'Novice' : undefined);
   return result;
 }
 
 /** How many recent pulls the history keeps. */
 export const PULL_LOG_MAX = 200;
 
-function logPull(save: SaveData, r: PullResult) {
+function logPull(save: SaveData, r: PullResult, banner?: string) {
   const log = (save.pullLog ??= []);
-  log.push({ id: r.crusader.id, at: Date.now(), banner: save.banner?.limited !== undefined ? 'Limited' : save.banner ? 'Standard' : undefined, isNew: r.isNew || undefined });
+  log.push({ id: r.crusader.id, at: Date.now(), banner: banner ?? (save.banner?.limited !== undefined ? 'Limited' : save.banner ? 'Standard' : undefined), isNew: r.isNew || undefined });
   if (log.length > PULL_LOG_MAX) log.splice(0, log.length - PULL_LOG_MAX);
 }
 
@@ -327,3 +328,21 @@ export function claimSpark(save: SaveData, id: string): PullResult | undefined {
   return grantSister(save, c);
 }
 
+/**
+ * The Novitiate's beginner banner: a 10-pull for NOVICE_COST Seals from the
+ * standard pool (no target, no shards), sure to hold an SSR or better. Counts
+ * toward pity like any pull. NOVICE_TENS of them per player.
+ */
+export function noviceTen(save: SaveData, rng: Rng = Math.random): PullResult[] {
+  const st = novitiateOf(save);
+  if (st.tens >= NOVICE_TENS || save.seals < NOVICE_COST || !noviceOpen(save)) return [];
+  save.seals -= NOVICE_COST;
+  st.tens += 1;
+  track(save, 'pull', 10);
+  const results: PullResult[] = [];
+  for (let i = 0; i < 10; i++) {
+    const needSSR = i === 9 && results.every((r) => rank(r.crusader.rarity) < rank('SSR'));
+    results.push(pullOnce(save, rng, needSSR ? 'SSR' : 'R', true));
+  }
+  return results;
+}

@@ -1,7 +1,8 @@
 import Phaser from 'phaser';
+import { NOVICE_COST, noviceTensLeft } from '../systems/novitiate';
 import { FONT, GAME_H, GAME_W, PAL, hex } from '../config';
 import { CLASSES, RARITY_COLOR } from '../data/classes';
-import { COST_ONE, COST_TEN, RARITY_ORDER, canPull, pull, type PullKind, type PullResult } from '../systems/gacha';
+import { COST_ONE, COST_TEN, RARITY_ORDER, canPull, noviceTen, pull, type PullKind, type PullResult } from '../systems/gacha';
 import { music } from '../audio/music';
 import { commit, game } from '../state/game';
 import { makeButton } from '../ui/button';
@@ -31,6 +32,8 @@ const rankOf = (r: PullResult) => RARITY_ORDER.indexOf(r.crusader.rarity);
 export class RevealScene extends Phaser.Scene {
   private results: PullResult[] = [];
   private index = 0;
+  /** Opened from the Novitiate: its own Again and Back. */
+  private novice = false;
   private busy = false;
   private card?: Phaser.GameObjects.Container;
   private hint!: Phaser.GameObjects.Text;
@@ -47,8 +50,9 @@ export class RevealScene extends Phaser.Scene {
     super('Reveal');
   }
 
-  init(data: { results: PullResult[] }) {
+  init(data: { results: PullResult[]; novice?: boolean }) {
     this.results = data.results ?? [];
+    this.novice = !!data.novice;
     this.index = 0;
     this.busy = false;
     this.card = undefined;
@@ -372,12 +376,22 @@ export class RevealScene extends Phaser.Scene {
     this.add.text(GAME_W - 24, 56, `${seals} Seal${seals === 1 ? '' : 's'}`, { fontFamily: FONT, fontSize: '18px', color: hex(PAL.amber) }).setOrigin(1, 0.5);
     const again = (kind: PullKind, x: number, label: string) =>
       makeButton(this, x, GAME_H - 176, 236, 76, label, () => this.again(kind), { fontSize: 20, disabled: !canPull(game.save, kind), active: kind === 'ten' });
-    again('one', GAME_W / 2 - 128, `Again ×1\n${COST_ONE} Seal`);
-    again('ten', GAME_W / 2 + 128, game.save.freeTenUsed ? `Again ×10\n${COST_TEN} Seals` : 'Again ×10\nFree first time');
+    if (this.novice) {
+      const left = noviceTensLeft(game.save);
+      makeButton(this, GAME_W / 2, GAME_H - 176, 300, 76, left ? `Novice ×10\n${NOVICE_COST} Seals` : 'Novice pulls spent', () => {
+        const results = noviceTen(game.save);
+        if (!results.length) return;
+        commit();
+        this.scene.restart({ results, novice: true });
+      }, { fontSize: 20, disabled: !left || game.save.seals < NOVICE_COST, active: true });
+    } else {
+      again('one', GAME_W / 2 - 128, `Again ×1\n${COST_ONE} Seal`);
+      again('ten', GAME_W / 2 + 128, game.save.freeTenUsed ? `Again ×10\n${COST_TEN} Seals` : 'Again ×10\nFree first time');
+    }
 
     const hist = this.add.text(24, 56, 'Oath Record ›', { fontFamily: FONT, fontSize: '17px', color: hex(PAL.steel) }).setOrigin(0, 0.5).setInteractive({ useHandCursor: true });
     hist.on('pointerup', () => this.scene.start('PullHistory'));
-    makeButton(this, GAME_W / 2 - 128, GAME_H - 80, 236, 68, 'To the Altar', () => this.scene.start('Recruit', {}), { fontSize: 19 });
+    makeButton(this, GAME_W / 2 - 128, GAME_H - 80, 236, 68, this.novice ? 'Novitiate' : 'To the Altar', () => this.scene.start(this.novice ? 'Novitiate' : 'Recruit', {}), { fontSize: 19 });
     makeButton(this, GAME_W / 2 + 128, GAME_H - 80, 236, 68, 'See roster', () => this.scene.start('Roster', {}), { fontSize: 19 });
   }
 
