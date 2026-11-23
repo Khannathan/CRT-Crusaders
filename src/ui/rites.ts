@@ -11,6 +11,7 @@ import type { SaveData } from '../state/save';
 import { matinsReady } from '../systems/matins';
 import { ROMAN_RANK, unlocked } from '../systems/rank';
 import { anyClaimable } from '../systems/tasks';
+import { noviceOpen, noviceReady } from '../systems/novitiate';
 import { anyBondRewards, anyUnheard } from '../systems/bonds';
 import { entriesLeft } from '../systems/trials';
 import { PROCESSION_ENTRIES, candleReady, honouredToday, processionLeft } from '../systems/offerings';
@@ -59,6 +60,10 @@ export interface RiteEntry {
   status?: (save: SaveData) => string;
   /** The daily blessing that boosts it (systems/boosts.ts), shown on its card. */
   boost?: BoostKind;
+  /** Shown only while this is true (e.g. the Novitiate's first fortnight). */
+  shown?: (save: SaveData) => boolean;
+  /** Kept off the Sanctum's rail (it has its own strip there). */
+  noRail?: boolean;
   /** Card art (a bg-* key); falls back to the hall. */
   bg?: string;
 }
@@ -161,6 +166,7 @@ export const RITES: RiteEntry[] = [
     blurb: 'Gather each Order. Earn Seals and titles.',
     status: (s) => `${SETS.filter((x) => (s.sets ?? []).includes(x.id)).length} of ${SETS.length} sets complete`,
   },
+  { label: 'Novitiate', scene: 'Novitiate', icon: 'sigil', rank: 1, home: 'sanctum', noRail: true, shown: (s) => noviceOpen(s), ready: (s) => noviceReady(s) },
   { label: 'Matins', scene: 'Matins', icon: 'flame', rank: 1, home: 'sanctum', ready: (s) => matinsReady(s) },
   { label: 'Penance', scene: 'Penance', icon: 'book', rank: 2, home: 'sanctum', ready: (s) => anyClaimable(s) },
   { label: 'Confession', scene: 'Confession', icon: 'book', rank: 5, home: 'sanctum', ready: (s) => anyUnheard(s) || anyBondRewards(s) || (Object.keys(s.owned).length > 0 && candleReady(s)) },
@@ -170,11 +176,11 @@ export const RITES: RiteEntry[] = [
 export const homeOf = (sceneKey: string): RiteHome | undefined => RITES.find((r) => r.scene === sceneKey && r.scene !== 'Sanctum')?.home;
 
 /** True when a Rite in `home` has something to claim (for a dot on its tab). */
-export const anyReady = (save: SaveData, home: RiteHome) => RITES.some((r) => r.home === home && unlocked(save, r.rank) && r.ready?.(save));
+export const anyReady = (save: SaveData, home: RiteHome) => RITES.some((r) => r.home === home && (r.shown?.(save) ?? true) && unlocked(save, r.rank) && r.ready?.(save));
 
 /** Draws the Sanctum's rail of daily Rites from `top`; returns its bottom edge. */
 export function drawRites(scene: Phaser.Scene, save: SaveData, top: number, home: RiteHome = 'sanctum'): number {
-  const list = RITES.filter((r) => r.home === home);
+  const list = RITES.filter((r) => r.home === home && !r.noRail && (r.shown?.(save) ?? true));
   const cols = 3;
   const gap = 10;
   const w = (GAME_W - PAD * 2 - gap * (cols - 1)) / cols;
