@@ -123,6 +123,7 @@ export const openErrands = (save: SaveData, now = Date.now()) => {
 };
 
 /** Sisters away on an errand. */
+/** Reads the active list directly: a day rollover clears the board, never the Sisters already away. */
 export const busySisters = (save: SaveData) => new Set((save.errands?.active ?? []).flatMap((a) => a.sisters));
 
 export const bonusLabel = (e: ErrandDef) => (e.bonus.kind === 'order' ? e.bonus.value : CLASSES[e.bonus.value]?.name ?? e.bonus.value);

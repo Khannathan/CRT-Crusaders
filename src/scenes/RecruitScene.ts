@@ -54,7 +54,7 @@ export class RecruitScene extends Phaser.Scene {
     if (splash) {
       addSplash(this, banner.target, GAME_W / 2, by, bw, bh, 'hero');
       fade(this, GAME_W / 2, by, bw, bh, 0.55, 0x140b12);
-    } else addBackdrop(this, this.textures.exists(`banner-${ord.id}`) ? `banner-${ord.id}` : 'bg-altar', GAME_W / 2, by, bw, bh, { fade: 0.55, fadeColor: 0x140b12, focusY: 0.35 });
+    } else addBackdrop(this, limited && this.textures.exists('banner-limited') ? 'banner-limited' : this.textures.exists(`banner-${ord.id}`) ? `banner-${ord.id}` : 'bg-altar', GAME_W / 2, by, bw, bh, { fade: 0.55, fadeColor: 0x140b12, focusY: 0.35 });
     // Her splash is busy; dim it so the banner's words and cards read on top.
     if (splash) this.add.rectangle(GAME_W / 2, by, bw, bh, 0x140b12, 0.4);
     this.add.rectangle(GAME_W / 2, by, bw, bh, limited ? RARITY_COLOR.UR : ord.color, 0.12);
