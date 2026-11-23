@@ -11,7 +11,7 @@ import { makeButton } from '../ui/button';
 import { drawItemIcon } from '../ui/itemIcon';
 import { modeScreen, toast } from '../ui/modeScreen';
 import { TAB_BAR_H } from '../ui/tabBar';
-import { PAD, addArt, addFrame, text } from '../ui/theme';
+import { PAD, addArt, addFrame, text, fitLine } from '../ui/theme';
 
 const ROMAN = ['I', 'II', 'III', 'IV', 'V'];
 const pct = (v: number) => `${Math.round(v * 1000) / 10}%`;
@@ -51,9 +51,9 @@ export class ReliquaryScene extends Phaser.Scene {
     const total = relicBonusText(reliquaryBonus(save));
     this.add.text(GAME_W / 2, top, total ? `All Sisters: ${total}` : 'No relic lit yet.', { ...text.body(16, total ? PAL.amber : PAL.muted), align: 'center', wordWrap: { width: bw } }).setOrigin(0.5, 0);
     itemIds('incense').forEach((id, i) => {
-      const x = GAME_W / 2 + (i - 1) * 150;
+      const x = GAME_W / 2 + (i - 1) * 164;
       drawItemIcon(this, x - 36, top + 38, id, 26);
-      tapForSources(this, this.add.text(x - 16, top + 38, `${countOf(save, id)} ${itemDef(id).name}`, text.body(14, PAL.ivory)).setOrigin(0, 0.5), id);
+      tapForSources(this, fitLine(this.add.text(x - 16, top + 38, `${countOf(save, id)} ${itemDef(id).name}`, text.body(14, PAL.ivory)).setOrigin(0, 0.5), 132), id);
     });
 
     // The tree: three columns of five, the Crown beneath

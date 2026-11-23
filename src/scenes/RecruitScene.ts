@@ -80,19 +80,23 @@ export class RecruitScene extends Phaser.Scene {
       this.add.image(GAME_W - PAD - 34, bTop + 46, 'ui-arrow').setDisplaySize(24, 24);
     }
     if (limited) {
+      this.add.rectangle(GAME_W / 2, bTop + 96, bw - 110, 72, 0x120a12, 0.6);
       addBadge(this, GAME_W / 2 - 52, bTop + 14, 'LIMITED SAINT', PAL.amber, 14);
       this.add.text(GAME_W / 2, bTop + 72, win.saint.name.toUpperCase(), text.display(22, 0xfff1d6)).setOrigin(0.5).setShadow(0, 2, '#000000', 8, false, true);
       this.add
-        .text(GAME_W / 2, bTop + 100, `Never on an Order banner. ${win.saint.order}.\nLeaves the Altar in ${timeLeft(win.ends)}; she returns in a later window.`, { ...text.body(16, 0xe1cabf), fontStyle: 'italic', align: 'center', wordWrap: { width: bw - 120 } })
+        .text(GAME_W / 2, bTop + 100, `${win.saint.order} · leaves in ${timeLeft(win.ends)}`, { ...text.body(16, 0xe1cabf), fontStyle: 'italic', align: 'center', wordWrap: { width: bw - 120 } })
+        .setShadow(0, 1, '#000000', 4, false, true)
         .setOrigin(0.5, 0);
     } else {
+      this.add.rectangle(GAME_W / 2, bTop + 100, bw - 110, 72, 0x120a12, 0.5);
       this.add.image(GAME_W / 2, bTop + 34, sigilKey(ord.id)).setDisplaySize(44, 44);
       this.add.text(GAME_W / 2, bTop + 72, ord.name.toUpperCase(), text.display(22, 0xfff1d6)).setOrigin(0.5).setShadow(0, 2, '#000000', 8, false, true);
       this.add
         .text(GAME_W / 2, bTop + 100, `"${ord.creed}"`, { ...text.body(17, 0xe1cabf), fontStyle: 'italic', align: 'center', wordWrap: { width: bw - 120 } })
-        .setOrigin(0.5, 0);
+        .setOrigin(0.5, 0)
+        .setShadow(0, 1, "#000000", 4, false, true);
     }
-    this.add.text(GAME_W / 2, bTop + 148, `BANNER ${page + 1} / ${pages}`, text.hud(12, PAL.muted)).setOrigin(0.5);
+    this.add.text(GAME_W / 2, bTop + 144, `BANNER ${page + 1} / ${pages}`, { ...text.hud(12, PAL.muted), stroke: '#0b070c', strokeThickness: 4 }).setOrigin(0.5);
 
     // The target UR in the middle, the two boosted SSRs either side.
     const urs = CRUSADERS.filter((c) => c.id === banner.target);

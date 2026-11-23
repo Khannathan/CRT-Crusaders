@@ -13,7 +13,7 @@ import { modeScreen, progressBar, toast } from '../ui/modeScreen';
 import { pickParty } from '../ui/partyPicker';
 import { accountPower, formatPower } from '../systems/power';
 import { drawRecommended } from '../ui/recommended';
-import { PAD, addFrame, text } from '../ui/theme';
+import { PAD, addFrame, text, fitLine } from '../ui/theme';
 
 /** The Bell Tower: the next floor up, what guards it, and the floors above. */
 export class TowerScene extends Phaser.Scene {
@@ -66,7 +66,7 @@ export class TowerScene extends Phaser.Scene {
         const g = floorDef(n);
         this.add.rectangle(GAME_W / 2, y + 27, bw, 54, 0x18111a).setStrokeStyle(1, g.boss ? 0x7a3a44 : PAL.armorShadow);
         this.add.text(PAD + 12, y + 8, `${n}`, text.hud(14, g.boss ? 0xe58a8a : PAL.steel));
-        this.add.text(PAD + 52, y + 6, g.boss ? `Boss: ${foesOf(g).split(',')[0]}` : foesOf(g), { ...text.body(15, PAL.muted), wordWrap: { width: bw - 70 } }).setCrop(0, 0, bw - 70, 22);
+        fitLine(this.add.text(PAD + 52, y + 6, g.boss ? `Boss: ${foesOf(g).split(',')[0]}` : foesOf(g), text.body(15, PAL.muted)), bw - 70);
         this.add.text(PAD + 52, y + 28, ruleText(g.rule) || rewardLine(floorReward(n), false), text.body(14, g.rule ? 0xe5a86a : PAL.steel));
         this.add.text(GAME_W - PAD - 12, y + 32, `REC ${formatPower(floorRecommended(save, n))}`, text.hud(11, PAL.steel)).setOrigin(1, 0);
         y += 60;

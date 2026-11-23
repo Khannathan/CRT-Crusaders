@@ -159,6 +159,9 @@ export class RosterScene extends Phaser.Scene {
       // ui-card.png skins the card behind each Sister (the portrait covers its top)
       if (!nine(this, 'ui-card', x, topY + ch / 2, cw, ch)) {
         this.add.rectangle(x, topY + ch / 2, cw, ch, have ? 0x1e1620 : 0x151017).setStrokeStyle(1, PAL.armorShadow);
+      } else {
+        // the card art's carved base sits under the name lines; a dark plate keeps them readable
+        this.add.rectangle(x, topY + ph + (ch - ph) / 2, cw - 8, ch - ph - 2, 0x150e16, 0.9);
       }
       if (have) {
         addBackdrop(this, portraitKey(c.id), x, topY + ph / 2, cw, ph, { fade: 0, focusY: 0.3 });
