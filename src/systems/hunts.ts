@@ -99,6 +99,26 @@ export const HUNTS: HuntDef[] = [
     ],
     classes: ['inquisitor', 'oracle', 'warsister', 'hierophant', 'adjudicator', 'sentinel'],
   },
+  {
+    id: 'font-leviathan', boss: 'font-leviathan', encounter: 'hunt-font-leviathan',
+    lore: 'The baptismal font of a drowned cathedral grew a thing in it. Everyone it swallows is born again.',
+    mechanics: [
+      { name: 'Baptismal Waters', text: 'Heals 2% of its HP every round (half while it Bleeds, Burns or is Poisoned) and gains 4% attack a round.', answer: 'Damage over time early, burst late: Censers, Exorcists, War-Sisters' },
+      { name: 'Swallow', text: 'Charges a turn, then swallows the strongest Sister and stuns her.', answer: 'A Hierophant or Sentinel to Taunt' },
+      { name: 'Tidal Surge', text: 'Hits and weakens every Sister.', answer: 'Confessors and Cantors to keep the party up' },
+    ],
+    classes: ['censer', 'exorcist', 'warsister', 'hierophant', 'confessor', 'cantor'],
+  },
+  {
+    id: 'iron-abbot', boss: 'iron-abbot', encounter: 'hunt-iron-abbot',
+    lore: 'An abbot who had himself cast in iron so he could keep his chair forever. His wardens keep it with him.',
+    mechanics: [
+      { name: 'The Wardens\' Wall', text: 'Takes 40% less damage while any Warden stands.', answer: 'Hits that strike every foe, and Executioners for the Wardens' },
+      { name: 'Iron and Glass', text: 'Every 4 rounds it swaps its Armor and Magic Resist.', answer: 'A party with both Physical and Magic damage' },
+      { name: 'Iron Sermon', text: 'Hits every Sister and Sunders her armor.', answer: 'Martyrs and Abbesses to hold the line' },
+    ],
+    classes: ['censer', 'inquisitor', 'oracle', 'martyr', 'arbalist', 'abbess'],
+  },
 ];
 
 /** Difficulty tiers: boss HP and attack. Past the sixth, each Endless step is 35% more. */
