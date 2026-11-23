@@ -442,7 +442,13 @@ export class SanctumScene extends Phaser.Scene {
         draw();
       }, { active: settings.musicMuted, fontSize: 19 });
       layer.add(mute.all);
-      layer.add(this.add.text(GAME_W / 2, 360, 'CRT screen effect', { ...style, fontSize: '22px' }).setOrigin(0.5));
+      const fxBtn = makeButton(this, GAME_W / 2, 316, 240, 44, settings.sfx ? 'Sound effects: On' : 'Sound effects: Off', () => {
+        settings.sfx = !settings.sfx;
+        saveSettings();
+        draw();
+      }, { active: settings.sfx, fontSize: 17 });
+      layer.add(fxBtn.all);
+      layer.add(this.add.text(GAME_W / 2, 366, 'CRT screen effect', { ...style, fontSize: '22px' }).setOrigin(0.5));
       const toggle = (on: boolean) => () => {
         settings.crt = on;
         saveSettings();

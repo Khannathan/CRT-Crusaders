@@ -9,6 +9,7 @@ import { installReadableText } from './ui/readable';
 import { fitBeforeBoot, watchScreenFit } from './ui/screenFit';
 import { wireSceneMusic } from './audio/battleMusic';
 import { music } from './audio/music';
+import { unlockSfx } from './audio/sfx';
 import { BattleScene } from './scenes/BattleScene';
 import { FieldScene } from './scenes/FieldScene';
 import { BootScene } from './scenes/BootScene';
@@ -65,6 +66,8 @@ function start() {
   const parent = document.getElementById('game');
   // tall phones get a taller game instead of black bars (see ui/screenFit.ts)
   fitBeforeBoot(parent);
+  // Browsers keep audio asleep until a tap; wake the sound effects on each one (cheap once awake).
+  window.addEventListener('pointerdown', unlockSfx, { passive: true });
   const game = new Phaser.Game({
     type: Phaser.AUTO, // WebGL, falling back to canvas
     parent: 'game',

@@ -1,3 +1,4 @@
+import type { WinCard } from '../state/run';
 import { simulateField } from './field';
 import { commit, game } from '../state/game';
 import { current } from '../state/run';
@@ -15,6 +16,10 @@ export interface Settled {
   /** The battle log's last line. */
   line: string;
   won: boolean;
+  /** A won stage's win card (Pilgrim's Road). */
+  win?: WinCard;
+  /** EXP the party took, and who levelled. */
+  exp?: { exp: number; levelled: string[] };
 }
 
 /**
@@ -32,7 +37,7 @@ export function settleBattle(battle: Battle, outcome: 'victory' | 'defeat'): Set
     bondBattle(game.save, battle);
     const next = challenge.finish(outcome, battle);
     commit();
-    return { ...next, won, line: next.line ?? (won ? `The trial is passed.${expLine}` : 'Your Sisters fall back, bloodied but alive.') };
+    return { ...next, won, exp, line: next.line ?? (won ? `The trial is passed.${expLine}` : 'Your Sisters fall back, bloodied but alive.') };
   }
   const run = current.run!;
   absorbBattle(run, battle);

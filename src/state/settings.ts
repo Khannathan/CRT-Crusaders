@@ -10,6 +10,8 @@ export interface Settings {
   /** Music loudness, 0 to 1. */
   musicVolume: number;
   musicMuted: boolean;
+  /** Sound effects (synthesized chip sounds; see audio/sfx.ts). */
+  sfx: boolean;
   /** Camera shake on big hits. */
   screenShake: boolean;
   /** Tech demo: battles play out in real time on an open field instead of in turns. */
@@ -24,7 +26,7 @@ export const BATTLE_SPEEDS: BattleSpeed[] = [1, 2, 3];
 export const nextSpeed = (s: number): BattleSpeed => BATTLE_SPEEDS[(BATTLE_SPEEDS.indexOf(s as BattleSpeed) + 1) % BATTLE_SPEEDS.length];
 
 const KEY = 'crt-crusaders.settings.v1';
-const DEFAULTS: Settings = { crt: true, crtStrength: 0.6, battleSpeed: 1, autoBattle: false, musicVolume: 0.7, musicMuted: false, screenShake: true, sisterView: 'both' };
+const DEFAULTS: Settings = { crt: true, crtStrength: 0.6, battleSpeed: 1, autoBattle: false, musicVolume: 0.7, musicMuted: false, sfx: true, screenShake: true, sisterView: 'both' };
 
 function load(): Settings {
   try {
