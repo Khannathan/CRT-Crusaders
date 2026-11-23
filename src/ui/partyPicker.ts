@@ -1,19 +1,17 @@
 import Phaser from 'phaser';
 import { GAME_H, GAME_W, PAL } from '../config';
-import { RARITY_COLOR } from '../data/classes';
 import { CRUSADERS } from '../data/crusaders';
 import type { CrusaderDef } from '../data/types';
 import type { SaveData } from '../state/save';
-import { formatPower, partyPower, sisterPower } from '../systems/power';
+import { partyPower, sisterPower } from '../systems/power';
 import { addScrollArea } from './scroll';
 import { drawOrderChips } from './orderBonus';
 import { drawHoundSlot } from './hound';
 import { makeButton } from './button';
-import { portraitKey } from './placeholderPortrait';
 import { drawRecommended } from './recommended';
 import { sortAndFilter, sortControls, emptyListLine } from './sisterSort';
 import { holdForCard } from './sisterCard';
-import { drawPortraitBadges } from './portraitBadges';
+import { cardGridBottom, cardSlot, drawRosterCard } from './rosterCard';
 import { openPresets } from './presets';
 import { addFrame, text } from './theme';
 
@@ -71,32 +69,28 @@ export function pickParty(scene: Phaser.Scene, save: SaveData, opts: PickOpts, d
       scroll = 0;
       draw();
     }, { depth: 40, h: 36 }));
-    const cell = 112;
     if (!owned.length) layer.add(scene.add.text(GAME_W / 2, 260, emptyListLine(save), text.body(17, PAL.muted)).setOrigin(0.5));
     const list = addScrollArea(scene, 174, GAME_H - 206, { parent: layer, start: scroll, onScroll: (y) => (scroll = y) });
+    // The Roster's cards, at the Roster's size.
+    const y0 = 182;
     owned.forEach((c, i) => {
-      const x = GAME_W / 2 + ((i % 4) - 1.5) * cell;
-      const y = 236 + Math.floor(i / 4) * (cell + 38);
+      const { left, top } = cardSlot(i, y0);
       const ok = allow(c);
       const at = picked.indexOf(c.id);
       const on = at >= 0;
-      const frame = scene.add.rectangle(x, y, 100, 100, 0x150e17).setStrokeStyle(on ? 3 : 1, on ? PAL.amber : ok ? RARITY_COLOR[c.rarity] : PAL.armorShadow);
-      const img = scene.add.image(x, y, portraitKey(c.id)).setDisplaySize(94, 94).setAlpha(!ok ? 0.2 : on ? 1 : 0.6);
-      const name = scene.add.text(x, y + 60, c.name.split(' ')[0], text.body(15, on ? PAL.amber : ok ? PAL.ivory : PAL.steel)).setOrigin(0.5);
-      const stat = scene.add.text(x, y + 78, formatPower(sisterPower(save, c)), text.hud(11, ok ? PAL.muted : PAL.steel)).setOrigin(0.5);
-      list.content.add([frame, img, name, stat]);
-      list.content.add(drawPortraitBadges(scene, x, y, 100, c, save, { dim: !ok }));
-      if (on) list.content.add(scene.add.text(x, y, `${at + 1}`, { ...text.hud(30, PAL.amber), stroke: '#000000', strokeThickness: 6 }).setOrigin(0.5));
+      const card = drawRosterCard(scene, left, top, c, save, { dim: !ok, picked: on, rank: max > 1 ? at + 1 : undefined });
+      list.content.add(card.parts);
       if (ok) {
-        list.tap(frame, () => {
+        list.tap(card.hit, () => {
           if (on) picked.splice(at, 1);
           else if (picked.length < max) picked.push(c.id);
+          else if (max === 1) picked.splice(0, 1, c.id);
           scene.time.delayedCall(0, draw);
         });
       }
-      holdForCard(scene, frame, c.id);
+      holdForCard(scene, card.hit, c.id);
     });
-    list.fit(236 + Math.ceil(owned.length / 4) * (cell + 38) - 50);
+    list.fit(cardGridBottom(owned.length, y0) + 4);
     if (opts.rec) {
       const parts = drawRecommended(scene, GAME_W / 2, GAME_H - 184, opts.rec, partyPower(save, picked), { size: 13, label: 'PARTY', grow: picked });
       const last = parts[parts.length - 1];
@@ -110,8 +104,9 @@ export function pickParty(scene: Phaser.Scene, save: SaveData, opts: PickOpts, d
     const orders = picked.map((id) => all.find((c) => c.id === id)!.order);
     if (orders.length && max > 1) layer.add(drawOrderChips(scene, GAME_W / 2, GAME_H - 108, orders, 40));
     else if (opts.why) layer.add(scene.add.text(GAME_W / 2, GAME_H - 104, opts.why, text.body(14, PAL.steel)).setOrigin(0.5));
-    const ready = picked.length >= Math.max(1, opts.min ?? 1);
-    const go = makeButton(scene, GAME_W / 2 + 166, GAME_H - 62, 160, 60, ready ? opts.confirm : `${picked.length} of ${opts.min}`, () => {
+    const need = Math.max(1, opts.min ?? 1);
+    const ready = picked.length >= need;
+    const go = makeButton(scene, GAME_W / 2 + 166, GAME_H - 62, 160, 60, ready ? opts.confirm : `${picked.length} of ${need}`, () => {
       if (!ready) return;
       layer.destroy();
       done([...picked]);

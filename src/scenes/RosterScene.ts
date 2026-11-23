@@ -9,7 +9,7 @@ import type { OwnedCrusader } from '../state/save';
 import type { Stats } from '../systems/stats';
 import { bondInfo, bondStatText } from '../systems/bonds';
 import { addOrderSigil } from '../ui/sisterCard';
-import { drawPortraitBadges, showBadgeKey } from '../ui/portraitBadges';
+import { showBadgeKey } from '../ui/portraitBadges';
 import { passes, sortControls, sortRoster, sortState } from '../ui/sisterSort';
 import type { ScrollArea } from '../ui/scroll';
 import { DMG_NAME, descNoCooldown, type SkillDef } from '../data/skills';
@@ -64,10 +64,11 @@ import { CURRENCY_BAR_H, addCurrencyBar } from '../ui/currencyBar';
 import { addSplash, hasSplash, loadSplash, portraitKey, queueSplash } from '../ui/placeholderPortrait';
 import { SisterSprite, fullKey } from '../ui/sisterSprite';
 import { nine } from '../ui/skin';
+import { CARD_COLS, CARD_GAP, CARD_H, cardSlot, drawRosterCard } from '../ui/rosterCard';
 import { addScrollArea } from '../ui/scroll';
 import { showSources, tapCost, tapForSources } from '../ui/sources';
 import { TAB_BAR_H, addTabBar } from '../ui/tabBar';
-import { PAD, addArt, addBackdrop, addBadge, addFrame, addHeading, addIcon, addScreenGlow, fade, noOrphan, text } from '../ui/theme';
+import { PAD, addArt, addBackdrop, addBadge, addFrame, addHeading, addScreenGlow, fade, noOrphan, text } from '../ui/theme';
 
 type Tab = 'grow' | 'vows' | 'skills' | 'gear' | 'symbol';
 const TABS: [Tab, string][] = [
@@ -144,48 +145,16 @@ export class RosterScene extends Phaser.Scene {
     if (!sorted.length) this.add.text(GAME_W / 2, top + 140, 'No Sister answers these filters.', text.body(18, PAL.muted)).setOrigin(0.5);
 
     // Cards as in the preview: portrait, rarity badge, name and level underneath.
-    const cols = 3;
-    const gap = 9;
-    const cw = (GAME_W - PAD * 2 - gap * (cols - 1)) / cols;
-    const ph = 128;
-    const ch = ph + 46;
+    // The same card shows in every Sister picker (ui/rosterCard.ts).
+    const ch = CARD_H;
+    const gap = CARD_GAP;
+    const cols = CARD_COLS;
     const y0 = top + 56;
     const firstCard = this.children.list.length;
     sorted.forEach((c, i) => {
-      const left = PAD + (i % cols) * (cw + gap);
-      const topY = y0 + Math.floor(i / cols) * (ch + gap);
-      const x = left + cw / 2;
-      const have = owned[c.id];
-      const tint = RARITY_COLOR[c.rarity];
-      // ui-card.png skins the card behind each Sister (the portrait covers its top)
-      if (!nine(this, 'ui-card', x, topY + ch / 2, cw, ch)) {
-        this.add.rectangle(x, topY + ch / 2, cw, ch, have ? 0x1e1620 : 0x151017).setStrokeStyle(1, PAL.armorShadow);
-      } else {
-        // the card art's carved base sits under the name lines; a dark plate keeps them readable
-        this.add.rectangle(x, topY + ph + (ch - ph) / 2, cw - 8, ch - ph - 2, 0x150e16, 0.9);
-      }
-      if (have) {
-        addBackdrop(this, portraitKey(c.id), x, topY + ph / 2, cw, ph, { fade: 0, focusY: 0.3 });
-        this.add.rectangle(x, topY + ph, cw, 1, tint);
-        drawPortraitBadges(this, x, topY + ph / 2, Math.min(cw, ph), c, game.save);
-        this.add.text(left + 8, topY + ph + 5, c.name.split(' ')[0], { ...text.body(19, PAL.ivory), fontStyle: '600' });
-        this.add.text(left + 8, topY + ph + 28, `${CLASSES[c.classId].role.toUpperCase()}${tierOf(have) ? ` T${tierOf(have)}` : ''}${have.vow ? ` V${have.vow}` : ''}`, text.hud(12, tierOf(have) ? TIER_COLOR[tierOf(have)] : PAL.muted));
-        this.add.text(left + cw - 8, topY + ph + 9, formatPower(sisterPower(game.save, c)), text.hud(14, PAL.amber)).setOrigin(1, 0);
-        if (have.tokens) {
-          addBadge(this, left + cw / 2 - 10, topY + ph - 26, `+${have.tokens}`, PAL.amber, 12);
-          // ui-vow.png beside the waiting-token count when present
-          addArt(this, 'ui-vow', left + cw / 2 - 22, topY + ph - 15, 20);
-        }
-      } else {
-        const g = this.add.graphics();
-        for (let r = 8; r > 0; r--) g.fillStyle(0x291c2b, 0.16).fillCircle(x, topY + ph / 2, (r / 8) * 80);
-        addIcon(this, x, topY + ph / 2, 'lock', 30, 0x967b8e);
-        this.add.rectangle(x, topY + ph, cw, 1, PAL.armorShadow);
-        this.add.text(left + 8, topY + ph + 5, 'Unknown', { ...text.body(19, PAL.muted), fontStyle: '600' });
-        this.add.text(left + 8, topY + ph + 28, 'UNSWORN', text.hud(12, PAL.steel));
-      }
-      // tap target on top of the whole card
-      const hit = this.add.rectangle(x, topY + ch / 2, cw, ch, 0x000000, 0.001).setInteractive({ useHandCursor: true });
+      const { left, top: topY } = cardSlot(i, y0);
+      const { hit } = drawRosterCard(this, left, topY, c, game.save);
+      hit.setInteractive({ useHandCursor: true });
       hit.on('pointerup', (p: Phaser.Input.Pointer) => {
         // A drag scrolls the list; only a tap inside the visible window opens her page.
         if (this.dragged || p.y < viewTop || p.y > viewBottom || this.detailOpen) return;

@@ -15,6 +15,7 @@ import { PAD, addFrame, text } from '../ui/theme';
 import { addScrollArea } from '../ui/scroll';
 import { TAB_BAR_H } from '../ui/tabBar';
 import { holdForCard } from '../ui/sisterCard';
+import { CARD_PH, CARD_W, cardGridBottom, cardSlot, drawRosterCard } from '../ui/rosterCard';
 import { sortAndFilter, sortControls, emptyListLine } from '../ui/sisterSort';
 
 
@@ -42,22 +43,12 @@ export class ConfessionScene extends Phaser.Scene {
     if (this.notice) toast(this, this.notice);
   }
 
-  /** Bond level as a small badge with a ring of progress. */
-  private pips(x: number, y: number, level: number, size = 5) {
-    const w = size * 13;
-    this.add.rectangle(x, y, w, size * 2 + 2, PAL.deepShadow).setOrigin(0, 0.5).setStrokeStyle(1, PAL.armorShadow);
-    this.add.rectangle(x + 1, y, Math.max(0, (w - 2) * (level / MAX_BOND)), size * 2, level >= BOND_CORE ? PAL.amber : 0xb07a3a).setOrigin(0, 0.5);
-    this.add.text(x + w + 4, y, level ? ROMAN_RANK(level) : '0', text.hud(size * 2 + 2, level ? PAL.amber : PAL.steel)).setOrigin(0, 0.5);
-  }
-
   private list() {
     const save = game.save;
     const { top } = modeScreen(this, 'Confession', 'Fight beside them, keep Vigil with them, bring offerings.');
     const owned = sortAndFilter(save, CRUSADERS.filter((c) => save.owned[c.id]));
     this.add.text(PAD, top, `BOND: ATK & HP, THEN DEVOTION`, text.hud(12, PAL.muted));
     tapForSources(this, this.add.text(GAME_W - PAD, top, `OFFERINGS ${offeringsHeld(save)}${candleReady(save) ? ' · CANDLE READY' : ''}`, text.hud(12, PAL.amber)).setOrigin(1, 0), 'offerings');
-    const cell = 118;
-    const x0 = GAME_W / 2 - cell * 1.5;
     // Every Sister in one list: drag or wheel to scroll.
     sortControls(this, GAME_W / 2, top + 42, GAME_W - PAD * 2, () => {
       ConfessionScene.listY = 0;
@@ -66,24 +57,31 @@ export class ConfessionScene extends Phaser.Scene {
     if (!owned.length) this.add.text(GAME_W / 2, top + 140, emptyListLine(save), text.body(17, PAL.muted)).setOrigin(0.5);
     const list = addScrollArea(this, top + 64, GAME_H - TAB_BAR_H, { start: ConfessionScene.listY, onScroll: (y) => (ConfessionScene.listY = y) });
     const before = this.children.list.length;
+    // The Roster's cards, with her bond under the name.
+    const y0 = top + 74;
     owned.forEach((c, i) => {
-      const x = x0 + (i % 4) * cell;
-      const y = top + 120 + Math.floor(i / 4) * 140;
+      const { left, top: cy } = cardSlot(i, y0);
       const b = bondInfo(save, c.id);
       makePlaceholderPortrait(this, c);
-      this.add.rectangle(x, y, 98, 98, 0x000000, 0).setStrokeStyle(2, RARITY_COLOR[c.rarity]);
-      const img = this.add.image(x, y, portraitKey(c.id)).setDisplaySize(94, 94);
-      list.tap(img, () => {
+      const card = drawRosterCard(this, left, cy, c, save);
+      list.tap(card.hit, () => {
         ConfessionScene.detailY = 0;
         this.scene.restart({ id: c.id });
       });
-      holdForCard(this, img, c.id);
-      this.add.text(x, y + 56, c.name.split(' ')[0], text.body(15, PAL.ivory)).setOrigin(0.5, 0);
-      this.pips(x - 28, y + 82, b.level, 4);
-      if (b.unheard || b.rewards.length) this.add.circle(x + 42, y - 42, 7, PAL.amber).setStrokeStyle(2, 0x1b121c);
+      holdForCard(this, card.hit, c.id);
+      // Her bond: a small bar with its rank, under her Power.
+      {
+        const bw = 48;
+        const bx = left + CARD_W - 8 - bw;
+        const by = cy + CARD_PH + 35;
+        this.add.rectangle(bx, by, bw, 18, PAL.deepShadow).setOrigin(0, 0.5).setStrokeStyle(1, PAL.armorShadow);
+        this.add.rectangle(bx + 1, by, Math.max(0, (bw - 2) * (b.level / MAX_BOND)), 16, b.level >= BOND_CORE ? PAL.amber : 0xb07a3a, 0.55).setOrigin(0, 0.5);
+        this.add.text(bx + bw / 2, by, b.level ? ROMAN_RANK(b.level) : '0', { ...text.hud(14, b.level ? 0xfff1d6 : PAL.steel), stroke: '#0b070c', strokeThickness: 3 }).setOrigin(0.5);
+      }
+      if (b.unheard || b.rewards.length) this.add.circle(left + CARD_W / 2, cy + 12, 8, PAL.amber).setStrokeStyle(2, 0x1b121c);
     });
     list.content.add(this.children.list.slice(before));
-    list.fit(top + 120 + Math.ceil(owned.length / 4) * 140 - 30);
+    list.fit(cardGridBottom(owned.length, y0) + 4);
   }
 
   private detail(id: string) {

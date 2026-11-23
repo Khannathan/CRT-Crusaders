@@ -9,13 +9,14 @@ import { commit, game } from '../state/game';
 import { current } from '../state/run';
 import { CRYPTS, MAX_PARTY, canMuster, cryptRecommended, startRun, suggestParty } from '../systems/crusade';
 import { makeButton } from '../ui/button';
-import { formatPower, partyPower, powerVerdict, sisterPower } from '../systems/power';
+import { formatPower, partyPower, powerVerdict } from '../systems/power';
 import { VERDICT_COLOR } from '../ui/recommended';
 import { portraitKey } from '../ui/placeholderPortrait';
 import { addIcon, addScreenGlow, text } from '../ui/theme';
 import { addScrollArea } from '../ui/scroll';
 import { holdForCard, justHeld } from '../ui/sisterCard';
 import { drawPortraitBadges } from '../ui/portraitBadges';
+import { cardGridBottom, cardSlot, drawRosterCard } from '../ui/rosterCard';
 import { openPresets } from '../ui/presets';
 import { sortAndFilter, sortControls, emptyListLine } from '../ui/sisterSort';
 
@@ -105,31 +106,30 @@ export class MusterScene extends Phaser.Scene {
     if (!owned.length) this.add.text(GAME_W / 2, 470, emptyListLine(game.save), text.body(17, PAL.muted)).setOrigin(0.5);
     // The Sisters scroll (drag or mouse wheel) between the controls and the buttons.
     const list = addScrollArea(this, 390, GAME_H - 108, { start: this.listY, onScroll: (y) => (this.listY = y) });
-    const before = this.children.list.length;
+    // The Roster's cards, at the Roster's size.
+    const y0 = 398;
     owned.forEach((c, i) => {
-      const x = 8 + 64 + (i % 4) * 132;
-      const y = 456 + Math.floor(i / 4) * 172;
+      const { left, top } = cardSlot(i, y0);
       const inParty = this.party.includes(c.id);
       const ready = canMuster(game.save, c.id);
-      this.add.rectangle(x, y, 134, 134, 0x170f1b).setStrokeStyle(1, ready ? RARITY_COLOR[c.rarity] : PAL.armorShadow);
-      const img = this.add.image(x, y, portraitKey(c.id)).setDisplaySize(128, 128);
-      if (inParty || !ready) img.setAlpha(0.3);
-      drawPortraitBadges(this, x, y, 128, c, game.save, { dim: inParty || !ready });
+      const card = drawRosterCard(this, left, top, c, game.save, {
+        dim: inParty || !ready,
+        picked: inParty,
+        note: ready ? undefined : 'Recovering',
+        noteColor: PAL.muted,
+      });
+      list.content.add(card.parts);
       if (ready && !inParty) {
-        list.tap(img, () => {
+        list.tap(card.hit, () => {
           if (this.party.length < MAX_PARTY) {
             this.party.push(c.id);
             this.time.delayedCall(0, () => this.create());
           }
         });
       }
-      holdForCard(this, img, c.id);
-      const sub = !ready ? 'Recovering' : formatPower(sisterPower(game.save, c));
-      this.add.text(x, y + 76, c.name.split(' ')[0], { ...text.body(17), fontStyle: '600' }).setOrigin(0.5);
-      this.add.text(x, y + 95, sub, text.body(14, PAL.muted)).setOrigin(0.5);
+      holdForCard(this, card.hit, c.id);
     });
-    list.content.add(this.children.list.slice(before));
-    list.fit(456 + Math.ceil(owned.length / 4) * 172 - 50);
+    list.fit(cardGridBottom(owned.length, y0) + 4);
 
     makeButton(this, GAME_W / 2 - 128, GAME_H - 60, 236, 80, 'Suggest', () => {
       this.party = suggestParty(game.save);

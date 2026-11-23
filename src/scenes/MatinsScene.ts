@@ -1,14 +1,13 @@
 import Phaser from 'phaser';
 import { addScrollArea } from '../ui/scroll';
 import { GAME_H, GAME_W, PAL } from '../config';
-import { RARITY_COLOR } from '../data/classes';
 import { commit, game } from '../state/game';
 import { MATINS, MATINS_DAYS, lightCandle, matinsOf, matinsReady, matinsText, vowCandidates, type MatinsClaim } from '../systems/matins';
 import { makeButton } from '../ui/button';
 import { modeScreen } from '../ui/modeScreen';
-import { portraitKey } from '../ui/placeholderPortrait';
 import { PAD, addFrame, text } from '../ui/theme';
 import { holdForCard } from '../ui/sisterCard';
+import { cardGridBottom, cardSlot, drawRosterCard } from '../ui/rosterCard';
 import { sortAndFilter, sortControls } from '../ui/sisterSort';
 
 /** Adds the three 32-wide frames of ui-matins-candle.png once; returns how many (0 when missing). */
@@ -124,20 +123,19 @@ export class MatinsScene extends Phaser.Scene {
     }, { depth: 20, h: 36 }));
     if (!cands.length) layer.add(this.add.text(GAME_W / 2, 250, 'No Sister answers these filters.', text.body(17, PAL.muted)).setOrigin(0.5));
     const list = addScrollArea(this, 168, GAME_H - 104, { parent: layer });
+    // The Roster's cards, at the Roster's size.
+    const y0 = 176;
     cands.forEach((c, i) => {
-        const x = GAME_W / 2 + ((i % 4) - 1.5) * 112;
-        const y = 222 + Math.floor(i / 4) * 128;
-        const frame = this.add.rectangle(x, y, 100, 100, 0x150e17).setStrokeStyle(2, RARITY_COLOR[c.rarity]);
-        const img = this.add.image(x, y, portraitKey(c.id)).setDisplaySize(94, 94);
-        const name = this.add.text(x, y + 60, c.name.split(' ')[0], text.body(15, PAL.ivory)).setOrigin(0.5);
-        list.tap(frame, () => {
-          layer.destroy();
-          then(c.id);
-        });
-        holdForCard(this, frame, c.id);
-        list.content.add([frame, img, name]);
+      const { left, top } = cardSlot(i, y0);
+      const card = drawRosterCard(this, left, top, c, save);
+      list.tap(card.hit, () => {
+        layer.destroy();
+        then(c.id);
       });
-    list.fit(222 + Math.ceil(cands.length / 4) * 128 - 40);
+      holdForCard(this, card.hit, c.id);
+      list.content.add(card.parts);
+    });
+    list.fit(cardGridBottom(cands.length, y0) + 4);
     const back = makeButton(this, GAME_W / 2, GAME_H - 62, 220, 60, 'Back', () => layer.destroy(), { fontSize: 19 });
     layer.add(back.all);
   }
