@@ -2,7 +2,7 @@ import { keywordLine } from '../systems/keywords';
 import Phaser from 'phaser';
 import { battleLoop } from '../audio/battleMusic';
 import { music } from '../audio/music';
-import { FONT, GAME_W, PAL, hex } from '../config';
+import { BASE_H, FONT, GAME_H, GAME_W, PAL, hex } from '../config';
 import { addTabBar } from '../ui/tabBar';
 import { RARITY_COLOR } from '../data/classes';
 import { CRUSADERS } from '../data/crusaders';
@@ -33,10 +33,31 @@ import { SKILL_FX, auraFx, burstFx, fxForEnemy, makeFxTextures, type Fx } from '
 import { comboBurst, damageSize, hitStop, popNumber, riteCard, shake, staticDeath, whiteFlash } from '../ui/juice';
 
 const CARD = 128;
-const ENEMY_Y = 250;
-const PARTY_Y = 585;
+/*
+ * Rows are laid out for a 960-high screen. On taller phones the extra height
+ * is shared out between the gaps (see spreadRows), so the fight fills the
+ * screen and the skill buttons stay just above the tab bar.
+ */
+let ENEMY_Y = 250;
+let PARTY_Y = 585;
 /** Party Sisters with full-body art stand as animated figures: box centre, and feet below it. */
-const FIGURE_Y = 580;
+let FIGURE_Y = 580;
+/** How far the turn line, Zeal bar and hound move down on tall screens. */
+let MID_DY = 0;
+/** How far the skill description moves down on tall screens. */
+let DESC_DY = 0;
+/** How far the skill buttons move down on tall screens (all of the extra height). */
+let SKILL_DY = 0;
+/** Shares the height above 960 out between the rows. Call at the top of create. */
+function spreadRows() {
+  const extra = GAME_H - BASE_H;
+  ENEMY_Y = 250 + Math.round(extra * 0.2);
+  MID_DY = Math.round(extra * 0.4);
+  PARTY_Y = 585 + Math.round(extra * 0.5);
+  FIGURE_Y = 580 + Math.round(extra * 0.5);
+  DESC_DY = Math.round(extra * 0.75);
+  SKILL_DY = extra;
+}
 const FEET = 84;
 const FIGURE_BOX = 176;
 const ROMAN = ['I', 'II', 'III', 'IV'];
@@ -154,6 +175,7 @@ export class BattleScene extends Phaser.Scene {
     this.skillButtons = [];
     this.strip = [];
 
+    spreadRows();
     this.cameras.main.setBackgroundColor(0x0e0d11);
     // bg-battle.png: the nave the fight happens in, dimmed so the units read on top
     addBackdrop(this, 'bg-battle', GAME_W / 2, this.scale.height / 2, GAME_W, this.scale.height, { alpha: 0.45, fade: 0.5, fadeColor: 0x0e0d11 }).forEach((o) => (o as unknown as Phaser.GameObjects.Components.Depth).setDepth(-10));
@@ -174,17 +196,17 @@ export class BattleScene extends Phaser.Scene {
     }
 
     this.logText = this.add
-      .text(GAME_W / 2, 398, '', { ...style, fontSize: '22px', align: 'center', wordWrap: { width: GAME_W - 40 } })
+      .text(GAME_W / 2, 398 + MID_DY, '', { ...style, fontSize: '22px', align: 'center', wordWrap: { width: GAME_W - 40 } })
       .setOrigin(0.5);
-    if (!this.textures.exists('ui-bar-frame')) this.add.rectangle(GAME_W / 2, 442, 404, 18, PAL.deepShadow).setStrokeStyle(2, PAL.armorShadow);
-    this.zealBar = new Bar(this, GAME_W / 2 - 200, 442, 400, 14, 'ui-bar-zeal', PAL.amber, PAL.deepShadow);
-    this.zealText = this.add.text(GAME_W / 2, 463, '', { ...style, fontSize: '16px', color: hex(PAL.steel) }).setOrigin(0.5);
+    if (!this.textures.exists('ui-bar-frame')) this.add.rectangle(GAME_W / 2, 442 + MID_DY, 404, 18, PAL.deepShadow).setStrokeStyle(2, PAL.armorShadow);
+    this.zealBar = new Bar(this, GAME_W / 2 - 200, 442 + MID_DY, 400, 14, 'ui-bar-zeal', PAL.amber, PAL.deepShadow);
+    this.zealText = this.add.text(GAME_W / 2, 463 + MID_DY, '', { ...style, fontSize: '16px', color: hex(PAL.steel) }).setOrigin(0.5);
     // Order counters (Toll, Tide, Remains...) sit on their own line under the turn strip.
     this.kwText = this.add.text(GAME_W / 2, 102, '', { ...style, fontSize: '15px', color: hex(PAL.amber) }).setOrigin(0.5);
     this.drawHound();
 
     this.descText = this.add
-      .text(GAME_W / 2, 740, '', { ...style, fontSize: '18px', align: 'center', color: hex(PAL.steel), wordWrap: { width: GAME_W - 40 } })
+      .text(GAME_W / 2, 740 + DESC_DY, '', { ...style, fontSize: '18px', align: 'center', color: hex(PAL.steel), wordWrap: { width: GAME_W - 40 } })
       .setOrigin(0.5);
 
     // The tab bar stays through the fight; leaving by it pauses the fight.
@@ -360,7 +382,7 @@ export class BattleScene extends Phaser.Scene {
     const w = 102;
     order.forEach((s, i) => {
       const x = 9 + w / 2 + i * (w + 3);
-      const y = 819;
+      const y = 819 + SKILL_DY;
       const step = s.id === 'shift';
       const usable = step ? this.battle.canStep(actor) : this.battle.canUse(actor, s);
       const selected = this.chosen === s;
@@ -829,9 +851,9 @@ export class BattleScene extends Phaser.Scene {
     const h = this.battle.hound;
     const def = h && HOUNDS.find((d) => d.name === h.name);
     if (!h || !def) return;
-    const [, img] = houndFace(this, 36, 438, def, 46);
+    const [, img] = houndFace(this, 36, 438 + MID_DY, def, 46);
     this.houndImg = img;
-    this.add.text(36, 464, 'HOUND', text.hud(9, PAL.steel)).setOrigin(0.5, 0);
+    this.add.text(36, 464 + MID_DY, 'HOUND', text.hud(9, PAL.steel)).setOrigin(0.5, 0);
     img.setInteractive({ useHandCursor: true }).on('pointerup', () =>
       showDetail(this, { title: def.name, color: RARITY_COLOR[def.rarity], tags: `${def.rarity} HOUND`, desc: `${h.howlName}, at the start of every round: ${howlParts(h.howl).join('; ')}.`, facts: ['Change hounds in the Kennel or at the Muster.'] }),
     );

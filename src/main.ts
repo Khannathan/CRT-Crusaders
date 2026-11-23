@@ -6,6 +6,7 @@ import { HuntScene } from './scenes/HuntScene';
 import { GAME_H, GAME_W, PAL } from './config';
 import { installCrt } from './fx/crt';
 import { installReadableText } from './ui/readable';
+import { fitBeforeBoot, watchScreenFit } from './ui/screenFit';
 import { wireSceneMusic } from './audio/battleMusic';
 import { music } from './audio/music';
 import { BattleScene } from './scenes/BattleScene';
@@ -56,6 +57,9 @@ async function loadFonts() {
 
 function start() {
   installReadableText();
+  const parent = document.getElementById('game');
+  // tall phones get a taller game instead of black bars (see ui/screenFit.ts)
+  fitBeforeBoot(parent);
   const game = new Phaser.Game({
     type: Phaser.AUTO, // WebGL, falling back to canvas
     parent: 'game',
@@ -111,6 +115,7 @@ function start() {
   bgFight.game = game;
   game.events.once(Phaser.Core.Events.READY, () => {
     installCrt(game);
+    watchScreenFit(game, parent);
     // Each screen asks for its loop as it opens.
     for (const scene of game.scene.scenes) scene.events.on(Phaser.Scenes.Events.CREATE, () => music.forScene(scene.scene.key));
   });
