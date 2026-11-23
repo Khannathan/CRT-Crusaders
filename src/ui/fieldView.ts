@@ -364,6 +364,8 @@ interface View {
   shield: Phaser.GameObjects.Rectangle;
   meter?: Phaser.GameObjects.Rectangle;
   charge?: Phaser.GameObjects.Ellipse;
+  /** A marker on the ground under it (gold for Sisters, red for foes). */
+  ring?: Phaser.GameObjects.Ellipse;
   barW: number;
 }
 
@@ -377,6 +379,8 @@ export interface FieldViewOpts {
   compact?: boolean;
   /** Depth range for figures (sorted by feet within it). */
   depth?: number;
+  /** Ground markers under every unit (the battle screen; the Vigil leaves them off). */
+  rings?: boolean;
   onText?: (text: string) => void;
   onDeath?: (u: Unit) => void;
   /** A Litany or Blasphemy goes off (the big screen stamps its name). */
@@ -426,6 +430,11 @@ export class FieldView {
     const hasMeter = u.side === 'party' || u.wrath !== undefined;
     const meter = hasMeter ? this.scene.add.rectangle(0, 0, 0, this.o.compact ? 2 : 3, u.side === 'party' ? PAL.amber : 0xff5a3a).setOrigin(0, 0.5) : undefined;
     const v: View = { fig, hpBack, hp, shield, meter, barW };
+    if (this.o.rings) {
+      const rw = (u.boss ? 74 : 42) * (s / 0.75);
+      v.ring = this.scene.add.ellipse(x, y, rw, rw * 0.34).setStrokeStyle(2, u.side === 'party' ? PAL.amber : 0xd0402a, 0.75).setFillStyle(u.side === 'party' ? PAL.amber : 0xd0402a, 0.12);
+      this.objects.push(v.ring);
+    }
     this.views.set(u.uid, v);
     this.objects.push(fig.root, hpBack, hp, shield, ...(meter ? [meter] : []));
   }
@@ -443,6 +452,14 @@ export class FieldView {
       if (!v.fig.dead) {
         v.fig.face(body.face);
         v.fig.walk(body.moving);
+      }
+      if (v.ring) {
+        const lit = this.marked.has(u.uid);
+        v.ring.setPosition(x, y).setDepth(this.depth - 0.6).setVisible(u.hp > 0);
+        v.ring.setStrokeStyle(lit ? 3 : 2, lit ? 0xfff1d6 : u.side === 'party' ? PAL.amber : 0xd0402a, lit ? 1 : 0.75);
+      }
+      if (this.focusMark && this.focusUid === u.uid) {
+        this.focusMark.setPosition(x, y - v.fig.height - 30).setDepth(this.depth + 0.95).setVisible(u.hp > 0);
       }
       const top = y - v.fig.height - (this.o.compact ? 4 : 8);
       const left = x - v.barW / 2;
@@ -570,6 +587,33 @@ export class FieldView {
     }
   }
 
+  /** Units lit up on the ground (a Litany's possible targets, the Sister picked to swap). */
+  private marked = new Set<string>();
+  private focusUid?: string;
+  private focusMark?: Phaser.GameObjects.Text;
+
+  /** Lights the ground markers of these units (none: clear). */
+  mark(uids: string[] = []) {
+    this.marked = new Set(uids);
+    this.sync();
+  }
+
+  /** The foe the player Focused: a marker over its head. */
+  setFocus(uid?: string) {
+    this.focusUid = uid;
+    if (!uid) {
+      this.focusMark?.setVisible(false);
+      return;
+    }
+    if (!this.focusMark) {
+      this.focusMark = this.scene.add.text(0, 0, '▼', { fontFamily: FONT, fontSize: '26px', color: hex(0xfff1d6), stroke: '#000000', strokeThickness: 5 }).setOrigin(0.5);
+      this.scene.tweens.add({ targets: this.focusMark, scale: 1.25, duration: 380, yoyo: true, repeat: -1 });
+      this.objects.push(this.focusMark);
+    }
+    this.focusMark.setVisible(true);
+    this.sync();
+  }
+
   private floatStack = new Map<string, { at: number; n: number }>();
 
   private float(uid: string, label: string, color: number, big = false) {
@@ -657,7 +701,8 @@ export class FieldView {
 
   destroy() {
     this.gone = true;
-    for (const v of this.views.values()) [v.fig.root, v.hpBack, v.hp, v.shield, v.meter, v.charge].forEach((o) => o?.destroy());
+    for (const v of this.views.values()) [v.fig.root, v.hpBack, v.hp, v.shield, v.meter, v.charge, v.ring].forEach((o) => o?.destroy());
+    this.focusMark?.destroy();
     this.views.clear();
   }
 }

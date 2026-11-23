@@ -9,6 +9,7 @@ import { nextSpeed, saveSettings, settings } from '../state/settings';
 import { CHAPTERS, STAGES_PER_CHAPTER, nextStage, stageBattle, stageDef } from '../systems/campaign';
 import { ZEAL_MAX, skillsFor, type Battle, type Unit } from '../systems/combat';
 import { FieldBattle } from '../systems/field';
+import { keywordLine } from '../systems/keywords';
 import { settleBattle } from '../systems/settle';
 import { makeButton } from '../ui/button';
 import { FieldView } from '../ui/fieldView';
@@ -44,13 +45,18 @@ interface Card {
 }
 
 /**
- * Real-time battle (tech demo). Sisters and foes walk an open field and fight
- * on their own, like an AFK auto-battler; the player's part is the Litanies:
- * tap a Sister's card when her Zeal is full (or leave Auto on).
+ * The active battle screen. Sisters and foes walk an open field and fight on
+ * their own; the player's part:
+ * - before the fight, tap two Sisters to trade places (or Begin at once)
+ * - tap a Sister (or her card) when her Zeal is full to cast her Litany;
+ *   hold the card and drag onto a foe or ally to aim it (time slows meanwhile)
+ * - tap a foe to Focus it: every Sister who can reach it turns on it
+ * - Pause, Speed 1x-3x, Auto (Litanies fire on their own)
  *
  * Opened two ways:
  * - from the Vigil (tap the field): a practice fight at the Vigil's stage, no rewards
- * - from any battle when "Real-time battles" is on: the same fight, paid out as usual
+ * - from a Crypt fight (always), or any fight when "Real-time battles" is on:
+ *   the same fight, paid out as usual
  */
 export class FieldScene extends Phaser.Scene {
   private field!: FieldBattle;
@@ -66,6 +72,20 @@ export class FieldScene extends Phaser.Scene {
   private slowLeft = 0;
   private toggles: Phaser.GameObjects.GameObject[] = [];
   private cardUntil = 0;
+  private kwText!: Phaser.GameObjects.Text;
+  /** Before the fight (formation swaps), the fight, or paused. */
+  private phase: 'deploy' | 'fight' = 'deploy';
+  private paused = false;
+  private pauseLayer?: Phaser.GameObjects.Container;
+  /** Seconds before the fight begins on its own (none once the player swaps). */
+  private deployLeft?: number;
+  private deployLayer: Phaser.GameObjects.GameObject[] = [];
+  /** The Sister picked to trade places with the next one tapped. */
+  private picked?: string;
+  /** Real seconds the fight freezes for a heavy blow. */
+  private hitStop = 0;
+  /** A Litany being aimed: held from her card, dragged onto a target. */
+  private aim?: { uid: string; x0: number; y0: number; at: number; on: boolean; line: Phaser.GameObjects.Graphics };
 
   constructor() {
     super('Field');
@@ -82,6 +102,15 @@ export class FieldScene extends Phaser.Scene {
     this.slowLeft = 0;
     this.cardUntil = 0;
     this.toggles = [];
+    this.phase = 'deploy';
+    this.paused = false;
+    this.pauseLayer = undefined;
+    this.deployLayer = [];
+    this.picked = undefined;
+    this.hitStop = 0;
+    this.aim = undefined;
+    // On Auto the fight starts by itself after a moment, unless the player starts swapping.
+    this.deployLeft = settings.autoBattle ? 2.2 : undefined;
     const save = game.save;
     let battle = data.battle;
     let bg = data.bg;
@@ -110,14 +139,17 @@ export class FieldScene extends Phaser.Scene {
 
     // Top bar
     this.add.rectangle(GAME_W / 2, 34, GAME_W, 68, 0x0e0d11, 0.85).setDepth(40);
-    this.add.text(14, 12, this.practice ? `DEMO · STAGE ${stageDef(this.stageN).label}` : 'REAL-TIME DEMO', text.hud(12, PAL.amber)).setDepth(41);
+    const title = this.practice ? `PRACTICE · STAGE ${stageDef(this.stageN).label}` : (current.challenge?.label ?? current.run?.crypt.name ?? 'BATTLE').toUpperCase();
+    this.add.text(14, 12, title, { ...text.hud(12, PAL.amber), wordWrap: { width: 170 } }).setDepth(41);
     this.timeText = this.add.text(14, 32, '', text.hud(18, PAL.steel)).setDepth(41);
     this.drawToggles();
     this.logText = this.add
-      .text(GAME_W / 2, 96, this.practice ? 'When her Zeal burns full, tap a Sister to cast her Litany!' : 'The dark stirs. Steel yourselves, Sisters!', { ...text.body(18, PAL.ivory), align: 'center', wordWrap: { width: GAME_W - 40 }, stroke: '#000000', strokeThickness: 4 })
+      .text(GAME_W / 2, 96, 'Tap two Sisters to trade places, then Begin!', { ...text.body(18, PAL.ivory), align: 'center', wordWrap: { width: GAME_W - 40 }, stroke: '#000000', strokeThickness: 4 })
       .setOrigin(0.5)
       .setDepth(41);
 
+    // Order counters (Tide, Toll, Remains...) under the top bar.
+    this.kwText = this.add.text(GAME_W / 2, 168, '', { ...text.hud(13, PAL.amber), stroke: '#000000', strokeThickness: 4 }).setOrigin(0.5).setDepth(41);
     const boss = b.units.find((u) => u.side === 'enemy' && u.boss);
     if (boss) {
       const w = GAME_W - 80;
@@ -133,31 +165,170 @@ export class FieldScene extends Phaser.Scene {
       y: FIELD_Y,
       scale: 0.75,
       depth: 10,
+      rings: true,
       onText: (t) => this.log(t),
       onUltimate: (u, s, charging) => this.ultimate(u, s, charging),
     });
 
     this.drawCards();
     this.applySpeed();
-    // Tapping a Sister on the field works like tapping her card.
+    this.drawDeploy();
+    // On the field: a Sister = her Litany (or a swap, before the fight); a foe = Focus.
     this.input.on('pointerdown', (p: Phaser.Input.Pointer) => {
+      if (this.paused || this.ended || this.aim) return;
       if (p.y < FIELD_Y - 120 || p.y > FIELD_Y + FIELD_H + 20) return;
       const body = this.view.bodyAt(p.x, p.y);
-      if (body) this.tryLitany(body.uid);
+      if (!body) return;
+      const u = b.get(body.uid);
+      if (this.phase === 'deploy') {
+        if (u.side === 'party') this.pickSwap(u.uid);
+        return;
+      }
+      if (u.side === 'party') this.tryLitany(u.uid);
+      else this.focus(u.uid);
     });
+    this.input.on('pointermove', (p: Phaser.Input.Pointer) => this.aimMove(p));
+    this.input.on('pointerup', (p: Phaser.Input.Pointer) => this.aimUp(p));
+  }
+
+  // ---------- before the fight: formation ----------
+
+  private drawDeploy() {
+    const y = FIELD_Y + FIELD_H * 0.47;
+    const begin = makeButton(this, GAME_W / 2, y, 200, 56, 'Begin!', () => this.begin(), { active: true, icon: 'blade' });
+    this.deployLayer = [...begin.all];
+    this.deployLayer.forEach((o) => (o as unknown as Phaser.GameObjects.Components.Depth).setDepth(45));
+  }
+
+  private pickSwap(uid: string) {
+    // Choosing places stops the clock: the fight waits for Begin.
+    this.deployLeft = undefined;
+    if (!this.picked) {
+      this.picked = uid;
+      this.view.mark([uid]);
+      this.log('Now tap the Sister she trades places with.');
+      return;
+    }
+    const a = this.picked;
+    this.picked = undefined;
+    this.view.mark([]);
+    if (a !== uid && this.field.swapPlaces(a, uid)) {
+      this.view.sync();
+      this.log(`${this.field.battle.get(a).name} and ${this.field.battle.get(uid).name} trade places.`);
+      this.cards.forEach((c) => c.frame.setStrokeStyle(2, PAL.bronze));
+    }
+  }
+
+  private begin() {
+    if (this.phase !== 'deploy') return;
+    this.phase = 'fight';
+    this.picked = undefined;
+    this.view.mark([]);
+    this.deployLayer.forEach((o) => o.destroy());
+    this.deployLayer = [];
+    this.log(this.practice ? 'Tap a foe to Focus it. Tap a Sister when her Zeal burns full!' : 'The dark stirs. Steel yourselves, Sisters!');
+  }
+
+  // ---------- Focus ----------
+
+  private focus(uid: string) {
+    this.field.setFocus(uid);
+    this.view.setFocus(this.field.focusUid);
+    if (this.field.focusUid) this.log(`Focus: ${this.field.battle.get(uid).name}. Tap it again to let them choose.`);
+  }
+
+  // ---------- aimed Litanies ----------
+
+  /** Pressed on a card: a quick tap casts at once; a hold or drag aims. */
+  private cardDown(uid: string, p: Phaser.Input.Pointer) {
+    if (this.ended || this.paused) return;
+    if (this.phase === 'deploy') {
+      this.pickSwap(uid);
+      return;
+    }
+    if (!this.field.litanyReady(this.field.battle.get(uid))) return;
+    this.aim = { uid, x0: p.x, y0: p.y, at: this.time.now, on: false, line: this.add.graphics().setDepth(50) };
+  }
+
+  private aimMove(p: Phaser.Input.Pointer) {
+    const a = this.aim;
+    if (!a) return;
+    if (!a.on && Math.hypot(p.x - a.x0, p.y - a.y0) < 24 && this.time.now - a.at < 260) return;
+    if (!a.on) {
+      const targets = this.field.litanyTargets(a.uid);
+      // A Litany with no single target (the whole party, every foe) needs no aim.
+      if (!targets.length) return;
+      a.on = true;
+      this.view.mark(targets.map((t) => t.uid));
+    }
+    a.line.clear();
+    a.line.lineStyle(4, PAL.amber, 0.9).lineBetween(a.x0, a.y0, p.x, p.y);
+    a.line.fillStyle(0xfff1d6, 1).fillCircle(p.x, p.y, 8);
+  }
+
+  private aimUp(p: Phaser.Input.Pointer) {
+    const a = this.aim;
+    if (!a) return;
+    this.aim = undefined;
+    a.line.destroy();
+    this.view.mark([]);
+    if (!a.on) {
+      this.tryLitany(a.uid);
+      return;
+    }
+    const body = this.view.bodyAt(p.x, p.y);
+    const legal = body && this.field.litanyTargets(a.uid).some((t) => t.uid === body.uid);
+    if (legal) this.tryLitany(a.uid, body!.uid);
+    else this.log('Let go over a lit target to aim the Litany.');
+  }
+
+  // ---------- pause ----------
+
+  private togglePause() {
+    if (this.ended) return;
+    this.paused = !this.paused;
+    this.pauseLayer?.destroy();
+    this.pauseLayer = undefined;
+    if (!this.paused) return;
+    const layer = this.add.container(0, 0).setDepth(70);
+    layer.add(this.add.rectangle(GAME_W / 2, GAME_H / 2, GAME_W, GAME_H, 0x09060b, 0.65).setInteractive());
+    layer.add(this.add.text(GAME_W / 2, GAME_H / 2 - 70, 'PAUSED', text.display(36, PAL.amber)).setOrigin(0.5));
+    const resume = makeButton(this, GAME_W / 2, GAME_H / 2 + 10, 220, 60, 'Resume', () => this.togglePause(), { active: true });
+    layer.add(resume.all);
+    this.pauseLayer = layer;
   }
 
   update(_t: number, delta: number) {
     if (this.ended) return;
-    let dt = Math.min(0.1, delta / 1000) * settings.battleSpeed;
+    const real = Math.min(0.1, delta / 1000);
+    this.refreshCards();
+    if (this.phase === 'deploy') {
+      if (this.deployLeft !== undefined && (this.deployLeft -= real) <= 0) this.begin();
+      return;
+    }
+    if (this.paused) return;
+    this.kwText.setText(keywordLine(this.field.battle.kw, this.field.battle.alive('party').map((u) => u.order ?? '')));
+    // A heavy blow (a crit, a kill) freezes the fight for a blink.
+    if (this.hitStop > 0) {
+      this.hitStop -= real;
+      return;
+    }
+    let dt = real * settings.battleSpeed;
     if (this.slowLeft > 0) {
-      this.slowLeft -= delta / 1000;
+      this.slowLeft -= real;
       dt *= 0.3;
     }
+    // Aiming a Litany: the fight crawls while the player picks a target.
+    if (this.aim?.on) dt *= 0.2;
     const events = this.field.update(dt);
     this.view.sync();
     this.view.handle(events);
-    this.refreshCards();
+    if (events.some((e) => e.kind === 'act' && e.events.some((x) => x.type === 'death' || (x.type === 'damage' && x.crit)))) this.hitStop = 0.07;
+    // The Focused foe fell: the marker goes.
+    if (this.field.focusUid && this.field.battle.get(this.field.focusUid).hp <= 0) {
+      this.field.setFocus(undefined);
+      this.view.setFocus(undefined);
+    }
     const secs = Math.floor(this.field.time);
     this.timeText.setText(`${Math.floor(secs / 60)}:${String(secs % 60).padStart(2, '0')} · ROUND ${this.field.battle.round}`);
     const end = events.find((e) => e.kind === 'end');
@@ -210,7 +381,7 @@ export class FieldScene extends Phaser.Scene {
         .setOrigin(0.5)
         .setDepth(33)
         .setVisible(false);
-      frame.setInteractive({ useHandCursor: true }).on('pointerdown', () => this.tryLitany(u.uid));
+      frame.setInteractive({ useHandCursor: true }).on('pointerdown', (p: Phaser.Input.Pointer) => this.cardDown(u.uid, p));
       this.cards.push({ u, frame, img, hp, zeal, ready, glow, wasReady: false });
     });
   }
@@ -243,9 +414,9 @@ export class FieldScene extends Phaser.Scene {
     }
   }
 
-  private tryLitany(uid: string) {
-    if (this.ended) return;
-    const e = this.field.castLitany(uid);
+  private tryLitany(uid: string, aimUid?: string) {
+    if (this.ended || this.phase !== 'fight' || this.paused) return;
+    const e = this.field.castLitany(uid, aimUid);
     if (e) this.view.handle([e]);
   }
 
@@ -253,11 +424,12 @@ export class FieldScene extends Phaser.Scene {
 
   private drawToggles() {
     this.toggles.forEach((o) => o.destroy());
-    const auto = makeButton(this, 262, 34, 96, 42, settings.autoBattle ? 'Auto: On' : 'Auto', () => this.toggleAuto(), { active: settings.autoBattle, fontSize: 17 });
-    const speed = makeButton(this, 364, 34, 96, 42, `Speed ${settings.battleSpeed}x`, () => this.toggleSpeed(), { active: settings.battleSpeed > 1, fontSize: 17 });
-    // Practice fights can be left at any time; real ones are short and play out.
-    const out = this.practice ? makeButton(this, 472, 34, 108, 42, 'Leave', () => this.leave(), { fontSize: 17 }) : undefined;
-    this.toggles = [...auto.all, ...speed.all, ...(out?.all ?? [])];
+    const auto = makeButton(this, 236, 34, 88, 42, settings.autoBattle ? 'Auto: On' : 'Auto', () => this.toggleAuto(), { active: settings.autoBattle, fontSize: 16 });
+    const speed = makeButton(this, 330, 34, 88, 42, `${settings.battleSpeed}x`, () => this.toggleSpeed(), { active: settings.battleSpeed > 1, fontSize: 17 });
+    const pause = makeButton(this, 404, 34, 50, 42, 'II', () => this.togglePause(), { fontSize: 17 });
+    // Practice fights can be left at any time; real ones play out.
+    const out = this.practice ? makeButton(this, 482, 34, 92, 42, 'Leave', () => this.leave(), { fontSize: 16 }) : undefined;
+    this.toggles = [...auto.all, ...speed.all, ...pause.all, ...(out?.all ?? [])];
     this.toggles.forEach((o) => (o as unknown as Phaser.GameObjects.Components.Depth).setDepth(42));
   }
 

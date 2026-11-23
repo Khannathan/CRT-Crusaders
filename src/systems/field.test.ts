@@ -202,3 +202,39 @@ describe('real-time field: space', () => {
     expect(f.battle.space!.inOverwatch(w, foe)).toBe(true);
   });
 });
+
+describe('real-time field: the player\'s hand', () => {
+  const setup = () => {
+    const save = newSave();
+    for (const id of STARTER) save.owned[id] = { level: 10, vow: 0 };
+    const b = stageBattle(save, STARTER, 5, seeded(9));
+    return { b, f: new FieldBattle(b, { w: 540, h: 600, manualLitany: true, rng: seeded(2) }) };
+  };
+
+  it('before the fight, two Sisters trade places and ranks', () => {
+    const { b, f } = setup();
+    const [x, , , y] = b.units.filter((u) => u.side === 'party');
+    const [rx, ry] = [x.rank, y.rank];
+    const yBefore = f.bodies.get(y.uid)!.y;
+    expect(f.swapPlaces(x.uid, y.uid)).toBe(true);
+    expect([x.rank, y.rank]).toEqual([ry, rx]);
+    expect(f.bodies.get(x.uid)!.y).toBeCloseTo(yBefore, 0);
+    // Not once the fight is under way.
+    f.update(0.05);
+    expect(f.swapPlaces(x.uid, y.uid)).toBe(false);
+  });
+
+  it('an aimed Litany lands on the chosen target', () => {
+    const { b, f } = setup();
+    f.update(0.05);
+    const sister = b.units.find((u) => u.side === 'party' && f.litanyTargets(u.uid).length > 1);
+    expect(sister).toBeDefined();
+    if (!sister) return;
+    sister.zeal = 100;
+    const targets = f.litanyTargets(sister.uid);
+    const pick = targets[targets.length - 1];
+    const e = f.castLitany(sister.uid, pick.uid);
+    expect(e?.kind).toBe('act');
+    if (e?.kind === 'act') expect(e.targetUid).toBe(pick.uid);
+  });
+});

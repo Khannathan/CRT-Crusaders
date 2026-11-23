@@ -163,8 +163,9 @@ export class BattleScene extends Phaser.Scene {
       const seed = newSeed();
       this.battle = challenge ? challenge.make(seeded(seed)) : makeBattle(game.save, run!, encounter, seeded(seed));
       (window as unknown as Record<string, unknown>).__crtLastBattle = { balance: BALANCE_VERSION, encounter, seed, log: this.battle.log };
-      // Tech demo: a new fight plays out in real time on an open field instead.
-      if (settings.realtimeBattles) {
+      // Crypt fights always play out in real time on the open field; other
+      // modes move over one by one (or all at once with "Real-time battles").
+      if (settings.realtimeBattles || !challenge) {
         this.scene.start('Field', { battle: this.battle });
         return;
       }

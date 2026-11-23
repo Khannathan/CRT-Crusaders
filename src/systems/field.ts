@@ -566,18 +566,54 @@ export class FieldBattle {
     return !!rite && u.hp > 0 && (u.zeal ?? 0) >= ZEAL_MAX && !this.done && this.battle.canUse(u, rite);
   }
 
-  /** The player taps a Sister whose Zeal is full: her Litany fires at once, wherever she stands. */
-  castLitany(uid: string): FieldEvent | undefined {
+  /** Who a Sister's Litany may be aimed at (empty when it needs no aim). */
+  litanyTargets(uid: string): Unit[] {
+    const u = this.battle.get(uid);
+    const rite = u && skillsFor(u).find((s) => s.rite);
+    if (!u || !rite || (rite.target !== 'enemy' && rite.target !== 'ally')) return [];
+    return this.battle.validTargets(u, rite);
+  }
+
+  /**
+   * The player taps a Sister whose Zeal is full: her Litany fires at once,
+   * wherever she stands, on the best target (or on `aimUid`, when the player
+   * dragged it onto someone it may reach).
+   */
+  castLitany(uid: string, aimUid?: string): FieldEvent | undefined {
     const u = this.battle.get(uid);
     if (!u || u.side !== 'party' || !this.litanyReady(u)) return undefined;
     const rite = skillsFor(u).find((s) => s.rite)!;
     const me = this.bodies.get(uid)!;
     const targets = this.battle.validTargets(u, rite);
-    const target = [...targets].sort((x, y) => this.battle.preview(u, rite, y) - this.battle.preview(u, rite, x))[0];
+    const aimed = aimUid ? targets.find((t) => t.uid === aimUid) : undefined;
+    const target = aimed ?? [...targets].sort((x, y) => this.battle.preview(u, rite, y) - this.battle.preview(u, rite, x))[0];
     const out: FieldEvent[] = [];
     this.perform(u, me, rite, rite.target === 'enemy' || rite.target === 'ally' ? target?.uid : undefined, out, true);
     me.plan = undefined;
     return out[0];
+  }
+
+  /**
+   * Before the fight: two Sisters trade places (and ranks), so the player can
+   * set the formation on the battle screen itself.
+   */
+  swapPlaces(a: string, c: string): boolean {
+    const x = this.battle.get(a);
+    const y = this.battle.get(c);
+    if (!x || !y || x === y || x.side !== 'party' || y.side !== 'party' || this.time > 0) return false;
+    [x.rank, y.rank] = [y.rank, x.rank];
+    // Their places across the line trade too.
+    const us = this.battle.units;
+    const i = us.indexOf(x);
+    const j = us.indexOf(y);
+    [us[i], us[j]] = [us[j], us[i]];
+    this.reform();
+    for (const u of [x, y]) {
+      const b = this.bodies.get(u.uid)!;
+      b.x = b.homeX;
+      b.y = b.homeY;
+    }
+    return true;
   }
 
   /** Where every living Sister stands, by Sister id (to carry into the next wave). */
