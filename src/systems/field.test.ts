@@ -4,7 +4,7 @@ import { autoBattle } from './autoplay';
 import { stageBattle } from './campaign';
 import { CRUSADERS } from '../data/crusaders';
 import { Battle, makeEnemy, skillsFor, type Unit } from './combat';
-import { EXTRA_SEC, FieldBattle, SWING_SEC, reachOf, simulateField, type FieldEvent } from './field';
+import { EXTRA_SEC, FieldBattle, HYMN_RADIUS, SWING_SEC, reachOf, simulateField, type FieldEvent } from './field';
 import { partyFor } from './niche';
 import { seeded } from './rng';
 
@@ -124,5 +124,81 @@ describe('real-time field: Sister kits', () => {
       const r = simulateField(stageBattle(save, party, 3, seeded(7)), { rng: seeded(8) });
       expect(r.outcome, c.name).not.toBe('stalled');
     }
+  });
+});
+
+describe('real-time field: space', () => {
+  const sis = (id: string, rank = 1, classId?: string): Unit => {
+    const c = CRUSADERS.find((x) => x.id === id)!;
+    return { uid: id, side: 'party', name: c.name, ref: id, classId: classId ?? c.classId, order: c.order, rank, maxHp: 1000, hp: 1000, atk: 100, armor: 0, mres: 0, crit: 0, spd: 10, status: {}, passive: c.passive };
+  };
+  const anySkill = (u: Unit) => skillsFor(u).find((s) => s.target === 'enemy' && !s.rite)!;
+
+  it('Focus: a tapped foe becomes every Sister\'s target, and tapping again clears it', () => {
+    const save = newSave();
+    for (const id of STARTER) save.owned[id] = { level: 10, vow: 0 };
+    const b = stageBattle(save, STARTER, 5, seeded(9));
+    const f = new FieldBattle(b, { w: 540, h: 600, rng: seeded(2) });
+    const foe = b.units.filter((u) => u.side === 'enemy').at(-1)!;
+    f.setFocus(foe.uid);
+    expect(f.focusUid).toBe(foe.uid);
+    const sister = b.units.find((u) => u.side === 'party' && b.validTargets(u, anySkill(u)).includes(foe))!;
+    expect(f.preferredFoe(sister, anySkill(sister))?.uid).toBe(foe.uid);
+    f.setFocus(foe.uid);
+    expect(f.focusUid).toBeUndefined();
+  });
+
+  it('a Veilblade goes for the back line, an Arbalist for the hardest hitter', () => {
+    const vb = CRUSADERS.find((c) => c.classId === 'veilblade')!;
+    const ar = CRUSADERS.find((c) => c.classId === 'arbalist')!;
+    const v = sis(vb.id, 1);
+    const a = sis(ar.id, 4);
+    const foes = [makeEnemy('husk', 'e0', 1), makeEnemy('husk', 'e1', 2), makeEnemy('husk', 'e2', 3)];
+    foes[1].atk *= 3;
+    const f = new FieldBattle(new Battle([v, a], foes, { rng: () => 0.5 }), { w: 540, h: 600, rng: seeded(1) });
+    const vs = skillsFor(v).find((s) => s.target === 'enemy' && !s.rite && f.battle.validTargets(v, s).length > 1);
+    expect(vs).toBeDefined();
+    if (vs) expect(f.preferredFoe(v, vs)!.rank).toBe(Math.max(...f.battle.validTargets(v, vs).map((x) => x.rank)));
+    const as = skillsFor(a).find((s) => s.target === 'enemy' && !s.rite && f.battle.validTargets(a, s).includes(foes[1]));
+    expect(as).toBeDefined();
+    if (as) expect(f.preferredFoe(a, as)!.uid).toBe('e1');
+  });
+
+  it('melee Sisters sharing a foe fan out around it instead of queuing', () => {
+    const x = sis('CC-W013', 1);
+    const y = sis('CC-W001', 2);
+    const z = sis('CC-W052', 3);
+    const foe = makeEnemy('golem', 'e0', 1);
+    foe.maxHp = foe.hp = 1e9;
+    const f = new FieldBattle(new Battle([x, y, z], [foe], { rng: () => 0.5 }), { w: 540, h: 600, rng: seeded(4) });
+    for (let i = 0; i < 120; i++) f.update(0.05);
+    const pts = [x, y, z].map((u) => f.bodies.get(u.uid)!);
+    const xs = pts.map((p) => p.x);
+    // Spread across the foe's front, not stacked on one line.
+    expect(Math.max(...xs) - Math.min(...xs)).toBeGreaterThan(40);
+  });
+
+  it('a Hymn reaches only the allies near the singer', () => {
+    const singer = sis('CC-W013', 1);
+    const near = sis('CC-W001', 2);
+    const far = sis('CC-W052', 3);
+    const f = new FieldBattle(new Battle([singer, near, far], [makeEnemy('husk', 'e0', 1)], { rng: () => 0.5 }), { w: 540, h: 600, rng: seeded(1) });
+    const at = (u: Unit, x: number, y: number) => Object.assign(f.bodies.get(u.uid)!, { x, y });
+    at(singer, 100, 400);
+    at(near, 100 + HYMN_RADIUS - 20, 400);
+    at(far, 100 + HYMN_RADIUS + 60, 400);
+    expect(f.battle.space!.inHymn(singer, near)).toBe(true);
+    expect(f.battle.space!.inHymn(singer, far)).toBe(false);
+  });
+
+  it('Overwatch waits for a foe to step into the zone', () => {
+    const w = sis('CC-W001', 1);
+    const foe = makeEnemy('husk', 'e0', 1);
+    const f = new FieldBattle(new Battle([w], [foe], { rng: () => 0.5 }), { w: 540, h: 600, rng: seeded(1) });
+    Object.assign(f.bodies.get(w.uid)!, { x: 270, y: 560 });
+    Object.assign(f.bodies.get(foe.uid)!, { x: 270, y: 40 });
+    expect(f.battle.space!.inOverwatch(w, foe)).toBe(false);
+    Object.assign(f.bodies.get(foe.uid)!, { x: 270, y: 450 });
+    expect(f.battle.space!.inOverwatch(w, foe)).toBe(true);
   });
 });

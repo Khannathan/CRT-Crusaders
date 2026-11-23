@@ -20,6 +20,12 @@ import { Battle, ZEAL_MAX, skillsFor, type BattleEvent, type Unit } from './comb
  * - ranks stay as the formation: they set where a Sister starts and which skills
  *   she may use, exactly as in turn-based fights
  * - Litanies fire on their own (auto) or when the player taps the Sister
+ * - melee fighters spread into open spots around their foe instead of piling on
+ *   one point; each class picks targets by its own rule (Veilblades dive the
+ *   back line, Arbalists take the most dangerous foe, Exorcists the boss), and
+ *   the player may Focus one foe for every Sister who can reach it
+ * - space matters for two Orders: a Hymn reaches the allies near the singer,
+ *   and Overwatch reacts to foes that step into the watcher's zone
  *
  * The view (ui/fieldView.ts) draws it; nothing here touches Phaser, so it runs
  * headless in tests.
@@ -41,6 +47,12 @@ const BASE_W = 540;
 
 export type Reach = 'melee' | 'mid' | 'ranged';
 const REACH: Record<Reach, number> = { melee: 54, mid: 190, ranged: 230 };
+/** A Hymn carries this far from the singer (field units at 540 wide). */
+export const HYMN_RADIUS = 260;
+/** Overwatch reacts to a foe this much further out than the watcher's own reach. */
+export const OVERWATCH_EXTRA = 170;
+/** Angle between melee fighters sharing one foe (radians). */
+const SLOT_SPREAD = 0.85;
 
 export interface Body {
   uid: string;
@@ -66,6 +78,8 @@ export interface Body {
   entering?: boolean;
   /** Its start-of-turn effects have run; it acts once it is in reach. */
   ready: boolean;
+  /** Who it walked toward last frame (melee fighters share out spots around a foe). */
+  goalUid?: string;
   /** Where it stands in formation (rank-based), for regrouping between fights. */
   homeX: number;
   homeY: number;
@@ -115,6 +129,8 @@ export class FieldBattle {
   private roundClock = 0;
   private done = false;
   private k: number;
+  /** The foe the player marked: every Sister who can hit it turns on it. */
+  focusUid?: string;
   private rng: () => number;
 
   constructor(
@@ -124,6 +140,29 @@ export class FieldBattle {
     this.k = opts.w / BASE_W;
     this.rng = opts.rng ?? Math.random;
     for (const u of battle.units) this.addBody(u);
+    battle.space = {
+      inHymn: (singer, u) => {
+        const a = this.bodies.get(singer.uid);
+        const c = this.bodies.get(u.uid);
+        return !a || !c || this.dist(a, c) <= HYMN_RADIUS * this.k;
+      },
+      inOverwatch: (watcher, foe) => {
+        const a = this.bodies.get(watcher.uid);
+        const c = this.bodies.get(foe.uid);
+        return !a || !c || this.dist(a, c) <= a.range + OVERWATCH_EXTRA * this.k + c.radius;
+      },
+    };
+  }
+
+  /** Marks a foe for every Sister (tap again, or pass nothing, to clear). */
+  setFocus(uid?: string) {
+    const u = uid ? this.battle.get(uid) : undefined;
+    this.focusUid = u && u.side === 'enemy' && u.hp > 0 && this.focusUid !== uid ? uid : undefined;
+    // Sisters already chasing someone else think again.
+    if (this.focusUid) for (const s of this.battle.alive('party')) {
+      const b = this.bodies.get(s.uid);
+      if (b?.plan && b.plan.skill.target === 'enemy' && b.plan.targetUid !== this.focusUid) b.plan = undefined;
+    }
   }
 
   get w() {
@@ -219,8 +258,31 @@ export class FieldBattle {
     }
     const c = autoChoose(this.battle, u, { noRite: this.opts.manualLitany });
     if (!c.skill || (c.skill.rite && this.opts.manualLitany)) return undefined;
-    const target = c.target;
+    const target = c.skill.target === 'enemy' ? this.preferredFoe(u, c.skill) ?? c.target : c.target;
     return { skill: c.skill, targetUid: target?.uid, age: 0 };
+  }
+
+  /**
+   * Who a Sister strikes, by her class: the player's Focus first, then
+   * Veilblades the furthest-back foe, Arbalists the hardest-hitting, Exorcists
+   * a boss (or the most blessed foe). Everyone else keeps the Auto player's pick.
+   */
+  preferredFoe(u: Unit, s: SkillDef): Unit | undefined {
+    const legal = this.battle.validTargets(u, s);
+    if (!legal.length) return undefined;
+    const focus = this.focusUid ? legal.find((x) => x.uid === this.focusUid) : undefined;
+    if (focus) return focus;
+    const best = (score: (x: Unit) => number) => [...legal].sort((a, c) => score(c) - score(a))[0];
+    switch (u.classId) {
+      case 'veilblade':
+        return best((x) => x.rank * 10 - x.hp / x.maxHp);
+      case 'arbalist':
+        return best((x) => x.atk * (x.boss ? 1.2 : 1));
+      case 'exorcist':
+        return best((x) => (x.boss ? 1000 : 0) + Object.keys(x.status).length * 10 + x.atk / 100);
+      default:
+        return undefined;
+    }
   }
 
   private inReach(me: Body, t: Unit) {
@@ -318,6 +380,7 @@ export class FieldBattle {
         this.walkTo(me, me.homeX, me.homeY, dt);
         continue;
       }
+      me.goalUid = goal?.uid;
       this.steer(u, me, goal, dt);
     }
 
@@ -347,6 +410,13 @@ export class FieldBattle {
     if (b.queue[0] === u.uid) {
       b.queue.shift();
       me.timer = Math.min(me.timer, me.lock + EXTRA_SEC);
+    }
+    // A taunt turns the foes: plans aimed at anyone else are dropped.
+    if (events.some((e) => e.type === 'status' && /^Taunt/.test((e as { label?: string }).label ?? ''))) {
+      for (const f of b.alive(u.side === 'party' ? 'enemy' : 'party')) {
+        const fb = this.bodies.get(f.uid);
+        if (fb?.plan && fb.plan.skill.target === 'enemy' && fb.plan.targetUid !== u.uid) fb.plan = undefined;
+      }
     }
     // Ranks moved (Processional, Stride, Step, pulls): the formation follows.
     if (events.some((e) => e.type === 'move')) this.reform();
@@ -393,6 +463,17 @@ export class FieldBattle {
     if (!goal || goal === u) return;
     const g = this.bodies.get(goal.uid);
     if (!g) return;
+    if (me.reach === 'melee' && goal.side !== u.side && u.side === 'party') {
+      const spot = this.meleeSpot(u, me, g);
+      if (spot) {
+        // Already close enough to strike: stand and wait for the swing.
+        if (Math.hypot(g.x - me.x, g.y - me.y) <= me.range + g.radius && Math.hypot(spot.x - me.x, spot.y - me.y) < me.radius) return;
+        this.walkTo(me, spot.x, spot.y, dt);
+        if (Math.abs(g.x - me.x) > 4) me.face = g.x > me.x ? 1 : -1;
+        this.clamp(me);
+        return;
+      }
+    }
     const dx = g.x - me.x;
     const dy = g.y - me.y;
     const d = Math.hypot(dx, dy) || 1;
@@ -407,6 +488,25 @@ export class FieldBattle {
     }
     if (Math.abs(dx) > 4) me.face = dx > 0 ? 1 : -1;
     this.clamp(me);
+  }
+
+  /**
+   * An open spot beside a foe: melee fighters sharing one foe fan out around
+   * it (from the side they came from) instead of queuing behind each other.
+   */
+  private meleeSpot(u: Unit, me: Body, g: Body): { x: number; y: number } | undefined {
+    const sharing = [...this.bodies.values()]
+      .filter((o) => o.goalUid === g.uid && o.reach === 'melee' && this.battle.get(o.uid)?.side === u.side && this.battle.get(o.uid)!.hp > 0)
+      .map((o) => o.uid)
+      .sort();
+    if (!sharing.includes(me.uid)) sharing.push(me.uid);
+    if (sharing.length < 2) return undefined;
+    const i = sharing.indexOf(me.uid);
+    // Fan out around the side of the foe facing this unit's own line.
+    const base = Math.atan2(u.side === 'party' ? 1 : -1, 0);
+    const ang = base + (i - (sharing.length - 1) / 2) * SLOT_SPREAD;
+    const r = me.range * 0.8 + g.radius;
+    return { x: g.x + Math.cos(ang) * r, y: g.y + Math.sin(ang) * r };
   }
 
   private walkTo(me: Body, x: number, y: number, dt: number) {

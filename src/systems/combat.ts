@@ -316,6 +316,17 @@ export class Battle {
   private reflecting?: { boss: Unit; sum: number };
   /** Summoned foes arrive Delayed (Lock the Crypt). */
   private locked = false;
+  /**
+   * Space, when the fight is played on an open field (systems/field.ts). Left
+   * unset in turn-based fights, where every Hymn reaches every ally and every
+   * Sister on Overwatch reacts to every foe.
+   */
+  space?: {
+    /** This ally stands inside the singer's Hymn. */
+    inHymn(singer: Unit, u: Unit): boolean;
+    /** This foe has stepped into the watcher's Overwatch zone. */
+    inOverwatch(watcher: Unit, foe: Unit): boolean;
+  };
 
   constructor(party: Unit[], enemies: Unit[], opts: { rng?: Rng; vigil?: number; zeal?: number; enemyScale?: number; mods?: Partial<BattleMods>; hound?: HoundHowl } = {}) {
     this.mods = { ...NO_MODS, ...opts.mods };
@@ -1534,7 +1545,7 @@ export class Battle {
         this.applyEffects(singer, u, sk, events);
       }
     };
-    if (h.allies) verse(h.allies, this.alive('party'));
+    if (h.allies) verse(h.allies, this.alive('party').filter((u) => !this.space || this.space.inHymn(singer, u)));
     if (h.foes) verse(h.foes, this.alive('enemy'));
   }
 
@@ -1544,6 +1555,7 @@ export class Battle {
     for (const u of this.alive('party')) {
       const ow = u.status.overwatch;
       if (!ow || foe.hp <= 0) continue;
+      if (this.space && !this.space.inOverwatch(u, foe)) continue;
       u.status.overwatch = undefined;
       events.push({ type: 'status', uid: u.uid, label: 'Overwatch!' });
       this.log.push(`  ${u.name} reacts on Overwatch`);
