@@ -16,7 +16,7 @@ import type { SaveData } from '../state/save';
 import { Battle, VIGIL_DEFAULT, makeEnemy, type Unit } from './combat';
 import type { Rng } from './gacha';
 import { claimGear, makeGear, rollGearRarity, type GearItem } from './gear';
-import { recommendedPower } from './power';
+import { recommendedPower, sisterPower } from './power';
 import { addBags, give, roomDrops, type Bag } from './items';
 import { levelUpCost, sisterStats } from './stats';
 import { rankOf } from './rank';
@@ -800,18 +800,22 @@ export function revive(save: SaveData, id: string): boolean {
   return true;
 }
 
-/** Suggested ranks: a Tank in front, Melee DPS next, then Ranged DPS and Buffers, the Healer at the back. */
+/**
+ * The strongest party by Power, kept whole: the best Tank and the best Healer
+ * if she has them, then the strongest of the rest. Ranks: Tank in front, Melee
+ * DPS next, then Ranged DPS and Buffers, the Healer at the back.
+ */
 export function suggestParty(save: SaveData): string[] {
   const order = { Tank: 0, 'Melee DPS': 1, 'Ranged DPS': 2, Buffer: 3, Healer: 4 } as const;
   const ready = CRUSADERS.filter((c) => canMuster(save, c.id));
-  const byStrength = [...ready].sort((a, b) => sisterStats(save, b).atk - sisterStats(save, a).atk);
-  // one of each role first, then the strongest of the rest
+  const power = new Map(ready.map((c) => [c.id, sisterPower(save, c)]));
+  const byPower = [...ready].sort((a, b) => power.get(b.id)! - power.get(a.id)!);
   const picked: typeof ready = [];
-  for (const role of ['Tank', 'Melee DPS', 'Healer'] as (keyof typeof order)[]) {
-    const best = byStrength.find((c) => CLASSES[c.classId].role === role && !picked.includes(c));
+  for (const role of ['Tank', 'Healer'] as (keyof typeof order)[]) {
+    const best = byPower.find((c) => CLASSES[c.classId].role === role && !picked.includes(c));
     if (best) picked.push(best);
   }
-  for (const c of byStrength) if (picked.length < MAX_PARTY && !picked.includes(c)) picked.push(c);
+  for (const c of byPower) if (picked.length < MAX_PARTY && !picked.includes(c)) picked.push(c);
   return picked
     .slice(0, MAX_PARTY)
     .sort((a, b) => order[CLASSES[a.classId].role] - order[CLASSES[b.classId].role])
