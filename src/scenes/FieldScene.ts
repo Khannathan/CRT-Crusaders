@@ -126,7 +126,8 @@ export class FieldScene extends Phaser.Scene {
       battle = stageBattle(save, party.length ? party : Object.keys(save.owned).slice(0, 4), stage.n);
       bg = `bg-${CHAPTERS[Math.min(stage.chapter, CHAPTERS.length - 1)].crypt.id}`;
     }
-    bg ??= current.run ? `bg-${current.run.crypt.id}` : undefined;
+    // Crypts fight in their own crypt; other modes in the nave.
+    bg ??= current.challenge ? 'bg-battle' : current.run ? `bg-${current.run.crypt.id}` : undefined;
     this.registry.set('field-bg', bg && this.textures.exists(bg) ? bg : 'bg-hall');
     this.vigilMax = data.vigilMax ?? battle.vigil;
     if (data.field) {
@@ -151,8 +152,10 @@ export class FieldScene extends Phaser.Scene {
     // Top bar
     this.add.rectangle(GAME_W / 2, 34, GAME_W, 68, 0x0e0d11, 0.85).setDepth(40);
     const title = this.practice ? `PRACTICE · STAGE ${stageDef(this.stageN).label}` : (current.challenge?.label ?? current.run?.crypt.name ?? 'BATTLE').toUpperCase();
-    this.add.text(14, 12, title, { ...text.hud(12, PAL.amber), wordWrap: { width: 170 } }).setDepth(41);
-    this.timeText = this.add.text(14, 32, '', text.hud(18, PAL.steel)).setDepth(41);
+    // One line: the label's first sentence, cut short to fit beside the buttons.
+    const short = title.split('.')[0];
+    this.add.text(14, 14, short.length > 20 ? `${short.slice(0, 19)}…` : short, text.hud(11, PAL.amber)).setDepth(41);
+    this.timeText = this.add.text(14, 36, '', text.hud(13, PAL.steel)).setDepth(41);
     this.drawToggles();
     this.logText = this.add
       .text(GAME_W / 2, 96, 'Tap two Sisters to trade places, then Begin!', { ...text.body(18, PAL.ivory), align: 'center', wordWrap: { width: GAME_W - 40 }, stroke: '#000000', strokeThickness: 4 })
@@ -349,7 +352,10 @@ export class FieldScene extends Phaser.Scene {
       this.view.setFocus(undefined);
     }
     const secs = Math.floor(this.field.time);
-    this.timeText.setText(`${Math.floor(secs / 60)}:${String(secs % 60).padStart(2, '0')} · ROUND ${this.field.battle.round}`);
+    const fb = this.field.battle;
+    // Timed fights (hunts, the siege) count down their rounds; others show the Vigil candle.
+    const rounds = fb.roundLimit ? `R${Math.min(fb.round, fb.roundLimit)}/${fb.roundLimit}` : `R${fb.round} · CANDLE ${fb.vigil}`;
+    this.timeText.setText(`${Math.floor(secs / 60)}:${String(secs % 60).padStart(2, '0')} · ${rounds}`);
     const end = events.find((e) => e.kind === 'end');
     if (end && end.kind === 'end') this.finish(end.outcome);
   }
@@ -520,11 +526,6 @@ export class FieldScene extends Phaser.Scene {
     layer.add(this.add.rectangle(GAME_W / 2, 440 + dy, GAME_W - 60, 300, 0x241925).setStrokeStyle(2, PAL.bronze));
     layer.add(this.add.text(GAME_W / 2, 340 + dy, won ? 'PURGED' : 'THE SISTERS FALL BACK', text.display(32, won ? PAL.amber : 0xd06060)).setOrigin(0.5));
     layer.add(this.add.text(GAME_W / 2, 392 + dy, `${secs} seconds · ${this.field.battle.round} rounds\nPractice: no rewards, nothing lost.`, { ...text.body(18, PAL.steel), align: 'center' }).setOrigin(0.5));
-    const all = makeButton(this, GAME_W / 2, 458 + dy, 380, 48, settings.realtimeBattles ? 'Real-time for all battles: On' : 'Real-time for all battles: Off', () => {
-      settings.realtimeBattles = !settings.realtimeBattles;
-      saveSettings();
-      all.text.setText(settings.realtimeBattles ? 'Real-time for all battles: On' : 'Real-time for all battles: Off');
-    }, { fontSize: 16, active: settings.realtimeBattles });
     const n = this.stageN;
     const bossN = Math.ceil(n / STAGES_PER_CHAPTER) * STAGES_PER_CHAPTER;
     const bw = 150;
@@ -532,7 +533,7 @@ export class FieldScene extends Phaser.Scene {
     // The chapter's boss, to see a Blasphemy (or the next chapter's, from a boss).
     const boss = makeButton(this, GAME_W / 2, 530 + dy, bw, 56, 'Boss fight', () => this.scene.restart({ stage: n === bossN ? Math.min(bossN + STAGES_PER_CHAPTER, CHAPTERS.length * STAGES_PER_CHAPTER) : bossN }), { fontSize: 18 });
     const back = makeButton(this, GAME_W / 2 + bw + 10, 530 + dy, bw, 56, 'Sanctum', () => this.leave(), { fontSize: 18 });
-    layer.add([...all.all, ...again.all, ...boss.all, ...back.all]);
+    layer.add([...again.all, ...boss.all, ...back.all]);
     this.tweens.timeScale = 1;
     this.time.timeScale = 1;
   }
