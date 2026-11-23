@@ -25,6 +25,7 @@ import { modeScreen, toast } from '../ui/modeScreen';
 import { pickParty } from '../ui/partyPicker';
 import { portraitKey } from '../ui/placeholderPortrait';
 import { PAD, addFrame, text } from '../ui/theme';
+import { raidMarks } from '../systems/pickMarks';
 
 const fmt = (n: number) => n.toLocaleString('en-US');
 const leaderOf = (encounter: string) => ENCOUNTERS[encounter]?.[0] ?? encounter;
@@ -108,7 +109,7 @@ export class RaidScene extends Phaser.Scene {
     pickParty(
       this,
       save,
-      { title: `Squad ${'I'.repeat(i + 1)}`, sub: 'No Sister may stand in two Squads.', initial: r.squads[i], max: SQUAD_SIZE, allow: (c) => !others.has(c.id), why: 'In another Squad', confirm: 'Form the Squad' },
+      { title: `Squad ${'I'.repeat(i + 1)}`, sub: 'No Sister may stand in two Squads.', initial: r.squads[i], max: SQUAD_SIZE, allow: (c) => !others.has(c.id), why: 'In another Squad', confirm: 'Form the Squad', marks: raidMarks(save) },
       (ids) => {
         setSquad(save, i, ids);
         commit();

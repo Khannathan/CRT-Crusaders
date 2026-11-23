@@ -26,6 +26,7 @@ import { makeButton } from '../ui/button';
 import { modeScreen, toast } from '../ui/modeScreen';
 import { pickParty } from '../ui/partyPicker';
 import { PAD, addFrame, text } from '../ui/theme';
+import { fightMarks } from '../systems/pickMarks';
 
 const stars = (n: number) => '★'.repeat(n) + '☆'.repeat(3 - n);
 const leaderOf = (encounter: string) => ENCOUNTERS[encounter]?.[0] ?? encounter;
@@ -111,7 +112,7 @@ export class WarScene extends Phaser.Scene {
     pickParty(
       this,
       save,
-      { title: `Storm the ${name}`, sub: `${lead} holds it. Lose no Sister for three stars!`, initial: save.lastParty, confirm: 'Storm!', rec: fortTarget(save, fort) },
+      { title: `Storm the ${name}`, sub: `${lead} holds it. Lose no Sister for three stars!`, initial: save.lastParty, confirm: 'Storm!', rec: fortTarget(save, fort), marks: fightMarks(warBattle(save, [], fort)) },
       (party) => {
         current.challenge = {
           label: `Chapter War: the ${name}. Take it, Sisters!`,

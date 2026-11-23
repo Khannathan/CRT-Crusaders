@@ -13,6 +13,8 @@ import { accountPower } from '../systems/power';
 import { drawRecommended } from '../ui/recommended';
 import { PAD, addFrame, text } from '../ui/theme';
 import { drawStars } from './TrialsScene';
+import { bonusMarks, fightMarks, joinMarks } from '../systems/pickMarks';
+import { isFeatured as blessedOrder } from '../systems/inquisition';
 
 const ACT_NUM = ['I', 'II', 'III'];
 const first = (id: string) => CRUSADERS.find((c) => c.id === id)?.name.split(' ')[0] ?? id;
@@ -104,6 +106,7 @@ export class InquisitionScene extends Phaser.Scene {
         why: 'Spent on another trial',
         confirm: 'Judge',
         rec: actRecommended(save, act),
+        marks: joinMarks(bonusMarks((c) => blessedOrder(rot, c.id), `+${Math.round(FEATURED_BONUS * 100)}% ATK and HP`, 'BLESSED'), fightMarks(inquisitionBattle(save, [], act))),
       },
       (party) => {
         current.challenge = {

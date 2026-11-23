@@ -32,6 +32,7 @@ import { addScrollArea, type ScrollArea } from '../ui/scroll';
 import { holdForCard } from '../ui/sisterCard';
 import { TAB_BAR_H } from '../ui/tabBar';
 import { PAD, text } from '../ui/theme';
+import { bonusMarks, bonusWho, joinMarks, rarityNeedMarks } from '../systems/pickMarks';
 
 /** Holy Errands: send Sisters away on timed duties and claim what they bring home. */
 export class ErrandsScene extends Phaser.Scene {
@@ -177,6 +178,10 @@ export class ErrandsScene extends Phaser.Scene {
         why: busy.size ? 'Away on an errand' : undefined,
         confirm: 'Send',
         suggest,
+        marks: joinMarks(
+          bonusMarks((c) => fitsBonus(e, c.id), `${bonusWho(e.bonus.kind, e.bonus.value)} earn +50%`, '+50%'),
+          e.minRarity ? rarityNeedMarks(e.minRarity, (c) => rarityAtLeast(c.rarity, e.minRarity!)) : undefined,
+        ),
       },
       (ids) => {
         const block = sendBlock(save, e, ids);
