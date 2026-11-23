@@ -8,7 +8,7 @@ import { ORDERS } from '../data/orders';
 import { sigilKey } from '../ui/icons';
 import { commit, game } from '../state/game';
 import { BOOSTED_SSRS, COST_ONE, COST_TEN, PITY_LIMIT, RARITY_ORDER, RATES, bannerPool, boostedSSRs, chooseLimited, chooseStandard, customizeBanner, defaultSSRs, standardSSRs, standardURs, SPARK, UR_HARD, UR_SOFT, canPull, claimSpark, pull, shardsOf, sparkKey, syncBanner, urPityLeft, type PullKind } from '../systems/gacha';
-import { isStandard, limitedUnseen, limitedWindow, markLimitedSeen, timeLeft, upcoming } from '../systems/limited';
+import { GRADUATE_AFTER, graduationDate, isStandard, limitedUnseen, limitedWindow, markLimitedSeen, timeLeft, upcoming, type LimitedWindow } from '../systems/limited';
 import { makeButton } from '../ui/button';
 import { CURRENCY_BAR_H, addCurrencyBar } from '../ui/currencyBar';
 import { addSplash, portraitKey, queueSplash, splashKey } from '../ui/placeholderPortrait';
@@ -82,7 +82,7 @@ export class RecruitScene extends Phaser.Scene {
       addBadge(this, GAME_W / 2 - 52, bTop + 14, 'LIMITED SAINT', PAL.amber, 14);
       this.add.text(GAME_W / 2, bTop + 72, win.saint.name.toUpperCase(), text.display(22, 0xfff1d6)).setOrigin(0.5).setShadow(0, 2, '#000000', 8, false, true);
       this.add
-        .text(GAME_W / 2, bTop + 100, `${win.saint.order} · leaves in ${timeLeft(win.ends)}`, { ...text.body(16, 0xe1cabf), fontStyle: 'italic', align: 'center', wordWrap: { width: bw - 120 } })
+        .text(GAME_W / 2, bTop + 100, `${win.saint.order} · leaves in ${timeLeft(win.ends)} · not on the standard banner`, { ...text.body(16, 0xe1cabf), fontStyle: 'italic', align: 'center', wordWrap: { width: bw - 120 } })
         .setShadow(0, 1, '#000000', 4, false, true)
         .setOrigin(0.5, 0);
     } else {
@@ -121,7 +121,8 @@ export class RecruitScene extends Phaser.Scene {
 
     if (limited) {
       const next = upcoming()[0];
-      makeButton(this, GAME_W / 2, bTop + bh - 26, 300, 36, `Next Saint: ${next.saint.name.split(' ')[0]} in ${timeLeft(next.starts)}`, () => this.showComing(), { fontSize: 15 });
+      const label = next ? `Next Saint: ${next.saint.name.split(' ')[0]} in ${timeLeft(next.starts)}` : 'Limited banners';
+      makeButton(this, GAME_W / 2, bTop + bh - 26, 300, 36, label, () => this.showComing(), { fontSize: 15 });
     } else {
       makeButton(this, GAME_W / 2, bTop + bh - 28, 300, 40, 'Choose your rate-up', () => this.customize(), { fontSize: 16, active: true });
     }
@@ -341,28 +342,49 @@ export class RecruitScene extends Phaser.Scene {
     layer.add(close.all);
   }
 
-  /** The Saints coming to the Altar, in order, with when each arrives. */
+  /** This Limited banner and the ones to come: who is on each, when it opens, and when they go standard. */
   private showComing() {
     const layer = this.add.container(0, 0).setDepth(20);
-    layer.add(this.add.rectangle(GAME_W / 2, GAME_H / 2, GAME_W, GAME_H, 0x09060b, 0.92).setInteractive());
-    layer.add(addFrame(this, GAME_W / 2, GAME_H / 2 - 30, GAME_W - 40, 700, { fill: 0x241925 }));
-    layer.add(this.add.text(GAME_W / 2, 170, 'SAINTS TO COME', text.display(26, PAL.amber)).setOrigin(0.5));
-    layer.add(this.add.text(GAME_W / 2, 200, 'Each holds the Altar for two weeks, then the next. All of them return.', { ...text.body(15, PAL.muted), align: 'center', wordWrap: { width: GAME_W - 100 } }).setOrigin(0.5, 0));
-    upcoming().forEach((w, k) => {
-      const y = 290 + k * 124;
-      makePlaceholderPortrait(this, w.saint);
-      layer.add(this.add.rectangle(110, y, 104, 104, 0x170f1b).setStrokeStyle(2, RARITY_COLOR.UR));
-      const img = this.add.image(110, y, portraitKey(w.saint.id)).setDisplaySize(96, 96);
-      holdForCard(this, img, w.saint.id);
-      const when = new Date(w.starts).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
-      layer.add([
-        img,
-        this.add.text(180, y - 34, w.saint.name, { ...text.body(19, PAL.ivory), fontStyle: '600' }),
-        this.add.text(180, y - 8, `${w.saint.title} · ${w.saint.order}`, text.body(15, PAL.muted)),
-        this.add.text(180, y + 16, `Arrives ${when} · in ${timeLeft(w.starts)}`, text.body(15, PAL.amber)),
+    layer.add(this.add.rectangle(GAME_W / 2, GAME_H / 2, GAME_W, GAME_H, 0x09060b, 0.94).setInteractive());
+    layer.add(addFrame(this, GAME_W / 2, GAME_H / 2, GAME_W - 24, GAME_H - 40, { fill: 0x241925 }));
+    layer.add(this.add.text(GAME_W / 2, 60, 'LIMITED BANNERS', text.display(24, PAL.amber)).setOrigin(0.5));
+    layer.add(
+      this.add
+        .text(GAME_W / 2, 84, `Each runs a Saint and two SSRs for two weeks. Nobody on them is on the standard banner until ${GRADUATE_AFTER} more Limited banners have passed; then they join their Order's standard pool for good.`, { ...text.body(15, PAL.muted), align: 'center', wordWrap: { width: GAME_W - 70 } })
+        .setOrigin(0.5, 0),
+    );
+    const list = addScrollArea(this, 170, GAME_H - 120, { parent: layer, depth: 20 });
+    const day = (t: number) => new Date(t).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+    const rows: LimitedWindow[] = [limitedWindow(), ...upcoming()];
+    let y = 180;
+    rows.forEach((w, k) => {
+      const cy = y + 80;
+      list.content.add(this.add.rectangle(GAME_W / 2, cy, GAME_W - 60, 168, 0x170f1b, 0.8).setStrokeStyle(1, k === 0 ? PAL.amber : PAL.deepShadow));
+      const portrait = (c: (typeof CRUSADERS)[number], x: number, py: number, size: number) => {
+        makePlaceholderPortrait(this, c);
+        const frame = this.add.rectangle(x, py, size + 6, size + 6, 0x170f1b).setStrokeStyle(2, RARITY_COLOR[c.rarity]);
+        const img = this.add.image(x, py, portraitKey(c.id)).setDisplaySize(size, size);
+        holdForCard(this, img, c.id);
+        list.content.add([frame, img]);
+      };
+      portrait(w.saint, 92, cy - 14, 96);
+      w.ssrs.forEach((c, i) => portrait(c, 176 + i * 66, cy + 36, 56));
+      const grad = graduationDate(w.saint.id);
+      list.content.add([
+        this.add.text(160, cy - 72, w.saint.name, { ...text.body(19, PAL.ivory), fontStyle: '600' }),
+        this.add.text(160, cy - 48, `${w.saint.title} · ${w.saint.order}`, text.body(15, PAL.muted)),
+        this.add.text(160, cy - 26, k === 0 ? `Up now · leaves in ${timeLeft(w.ends)}` : `Opens ${day(w.starts)} · in ${timeLeft(w.starts)}`, text.body(15, PAL.amber)),
+        this.add.text(GAME_W - 46, cy + 22, `SSR: ${w.ssrs.map((c) => c.name.split(' ')[0]).join(', ')}`, { ...text.body(14, PAL.ivory), align: 'right', wordWrap: { width: 190 } }).setOrigin(1, 0),
+        this.add.text(GAME_W - 46, cy + 56, grad ? `Standard from ${day(grad)}` : `Standard ${GRADUATE_AFTER} banners later`, text.hud(11, PAL.steel)).setOrigin(1, 0),
       ]);
+      y += 180;
     });
-    const close = makeButton(this, GAME_W / 2, GAME_H - 150, 240, 60, 'Close', () => layer.destroy());
+    if (!upcoming().length) {
+      list.content.add(this.add.text(GAME_W / 2, y + 10, 'More Saints are being canonized. This banner stays up until they arrive.', { ...text.body(15, PAL.muted), align: 'center', wordWrap: { width: GAME_W - 90 } }).setOrigin(0.5, 0));
+      y += 60;
+    }
+    list.fit(y);
+    const close = makeButton(this, GAME_W / 2, GAME_H - 76, 240, 60, 'Close', () => layer.destroy());
     layer.add(close.all);
   }
 
@@ -374,7 +396,7 @@ export class RecruitScene extends Phaser.Scene {
     const title = this.add.text(GAME_W / 2, 200, 'Recruitment rates', text.display(28, PAL.amber)).setOrigin(0.5);
     layer.add([shade, ...panel, title]);
     RARITY_ORDER.forEach((r, i) => {
-      const y = 270 + i * 56;
+      const y = 260 + i * 46;
       const count = CRUSADERS.filter((c) => c.rarity === r && isStandard(c)).length;
       layer.add(this.add.text(110, y, r, { ...style, color: hex(RARITY_COLOR[r]) }).setOrigin(0, 0.5));
       layer.add(this.add.text(220, y, `${(RATES[r] * 100).toFixed(1)}%`, style).setOrigin(0, 0.5));
@@ -383,11 +405,18 @@ export class RecruitScene extends Phaser.Scene {
     const notes = this.add
       .text(
         GAME_W / 2,
-        590,
-        `A UR is the targeted Sister half the time,\nand always after a UR that strays.\nHalf of SSRs are the banner's boosted pair.\nOn the standard banner you choose the UR\nand the two SSRs.\n×10 always includes an SR or better.\nThe ${PITY_LIMIT}th pull without an SSR or UR gives one.\nUR chance climbs after pull ${UR_SOFT}; pull ${UR_HARD} is a UR.\nUR and SSR pity carry across all banners.\nEach pull gives a Relic Shard of the target's Order\n(or Saint's Favor on the Limited banner);\n${SPARK} buy that banner's UR.\nDuplicates add a Vow rank (max 5), then pay Tithes.`,
-        { ...style, fontSize: '16px', color: hex(PAL.steel), align: 'center', lineSpacing: 4 },
+        450,
+        [
+          'A UR is the banner\'s target half the time, and always after one that strays. Half of SSRs are its boosted pair.',
+          'On the standard banner you choose the UR and the two SSRs.',
+          `×10 always has an SR or better. Pull ${PITY_LIMIT} without an SSR or UR gives one. UR chance climbs after pull ${UR_SOFT}; pull ${UR_HARD} is a UR. Pity carries across every banner.`,
+          `Each pull gives a Relic Shard of the target's Order (Saint's Favor on the Limited banner). ${SPARK} buy that UR.`,
+          `Limited Sisters join the standard pool after ${GRADUATE_AFTER} more Limited banners.`,
+          'Duplicates add a Vow rank, then pay Tithes.',
+        ].join('\n'),
+        { ...style, fontSize: '16px', color: hex(PAL.steel), align: 'center', lineSpacing: 2, wordWrap: { width: GAME_W - 100 } },
       )
-      .setOrigin(0.5);
+      .setOrigin(0.5, 0);
     const close = makeButton(this, GAME_W / 2, GAME_H - 185, 240, 64, 'Close', () => layer.destroy());
     layer.add([notes, ...close.all]);
   }

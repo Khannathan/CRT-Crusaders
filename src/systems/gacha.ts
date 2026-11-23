@@ -4,7 +4,7 @@ import type { CrusaderDef, Rarity } from '../data/types';
 import type { SaveData } from '../state/save';
 import { track } from './tasks';
 import { STIGMATA_FOR_COPY, addStigmata, copiesLeft } from './tiers';
-import { isStandard, limitedWindow } from './limited';
+import { SAINTS, isLimitedNow, isStandard, limitedWindow } from './limited';
 
 export const RATES: Record<Rarity, number> = { R: 0.6, SR: 0.3, SSR: 0.085, UR: 0.015 };
 export const RARITY_ORDER: Rarity[] = ['R', 'SR', 'SSR', 'UR'];
@@ -66,20 +66,20 @@ export const ORDER_SSR_SHARE = 0.5;
 const pickFrom = (rng: Rng, pool: CrusaderDef[]) => pool[Math.floor(rng() * pool.length)];
 
 /** Sisters of a rarity that any banner can give at random (limited Saints only come as a target). */
-const standardOf = (rarity: Rarity) => CRUSADERS.filter((c) => c.rarity === rarity && isStandard(c));
+const standardOf = (rarity: Rarity, now = Date.now()) => CRUSADERS.filter((c) => c.rarity === rarity && isStandard(c, now));
 
 /** Standard URs: the ones a standard banner can target. */
-export const standardURs = () => standardOf('UR');
+export const standardURs = (now = Date.now()) => standardOf('UR', now);
 /** Standard SSRs: the ones a standard banner can boost. */
-export const standardSSRs = () => standardOf('SSR');
+export const standardSSRs = (now = Date.now()) => standardOf('SSR', now);
 /** How many SSRs a standard banner boosts. */
 export const BOOSTED_SSRS = 2;
 
 /** The two SSRs a standard banner boosts before the player picks: the target's Order's first two. */
-export const defaultSSRs = (urId: string) => {
+export const defaultSSRs = (urId: string, now = Date.now()) => {
   const ur = CRUSADERS.find((c) => c.id === urId);
-  const mine = standardSSRs().filter((c) => c.order === ur?.order);
-  const rest = standardSSRs().filter((c) => c.order !== ur?.order);
+  const mine = standardSSRs(now).filter((c) => c.order === ur?.order);
+  const rest = standardSSRs(now).filter((c) => c.order !== ur?.order);
   return [...mine, ...rest].slice(0, BOOSTED_SSRS).map((c) => c.id);
 };
 
@@ -90,18 +90,19 @@ export const defaultSSRs = (urId: string) => {
  * default UR or SSR pair for any that are not.
  */
 export function syncBanner(save: SaveData, now = Date.now()) {
+  settleFavor(save, now);
   const b = save.banner;
   if (b?.limited !== undefined) {
     const w = limitedWindow(now);
     if (b.limited !== w.index || b.target !== w.saint.id) save.banner = { order: w.saint.order, target: w.saint.id, limited: w.index };
     return save.banner!;
   }
-  const urs = standardURs();
+  const urs = standardURs(now);
   // Older saves named an Order: start from its UR.
   const ur = urs.find((c) => c.id === b?.target) ?? urs.find((c) => c.order === b?.order) ?? urs[0];
-  const ssrIds = new Set(standardSSRs().map((c) => c.id));
+  const ssrIds = new Set(standardSSRs(now).map((c) => c.id));
   let ssrs = (b?.ssrs ?? []).filter((id, i, a) => ssrIds.has(id) && a.indexOf(id) === i);
-  if (ssrs.length !== BOOSTED_SSRS) ssrs = defaultSSRs(ur.id);
+  if (ssrs.length !== BOOSTED_SSRS) ssrs = defaultSSRs(ur.id, now);
   save.banner = { order: ur.order, target: ur.id, ssrs };
   return save.banner;
 }
@@ -160,7 +161,17 @@ export function boostedSSRs(save: SaveData, now = Date.now()): CrusaderDef[] {
 }
 
 /** Where a pull's Relic Shards (or Saint's Favor) go, and what spends them. */
-export const sparkKey = (c: Pick<CrusaderDef, 'id' | 'order' | 'limited'>) => (c.limited ? c.id : c.order);
+export const sparkKey = (c: Pick<CrusaderDef, 'id' | 'order' | 'limited'>, now = Date.now()) => (isLimitedNow(c, now) ? c.id : c.order);
+
+/** A Saint who joined the standard pool turns her saved Saint's Favor into her Order's Relic Shards. */
+export function settleFavor(save: SaveData, now = Date.now()) {
+  for (const c of SAINTS) {
+    const favor = save.shards?.[c.id];
+    if (!favor || isLimitedNow(c, now)) continue;
+    save.shards![c.order] = shardsOf(save, c.order) + favor;
+    delete save.shards![c.id];
+  }
+}
 
 /**
  * Picks the Sister for a rolled rarity. A banner UR is the target half the
@@ -202,10 +213,12 @@ export function bannerPool(save: SaveData): { c: CrusaderDef; chance: number; fe
       for (const c of rest) out.push({ c, chance: (rate * (1 - TARGET_SHARE)) / rest.length, featured: false });
       continue;
     }
-    for (const c of pool) {
+    // A Limited banner's SSRs are not in the standard pool: they join it here.
+    const all = r === 'SSR' ? [...pool, ...boosted.filter((c) => !pool.includes(c))] : pool;
+    for (const c of all) {
       let chance = rate / pool.length;
       const up = r === 'SSR' && boosted.includes(c);
-      if (r === 'SSR' && boosted.length) chance = (rate * (1 - ORDER_SSR_SHARE)) / pool.length + (up ? (rate * ORDER_SSR_SHARE) / boosted.length : 0);
+      if (r === 'SSR' && boosted.length) chance = (pool.includes(c) ? (rate * (1 - ORDER_SSR_SHARE)) / pool.length : 0) + (up ? (rate * ORDER_SSR_SHARE) / boosted.length : 0);
       out.push({ c, chance, featured: up });
     }
   }
