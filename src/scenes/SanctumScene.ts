@@ -17,6 +17,7 @@ import { KEEPER_BOND, blessingReady, chooseKeeper, keeperLines, keeperOf, visitK
 import { anyDeedReady } from '../systems/deeds';
 import { noviceDay, noviceOpen, noviceReady, NOVITIATE_DAYS } from '../systems/novitiate';
 import { anyClaimable } from '../systems/tasks';
+import { missivesReady } from '../systems/missives';
 import { matinsReady } from '../systems/matins';
 import { passReady } from '../systems/pass';
 import { chapterReady } from '../systems/chapter';
@@ -168,6 +169,7 @@ export class SanctumScene extends Phaser.Scene {
     const duty = GROUPS.duties.find((t) => (t.shown?.(save) ?? true) && t.ready?.(save)) ?? GROUPS.duties[0];
     const items: { label: string; icon: string; go: () => void; ready: boolean }[] = [
       { label: 'Duties', icon: 'book', go: () => this.scene.start(duty.scene, duty.data ?? {}), ready: groupReady(save, 'duties') },
+      { label: 'Missives', icon: 'book', go: () => this.scene.start('Missives'), ready: missivesReady(save) },
       { label: 'Matins', icon: 'matins', go: () => this.scene.start('Matins'), ready: matinsReady(save) },
       { label: 'Pass', icon: 'sigil', go: () => this.scene.start('Pass'), ready: passReady(save) },
       { label: 'Chapter', icon: 'chapter', go: () => this.scene.start('Chapter'), ready: chapterReady(save) },

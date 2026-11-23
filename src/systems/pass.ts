@@ -1,6 +1,7 @@
 import type { SaveData } from '../state/save';
 import { giltOf } from './currency';
 import { grant, rewardText, type Reward, type TaskEvent } from './tasks';
+import { send } from './missives';
 
 /**
  * The Pilgrim's Pass: a 30-day season of 50 tiers, climbed with Steps earned by
@@ -83,12 +84,25 @@ const dayOf = (now: number) => {
 /** This season's pass state, fresh when a new season has begun. */
 export function passOf(save: SaveData, now = Date.now()): PassState {
   const s = seasonAt(now).index;
+  if (save.pass && save.pass.season !== s) mailUnclaimed(save, save.pass, now);
   if (!save.pass || save.pass.season !== s) save.pass = { season: s, steps: 0, day: dayOf(now), today: 0, free: [], paid: [], overflow: 0 };
   if (save.pass.day !== dayOf(now)) {
     save.pass.day = dayOf(now);
     save.pass.today = 0;
   }
   return save.pass;
+}
+
+/** A season's tiers reached but never claimed go to Missives when it ends. */
+function mailUnclaimed(save: SaveData, p: PassState, now: number) {
+  const missed: Reward[] = [];
+  for (let t = 1; t <= tierOf(p); t++) {
+    if (!p.free.includes(t)) missed.push(freeReward(t));
+    if (p.sworn && !p.paid.includes(t)) missed.push(paidReward(t));
+  }
+  const extra = Math.floor(Math.max(0, p.steps - TIERS * STEPS_PER_TIER) / STEPS_PER_TIER) - p.overflow;
+  for (let i = 0; i < extra; i++) missed.push(OVERFLOW);
+  if (missed.length) send(save, { from: "The Pilgrim's Pass", title: 'The season has turned!', body: 'You walked the steps but never took the rewards. Here they are. Walk the new season harder!', reward: sumRewards(missed) }, now);
 }
 
 /** Adds Steps for something done (called from tasks.track). Returns Steps actually gained. */

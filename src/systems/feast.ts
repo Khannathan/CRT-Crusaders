@@ -6,7 +6,8 @@ import { BELFRY, OSSUARY, skirmish } from './crusade';
 import { earn } from './currency';
 import type { Rng } from './gacha';
 import { bagText, give, type Bag } from './items';
-import { limitedWindow, type LimitedWindow } from './limited';
+import { limitedWindow, windowAt, type LimitedWindow } from './limited';
+import { send, sumLetters } from './missives';
 import { dayKey } from './tasks';
 import { addStigmata } from './tiers';
 
@@ -130,6 +131,13 @@ export function feastOf(save: SaveData, now = Date.now()): FeastState {
   const w = limitedWindow(now);
   let f = save.feast;
   if (!f || f.index !== w.index) {
+    // Milestones reached but never claimed go to Missives.
+    const missed = f ? FEAST_MARKS.filter((m) => f!.earned >= m.at && !f!.paid.includes(m.at)) : [];
+    if (missed.length) {
+      const old = windowAt(f!.index);
+      const r = sumLetters(missed.map((m) => ({ ...m.reward, favor: m.reward.favor ? { id: old.saint.id, name: old.saint.name.split(' ')[0], n: m.reward.favor } : undefined, title: m.reward.title ? feastTitle(old) : undefined })));
+      send(save, { from: feastName(old), title: 'The Feast is over!', body: 'You lit the candles but left the gifts on the table. They are yours. Take them!', reward: r }, now);
+    }
     const melted = f ? Math.floor(f.candles * ALMS_PER_CANDLE) : 0;
     if (melted) earn(save, 0, melted);
     f = save.feast = { index: w.index, candles: 0, earned: 0, won: [], paid: [], bought: {}, day: dayKey(now), repeats: 0, melted: melted || undefined };

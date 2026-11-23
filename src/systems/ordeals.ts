@@ -7,6 +7,7 @@ import { CP, foePower, partyPower } from './power';
 import { rivals } from './rivals';
 import { seeded } from './rng';
 import { dayKey, grant, track, weekKey, type Reward } from './tasks';
+import { send } from './missives';
 
 /**
  * The Ordeals: a weekly league of twenty Sisterhoods, you and nineteen of the
@@ -155,8 +156,11 @@ export function ordealsOf(save: SaveData, now = Date.now()): OrdealState {
   if (o.week !== week) {
     // A week you never fought in is not judged: no reward, no fall.
     const last = o.points > 0 ? judge(o) : undefined;
-    // An unclaimed older reward is paid now rather than lost.
-    if (o.last && !o.last.claimed) grant(save, o.last.reward);
+    // An unclaimed older reward goes to Missives rather than being lost.
+    if (o.last && !o.last.claimed) {
+      o.last.claimed = true;
+      send(save, { from: 'The Ordeals', title: `Your place: ${o.last.place} of ${BRACKET}`, body: 'The week was judged while you were away. Your spoils, held for you!', reward: o.last.reward }, now);
+    }
     o.last = last;
     o.league = last ? last.now : o.league;
     o.best = Math.max(o.best ?? 0, o.league);

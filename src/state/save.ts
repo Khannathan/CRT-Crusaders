@@ -115,6 +115,8 @@ export interface SaveData {
   novitiate?: import('../systems/novitiate').NovitiateState;
   /** The Pilgrim's Pass for this season (systems/pass.ts). */
   pass?: import('../systems/pass').PassState;
+  /** Missives: letters with rewards and news (systems/missives.ts). */
+  missives?: import('../systems/missives').MissivesState;
   /** The weekly Ordeals league (systems/ordeals.ts). */
   ordeals?: import('../systems/ordeals').OrdealState;
   /** Matins login calendar. */
