@@ -12,6 +12,7 @@ import { matinsReady } from '../systems/matins';
 import { ROMAN_RANK, unlocked } from '../systems/rank';
 import { anyClaimable } from '../systems/tasks';
 import { noviceOpen, noviceReady } from '../systems/novitiate';
+import { anyDeedReady, deedPoints } from '../systems/deeds';
 import { anyBondRewards, anyUnheard } from '../systems/bonds';
 import { entriesLeft } from '../systems/trials';
 import { PROCESSION_ENTRIES, candleReady, honouredToday, processionLeft } from '../systems/offerings';
@@ -141,6 +142,11 @@ export const RITES: RiteEntry[] = [
     label: 'Rival Orders', scene: 'Rivals', icon: 'sigil', rank: 1, home: 'board', bg: 'bg-hall',
     blurb: 'Outshine the lesser Orders.',
     status: (s) => `Place ${ladder(s).place} of ${ladder(s).rows.length}  ·  Renown ${renownOf(s)}`,
+  },
+  {
+    label: 'Deeds', scene: 'Deeds', icon: 'sigil', rank: 1, home: 'cloister', bg: 'bg-hall', ready: (s) => anyDeedReady(s),
+    blurb: 'Great works, remembered. Earn Gilt and titles!',
+    status: (s) => `${deedPoints(s)} Deed points  ·  ${(s.titles ?? []).length} titles`,
   },
   { label: 'Inventory', scene: 'Inventory', icon: 'shield', art: 'inventory', rank: 1, home: 'cloister', bg: 'bg-hall', blurb: 'What your Sisters carried home.' },
   {

@@ -98,6 +98,8 @@ export interface SaveData {
   campaign?: CampaignState;
   /** Daily Penance and weekly Litany progress. */
   tasks?: TaskState;
+  /** Deeds: lifetime counts and tiers claimed (systems/deeds.ts). */
+  deeds?: import('../systems/deeds').DeedState;
   /** A new player's first week (systems/novitiate.ts). */
   novitiate?: import('../systems/novitiate').NovitiateState;
   /** Matins login calendar. */

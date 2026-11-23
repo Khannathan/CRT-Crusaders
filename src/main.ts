@@ -25,6 +25,7 @@ import { RosterScene } from './scenes/RosterScene';
 import { SanctumScene } from './scenes/SanctumScene';
 import { PenanceScene } from './scenes/PenanceScene';
 import { NovitiateScene } from './scenes/NovitiateScene';
+import { DeedsScene } from './scenes/DeedsScene';
 import { MatinsScene } from './scenes/MatinsScene';
 import { RankScene } from './scenes/RankScene';
 import { TrialsScene } from './scenes/TrialsScene';
@@ -79,6 +80,7 @@ function start() {
       SanctumScene,
       PenanceScene,
       NovitiateScene,
+      DeedsScene,
       MatinsScene,
       RankScene,
       TrialsScene,
