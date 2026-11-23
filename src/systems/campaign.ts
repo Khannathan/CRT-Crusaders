@@ -92,6 +92,8 @@ export interface CampaignState {
   /** Highest stage cleared (0 = none). */
   best: number;
   fast?: FastState;
+  /** The Penitent and Damned roads (systems/hardRoad.ts). */
+  hard?: Partial<Record<'penitent' | 'damned', { best: number; unbroken: number[] }>>;
 }
 
 export const campaignOf = (save: SaveData): CampaignState => (save.campaign ??= { best: 0 });
