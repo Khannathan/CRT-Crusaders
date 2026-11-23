@@ -98,6 +98,8 @@ export interface SaveData {
   campaign?: CampaignState;
   /** Daily Penance and weekly Litany progress. */
   tasks?: TaskState;
+  /** Story scenes seen (systems/story.ts). */
+  story?: import('../systems/story').StoryState;
   /** The Keeper of the Sanctum (systems/keeper.ts). */
   keeper?: import('../systems/keeper').KeeperState;
   /** Deeds: lifetime counts and tiers claimed (systems/deeds.ts). */
