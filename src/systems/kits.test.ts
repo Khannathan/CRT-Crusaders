@@ -68,7 +68,7 @@ describe('Sister kits: shape', () => {
 });
 
 describe('Sister kits: signatures', () => {
-  it('Coup de Grâce: a Mercy kill gives Mirelle Bellgrave another action once a round', () => {
+  it('Coup de Grâce: a Mercy kill gives Justa Vindex another action once a round', () => {
     const m = sis('CC-W077');
     const foes = [makeEnemy('husk', 'e0', 1), makeEnemy('husk', 'e1', 2)];
     const b = new Battle([m], foes, { rng: never });
@@ -81,7 +81,7 @@ describe('Sister kits: signatures', () => {
     expect(b.queue[0]).toBe(m.uid);
   });
 
-  it('Duet: while a Hymn plays, Morgane Greywake strikes twice and fills Zeal', () => {
+  it('Duet: while a Hymn plays, Caecilia Dolabella strikes twice and fills Zeal', () => {
     const run = (hymn: boolean) => {
       const m = sis('CC-W080', 1, { zeal: 0 });
       const foe = tank('e0', 1);
@@ -113,7 +113,7 @@ describe('Sister kits: signatures', () => {
     expect(v.status.overwatch).toBeUndefined();
   });
 
-  it('Vindication: Isolde Thorne adds Guilt with each counter, and Vindicates at five', () => {
+  it('Vindication: Verginia Imperiosa adds Guilt with each counter, and Vindicates at five', () => {
     const it2 = sis('CC-W069');
     const foe = makeEnemy('husk', 'e0', 1);
     foe.maxHp = foe.hp = 100000;
@@ -129,7 +129,7 @@ describe('Sister kits: signatures', () => {
     expect(foe.guilt).toBe(0);
   });
 
-  it('Harvest: Remains feed Aveline Thorne Zeal and attack', () => {
+  it('Harvest: Remains feed Ursula Messalla Zeal and attack', () => {
     const a = sis('CC-W079', 1, { zeal: 0 });
     const foes = [makeEnemy('husk', 'e0', 1), makeEnemy('husk', 'e1', 2)];
     const b = new Battle([a], foes, { rng: never });
@@ -170,7 +170,7 @@ describe('Sister kits: signatures', () => {
     expect(p.status.haste).toBe(1);
   });
 
-  it('The Red Road: Ysabet Thorne may Step twice a turn', () => {
+  it('The Red Road: Peregrina Rufa may Step twice a turn', () => {
     const y = sis('CC-W009', 2);
     const a = sis('CC-W001', 1);
     const c = sis('CC-W013', 3);
@@ -215,7 +215,7 @@ describe("Sister kits: Saint's Seals", () => {
     expect(v.hp).toBe(Math.round(v.maxHp * 0.25));
   });
 
-  it('I Walk Before You: Rosamund Thorne takes a killing blow meant for another', () => {
+  it('I Walk Before You: Rubria Corvina takes a killing blow meant for another', () => {
     const r = sis('CC-W129', 2, { maxHp: 100000, hp: 100000 });
     const v = sis('CC-W001', 1);
     const foe = makeEnemy('husk', 'e0', 1);
@@ -225,7 +225,7 @@ describe("Sister kits: Saint's Seals", () => {
     expect(r.hp).toBeLessThan(r.maxHp);
   });
 
-  it('Drowned and Returned: Rosamund Greywake rises next round and the Tide floods', () => {
+  it('Drowned and Returned: Marina Gurges rises next round and the Tide floods', () => {
     const r = sis('CC-W100');
     const foe = makeEnemy('husk', 'e0', 1);
     const b = new Battle([r, sis('CC-W001', 2)], [foe], { rng: never });

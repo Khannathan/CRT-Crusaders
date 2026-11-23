@@ -77,7 +77,8 @@ export interface ChapterState {
   log: LogLine[];
 }
 
-const FIRST = ['Agathe', 'Odile', 'Maren', 'Ysolde', 'Benedetta', 'Clothilde', 'Ilse', 'Perpetua', 'Sabine', 'Ottilie', 'Hroswitha', 'Lucia', 'Ermengarde', 'Felicitas', 'Gisela', 'Radegund', 'Walburga', 'Scholastica', 'Brunhild', 'Theodora', 'Cunegonde', 'Adelais'];
+// Latin first names no Sister uses (project files: names/latin-name-library.md), so a Chapter member is never mistaken for one.
+const FIRST = ['Agnes', 'Annia', 'Cocceia', 'Crescentia', 'Cyrilla', 'Domnina', 'Euphemia', 'Fannia', 'Galeria', 'Jucunda', 'Margarita', 'Melania', 'Nigrina', 'Ovinia', 'Plancia', 'Pomponia', 'Popillia', 'Prisca', 'Roscia', 'Salvia', 'Scribonia', 'Sempronia'];
 const EPITHET = ['the Penitent', 'of the Nails', 'Ashhand', 'the Unbowed', 'Lampwright', 'of Seven Sorrows', 'the Quiet', 'Bellrope', 'the Scourged', 'Gravewarden', 'of the Last Psalm', 'Thornveil', 'the Unshriven', 'Candlewick'];
 const TITLES = ['Prioress', 'Subprioress', 'Cellaress', 'Sacristan', 'Novice Mistress', 'Sister', 'Sister', 'Sister', 'Sister', 'Sister', 'Sister', 'Novice', 'Novice', 'Novice'];
 const CHAPTER_NAMES = ['Chapter of the Weeping Nail', 'Chapter of the Ninth Bell', 'Chapter of Ash and Vigil', 'Chapter of the Drowned Lamp', 'Chapter of the Iron Psalter'];

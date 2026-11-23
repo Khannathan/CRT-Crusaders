@@ -107,7 +107,7 @@ describe('crypt maps', () => {
 describe('reasons to keep going', () => {
   it('two crusaders of one order turn on its bonus', () => {
     const save = newSave();
-    // Aveline and Mariel are both Sepulcher Watch: +10% max HP
+    // Decima and Mustiola are both Sepulcher Watch: +10% max HP
     for (const id of ['CC-W013', 'CC-W022', 'CC-W001']) save.owned[id] = { level: 1, vow: 0 };
     const solo = startRun(save, ['CC-W013', 'CC-W001']);
     const pair = startRun(save, ['CC-W013', 'CC-W022']);

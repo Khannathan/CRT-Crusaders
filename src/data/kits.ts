@@ -403,7 +403,7 @@ K('CC-W069', (own) => ({
     own({ name: 'Unsheathe the Oath', desc: "Spend a foe's Guilt: 0.8x plus 0.3x per Guilt. At 5 Guilt it is also Stunned (not bosses). Cooldown 2.", from: [1, 2, 3], target: 'enemy', mult: 0.8, spend: { kw: 'guilt', per: { multAdd: 0.3 }, full: { stun: 1 } }, cooldown: 2 }),
     own({ name: 'Judgment of the Wall', desc: 'LITANY: Ward every ally (-25% damage) for 2 turns; she draws every attack and counters at full attack.', target: 'allAllies', ward: { pct: 0.25, turns: 2 }, taunt: 2, counter: { mult: 1.0, turns: 2 }, rite: true }),
   ],
-  seal: { name: 'Saint of the Wall', desc: 'Once a fight, when a Sister would take a hit worth over 30% of her max HP, Isolde steps in and takes it at half damage.', kind: 'wallSaint' },
+  seal: { name: 'Saint of the Wall', desc: 'Once a fight, when a Sister would take a hit worth over 30% of her max HP, Verginia steps in and takes it at half damage.', kind: 'wallSaint' },
   shines: ['Flayed Saint Hunt', 'Twofold Reliquary Hunt', 'One-shot bosses in the deeper crypts', 'Inquisition trials', 'Her Feast'],
 }));
 
@@ -938,7 +938,7 @@ K('CC-W009', (own) => ({
     own({ name: 'Retreat in Blood', desc: 'Step two ranks back; the foe in rank 1 Bleeds for 2 turns. Cooldown 1.', from: [1, 2], target: 'enemy', reach: [1], mult: 0.4, bleed: { mult: 0.25, turns: 2 }, move: 2, cooldown: 1 }),
     own({ name: "Pilgrim's Verdict", desc: 'LITANY: spend all Stride: a crushing blow on any enemy, 1.6x plus 0.3x per Stride, doubled against the Accused.', target: 'enemy', mult: 1.6, bonusIfAccused: 1, spend: { kw: 'stride', per: { multAdd: 0.3 } }, rite: true }),
   ],
-  seal: { name: 'The Bell No One Hears', desc: 'The first time a Sister falls, Ysabet gains 5 Stride and Haste.', kind: 'bellNoOne' },
+  seal: { name: 'The Bell No One Hears', desc: 'The first time a Sister falls, Peregrina gains 5 Stride and Haste.', kind: 'bellNoOne' },
   shines: ['Colossus Hunt', 'Red Cardinal Hunt', 'Free-movement Vigil and real-time field', 'Red Pilgrimage Order Tower'],
 }));
 
