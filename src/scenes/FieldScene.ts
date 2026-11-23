@@ -15,6 +15,7 @@ import { keywordLine } from '../systems/keywords';
 import { settleBattle } from '../systems/settle';
 import { makeButton } from '../ui/button';
 import { FieldView } from '../ui/fieldView';
+import { battleReport, bossIntro } from '../ui/bossIntro';
 import { litanyCutIn, riteCard, shake } from '../ui/juice';
 import { portraitKey, queueSplash, splashKey } from '../ui/placeholderPortrait';
 import { fade, text } from '../ui/theme';
@@ -224,8 +225,14 @@ export class FieldScene extends Phaser.Scene {
     this.drawChain();
     this.drawHosanna();
     this.applySpeed();
-    if (this.phase === 'deploy') this.drawDeploy();
-    else this.log('Back into the fight!');
+    if (this.phase === 'deploy') {
+      this.drawDeploy();
+      // A boss fight opens on its title card (the deploy clock waits for it).
+      if (boss) {
+        if (this.deployLeft !== undefined) this.deployLeft += 2.4;
+        bossIntro(this, b.units.filter((u) => u.side === 'party'), boss, () => {});
+      }
+    } else this.log('Back into the fight!');
     // On the field: a Sister = her Litany (or a swap, before the fight); a foe = Focus.
     this.input.on('pointerdown', (p: Phaser.Input.Pointer) => {
       if (this.paused || this.ended || this.aim) return;
@@ -762,11 +769,16 @@ export class FieldScene extends Phaser.Scene {
         });
         return;
       }
-      this.time.delayedCall(1400, () => {
-        this.tweens.timeScale = 1;
-        this.time.timeScale = 1;
+      const go = () => {
         music.carryCue(); // the cue plays on over the results; it stops when the player leaves them
         this.scene.start(next.scene, next.data ?? {});
+      };
+      this.time.delayedCall(won ? 900 : 1400, () => {
+        this.tweens.timeScale = 1;
+        this.time.timeScale = 1;
+        // A won fight: the battle report first, every Sister's share of the damage.
+        if (won) battleReport(this, b.units.filter((u) => u.side === 'party'), this.view.dealt, go);
+        else go();
       });
       return;
     }
