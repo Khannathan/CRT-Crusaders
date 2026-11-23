@@ -111,6 +111,8 @@ export interface Unit {
   lastSkill?: string;
   /** Sisters: her own Zeal, 0-ZEAL_MAX. Full, her Sacrament is ready. */
   zeal?: number;
+  /** Sisters: she has taken her Second Vows (shown as a crimson-gold aura). */
+  exalted?: boolean;
   /** Bosses: Wrath, 0-ZEAL_MAX. Full, the boss readies its Blasphemy. */
   wrath?: number;
   /** Bosses: 2 once the second phase has begun. */

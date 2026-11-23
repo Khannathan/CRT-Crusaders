@@ -57,6 +57,7 @@ import { drawItemIcon } from '../ui/itemIcon';
 import { ascend, ascendBlock, costLine, nextAscension } from '../systems/ascension';
 import { SYMBOL_ASC, SYMBOL_MAX, WAKE_COST, WAKE_TITHES, raiseSymbol, symbolBlock, symbolName, symbolPerks, symbolStatMult, upgradeCost } from '../systems/symbols';
 import { ROMAN_RANK } from '../systems/rank';
+import { VOW_LITANY, VOW_STAT, VOW_ZEAL, secondTitle, takeSecondVows, tookVows, vowBlock as secondVowBlock, vowTrials } from '../systems/secondVows';
 import { CANON_STAT, MAX_CANON, PATHS, TRAITS, canCanonize, canonBlock, canonCost, canonOf, canonize, pointsLeft, resetTraits, takeTrait, traitBlock, traitPoints, traitsOf } from '../systems/canon';
 import { MAX_LEVEL } from '../systems/stats';
 import { countOf, itemDef, type ItemId } from '../systems/items';
@@ -384,7 +385,7 @@ export class RosterScene extends Phaser.Scene {
     layer.add([
       ...addBadge(this, PAD + 4, NAME_Y - 50, c.rarity, tint, 13),
       this.add.text(PAD + 4, NAME_Y - 28, have ? c.name.toUpperCase() : 'NOT YET SWORN', text.display(26, 0xfff1d6)),
-      this.add.text(PAD + 4, NAME_Y + 6, `${c.title && c.title !== cls.name ? `${c.title} · ` : ''}${cls.name} · ${cls.role}`, text.body(16, tint)),
+      this.add.text(PAD + 4, NAME_Y + 6, tookVows(have) ? `✠ ${secondTitle(c.classId)} · ${cls.role}` : `${c.title && c.title !== cls.name ? `${c.title} · ` : ''}${cls.name} · ${cls.role}`, text.body(16, tookVows(have) ? 0xf2d27a : tint)),
     ]);
     const sigil = addOrderSigil(this, PAD + 16, NAME_Y + 44, c.order, 26);
     if (sigil) layer.add(sigil);
@@ -725,6 +726,7 @@ export class RosterScene extends Phaser.Scene {
       y += 36;
     }
     if (hasRite(c)) y = this.riteBlock(list, c, y);
+    y = this.secondVowsBlock(list, c, y);
     // Traits.
     const left_ = pointsLeft(have);
     layer.add(this.add.text(left, y, `TRAITS · ${left_} OF ${traitPoints(have)} POINTS LEFT`, text.hud(14, left_ > 0 ? PAL.amber : PAL.steel)));
@@ -763,6 +765,41 @@ export class RosterScene extends Phaser.Scene {
       y += 8;
     }
     return y + 20;
+  }
+
+  /** Second Vows: four trials, then her advanced class. */
+  private secondVowsBlock(list: ScrollArea, c: CrusaderDef, y: number): number {
+    const save = game.save;
+    const have = save.owned[c.id];
+    const layer = list.content;
+    const bw = GAME_W - PAD * 2 - 16;
+    const left = PAD + 8;
+    const title = secondTitle(c.classId);
+    layer.add(this.add.text(left, y, `SECOND VOWS · ${title.toUpperCase()}`, text.hud(14, tookVows(have) ? 0xf2d27a : PAL.amber)));
+    y += 24;
+    if (tookVows(have)) {
+      const t = this.add.text(left, y, `She is ${title}. All stats +${Math.round(VOW_STAT * 100)}%, her Litany +${Math.round(VOW_LITANY * 100)}%, and she opens every fight with ${VOW_ZEAL} Zeal.`, { ...text.body(15, PAL.ivory), wordWrap: { width: bw } });
+      layer.add(t);
+      return y + t.height + 24;
+    }
+    const t = this.add.text(left, y, `Her advanced class: all stats +${Math.round(VOW_STAT * 100)}%, Litany +${Math.round(VOW_LITANY * 100)}%, ${VOW_ZEAL} Zeal at every fight's start, and a new title. Pass four trials:`, { ...text.body(14, PAL.muted), wordWrap: { width: bw } });
+    layer.add(t);
+    y += t.height + 8;
+    for (const tr of vowTrials(save, c.id)) {
+      const line = this.add.text(left + 4, y, `${tr.done ? '✓' : '○'} ${tr.label}`, { ...text.body(15, tr.done ? PAL.amber : PAL.ivory), wordWrap: { width: bw - 8 } });
+      layer.add(line);
+      y += line.height + 6;
+    }
+    const block = secondVowBlock(save, c.id);
+    const b = makeButton(this, GAME_W / 2, y + 30, bw, 56, block ? `Second Vows: ${block}` : `Take Second Vows: become ${title}`, () => {
+      if (list.dragging) return;
+      if (takeSecondVows(save, c.id)) {
+        commit();
+        this.reopen(c, 'canon');
+      }
+    }, { disabled: !!block, active: !block, fontSize: 16 });
+    layer.add(b.all);
+    return y + 76;
   }
 
   /** Her Relic Rite (SSR and UR): fight or sweep a level for Motes, and sanctify her Litany. */

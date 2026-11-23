@@ -11,6 +11,10 @@ import { MAX_LEVEL } from './stats';
  * tree resets for free.
  */
 export const MAX_CANON = 20;
+/** Second Vows (systems/secondVows.ts): all stats, Litany power and opening Zeal. */
+export const VOW_STAT = 0.08;
+export const VOW_LITANY = 0.25;
+export const VOW_ZEAL = 15;
 export const CANON_STAT = 0.015;
 
 export const canonOf = (o: Pick<OwnedCrusader, 'canon'> | undefined) => o?.canon?.rank ?? 0;
@@ -132,8 +136,14 @@ export function resetTraits(save: SaveData, sisterId: string) {
 }
 
 /** Everything her Canon rank and traits give. */
-export function canonEffect(o: Pick<OwnedCrusader, 'canon'> | undefined): Required<TraitEffect> & { statMult: number } {
+export function canonEffect(o: Pick<OwnedCrusader, 'canon' | 'secondVow'> | undefined): Required<TraitEffect> & { statMult: number } {
   const out = { atkPct: 0, hpPct: 0, armorPct: 0, crit: 0, spd: 0, litanyPct: 0, dmgPct: 0, guard: 0, healPct: 0, zeal: 0, statMult: 1 + CANON_STAT * canonOf(o) };
+  // Second Vows (systems/secondVows.ts): all stats, her Litany, and opening Zeal.
+  if (o?.secondVow) {
+    out.statMult += VOW_STAT;
+    out.litanyPct += VOW_LITANY;
+    out.zeal += VOW_ZEAL;
+  }
   for (const id of traitsOf(o)) for (const [k, v] of Object.entries(TRAIT[id].fx)) out[k as keyof TraitEffect] += v as number;
   return out;
 }

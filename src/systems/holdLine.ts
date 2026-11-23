@@ -50,6 +50,8 @@ export interface HoldState {
   best: number;
   /** Best today. */
   today: number;
+  /** Most waves held with each Sister in the party (for her Second Vows). */
+  withHer?: Record<string, number>;
   stand?: HoldStand;
 }
 
@@ -168,6 +170,8 @@ export function finishWave(save: SaveData, outcome: 'victory' | 'defeat', battle
   if (!stand) return { held: 0, over: true };
   if (outcome === 'victory') {
     stand.held++;
+    const w = (h.withHer ??= {});
+    for (const id of stand.party) w[id] = Math.max(w[id] ?? 0, stand.held);
     for (const u of battle.units) if (u.side === 'party' && u.uid in stand.hp) stand.hp[u.uid] = Math.max(0, u.hp);
   }
   const over = outcome !== 'victory' || stand.held >= HOLD_WAVES;

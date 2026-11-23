@@ -32,6 +32,8 @@ export interface OwnedCrusader {
   symbol?: number;
   /** Canonization past level 50: rank 0-20 and the traits taken (systems/canon.ts). */
   canon?: { rank: number; traits: string[] };
+  /** Second Vows taken (systems/secondVows.ts): her advanced class. */
+  secondVow?: boolean;
   /** Crusades left to sit out after falling (0 = ready). Tithes can revive early. */
   recovering?: number;
 }

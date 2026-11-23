@@ -462,6 +462,7 @@ export function makeBattle(save: SaveData, run: RunState, encounter: string, rng
       critDmg: st.critDmg,
       symbol: sym,
       zeal: cn.zeal || undefined,
+      exalted: save.owned[id].secondVow || undefined,
       passive: c.passive,
       order: c.order,
       spd: st.spd + (c.passive?.kind === 'swift' ? c.passive.value ?? 0 : 0),
