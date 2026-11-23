@@ -5,6 +5,7 @@ import { crusadeTabTarget, drawBadge } from './bgFight';
 import { marchOf } from '../systems/march';
 import { anyReady, homeOf } from './rites';
 import { limitedUnseen } from '../systems/limited';
+import { quickVowReady } from '../systems/quick';
 import { nine, stretch } from './skin';
 import { addIcon } from './theme';
 
@@ -97,7 +98,9 @@ export function addTabBar(scene: Phaser.Scene, current: string, depth = 5, onTab
     const fresh = t.scene === 'Altar' && limitedUnseen(game.save);
     // The Sanctum lights up when the Vigil's march has halted.
     const halted = t.scene === 'Sanctum' && !!marchOf(game.save)?.stopped;
-    if (fresh || halted || ('home' in t && anyReady(game.save, t.home))) keep(scene.add.circle(cx + bw / 2 - 12, cy - bh / 2 + 12, 5, PAL.amber).setStrokeStyle(2, 0x1b121c).setDepth(depth));
+    // The Roster lights up when Quick Vow has a Vow to swear.
+    const vows = t.scene === 'Roster' && quickVowReady(game.save);
+    if (fresh || halted || vows || ('home' in t && anyReady(game.save, t.home))) keep(scene.add.circle(cx + bw / 2 - 12, cy - bh / 2 + 12, 5, PAL.amber).setStrokeStyle(2, 0x1b121c).setDepth(depth));
     if (centre) drawBadge(scene, cx + bw / 2 - 24, cy - bh / 2 + 12, depth);
     box.setInteractive({ useHandCursor: true });
     box.on('pointerup', () => {

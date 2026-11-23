@@ -63,6 +63,8 @@ import { MAX_LEVEL } from '../systems/stats';
 import { countOf, itemDef, type ItemId } from '../systems/items';
 import { MAX_SKILL_LEVEL, nextSkillStep, raiseSkill, skillBlock, skillLevels, stepText } from '../systems/skillLevels';
 import { makeButton } from '../ui/button';
+import { confirmSheet } from '../ui/confirmSheet';
+import { enhanceTo, meltSpares, nextMilestone, quickVowPlan, spareGear, spareValue, takeQuickVows } from '../systems/quick';
 import { toast } from '../ui/modeScreen';
 import { pickParty } from '../ui/partyPicker';
 import { current } from '../state/run';
@@ -137,6 +139,12 @@ export class RosterScene extends Phaser.Scene {
     const count = Object.keys(owned).length;
     const top = addHeading(this, 'Roster', CURRENCY_BAR_H + 10);
     this.add.text(GAME_W - PAD, top - 8, `${count} / ${CRUSADERS.length}`, text.hud(16, PAL.muted)).setOrigin(1, 1);
+
+    // Quick Vow: every Vow her copies already pay for, across the whole roster, in one oath.
+    if (count) {
+      const qv = quickVowPlan(game.save);
+      makeButton(this, GAME_W - PAD - 172, top - 26, 168, 40, qv.vows ? `Quick Vow · ${qv.vows}` : 'Quick Vow', () => !this.detailOpen && this.quickVow(), { fontSize: 15, active: qv.vows > 0, disabled: !qv.vows, icon: 'seal' });
+    }
 
     const f = sortState.filter;
     const shown = CRUSADERS.filter((c) => (f.unsworn || owned[c.id]) && passes(c));
@@ -235,6 +243,19 @@ export class RosterScene extends Phaser.Scene {
     if (this.notice) toast(this, this.notice, GAME_H / 2);
   }
 
+
+  /** Shows what Quick Vow would swear, then swears it. */
+  private quickVow() {
+    const save = game.save;
+    const plan = quickVowPlan(save);
+    if (!plan.vows) return toast(this, 'No Vow is ready. Pull again, and bring her sisters home!', GAME_H / 2);
+    const lines = plan.steps.map((s) => `${s.name.split(' ')[0]}: Vow ${s.from} → ${s.to}`);
+    confirmSheet(this, `Swear ${plan.vows} Vow${plan.vows > 1 ? 's' : ''}?`, lines, 'Swear them all!', () => {
+      const done = takeQuickVows(save);
+      commit();
+      this.scene.restart({ notice: `${done.vows} Vow${done.vows > 1 ? 's' : ''} sworn! Their faith hardens!` });
+    }, `Cost: ${plan.tithes.toLocaleString('en-US')} Tithes. Copies only: your Stigmata stay sealed.`);
+  }
 
   private reopen(c: CrusaderDef, tab: Tab) {
     this.scene.restart({ openId: c.id, tab });
@@ -1147,7 +1168,10 @@ export class RosterScene extends Phaser.Scene {
     );
     if (!maxed) tapCost(this, enhText, iron, enhanceCost(item));
     const eb = enhanceBlock(save, item);
-    const enh = makeButton(this, GAME_W / 2, y + 10, 300, 52, maxed ? 'Fully refined' : eb ?? (item.level >= MAX_GEAR_LEVEL ? `Refine to +${next.level}` : `Enhance to +${next.level}`), () => {
+    // A second button climbs straight to the next substat roll (or the stage's cap), as far as the purse allows.
+    const goal = maxed ? item.level : nextMilestone(item);
+    const leap = !eb && goal > item.level + 1;
+    const enh = makeButton(this, leap ? GAME_W / 2 - 108 : GAME_W / 2, y + 10, leap ? 236 : 300, 52, maxed ? 'Fully refined' : eb ?? (item.level >= MAX_GEAR_LEVEL ? `Refine to +${next.level}` : `Enhance to +${next.level}`), () => {
       if (enhance(save, item)) {
         commit();
         layer.destroy();
@@ -1155,6 +1179,17 @@ export class RosterScene extends Phaser.Scene {
       }
     }, { disabled: !!eb, active: !eb, fontSize: 18 });
     layer.add(enh.all);
+    if (leap) {
+      const up = makeButton(this, GAME_W / 2 + 128, y + 10, 196, 52, `Up to +${goal}`, () => {
+        const n = enhanceTo(save, item, goal);
+        if (!n) return;
+        commit();
+        layer.destroy();
+        this.forge(c, item);
+        toast(this, item.level >= goal ? `+${item.level}! The iron sings your praise!` : `+${item.level}. The purse ran dry: tithe more, and strike again!`, GAME_H / 2);
+      }, { fontSize: 18 });
+      layer.add(up.all);
+    }
     y += 52;
 
     // Reroll
@@ -1189,19 +1224,34 @@ export class RosterScene extends Phaser.Scene {
     layer.add(this.add.rectangle(GAME_W / 2, GAME_H / 2, GAME_W, GAME_H, 0x09060b, 0.96).setInteractive());
     layer.add(addFrame(this, GAME_W / 2, GAME_H / 2, GAME_W - 24, GAME_H - 40, { fill: 0x241925 }));
     layer.add(this.add.text(GAME_W / 2, 64, `CHOOSE A ${SLOT_NAME[slot].toUpperCase()}`, text.display(22, PAL.ivory)).setOrigin(0.5));
+    // Melt spares: every unworn, unenhanced R and SR piece of every slot, in one pyre.
+    const spares = spareGear(save);
+    const meltAll = makeButton(this, GAME_W / 2, 112, GAME_W - 56, 40, spares.length ? `Melt spare R and SR gear · ${spares.length} pieces · +${spareValue(save)} Tithes` : 'No spare R or SR gear to melt', () => {
+      confirmSheet(this, `Melt ${spares.length} piece${spares.length > 1 ? 's' : ''}?`, [
+        `Every R and SR piece no Sister wears and none has enhanced, from every slot.`,
+        `They pay ${spareValue(save)} Tithes and Alms besides.`,
+      ], 'Into the fire!', () => {
+        const m = meltSpares(save);
+        commit();
+        layer.destroy();
+        this.gearPicker(c, slot);
+        toast(this, `${m.count} pieces melted for ${m.tithes} Tithes. Waste nothing holy!`, GAME_H / 2);
+      });
+    }, { fontSize: 14, disabled: !spares.length, icon: 'flame' });
+    layer.add(meltAll.all);
     const rank = (r: string) => RARITY_ORDER.indexOf(r as never);
     const items = gearOf(save)
       .filter((g) => g.slot === slot)
       .sort((a, b) => Number(a.on === c.id) - Number(b.on === c.id) || Number(!!a.on) - Number(!!b.on) || rank(b.rarity) - rank(a.rarity) || b.level - a.level);
     const shown = items;
     // Every piece for the slot scrolls (drag or wheel) between the title and the buttons.
-    const listTop = 92;
+    const listTop = 136;
     const listBottom = GAME_H - 100;
     const list = addScrollArea(this, listTop, listBottom, { parent: layer });
     const inList = () => !list.dragging && this.input.activePointer.y >= listTop && this.input.activePointer.y <= listBottom;
-    if (!shown.length) layer.add(this.add.text(GAME_W / 2, 200, 'Nothing for this slot.\nCrusade, and the dead will arm you!', { ...text.body(18, PAL.muted), align: 'center' }).setOrigin(0.5));
+    if (!shown.length) layer.add(this.add.text(GAME_W / 2, 240, 'Nothing for this slot.\nCrusade, and the dead will arm you!', { ...text.body(18, PAL.muted), align: 'center' }).setOrigin(0.5));
     shown.forEach((g, i) => {
-      const y = 140 + i * 92;
+      const y = 184 + i * 92;
       const row = this.add.rectangle(GAME_W / 2, y, GAME_W - 56, 84, 0x1b131d).setStrokeStyle(1, RARITY_COLOR[g.rarity]);
       list.tap(row, () => {
         equip(save, c.id, g.uid);
@@ -1231,7 +1281,7 @@ export class RosterScene extends Phaser.Scene {
         list.content.add(melt.all);
       }
     });
-    list.fit(140 + shown.length * 92 - 30);
+    list.fit(184 + shown.length * 92 - 30);
     const current = equipped(save, c.id).find((g) => g.slot === slot);
     const back = makeButton(this, GAME_W / 2 + (current ? 120 : 0), GAME_H - 62, 220, 60, 'Back', () => layer.destroy(), { fontSize: 19 });
     layer.add(back.all);
