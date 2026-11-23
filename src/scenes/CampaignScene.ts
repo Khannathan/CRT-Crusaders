@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import { chronicle, pendingAfter, pendingBefore } from '../systems/story';
 import { GAME_H, GAME_W, PAL } from '../config';
 import { ENCOUNTERS, ENEMIES } from '../data/enemies';
 import { commit, game } from '../state/game';
@@ -33,13 +34,16 @@ export class CampaignScene extends Phaser.Scene {
   private static listY?: number;
   private sel = 0;
   private notice?: string;
+  /** A stage to fight at once (after its story scene played). */
+  private fight?: number;
 
   constructor() {
     super('Campaign');
   }
 
-  init(data: { notice?: string }) {
+  init(data: { notice?: string; fight?: number }) {
     this.notice = data.notice;
+    this.fight = data.fight;
     this.sel = 0;
   }
 
@@ -113,6 +117,13 @@ export class CampaignScene extends Phaser.Scene {
     this.drawPanel(mapBottom + 6);
     if (this.notice) toast(this, this.notice, GAME_H / 2 - 120);
     this.notice = undefined;
+    // The Chronicle: every story scene behind you, to play again.
+    if (chronicle(save, best).length) makeButton(this, GAME_W - PAD - 150, top - 30, 104, 40, 'Chronicle', () => this.scene.start('Chronicle'), { fontSize: 15, icon: 'book' });
+    if (this.fight) {
+      const n = this.fight;
+      this.fight = undefined;
+      this.time.delayedCall(0, () => this.challenge(n));
+    }
   }
 
   /** The chosen stage: its foes, what it asks, what it pays, and Challenge. */
@@ -150,6 +161,12 @@ export class CampaignScene extends Phaser.Scene {
    */
   private challenge(n: number, push = false) {
     const save = game.save;
+    // The road's story: a scene plays the first time a stage is reached.
+    const scene = n === campaignOf(save).best + 1 ? pendingBefore(save, n) : undefined;
+    if (scene) {
+      this.scene.start('Story', { id: scene.id, next: { scene: 'Campaign', data: { fight: n } } });
+      return;
+    }
     const s = stageDef(n);
     const v = ensureVigil(save, Date.now());
     pickParty(
@@ -201,6 +218,8 @@ export class CampaignScene extends Phaser.Scene {
           : r.first
             ? `Stage ${s.label} cleared: ${rewardText(r.reward!)}${r.chest ? `\nChapter chest: ${rewardText(r.chest)}` : ''}\nThe Vigil quickens!`
             : `Stage ${s.label} won again.`;
+        const after = r.first ? pendingAfter(save, n) : undefined;
+        if (after) return { scene: 'Story', data: { id: after.id, next: { scene: 'Campaign', data: { notice } } } };
         return { scene: 'Campaign', data: { notice } };
       },
     };
