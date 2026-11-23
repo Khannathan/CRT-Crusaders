@@ -221,7 +221,7 @@ K('CC-W049', (own) => ({
     own({ name: 'Night Shift', desc: 'Every ally +15% attack for 2 turns; allies on Overwatch +30% instead. Cooldown 3.', target: 'allAllies', empower: { pct: 0.15, turns: 2 }, empowerTarget: true, cond: { if: 'overwatch', then: { empower: { pct: 0.3, turns: 2 } } }, cooldown: 3 }),
     own({ name: 'Watchtower Omen', desc: 'LITANY: every Sister goes on Overwatch with a strong reaction (0.9x) and gains Haste.', target: 'allAllies', overwatchAll: ow(0.9), haste: 1, rite: true }),
   ],
-  shines: ['Flayed Saint Hunt', 'Iron Abbot Hunt', 'Iron Vigil Order Tower', 'Real-time field'],
+  shines: ['Iron Abbot Hunt', 'Colossus Hunt', 'Iron Vigil Order Tower', 'Real-time field'],
 }));
 
 K('CC-W058', (own) => ({
@@ -301,7 +301,7 @@ K('CC-W050', (own) => ({
     own({ name: 'Absolution', desc: 'LITANY: heavy magic damage on every enemy; any common foe left under 30% HP is granted Mercy at once.', target: 'allEnemies', mult: 1.3, mercyLine: 0.3, rite: true }),
   ],
   seal: { name: 'Last Rites Heard', desc: 'The first time a Sister would fall, she is healed 30% instead and her attacker is Foretold.', kind: 'lastRites' },
-  shines: ['Flayed Saint Hunt', 'Choirmaster Hunt', 'Waves and summons', "Pilgrim's Road", 'Crypt runs'],
+  shines: ['Red Cardinal Hunt', 'Waves and summons', "Pilgrim's Road", 'Crypt runs'],
 }));
 
 K('CC-W059', (own) => ({
@@ -518,7 +518,7 @@ K('CC-W088', (own) => ({
     st('sentinel', 'tomb-stance'),
     st('sentinel', 'sealed-sepulcher'),
   ],
-  shines: ['Choirmaster Hunt', 'Summoner bosses'],
+  shines: ['Summoner bosses'],
 }));
 
 K('CC-W235', (own) => ({
@@ -603,7 +603,7 @@ K('CC-W209', (own) => ({
     own({ name: 'Final Judgment', desc: 'LITANY: every enemy is Weakened (-30%) for 3 turns and loses 50 Wrath.', target: 'allEnemies', mult: 0.9, weaken: { pct: 0.3, turns: 3 }, wrathDrain: 50, rite: true }),
   ],
   seal: { name: 'Reflected Blasphemy', desc: 'Once a fight, a Blasphemy is turned back: the Sisters take half, and the boss takes the other half.', kind: 'reflect' },
-  shines: ['Twofold Reliquary Hunt', 'Red Cardinal Hunt', "Every boss's Blasphemy", 'Chapter Siege', 'Her Feast'],
+  shines: ['Red Cardinal Hunt', 'Flayed Saint Hunt', "Every boss's Blasphemy", 'Chapter Siege', 'Her Feast'],
 }));
 
 K('CC-W089', (own) => ({
@@ -792,7 +792,7 @@ K('CC-W220', (own) => ({
     st('inquisitor', 'sentence'),
     st('inquisitor', 'verdict'),
   ],
-  shines: ['Font Leviathan Hunt', 'Choirmaster Hunt', 'Finishing Hunt bosses', "Pilgrim's Road chapter bosses"],
+  shines: ['Font Leviathan Hunt', 'Flayed Saint Hunt', 'Finishing Hunt bosses', "Pilgrim's Road chapter bosses"],
 }));
 
 K('CC-W007', (own) => ({
@@ -1036,7 +1036,7 @@ K('CC-W019', (own) => ({
     own({ name: 'Midnight Toll', desc: 'LITANY: strike every enemy; the Bell rings three times.', target: 'allEnemies', mult: 0.95, gain: { toll: 2 }, rite: true }),
   ],
   seal: { name: 'Unbroken Vow', desc: 'The first killing blow leaves her at 1 HP, and Midnight comes at once if it has not yet.', kind: 'unbrokenMidnight' },
-  shines: ['Iron Abbot Hunt', 'Rot-Mother Hunt', 'Bell Tower', 'Hollow Bell Order Tower'],
+  shines: ['Rot-Mother Hunt', 'Choirmaster Hunt', 'Bell Tower', 'Hollow Bell Order Tower'],
 }));
 
 K('CC-W010', (own) => ({

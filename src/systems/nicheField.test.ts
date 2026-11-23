@@ -1,11 +1,14 @@
 import { beforeAll, describe, expect, it } from 'vitest';
 import type { Rarity } from '../data/types';
-import { nicheTable, type NicheRow } from './niche';
+import { KITS } from '../data/kits';
+import { HUNTS } from './hunts';
+import { SHINE_LABEL, nicheTable, rankIn, type NicheRow } from './niche';
 
 /**
  * The rarity budget on the open field: every hunt played in real time
- * (systems/field.ts). Looser than the turn-based guards in niche.test.ts until
- * the balance re-tune moves the "Shines in" sim onto the field as well.
+ * (systems/field.ts), as every fight in the game is. The "Shines in" hunts on
+ * each Sister's page are checked here; the turn-based guards in niche.test.ts
+ * stay as a second opinion on the kits themselves.
  */
 let rows: NicheRow[];
 beforeAll(() => {
@@ -28,5 +31,21 @@ describe('niche sim on the field', () => {
 
   it('no Sister is useless on the field', () => {
     for (const r of rows) expect(r.avg, r.name).toBeGreaterThanOrEqual(25);
+  });
+
+  it('every hunt a Sister claims to shine in is one where she is in the top third of her role', () => {
+    expect(Object.keys(SHINE_LABEL).sort()).toEqual(HUNTS.map((h) => h.id).sort());
+    let claims = 0;
+    for (const r of rows) {
+      const n = rows.filter((x) => x.role === r.role).length;
+      for (const s of KITS[r.id]?.shines ?? []) {
+        if (!/Hunt\b/.test(s) || /Hunt (damage|bosses)|Hunts$/.test(s) || s === 'Finishing Hunt bosses') continue;
+        const hunt = Object.keys(SHINE_LABEL).find((h) => SHINE_LABEL[h] === s);
+        expect(hunt, `${r.name}: "${s}" names no hunt`).toBeDefined();
+        expect(rankIn(rows, r.id, hunt!), `${r.name} in ${s}`).toBeLessThanOrEqual(Math.ceil(n / 3));
+        claims++;
+      }
+    }
+    expect(claims).toBeGreaterThan(30);
   });
 });

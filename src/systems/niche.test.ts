@@ -1,8 +1,7 @@
 import { beforeAll, describe, expect, it } from 'vitest';
 import type { Rarity } from '../data/types';
 import { HUNTS } from './hunts';
-import { KITS } from '../data/kits';
-import { SHINE_LABEL, nicheTable, partyFor, rankIn, type NicheRow } from './niche';
+import { nicheTable, partyFor, rankIn, type NicheRow } from './niche';
 
 /**
  * The rarity budget, checked in the niche sim: every Sister fights every
@@ -52,19 +51,4 @@ describe('niche sim', () => {
     for (const r of rows) expect(r.avg, r.name).toBeGreaterThanOrEqual(40);
   });
 
-  it('every hunt a Sister claims to shine in is one where she is in the top third of her role', () => {
-    expect(Object.keys(SHINE_LABEL).sort()).toEqual(HUNTS.map((h) => h.id).sort());
-    let claims = 0;
-    for (const r of rows) {
-      const n = rows.filter((x) => x.role === r.role).length;
-      for (const s of KITS[r.id]?.shines ?? []) {
-        if (!/Hunt\b/.test(s) || /Hunt (damage|bosses)|Hunts$/.test(s) || s === 'Finishing Hunt bosses') continue;
-        const hunt = Object.keys(SHINE_LABEL).find((h) => SHINE_LABEL[h] === s);
-        expect(hunt, `${r.name}: "${s}" names no hunt`).toBeDefined();
-        expect(rankIn(rows, r.id, hunt!), `${r.name} in ${s}`).toBeLessThanOrEqual(Math.ceil(n / 3));
-        claims++;
-      }
-    }
-    expect(claims).toBeGreaterThan(30);
-  });
 });
