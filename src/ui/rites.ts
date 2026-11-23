@@ -10,6 +10,7 @@ import Phaser from 'phaser';
 import { GAME_W, PAL } from '../config';
 import type { SaveData } from '../state/save';
 import { matinsReady } from '../systems/matins';
+import { passReady } from '../systems/pass';
 import { ROMAN_RANK, unlocked } from '../systems/rank';
 import { anyClaimable } from '../systems/tasks';
 import { noviceOpen, noviceReady } from '../systems/novitiate';
@@ -180,6 +181,7 @@ export const RITES: RiteEntry[] = [
   },
   { label: 'Novitiate', scene: 'Novitiate', icon: 'sigil', rank: 1, home: 'sanctum', noRail: true, shown: (s) => noviceOpen(s), ready: (s) => noviceReady(s) },
   { label: 'Matins', scene: 'Matins', icon: 'flame', rank: 1, home: 'sanctum', ready: (s) => matinsReady(s) },
+  { label: 'Pass', scene: 'Pass', icon: 'sigil', rank: 1, home: 'sanctum', ready: (s) => passReady(s) },
   { label: 'Penance', scene: 'Penance', icon: 'book', rank: 2, home: 'sanctum', ready: (s) => anyClaimable(s) },
   { label: 'Confession', scene: 'Confession', icon: 'book', rank: 5, home: 'sanctum', ready: (s) => anyUnheard(s) || anyBondRewards(s) || (Object.keys(s.owned).length > 0 && candleReady(s)) },
 ];
