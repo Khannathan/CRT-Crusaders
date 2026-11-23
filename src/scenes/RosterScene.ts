@@ -12,7 +12,7 @@ import { addOrderSigil } from '../ui/sisterCard';
 import { drawPortraitBadges, showBadgeKey } from '../ui/portraitBadges';
 import { passes, sortControls, sortRoster, sortState } from '../ui/sisterSort';
 import type { ScrollArea } from '../ui/scroll';
-import { DMG_NAME, type SkillDef } from '../data/skills';
+import { DMG_NAME, descNoCooldown, type SkillDef } from '../data/skills';
 import { KITS, kitSkills } from '../data/kits';
 import { showDetail as showSkillDetail } from '../ui/glossary';
 import { dmgTagOf } from '../data/classes';
@@ -582,7 +582,7 @@ export class RosterScene extends Phaser.Scene {
         layer.add(tapForSources(this, this.add.text(left, y, block === 'unction' ? 'Short of Unction: battles, the Vigil and the road give EXP too. Tap for sources ›' : 'Short of Tithes: tap to see where to get more ›', { ...text.body(14, PAL.amber), wordWrap: { width: bw } }), block === 'unction' ? 'unction1' : 'tithes'));
         y += 44;
       } else {
-        layer.add(this.add.text(left, y, 'Each flask costs 1 Tithe per 10 EXP. Nothing spills past her cap.', { ...text.body(13, PAL.muted), wordWrap: { width: bw } }));
+        layer.add(this.add.text(left, y, '1 Tithe per 10 EXP. Nothing spills past her cap.', { ...text.body(13, PAL.muted), wordWrap: { width: bw } }));
         y += 28;
       }
     } else {
@@ -781,10 +781,10 @@ export class RosterScene extends Phaser.Scene {
       const tx = icon ? left + 44 : left;
       const name = this.add.text(tx, y, `${s.name}${isUp ? '+' : ''}`, { ...text.body(20, s.rite ? PAL.amber : PAL.ivory), fontStyle: '600' });
       const t = this.add.text(tx, y + 28, tag, text.hud(11, isUp ? PAL.amber : PAL.steel));
-      const d = this.add.text(left, y + 46, s.desc, { ...text.body(15, PAL.muted), wordWrap: { width } });
+      const d = this.add.text(left, y + 46, descNoCooldown(s.desc), { ...text.body(15, PAL.muted), wordWrap: { width } });
       layer.add([...(icon ? [icon] : []), name, t, d]);
       // Tap the skill for its full description, with every effect explained.
-      const open = () => showSkillDetail(this, { title: `${s.name}${isUp ? '+' : ''}`, color: s.rite ? PAL.amber : PAL.ivory, tags: tag, desc: s.desc, facts: skillFacts(c, s, skillLevels(save, c.id)[i], isUp) }, 60);
+      const open = () => showSkillDetail(this, { title: `${s.name}${isUp ? '+' : ''}`, color: s.rite ? PAL.amber : PAL.ivory, tags: tag, desc: descNoCooldown(s.desc), facts: skillFacts(c, s, skillLevels(save, c.id)[i], isUp) }, 60);
       for (const o of [name, d]) o.setInteractive({ useHandCursor: true }).on('pointerup', (p: Phaser.Input.Pointer) => p.getDistance() < 12 && open());
       // Skill level: Psalter Pages and Tithes raise it, up to MAX_SKILL_LEVEL.
       const lv = skillLevels(save, c.id)[i];

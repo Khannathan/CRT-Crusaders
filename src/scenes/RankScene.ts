@@ -25,7 +25,7 @@ export class RankScene extends Phaser.Scene {
 
   create() {
     const save = game.save;
-    const { top, refresh } = modeScreen(this, 'Rank of Faith', 'Every deed of the faithful is counted. Rise, and more of the war opens to you.');
+    const { top, refresh } = modeScreen(this, 'Rank of Faith', 'Rise to open more of the war.');
     const info = rankInfo(save);
     const bw = GAME_W - PAD * 2;
 

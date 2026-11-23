@@ -50,7 +50,7 @@ export class ArmoryScene extends Phaser.Scene {
     if (gifted) commit();
     const a = armoryOf(save);
     const { set, ends } = featuredSet();
-    const { top } = modeScreen(this, "The Saints' Armory", 'UR gear is never found on the road. Pull for it here, or forge it from Saint\'s Fragments.', this.back, 'bg-armory');
+    const { top } = modeScreen(this, "The Saints' Armory", '', this.back, 'bg-armory');
     const bw = GAME_W - PAD * 2;
     let y = top;
 
@@ -68,7 +68,7 @@ export class ArmoryScene extends Phaser.Scene {
     makeButton(this, GAME_W - PAD - 56, y + 8, 112, 34, 'Details', () => this.showRates(), { fontSize: 14, icon: 'book' });
     y += 32;
     const left = PITY - a.pity;
-    this.add.text(PAD, y, `A UR is certain within ${left} pull${left === 1 ? '' : 's'}. The count carries across weeks.`, text.body(15, PAL.ivory));
+    this.add.text(PAD, y, `UR within ${left} pull${left === 1 ? '' : 's'}. Carries across weeks.`, text.body(15, PAL.ivory));
     y += 30;
     progressBar(this, PAD, y, bw, a.pity / PITY, RARITY_COLOR.UR, 10);
     y += 24;
@@ -104,7 +104,7 @@ export class ArmoryScene extends Phaser.Scene {
     const moulds = countOf(save, 'armory3');
     addPanel(this, PAD, y, bw, 132);
     this.add.text(PAD + 14, y + 12, 'THE UR FORGE', text.hud(13, PAL.steel));
-    this.add.text(PAD + 14, y + 32, `Pour a UR piece of the slot and set you choose: ${FORGE_FRAGMENTS} Saint's Fragments or one Reliquary Mould.`, { ...text.body(15, PAL.ivory), wordWrap: { width: bw - 28 } });
+    this.add.text(PAD + 14, y + 32, `Any slot and set: ${FORGE_FRAGMENTS} Saint's Fragments or 1 Reliquary Mould.`, { ...text.body(15, PAL.ivory), wordWrap: { width: bw - 28 } });
     progressBar(this, PAD + 14, y + 84, bw - 200, frags / FORGE_FRAGMENTS, PAL.amber, 10);
     this.add.text(PAD + 14, y + 98, `Fragments ${frags}/${FORGE_FRAGMENTS}${moulds ? `  ·  Moulds ${moulds}` : ''}`, text.hud(12, PAL.amber));
     const canForge = !forgeBlock(save, 'fragments') || !forgeBlock(save, 'mould');

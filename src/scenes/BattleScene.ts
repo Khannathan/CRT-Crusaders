@@ -7,7 +7,7 @@ import { addTabBar } from '../ui/tabBar';
 import { RARITY_COLOR } from '../data/classes';
 import { CRUSADERS } from '../data/crusaders';
 import { ENEMIES } from '../data/enemies';
-import type { SkillDef } from '../data/skills';
+import { descNoCooldown, type SkillDef } from '../data/skills';
 import { game } from '../state/game';
 import { nextSpeed, saveSettings, settings } from '../state/settings';
 import { autoChoose, autoStep } from '../systems/autoplay';
@@ -403,7 +403,7 @@ export class BattleScene extends Phaser.Scene {
         held = false;
         timer = this.time.delayedCall(420 * settings.battleSpeed, () => {
           held = true;
-          showDetail(this, { title: s.name, color: s.rite ? PAL.amber : PAL.ivory, tags: s.rite ? 'LITANY · HER ZEAL FULL' : step ? 'FREE · ONCE A TURN' : `SKILL${s.cooldown ? ` · COOLDOWN ${s.cooldown}` : ''}`, desc: s.desc }, 60);
+          showDetail(this, { title: s.name, color: s.rite ? PAL.amber : PAL.ivory, tags: s.rite ? 'LITANY · HER ZEAL FULL' : step ? 'FREE · ONCE A TURN' : `SKILL${s.cooldown ? ` · COOLDOWN ${s.cooldown}` : ''}`, desc: s.cooldown ? descNoCooldown(s.desc) : s.desc }, 60);
         });
       });
       box.on('pointerout', () => timer?.remove());

@@ -86,8 +86,7 @@ export class CrusadeScene extends Phaser.Scene {
     const hh = 236;
     const tx = PAD + 18;
     const ready = CRUSADERS.filter((c) => canMuster(s, c.id));
-    this.add.text(PAD, listTop + 4, 'Every fight pays Tithes, Pilgrimage or not.', text.body(16, PAL.muted));
-    let bottom = listTop + 22;
+    let bottom = listTop;
     const shown = CRYPTS.filter((c, i) => cryptUnlocked(s, c) || i === 0 || cryptUnlocked(s, CRYPTS[i - 1]));
     shown.forEach((crypt) => {
       const open = cryptUnlocked(s, crypt);

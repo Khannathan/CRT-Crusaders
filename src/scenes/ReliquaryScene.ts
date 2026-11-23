@@ -35,7 +35,7 @@ export class ReliquaryScene extends Phaser.Scene {
   create() {
     const save = game.save;
     const codex = this.tab === 'codex';
-    const { top: head } = modeScreen(this, codex ? 'Order Codex' : 'The Reliquary', codex ? 'Writs raise an Order. Each level lifts its Sisters.' : 'Incense lights the relics. Each one lifts every Sister.');
+    const { top: head } = modeScreen(this, codex ? 'Order Codex' : 'The Reliquary', codex ? '' : '');
     const bw = GAME_W - PAD * 2;
     (['relics', 'codex'] as const).forEach((t, i) => {
       makeButton(this, GAME_W / 2 + (i - 0.5) * 200, head + 14, 190, 40, t === 'relics' ? 'Relics' : 'Order Codex', () => t !== this.tab && this.scene.restart({ tab: t }), { active: t === this.tab, fontSize: 16, skin: 'ui-subtab' });

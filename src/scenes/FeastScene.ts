@@ -52,7 +52,7 @@ export class FeastScene extends Phaser.Scene {
     const w = limitedWindow();
     const f = feastOf(save);
     const saint = w.saint;
-    const { top } = modeScreen(this, feastName(w), `${saint.name} holds the Altar. Win Candles at the Feast, spend them at the stall. Ends in ${timeLeft(w.ends)}.`);
+    const { top } = modeScreen(this, feastName(w), `Ends in ${timeLeft(w.ends)}.`);
     const bw = GAME_W - PAD * 2;
     let y = top;
 
@@ -103,7 +103,7 @@ export class FeastScene extends Phaser.Scene {
       const won = f.won.includes(i);
       this.add.rectangle(GAME_W / 2, y + h / 2, bw, h, open ? 0x1e1520 : 0x151017).setStrokeStyle(1, won ? PAL.bronze : PAL.armorShadow);
       this.add.text(PAD + 12, y + 8, `${ROMAN[i]} · ${st.name}`, text.body(17, open ? 0xfff1d6 : PAL.steel)).setFontStyle('600');
-      this.add.text(PAD + 12, y + 34, open ? (won ? `Won · repeat pays ${st.repeat} Candles` : `First win pays ${st.first} Candles`) : 'Win the stage before it.', text.body(14, won ? PAL.muted : PAL.amber));
+      this.add.text(PAD + 12, y + 34, open ? (won ? `Won · repeat pays ${st.repeat} Candles` : `First win pays ${st.first} Candles`) : 'Locked', text.body(14, won ? PAL.muted : PAL.amber));
       if (open) {
         makeButton(this, GAME_W - PAD - 150, y + h / 2, 84, 44, 'Fight', () => this.fight(i), { active: !won, fontSize: 16 });
         makeButton(this, GAME_W - PAD - 52, y + h / 2, 84, 44, 'Sweep', () => {

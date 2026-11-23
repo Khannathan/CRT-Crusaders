@@ -36,7 +36,7 @@ export class MatinsScene extends Phaser.Scene {
 
   create() {
     const save = game.save;
-    const { top, refresh } = modeScreen(this, 'Matins', 'One candle each dawn. Miss a day and the next candle simply waits for you.');
+    const { top, refresh } = modeScreen(this, 'Matins', 'One candle each dawn. A missed day just waits.');
     const m = matinsOf(save);
     const ready = matinsReady(save);
     const cols = 7;

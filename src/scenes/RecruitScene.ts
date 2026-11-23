@@ -185,7 +185,7 @@ export class RecruitScene extends Phaser.Scene {
     const poolH = 116;
     addPanel(this, GAME_W / 2 - pw / 2, y, pw, poolH);
     const first = target.name.split(' ')[0];
-    this.add.text(px + 16, y + 10, s.urGuaranteed ? `The next UR is ${first}, sworn.` : `A UR here is ${first} half the time, and always after one that strays.`, { ...text.body(17, PAL.ivory), fontStyle: '600', wordWrap: { width: pw - 32 } });
+    this.add.text(px + 16, y + 10, s.urGuaranteed ? `The next UR is ${first}, sworn.` : `A UR here is ${first} half the time, or always after a miss.`, { ...text.body(17, PAL.ivory), fontStyle: '600', wordWrap: { width: pw - 32 } });
     // Pity counters: UR (shared by every banner) and SSR
     const toPity = PITY_LIMIT - s.pity;
     const urLeft = urPityLeft(s);
@@ -278,7 +278,7 @@ export class RecruitScene extends Phaser.Scene {
       layer.add(this.add.text(GAME_W / 2, 60, 'CHOOSE YOUR RATE-UP', text.display(24, PAL.amber)).setOrigin(0.5));
       layer.add(
         this.add
-          .text(GAME_W / 2, 84, 'Tap one UR and two SSRs. A UR here is your pick half the time and always after one that strays. Pity and Relic Shards carry over. Hold a portrait for her stats.', { ...text.body(15, PAL.muted), align: 'center', wordWrap: { width: GAME_W - 70 } })
+          .text(GAME_W / 2, 84, 'Pick one UR and two SSRs. Pity and Relic Shards carry over. Hold a portrait for her stats.', { ...text.body(15, PAL.muted), align: 'center', wordWrap: { width: GAME_W - 70 } })
           .setOrigin(0.5, 0),
       );
       const list = addScrollArea(this, 160, GAME_H - 130, { parent: layer, depth: 20 });
@@ -445,7 +445,7 @@ export class RecruitScene extends Phaser.Scene {
         GAME_W / 2,
         450,
         [
-          'A UR is the banner\'s target half the time, and always after one that strays. Half of SSRs are its boosted pair.',
+          'A UR is the banner\'s target half the time, or always after a miss. Half of SSRs are its boosted pair.',
           'On the standard banner you choose the UR and the two SSRs.',
           `×10 always has an SR or better. Pull ${PITY_LIMIT} without an SSR or UR gives one. UR chance climbs after pull ${UR_SOFT}; pull ${UR_HARD} is a UR. Pity carries across every banner.`,
           `Each pull gives a Relic Shard of the target's Order (Saint's Favor on the Limited banner). ${SPARK} buy that UR.`,

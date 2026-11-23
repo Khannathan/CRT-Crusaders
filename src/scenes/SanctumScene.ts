@@ -193,7 +193,7 @@ export class SanctumScene extends Phaser.Scene {
       gotText.setText(`Gathered: ${parts.join(' · ')}`);
       bar.setSize(Math.max(1, barW * (p.hours / VIGIL_CAP_HOURS)), 8);
       const hm = (h: number) => `${Math.floor(h)}h ${String(Math.floor((h % 1) * 60)).padStart(2, '0')}m`;
-      timeText.setText(p.full ? `FULL · ${VIGIL_CAP_HOURS}H REACHED · CLAIM TO KEEP GATHERING` : `${hm(p.hours).toUpperCase()} OF ${VIGIL_CAP_HOURS}H · GATHERS WHILE YOU ARE AWAY`);
+      timeText.setText(p.full ? `FULL · CLAIM TO KEEP GATHERING` : `${hm(p.hours).toUpperCase()} / ${VIGIL_CAP_HOURS}H`);
       claim.box.setAlpha(p.tithes > 0 ? 1 : 0.5);
     };
     update();

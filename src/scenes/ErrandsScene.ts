@@ -47,7 +47,7 @@ export class ErrandsScene extends Phaser.Scene {
 
   create() {
     const save = game.save;
-    const { top, refresh } = modeScreen(this, 'Holy Errands', 'The Church has work beyond the crypts. Send Sisters away; they come home with spoils. Sisters away still fight.');
+    const { top, refresh } = modeScreen(this, 'Holy Errands', 'Sisters on errands can still fight.');
     const bw = GAME_W - PAD * 2;
     const s = errandsOf(save);
     this.timers = [];

@@ -28,7 +28,7 @@ export class InventoryScene extends Phaser.Scene {
 
   create() {
     const save = game.save;
-    const { top } = modeScreen(this, 'Inventory', 'Every relic, ash and page your Sisters have carried home.');
+    const { top } = modeScreen(this, 'Inventory', '');
     const bw = GAME_W - PAD * 2;
 
     // Currencies

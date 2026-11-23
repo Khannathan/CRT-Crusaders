@@ -18,7 +18,7 @@ export class PullHistoryScene extends Phaser.Scene {
   }
 
   create() {
-    const { top } = modeScreen(this, 'Oath Record', `Your last ${PULL_LOG_MAX} pulls, newest first. Nothing is hidden.`, 'Recruit');
+    const { top } = modeScreen(this, 'Oath Record', `Your last ${PULL_LOG_MAX} pulls, newest first.`, 'Recruit');
     const log = [...(game.save.pullLog ?? [])].reverse();
     const count = (r: string) => log.filter((p) => CRUSADERS.find((c) => c.id === p.id)?.rarity === r).length;
     const sinceUR = log.findIndex((p) => CRUSADERS.find((c) => c.id === p.id)?.rarity === 'UR');

@@ -307,3 +307,6 @@ export const CLASS_SKILLS: Record<string, [SkillDef, SkillDef, SkillDef, SkillDe
  * or behind), then still act. It is not a skill turn; the battle screen handles it.
  */
 export const SHIFT_SKILL: SkillDef = { id: 'shift', name: 'Step', desc: 'Free, once a turn: swap with the Sister beside you, then still act. Tap Step, then the Sister to trade places with.', from: any, target: 'self' };
+
+/** A skill's description without its closing "Cooldown N.", for places that already show the cooldown as a tag. */
+export const descNoCooldown = (desc: string) => desc.replace(/\s*Cooldown \d+\.\s*$/, '');

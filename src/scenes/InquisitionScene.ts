@@ -37,7 +37,7 @@ export class InquisitionScene extends Phaser.Scene {
     const now = Date.now();
     const rot = rotation(now);
     const st = inquisitionOf(save, now);
-    const { top } = modeScreen(this, 'The Inquisition', 'Every fortnight a new Edict. Three trials, nine Brands, and no mercy.');
+    const { top } = modeScreen(this, 'The Inquisition', 'A new Edict every fortnight.');
     const bw = GAME_W - PAD * 2;
 
     // The Edict
@@ -111,7 +111,7 @@ export class InquisitionScene extends Phaser.Scene {
           make: (rng) => inquisitionBattle(save, party, act, rng),
           finish: (_o, battle) => {
             const r = finishAct(save, act, battle);
-            let notice = 'Judgment failed. The heretics laugh. Try again.';
+            let notice = 'Judgment failed. Try again.';
             if (r.brands) notice = r.gained ? `${r.brands} Brand${r.brands > 1 ? 's' : ''} earned` : `${r.brands} Brand${r.brands > 1 ? 's' : ''}, no better than before`;
             for (const m of r.paid) notice += `\nMark ${m.at}: ${markText(m)}`;
             for (const g of r.gear) notice += `\n${g.name} (${g.rarity})`;

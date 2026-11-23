@@ -29,7 +29,7 @@ export class OrderBookScene extends Phaser.Scene {
 
   create() {
     const save = game.save;
-    const { top, refresh } = modeScreen(this, 'Order Book', 'Every Sister of every Order. Finish an Order\'s R and SR Sisters for Seals and a title.');
+    const { top, refresh } = modeScreen(this, 'Order Book', 'Collect an Order\'s R and SR Sisters for Seals and a title.');
     const owned = Object.keys(save.owned).length;
     const total = ORDER_LIST.reduce((n, o) => n + orderCount(save, o.id).of, 0);
 

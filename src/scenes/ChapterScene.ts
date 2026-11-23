@@ -36,11 +36,10 @@ import { TAB_BAR_H } from '../ui/tabBar';
 import { PAD, addFrame, addPanel, text } from '../ui/theme';
 
 const SIMULATED = [
-  'Your Chapter is played offline. There is no server and no other players.',
-  'Its fourteen members are AI Sisters, made up when you joined. Each has a Devotion (the chance she turns up on a given day) and a Might (how hard she strikes).',
-  'Each day the game rolls, for every member, whether she was devout. If she was, she tithes to the Chapter and strikes the week\'s Siege beast twice. Days you were away are caught up when you return (up to a week).',
-  'Their numbers are simulated; yours are real. Your tithes and your Siege fights are played, and count exactly as shown.',
-  'The Chapter levels from everyone\'s tithes. Each level lifts every one of your Sisters by 1% ATK and HP.',
+  'Played offline: fourteen AI Sisters, no other players.',
+  'Each day, a member may turn up (her Devotion) to tithe and strike the week\'s Siege beast twice (her Might). Days away catch up when you return, up to a week.',
+  'Your own tithes and Siege fights count exactly as shown.',
+  'Each Chapter level: all your Sisters +1% ATK and HP.',
 ];
 
 const fmt = (n: number) => Math.round(n).toLocaleString('en-US');
@@ -61,12 +60,13 @@ export class ChapterScene extends Phaser.Scene {
     const save = game.save;
     const c = chapterOf(save);
     if (c) commit();
-    const { top } = modeScreen(this, 'The Chapter', c ? `The ${c.name}. Tithe, besiege, and grow together.` : 'A house of Sisters who pray, tithe and fight as one.', undefined, 'bg-chapter');
+    const { top } = modeScreen(this, 'The Chapter', c ? `The ${c.name}.` : '', undefined, 'bg-chapter');
     const bw = GAME_W - PAD * 2;
     if (!c) {
-      addPanel(this, PAD, top, bw, 420);
-      this.add.text(PAD + 16, top + 14, SIMULATED.join('\n\n'), { ...text.body(16, PAL.ivory), wordWrap: { width: bw - 32 } });
-      makeButton(this, GAME_W / 2, top + 470, 280, 60, 'Take your vows', () => {
+      const blurb = this.add.text(PAD + 16, top + 14, SIMULATED.join('\n\n'), { ...text.body(16, PAL.ivory), wordWrap: { width: bw - 32 } }).setDepth(1);
+      const ph = blurb.height + 28;
+      addPanel(this, PAD, top, bw, ph);
+      makeButton(this, GAME_W / 2, top + ph + 50, 280, 60, 'Take your vows', () => {
         foundChapter(save);
         commit();
         this.scene.restart({ notice: 'The Chapter takes you in.' });

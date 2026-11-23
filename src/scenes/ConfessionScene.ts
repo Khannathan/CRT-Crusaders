@@ -52,7 +52,7 @@ export class ConfessionScene extends Phaser.Scene {
 
   private list() {
     const save = game.save;
-    const { top } = modeScreen(this, 'Confession', 'Fight beside them, keep Vigil with them, bring them offerings. In time they will speak.');
+    const { top } = modeScreen(this, 'Confession', 'Fight beside them, keep Vigil with them, bring offerings.');
     const owned = sortAndFilter(save, CRUSADERS.filter((c) => save.owned[c.id]));
     this.add.text(PAD, top, `BOND: ATK & HP, THEN DEVOTION`, text.hud(12, PAL.muted));
     tapForSources(this, this.add.text(GAME_W - PAD, top, `OFFERINGS ${offeringsHeld(save)}${candleReady(save) ? ' · CANDLE READY' : ''}`, text.hud(12, PAL.amber)).setOrigin(1, 0), 'offerings');

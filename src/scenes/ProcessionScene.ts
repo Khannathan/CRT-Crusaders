@@ -45,7 +45,7 @@ export class ProcessionScene extends Phaser.Scene {
 
   create() {
     const save = game.save;
-    const { top } = modeScreen(this, 'The Procession', 'The relics walk once a day. The dead come to take them back.');
+    const { top } = modeScreen(this, 'The Procession', '');
     const bw = GAME_W - PAD * 2;
     const left = processionLeft(save);
     this.add.text(PAD, top, `VICTORIES LEFT TODAY ${left}/${PROCESSION_ENTRIES}`, text.hud(14, left ? PAL.amber : PAL.steel));
@@ -73,7 +73,7 @@ export class ProcessionScene extends Phaser.Scene {
       addFrame(this, GAME_W / 2, y + h / 2, bw, h, { fill: open ? 0x1e1520 : 0x151017, edge: open ? PAL.goldEdge : PAL.armorShadow });
       this.add.text(PAD + 14, y + 12, t.name.toUpperCase(), text.hud(13, open ? PAL.amber : PAL.steel));
       const win = (Object.entries(t.win) as [keyof typeof POTENCY_NAME, number][]).map(([p, n]) => `${n} ${POTENCY_NAME[p]}`).join(' + ');
-      this.add.text(PAD + 14, y + 34, open ? `Wins ${win} offering${t.win.fine || t.win.holy || (t.win.common ?? 0) > 1 ? 's' : ''}` : 'Win the procession above to open it.', text.body(15, open ? PAL.ivory : PAL.steel));
+      this.add.text(PAD + 14, y + 34, open ? `Wins ${win} offering${t.win.fine || t.win.holy || (t.win.common ?? 0) > 1 ? 's' : ''}` : 'Locked', text.body(15, open ? PAL.ivory : PAL.steel));
       if (open) {
         drawRecommended(this, PAD + 14, y + 66, processionRecommended(save, tier), partyPower(save, party), { size: 12, label: 'PARTY' });
         makeButton(this, GAME_W - PAD - 70, y + h / 2, 116, 52, 'Walk', () => this.fight(tier), { active: left > 0, disabled: left <= 0, icon: 'blade', fontSize: 17 });

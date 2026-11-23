@@ -16,7 +16,7 @@ export class RivalsScene extends Phaser.Scene {
 
   create() {
     const save = game.save;
-    const { top } = modeScreen(this, 'Rival Orders', 'Computer-run Sisterhoods. Their Renown creeps up each day; yours rises with what you do.');
+    const { top } = modeScreen(this, 'Rival Orders', 'AI Sisterhoods. Your Renown rises with what you do.');
     const { rows, place } = ladder(save);
     const seen = save.ladderSeen;
     save.ladderSeen = place;

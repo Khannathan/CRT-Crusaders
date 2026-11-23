@@ -62,7 +62,7 @@ export class TowerScene extends Phaser.Scene {
   }
 
   create() {
-    const sub = this.view === 'bell' ? 'Bells that ring for no one living, floor upon floor without end. Any Sisters may climb.' : this.order ? `The ${this.order}'s own tower. Fifty floors, climbed only by four of its Sisters.` : 'Ten towers, one for each Order. Only a full party of the Order may climb, and each pays its Writs.';
+    const sub = this.view === 'bell' ? 'Endless floors. Any Sisters may climb.' : this.order ? `Fifty floors. Only its own Sisters may climb.` : 'A full party of one Order climbs its tower and earns its Writs.';
     const { top } = modeScreen(this, this.view === 'bell' ? 'The Bell Tower' : this.order ?? 'The Order Towers', sub, undefined, this.towerBg());
     const half = (GAME_W - PAD * 2 - 8) / 2;
     makeButton(this, PAD + half / 2, top + 20, half, 40, 'Bell Tower', () => this.scene.restart({ view: 'bell' }), { active: this.view === 'bell', fontSize: 16 });
@@ -193,7 +193,7 @@ export class TowerScene extends Phaser.Scene {
           finish: (_o, battle) => {
             const before = towerOf(save).best;
             const r = finishFloor(save, floor, battle);
-            const notice = r.reward ? `Floor ${floor} taken: ${rewardLine(r.reward)}${r.gear ? `\n${r.gear.name} (${r.gear.rarity})` : ''}` : 'Driven back down the stair. Climb again when ready.';
+            const notice = r.reward ? `Floor ${floor} taken: ${rewardLine(r.reward)}${r.gear ? `\n${r.gear.name} (${r.gear.rarity})` : ''}` : 'Driven back down the stair.';
             const rec = r.reward ? noteTower(save, floor, before) : undefined;
             return { scene: 'Tower', data: { notice, record: rec && beatenText(rec), view: 'bell' } };
           },
@@ -219,7 +219,7 @@ export class TowerScene extends Phaser.Scene {
           finish: (_o, battle) => {
             const r = finishOrderFloor(save, order, floor, battle);
             commit();
-            const notice = r.reward ? `Floor ${floor} taken: ${rewardLine(r.reward)}${r.gear ? `\n${r.gear.name} (${r.gear.rarity})` : ''}` : 'Driven back down the stair. Climb again when ready.';
+            const notice = r.reward ? `Floor ${floor} taken: ${rewardLine(r.reward)}${r.gear ? `\n${r.gear.name} (${r.gear.rarity})` : ''}` : 'Driven back down the stair.';
             return { scene: 'Tower', data: { notice, view: 'orders', order } };
           },
         };

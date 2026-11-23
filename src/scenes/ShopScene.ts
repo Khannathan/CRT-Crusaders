@@ -14,9 +14,9 @@ import { pickParty } from '../ui/partyPicker';
 import { PAD, addFrame, addIcon, text } from '../ui/theme';
 
 const COUNTERS: [Counter, string, string][] = [
-  ['gilt', 'Gilt', 'Premium goods for Gilt, and an offering of the day. Limits reset daily.'],
-  ['almonry', 'Almonry', 'Six offers for Alms, new each dawn. One free refresh a day.'],
-  ['tithes', 'Tithes', 'Common goods for Tithes. Limits reset each Monday.'],
+  ['gilt', 'Gilt', 'Limits reset daily.'],
+  ['almonry', 'Almonry', 'New each dawn. One free refresh a day.'],
+  ['tithes', 'Tithes', 'Limits reset each Monday.'],
 ];
 
 const PRICE_ICON = { gilt: 'gilt', alms: 'alms', tithes: 'tithe' } as const;
@@ -37,7 +37,7 @@ export class ShopScene extends Phaser.Scene {
 
   create() {
     const save = game.save;
-    const { top, refresh } = modeScreen(this, 'The Shop', 'The Church sells what it cannot use. Everything else it keeps.');
+    const { top, refresh } = modeScreen(this, 'The Shop', '');
     const bw = GAME_W - PAD * 2;
     const tw = bw / 3;
     COUNTERS.forEach(([id, label], i) => {
