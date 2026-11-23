@@ -11,6 +11,9 @@ import { PAD, addBackdrop, addHeading, addScreenGlow, noOrphan, text } from './t
  * content may start and the currency bar's refresh.
  */
 export function modeScreen(scene: Phaser.Scene, title: string, sub: string, back = tabOf(scene.scene.key), bg?: string) {
+  // A double tap on the button that opened this screen (Done, Back, a tab) must not land on
+  // whatever sits under the finger here, so taps are held off for a moment after it opens.
+  settleTaps(scene);
   // An optional faint backdrop, shown only once its art is in src/assets/ui.
   if (bg && scene.textures.exists(bg)) addBackdrop(scene, bg, GAME_W / 2, GAME_H / 2, GAME_W, GAME_H, { alpha: 0.28, fade: 0.6, fadeColor: 0x0e0d11 });
   addScreenGlow(scene);
@@ -41,4 +44,10 @@ export function toast(scene: Phaser.Scene, msg: string, y = GAME_H - 190) {
   const t = scene.add.text(GAME_W / 2, y, msg.split('\n').map(noOrphan).join('\n'), { ...text.body(19, PAL.ivory), align: 'center', wordWrap: { width: GAME_W - 80 } }).setOrigin(0.5).setDepth(31);
   const bg = scene.add.rectangle(GAME_W / 2, y, t.width + 40, t.height + 26, 0x1b121c, 0.97).setStrokeStyle(1, PAL.amber).setDepth(30);
   scene.tweens.add({ targets: [t, bg], alpha: 0, delay: 3200, duration: 700, onComplete: () => (t.destroy(), bg.destroy()) });
+}
+
+/** Ignore taps for the first `ms` after a screen opens, so a double tap cannot fall through to it. */
+export function settleTaps(scene: Phaser.Scene, ms = 200) {
+  scene.input.enabled = false;
+  scene.time.delayedCall(ms, () => { if (scene.input) scene.input.enabled = true; });
 }

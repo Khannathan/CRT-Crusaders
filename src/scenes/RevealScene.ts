@@ -10,6 +10,7 @@ import { addSplash, portraitKey, queueSplash, splashKey } from '../ui/placeholde
 import { FIGURE_H, FIGURE_W, SisterSprite, fullKey } from '../ui/sisterSprite';
 import { holdForCard } from '../ui/sisterCard';
 import { fitLine } from '../ui/theme';
+import { settleTaps } from '../ui/modeScreen';
 
 const CY = 400;
 const SIZE = 256;
@@ -63,6 +64,7 @@ export class RevealScene extends Phaser.Scene {
   }
 
   create() {
+    settleTaps(this);
     this.cameras.main.setBackgroundColor(0x0a090c);
     this.counter = this.add.text(24, 28, '', { fontFamily: FONT, fontSize: '18px', color: hex(PAL.steel) }).setOrigin(0, 0.5);
     this.hint = this.add
@@ -92,7 +94,7 @@ export class RevealScene extends Phaser.Scene {
       this.busy = false;
       this.hint.setText('Break the seals!');
     });
-    this.skipBest = makeButton(this, GAME_W / 2, GAME_H - 70, 260, 64, 'Skip to best', () => this.skipToBest(), { fontSize: 19 });
+    this.skipBest = makeButton(this, GAME_W / 2, GAME_H - 70, 260, 64, 'Skip to all ten', () => this.skipToBest(), { fontSize: 19 });
     this.skipBest.all.forEach((o) => (o as unknown as Phaser.GameObjects.Components.Depth).setDepth?.(10));
   }
 
@@ -171,16 +173,14 @@ export class RevealScene extends Phaser.Scene {
     this.hint.setText(this.revealed < this.results.length - 1 ? 'Tap for the next seal' : 'Tap to see all ten');
   }
 
-  /** Breaks every seal at once and shows the rarest Sister full size. */
+  /**
+   * Skip: straight to the summary of all ten, whatever is on screen (a seal
+   * mid-shake, a Sister mid-rise). Works at any moment; the pulls were granted
+   * before this screen opened, so nothing is lost by skipping.
+   */
   private skipToBest() {
-    if (this.busy) return;
-    if (this.focus) this.closeFocus();
-    while (this.revealed < this.results.length - 1) this.breakNext(true);
-    const best = [...this.results].sort((a, b) => rankOf(b) - rankOf(a) || Number(b.isNew) - Number(a.isNew))[0];
-    this.skipBest?.all.forEach((o) => o.destroy());
     this.skipBest = undefined;
-    if (best.crusader.rarity === 'UR') music.stinger('ur', 'duck');
-    this.showFocus(best);
+    this.showSummary();
   }
 
   private advance() {
@@ -252,6 +252,8 @@ export class RevealScene extends Phaser.Scene {
     const c = r.crusader;
     const card = this.add.container(GAME_W / 2, CY).setData('stage', 'shown');
     this.card = card;
+    // No tap closes her until the static has cleared.
+    this.busy = true;
     const color = RARITY_COLOR[c.rarity];
 
     if (high) {
@@ -287,7 +289,13 @@ export class RevealScene extends Phaser.Scene {
     }
 
     let f = 0;
-    const flicker = this.time.addEvent({ delay: 60, loop: true, callback: () => noise.setTexture(noiseKey(++f % NOISE_FRAMES)).setDisplaySize(w, h) });
+    const flicker = this.time.addEvent({ delay: 60, loop: true, callback: () => noise.active && noise.setTexture(noiseKey(++f % NOISE_FRAMES)).setDisplaySize(w, h) });
+    // Timers that touch her die with her card (a skip or summary can clear it mid-rise).
+    let after: Phaser.Time.TimerEvent | undefined;
+    card.once(Phaser.GameObjects.Events.DESTROY, () => {
+      flicker.remove();
+      after?.remove();
+    });
     this.tweens.add({ targets: portrait, alpha: 1, duration: high ? 900 : 500, delay: high ? 500 : 250 });
     this.tweens.add({
       targets: noise,
@@ -299,7 +307,7 @@ export class RevealScene extends Phaser.Scene {
         noise.destroy();
         // The rare ones raise their relic as the static clears.
         if (sprite && high) sprite.cast(color, c.rarity === 'UR');
-        if (stepper) this.time.delayedCall(high ? 700 : 450, () => (high ? stepper.cast(color, c.rarity === 'UR') : stepper.attack(-1)));
+        if (stepper) after = this.time.delayedCall(high ? 700 : 450, () => card.active && (high ? stepper.cast(color, c.rarity === 'UR') : stepper.attack(-1)));
         this.busy = false;
         if (this.results.length > 1) this.hint.setText('Tap to return to the table');
         else this.hint.setText('Tap to continue');
@@ -330,6 +338,8 @@ export class RevealScene extends Phaser.Scene {
     this.children.removeAll(true);
     this.tweens.killAll();
     this.time.removeAllEvents();
+    // "Back to altar" sits where Skip was: a double tap on Skip must not leave before the ten are seen.
+    settleTaps(this, 350);
     this.add.text(GAME_W / 2, 56, 'Sworn', { fontFamily: FONT, fontSize: '32px', color: hex(PAL.amber) }).setOrigin(0.5);
 
     const cols = 3;
