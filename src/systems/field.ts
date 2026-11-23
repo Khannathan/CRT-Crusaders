@@ -1,7 +1,7 @@
 import { CLASSES } from '../data/classes';
 import { ENEMIES } from '../data/enemies';
 import type { SkillDef } from '../data/skills';
-import { autoChoose } from './autoplay';
+import { autoChoose, autoStep } from './autoplay';
 import { Battle, ZEAL_MAX, skillsFor, type BattleEvent, type Unit } from './combat';
 
 /**
@@ -31,10 +31,24 @@ import { Battle, ZEAL_MAX, skillsFor, type BattleEvent, type Unit } from './comb
  * headless in tests.
  */
 
+/**
+ * Foes hit this much harder on the field than in the old turn-based game: the
+ * Sisters' free Step and catching up after the walk in make them a little
+ * stronger here (tuned with balance.test.ts on the field).
+ */
+export const FIELD_ENEMY_ATK = 1.09;
+/** And the rank and file have this much more health (bosses keep theirs). */
+export const FIELD_ENEMY_HP = 1;
+/** Foes that shoot keep this share of a Sister's ranged reach. */
+const ENEMY_SHOOT = 1;
+/** Sisters act this much more often than foes of the same speed: they walk to most fights, foes' volleys do not. */
+export const SISTER_PACE = 0.94;
+/** Share of a beat a unit may catch up after walking into reach. */
+const MAX_CATCHUP = 0.9;
 /** Seconds between a unit's actions at speed 10. */
 export const ACT_SEC = 2.2;
 /** Seconds per round (candle, relic Zeal, howl, boss traits). */
-export const ROUND_SEC = 2.6;
+export const ROUND_SEC = 2.2;
 /** A delayed unit's next action waits this much longer. */
 export const DELAY_SEC = 1.6;
 /** An extra action (Coup de Grâce) comes this soon after the swing ends. */
@@ -78,6 +92,8 @@ export interface Body {
   entering?: boolean;
   /** Its start-of-turn effects have run; it acts once it is in reach. */
   ready: boolean;
+  /** Seconds it has been ready but still walking into reach. */
+  waited?: number;
   /** Who it walked toward last frame (melee fighters share out spots around a foe). */
   goalUid?: string;
   /** Where it stands in formation (rank-based), for regrouping between fights. */
@@ -127,6 +143,8 @@ export class FieldBattle {
   /** Seconds since the fight began. */
   time = 0;
   private roundClock = 0;
+  /** Someone has acted: from now on rounds pass. */
+  private engaged = false;
   private done = false;
   private k: number;
   /** The foe the player marked: every Sister who can hit it turns on it. */
@@ -186,6 +204,12 @@ export class FieldBattle {
   }
 
   private addBody(u: Unit, near?: Body): Body {
+    if (u.side === 'enemy') {
+      u.atk = Math.round(u.atk * FIELD_ENEMY_ATK);
+      const full = u.hp >= u.maxHp;
+      if (!u.boss) u.maxHp = Math.round(u.maxHp * FIELD_ENEMY_HP);
+      if (full) u.hp = u.maxHp;
+    }
     const home = this.home(u);
     let { x, y } = home;
     const carried = u.side === 'party' ? this.opts.carry?.get(u.ref) : undefined;
@@ -204,7 +228,8 @@ export class FieldBattle {
       x,
       y,
       reach,
-      range: (reach === 'melee' ? REACH.melee * (this.opts.bodyScale ?? 1) : REACH[reach]) * this.k * (u.boss ? 1.2 : 1),
+      // Foes that shoot stand a little closer than Sisters do, so melee Sisters can get at them.
+      range: (reach === 'melee' ? REACH.melee * (this.opts.bodyScale ?? 1) : REACH[reach] * (u.side === 'enemy' ? ENEMY_SHOOT : 1)) * this.k * (u.boss ? 1.2 : 1),
       speed: (u.side === 'party' ? 92 : 78) * fast * this.k,
       radius: (u.boss ? 44 : 27) * this.k * (this.opts.bodyScale ?? 1),
       // Not everyone strikes at once at the start.
@@ -224,7 +249,7 @@ export class FieldBattle {
   /** Seconds between this unit's actions: faster units act a little more often. */
   interval(u: Unit) {
     const f = Math.max(0.8, Math.min(1.25, 1 + (10 - u.spd) * 0.025));
-    return ACT_SEC * f * (u.status.haste ? 0.8 : 1);
+    return ACT_SEC * f * (u.status.haste ? 0.8 : 1) * (u.side === 'party' ? SISTER_PACE : 1);
   }
 
   private dist(a: Body, b: Body) {
@@ -249,12 +274,22 @@ export class FieldBattle {
   }
 
   /** The skill and target a unit wants, by the same brains as the turn-based Auto player and enemies. */
-  private choose(u: Unit): Body['plan'] {
+  private choose(u: Unit, out: FieldEvent[] = []): Body['plan'] {
     if (u.side === 'enemy') {
       // Nothing it can use from where it stands (it waits, as in the turn-based game).
       if (!skillsFor(u).some((s) => this.battle.canUse(u, s))) return undefined;
       const c = this.battle.enemyChoose(u);
       return { skill: c.skill, targetUid: c.target?.uid, age: 0 };
+    }
+    // A Sister knocked out of her ranks trades places with a neighbour first
+    // (the free Step of the turn-based game), so rank-bound kits keep working.
+    const partner = autoStep(this.battle, u);
+    if (partner) {
+      const events = this.battle.step(u, partner);
+      if (events.length) {
+        this.reform();
+        out.push({ kind: 'tick', events });
+      }
     }
     const c = autoChoose(this.battle, u, { noRite: this.opts.manualLitany });
     if (!c.skill || (c.skill.rite && this.opts.manualLitany)) return undefined;
@@ -312,8 +347,8 @@ export class FieldBattle {
     const b = this.battle;
     this.time += dt;
 
-    // Rounds tick on a clock.
-    if (b.round === 0 || (this.roundClock += dt) >= ROUND_SEC) {
+    // Rounds tick on a clock, from the first blow: the walk in costs no candle.
+    if (b.round === 0 || (this.engaged && (this.roundClock += dt) >= ROUND_SEC)) {
       this.roundClock = 0;
       const events: BattleEvent[] = [];
       if (b.roundLimit && b.round >= b.roundLimit) {
@@ -342,9 +377,11 @@ export class FieldBattle {
           continue;
         }
         me.ready = true;
+        me.waited = 0;
       }
+      if (me.ready) me.waited = (me.waited ?? 0) + dt;
       if (me.ready && !me.plan) {
-        me.plan = this.choose(u);
+        me.plan = this.choose(u, out);
         if (!me.plan) me.timer = 0.4; // nothing worth doing yet: think again shortly
       }
 
@@ -398,12 +435,16 @@ export class FieldBattle {
     const target = targetUid ? b.get(targetUid) : undefined;
     const charge = u.side === 'enemy' && !!skill.windup && !u.status.charging;
     if (target && target !== u) me.face = this.bodies.get(target.uid)!.x >= me.x ? 1 : -1;
+    this.engaged = true;
     const events = b.act(u, skill, target && target.hp > 0 ? target : undefined);
     me.lock = skill.rite ? LITANY_SEC : SWING_SEC;
     // A tapped Litany is a free action: her own clock carries on.
     if (!free) {
       me.ready = false;
-      me.timer = this.interval(u);
+      // Time spent walking into reach is not lost: the next action comes that
+      // much sooner (up to most of a beat), so walkers keep pace with casters.
+      me.timer = this.interval(u) - Math.min(me.waited ?? 0, this.interval(u) * MAX_CATCHUP);
+      me.waited = 0;
     }
     // Another action at once (Coup de Grâce): in turn order she goes to the front
     // of the queue; on the field she strikes again as soon as the swing ends.
@@ -429,7 +470,9 @@ export class FieldBattle {
   private addSummons(caller: Body, out: FieldEvent[]) {
     for (const u of this.battle.units) {
       if (this.bodies.has(u.uid)) continue;
-      this.addBody(u, caller);
+      const nb = this.addBody(u, caller);
+      // A summoned foe needs a beat to rise before it acts (as it waits for the next round in turn order).
+      nb.timer = this.interval(u);
       out.push({ kind: 'spawn', uid: u.uid });
     }
   }
@@ -482,8 +525,9 @@ export class FieldBattle {
     if (d > want) step = Math.min(me.speed * dt, d - want);
     else if (me.reach !== 'melee' && goal.side !== u.side && d < me.range * 0.4) step = -me.speed * 0.6 * dt;
     if (step) {
-      me.x += (dx / d) * step;
-      me.y += (dy / d) * step;
+      const dir = step > 0 ? this.avoid(me, dx / d, dy / d, g.uid) : { x: dx / d, y: dy / d };
+      me.x += dir.x * step;
+      me.y += dir.y * step;
       me.moving = true;
     }
     if (Math.abs(dx) > 4) me.face = dx > 0 ? 1 : -1;
@@ -515,10 +559,44 @@ export class FieldBattle {
     const d = Math.hypot(dx, dy);
     if (d < 3) return;
     const step = Math.min(me.speed * dt, d);
-    me.x += (dx / d) * step;
-    me.y += (dy / d) * step;
+    const dir = this.avoid(me, dx / d, dy / d);
+    me.x += dir.x * step;
+    me.y += dir.y * step;
     me.moving = true;
     if (Math.abs(dx) > 4) me.face = dx > 0 ? 1 : -1;
+  }
+
+  /**
+   * Steers around bodies in the way: anyone standing just ahead on the line of
+   * travel turns the step sideways, toward the side the walker is already on,
+   * so a Sister goes round a boss instead of pushing into its back.
+   */
+  private avoid(me: Body, ux: number, uy: number, goalUid?: string): { x: number; y: number } {
+    const look = 90 * this.k;
+    let sx = 0;
+    let sy = 0;
+    for (const u of this.battle.alive()) {
+      if (u.uid === me.uid || u.uid === goalUid) continue;
+      const o = this.bodies.get(u.uid);
+      if (!o) continue;
+      const rx = o.x - me.x;
+      const ry = o.y - me.y;
+      const ahead = rx * ux + ry * uy;
+      if (ahead <= 0 || ahead > look + o.radius) continue;
+      const side = rx * -uy + ry * ux; // signed distance off the line
+      const clear = me.radius + o.radius;
+      if (Math.abs(side) >= clear) continue;
+      // Turn away from it, harder the closer and more central it is.
+      const push = (1 - Math.abs(side) / clear) * (1 - ahead / (look + o.radius + 1));
+      const away = side >= 0 ? -1 : 1;
+      sx += -uy * away * push * 1.6;
+      sy += ux * away * push * 1.6;
+    }
+    if (!sx && !sy) return { x: ux, y: uy };
+    const nx = ux + sx;
+    const ny = uy + sy;
+    const n = Math.hypot(nx, ny) || 1;
+    return { x: nx / n, y: ny / n };
   }
 
   /** Nobody stands inside anyone else. */

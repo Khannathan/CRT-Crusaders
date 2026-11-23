@@ -98,7 +98,7 @@ export const ENEMIES: Record<string, EnemyDef> = {
     skills: [{ id: 'grave-breath', name: 'Grave Breath', desc: '', from: any, target: 'enemy', mult: 0.6, poison: { mult: 0.45, turns: 3 }, aim: 'random' }],
   },
   choir: {
-    id: 'choir', name: 'The Choir Below', hp: 530, atk: 20, armor: 48, spd: 10, boss: true, color: 0x652b3b, shape: 'choir',
+    id: 'choir', name: 'The Choir Below', hp: 530, atk: 18, armor: 48, spd: 10, boss: true, color: 0x652b3b, shape: 'choir',
     blasphemy: { id: 'drowning-requiem', name: 'Drowning Requiem', desc: 'BLASPHEMY: drowns every Sister, steals 25 of their Zeal and weakens them.', from: any, target: 'allEnemies', mult: 1.4, zealDrain: 25, weaken: { pct: 0.3, turns: 2 }, rite: true, windup: true },
     skills: [
       { id: 'hymn-of-drowning', name: 'Hymn of Drowning', desc: '', from: any, target: 'allEnemies', mult: 0.6 },
