@@ -23,6 +23,8 @@ export interface PickOpts {
   /** Pre-selected, in rank order. */
   initial: string[];
   max?: number;
+  /** Fewest Sisters the fight takes (Confirm waits until then). */
+  min?: number;
   /** Only these Sisters may be chosen (others are shown dimmed with `why`). */
   allow?: (c: CrusaderDef) => boolean;
   why?: string;
@@ -108,10 +110,12 @@ export function pickParty(scene: Phaser.Scene, save: SaveData, opts: PickOpts, d
     const orders = picked.map((id) => all.find((c) => c.id === id)!.order);
     if (orders.length && max > 1) layer.add(drawOrderChips(scene, GAME_W / 2, GAME_H - 108, orders, 40));
     else if (opts.why) layer.add(scene.add.text(GAME_W / 2, GAME_H - 104, opts.why, text.body(14, PAL.steel)).setOrigin(0.5));
-    const go = makeButton(scene, GAME_W / 2 + 166, GAME_H - 62, 160, 60, opts.confirm, () => {
+    const ready = picked.length >= Math.max(1, opts.min ?? 1);
+    const go = makeButton(scene, GAME_W / 2 + 166, GAME_H - 62, 160, 60, ready ? opts.confirm : `${picked.length} of ${opts.min}`, () => {
+      if (!ready) return;
       layer.destroy();
       done([...picked]);
-    }, { active: picked.length > 0, disabled: !picked.length, fontSize: 18 });
+    }, { active: ready, disabled: !ready, fontSize: 18 });
     const sug = makeButton(scene, GAME_W / 2, GAME_H - 62, 160, 60, 'Suggest', () => {
       picked.splice(0, picked.length, ...suggest());
       draw();
