@@ -31,6 +31,7 @@ import { ChronicleScene } from './scenes/ChronicleScene';
 import { MatinsScene } from './scenes/MatinsScene';
 import { RankScene } from './scenes/RankScene';
 import { TrialsScene } from './scenes/TrialsScene';
+import { HoldScene } from './scenes/HoldScene';
 import { FeastScene } from './scenes/FeastScene';
 import { ArmoryScene } from './scenes/ArmoryScene';
 import { ChapterScene } from './scenes/ChapterScene';
@@ -88,6 +89,7 @@ function start() {
       MatinsScene,
       RankScene,
       TrialsScene,
+      HoldScene,
       FeastScene,
       ArmoryScene,
       ChapterScene,

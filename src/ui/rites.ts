@@ -1,3 +1,4 @@
+import { HOLD_WAVES, holdLeft, holdOf } from '../systems/holdLine';
 import { HOUNDS } from '../data/hounds';
 import type { BoostKind } from '../systems/boosts';
 import { armoryOf, featuredSet, PITY } from '../systems/armory';
@@ -102,6 +103,11 @@ export const RITES: RiteEntry[] = [
     label: 'Relic Trials', scene: 'Trials', icon: 'shield', rank: 3, home: 'board', bg: 'bg-iron-oubliette', boost: 'trials', ready: (s) => entriesLeft(s) > 0,
     blurb: 'The dead guard a new spoil each dawn.',
     status: (s) => `${entriesLeft(s)} of ${TRIAL_ENTRIES} entries left today`,
+  },
+  {
+    label: 'Hold the Line', scene: 'Hold', icon: 'shield', rank: 4, home: 'board', bg: 'bg-candle-maze', ready: (s) => holdLeft(s) > 0 || !!holdOf(s).stand,
+    blurb: 'Ten waves. Wounds carry. Hold!',
+    status: (s) => `${holdOf(s).stand ? `Wave ${holdOf(s).stand!.held + 1} waits` : `${holdLeft(s)} stand left today`}  ·  best ${holdOf(s).best}/${HOLD_WAVES}`,
   },
   {
     label: 'Reliquary Procession', scene: 'Procession', icon: 'flame', rank: 5, home: 'board', bg: 'bg-candle-maze', ready: (s) => processionLeft(s) > 0,
