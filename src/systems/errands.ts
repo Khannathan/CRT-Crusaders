@@ -123,7 +123,7 @@ export const openErrands = (save: SaveData, now = Date.now()) => {
 };
 
 /** Sisters away on an errand. */
-export const busySisters = (save: SaveData) => new Set(errandsOf(save).active.flatMap((a) => a.sisters));
+export const busySisters = (save: SaveData) => new Set((save.errands?.active ?? []).flatMap((a) => a.sisters));
 
 export const bonusLabel = (e: ErrandDef) => (e.bonus.kind === 'order' ? e.bonus.value : CLASSES[e.bonus.value]?.name ?? e.bonus.value);
 
