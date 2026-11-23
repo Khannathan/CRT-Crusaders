@@ -200,12 +200,12 @@ function K(id: string, build: (own: (s: Own) => SkillDef) => Kit) {
 // ======================= Iron Vigil: Overwatch =======================
 
 K('CC-W040', (own) => ({
-  passive: sig('Watchfire', 'At the start of each round she sets the foe that acts first Burning for 2 turns. Her burns and poisons are 30% stronger.'),
-  sig: { burnFirst: 2, dotMult: 0.3 },
+  passive: sig('Watchfire', 'At the start of each round she sets the foe that acts first Burning for 2 turns. Her burns and poisons are 15% stronger.'),
+  sig: { burnFirst: 2, dotMult: 0.15 },
   skills: [
     own({ name: 'Beacon Smoke', desc: 'Smoke every enemy (-20% attack for 2 turns) and go on Overwatch: the next foe to act is struck and set Burning.', target: 'allEnemies', mult: 0.3, weaken: { pct: 0.2, turns: 2 }, overwatch: ow(0.3, { poison: { mult: 0.45, turns: 2 }, stackPoison: true }), cooldown: 2 }),
     own({ name: 'Iron Thurible', desc: 'Swing at rank 1-2 and set it Burning for 2 turns (stacks). If it was already Burning, it is also Sundered (-20% armor) for 2 turns.', from: [1, 2, 3], target: 'enemy', reach: [1, 2], mult: 0.9, poison: { mult: 0.45, turns: 2 }, stackPoison: true, cond: { if: 'burning', then: { sunder: { pct: 0.2, turns: 2 } } } }),
-    own({ name: 'Tower Lamp', desc: "Spread one foe's burn to every other foe, then ignite it all at once on that foe for 1.3x. Cooldown 3.", target: 'enemy', mult: 0.3, spreadPoison: true, detonate: 1.3, cooldown: 3 }),
+    own({ name: 'Tower Lamp', desc: "Spread one foe's burn to every other foe, then ignite it all at once on that foe. Cooldown 3.", target: 'enemy', mult: 0.3, spreadPoison: true, detonate: 1.0, cooldown: 3 }),
     own({ name: 'The Wall Is Lit', desc: 'LITANY: every enemy Burns for 3 turns (stacks), and every Sister goes on Overwatch.', target: 'allEnemies', mult: 0.5, poison: { mult: 0.5, turns: 3 }, stackPoison: true, overwatchAll: OVERWATCH_HIT, rite: true }),
   ],
   seal: { name: 'Never Sleep', desc: 'The first time a boss starts charging, every burn on it ignites at once and it loses 20 Wrath.', kind: 'neverSleep' },
@@ -296,9 +296,9 @@ K('CC-W050', (own) => ({
   sig: { mercyUp: 0.1, mercyZeal: 10 },
   skills: [
     own({ name: 'Ashen Reading', desc: 'Hit any enemy, Hex it (-20% Magic Resist) and Foretell it: its Mercy line is 15% higher, for 2 turns.', target: 'enemy', mult: 1.0, hex: { pct: 0.2, turns: 2 }, foretell: { pct: 0.15, turns: 2 } }),
-    own({ name: 'Grant Peace', desc: 'An ally gains +30% attack for 2 turns and Haste. Cooldown 2.', target: 'ally', empower: { pct: 0.3, turns: 2 }, empowerTarget: true, haste: 1, cooldown: 2 }),
+    own({ name: 'Grant Peace', desc: 'An ally gains +35% attack for 2 turns and Haste. Cooldown 2.', target: 'ally', empower: { pct: 0.35, turns: 2 }, empowerTarget: true, haste: 1, cooldown: 2 }),
     own({ name: 'Smoke of the Pyre', desc: 'Every enemy is Weakened (-20% attack) for 2 turns; foes under half HP are also Delayed. Cooldown 3.', target: 'allEnemies', weaken: { pct: 0.2, turns: 2 }, cond: { if: 'underHalf', then: { delay: true } }, cooldown: 3 }),
-    own({ name: 'Absolution', desc: 'LITANY: heavy magic damage on every enemy; any common foe left under 30% HP is granted Mercy at once.', target: 'allEnemies', mult: 1.1, mercyLine: 0.3, rite: true }),
+    own({ name: 'Absolution', desc: 'LITANY: heavy magic damage on every enemy; any common foe left under 30% HP is granted Mercy at once.', target: 'allEnemies', mult: 1.3, mercyLine: 0.3, rite: true }),
   ],
   seal: { name: 'Last Rites Heard', desc: 'The first time a Sister would fall, she is healed 30% instead and her attacker is Foretold.', kind: 'lastRites' },
   shines: ['Waves and summons', "Pilgrim's Road", 'Crypt runs'],
@@ -320,8 +320,8 @@ K('CC-W077', (own) => ({
   passive: sig('Coup de Grâce', 'Her hits on foes under half HP always crit. Once a round, a Mercy kill gives her another action.'),
   sig: { critUnderHalf: true, mercyExtra: true },
   skills: [
-    own({ name: 'Measured Cut', desc: 'A strike on rank 1-3 that cannot kill: it leaves the foe at its Mercy line at least.', from: [1, 2], target: 'enemy', reach: [1, 2, 3], mult: 1.3, cannotKill: true }),
-    own({ name: 'Riposte Thrust', desc: 'Strike rank 1-2 and counter anyone who hits her until her next turn.', from: [1, 2], target: 'enemy', reach: [1, 2], mult: 1.0, counter: { mult: 0.6, turns: 1 } }),
+    own({ name: 'Measured Cut', desc: 'A strike on rank 1-3 that cannot kill: it leaves the foe at its Mercy line at least.', from: [1, 2], target: 'enemy', reach: [1, 2, 3], mult: 1.45, cannotKill: true }),
+    own({ name: 'Riposte Thrust', desc: 'Strike rank 1-2 and counter anyone who hits her until her next turn.', from: [1, 2], target: 'enemy', reach: [1, 2], mult: 1.2, counter: { mult: 0.6, turns: 1 } }),
     own({ name: "Duelist's Salute", desc: '+25% attack and +20% critical chance for 2 turns. Cooldown 2.', target: 'self', empower: { pct: 0.25, turns: 2 }, critUp: { pct: 0.2, turns: 2 }, cooldown: 2 }),
     own({ name: 'Mercy Stroke', desc: 'LITANY: strike every enemy, double against foes under half HP.', target: 'allEnemies', mult: 0.9, cond: { if: 'underHalf', then: { mult: 1.8 } }, rite: true }),
   ],
@@ -490,7 +490,7 @@ K('CC-W199', (own) => ({
   skills: [
     st('hospitaller', 'chalice-draught'),
     own({ name: 'Ossuary Tending', desc: 'Every ally Regenerates 6% a turn for 3 turns; spend 2 Remains to also Ward them (-15%) for 2 turns. Cooldown 2.', target: 'allAllies', regen: { pct: 0.06, turns: 3 }, ward: { pct: 0.15, turns: 2 }, spend: { kw: 'remains', n: 2, need: true, orElse: { ward: undefined }, per: {} }, cooldown: 2 }),
-    own({ name: 'Unmask the Fraud', desc: 'Hit any foe and strip its shield and blessings. Cooldown 2.', target: 'enemy', mult: 0.8, purge: true, cooldown: 2 }),
+    own({ name: 'Unmask the Fraud', desc: 'Hit any foe and strip its shield and blessings. Cooldown 2.', target: 'enemy', mult: 1.1, purge: true, cooldown: 2 }),
     own({ name: 'Chalice of Bones', desc: 'LITANY: raise every fallen Sister with 40% HP, heal every ally 30%, and the party gains 2 Remains.', target: 'allAllies', revive: 0.4, healPct: 0.3, gain: { remains: 2 }, rite: true }),
   ],
   seal: { name: 'Not Yet', desc: 'The first Sister to fall each fight is raised at once with 25% HP.', kind: 'notYet' },
@@ -501,9 +501,9 @@ K('CC-W079', (own) => ({
   passive: sig('Harvest', 'Each Remains the party gains gives her 8 Zeal and +5% attack for the fight (up to +25%).'),
   sig: { remainsZeal: 8, remainsAtk: { per: 0.05, cap: 0.25 } },
   skills: [
-    own({ name: "Duelist's Lunge", desc: 'Lunge a rank forward and strike rank 1-3.', from: [1, 2, 3], target: 'enemy', reach: [1, 2, 3], mult: 1.2, move: -1 }),
+    own({ name: "Duelist's Lunge", desc: 'Lunge a rank forward and strike rank 1-3.', from: [1, 2, 3], target: 'enemy', reach: [1, 2, 3], mult: 1.35, move: -1 }),
     own({ name: 'Grave Feint', desc: 'Counter anyone who hits her for 2 turns, at 0.6x. Cooldown 2.', target: 'self', counter: { mult: 0.6, turns: 2 }, cooldown: 2 }),
-    own({ name: 'Reap', desc: 'Spend 2 Remains to strike ranks 1 and 2 at once. Cooldown 1.', target: 'allEnemies', onlyRanks: [1, 2], mult: 1.15, spend: { kw: 'remains', n: 2, need: true, per: {} }, cooldown: 1 }),
+    own({ name: 'Reap', desc: 'Spend 2 Remains to strike ranks 1 and 2 at once. Cooldown 1.', target: 'allEnemies', onlyRanks: [1, 2], mult: 1.4, spend: { kw: 'remains', n: 2, need: true, per: {} }, cooldown: 1 }),
     own({ name: 'Harvest of Heretics', desc: 'LITANY: strike every enemy; each kill adds 1 Remains.', target: 'allEnemies', mult: 1.0, onKill: { remains: 1 }, rite: true }),
   ],
   shines: ['Swarm fights', "Pilgrim's Road"],
@@ -525,10 +525,10 @@ K('CC-W235', (own) => ({
   passive: sig('Saint-Fletched', 'Her bolts are cut from saints\' bones: each Remains she spends gives that bolt +20% damage and 15% more armor pierce.'),
   sig: {},
   skills: [
-    own({ name: 'Bone Bolt', desc: 'A heavy bolt on any rank; spend 1 Remains to also Sunder it (-25% armor) for 2 turns.', from: [2, 3, 4], target: 'enemy', mult: 1.25, armorPierce: 0.2, sunder: { pct: 0.25, turns: 2 }, spend: { kw: 'remains', n: 1, need: true, orElse: { sunder: undefined }, per: { multPct: 0.2, armorPierce: 0.15 } } }),
+    own({ name: 'Bone Bolt', desc: 'A heavy bolt on any rank; spend 1 Remains to also Sunder it (-25% armor) for 2 turns.', from: [2, 3, 4], target: 'enemy', mult: 1.4, armorPierce: 0.2, sunder: { pct: 0.25, turns: 2 }, spend: { kw: 'remains', n: 1, need: true, orElse: { sunder: undefined }, per: { multPct: 0.2, armorPierce: 0.15 } } }),
     st('arbalist', 'marking-shot'),
-    own({ name: 'Reliquary Volley', desc: 'Spend up to 4 Remains: one bolt (0.9x, through 15% of its Armor) at a random foe for each. Cooldown 2.', target: 'allEnemies', mult: 0.9, armorPierce: 0.15, volley: 4, cooldown: 2 }),
-    own({ name: 'Ossuary Ballista', desc: 'LITANY: a crushing bolt through shields and 30% of its Armor; spends every Remains for more.', target: 'enemy', mult: 2.0, armorPierce: 0.3, pierceShield: true, spend: { kw: 'remains', per: { multPct: 0.2, armorPierce: 0.15 } }, rite: true }),
+    own({ name: 'Reliquary Volley', desc: 'Spend up to 4 Remains: one bolt (1.1x, through 15% of its Armor) at a random foe for each. Cooldown 2.', target: 'allEnemies', mult: 1.1, armorPierce: 0.15, volley: 4, cooldown: 2 }),
+    own({ name: 'Ossuary Ballista', desc: 'LITANY: a crushing bolt through shields and 30% of its Armor; spends every Remains for more.', target: 'enemy', mult: 2.4, armorPierce: 0.3, pierceShield: true, spend: { kw: 'remains', per: { multPct: 0.2, armorPierce: 0.15 } }, rite: true }),
   ],
   shines: ['Flayed Saint Hunt', 'Bosses with adds'],
 }));
@@ -581,10 +581,10 @@ K('CC-W151', (own) => ({
 const HYMN = 2; // turns a Hymn's status lasts, so it holds until each Sister's own turn
 
 K('CC-W080', (own) => ({
-  passive: sig('Duet', 'While any Hymn plays, each of her strikes lands twice (the second at 40%), and every strike gives the party 3 Zeal.'),
-  sig: { hymnDouble: 0.4, hymnStrikeZeal: 3 },
+  passive: sig('Duet', 'While any Hymn plays, each of her strikes lands twice (the second at 60%), and every strike gives the party 3 Zeal.'),
+  sig: { hymnDouble: 0.6, hymnStrikeZeal: 3 },
   skills: [
-    own({ name: 'Cadence Thrust', desc: 'Lunge into rank 1-3; +50% while a Hymn plays.', from: [1, 2], target: 'enemy', reach: [1, 2, 3], mult: 1.15, cond: { if: 'hymn', then: { mult: 1.75 } } }),
+    own({ name: 'Cadence Thrust', desc: 'Lunge into rank 1-3; +50% while a Hymn plays.', from: [1, 2], target: 'enemy', reach: [1, 2, 3], mult: 1.3, cond: { if: 'hymn', then: { mult: 1.95 } } }),
     own({ name: 'Hymn of the Blade', desc: 'A Hymn for 3 rounds: every ally +15% critical chance. Cooldown 3.', target: 'self', hymn: { name: 'Hymn of the Blade', rounds: 3, allies: { critUp: { pct: 0.15, turns: HYMN } } }, cooldown: 3 }),
     own({ name: 'Candle Cut', desc: 'Strike rank 1-2, leave it Bleeding for 2 turns and push its turn to the end. Cooldown 2.', from: [1, 2], target: 'enemy', reach: [1, 2], mult: 1.0, bleed: { mult: 0.25, turns: 2 }, delay: true, cooldown: 2 }),
     own({ name: 'Crescendo', desc: 'LITANY: five strikes on any enemy at 0.45x each; each one gives the party 4 Zeal.', target: 'enemy', mult: 0.45, hits: 5, zealPerHit: 4, rite: true }),
@@ -600,7 +600,7 @@ K('CC-W209', (own) => ({
     st('adjudicator', 'reflected-sentence'),
     own({ name: 'Hymn of Silence', desc: 'A Hymn for 3 rounds: every foe -15% attack. Cooldown 3.', target: 'self', hymn: { name: 'Hymn of Silence', rounds: 3, foes: { weaken: { pct: 0.15, turns: HYMN } } }, cooldown: 3 }),
     st('adjudicator', 'mirror-ward'),
-    own({ name: 'Final Judgment', desc: 'LITANY: every enemy is Weakened (-30%) for 3 turns and loses 50 Wrath.', target: 'allEnemies', mult: 0.6, weaken: { pct: 0.3, turns: 3 }, wrathDrain: 50, rite: true }),
+    own({ name: 'Final Judgment', desc: 'LITANY: every enemy is Weakened (-30%) for 3 turns and loses 50 Wrath.', target: 'allEnemies', mult: 0.9, weaken: { pct: 0.3, turns: 3 }, wrathDrain: 50, rite: true }),
   ],
   seal: { name: 'Reflected Blasphemy', desc: 'Once a fight, a Blasphemy is turned back: the Sisters take half, and the boss takes the other half.', kind: 'reflect' },
   shines: ["Every boss's Blasphemy", 'Chapter Siege', 'Her Feast'],
@@ -674,8 +674,8 @@ K('CC-W161', (own) => ({
 // ======================= Thorn Covenant: Scars =======================
 
 K('CC-W090', (own) => ({
-  passive: sig('Crown of Living Briar', 'Each hit she takes gives her 1 Scar. Her counters deal 5% more per Scar and leave the attacker Bleeding for 2 turns.'),
-  sig: { scarOnHit: 1, counterPerScar: 0.05, counterBleed: 2 },
+  passive: sig('Crown of Living Briar', 'Each hit she takes gives her 1 Scar. Her counters deal 4% more per Scar and leave the attacker Bleeding for 2 turns.'),
+  sig: { scarOnHit: 1, counterPerScar: 0.04, counterBleed: 2 },
   skills: [
     own({ name: 'Briar Guard', desc: 'Strike rank 1-2, draw attacks and counter, for 2 turns.', from: [1, 2], target: 'enemy', reach: [1, 2], mult: 0.75, taunt: 2, counter: { mult: 0.5, turns: 2 } }),
     own({ name: 'Scourge Stance', desc: 'Lose 10% HP; Ward herself (-30%) and draw attacks for 2 turns. Cooldown 2.', target: 'self', selfDmgPct: 0.1, ward: { pct: 0.3, turns: 2 }, taunt: 2, cooldown: 2 }),
@@ -749,8 +749,8 @@ K('CC-W171', (own) => ({
 K('CC-W033', (own) => ({
   skills: [
     st('censer', 'incense-cloud'),
-    st('censer', 'fan-the-flames'),
-    own({ name: 'Bitter Smoke', desc: 'Lose 5% HP; Poison every enemy for 2 turns (stacks). Cooldown 2.', target: 'allEnemies', selfDmgPct: 0.05, poison: { mult: 0.35, turns: 2 }, stackPoison: true, cooldown: 2 }),
+    st('censer', 'burning-thurible'),
+    own({ name: 'Bitter Smoke', desc: 'Lose 5% HP; Poison every enemy for 2 turns (stacks). Cooldown 2.', target: 'allEnemies', selfDmgPct: 0.05, poison: { mult: 0.5, turns: 2 }, stackPoison: true, cooldown: 2 }),
     st('censer', 'choking-smoke'),
   ],
 }));
@@ -771,13 +771,13 @@ K('CC-W100', (own) => ({
 }));
 
 K('CC-W229', (own) => ({
-  passive: sig('Tide of Omens', 'The Tide starts at 2. At the start of each round every Sister gains 2 Zeal per Tide.'),
-  sig: { tideStart: 2, tideZeal: 2 },
+  passive: sig('Tide of Omens', 'The Tide starts at 2. At the start of each round every Sister gains 3 Zeal per Tide.'),
+  sig: { tideStart: 2, tideZeal: 3 },
   skills: [
     own({ name: 'Sunken Sight', desc: 'Hit any enemy, Hex it (-25% Magic Resist) for 2 turns and push its turn to the end. Breaks a charge. Cooldown 2.', target: 'enemy', mult: 0.5, hex: { pct: 0.25, turns: 2 }, delay: true, cooldown: 2 }),
     own({ name: 'Riptide Blessing', desc: 'An ally gains +25% attack for 2 turns and Haste; at Tide 4 or more, every ally does. Cooldown 3.', target: 'ally', empower: { pct: 0.25, turns: 2 }, empowerTarget: true, haste: 1, byTide: { at: 4, then: { target: 'allAllies' } }, cooldown: 3 }),
     own({ name: 'Ebb of Omens', desc: 'Ebb: spend all the Tide; every Sister gains 10 Zeal per Tide spent. Cooldown 3.', target: 'self', zealAll: true, spend: { kw: 'tide', per: { zeal: 10 } }, cooldown: 3 }),
-    own({ name: 'Deluge Omen', desc: 'LITANY: heavy magic damage on every enemy, +10% per Tide.', target: 'allEnemies', mult: 1.1, byTide: { per: { multPct: 0.1 } }, rite: true }),
+    own({ name: 'Deluge Omen', desc: 'LITANY: heavy magic damage on every enemy, +10% per Tide.', target: 'allEnemies', mult: 1.3, byTide: { per: { multPct: 0.1 } }, rite: true }),
   ],
   seal: { name: 'High Water', desc: 'The first time the Tide reaches 5, every Sister gains 25 Zeal.', kind: 'highWater' },
   shines: ['Litany-chain parties', 'Red Cardinal Hunt', 'Her Feast'],
@@ -858,10 +858,10 @@ K('CC-W230', (own) => ({
   passive: sig('Nothing Hidden', 'Every foe starts the fight Confessed for 3 turns, and she acts first in round 1.'),
   sig: { confessAll: 3, firstRound: true },
   skills: [
-    own({ name: 'Glass Augury', desc: 'Hit any enemy, Hex it (-25% Magic Resist) for 2 turns, Confess it and push its turn to the end. Breaks a charge. Cooldown 2.', target: 'enemy', mult: 0.5, hex: { pct: 0.25, turns: 2 }, confess: 2, delay: true, cooldown: 2 }),
+    own({ name: 'Glass Augury', desc: 'Hit any enemy, Hex it (-25% Magic Resist) for 2 turns, Confess it and push its turn to the end. Breaks a charge. Cooldown 2.', target: 'enemy', mult: 0.8, hex: { pct: 0.25, turns: 2 }, confess: 2, delay: true, cooldown: 2 }),
     own({ name: 'Mirror the Sin', desc: "Take a foe's Empower, Ward, Haste and shield for your strongest Sister. Cooldown 3.", target: 'enemy', mult: 0.4, steal: true, cooldown: 3 }),
-    own({ name: 'Pane of Black Glass', desc: 'Every ally +20% critical chance for 2 turns, and every Sister 10 Zeal. Cooldown 3.', target: 'allAllies', critUp: { pct: 0.2, turns: 2 }, zealGain: 10, zealAll: true, cooldown: 3 }),
-    own({ name: 'Shattered Confession', desc: 'LITANY: heavy magic damage on every enemy; their blessings pass to your strongest Sister.', target: 'allEnemies', mult: 1.1, steal: true, rite: true }),
+    own({ name: 'Pane of Black Glass', desc: 'Every ally +30% critical chance for 2 turns, and every Sister 10 Zeal. Cooldown 3.', target: 'allAllies', critUp: { pct: 0.3, turns: 2 }, zealGain: 10, zealAll: true, cooldown: 3 }),
+    own({ name: 'Shattered Confession', desc: 'LITANY: heavy magic damage on every enemy; their blessings pass to your strongest Sister.', target: 'allEnemies', mult: 1.3, steal: true, rite: true }),
   ],
   seal: { name: 'Seen Before', desc: 'The first time a Blasphemy lands, she saw it coming: every Sister is Warded (-40%) against it.', kind: 'seenBefore' },
   shines: ['Twofold Reliquary', 'Inquisition trials', 'Self-buffing bosses'],
@@ -894,7 +894,7 @@ K('CC-W008', (own) => ({
 K('CC-W035', (own) => ({
   skills: [
     st('censer', 'incense-cloud'),
-    st('censer', 'fan-the-flames'),
+    st('censer', 'burning-thurible'),
     own({ name: 'Glass Smoke', desc: 'Smoke one foe: Confessed and Weakened (-20%) for 2 turns. Cooldown 1.', target: 'enemy', mult: 0.3, confess: 2, weaken: { pct: 0.2, turns: 2 }, cooldown: 1 }),
     own({ name: 'Smoke and Mirrors', desc: 'LITANY: damage every enemy; every Confessed foe also Burns for 3 turns.', target: 'allEnemies', mult: 0.7, cond: { if: 'confessed', then: { poison: { mult: 0.5, turns: 3 }, stackPoison: true } }, rite: true }),
   ],
@@ -959,7 +959,7 @@ K('CC-W120', (own) => ({
   passive: sig('Marching Song', 'Whenever she sings (any of her skills), every Pilgrim gains 1 Stride.'),
   sig: { singStride: 1 },
   skills: [
-    own({ name: 'Processional', desc: 'The whole party steps one rank: the front Sister goes to the back, and the new front gains Haste. Cooldown 2.', target: 'self', rotate: true, cooldown: 2 }),
+    own({ name: 'Processional', desc: 'The whole party steps one rank: the front Sister goes to the back, and the new front gains Haste; every Sister gains 8 Zeal. Cooldown 2.', target: 'self', rotate: true, zealGain: 8, zealAll: true, cooldown: 2 }),
     st('cantor', 'hymn-of-iron'),
     st('cantor', 'psalm-of-blades'),
     own({ name: 'Song of the Long Road', desc: 'LITANY: every ally +30% attack for 2 turns and Haste; each gains 2 Stride.', target: 'allAllies', empower: { pct: 0.3, turns: 2 }, empowerTarget: true, haste: 1, giveStride: 2, rite: true }),
@@ -968,8 +968,8 @@ K('CC-W120', (own) => ({
 }));
 
 K('CC-W018', (own) => ({
-  passive: sig('Communion of Blood', 'Heals for 15% of the damage she deals, +5% per Stride. Each fallen Sister gives her +15% attack.'),
-  sig: { strideLifesteal: { base: 0.15, per: 0.05 }, atkPerFallen: 0.15 },
+  passive: sig('Communion of Blood', 'Heals for 15% of the damage she deals, +5% per Stride, and deals 5% more per Stride. Each fallen Sister gives her +15% attack.'),
+  sig: { strideLifesteal: { base: 0.15, per: 0.05 }, atkPerFallen: 0.15, strideDmg: 0.05 },
   skills: [
     st('warsister', 'flagellants-charge'),
     st('warsister', 'blood-for-zeal'),
@@ -1027,10 +1027,10 @@ K('CC-W183', (own) => ({
 // ======================= Hollow Bell: Toll =======================
 
 K('CC-W019', (own) => ({
-  passive: sig('Cracked Bell', 'While she is under half HP, her skills ring the Bell twice. Peal: she strikes every enemy for 0.5x.'),
-  sig: { doubleRingLow: true, peal: { strikeAll: 0.5 } },
+  passive: sig('Cracked Bell', 'While she is under half HP, her skills ring the Bell twice. Peal: she strikes every enemy for 0.7x.'),
+  sig: { doubleRingLow: true, peal: { strikeAll: 0.7 } },
   skills: [
-    own({ name: 'Clapper Blow', desc: 'A heavy strike on rank 1-2; +40% while she is under half HP.', from: [1, 2], target: 'enemy', reach: [1, 2], mult: 1.25, lowHpBonus: 0.4 }),
+    own({ name: 'Clapper Blow', desc: 'A heavy strike on rank 1-2; +40% while she is under half HP.', from: [1, 2], target: 'enemy', reach: [1, 2], mult: 1.4, lowHpBonus: 0.4 }),
     own({ name: 'Ring the Hours', desc: 'Lose 10% HP; +25 of her own Zeal, and the Bell rings twice. Cooldown 2.', target: 'self', selfDmgPct: 0.1, zealGain: 25, gain: { toll: 1 }, cooldown: 2 }),
     own({ name: 'Toll for the Wicked', desc: 'Strike rank 1-3 and push its turn to the end. Cooldown 2.', from: [1, 2], target: 'enemy', reach: [1, 2, 3], mult: 1.1, delay: true, cooldown: 2 }),
     own({ name: 'Midnight Toll', desc: 'LITANY: strike every enemy; the Bell rings three times.', target: 'allEnemies', mult: 0.95, gain: { toll: 2 }, rite: true }),
@@ -1160,10 +1160,10 @@ K('CC-W218', (own) => ({
 }));
 
 K('CC-W137', (own) => ({
-  passive: sig('Lantern of Glass', 'Her burns on Confessed foes are 40% stronger.'),
-  sig: { dotConfessed: 0.4 },
+  passive: sig('Lantern of Glass', 'Her burns on Confessed foes are 60% stronger.'),
+  sig: { dotConfessed: 0.6 },
   skills: [
-    own({ name: 'Glass Lantern', desc: 'Hit any enemy, strip its shield and blessings, and Confess it for 2 turns.', target: 'enemy', mult: 0.9, purge: true, confess: 2 }),
+    own({ name: 'Glass Lantern', desc: 'Hit any enemy, strip its shield and blessings, Confess it and set it Burning for 2 turns.', target: 'enemy', mult: 0.9, purge: true, confess: 2, poison: { mult: 0.35, turns: 2 }, stackPoison: true }),
     st('exorcist', 'witchfire'),
     own({ name: 'Mirror Flame', desc: 'Ignite all the burn on one foe at once for 1.5x; 2x on the Confessed. Cooldown 2.', target: 'enemy', mult: 0.3, detonate: 1.5, cond: { if: 'confessed', then: { detonate: 2 } }, cooldown: 2 }),
     own({ name: 'Pane of Fire', desc: 'LITANY: burn every enemy for 3 turns (stacks) and Confess them.', target: 'allEnemies', mult: 0.8, confess: 2, poison: { mult: 0.4, turns: 3 }, stackPoison: true, rite: true }),
