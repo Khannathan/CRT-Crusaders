@@ -15,7 +15,7 @@ import { showDetail } from '../ui/glossary';
 import { HOUNDS } from '../data/hounds';
 import { howlParts } from '../systems/hounds';
 import { houndFace } from '../ui/hound';
-import { addArt, text } from '../ui/theme';
+import { addArt, addBackdrop, text } from '../ui/theme';
 import { Bar, candleFrames, nine } from '../ui/skin';
 import { current } from '../state/run';
 import { BALANCE_VERSION, Battle, EXECUTE_AT, ZEAL_MAX, skillsFor, type BattleEvent, type Unit } from '../systems/combat';
@@ -64,6 +64,10 @@ interface Card {
   sprite?: SisterSprite;
   /** A Sister's own Zeal, or a boss's Wrath, under her HP. */
   meter?: Bar;
+  /** ui-litany-ready.png: a halo over a Sister whose Litany is ready. */
+  ready?: Phaser.GameObjects.Image;
+  /** A boss's bust, swapped to its Blasphemy pose while its Wrath is full or it charges one. */
+  pose?: { base: string; blasphemy: string };
 }
 
 type Mode = 'busy' | 'skill' | 'target';
@@ -147,13 +151,15 @@ export class BattleScene extends Phaser.Scene {
     this.strip = [];
 
     this.cameras.main.setBackgroundColor(0x0e0d11);
+    // bg-battle.png: the nave the fight happens in, dimmed so the units read on top
+    addBackdrop(this, 'bg-battle', GAME_W / 2, this.scale.height / 2, GAME_W, this.scale.height, { alpha: 0.45, fade: 0.5, fadeColor: 0x0e0d11 }).forEach((o) => (o as unknown as Phaser.GameObjects.Components.Depth).setDepth(-10));
     const style = { fontFamily: FONT, color: hex(PAL.ivory) };
     this.roundText = this.add.text(16, 24, '', { ...style, fontSize: '22px', color: hex(PAL.steel) }).setOrigin(0, 0.5);
     this.applySpeed();
     this.drawToggles();
     this.candle = this.add.graphics();
     this.candleFrames = candleFrames(this);
-    if (this.candleFrames) this.candleSprite = this.add.image(GAME_W - 33, 25, 'ui-vigil-candle', 0);
+    if (this.candleFrames) this.candleSprite = this.add.image(GAME_W - 33, 25, 'ui-vigil-candle', 0).setScale(46 / this.textures.get('ui-vigil-candle').getSourceImage().height);
     this.add.text(GAME_W - 52, 24, 'Vigil', { ...style, fontSize: '17px', color: hex(PAL.steel) }).setOrigin(1, 0.5);
 
     for (let i = 0; i < 4; i++) {
@@ -279,7 +285,9 @@ export class BattleScene extends Phaser.Scene {
       });
     };
     // A boss's Blasphemy gets its card when it lands, not on the turn it charges.
-    if (skill.rite && (actor.side === 'party' || actor.status.charging)) riteCard(this, skill.name, actor.name, go, actor.side === 'party' ? 'INVOKES' : 'UNLEASHES A BLASPHEMY');
+    if (skill.rite && (actor.side === 'party' || actor.status.charging)) {
+      riteCard(this, skill.name, actor.name, go, actor.side === 'party' ? 'INVOKES' : 'UNLEASHES A BLASPHEMY', actor.side === 'party' ? undefined : `blasphemy-${actor.ref}`);
+    }
     else go();
   }
 
@@ -558,6 +566,7 @@ export class BattleScene extends Phaser.Scene {
     // Enemies carry their own idle aura behind the portrait.
     if (!party) auraFx(this, box, CARD, fxForEnemy(u.ref), skinFrame ?? img);
     const card: Card = { box, frame, skinFrame, glow, img, hp, shieldFill, hpText, tags, preview, meter };
+    if (!party && this.textures.exists(`${key}-blasphemy`)) card.pose = { base: key, blasphemy: `${key}-blasphemy` };
     if (party) {
       card.threat = this.add
         .text(0, -CARD / 2 + 3, '', { fontFamily: FONT, fontSize: '18px', color: hex(PAL.ivory), backgroundColor: '#652b3b', padding: { x: 5, y: 2 } })
@@ -605,7 +614,9 @@ export class BattleScene extends Phaser.Scene {
     const threat = this.add
       .text(0, -FEET - 4, '', { fontFamily: FONT, fontSize: '18px', color: hex(PAL.ivory), backgroundColor: '#652b3b', padding: { x: 5, y: 2 } })
       .setOrigin(0.5, 0);
-    const box = this.add.container(slotX(u.rank), FIGURE_Y, [glow, frame, sprite.root, ...hp.parts, ...meter.parts, shieldFill, hpText, tags, preview, threat]);
+    // A halo over her head while her Litany is ready
+    const ready = this.textures.exists('ui-litany-ready') ? this.add.image(0, FEET - sprite.height + 14, 'ui-litany-ready').setVisible(false) : undefined;
+    const box = this.add.container(slotX(u.rank), FIGURE_Y, [glow, frame, ...(ready ? [ready] : []), sprite.root, ...hp.parts, ...meter.parts, shieldFill, hpText, tags, preview, threat]);
     // Her Order's sigil by her feet.
     if (u.order) {
       box.add(this.add.circle(CARD / 2 - 14, FEET - 14, 13, 0x0d090f, 0.85));
@@ -618,7 +629,7 @@ export class BattleScene extends Phaser.Scene {
       box.setAlpha(0);
       sprite.dead = true;
     }
-    this.cards.set(u.uid, { box, frame, glow, img: sprite.upper, hp, shieldFill, hpText, tags, threat, preview, sprite, meter });
+    this.cards.set(u.uid, { box, frame, glow, img: sprite.upper, hp, shieldFill, hpText, tags, threat, preview, sprite, meter, ready });
   }
 
   /** Redraws every card, the turn strip, Zeal and the candle. */
@@ -635,6 +646,15 @@ export class BattleScene extends Phaser.Scene {
       if (c.meter) {
         const v = (u.side === 'party' ? u.zeal : u.wrath) ?? 0;
         c.meter.set(v / ZEAL_MAX, v >= ZEAL_MAX ? (u.side === 'party' ? 0xffd36a : 0xff4a4a) : u.side === 'party' ? 0xc8902e : 0xa8262f);
+        const bar = u.side === 'party' ? 'ui-bar-litany' : 'ui-bar-wrath';
+        c.meter.setFillKey(v >= ZEAL_MAX ? `${bar}-full` : bar);
+        const full = v >= ZEAL_MAX && !dead;
+        if (c.ready && c.ready.visible !== full) {
+          this.tweens.killTweensOf(c.ready);
+          c.ready.setVisible(full).setAlpha(1).setScale(1);
+          if (full) this.tweens.add({ targets: c.ready, alpha: 0.6, scale: 1.06, duration: 700, yoyo: true, repeat: -1, ease: 'Sine.inOut' });
+        }
+        if (c.pose && !dead) c.img.setTexture(full || u.status.charging ? c.pose.blasphemy : c.pose.base).setDisplaySize(CARD, CARD);
       }
       c.shieldFill.width = Math.min(CARD, (CARD * (u.status.shield ?? 0)) / u.maxHp);
       c.hpText.setText(`${u.hp}/${u.maxHp}`);
@@ -746,7 +766,9 @@ export class BattleScene extends Phaser.Scene {
         c.intentText.setText('');
         continue;
       }
-      c.intentIcon.setTexture(intentIconKey(view.charging ? 'charge' : view.kind)).setDisplaySize(24, 24);
+      // icon-blasphemy.png marks a boss's Blasphemy, charging or not
+      const blas = view.skill.rite && this.textures.exists('icon-blasphemy');
+      c.intentIcon.setTexture(blas ? 'icon-blasphemy' : intentIconKey(view.charging ? 'charge' : view.kind)).setDisplaySize(24, 24);
       const who = view.targets.length === 1 ? view.targets[0].name : '';
       let line: string;
       if (view.kind === 'summon') line = 'Summons help';

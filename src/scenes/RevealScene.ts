@@ -83,7 +83,7 @@ export class RevealScene extends Phaser.Scene {
     this.add.text(GAME_W / 2, 134, 'Each seal is the true colour of what it holds.', { fontFamily: FONT, fontSize: '16px', color: hex(PAL.steel) }).setOrigin(0.5);
     this.busy = true;
     this.results.forEach((r, i) => {
-      const seal = this.add.image(cellX(i), cellY(i) - 60, sealKey(r.crusader.rarity)).setScale(0.9).setAlpha(0);
+      const seal = this.add.image(cellX(i), cellY(i) - 60, sealKey(r.crusader.rarity)).setDisplaySize(84, 84).setAlpha(0);
       this.seals[i] = seal;
       this.tweens.add({ targets: seal, y: cellY(i), alpha: 1, delay: i * 90, duration: 260, ease: 'Back.out' });
     });
@@ -200,7 +200,7 @@ export class RevealScene extends Phaser.Scene {
     this.card?.destroy();
     const r = this.results[this.index];
     this.counter.setText(this.results.length > 1 ? `${this.index + 1} / ${this.results.length}` : '');
-    const seal = this.add.image(0, 0, sealKey(r.crusader.rarity)).setScale(2);
+    const seal = this.add.image(0, 0, sealKey(r.crusader.rarity)).setDisplaySize(192, 192);
     this.card = this.add.container(GAME_W / 2, CY, [seal]).setData('stage', 'seal');
     this.tweens.add({ targets: seal, y: -10, duration: 900, yoyo: true, repeat: -1, ease: 'Sine.inOut' });
     this.hint.setText('Tap to break the seal');

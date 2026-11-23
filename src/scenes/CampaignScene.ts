@@ -70,6 +70,8 @@ export class CampaignScene extends Phaser.Scene {
       const art = this.textures.exists(`bg-${ch.crypt.id}`) ? `bg-${ch.crypt.id}` : 'bg-hall';
       addBackdrop(this, art, GAME_W / 2, (y0 + y1) / 2, GAME_W - PAD * 2, y1 - y0, { alpha: best >= first - 1 ? 0.4 : 0.15, fade: 0.6, fadeColor: 0x120c14 });
       const by = y0 - 26;
+      // chapter-<n>.png: the chapter's title scene, behind its banner
+      if (this.textures.exists(`chapter-${c + 1}`)) addBackdrop(this, `chapter-${c + 1}`, GAME_W / 2, by - 22, GAME_W - PAD * 2, 92, { alpha: best >= first - 1 ? 0.9 : 0.35, fade: 0.5, fadeColor: 0x120c14, focusY: 0.4 });
       this.add.rectangle(GAME_W / 2, by, GAME_W - PAD * 2, 44, 0x1b121c, 0.92).setStrokeStyle(1, best >= first - 1 ? PAL.goldEdge : PAL.armorShadow);
       this.add.text(PAD + 14, by, `CHAPTER ${c + 1}`, text.hud(12, PAL.amber)).setOrigin(0, 0.5);
       this.add.text(PAD + 104, by, ch.name, text.display(17, best >= first - 1 ? 0xfff1d6 : PAL.muted)).setOrigin(0, 0.5);

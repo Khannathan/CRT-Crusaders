@@ -7,30 +7,35 @@ import Phaser from 'phaser';
  * canvas fallback renderer, keep the drawn look.
  *
  * Each entry is the corner size in source pixels: the part of each corner that
- * never stretches. Make art with corners at least that big.
+ * never stretches. Make art with corners at least that big. 0 means the art is
+ * not sliced at all, just stretched to the box (the arched roster card).
+ *
+ * The pixel-art skins are stored at 2x their native grid, so one art pixel is
+ * two screen pixels, like the backdrops. Ornaments in the middle of an edge
+ * were cleaned off at import (tools/art-intake) so edges stretch.
  */
 export const SKINS = {
+  'ui-panel': 44,
+  'ui-frame': 30,
+  'ui-card': 0,
+  'ui-unit-frame': 16,
+  'ui-turn-frame': 20,
+  'ui-gear-slot': 26,
+  'ui-rite-tile': 22,
   'ui-button': 16,
-  'ui-button-pressed': 16,
   'ui-button-primary': 16,
-  'ui-button-primary-pressed': 16,
-  'ui-frame': 24,
-  'ui-panel': 24,
-  'ui-card': 12,
-  'ui-chip': 10,
-  'ui-badge': 6,
-  'ui-tab-active': 16,
-  'ui-subtab': 14,
-  'ui-subtab-active': 14,
-  'ui-skill': 16,
-  'ui-skill-selected': 16,
-  'ui-skill-rite': 16,
-  'ui-unit-frame': 12,
-  'ui-turn-frame': 8,
-  'ui-bar-frame': 4,
-  'ui-gear-slot': 14,
-  'ui-rite-tile': 16,
   'ui-button-disabled': 16,
+  'ui-button-pressed': 16,
+  'ui-button-primary-pressed': 16,
+  'ui-subtab': 12,
+  'ui-subtab-active': 12,
+  'ui-tab-active': 12,
+  'ui-skill': 22,
+  'ui-skill-selected': 22,
+  'ui-skill-rite': 30,
+  'ui-bar-frame': 4,
+  'ui-chip': 10,
+  'ui-badge': 12,
 } as Record<string, number>;
 
 export type SkinKey = string;
@@ -43,6 +48,7 @@ export function hasSkin(scene: Phaser.Scene, key: string) {
 export function nine(scene: Phaser.Scene, key: SkinKey, x: number, y: number, w: number, h: number) {
   if (!hasSkin(scene, key)) return null;
   const src = scene.textures.get(key).getSourceImage();
+  if (SKINS[key] === 0) return scene.add.nineslice(x, y, key, undefined, w, h, 0, 0, 0, 0);
   // corners can't be bigger than half the box or half the source image
   const c = Math.max(1, Math.floor(Math.min(SKINS[key] ?? 12, w / 2, h / 2, src.width / 2, src.height / 2)));
   return scene.add.nineslice(x, y, key, undefined, w, h, c, c, c, c);
@@ -85,6 +91,14 @@ export class Bar {
     if (frame) this.parts.push(frame);
   }
 
+  /** Swaps the fill art (e.g. ui-bar-litany-full.png once a meter is full), when that file exists. */
+  setFillKey(key: string) {
+    if (this.fill instanceof Phaser.GameObjects.Image && this.fill.texture.key !== key && this.fill.scene.textures.exists(key)) {
+      const { displayWidth, displayHeight } = this.fill;
+      this.fill.setTexture(key).setDisplaySize(displayWidth, displayHeight);
+    }
+  }
+
   /** frac 0..1; colour only applies to the drawn (unskinned) fill. */
   set(frac: number, color?: number) {
     const width = Math.max(0, Math.min(1, frac)) * this.w;
@@ -99,18 +113,19 @@ export class Bar {
 }
 
 /**
- * ui-vigil-candle.png is a horizontal strip of square-ish frames (full candle on
- * the left, snuffed on the right). Frame width = image height / 3, so a 96x48
- * strip of 16x48 frames gives 6. Adds numbered frames once; returns the count
+ * ui-vigil-candle.png is a horizontal strip of 6 equal frames (full candle on
+ * the left, snuffed on the right). Adds numbered frames once; returns the count
  * (0 when the file is missing).
  */
+export const CANDLE_FRAMES = 6;
+
 export function candleFrames(scene: Phaser.Scene) {
   const key = 'ui-vigil-candle';
   if (!scene.textures.exists(key)) return 0;
   const tex = scene.textures.get(key);
   const img = tex.getSourceImage();
-  const fw = Math.max(1, Math.round(img.height / 3));
-  const n = Math.max(2, Math.floor(img.width / fw));
+  const n = CANDLE_FRAMES;
+  const fw = Math.floor(img.width / n);
   if (!tex.has('0')) for (let i = 0; i < n; i++) tex.add(i, 0, i * fw, 0, fw, img.height);
   return n;
 }

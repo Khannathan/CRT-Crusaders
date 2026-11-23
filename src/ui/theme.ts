@@ -137,8 +137,8 @@ export function addHeading(scene: Phaser.Scene, title: string, y: number, sub?: 
   const t = scene.add.text(PAD, y, title, text.display(34, PAL.ivory)).setOrigin(0, 0).setShadow(0, 2, '#000000', 10, false, true);
   const lineY = y + t.height + 6;
   if (scene.textures.exists('ui-divider')) {
-    // ui-divider.png: the flourish under each screen title, drawn at its own size
-    scene.add.image(PAD, lineY, 'ui-divider').setOrigin(0, 0.5);
+    // ui-divider.png: the flourish under each screen title, at three quarters of its size
+    scene.add.image(PAD - 4, lineY + 2, 'ui-divider').setOrigin(0, 0.5).setScale(0.75);
   } else {
     const g = scene.add.graphics();
     for (let i = 0; i < 53; i++) g.fillStyle(PAL.goldEdge, 1 - i / 53).fillRect(PAD + i, lineY, 1, 1);
