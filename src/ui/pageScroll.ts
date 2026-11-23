@@ -24,8 +24,15 @@ export interface PageScrollOpts {
   onScroll?: (y: number) => void;
 }
 
-function pin(o: Obj) {
+/**
+ * Fix `o` (and everything inside it) to the screen. A geometry mask is drawn
+ * through the camera too, so its shape is pinned with it, or a clipped list
+ * inside a popup would show the wrong slice once the page is scrolled.
+ */
+export function pin(o: Obj) {
   o.setScrollFactor?.(0, 0);
+  const mask = (o as { mask?: unknown }).mask;
+  if (mask instanceof Phaser.Display.Masks.GeometryMask) mask.geometryMask?.setScrollFactor(0, 0);
   if (o instanceof Phaser.GameObjects.Container) o.list.forEach((c) => pin(c as Obj));
 }
 
@@ -51,11 +58,9 @@ function eachInteractive(list: Phaser.GameObjects.GameObject[], fn: (o: Phaser.G
 export function addPageScroll(scene: Phaser.Scene, opts: PageScrollOpts): number {
   const cam = scene.cameras.main;
   const max = Math.max(0, Math.ceil(opts.contentBottom + 18 - opts.bottom));
-  const pinned = new Set<Phaser.GameObjects.GameObject>();
   for (const o of opts.fixed as Obj[]) {
     pin(o);
     o.setDepth?.(o.depth! + CHROME_LIFT);
-    pinned.add(o);
   }
   if (!max) {
     cam.setScroll(0, 0);
@@ -64,15 +69,13 @@ export function addPageScroll(scene: Phaser.Scene, opts: PageScrollOpts): number
   // Taps on the fixed bars never reach the page scrolled under them.
   const W = scene.scale.width;
   for (const [y0, y1] of [[0, opts.top], [opts.bottom, scene.scale.height]]) {
-    const z = scene.add.zone(W / 2, (y0 + y1) / 2, W, y1 - y0).setScrollFactor(0).setDepth(OVERLAY_DEPTH - 0.5).setInteractive();
-    pinned.add(z);
+    scene.add.zone(W / 2, (y0 + y1) / 2, W, y1 - y0).setScrollFactor(0).setDepth(OVERLAY_DEPTH - 0.5).setInteractive();
   }
 
   // A thin gold thumb at the right edge: where you are on the page.
   const track = opts.bottom - opts.top - 12;
   const thumbH = Math.max(36, (track * (opts.bottom - opts.top)) / (opts.bottom - opts.top + max));
   const thumb = scene.add.rectangle(GAME_W - 3, opts.top + 6, 3, thumbH, PAL.amber, 0.55).setOrigin(0.5, 0).setScrollFactor(0).setDepth(OVERLAY_DEPTH - 1);
-  pinned.add(thumb);
 
   const set = (y: number) => {
     cam.scrollY = Phaser.Math.Clamp(y, 0, max);
@@ -81,14 +84,13 @@ export function addPageScroll(scene: Phaser.Scene, opts: PageScrollOpts): number
   };
   set(opts.start ?? 0);
 
-  // Popups made while scrolled stay where they are drawn on screen.
+  // Popups made while scrolled stay where they are drawn on screen. A popup
+  // can rebuild its insides (the Sister picker redraws on every tap), so the
+  // popups are pinned again every frame, not once.
   const modalOpen = () => scene.children.list.some((o) => (o as Obj).depth! >= MODAL_DEPTH && (o as Obj).visible !== false && anyInteractive(o));
   const pinPopups = () => {
     for (const o of scene.children.list as Obj[]) {
-      if (!pinned.has(o) && o.depth! >= OVERLAY_DEPTH) {
-        pin(o);
-        pinned.add(o);
-      }
+      if (o.depth! >= OVERLAY_DEPTH) pin(o);
     }
   };
   scene.events.on(Phaser.Scenes.Events.POST_UPDATE, pinPopups);
