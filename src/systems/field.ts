@@ -198,6 +198,11 @@ export class FieldBattle {
   focusUid?: string;
   /** Danger zones standing (see Zone). */
   zones: Zone[] = [];
+  /** Live ranks by where each unit stands (space.liveRank), and the field time they were worked out. */
+  private ranks = new Map<string, number>();
+  private rankAt = -1;
+  /** Field time not yet passed to the status clocks. */
+  private clockAcc = 0;
   private rng: () => number;
 
   constructor(
@@ -225,17 +230,26 @@ export class FieldBattle {
         return !!z && !!me && Math.hypot(me.x - z.x, me.y - z.y) > z.r;
       },
       liveRank: (foe) => {
-        const pack = this.battle.alive(foe.side);
-        const party = this.battle.alive(foe.side === 'enemy' ? 'party' : 'enemy').map((p) => this.bodies.get(p.uid)).filter((x): x is Body => !!x);
-        if (!party.length) return foe.rank;
-        const cx = party.reduce((a, p) => a + p.x, 0) / party.length;
-        const cy = party.reduce((a, p) => a + p.y, 0) / party.length;
-        const d = (u: Unit) => {
-          const b = this.bodies.get(u.uid);
-          return b ? Math.hypot(b.x - cx, b.y - cy) : Infinity;
-        };
-        const mine = d(foe);
-        return 1 + pack.filter((o) => o !== foe && (d(o) < mine || (d(o) === mine && o.rank < foe.rank))).length;
+        // Worked out once a frame for every unit: targeting asks it often.
+        if (this.rankAt !== this.time) {
+          this.rankAt = this.time;
+          this.ranks.clear();
+          for (const side of ['party', 'enemy'] as const) {
+            const others = this.battle.alive(side === 'enemy' ? 'party' : 'enemy').map((p) => this.bodies.get(p.uid)).filter((x): x is Body => !!x);
+            if (!others.length) continue;
+            const cx = others.reduce((a, p) => a + p.x, 0) / others.length;
+            const cy = others.reduce((a, p) => a + p.y, 0) / others.length;
+            const pack = this.battle
+              .alive(side)
+              .map((u) => {
+                const b = this.bodies.get(u.uid);
+                return { u, d: b ? Math.hypot(b.x - cx, b.y - cy) : Infinity };
+              })
+              .sort((a, c) => a.d - c.d || a.u.rank - c.u.rank);
+            pack.forEach((x, i) => this.ranks.set(x.u.uid, i + 1));
+          }
+        }
+        return this.ranks.get(foe.uid) ?? foe.rank;
       },
       inOverwatch: (watcher, foe) => {
         const a = this.bodies.get(watcher.uid);
@@ -439,9 +453,11 @@ export class FieldBattle {
     }
 
     // Statuses, damage over time and cooldowns run on the clock.
-    if (this.engaged) {
+    // (in steps of a tenth of a second: plenty for 2s pulses, and cheap in long sims)
+    if (this.engaged && (this.clockAcc += dt) >= 0.1) {
       const events: BattleEvent[] = [];
-      b.timePass(dt, events);
+      b.timePass(this.clockAcc, events);
+      this.clockAcc = 0;
       if (events.length) out.push({ kind: 'tick', events });
       if (b.outcome()) {
         this.done = true;

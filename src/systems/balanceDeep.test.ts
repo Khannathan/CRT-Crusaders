@@ -10,7 +10,7 @@ describe(`deep crypt balance ${BALANCE_VERSION} (auto player, ${N} seeded runs)`
     // 0.89 on the old roster's ids, 0.96 on the new: unit order on the field moved with the ids, not any Sister's power
     expect(mid.rate).toBeLessThan(0.97);
     expect(sample(12, BELFRY).rate).toBeGreaterThan(0.9);
-  }, 20_000); // 900 runs
+  }, 60_000); // 900 real-time runs: slow on CI runners
 
   it('Heresy tiers ask for more levels (and grow the crypt toward 30 floors)', () => {
     // Heresy III: 20 floors in 2 acts

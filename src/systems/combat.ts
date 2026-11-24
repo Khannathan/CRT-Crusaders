@@ -310,6 +310,7 @@ export const cooldownSec = (n: number) => PULSE * (n + 1);
 /** Statuses that wear off over time. */
 const TIMED_KEYS = ['poison', 'bleed', 'regen', 'stun', 'weaken', 'empower', 'accused', 'taunt', 'sunder', 'hex', 'ward', 'counter', 'thorns', 'critUp', 'overwatch', 'confessed', 'foretold', 'silence', 'rapture', 'martyr', 'penance'] as const;
 type TimedKey = (typeof TIMED_KEYS)[number];
+const TIMED_SET: ReadonlySet<string> = new Set(TIMED_KEYS);
 function turnsOf(st: Status, k: TimedKey): number {
   const v = st[k] as number | { turns: number } | undefined;
   return typeof v === 'number' ? v : v?.turns ?? 0;
@@ -780,29 +781,33 @@ export class Battle {
    * bites, a regen mends, and one "turn" of it wears off. Cooldowns run down.
    */
   timePass(dt: number, events: BattleEvent[]) {
-    for (const u of this.alive()) {
+    for (const u of this.units) {
+      if (u.hp <= 0) continue;
       const cds = u.cooldowns;
-      if (cds) for (const id of Object.keys(cds)) if (cds[id] > 0) cds[id] = Math.max(0, cds[id] - dt);
-      const clocks = (u.clocks ??= {});
-      for (const k of TIMED_KEYS) {
-        const n = turnsOf(u.status, k);
-        if (!n) {
-          delete clocks[k];
-          continue;
-        }
-        let c = clocks[k];
-        if (!c || n > c.n) c = clocks[k] = { t: 0, n };
+      if (cds) for (const id in cds) if (cds[id] > 0) cds[id] = Math.max(0, cds[id] - dt);
+      const clocks = u.clocks;
+      // Clocks of statuses that wore off or were stripped.
+      if (clocks) for (const k in clocks) if (!turnsOf(u.status, k as TimedKey)) delete clocks[k];
+      for (const k in u.status) {
+        if (!TIMED_SET.has(k)) continue;
+        const key = k as TimedKey;
+        const n = turnsOf(u.status, key);
+        if (!n) continue;
+        const cl = (u.clocks ??= {});
+        let c = cl[key];
+        if (!c || n > c.n) c = cl[key] = { t: 0, n };
         c.t += dt;
-        while (c.t >= PULSE && turnsOf(u.status, k)) {
+        while (c.t >= PULSE && turnsOf(u.status, key)) {
           c.t -= PULSE;
-          if (k === 'poison') {
-            if (!this.tickPoison(u, events)) return;
-          } else if (k === 'bleed') {
-            if (!this.tickBleed(u, events)) return;
-          } else if (k === 'regen') this.tickRegen(u, events);
-          else countDown(u.status, k);
+          if (key === 'poison') {
+            if (!this.tickPoison(u, events)) break;
+          } else if (key === 'bleed') {
+            if (!this.tickBleed(u, events)) break;
+          } else if (key === 'regen') this.tickRegen(u, events);
+          else countDown(u.status, key);
         }
-        c.n = turnsOf(u.status, k);
+        if (u.hp <= 0) break;
+        c.n = turnsOf(u.status, key);
       }
     }
   }
