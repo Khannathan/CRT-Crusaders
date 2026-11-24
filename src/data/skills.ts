@@ -285,7 +285,7 @@ export const CLASS_SKILLS: Record<string, [SkillDef, SkillDef, SkillDef, SkillDe
     { id: 'sealed-sepulcher', name: 'Sealed Sepulcher', desc: 'LITANY: Ward every ally (-25% damage taken) for 2 turns. She draws every attack and strikes back hard for 2 turns.', from: any, target: 'allAllies', ward: { pct: 0.25, turns: 2 }, rite: true, taunt: 2, counter: { mult: 0.9, turns: 2 } },
   ],
   martyr: [
-    { id: 'radiant-smite', name: 'Radiant Smite', desc: 'Strike rank 1-2 and heal for 35% of the damage dealt.', from: [1, 2], target: 'enemy', reach: [1, 2], mult: 1.1, drain: 0.35 },
+    { id: 'radiant-smite', name: 'Searing Smite', desc: 'Strike rank 1-2 and heal for 35% of the damage dealt.', from: [1, 2], target: 'enemy', reach: [1, 2], mult: 1.1, drain: 0.35 },
     { id: 'intercession', name: 'Intercession', desc: 'Draw enemy attacks for 2 turns, Ward herself (-20% damage) and Regenerate 5% a turn. Cooldown 2.', from: any, target: 'self', taunt: 2, ward: { pct: 0.2, turns: 2 }, regen: { pct: 0.05, turns: 2 }, cooldown: 2 },
     { id: 'blood-oath', name: 'Blood Oath', desc: 'Sacrifice 12% HP. Every ally gains +20% attack for 2 turns. Cooldown 3.', from: any, target: 'allAllies', selfDmgPct: 0.12, empower: { pct: 0.2, turns: 2 }, empowerTarget: true, cooldown: 3 },
     { id: 'dawnbreak', name: 'Dawnbreak', desc: 'LITANY: burn every enemy with light, heal for 50% of the damage dealt and draw attacks for 2 turns.', from: any, target: 'allEnemies', mult: 0.8, drain: 0.5, rite: true, taunt: 2 },
