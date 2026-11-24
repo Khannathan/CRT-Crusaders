@@ -13,7 +13,7 @@ import { SHINE_LABEL, nicheTableAsync, rankIn, type NicheRow } from './niche';
 let rows: NicheRow[];
 beforeAll(async () => {
   rows = await nicheTableAsync({ seeds: 4, engine: 'field' });
-}, 180_000);
+}, 300_000); // every hunt for every Sister on the real-time clock: slow on CI runners
 
 const mean = (xs: number[]) => xs.reduce((a, b) => a + b, 0) / xs.length;
 const avgOf = (r: Rarity) => mean(rows.filter((x) => x.rarity === r).map((x) => x.avg));

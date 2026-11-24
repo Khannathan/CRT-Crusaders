@@ -28,14 +28,14 @@ export interface HosannaDef {
 const ALL = [1, 2, 3, 4];
 
 export const HOSANNAS: HosannaDef[] = [
-  { id: 'wrath-choir', name: 'Choir of Wrath', desc: 'Heavy consecrated damage on every foe; they are Weakened (-15%) for 2 turns.', rank: 1, skill: { target: 'allEnemies', dmg: 'magic', mult: 1.2, weaken: { pct: 0.15, turns: 2 } } },
+  { id: 'wrath-choir', name: 'Choir of Wrath', desc: 'Heavy consecrated damage on every foe; they are Weakened (-15%) for 4s.', rank: 1, skill: { target: 'allEnemies', dmg: 'magic', mult: 1.2, weaken: { pct: 0.15, turns: 2 } } },
   { id: 'saints-mantle', name: "Saints' Mantle", desc: 'Every Sister gains a shield of 25% of her max HP.', rank: 1, wait: 'wounded', skill: { target: 'allAllies', shieldPct: 0.25 } },
   { id: 'living-waters', name: 'Living Waters', desc: 'Every Sister heals 30% of her max HP and is cleansed.', rank: 1, wait: 'wounded', skill: { target: 'allAllies', healPct: 0.3, cleanse: true } },
   { id: 'kindled-hearts', name: 'Kindled Hearts', desc: 'Every Sister gains 40 Zeal. Chain the Litanies that follow!', rank: 3, skill: { target: 'allAllies', zealGain: 40, zealAll: true } },
-  { id: 'silence', name: 'Silence the Heretic', desc: 'Light damage on every foe; each loses 60 Wrath and is Delayed.', rank: 5, wait: 'wrath', skill: { target: 'allEnemies', dmg: 'magic', mult: 0.6, wrathDrain: 60, delay: true } },
-  { id: 'host-banner', name: 'Banner of the Host', desc: 'Every Sister +30% attack for 3 turns, and Haste.', rank: 7, skill: { target: 'allAllies', empower: { pct: 0.3, turns: 3 }, haste: 1 } },
+  { id: 'silence', name: 'Silence the Heretic', desc: 'Light damage on every foe; each loses 60 Wrath and is Staggered.', rank: 5, wait: 'wrath', skill: { target: 'allEnemies', dmg: 'magic', mult: 0.6, wrathDrain: 60, delay: true } },
+  { id: 'host-banner', name: 'Banner of the Host', desc: 'Every Sister +30% attack for 6s, and Haste.', rank: 7, skill: { target: 'allAllies', empower: { pct: 0.3, turns: 3 }, haste: 1 } },
   { id: 'many-verdict', name: 'Verdict of the Many', desc: 'A crushing blow on the strongest foe: ignores 30% armor, +30% on bosses.', rank: 9, skill: { target: 'enemy', aim: 'strongest', dmg: 'magic', mult: 3, armorPierce: 0.3, bossBonus: 0.3 } },
-  { id: 'vigil-unbroken', name: 'Vigil Unbroken', desc: 'Every Sister regenerates 8% HP for 4 turns and takes 25% less damage for 3.', rank: 11, wait: 'wounded', skill: { target: 'allAllies', regen: { pct: 0.08, turns: 4 }, ward: { pct: 0.25, turns: 3 } } },
+  { id: 'vigil-unbroken', name: 'Vigil Unbroken', desc: 'Every Sister regenerates 8% HP for 8s and takes 25% less damage for 6s.', rank: 11, wait: 'wounded', skill: { target: 'allAllies', regen: { pct: 0.08, turns: 4 }, ward: { pct: 0.25, turns: 3 } } },
 ];
 
 export const HOSANNA = Object.fromEntries(HOSANNAS.map((h) => [h.id, h])) as Record<string, HosannaDef>;

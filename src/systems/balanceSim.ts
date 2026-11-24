@@ -109,4 +109,23 @@ export function sample(level: number, crypt: CryptDef = OSSUARY, heresy = 0) {
   return { rate: wins / N, median };
 }
 
+/**
+ * sample, but it gives the event loop a turn after each run, so a long sample
+ * never starves the test runner's own messages (they time out after 60s).
+ */
+export async function sampleAsync(level: number, crypt: CryptDef = OSSUARY, heresy = 0) {
+  let wins = 0;
+  const rites: number[] = [];
+  for (let i = 0; i < N; i++) {
+    const r = playCrypt(1000 + i, level, crypt, heresy);
+    if (r.outcome === 'victory') wins++;
+    if (r.firstRite !== undefined) rites.push(r.firstRite);
+    await new Promise((res) => setTimeout(res, 0));
+  }
+  rites.sort((a, b) => a - b);
+  const median = rites[Math.floor(rites.length / 2)];
+  console.log(`[balance ${BALANCE_VERSION}] ${crypt.id}${heresy ? ` heresy ${heresy}` : ''} level ${level}: win ${((wins / N) * 100).toFixed(1)}%, boss first Rite median round ${median}`);
+  return { rate: wins / N, median };
+}
+
 export { BELFRY, OSSUARY };

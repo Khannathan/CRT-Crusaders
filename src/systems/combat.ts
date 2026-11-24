@@ -137,6 +137,8 @@ export interface Unit {
   skillLv?: number[];
   /** Own turns left before each skill can be used again. */
   cooldowns?: Record<string, number>;
+  /** Real time: each status's own clock (seconds into its pulse, and the turns it had). */
+  clocks?: Record<string, { t: number; n: number }>;
   /** Crusaders: has taken this turn's free Step. */
   stepped?: boolean;
   /** Crusaders: her Order, for Order weaknesses. */
@@ -274,7 +276,7 @@ export function upgraded(s: SkillDef): SkillDef {
     ...s,
     id: s.id,
     name: `${s.name}+`,
-    desc: `${s.desc} (Vow: +25% effect${s.cooldown ? ', -1 cooldown' : ''}.)`,
+    desc: `${s.desc} (Vow: +25% effect${s.cooldown ? ', 2s off its cooldown' : ''}.)`,
     mult: up(s.mult),
     heal: up(s.heal),
     healPct: up(s.healPct),
@@ -301,6 +303,27 @@ export interface BattleMods {
 }
 export const NO_MODS: BattleMods = { burnMult: 0, detonateMult: 0, openingBurn: 0, roundZeal: 0, zealMult: 0, riteMult: 0, lowHpAtk: 0, fallenAtk: 0, fallHeal: 0 };
 
+/** Seconds per "turn" of a status, and per round, in real time. */
+export const PULSE = 2;
+/** A cooldown of N (in the skill data) lasts this many seconds in real time. */
+export const cooldownSec = (n: number) => PULSE * (n + 1);
+/** Statuses that wear off over time. */
+const TIMED_KEYS = ['poison', 'bleed', 'regen', 'stun', 'weaken', 'empower', 'accused', 'taunt', 'sunder', 'hex', 'ward', 'counter', 'thorns', 'critUp', 'overwatch', 'confessed', 'foretold', 'silence', 'rapture', 'martyr', 'penance'] as const;
+type TimedKey = (typeof TIMED_KEYS)[number];
+const TIMED_SET: ReadonlySet<string> = new Set(TIMED_KEYS);
+function turnsOf(st: Status, k: TimedKey): number {
+  const v = st[k] as number | { turns: number } | undefined;
+  return typeof v === 'number' ? v : v?.turns ?? 0;
+}
+function countDown(st: Status, k: TimedKey) {
+  const v = st[k] as number | { turns: number } | undefined;
+  if (v === undefined) return;
+  if (typeof v === 'number') {
+    if (v - 1 <= 0) delete st[k];
+    else (st as Record<string, unknown>)[k] = v - 1;
+  } else if (--v.turns <= 0) delete st[k];
+}
+
 export class Battle {
   units: Unit[];
   round = 0;
@@ -308,6 +331,12 @@ export class Battle {
   rage = 0;
   /** uids still to act this round, in order. */
   queue: string[] = [];
+  /**
+   * Real time (the field sets it): statuses, damage over time and cooldowns run
+   * on the fight clock (timePass) instead of counting actions. One "turn" of a
+   * skill's data is PULSE seconds; a cooldown of N lasts PULSE * (N + 1) seconds.
+   */
+  timed = false;
   /** Every action and Zeal change, for balance comparisons. */
   log: string[] = [];
   private rng: Rng;
@@ -344,7 +373,7 @@ export class Battle {
   /** A Blasphemy being turned back: half its damage goes to the boss. */
   private reflecting?: { boss: Unit; sum: number };
   /** Summoned foes arrive Delayed (Lock the Crypt). */
-  private locked = false;
+  locked = false;
   /** Relics of War: attacks per Sister (Edict of the Bell), the Sister whose attack tolls now, Vigilia's Key spent, and the Unsleeping Watch's marks. */
   private swings: Record<string, number> = {};
   private tolling?: Unit;
@@ -364,6 +393,8 @@ export class Battle {
     inOverwatch(watcher: Unit, foe: Unit): boolean;
     /** This Sister was moved clear of the foe's charged blow. */
     dodges?(foe: Unit, u: Unit): boolean;
+    /** A foe's place in its pack by where it stands: 1 = nearest the Sisters. 1-2 is the front line. */
+    liveRank?(foe: Unit): number;
   };
 
   constructor(party: Unit[], enemies: Unit[], opts: { rng?: Rng; vigil?: number; zeal?: number; enemyScale?: number; mods?: Partial<BattleMods>; hound?: HoundHowl } = {}) {
@@ -549,7 +580,7 @@ export class Battle {
         events.push({ type: 'text', text: 'The candle is dead. The heretics grow bolder.' });
       }
     }
-    if (this.locked) for (const e of this.alive('enemy')) if (e.uid.startsWith('summon-')) e.status.delayed = true;
+    if (this.locked && !this.timed) for (const e of this.alive('enemy')) if (e.uid.startsWith('summon-')) e.status.delayed = true;
     const order = this.alive().sort((a, b) => {
       const da = a.status.delayed ? 1 : 0;
       const db = b.status.delayed ? 1 : 0;
@@ -663,44 +694,9 @@ export class Battle {
     const st = actor.status;
     st.shield = 0;
     actor.stepped = false;
-    if (st.poison) {
-      const by = st.poison.by ? this.units.find((u) => u.uid === st.poison!.by) : undefined;
-      const twice = by && by.hp > 0 && by.sig?.hymnBurnTwice && this.kw.hymns.length && st.poison.kind === 'burn' ? 2 : 1;
-      const dmg = Math.min(actor.hp, st.poison.dmg * twice);
-      actor.hp -= dmg;
-      events.push({ type: 'damage', uid: actor.uid, amount: dmg, blocked: 0 });
-      if (actor.side === 'party') this.hurtZeal(actor, dmg, events);
-      if (st.poison.guilt && actor.hp > 0) this.addGuilt(actor, 1, events);
-      st.poison.turns -= 1;
-      if (st.poison.turns <= 0) st.poison = undefined;
-      if (actor.hp <= 0) {
-        this.kill(actor, events);
-        return false;
-      }
-      this.checkPhase(actor, events);
-    }
-    if (st.bleed) {
-      const dmg = Math.min(actor.hp, st.bleed.dmg);
-      actor.hp -= dmg;
-      events.push({ type: 'damage', uid: actor.uid, amount: dmg, blocked: 0 });
-      if (actor.side === 'party') this.hurtZeal(actor, dmg, events);
-      this.scar(actor, dmg, events);
-      const stig = st.bleed.by ? this.units.find((u) => u.uid === st.bleed!.by) : undefined;
-      if (stig && stig.hp > 0) this.mend(stig, dmg * 0.5, events);
-      if (--st.bleed.turns <= 0) st.bleed = undefined;
-      if (actor.hp <= 0) {
-        this.kill(actor, events);
-        return false;
-      }
-      this.checkPhase(actor, events);
-    }
-    if (st.regen) {
-      const real = Math.min(actor.maxHp - actor.hp, Math.round(actor.maxHp * st.regen.pct * this.healOf(actor)));
-      if (real > 0) {
-        actor.hp += real;
-        events.push({ type: 'heal', uid: actor.uid, amount: real });
-      }
-      if (--st.regen.turns <= 0) st.regen = undefined;
+    if (!this.timed) {
+      if (!this.tickPoison(actor, events) || !this.tickBleed(actor, events)) return false;
+      this.tickRegen(actor, events);
     }
     actor.steps = 0;
     if (actor.passive?.kind === 'healAura') {
@@ -713,31 +709,107 @@ export class Battle {
         }
       }
     }
-    if (st.weaken && --st.weaken.turns <= 0) st.weaken = undefined;
-    if (st.empower && --st.empower.turns <= 0) st.empower = undefined;
-    if (st.accused && --st.accused <= 0) st.accused = undefined;
-    if (st.taunt && --st.taunt <= 0) st.taunt = undefined;
-    if (st.sunder && --st.sunder.turns <= 0) st.sunder = undefined;
-    if (st.hex && --st.hex.turns <= 0) st.hex = undefined;
-    if (st.ward && --st.ward.turns <= 0) st.ward = undefined;
-    if (st.counter && --st.counter.turns <= 0) st.counter = undefined;
-    if (st.thorns && --st.thorns.turns <= 0) st.thorns = undefined;
-    if (st.critUp && --st.critUp.turns <= 0) st.critUp = undefined;
-    if (st.overwatch && --st.overwatch.turns <= 0) st.overwatch = undefined;
-    if (st.confessed && --st.confessed <= 0) st.confessed = undefined;
-    if (st.foretold && --st.foretold.turns <= 0) st.foretold = undefined;
-    if (st.silence && --st.silence <= 0) st.silence = undefined;
-    if (st.rapture && --st.rapture <= 0) st.rapture = undefined;
-    if (st.martyr && --st.martyr.turns <= 0) st.martyr = undefined;
+    if (!this.timed) for (const k of TIMED_KEYS) if (k !== 'stun' && k !== 'penance' && k !== 'poison' && k !== 'bleed' && k !== 'regen') countDown(st, k);
     this.turnKits(actor, events);
     if (st.stun) {
-      st.stun -= 1;
-      if (st.stun <= 0) st.stun = undefined;
+      if (!this.timed) {
+        st.stun -= 1;
+        if (st.stun <= 0) st.stun = undefined;
+      }
       this.log.push(`${actor.name} is stunned`);
       events.push({ type: 'status', uid: actor.uid, label: 'Stunned' });
       return false;
     }
     return true;
+  }
+
+  /** Burn or poison bites once. False if it killed. */
+  private tickPoison(actor: Unit, events: BattleEvent[]): boolean {
+    const st = actor.status;
+    if (!st.poison) return true;
+    const by = st.poison.by ? this.units.find((u) => u.uid === st.poison!.by) : undefined;
+    const twice = by && by.hp > 0 && by.sig?.hymnBurnTwice && this.kw.hymns.length && st.poison.kind === 'burn' ? 2 : 1;
+    const dmg = Math.min(actor.hp, st.poison.dmg * twice);
+    actor.hp -= dmg;
+    events.push({ type: 'damage', uid: actor.uid, amount: dmg, blocked: 0 });
+    if (actor.side === 'party') this.hurtZeal(actor, dmg, events);
+    if (st.poison.guilt && actor.hp > 0) this.addGuilt(actor, 1, events);
+    st.poison.turns -= 1;
+    if (st.poison.turns <= 0) st.poison = undefined;
+    if (actor.hp <= 0) {
+      this.kill(actor, events);
+      return false;
+    }
+    this.checkPhase(actor, events);
+    return true;
+  }
+
+  /** Bleeding bites once. False if it killed. */
+  private tickBleed(actor: Unit, events: BattleEvent[]): boolean {
+    const st = actor.status;
+    if (!st.bleed) return true;
+    const dmg = Math.min(actor.hp, st.bleed.dmg);
+    actor.hp -= dmg;
+    events.push({ type: 'damage', uid: actor.uid, amount: dmg, blocked: 0 });
+    if (actor.side === 'party') this.hurtZeal(actor, dmg, events);
+    this.scar(actor, dmg, events);
+    const stig = st.bleed.by ? this.units.find((u) => u.uid === st.bleed!.by) : undefined;
+    if (stig && stig.hp > 0) this.mend(stig, dmg * 0.5, events);
+    if (--st.bleed.turns <= 0) st.bleed = undefined;
+    if (actor.hp <= 0) {
+      this.kill(actor, events);
+      return false;
+    }
+    this.checkPhase(actor, events);
+    return true;
+  }
+
+  private tickRegen(actor: Unit, events: BattleEvent[]) {
+    const st = actor.status;
+    if (!st.regen) return;
+    const real = Math.min(actor.maxHp - actor.hp, Math.round(actor.maxHp * st.regen.pct * this.healOf(actor)));
+    if (real > 0) {
+      actor.hp += real;
+      events.push({ type: 'heal', uid: actor.uid, amount: real });
+    }
+    if (--st.regen.turns <= 0) st.regen = undefined;
+  }
+
+  /**
+   * Real time: `dt` seconds pass. Each status runs on its own clock from the
+   * moment it was laid (or renewed): every PULSE seconds a burn, poison or bleed
+   * bites, a regen mends, and one "turn" of it wears off. Cooldowns run down.
+   */
+  timePass(dt: number, events: BattleEvent[]) {
+    for (const u of this.units) {
+      if (u.hp <= 0) continue;
+      const cds = u.cooldowns;
+      if (cds) for (const id in cds) if (cds[id] > 0) cds[id] = Math.max(0, cds[id] - dt);
+      const clocks = u.clocks;
+      // Clocks of statuses that wore off or were stripped.
+      if (clocks) for (const k in clocks) if (!turnsOf(u.status, k as TimedKey)) delete clocks[k];
+      for (const k in u.status) {
+        if (!TIMED_SET.has(k)) continue;
+        const key = k as TimedKey;
+        const n = turnsOf(u.status, key);
+        if (!n) continue;
+        const cl = (u.clocks ??= {});
+        let c = cl[key];
+        if (!c || n > c.n) c = cl[key] = { t: 0, n };
+        c.t += dt;
+        while (c.t >= PULSE && turnsOf(u.status, key)) {
+          c.t -= PULSE;
+          if (key === 'poison') {
+            if (!this.tickPoison(u, events)) break;
+          } else if (key === 'bleed') {
+            if (!this.tickBleed(u, events)) break;
+          } else if (key === 'regen') this.tickRegen(u, events);
+          else countDown(u.status, key);
+        }
+        if (u.hp <= 0) break;
+        c.n = turnsOf(u.status, key);
+      }
+    }
   }
 
   canUse(actor: Unit, skill: SkillDef): boolean {
@@ -770,7 +842,7 @@ export class Battle {
       case 'allEnemies':
         return foes;
       case 'enemy': {
-        let pool = skill.reach?.length ? foes.filter((u) => skill.reach!.includes(u.rank)) : foes;
+        let pool = skill.reach?.length ? foes.filter((u) => skill.reach!.includes(u.side === 'enemy' && this.space?.liveRank ? this.space.liveRank(u) : u.rank)) : foes;
         const taunting = pool.filter((u) => u.status.taunt);
         if (taunting.length) pool = taunting;
         return pool;
@@ -816,8 +888,8 @@ export class Battle {
     const events: BattleEvent[] = [{ type: 'text', text: `${actor.name}: ${skill.name}` }];
     // Each action ticks the actor's cooldowns down, then starts this skill's.
     const cds = (actor.cooldowns ??= {});
-    for (const id of Object.keys(cds)) if (cds[id] > 0) cds[id] -= 1;
-    if (skill.cooldown) cds[skill.id] = skill.cooldown;
+    if (!this.timed) for (const id of Object.keys(cds)) if (cds[id] > 0) cds[id] -= 1;
+    if (skill.cooldown) cds[skill.id] = this.timed ? cooldownSec(skill.cooldown) : skill.cooldown;
     const single = skill.target === 'enemy' || skill.target === 'ally';
     this.log.push(`${actor.name} uses ${skill.name}${single && target ? ` on ${target.name}` : ''}`);
     if (skill.rite && actor.side === 'party') this.addZeal(-ZEAL_MAX, events, 'Sacrament', actor);
@@ -843,7 +915,7 @@ export class Battle {
     if (pen) {
       events.push({ type: 'status', uid: actor.uid, label: 'Penance' });
       this.pierce(actor, Math.round(this.attackOf(actor) * pen.pct), events);
-      if (--pen.turns <= 0) actor.status.penance = undefined;
+      if (!this.timed && --pen.turns <= 0) actor.status.penance = undefined;
       if (actor.hp <= 0) return events;
     }
 
@@ -1103,7 +1175,7 @@ export class Battle {
         this.queue.splice(i, 1);
         this.queue.push(t.uid);
       } else t.status.delayed = true;
-      events.push({ type: 'status', uid: t.uid, label: 'Delayed' });
+      events.push({ type: 'status', uid: t.uid, label: 'Staggered' });
       if (t.status.charging) {
         t.status.charging = false;
         this.log.push(`  ${t.name}'s charge is broken`);
@@ -2492,7 +2564,7 @@ export class Battle {
     const by = this.get(gr.by);
     if (gr.kind === 'hallowed') for (const a of this.alive('party')) this.mend(a, a.maxHp * GROUND.hallowedRegen, events);
     if (gr.kind === 'thorns' && by) for (const e of this.alive('enemy')) this.pierce(e, Math.round(this.attackOf(by) * GROUND.thornsAtk * baneMult(by, e)), events);
-    if (gr.kind === 'flood') for (const e of this.alive('enemy')) e.status.delayed = true;
+    if (gr.kind === 'flood' && !this.timed) for (const e of this.alive('enemy')) e.status.delayed = true;
     if (gr.kind === 'lantern') {
       const low = this.alive('party').sort((a, b) => a.hp / a.maxHp - b.hp / b.maxHp)[0];
       if (low) {

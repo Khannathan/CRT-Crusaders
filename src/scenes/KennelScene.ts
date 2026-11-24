@@ -62,7 +62,7 @@ export class KennelScene extends Phaser.Scene {
       houndFace(this, PAD + 70, y + 86, def, 100);
       this.add.text(PAD + 136, y + 30, def.name, text.display(20, 0xfff1d6));
       this.add.text(GAME_W - PAD - 12, y + 12, `${def.rarity}  LV ${lv}/${HOUND_MAX}`, text.hud(13, RARITY_COLOR[def.rarity])).setOrigin(1, 0);
-      this.add.text(PAD + 136, y + 60, `${def.howlName}, every round:`, text.body(15, PAL.amber));
+      this.add.text(PAD + 136, y + 60, `${def.howlName}, every 2s:`, text.body(15, PAL.amber));
       this.add.text(PAD + 136, y + 82, howlParts(howlAt(def, lv)).map((p) => `• ${p}`).join('\n'), { ...text.body(15, PAL.ivory), wordWrap: { width: bw - 150 } });
     } else this.add.text(PAD + 16, y + 60, 'No hound runs with your Sisters. Choose one below!', text.body(16, PAL.muted));
     y += ch + 14;
