@@ -58,6 +58,7 @@ import { AltarScene, CloisterScene, ModesScene, WingAbyssScene, WingContestScene
 import { ProfileScene } from './scenes/ProfileScene';
 import { TitleScene } from './scenes/TitleScene';
 import { CampaignScene } from './scenes/CampaignScene';
+import { ArtReviewScene } from './scenes/ArtReviewScene';
 
 /**
  * Phaser draws text onto canvases, so web fonts must be loaded before any scene
@@ -151,6 +152,8 @@ function start() {
       BattleScene,
       FieldScene,
       ResultsScene,
+      // Developer only: opened with ?artreview (see scenes/ArtReviewScene.ts).
+      ArtReviewScene,
     ],
   });
 

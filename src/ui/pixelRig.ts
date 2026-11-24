@@ -39,6 +39,8 @@ const HIP = 102;
 const KNEE = 146;
 const FEET = 184;
 const MID = 64;
+/** The rig's guide rows (art pixels of the still), drawn by the art review viewer. */
+export const RIG_GUIDES = { crown: CROWN, shoulder: SHOULDER, hip: HIP, knee: KNEE, feet: FEET } as const;
 /** Half-width of her core (head, spine, belly): it never counts as arm or loose cloth. */
 const CORE = 14;
 
