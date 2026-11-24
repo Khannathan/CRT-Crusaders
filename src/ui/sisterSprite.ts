@@ -3,6 +3,7 @@ import { pixelShadow, rimKey } from './pixelFx';
 import { MINI_SCALE, POSE, glowKey, miniKey, posesKey, type PoseName } from './spriteAssets';
 import { hasFullBody } from './placeholderPortrait';
 import { standInKey } from './standIn';
+import { RIG_CLIPS, rigKey, type RigClip } from './pixelRig';
 
 /**
  * A Sister's full-body pixel figure, brought to life with sprite-style motion
@@ -15,8 +16,10 @@ import { standInKey } from './standIn';
  * - death: HURT goes grey, sinks and crumbles into rising ash
  * - active: she steps forward on a brightened floor ring
  *
- * The poses come from her pose sheet (src/assets/poses/<id>.png, see
- * spriteAssets.ts) when she has one; without it the still makes the same moves.
+ * The moves come from the pixel rig (ui/pixelRig.ts): her one still bent
+ * frame by frame in code (breathing, wind-up and blow, cast, Litany, recoil,
+ * run). A drawn pose sheet (src/assets/poses/<id>.png, see spriteAssets.ts)
+ * or animation sheet, when she has one, still wins for her big moments.
  * Pixel art stays on its grid: the art is only ever drawn at whole-number
  * scales and moves in whole-pixel steps, never squashed, stretched or tilted.
  * Small figures (the Vigil) use a mini texture shrunk once (miniKey).
@@ -51,6 +54,9 @@ export interface SisterSpriteOpts {
   mini?: boolean;
 }
 
+/** The rig clip standing in for each drawn pose. */
+const RIG_OF: Record<PoseName, RigClip> = { strike: 'strike', cast: 'cast', litany: 'litany', hurt: 'hurt' };
+
 /** A stepped ease: flashes and hops move in a few hard steps, like sprite frames. */
 const STEPS = (n: number) => ({ ease: 'Stepped', easeParams: [n] });
 
@@ -70,6 +76,11 @@ export class SisterSprite {
 
   /** Her animation sheet frames, shown in place of the still while one plays. */
   private sheet?: Phaser.GameObjects.Sprite;
+  /** Her pixel-rig frames (ui/pixelRig.ts), shown in place of the still (not for minis). */
+  private rig?: Phaser.GameObjects.Sprite;
+  /** The rig clip playing (undefined = breathing). */
+  private clip?: RigClip;
+  private clipStep?: Phaser.Time.TimerEvent;
   /** Her pose sheet (STRIKE, CAST, LITANY, HURT), shown in place of the still for a beat. */
   private poseImg?: Phaser.GameObjects.Sprite;
   private poseBack?: Phaser.Time.TimerEvent;
@@ -104,6 +115,14 @@ export class SisterSprite {
     this.legs = img().setCrop(0, waist, tex.width, tex.height - waist);
     this.upper = img().setCrop(0, 0, tex.width, waist);
     this.pose = scene.add.container(0, 0, [this.halo, this.legs, this.upper]);
+    const rig = mini ? undefined : rigKey(scene, key);
+    if (rig) {
+      this.rig = scene.add.sprite(0, this.px(FOOT_PAD), rig, 0).setOrigin(0.5, 1).setScale(this.u);
+      this.pose.add(this.rig);
+      this.upper.setVisible(false);
+      this.legs.setVisible(false);
+      this.halo.setTexture(glowKey(scene, rig, this.glowR), 0);
+    }
     if (!mini && scene.textures.exists(posesKey(id))) {
       this.poseImg = scene.add.sprite(0, this.px(FOOT_PAD), this.tex(posesKey(id)), 0).setOrigin(0.5, 1).setScale(this.u).setVisible(false);
       this.pose.add(this.poseImg);
@@ -116,6 +135,7 @@ export class SisterSprite {
     this.root.once(Phaser.GameObjects.Events.DESTROY, () => {
       this.breath?.remove();
       this.poseBack?.remove();
+      this.clipStep?.remove();
     });
   }
 
@@ -145,13 +165,74 @@ export class SisterSprite {
 
   /** Everything that shows her art (tints go on all of it). */
   private get parts() {
-    return [this.upper, this.legs, this.poseImg, this.sheet].filter((p): p is Phaser.GameObjects.Image | Phaser.GameObjects.Sprite => !!p);
+    return [this.upper, this.legs, this.rig, this.poseImg, this.sheet].filter((p): p is Phaser.GameObjects.Image | Phaser.GameObjects.Sprite => !!p);
   }
 
   private breathe() {
     if (this.dead) return;
     this.beat = (this.beat + 1) % BREATH.length;
     this.upper.y = this.px(FOOT_PAD) + this.px(BREATH[this.beat]);
+    if (this.rig && !this.clip) {
+      const idle = RIG_CLIPS.idle;
+      this.rigFrame(idle.start + (this.beat % idle.count));
+    }
+  }
+
+  /** Shows one rig frame, its glow following. */
+  private rigFrame(i: number) {
+    if (!this.rig) return;
+    this.rig.setFrame(i);
+    if (this.halo.texture.key === glowKey(this.scene, this.rig.texture.key, this.glowR)) this.halo.setFrame(i);
+  }
+
+  /** Her still (or rig) on show, or hidden behind a drawn pose or sheet. */
+  private showBase(on: boolean) {
+    if (this.rig) {
+      this.rig.setVisible(on);
+      if (on) this.halo.setTexture(glowKey(this.scene, this.rig.texture.key, this.glowR), this.rig.frame.name);
+    } else {
+      this.upper.setVisible(on);
+      this.legs.setVisible(on);
+      if (on) this.halo.setTexture(glowKey(this.scene, this.still(), this.glowR));
+    }
+  }
+
+  /**
+   * Plays a rig clip once (or looping, for running), then she goes back to
+   * breathing. `hold` keeps the last frame. Returns false without a rig.
+   */
+  private playClip(name: RigClip, opts: { loop?: boolean; hold?: boolean } = {}) {
+    if (!this.rig) return false;
+    this.clipStep?.remove();
+    this.clipStep = undefined;
+    this.showStill();
+    this.clip = name;
+    const c = RIG_CLIPS[name];
+    let i = 0;
+    const step = () => {
+      if (this.clip !== name) return;
+      if (i >= c.count) {
+        if (opts.loop) i = 0;
+        else {
+          this.clipStep = undefined;
+          if (!opts.hold) this.clip = undefined;
+          return;
+        }
+      }
+      this.rigFrame(c.start + i);
+      this.clipStep = this.scene.time.delayedCall(c.ms[i], step);
+      i++;
+    };
+    step();
+    return true;
+  }
+
+  /** Stops a rig clip; she breathes again. */
+  private stopClip() {
+    this.clipStep?.remove();
+    this.clipStep = undefined;
+    this.clip = undefined;
+    if (this.rig) this.rigFrame(RIG_CLIPS.idle.start);
   }
 
   /** Whether she has a pose sheet to show. */
@@ -169,8 +250,7 @@ export class SisterSprite {
     this.poseBack?.remove();
     this.poseBack = undefined;
     p.setFrame(POSE[name]).setVisible(true);
-    this.upper.setVisible(false);
-    this.legs.setVisible(false);
+    this.showBase(false);
     this.halo.setTexture(glowKey(this.scene, p.texture.key, this.glowR), POSE[name]);
     if (ms) this.poseBack = this.scene.time.delayedCall(ms, () => this.showStill());
     return true;
@@ -182,9 +262,7 @@ export class SisterSprite {
     this.poseBack = undefined;
     if (!this.poseImg?.visible) return;
     this.poseImg.setVisible(false);
-    this.upper.setVisible(true);
-    this.legs.setVisible(true);
-    this.halo.setTexture(glowKey(this.scene, this.still(), this.glowR));
+    this.showBase(true);
   }
 
   /**
@@ -208,23 +286,24 @@ export class SisterSprite {
       );
     }
     this.showStill();
-    this.upper.setVisible(false);
-    this.legs.setVisible(false);
+    this.stopClip();
+    this.showBase(false);
     this.sheet.setVisible(true).play(key);
     this.halo.setTexture(glowKey(this.scene, key, this.glowR), 0);
     return true;
   }
 
   private stopSheet() {
-    this.sheet?.stop().setVisible(false);
-    this.halo.setTexture(glowKey(this.scene, this.still(), this.glowR));
-    this.upper.setVisible(true);
-    this.legs.setVisible(true);
+    if (!this.sheet?.visible) return;
+    this.sheet.stop().setVisible(false);
+    this.showBase(true);
   }
 
-  /** Her drawn pose for an action: an animation sheet first, then her pose sheet. */
+  /** Her move for an action: a drawn animation sheet first, then her drawn pose, then the pixel rig. */
   private act(sheet: string, pose: PoseName, ms: number) {
-    if (!this.playSheet(sheet)) this.showPose(pose, ms);
+    if (this.playSheet(sheet)) return;
+    if (this.showPose(pose, ms)) return;
+    this.playClip(RIG_OF[pose]);
   }
 
   private kill(...targets: object[]) {
@@ -286,7 +365,7 @@ export class SisterSprite {
    */
   shoot(nx: number, ny: number, color: number) {
     if (this.dead) return;
-    if (!this.hasPoses) return this.cast(color);
+    if (!this.hasPoses && !this.rig) return this.cast(color);
     this.kill(this.pose);
     this.reset();
     this.act('attack', 'strike', 460);
@@ -328,7 +407,7 @@ export class SisterSprite {
     this.reset();
     this.scene.tweens.add({ targets: this.pose, x: { from: -shake, to: shake }, duration: 40, yoyo: true, repeat: 2, ...STEPS(1), onComplete: () => this.pose.setX(0) });
     if (!hurt) return;
-    if (!this.sheet?.visible) this.showPose('hurt', 300);
+    if (!this.sheet?.visible && !this.showPose('hurt', 300)) this.playClip('hurt');
     this.parts.forEach((p) => p.setTintFill(0xffffff));
     this.scene.tweens.add({ targets: this.pose, y: this.px(6) * dir, duration: 70, yoyo: true, ...STEPS(2) });
     this.scene.time.delayedCall(60, () => !this.dead && this.parts.forEach((p) => p.setTint(0xff6666)));
@@ -340,7 +419,7 @@ export class SisterSprite {
     if (this.dead) return;
     this.dead = true;
     this.stopSheet();
-    this.showPose('hurt');
+    if (!this.showPose('hurt')) this.playClip('hurt', { hold: true });
     this.setActiveOff();
     const s = this.s;
     this.kill(this.pose, this.halo);
@@ -393,6 +472,7 @@ export class SisterSprite {
     this.reset();
     this.pose.setAlpha(1);
     this.showStill();
+    this.stopClip();
     this.parts.forEach((p) => p.clearTint());
     this.ring.setAlpha(1).setStrokeStyle(2 * this.s, this.ringColor, 0.55);
   }
@@ -419,9 +499,16 @@ export class SisterSprite {
       this.walking?.remove();
       this.walking = undefined;
       this.stance.setY(0).setAngle(0);
+      if (this.clip === 'run') this.stopClip();
       return;
     }
     this.stance.setY(0).setAngle(0);
+    // With a rig she runs (lean, bob, striding legs) instead of hopping.
+    if (this.rig && (!this.clip || this.clip === 'run')) {
+      this.playClip('run', { loop: true });
+      this.walking = this.scene.tweens.add({ targets: this.stance, y: 0, duration: 1000, repeat: -1 });
+      return;
+    }
     this.walking = this.scene.tweens.add({ targets: this.stance, y: -(this.px(3) || 1), duration: 150, yoyo: true, repeat: -1, ...STEPS(2) });
   }
 
@@ -431,7 +518,7 @@ export class SisterSprite {
     this.setActive(false);
     this.kill(this.pose);
     this.reset();
-    this.scene.time.delayedCall(delay, () => !this.dead && this.showPose('litany', 900));
+    this.scene.time.delayedCall(delay, () => !this.dead && (this.showPose('litany', 900) || this.playClip('litany')));
     this.scene.tweens.add({ targets: this.pose, y: -this.px(12), duration: 140, delay, yoyo: true, repeat: 1, ...STEPS(3) });
   }
 }
