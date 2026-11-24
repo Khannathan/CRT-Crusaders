@@ -62,14 +62,14 @@ describe('Sister kits: shape', () => {
   });
 
   it('Sisters fight with their kit', () => {
-    const u = sis('CC-W077');
+    const u = sis('AM-SSR-WAR');
     expect(skillsFor(u).map((s) => s.name)).toEqual(['Measured Cut', 'Riposte Thrust', "Duelist's Salute", 'Mercy Stroke', 'Step']);
   });
 });
 
 describe('Sister kits: signatures', () => {
   it('Coup de Grâce: a Mercy kill gives Justa Vindex another action once a round', () => {
-    const m = sis('CC-W077');
+    const m = sis('AM-SSR-WAR');
     const foes = [makeEnemy('husk', 'e0', 1), makeEnemy('husk', 'e1', 2)];
     const b = new Battle([m], foes, { rng: never });
     b.startRound([]);
@@ -83,7 +83,7 @@ describe('Sister kits: signatures', () => {
 
   it('Duet: while a Hymn plays, Caecilia Dolabella strikes twice and fills Zeal', () => {
     const run = (hymn: boolean) => {
-      const m = sis('CC-W080', 1, { zeal: 0 });
+      const m = sis('CC-UR1', 1, { zeal: 0 });
       const foe = tank('e0', 1);
       const b = new Battle([m], [foe], { rng: never });
       if (hymn) b.kw.hymns.push({ by: m.uid, name: 'Test', rounds: 3, choir: true });
@@ -97,7 +97,7 @@ describe('Sister kits: signatures', () => {
   });
 
   it('Watchfire: the foe acting first each round is set Burning', () => {
-    const i = sis('CC-W040');
+    const i = sis('IV-UR1');
     const foe = tank('e0', 1);
     foe.spd = 99;
     const b = new Battle([i], [foe], { rng: never });
@@ -106,15 +106,15 @@ describe('Sister kits: signatures', () => {
   });
 
   it("Sentry's Omen: the fastest Sister opens on Overwatch", () => {
-    const v = sis('CC-W049', 2);
-    const fast = sis('CC-W001', 1, { spd: 30 });
+    const v = sis('IV-SSR-ORA', 2);
+    const fast = sis('IV-R-EXE', 1, { spd: 30 });
     new Battle([fast, v], [tank('e0', 1)], { rng: never });
     expect(fast.status.overwatch).toBeDefined();
     expect(v.status.overwatch).toBeUndefined();
   });
 
   it('Vindication: Verginia Imperiosa adds Guilt with each counter, and Vindicates at five', () => {
-    const it2 = sis('CC-W069');
+    const it2 = sis('VT-LUR');
     const foe = makeEnemy('husk', 'e0', 1);
     foe.maxHp = foe.hp = 100000;
     const b = new Battle([it2], [foe], { rng: never });
@@ -130,7 +130,7 @@ describe('Sister kits: signatures', () => {
   });
 
   it('Harvest: Remains feed Ursula Messalla Zeal and attack', () => {
-    const a = sis('CC-W079', 1, { zeal: 0 });
+    const a = sis('SW-SSR-WAR', 1, { zeal: 0 });
     const foes = [makeEnemy('husk', 'e0', 1), makeEnemy('husk', 'e1', 2)];
     const b = new Battle([a], foes, { rng: never });
     b.act(a, { id: 'x', name: 'x', desc: '', from: [], target: 'enemy', mult: 100 }, foes[0]);
@@ -140,7 +140,7 @@ describe('Sister kits: signatures', () => {
   });
 
   it('Reliquary Volley spends Remains for one bolt each', () => {
-    const e = sis('CC-W235', 3);
+    const e = sis('SW-SSR-ARB', 3);
     const b = new Battle([e], [tank('e0', 1), tank('e1', 2)], { rng: never });
     b.kw.remains = 3;
     const ev = b.act(e, skill(e, 'Reliquary Volley'));
@@ -150,7 +150,7 @@ describe('Sister kits: signatures', () => {
 
   it('Brine Smite drains more with the Tide', () => {
     const run = (tide: number) => {
-      const r = sis('CC-W100', 1, { hp: 100 });
+      const r = sis('DL-UR1', 1, { hp: 100 });
       const b = new Battle([r], [tank('e0', 1)], { rng: never });
       b.kw.tide = tide;
       b.act(r, skill(r, 'Brine Smite'), b.get('e0'));
@@ -160,8 +160,8 @@ describe('Sister kits: signatures', () => {
   });
 
   it('Processional: the front Sister goes to the back and Pilgrims gain Stride', () => {
-    const c = sis('CC-W120', 1);
-    const p = sis('CC-W009', 2);
+    const c = sis('RP-SSR-CAN', 1);
+    const p = sis('RP-UR1', 2);
     const b = new Battle([c, p], [tank('e0', 1)], { rng: never });
     b.act(c, skill(c, 'Processional'));
     expect(c.rank).toBe(2);
@@ -171,9 +171,9 @@ describe('Sister kits: signatures', () => {
   });
 
   it('The Red Road: Peregrina Rufa may Step twice a turn', () => {
-    const y = sis('CC-W009', 2);
-    const a = sis('CC-W001', 1);
-    const c = sis('CC-W013', 3);
+    const y = sis('RP-UR1', 2);
+    const a = sis('IV-R-EXE', 1);
+    const c = sis('SW-R-WAR', 3);
     const b = new Battle([a, y, c], [tank('e0', 1)], { rng: never });
     b.step(y, a);
     expect(b.canStep(y)).toBe(true);
@@ -182,7 +182,7 @@ describe('Sister kits: signatures', () => {
   });
 
   it('Cracked Bell: Peals strike every foe', () => {
-    const m = sis('CC-W019');
+    const m = sis('HB-UR1');
     const foes = [tank('e0', 1), tank('e1', 2)];
     const b = new Battle([m], foes, { rng: never });
     b.kw.toll = KW.PEAL_EVERY - 1;
@@ -195,8 +195,8 @@ describe("Sister kits: Saint's Seals", () => {
   const blow = (b: Battle, foe: Unit, t: Unit, mult = 1000) => b.act(foe, { id: 'blow', name: 'Blow', desc: '', from: [], target: 'enemy', mult }, t);
 
   it('Last Rites Heard: the first Sister who would fall is healed instead, once', () => {
-    const a = sis('CC-W050', 3);
-    const v = sis('CC-W001', 1);
+    const a = sis('AM-UR1', 3);
+    const v = sis('IV-R-EXE', 1);
     const foe = makeEnemy('husk', 'e0', 1);
     const b = new Battle([v, a], [foe], { rng: never });
     blow(b, foe, v);
@@ -207,8 +207,8 @@ describe("Sister kits: Saint's Seals", () => {
   });
 
   it('Not Yet: the first Sister to fall rises at once', () => {
-    const r = sis('CC-W199', 3);
-    const v = sis('CC-W001', 1);
+    const r = sis('SW-LUR', 3);
+    const v = sis('IV-R-EXE', 1);
     const foe = makeEnemy('husk', 'e0', 1);
     const b = new Battle([v, r], [foe], { rng: never });
     blow(b, foe, v);
@@ -216,8 +216,8 @@ describe("Sister kits: Saint's Seals", () => {
   });
 
   it('I Walk Before You: Rubria Corvina takes a killing blow meant for another', () => {
-    const r = sis('CC-W129', 2, { maxHp: 100000, hp: 100000 });
-    const v = sis('CC-W001', 1);
+    const r = sis('RP-LUR', 2, { maxHp: 100000, hp: 100000 });
+    const v = sis('IV-R-EXE', 1);
     const foe = makeEnemy('husk', 'e0', 1);
     const b = new Battle([v, r], [foe], { rng: never });
     blow(b, foe, v, 50);
@@ -226,9 +226,9 @@ describe("Sister kits: Saint's Seals", () => {
   });
 
   it('Drowned and Returned: Marina Gurges rises next round and the Tide floods', () => {
-    const r = sis('CC-W100');
+    const r = sis('DL-UR1');
     const foe = makeEnemy('husk', 'e0', 1);
-    const b = new Battle([r, sis('CC-W001', 2)], [foe], { rng: never });
+    const b = new Battle([r, sis('IV-R-EXE', 2)], [foe], { rng: never });
     blow(b, foe, r, 10000);
     expect(r.hp).toBe(0);
     const ev: BattleEvent[] = [];
@@ -238,7 +238,7 @@ describe("Sister kits: Saint's Seals", () => {
   });
 
   it('The Note Held: the first Hymn to end plays two more rounds', () => {
-    const m = sis('CC-W080');
+    const m = sis('CC-UR1');
     const b = new Battle([m], [tank('e0', 1)], { rng: never });
     b.kw.hymns.push({ by: m.uid, name: 'Short', rounds: 1, choir: true });
     b.startRound([]);
@@ -247,7 +247,7 @@ describe("Sister kits: Saint's Seals", () => {
   });
 
   it('Seals reset each fight', () => {
-    const a = sis('CC-W050');
+    const a = sis('AM-UR1');
     a.sealUsed = true;
     new Battle([a], [tank('e0', 1)], { rng: never });
     expect(a.sealUsed).toBe(false);

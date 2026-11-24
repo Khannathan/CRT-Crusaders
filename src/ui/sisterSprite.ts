@@ -1,6 +1,8 @@
 import Phaser from 'phaser';
 import { pixelShadow, rimKey } from './pixelFx';
 import { MINI_SCALE, POSE, glowKey, miniKey, posesKey, type PoseName } from './spriteAssets';
+import { hasFullBody } from './placeholderPortrait';
+import { standInKey } from './standIn';
 
 /**
  * A Sister's full-body pixel figure, brought to life with sprite-style motion
@@ -34,7 +36,8 @@ const WAIST = 104;
 const BREATH = [0, 0, 1, 1, 2, 2, 2, 1, 1, 0];
 const BEAT_MS = 150;
 
-export const fullKey = (id: string) => `full-${id}`;
+/** Her figure's texture key: her own full-body art, else her Order-and-class stand-in (ui/standIn.ts). */
+export const fullKey = (id: string) => (hasFullBody(id) ? `full-${id}` : (standInKey('full', id) ?? `full-${id}`));
 /** Same key as fieldView's animKey: an animation sheet loaded by BootScene from src/assets/anim. */
 const sheetKey = (id: string, a: string) => `anim-${id}-${a}`;
 

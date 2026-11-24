@@ -21,12 +21,12 @@ export interface StoryScene {
 }
 
 // The cast: the Vigil's company on the road.
-export const AURELIA = 'CC-W040'; // Mother Aurelia, Iron Vigil, leads the march
-export const PEREGRINA = 'CC-W009'; // Peregrina, Red Pilgrimage, walked the road before
-export const OCTAVIA = 'CC-W180'; // Octavia, Veiled Tribunal, the knife in the dark
-export const PERPETUA = 'CC-W090'; // Perpetua, Thorn Covenant, the wall
-export const CASSIA = 'CC-W049'; // Cassia, Ash Oracle, reads the omens
-export const MARINA = 'CC-W100'; // Marina, Drowned Litany, hears the water
+export const AURELIA = 'IV-UR1'; // Mother Aurelia, Iron Vigil, leads the march
+export const PEREGRINA = 'RP-UR1'; // Peregrina, Red Pilgrimage, walked the road before
+export const OCTAVIA = 'VT-SSR-VEI'; // Octavia, Veiled Tribunal, the knife in the dark
+export const PERPETUA = 'TC-UR1'; // Perpetua, Thorn Covenant, the wall
+export const CASSIA = 'IV-SSR-ORA'; // Cassia, Ash Oracle, reads the omens
+export const MARINA = 'DL-UR1'; // Marina, Drowned Litany, hears the water
 
 export const CAST = [AURELIA, PEREGRINA, OCTAVIA, PERPETUA, CASSIA, MARINA];
 

@@ -36,13 +36,16 @@ describe('niche sim on the field', () => {
   it('every hunt a Sister claims to shine in is one where she is in the top third of her role', () => {
     expect(Object.keys(SHINE_LABEL).sort()).toEqual(HUNTS.map((h) => h.id).sort());
     let claims = 0;
-    for (const r of rows) {
-      const n = rows.filter((x) => x.role === r.role).length;
+    // Claims are read against the hand-made kits of her role: the kits built
+    // from Order skills (data/kitGen.ts) are stand-ins until each one's art arrives.
+    const made = rows.filter((x) => !KITS[x.id]?.generated);
+    for (const r of made) {
+      const n = made.filter((x) => x.role === r.role).length;
       for (const s of KITS[r.id]?.shines ?? []) {
         if (!/Hunt\b/.test(s) || /Hunt (damage|bosses)|Hunts$/.test(s) || s === 'Finishing Hunt bosses') continue;
         const hunt = Object.keys(SHINE_LABEL).find((h) => SHINE_LABEL[h] === s);
         expect(hunt, `${r.name}: "${s}" names no hunt`).toBeDefined();
-        expect(rankIn(rows, r.id, hunt!), `${r.name} in ${s}`).toBeLessThanOrEqual(Math.ceil(n / 3));
+        expect(rankIn(made, r.id, hunt!), `${r.name} in ${s}`).toBeLessThanOrEqual(Math.ceil(n / 3));
         claims++;
       }
     }

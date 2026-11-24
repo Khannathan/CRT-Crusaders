@@ -1,4 +1,5 @@
 import { sfx } from '../audio/sfx';
+import { rankTitle } from '../data/crusaders';
 import Phaser from 'phaser';
 import { NOVICE_COST, noviceTensLeft } from '../systems/novitiate';
 import { FONT, GAME_H, GAME_W, PAL, hex } from '../config';
@@ -328,7 +329,7 @@ export class RevealScene extends Phaser.Scene {
     const textY = Math.max(SIZE / 2, fy + h / 2 + 6);
     const texts = [
       this.add.text(0, textY + 44, c.name, { ...style, fontSize: '30px' }).setOrigin(0.5),
-      this.add.text(0, textY + 82, `${c.rarity} · ${CLASSES[c.classId].name}`, { ...style, fontSize: '19px', color: hex(color) }).setOrigin(0.5),
+      this.add.text(0, textY + 82, `${c.rarity} ${rankTitle(c)} · ${CLASSES[c.classId].name}`, { ...style, fontSize: '19px', color: hex(color) }).setOrigin(0.5),
       this.add
         .text(0, textY + 124, tag, { ...style, fontSize: '20px', color: hex(r.isNew ? PAL.amber : PAL.steel) })
         .setOrigin(0.5),

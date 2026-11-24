@@ -3,7 +3,7 @@ import Phaser from 'phaser';
 import { saveSettings, settings } from '../state/settings';
 import { GAME_H, GAME_W, PAL } from '../config';
 import { CLASSES, RARITY_COLOR, classIconFor } from '../data/classes';
-import { CRUSADERS } from '../data/crusaders';
+import { CRUSADERS, rankTitle } from '../data/crusaders';
 import { autoEquipPlan, formatPower, gearPower, gearSwapDelta, sisterPower } from '../systems/power';
 import { ORDERS } from '../data/orders';
 import type { OwnedCrusader } from '../state/save';
@@ -410,7 +410,7 @@ export class RosterScene extends Phaser.Scene {
     layer.add([
       ...addBadge(this, PAD + 4, NAME_Y - 50, c.rarity, tint, 13),
       this.add.text(PAD + 4, NAME_Y - 28, have ? c.name.toUpperCase() : 'NOT YET SWORN', text.display(26, 0xfff1d6)),
-      this.add.text(PAD + 4, NAME_Y + 6, tookVows(have) ? `✠ ${secondTitle(c.classId)} · ${cls.role}` : `${c.title && c.title !== cls.name ? `${c.title} · ` : ''}${cls.name} · ${cls.role}`, text.body(16, tookVows(have) ? 0xf2d27a : tint)),
+      this.add.text(PAD + 4, NAME_Y + 6, tookVows(have) ? `✠ ${secondTitle(c.classId)} · ${cls.role}` : `${rankTitle(c)} · ${c.title ?? cls.name} · ${cls.role}`, text.body(16, tookVows(have) ? 0xf2d27a : tint)),
     ]);
     const sigil = addOrderSigil(this, PAD + 16, NAME_Y + 44, c.order, 26);
     if (sigil) layer.add(sigil);

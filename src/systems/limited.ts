@@ -4,7 +4,7 @@ import type { SaveData } from '../state/save';
 
 /**
  * The Limited banner: every LIMITED_DAYS a new banner takes the Altar. Each
- * runs one Saint (a limited UR) and two limited SSRs, none of whom any
+ * runs one Living Saint (a limited UR) and her two Limited Commanders (SSRs), none of whom any
  * standard banner can give, and it cannot be customized. Once GRADUATE_AFTER
  * more Limited banners have come and gone, its three Sisters join their
  * Orders' standard pools for good. The calendar runs on the device clock,
@@ -20,14 +20,12 @@ export const GRADUATE_AFTER = 3;
 const EPOCH = new Date(2026, 10, 16);
 const DAY = 864e5;
 
-/** Each Limited banner: its Saint, then its two SSRs (one of her Order, one of an Order with no Saint). */
-const LINEUP: [string, string, string][] = [
-  ['CC-W069', 'CC-W078', 'CC-W187'],
-  ['CC-W129', 'CC-W147', 'CC-W197'],
-  ['CC-W209', 'CC-W218', 'CC-W137'],
-  ['CC-W199', 'CC-W217', 'CC-W148'],
-  ['CC-W229', 'CC-W127', 'CC-W237'],
-];
+/**
+ * Each Limited banner: an Order's Living Saint and the two Limited Commanders
+ * sworn to her. Ten banners, one per Order, two weeks each: the lineup runs to
+ * April 2027. Paulina Macra leads, as the first Saint with her art in.
+ */
+const LINEUP: [string, string, string][] = (['IV', 'VT', 'RP', 'CC', 'SW', 'DL', 'AM', 'TC', 'GC', 'HB'] as const).map((o) => [`${o}-LUR`, `${o}-LSSR1`, `${o}-LSSR2`]);
 
 const byId = (id: string) => CRUSADERS.find((c) => c.id === id)!;
 export interface LimitedBanner {

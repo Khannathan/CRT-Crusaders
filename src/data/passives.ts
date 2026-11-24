@@ -28,3 +28,4 @@ export function basePassive(c: Pick<CrusaderDef, 'classId' | 'rarity'>): Passive
   if (c.rarity !== 'R' && c.rarity !== 'SR') return undefined;
   return BY_CLASS[c.classId]?.(c.rarity === 'SR');
 }
+

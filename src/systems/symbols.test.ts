@@ -15,7 +15,7 @@ const hiero = CRUSADERS.find((c) => c.classId === 'hierophant' && c.rarity === '
 describe('Holy Symbols', () => {
   it('every Sister has a relic to name her Symbol', () => {
     expect(CRUSADERS.every((c) => c.relic)).toBe(true);
-    expect(symbolName(CRUSADERS.find((c) => c.id === 'CC-W001')!)).toBe('Interrogation Seal');
+    expect(symbolName(CRUSADERS.find((c) => c.id === 'IV-R-EXE')!)).toBe('Interrogation Seal');
   });
 
   it('wakes after her first Ascension, then rises to +15 on tiered Grace', () => {
@@ -49,7 +49,7 @@ describe('Holy Symbols', () => {
   });
 
   it('a full party of +15 Symbols is strong, not a different game', () => {
-    const party = ['CC-W013', 'CC-W052', 'CC-W001', 'CC-W022'];
+    const party = ['SW-R-WAR', 'DL-R-HIE', 'IV-R-EXE', 'SW-SR-CON'];
     const rate = (lv?: number) => {
       let wins = 0;
       for (let i = 0; i < 200; i++) {
@@ -66,7 +66,7 @@ describe('Holy Symbols', () => {
   });
 
   it('at +10 a Sister with a signature has it Exalted; R and SR keep the class blessing', () => {
-    const isolde = CRUSADERS.find((c) => c.id === 'CC-W040')!;
+    const isolde = CRUSADERS.find((c) => c.id === 'IV-UR1')!;
     expect(exalts(isolde)).toBe(true);
     expect(symbolPerks(isolde)[1].name).toBe(`Exalted ${isolde.passive!.name}`);
     expect(symbolCombat(isolde, 9)!.exalt).toBeUndefined();
@@ -87,7 +87,7 @@ describe('Holy Symbols', () => {
   });
 
   it('an Exalted Sister fights with the stronger signature', () => {
-    const c = CRUSADERS.find((x) => x.id === 'CC-W040')!;
+    const c = CRUSADERS.find((x) => x.id === 'IV-UR1')!;
     const unit = (lv?: number): Unit => ({ uid: c.id, side: 'party' as const, name: c.name, ref: c.id, classId: c.classId, order: c.order, rank: 1, maxHp: 1000, hp: 1000, atk: 100, armor: 0, mres: 0, crit: 0, spd: 10, status: {}, passive: c.passive, symbol: symbolCombat(c, lv) });
     const plain = unit(9);
     const high = unit(10);

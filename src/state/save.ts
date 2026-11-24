@@ -1,4 +1,5 @@
 import { starterGear, type GearItem } from '../systems/gear';
+import { ROSTER_VERSION, migrateRoster } from './rosterMigration';
 import type { PilgrimageState } from '../systems/crusade';
 import type { MatinsState } from '../systems/matins';
 import type { RankState } from '../systems/rank';
@@ -48,6 +49,8 @@ export interface SaveData {
   /** Hosanna picks: per party (sorted Sister ids joined by +) and the last one picked. */
   hosanna?: { byParty?: Record<string, string>; last?: string };
   version: 1;
+  /** Which roster the ids are from: 2 = the 500-Sister roster (state/rosterMigration.ts). Unset = the old 90. */
+  roster?: number;
   seals: number;
   tithes: number;
   /** Pulls since the last SSR or UR. */
@@ -180,7 +183,7 @@ const KEY = 'crt-crusaders.save.v1';
  * lets you try the altar beyond the free first 10-pull.
  */
 export function newSave(): SaveData {
-  return { version: 1, seals: 30, tithes: 500, pity: 0, totalPulls: 0, freeTenUsed: false, owned: {}, cleared: [], lastParty: [], gear: starterGear(), items: { unction1: 10 } };
+  return { version: 1, roster: ROSTER_VERSION, seals: 30, tithes: 500, pity: 0, totalPulls: 0, freeTenUsed: false, owned: {}, cleared: [], lastParty: [], gear: starterGear(), items: { unction1: 10 } };
 }
 
 export function loadSave(): SaveData {
@@ -202,7 +205,10 @@ export function loadSave(): SaveData {
 function parseSave(raw: string): SaveData | undefined {
   try {
     const data = JSON.parse(raw) as SaveData;
-    if (data && data.version === 1 && typeof data.owned === 'object') return { ...newSave(), ...data, gear: data.gear ?? starterGear() };
+    if (data && data.version === 1 && typeof data.owned === 'object') {
+      const moved = migrateRoster(data);
+      return { ...newSave(), ...moved, gear: moved.gear ?? starterGear() };
+    }
   } catch {
     // not JSON
   }
@@ -307,7 +313,8 @@ export function importSave(text: string): SaveData | undefined {
     }
     const data = JSON.parse(json) as SaveData;
     if (!data || data.version !== 1 || typeof data.owned !== 'object' || typeof data.seals !== 'number') return undefined;
-    return { ...newSave(), ...data, gear: data.gear ?? starterGear() };
+    const moved = migrateRoster(data);
+    return { ...newSave(), ...moved, gear: moved.gear ?? starterGear() };
   } catch {
     return undefined;
   }

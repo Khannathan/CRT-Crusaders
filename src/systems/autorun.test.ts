@@ -4,7 +4,7 @@ import { canRepeat, repeatRuns } from './autorun';
 import { OSSUARY } from './crusade';
 import { seeded } from './rng';
 
-const party = ['CC-W013', 'CC-W052', 'CC-W001', 'CC-W022'];
+const party = ['SW-R-WAR', 'DL-R-HIE', 'IV-R-EXE', 'SW-SR-CON'];
 
 describe('repeat runs', () => {
   it('needs the crypt cleared at that tier', () => {

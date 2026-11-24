@@ -5,7 +5,7 @@ import { HOLD_WAVES, beginStand, finishWave, holdLeft, holdOf, standReward, take
 import { countOf } from './items';
 import { seeded } from './rng';
 
-const PARTY = ['CC-W013', 'CC-W052', 'CC-W001', 'CC-W022'];
+const PARTY = ['SW-R-WAR', 'DL-R-HIE', 'IV-R-EXE', 'SW-SR-CON'];
 const NOW = new Date(2026, 10, 23, 12).getTime();
 
 function save(level = 40) {
