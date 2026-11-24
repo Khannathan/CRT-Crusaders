@@ -3,7 +3,7 @@
 Usage (from the repo root):
     python3 -I tools/roster/apply_weapons.py /mnt/project-files/sister-bible/roster-500
 
-Every card's IMAGE PROMPT names it: "Weapon (<tier>): <Name>, <what it looks like>; held: ...".
+Every card's IMAGE PROMPT (or, for a locked reference, line 6) names it: "Weapon (<tier>): <Name>, <what it looks like>; held: ...".
 The tier is Epic (R), Legendary (SR), Mythic (SSR) or Divine Arsenal (UR). A card
 without a named weapon is left out and the game names hers from her relic.
 Run it again whenever the cards' weapons change.
@@ -18,6 +18,8 @@ OUT = ROOT / 'src' / 'data' / 'weapons.ts'
 TIERS = {'Epic': 'epic', 'Legendary': 'legendary', 'Mythic': 'mythic', 'Divine Arsenal': 'divine'}
 HEAD = re.compile(r'^### ([A-Z]{2}-[A-Z0-9]+(?:-[A-Z0-9]+)?):')
 LINE = re.compile(r'^IMAGE PROMPT.*?Weapon \(([^)]+)\): (.+?); held: ')
+# Locked-reference Sisters have no IMAGE PROMPT weapon; their line 6 names it instead.
+LINE6 = re.compile(r'^6 Silhouette: [^.]*\. Weapon \(([^)]+)\): (.+?)\. Held: ')
 
 weapons = {}
 missing = []
@@ -30,13 +32,13 @@ for card in sorted(Path(sys.argv[1]).glob('[A-Z][A-Z]-*.md')):
                 missing.append(sid)
             sid = h.group(1)
             continue
-        m = LINE.match(line)
+        m = LINE.match(line) or LINE6.match(line)
         if sid and m and sid not in weapons:
             tier = TIERS.get(m.group(1))
             if not tier:
                 sys.exit(f'{sid}: unknown weapon tier {m.group(1)!r}')
             name, _, look = m.group(2).partition(', ')
-            weapons[sid] = {'name': name.strip(), 'tier': tier, 'look': look.strip()}
+            weapons[sid] = {'name': name.strip(), 'tier': tier, 'look': re.sub(r'^her approved |;? (in|on) her splash.*$', '', look.strip())}
     if sid and sid not in weapons:
         missing.append(sid)
 
