@@ -215,7 +215,8 @@ export function recordBanner(scene: Phaser.Scene, line: string, y = 200, hold = 
  * splash art, the Litany's name and the Chain it makes, then sweeps off.
  * Needs her splash loaded (splashKey); otherwise use riteCard.
  */
-export function litanyCutIn(scene: Phaser.Scene, id: string, name: string, who: string, chain = 0) {
+/** `cry` is her battle oath, shouted small under the Litany's name. */
+export function litanyCutIn(scene: Phaser.Scene, id: string, name: string, who: string, chain = 0, cry?: string) {
   const y = 400;
   const W = GAME_W + 120;
   const H = 190;
@@ -240,7 +241,8 @@ export function litanyCutIn(scene: Phaser.Scene, id: string, name: string, who: 
       .text(x0, 2, name.toUpperCase(), { fontFamily: FONT, fontSize: '38px', color: hex(PAL.amber), stroke: '#000000', strokeThickness: 6, wordWrap: { width: GAME_W - 60 } })
       .setOrigin(0, 0.5),
   );
-  if (chain >= 2) band.add(scene.add.text(x0, 50, `CHAIN x${chain}`, { fontFamily: FONT, fontSize: '20px', color: '#ffcf6a', stroke: '#000000', strokeThickness: 5 }).setOrigin(0, 0.5));
+  if (cry) band.add(scene.add.text(x0, 30, `"${cry}"`, { fontFamily: FONT, fontSize: '19px', fontStyle: 'italic', color: '#f2e6c9', stroke: '#000000', strokeThickness: 4, wordWrap: { width: Math.round(W * 0.5) } }).setOrigin(0, 0));
+  if (chain >= 2) band.add(scene.add.text(x0, cry ? -72 : 50, `CHAIN x${chain}`, { fontFamily: FONT, fontSize: '20px', color: '#ffcf6a', stroke: '#000000', strokeThickness: 5 }).setOrigin(0, 0.5));
   scene.tweens.add({ targets: dim, fillAlpha: 0.5, duration: 120 });
   scene.tweens.add({
     targets: band,
@@ -249,7 +251,7 @@ export function litanyCutIn(scene: Phaser.Scene, id: string, name: string, who: 
     ease: 'Quad.out',
     onComplete: () => shake(scene, 'crit'),
   });
-  scene.time.delayedCall(820, () => {
+  scene.time.delayedCall(cry ? 1100 : 820, () => {
     scene.tweens.add({ targets: band, x: GAME_W * 1.6, duration: 160, ease: 'Quad.in', onComplete: () => band.destroy() });
     scene.tweens.add({ targets: dim, fillAlpha: 0, duration: 180, onComplete: () => dim.destroy() });
   });

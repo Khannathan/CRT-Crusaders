@@ -3,15 +3,18 @@ import { GAME_H, GAME_W, PAL } from '../config';
 import { BALANCE_VERSION } from '../systems/combat';
 import { addBackdrop, text } from '../ui/theme';
 
-/** Lines under the logo: a little lore, a little advice. One per visit. */
+/** Commandments under the logo: a little creed, a little advice. One per visit. */
 export const TITLE_LINES = [
-  'Every candle lit is a vow kept.',
-  'The drowned keep pace. Outrun them!',
+  'Obey the Order before mercy, before kin, before God.',
+  'Doubt is heresy. Burn it out of yourself first.',
   'The Vigil gathers while you sleep. Claim it at dawn.',
-  'Duties point the way. Tap Go and march.',
-  'Sweep all ends the day\'s Labors in one tap.',
-  'A Sister\'s bond grows each time you speak with her.',
-  'Pray less. Strike more. The Saints prefer it.',
+  'Duties are decrees. Tap Go and march.',
+  'Sweep all ends the day\'s Labors in one tap. Idle hands are heresy.',
+  'Speak with your Sisters. Their bond is your blade.',
+  'Pray less. Strike more. The Order prefers it.',
+  'Trust no rival Order. They would burn you too.',
+  'What the Order names heretic, you burn. Ask nothing.',
+  'Lose a Sister, and keep marching. Grief is for after the war.',
 ];
 
 /** The art behind the title: title-keyart.png once it lands, else the great hall. */

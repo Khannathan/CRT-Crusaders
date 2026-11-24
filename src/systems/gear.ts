@@ -68,16 +68,16 @@ export const SUB_UPGRADE_LEVELS = [3, 6, 9, 12, 15];
 
 const PREFIX: Record<Rarity, string[]> = {
   R: ['Worn', 'Pilgrim', 'Penitent', 'Tarnished'],
-  SR: ['Blessed', 'Anointed', 'Vigilant', 'Sworn'],
+  SR: ['Consecrated', 'Anointed', 'Vigilant', 'Sworn'],
   SSR: ['Sainted', 'Inquisitorial', 'Consecrated', 'Wrathful'],
-  UR: ["Martyr's", 'Seraphic', 'Apocalyptic', 'Most Holy'],
+  UR: ["Martyr's", 'Seraphic', 'Apocalyptic', 'Pyre-Born'],
 };
 const NOUN: Record<GearSlot, string[]> = {
   blade: ['Flail', 'Mace', 'Censer-Hammer', 'Scourge', 'Longsword', 'Bone Saw', 'Glaive'],
   habit: ['Habit', 'Hairshirt', 'Cuirass', 'Chainmail', 'Shroud', 'Tabard'],
   veil: ['Veil', 'Wimple', 'Mourning Hood', 'Coif', 'Mitre', 'Visor'],
   sabatons: ['Sabatons', 'Greaves', 'Pilgrim Boots', 'Penitent Sandals', 'Iron Shoes'],
-  rosary: ['Rosary', 'Reliquary', 'Prayer Beads', 'Censer', 'Holy Icon', 'Fingerbone'],
+  rosary: ['Rosary', 'Reliquary', 'Prayer Beads', 'Censer', 'Burning Icon', 'Fingerbone'],
 };
 
 const pick = <T>(rng: Rng, xs: T[]) => xs[Math.floor(rng() * xs.length) % xs.length];

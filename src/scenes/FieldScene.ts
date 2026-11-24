@@ -3,6 +3,7 @@ import { battleLoop } from '../audio/battleMusic';
 import { music } from '../audio/music';
 import { BASE_H, GAME_H, GAME_W, HP_PARTY, PAL } from '../config';
 import type { SkillDef } from '../data/skills';
+import { KITS } from '../data/kits';
 import { commit, game } from '../state/game';
 import { current } from '../state/run';
 import { nextSpeed, saveSettings, settings } from '../state/settings';
@@ -523,7 +524,7 @@ export class FieldScene extends Phaser.Scene {
     if (s.id.startsWith('hosanna-')) return riteCard(this, s.name, 'THE SISTERHOOD', () => {}, 'SINGS A HOSANNA');
     if (u.side === 'party' && this.textures.exists(splashKey(u.ref))) {
       const chain = this.field.chainLeft() > 0 ? this.field.chain.count : 0;
-      return litanyCutIn(this, u.ref, s.name, u.name, chain);
+      return litanyCutIn(this, u.ref, s.name, u.name, chain, KITS[u.ref]?.cry);
     }
     // A boss's Blasphemy shows its own icon (ui/blasphemy-<boss id>.png) when it has one.
     const icon = u.side === 'enemy' && this.textures.exists(`blasphemy-${u.ref}`) ? `blasphemy-${u.ref}` : undefined;
@@ -820,7 +821,7 @@ export class FieldScene extends Phaser.Scene {
     // the box sits over the middle of the field, which moves down on tall screens
     const dy = Math.round((GAME_H - BASE_H) / 2);
     layer.add(this.add.rectangle(GAME_W / 2, 440 + dy, GAME_W - 60, 300, 0x241925).setStrokeStyle(2, PAL.bronze));
-    layer.add(this.add.text(GAME_W / 2, 340 + dy, won ? 'PURGED' : 'THE SISTERS FALL BACK', text.display(32, won ? PAL.amber : 0xd06060)).setOrigin(0.5));
+    layer.add(this.add.text(GAME_W / 2, 340 + dy, won ? 'EXECUTED' : 'THE SISTERS FALL BACK', text.display(32, won ? PAL.amber : 0xd06060)).setOrigin(0.5));
     layer.add(this.add.text(GAME_W / 2, 392 + dy, `${secs} seconds · ${this.field.battle.round} rounds\nPractice: no rewards, nothing lost.`, { ...text.body(18, PAL.steel), align: 'center' }).setOrigin(0.5));
     const n = this.stageN;
     const bossN = Math.ceil(n / STAGES_PER_CHAPTER) * STAGES_PER_CHAPTER;

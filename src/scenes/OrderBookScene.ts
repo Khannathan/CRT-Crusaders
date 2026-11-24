@@ -11,7 +11,7 @@ import { portraitKey } from '../ui/placeholderPortrait';
 import { addScrollArea } from '../ui/scroll';
 import { holdForCard } from '../ui/sisterCard';
 import { TAB_BAR_H } from '../ui/tabBar';
-import { PAD, text } from '../ui/theme';
+import { PAD, noOrphan, text } from '../ui/theme';
 
 const CARD = 84;
 
@@ -67,7 +67,14 @@ export class OrderBookScene extends Phaser.Scene {
       if (this.textures.exists(sigilKey(o.id))) add(this.add.image(PAD + 18, y + 18, sigilKey(o.id)).setDisplaySize(36, 36).setAlpha(have ? 1 : 0.45));
       add(this.add.text(PAD + 44, y + 18, o.name, text.display(21, have ? 0xfff1d6 : PAL.muted)).setOrigin(0, 0.5));
       add(this.add.text(GAME_W - PAD, y + 18, `${have} / ${of}`, text.hud(14, have === of ? PAL.amber : PAL.steel)).setOrigin(1, 0.5));
-      y += 44;
+      y += 42;
+      // Its creed, what its god demands, and the Order it feuds with.
+      const creed = add(this.add.text(PAD + 4, y, `"${o.creed}"`, { ...text.body(17, PAL.amber), fontStyle: 'italic', wordWrap: { width: GAME_W - PAD * 2 - 8 } }));
+      y += creed.height + 4;
+      const lore = add(this.add.text(PAD + 4, y, noOrphan(o.lore), { ...text.body(14, PAL.muted), wordWrap: { width: GAME_W - PAD * 2 - 8 }, lineSpacing: 1 }));
+      y += lore.height + 4;
+      add(this.add.text(PAD + 4, y, `SWORN RIVAL · ${o.rival.toUpperCase()}`, text.hud(12, 0xd06060)));
+      y += 28;
 
       const sisters = sistersOf(o.id);
       const gap = (GAME_W - PAD * 2 - CARD * 5) / 4;

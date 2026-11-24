@@ -37,11 +37,11 @@ export function settleBattle(battle: Battle, outcome: 'victory' | 'defeat'): Set
     bondBattle(game.save, battle);
     const next = challenge.finish(outcome, battle);
     commit();
-    return { ...next, won, exp, line: next.line ?? (won ? `The trial is passed.${expLine}` : 'Your Sisters fall back, bloodied but alive.') };
+    return { ...next, won, exp, line: next.line ?? (won ? `The trial is passed by decree.${expLine}` : 'Your Sisters fall back, bloodied but alive.') };
   }
   const run = current.run!;
   absorbBattle(run, battle);
-  const line = won ? `The heretics are purged!${expLine}` : 'Your Sisters have fallen. The dark takes its tithe.';
+  const line = won ? `Sentence carried out. The heretics burn!${expLine}` : 'Your Sisters have fallen. The Order will remember who failed it.';
   if (won) {
     winRoom(run, game.save);
     commit();

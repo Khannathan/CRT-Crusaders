@@ -57,11 +57,11 @@ export interface ErrandState {
 /** Errand kinds: each pays mostly in one material family. */
 const KINDS: { family: Family; names: [string, string][] }[] = [
   { family: 'ash', names: [['Tend the Pyres', 'A heretic burns at dawn. Someone must keep the fire honest.'], ['Sweep the Ossuary', 'The bones are restless. The ash is useful.']] },
-  { family: 'page', names: [['Copy the Psalter', 'A blind scriptorium needs steady hands for a night.'], ['Burn the Heretic\'s Books', 'Read nothing. Keep what is holy.']] },
-  { family: 'iron', names: [['Escort the Reliquary', 'A saint\'s finger travels to a poorer chapel.'], ['Nail the Coffins Shut', 'The plague village asks for iron and silence.']] },
-  { family: 'incense', names: [['Bless the Fields', 'Smoke over the barley, and a prayer against the blight.'], ['Keep Vigil at the Shrine', 'The candles must not go out before Lauds.']] },
+  { family: 'page', names: [['Copy the Psalter', 'A blind scriptorium needs steady hands for a night.'], ['Burn the Heretic\'s Books', 'Read nothing. Burn everything.']] },
+  { family: 'iron', names: [['Escort the Reliquary', 'A saint\'s finger travels past a rival Order\'s road.'], ['Nail the Coffins Shut', 'The plague village asks for iron and silence.']] },
+  { family: 'incense', names: [['Consecrate the Fields', 'Smoke over the barley. Burn any field the blight has touched.'], ['Keep Vigil at the Shrine', 'The candles must not go out before Lauds.']] },
   { family: 'writ', names: [['Carry the Prioress\'s Letters', 'Sealed. Unread. Delivered by hand.'], ['Hear a Village\'s Confession', 'Every sin of a hamlet, in one long night.']] },
-  { family: 'unction', names: [['Anoint the Dying', 'The hospice has more beds than priests.'], ['Wash the Pilgrims\' Feet', 'Humility is a discipline too.']] },
+  { family: 'unction', names: [['Anoint the Dying', 'The hospice has more beds than priests. Ease them, or end them.'], ['Wash the Pilgrims\' Feet', 'Humility is a discipline too.']] },
 ];
 
 const RARITY_ORDER: Rarity[] = ['R', 'SR', 'SSR', 'UR'];

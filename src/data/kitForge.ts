@@ -275,33 +275,33 @@ const PASSIVE_WORDS: Record<string, string[]> = {
 const PASSIVE_NOUNS = ['Vow', 'Creed', 'Oath', 'Rule', 'Covenant', 'Canon', 'Tithe', 'Penance', 'Psalm', 'Seal', 'Zeal', 'Litany', 'Faith', 'Heresy-Bane'];
 
 const CRY_OPEN: Record<string, string[]> = {
-  'Iron Vigil': ['The wall stands while I stand!', 'I have not slept in nine years, and neither will you!', 'Lanterns lit, heretic, and you are seen!', 'No gate opens on my watch!', 'Iron in the flesh, iron in the faith!', 'The night is long, and I am longer!', 'Every rivet is a vow, and I keep them all!', 'Watch, Sisters, and strike what moves!'],
-  'Ashen Mercy': ['Kneel, and I make it quick!', 'Ash to ash, and you first!', 'Mercy is a blade, and I am sharp!', 'Breathe the smoke of the faithful dead!', 'No one suffers long near me!', 'I burned a city to save it. I will burn you!', 'The pyre is lit, and it is hungry!', 'Hold still. This is the kind part!'],
-  'Veiled Tribunal': ['Guilty, as charged and as born!', 'Your verdict is nailed to my armour!', 'I need no eyes to see your sin!', 'The court is in session, and there is no appeal!', 'Confess, or be confessed for!', 'The scales are already tipped, heretic!', 'I judged myself first. Now you!', 'Silence in my court!'],
-  'Sepulcher Watch': ['The dead fight beside me!', 'Your bones will serve the Watch!', 'My Sisters\' skulls are watching you!', 'Rest is for the faithful. You get the crypt!', 'Every grave I keep is a soldier!', 'Death is no discharge from this war!', 'The tomb is open, and it calls your name!', 'Join the honoured dead, heretic!'],
-  'Choir of the Pyre': ['Sing, and the dark recoils!', 'My candle burns down, and I burn brighter!', 'The hymn has not stopped in three hundred years!', 'Hear the choir, and despair!', 'Wax and fire and fury!', 'Louder, Sisters! Louder!', 'Every verse is a blade!', 'I will sing over your ashes!'],
-  'Verdant Martyrdom': ['Bleed, and be made holy!', 'Every scar is a prayer answered!', 'The briar grows from my wounds, and it hungers!', 'Pain is my psalm!', 'I count my sins in scars, and I have room for yours!', 'Cut me! I dare you!', 'My blood for the Covenant!', 'The thorns know your name!'],
-  'Drowned Litany': ['The water remembers you!', 'I drowned, and I came back angrier!', 'Speak for the drowned, Sisters!', 'The tide rises, and you sink!', 'Salt in the wound, salt in the soul!', 'What the sea takes, it consecrates!', 'Breathe deep, heretic. It is the last!', 'The deep sends its regards!'],
-  'Confessors of Glass': ['You said you were clean. The mirror says otherwise!', 'Look into me, and see your sin!', 'I hold every confession ever whispered!', 'Shatter me, and I cut you a thousand ways!', 'Nothing is hidden from the mirror!', 'Your face is the only one I wear!', 'Every crack in me is a sinner I broke!', 'The pane does not lie!'],
-  'Crimson Inquisition': ['Confess, and burn clean!', 'Kneel, heretic, and be questioned!', 'The writ is sealed, and so is your fate!', 'Every heretic\'s road ends in red!', 'The brand is hot, and so is my zeal!', 'I never stop hunting!', 'Ten thousand confessions, and you are one more!', 'The Inquisition has found you!'],
-  'Hallowed Belfry': ['*the bell tolls once*', '*the bell tolls twice, then silence*', '*a cracked note, and then the hammer falls*', '*the hour rings, and it is yours*', '*a low knell that shakes the bone*', '*the bell rings midnight early*', '*three tolls, slow and sure*', '*the rope creaks, the bronze answers*'],
+  'Iron Vigil': ['The wall stands. You are outside it.', 'I walled up my own Sister for less.', 'No gate opens. Not for you, not for mercy.', 'I have not slept in nine years, and I will not start now.', 'The lantern sees you. The wall forgets you.', 'Iron in the flesh, iron in the oath.', 'The Vigil wills it. Let the outside burn.', 'Every rivet is a vow, and I break none.'],
+  'Ashen Mercy': ['Kneel, and I make it quick.', 'Ash to ash. You first.', 'Mercy is a blade, and I keep it sharp.', 'I burned a city to save it. You are smaller.', 'The pyre is lit, and it is hungry.', 'Breathe the smoke. It is all that is left of the doubters.', 'Hold still. This is the kind part.', 'The Mercy wills it. Every one of you burns.'],
+  'Veiled Tribunal': ['Guilty, by decree.', 'The verdict was written before you were born.', 'I need no eyes to see your sin.', 'There is no appeal in my court.', 'The Tribunal has never acquitted. I will not be the first.', 'The scale is tipped, and you are on it.', 'I hesitated once. They weighed my Sister instead.', 'Silence. The sentence is read.'],
+  'Sepulcher Watch': ['The dead are ours. So are you.', 'Your bones will serve the Watch.', 'I buried the mourners with their dead. I will bury you.', 'Rest is for the faithful. You get the vault.', 'The vaults are hungry, and you are still warm.', 'Death is no discharge from this war.', 'The tomb is open, and it knows your name.', 'Every grave I keep is a soldier.'],
+  'Choir of the Pyre': ['The hymn never stops.', 'My candle burns down, and I burn brighter.', 'My choir-mother faltered. I lit her pyre myself.', 'Hear the choir, and burn.', 'Wax and fire and fury.', 'Every village that would not sing is ash now.', 'Every verse is a blade.', 'I will sing over your ashes.'],
+  'Verdant Martyrdom': ['Feed the roots.', 'Every scar is a prayer answered.', 'The briar grows from my wounds, and it hungers.', 'Pain is my psalm.', 'I bled for the garden this morning. Now you will.', 'The hedge has room for one more.', 'My blood for the roots, and yours for the harvest.', 'The thorns know your name.'],
+  'Drowned Litany': ['The water remembers you.', 'I drowned, and I came back angrier.', 'Your village strayed. The flood found it.', 'The tide rises, and you sink.', 'Salt in the wound, salt in the soul.', 'What the water takes, it consecrates.', 'Breathe deep, heretic. It is your last.', 'The deep wants you baptised.'],
+  'Confessors of Glass': ['The mirror shows your sin.', 'Look into me, and see what you are.', 'I hold every confession ever whispered.', 'Shatter me, and I cut you a thousand ways.', 'Nothing is hidden. Nothing is spared.', 'I gave my face for sight. You will give more.', 'Every crack in me is a sinner I broke.', 'My Sister\'s reflection darkened. I broke her too.'],
+  'Crimson Inquisition': ['Confess, and burn clean.', 'Kneel, heretic, and be questioned.', 'The writ is sealed, and so is your fate.', 'Every heretic\'s road ends in red.', 'The brand is hot, and so is my zeal.', 'No confession? I will brand one out of you.', 'Ten thousand confessions, and you are one more.', 'The Inquisition has found you.'],
+  'Hallowed Belfry': ['*the bell tolls, and someone pays for it*', '*one toll, one life*', '*a cracked note, and then the hammer falls*', '*the hour rings, and it is yours*', '*a low knell that shakes the bone*', '*the bell rings midnight early*', '*three tolls, three graves*', '*the rope of braided hair creaks*'],
 };
 const CRY_CLOSE: Record<string, string[]> = {
-  hierophant: ['Behind the relic, Sisters!', 'Break on my shield!', 'The saint in my shield has seen worse!', 'Not one step past me!', 'Hold the line!', 'My reliquary, your grave!'],
-  sentinel: ['Strike me, and I strike back!', 'I am the door that does not open!', 'Come and try me!', 'Every blow you land, I return!', 'Hit harder!', 'The tomb is behind me!'],
-  martyr: ['Take me first, and spare them!', 'I bleed so they need not!', 'Death will have to wait its turn!', 'My wounds are their shield!', 'Not yet!', 'I die tomorrow. Not today!'],
-  confessor: ['Rise, Sister. You are not done!', 'Confess, and be mended!', 'The faithful do not fall here!', 'Your wounds are forgiven!', 'Up! The war is not over!', 'I will not lose another!'],
-  hospitaller: ['No Sister dies on my watch!', 'Drink, and stand!', 'The grave gives them back to me!', 'Mend, and march!', 'Back to the line!', 'I have pulled Sisters from worse!'],
-  abbess: ['Kneel to my rule!', 'Pain is the lesson!', 'The rod for you, the balm for them!', 'Discipline, Sisters!', 'My thorns mend as they cut!', 'Obey!'],
-  oracle: ['I saw your death in the ashes!', 'It is written, and I wrote it!', 'Faster, Sisters, the omens wait!', 'Your doom is already read!', 'The smoke never lies!', 'I know how this ends!'],
-  cantor: ['Sing with me!', 'Every verse, a killing blow!', 'Hear me, and fight harder!', 'The hymn rises!', 'For the choir!', 'Again, Sisters, louder!'],
-  adjudicator: ['Weighed, and wanting!', 'Sentence pronounced!', 'Your strength is forfeit!', 'The ledger is closed!', 'Judgement is mine!', 'You are found guilty!'],
-  warsister: ['Bleed with me!', 'Into them!', 'For every lash, a head!', 'I will not stop until I fall!', 'Fury is faith!', 'Charge!'],
+  hierophant: ['Break on my shield!', 'Not one step past me!', 'Behind the reliquary, Sisters!', 'My reliquary, your grave!', 'Hold the line, or die on it!', 'The relic hungers. Come closer!'],
+  sentinel: ['Strike me, and I strike back!', 'I am the door that does not open!', 'Come and try me!', 'Every blow you land, I return!', 'Hit harder!', 'You break before I bend!'],
+  martyr: ['Take me first, and burn for it!', 'I bleed so they need not!', 'Death will have to wait its turn!', 'My wounds are their shield!', 'Not yet!', 'I die tomorrow. You die today!'],
+  confessor: ['Rise, Sister. The Order is not done with you!', 'Confess, and be mended!', 'No one falls before the work is done!', 'Up! The war is not over!', 'Your wounds are forgiven. Your doubts are not!', 'I will not lose another!'],
+  hospitaller: ['No Sister dies on my watch!', 'Drink, and stand!', 'The grave gives them back to me!', 'Mend, and march!', 'Back to the line!', 'Bleed later. Kill now!'],
+  abbess: ['Kneel to my rule!', 'Pain is the lesson!', 'The rod for you, the balm for them!', 'Discipline, Sisters!', 'Obey, or join them!', 'Obey!'],
+  oracle: ['I saw your death in the ashes!', 'It is written, and I wrote it!', 'Your doom is already read!', 'The smoke never lies!', 'I know how this ends!', 'The omens want you dead!'],
+  cantor: ['Sing with me!', 'Every verse, a killing blow!', 'Louder, or burn!', 'The hymn rises!', 'For the choir!', 'Again, Sisters, louder!'],
+  adjudicator: ['Weighed, and wanting!', 'Sentence pronounced!', 'Your strength is forfeit!', 'The ledger is closed!', 'Judgement is mine!', 'Guilty!'],
+  warsister: ['Bleed with me!', 'Into them!', 'For every lash, a head!', 'I will not stop until I fall!', 'Fury is faith!', 'Burn it all!'],
   inquisitor: ['Name your sin, and lose your head!', 'The axe is merciful!', 'Heretic, I see you!', 'Accused, and executed!', 'Kneel for the blade!', 'One stroke!'],
   veilblade: ['You never saw me!', 'A whisper, then nothing!', 'Behind you!', 'Quiet now!', 'The veil parts!', 'One cut is enough!'],
-  censer: ['Choke on holy smoke!', 'Breathe deep, heretic!', 'The thurible swings for you!', 'Burn in the incense!', 'Smoke and fire!', 'The coals are blessed!'],
-  arbalist: ['One bolt, one heretic!', 'Down you go!', 'The quarrel is blessed!', 'I never miss twice!', 'Loose!', 'Mark, and fire!'],
-  exorcist: ['Begone, foul thing!', 'The lantern sees you!', 'Witchfire for the witch!', 'Out of this world!', 'Burn, abomination!', 'The light takes you!'],
+  censer: ['Choke on the smoke!', 'Breathe deep, heretic!', 'The thurible swings for you!', 'Burn in the incense!', 'Smoke and fire!', 'The coals are consecrated!'],
+  arbalist: ['One bolt, one heretic!', 'Down you go!', 'This quarrel has your name on it!', 'I never miss twice!', 'Loose!', 'Mark, and fire!'],
+  exorcist: ['Begone, foul thing!', 'The lantern sees you!', 'Witchfire for the witch!', 'Out of this world!', 'Burn, abomination!', 'Burn, and be absolved!'],
 };
 
 const ORDER_FX: Record<string, string> = {
@@ -525,8 +525,8 @@ export function forgeKits(all: CrusaderDef[]) {
     const h = hash(c.id);
     const seen = crySeen.get(c.order) ?? new Set<string>();
     crySeen.set(c.order, seen);
-    const opens = CRY_OPEN[c.order] ?? ['For the faith!'];
-    const closes = CRY_CLOSE[c.classId] ?? ['Onward!'];
+    const opens = CRY_OPEN[c.order] ?? ['The Order wills it.'];
+    const closes = CRY_CLOSE[c.classId] ?? ['The world can burn!'];
     let cry = '';
     for (let k = 0; k < opens.length * closes.length; k++) {
       cry = `${opens[(h + k) % opens.length]} ${closes[((h >>> 7) + k * 3) % closes.length]}`;

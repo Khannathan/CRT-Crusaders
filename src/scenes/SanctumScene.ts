@@ -376,7 +376,7 @@ export class SanctumScene extends Phaser.Scene {
       const won = end.outcome === 'victory';
       if (won) view.cheer();
       const msg = this.add
-        .text(left + fw / 2, top + 24, won ? 'PURGED. THE VIGIL HOLDS.' : 'THE SISTERS FALL BACK AND PRAY.', { ...text.hud(12, won ? PAL.amber : PAL.oxblood), stroke: '#000000', strokeThickness: 4 })
+        .text(left + fw / 2, top + 24, won ? 'PURGED. THE VIGIL HOLDS.' : 'THE SISTERS FALL BACK, SWORN TO RETURN.', { ...text.hud(12, won ? PAL.amber : PAL.oxblood), stroke: '#000000', strokeThickness: 4 })
         .setOrigin(0.5)
         .setDepth(6);
       this.skirmish.push(msg);
