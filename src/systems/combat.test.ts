@@ -259,6 +259,31 @@ describe('balance formulas', () => {
     expect(s1.hp).toBeLessThan(1e6);
   });
 
+  it('draining a charging boss below full Wrath breaks its Blasphemy, and its next charged blow winds up in plain sight', () => {
+    const boss = makeEnemy('choir', 'e0', 1);
+    boss.phase = 2; // Requiem (a charged blow) is on the table
+    const s1 = crusader('s1', 'adjudicator', 1, { maxHp: 1e6, hp: 1e6 });
+    const b = new Battle([s1], [boss], { rng: () => 0.5 });
+    boss.wrath = ZEAL_MAX;
+    b.planIntent(boss);
+    b.act(boss, b.enemyChoose(boss).skill); // charges Drowning Requiem
+    expect(boss.status.charging).toBe(true);
+    const judgment = CLASS_SKILLS.adjudicator.find((s) => s.wrathDrain && s.rite)!;
+    const ev = b.act(s1, judgment);
+    expect(boss.wrath).toBeLessThan(ZEAL_MAX);
+    expect(boss.status.charging).toBe(false);
+    expect(ev.some((e) => e.type === 'status' && e.label === 'Blasphemy broken!')).toBe(true);
+    // Whatever it does next, nothing lands unannounced: a charged blow charges first.
+    const hp = s1.hp;
+    const next = b.enemyChoose(boss).skill;
+    b.act(boss, next);
+    if (next.windup) {
+      expect(boss.status.charging).toBe(true);
+      expect(s1.hp).toBe(hp);
+    }
+    expect(next.id).not.toBe(ENEMIES.choir.blasphemy!.id);
+  });
+
   it('Zeal from wounds is capped per round', () => {
     const tank = crusader('t', 'hierophant', 1, { maxHp: 1000, hp: 1000 });
     const e = makeEnemy('choir', 'e0', 1);

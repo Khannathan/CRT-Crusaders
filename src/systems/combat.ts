@@ -791,9 +791,11 @@ export class Battle {
     if (actor.side === 'enemy' && skill.windup && !actor.status.charging) {
       actor.status.charging = true;
       const pre: BattleEvent[] = [];
+      actor.intent = { skillId: skill.id };
       this.chargeKits(actor, pre);
       if (actor.hp <= 0) return [...pre, { type: 'intent' }];
-      actor.intent = { skillId: skill.id };
+      // Its Wrath torn away as it began: the Blasphemy never comes.
+      if (!actor.status.charging) return [...pre, { type: 'intent' }];
       this.log.push(`${actor.name} charges ${skill.name}`);
       return [
         ...pre,
@@ -1092,6 +1094,7 @@ export class Battle {
     if (skill.wrathDrain && t.wrath !== undefined && t.wrath > 0) {
       t.wrath = Math.max(0, t.wrath - skill.wrathDrain);
       events.push({ type: 'status', uid: t.uid, label: `-${skill.wrathDrain} Wrath` });
+      this.wrathLost(t, events);
     }
     if (skill.accuse) {
       t.status.accused = skill.accuse;
@@ -1455,6 +1458,7 @@ export class Battle {
     if (mercyBoss && t.wrath) {
       t.wrath = Math.max(0, t.wrath - KW.MERCY_WRATH);
       events.push({ type: 'status', uid: t.uid, label: `Mercy -${KW.MERCY_WRATH} Wrath` });
+      this.wrathLost(t, events);
     }
     // Guilt: a Tribunal Sister's hit on the Accused weighs on it.
     if (t.hp > 0 && t.status.accused && this.isKw(actor, 'guilt') && skill.id !== 'riposte') this.addGuilt(t, 1, events);
@@ -1841,6 +1845,7 @@ export class Battle {
         if (foe.hp > 0 && foe.status.charging && foe.wrath !== undefined) {
           foe.wrath = Math.max(0, foe.wrath - KW.OVERWATCH_WRATH);
           events.push({ type: 'status', uid: foe.uid, label: `-${KW.OVERWATCH_WRATH} Wrath` });
+          this.wrathLost(foe, events);
         }
       }
       const oz = this.sigHolder('owZeal');
@@ -2199,18 +2204,35 @@ export class Battle {
     }
   }
 
+  /**
+   * A boss charging its Blasphemy that loses Wrath can no longer cast it: the
+   * charge breaks at once (its mark leaves the ground), and its next move is an
+   * ordinary one, which winds up again in plain sight if it is a charged blow.
+   */
+  private wrathLost(t: Unit, events: BattleEvent[]) {
+    const prof = t.boss ? ENEMIES[t.ref]?.blasphemy : undefined;
+    if (!prof || !t.status.charging || t.intent?.skillId !== prof.id || (t.wrath ?? 0) >= ZEAL_MAX) return;
+    t.status.charging = false;
+    this.log.push(`  ${t.name}'s ${prof.name} is broken`);
+    events.push({ type: 'status', uid: t.uid, label: 'Blasphemy broken!' }, { type: 'text', text: `${prof.name} is broken!` });
+    this.planIntent(t);
+    events.push({ type: 'intent' });
+  }
+
   /** A foe starts charging: The Mirror Judges and Never Sleep answer it. */
   private chargeKits(foe: Unit, events: BattleEvent[]) {
     const mj = this.sigHolder('hymnWrath');
     if (mj && this.kw.hymns.length && foe.wrath) {
       foe.wrath = Math.max(0, foe.wrath - mj.sig!.hymnWrath!);
       events.push({ type: 'status', uid: foe.uid, label: `-${mj.sig!.hymnWrath} Wrath` });
+      this.wrathLost(foe, events);
     }
     const ns = foe.boss ? this.sealHolder('neverSleep') : undefined;
     if (ns) {
       this.breakSeal(ns, events);
       if (foe.wrath) foe.wrath = Math.max(0, foe.wrath - 20);
       events.push({ type: 'status', uid: foe.uid, label: '-20 Wrath' });
+      this.wrathLost(foe, events);
       const p = foe.status.poison;
       if (p) {
         foe.status.poison = undefined;

@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
 import { battleLoop } from '../audio/battleMusic';
 import { music } from '../audio/music';
-import { BASE_H, GAME_H, GAME_W, HP_PARTY, PAL } from '../config';
+import { BASE_H, GAME_H, GAME_W, HP_PARTY, PAL, hex } from '../config';
 import type { SkillDef } from '../data/skills';
 import { KITS } from '../data/kits';
 import { commit, game } from '../state/game';
@@ -41,6 +41,11 @@ function spreadRows() {
   CARD_Y = 846 + extra;
 }
 
+/** How long a warning holds the log line (ms), and its colour. */
+const WARN_MS = 2600;
+const WARN_COLOR = '#ff9a7a';
+const IVORY = hex(PAL.ivory);
+
 interface Card {
   u: Unit;
   frame: Phaser.GameObjects.Rectangle;
@@ -50,6 +55,8 @@ interface Card {
   ready: Phaser.GameObjects.Text;
   glow: Phaser.GameObjects.Rectangle;
   wasReady: boolean;
+  /** Her ready Litany answers a charged blow right now ('break' or 'brace'). */
+  wasAnswer?: string;
 }
 
 /**
@@ -74,6 +81,10 @@ export class FieldScene extends Phaser.Scene {
   private view!: FieldView;
   private cards: Card[] = [];
   private logText!: Phaser.GameObjects.Text;
+  /** A warning holds the log line until then (ms): routine blow-by-blow lines wait. */
+  private warnUntil = 0;
+  /** A tapped answer was just announced (ms): the engine's own "is broken!" line waits. */
+  private tapSaidUntil = 0;
   private timeText!: Phaser.GameObjects.Text;
   private bossBar?: { u: Unit; hp: Phaser.GameObjects.Rectangle; wrath: Phaser.GameObjects.Rectangle; w: number };
   private ended = false;
@@ -143,6 +154,8 @@ export class FieldScene extends Phaser.Scene {
     this.drag = undefined;
     this.zoneGfx = undefined;
     this.zonesSeen = 0;
+    this.warnUntil = 0;
+    this.tapSaidUntil = 0;
     // The fight starts by itself after a moment (sooner on Auto), unless the player starts swapping.
     this.deployLeft = settings.autoBattle ? 2.2 : DEPLOY_WAIT;
     const save = game.save;
@@ -222,7 +235,8 @@ export class FieldScene extends Phaser.Scene {
       scale: 1,
       depth: 10,
       rings: true,
-      onText: (t) => this.log(t),
+      // A break the player just tapped is already named ("Secunda breaks it!").
+      onText: (t) => (/is broken!$/.test(t) && this.time.now < this.tapSaidUntil ? undefined : this.log(t, /seethes with Wrath|is broken!|turns back on it/.test(t))),
       onUltimate: (u, s, charging) => this.ultimate(u, s, charging),
     });
 
@@ -402,7 +416,6 @@ export class FieldScene extends Phaser.Scene {
     if (zs.length > this.zonesSeen) {
       this.zonesSeen = zs.length;
       sfx('telegraph');
-      this.log(`${zs[zs.length - 1].skillName} is coming! Drag your Sisters out of the red!`);
     } else if (!zs.length) this.zonesSeen = 0;
     const pulse = 0.5 + 0.5 * Math.sin(this.time.now / 90);
     for (const z of zs) {
@@ -499,8 +512,16 @@ export class FieldScene extends Phaser.Scene {
     if (end && end.kind === 'end') this.finish(end.outcome);
   }
 
-  private log(t: string) {
-    this.logText.setText(t).setAlpha(1);
+  /**
+   * The line under the top bar. A warning (a charged blow, who can answer it,
+   * what a tap broke) holds it for a few seconds: the blow-by-blow "Name: Skill"
+   * lines would otherwise wipe it before anyone could read it.
+   */
+  private log(t: string, warn = false) {
+    const now = this.time.now;
+    if (!warn && now < this.warnUntil) return;
+    if (warn) this.warnUntil = now + WARN_MS;
+    this.logText.setText(t).setColor(warn ? WARN_COLOR : IVORY).setAlpha(1);
     this.tweens.killTweensOf(this.logText);
     this.tweens.add({ targets: this.logText, alpha: 0.35, delay: 2600, duration: 600 });
   }
@@ -508,7 +529,10 @@ export class FieldScene extends Phaser.Scene {
   /** A Litany lands or a Blasphemy begins: its name across the screen, a beat of slow motion. */
   private ultimate(u: Unit, s: SkillDef, charging: boolean) {
     if (charging) {
-      this.log(`${u.name} begins ${s.name}! Strike hard or Delay it.`);
+      const who = this.answerers();
+      // Short enough for two lines above the boss bar: what is coming, then the answer.
+      const what = s.rite ? 'BLASPHEMY!' : `${s.name}!`;
+      this.log(who ? `${what} Tap ${who}, or leave the red!` : `${s.rite ? `BLASPHEMY: ${s.name}` : what} Leave the red!`, true);
       shake(this, 'boss');
       sfx('blasphemy');
       return;
@@ -682,12 +706,20 @@ export class FieldScene extends Phaser.Scene {
       c.img.setTint(alive ? 0xffffff : 0x333333);
       const ready = alive && this.field.litanyReady(u);
       c.ready.setVisible(ready);
+      // A ready Litany that answers a charged blow says so: BREAK IT or BRACE.
+      const answer = ready ? this.field.answerOf(u)?.answer : undefined;
       // While a Chain is open, a ready card says what linking it is worth.
       const link = this.field.chainLeft() > 0 ? Math.round(chainBonus(this.field.chain.count + 1) * 100) : 0;
-      if (ready) c.ready.setText(link ? `LINK +${link}%` : (skillsFor(u).find((s) => s.rite)?.name ?? '').toUpperCase());
+      if (ready) c.ready.setText(answer === 'break' ? 'BREAK IT!' : answer === 'brace' ? 'BRACE!' : link ? `LINK +${link}%` : (skillsFor(u).find((s) => s.rite)?.name ?? '').toUpperCase());
+      c.ready.setColor(answer ? WARN_COLOR : '#fff1d6');
       c.zeal.setFillStyle(ready ? 0xfff1d6 : PAL.amber);
+      if (answer !== c.wasAnswer) {
+        c.glow.setFillStyle(answer ? 0xff3a2a : PAL.amber, c.glow.fillAlpha);
+        c.frame.setStrokeStyle(ready ? 3 : 2, answer ? 0xff5a3a : ready ? PAL.amber : PAL.bronze);
+        c.wasAnswer = answer;
+      }
       if (ready && !c.wasReady) {
-        c.frame.setStrokeStyle(3, PAL.amber);
+        c.frame.setStrokeStyle(3, answer ? 0xff5a3a : PAL.amber);
         c.glow.setAlpha(0.6);
         this.tweens.add({ targets: c.glow, alpha: 0.15, duration: 420, yoyo: true, repeat: -1 });
       } else if (!ready && c.wasReady) {
@@ -700,14 +732,34 @@ export class FieldScene extends Phaser.Scene {
     if (this.bossBar) {
       const { u, hp, wrath, w } = this.bossBar;
       hp.setSize((w * Math.max(0, u.hp)) / u.maxHp, 8);
-      wrath.setSize((w * Math.min(ZEAL_MAX, u.wrath ?? 0)) / ZEAL_MAX, 3);
+      const full = (u.wrath ?? 0) >= ZEAL_MAX;
+      wrath.setSize((w * Math.min(ZEAL_MAX, u.wrath ?? 0)) / ZEAL_MAX, 5).setFillStyle(full ? 0xfff1d6 : 0xff5a3a);
+      // Full Wrath flickers: the Blasphemy is next.
+      wrath.setAlpha(full ? 0.6 + 0.4 * Math.sin(this.time.now / 80) : 1);
     }
+  }
+
+  /** The Sisters whose ready Litany answers a charged blow now ("Secunda or Irmgard"). */
+  private answerers() {
+    const names = this.field.battle.alive('party').filter((u) => this.field.litanyReady(u) && this.field.answerOf(u)).map((u) => u.name);
+    return names.length ? `${names.slice(0, -1).join(', ')}${names.length > 1 ? ' or ' : ''}${names[names.length - 1]}` : '';
   }
 
   private tryLitany(uid: string, aimUid?: string) {
     if (this.ended || this.phase !== 'fight' || this.paused) return;
+    const u = this.field.battle.get(uid);
+    const ans = u ? this.field.answerOf(u) : undefined;
+    const blow = ans && skillsFor(ans.foe).find((s) => s.id === ans.foe.intent?.skillId)?.name;
     const e = this.field.castLitany(uid, aimUid);
-    if (e) this.view.handle([e]);
+    if (!e) return;
+    this.view.handle([e]);
+    // Say what the tap did to the blow it answered.
+    if (ans && blow) {
+      if (!ans.foe.status.charging || ans.foe.hp <= 0) {
+        this.log(`${u!.name} breaks ${blow}!`, true);
+        this.tapSaidUntil = this.time.now + 1500;
+      } else if (ans.answer === 'brace') this.log(`${u!.name} braces the Sisters against ${blow}!`, true);
+    }
   }
 
   // ---------- switches ----------

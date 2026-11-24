@@ -130,6 +130,24 @@ export interface Zone {
   at: number;
 }
 
+/**
+ * How a Litany meets a foe's charged blow: 'break' stops it (Delay, Silence,
+ * a stun on a lesser foe, or Wrath torn from a Blasphemy), 'brace' blunts it
+ * (a Ward or shield on every Sister). Used to point the player at the answer.
+ */
+export type Answer = 'break' | 'brace';
+export function answerTo(s: SkillDef, foe: Unit): Answer | undefined {
+  if (!foe.status.charging) return undefined;
+  const single = s.target === 'enemy';
+  const onFoe = single || s.target === 'allEnemies';
+  const blas = !!foe.boss && foe.intent?.skillId === ENEMIES[foe.ref]?.blasphemy?.id;
+  // Bosses shrug off stuns and one turn of Silence.
+  if (onFoe && (s.delay || (s.silence && (!foe.boss || s.silence > 1)) || (s.stun && !foe.boss))) return 'break';
+  if (blas && ((onFoe && s.wrathDrain) || s.alsoFoes?.wrathDrain)) return 'break';
+  if (s.target === 'allAllies' && (s.ward || s.shieldPct)) return 'brace';
+  return undefined;
+}
+
 export type FieldEvent =
   | { kind: 'act'; uid: string; skill: SkillDef; targetUid?: string; events: BattleEvent[]; ranged: boolean; litany: boolean; charge: boolean; hosanna?: boolean }
   /** Start-of-action ticks (poison, regen, stun) and round effects. */
@@ -543,7 +561,9 @@ export class FieldBattle {
     // Ranks moved (Processional, Pursuit, Step, pulls): the formation follows.
     if (events.some((e) => e.type === 'move')) this.reform();
     this.applyDelays();
-    out.push({ kind: 'act', uid: u.uid, skill, targetUid, events, ranged: me.reach !== 'melee', litany: !!skill.rite && !charge, charge });
+    // A charge torn away as it began (its Wrath drained) never winds up.
+    const charged = charge && !!u.status.charging;
+    out.push({ kind: 'act', uid: u.uid, skill, targetUid, events, ranged: me.reach !== 'melee', litany: !!skill.rite && !charge, charge: charged });
     this.addSummons(me, out);
   }
 
@@ -783,6 +803,19 @@ export class FieldBattle {
     return !!rite && u.hp > 0 && (u.zeal ?? 0) >= ZEAL_MAX && !this.done && this.battle.canUse(u, rite);
   }
 
+  /** A foe winding up a charged blow that this Sister's Litany can answer, and how. */
+  answerOf(u: Unit): { foe: Unit; answer: Answer } | undefined {
+    const rite = skillsFor(u).find((s) => s.rite);
+    if (!rite) return undefined;
+    // A Blasphemy first, then any other charged blow.
+    const foes = this.battle.alive('enemy').filter((f) => f.status.charging).sort((a, c) => Number(!!c.boss) - Number(!!a.boss));
+    for (const foe of foes) {
+      const answer = answerTo(rite, foe);
+      if (answer && (rite.target !== 'enemy' || this.battle.validTargets(u, rite).includes(foe))) return { foe, answer };
+    }
+    return undefined;
+  }
+
   /** Who a Sister's Litany may be aimed at (empty when it needs no aim). */
   litanyTargets(uid: string): Unit[] {
     const u = this.battle.get(uid);
@@ -803,7 +836,9 @@ export class FieldBattle {
     const me = this.bodies.get(uid)!;
     const targets = this.battle.validTargets(u, rite);
     const aimed = aimUid ? targets.find((t) => t.uid === aimUid) : undefined;
-    const target = aimed ?? [...targets].sort((x, y) => this.battle.preview(u, rite, y) - this.battle.preview(u, rite, x))[0];
+    // A tap with no aim meets a charged blow it can break: it goes to that foe.
+    const ans = !aimed && rite.target === 'enemy' ? this.answerOf(u) : undefined;
+    const target = aimed ?? ans?.foe ?? [...targets].sort((x, y) => this.battle.preview(u, rite, y) - this.battle.preview(u, rite, x))[0];
     const out: FieldEvent[] = [];
     this.perform(u, me, rite, rite.target === 'enemy' || rite.target === 'ally' ? target?.uid : undefined, out, true);
     me.plan = undefined;

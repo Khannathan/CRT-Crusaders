@@ -338,3 +338,28 @@ describe('real-time field: played with no screen', () => {
     expect(f.time).toBeGreaterThan(5);
   });
 });
+
+describe('real-time field: answering a charged blow', () => {
+  it('names the Sisters whose Litany breaks or braces a Blasphemy, and a tap breaks it', () => {
+    const save = newSave();
+    const party = ['GC-R-ADJ', 'IV-SR-SEN', 'SW-R-WAR', 'IV-R-EXE'];
+    for (const id of party) save.owned[id] = { level: 10, vow: 0 };
+    const b = stageBattle(save, party, 10, seeded(4));
+    const f = screenField(b, true);
+    const boss = b.units.find((u) => u.boss)!;
+    const [secunda, irmgard, tarchna] = party.map((id) => b.units.find((u) => u.ref === id)!);
+    for (const s of [secunda, irmgard, tarchna]) s.zeal = 100;
+    f.update(0.05);
+    expect(f.answerOf(secunda)).toBeUndefined(); // nothing to answer yet
+    boss.wrath = 100;
+    b.planIntent(boss);
+    b.act(boss, b.enemyChoose(boss).skill); // Drowning Requiem winds up
+    expect(boss.status.charging).toBe(true);
+    expect(f.answerOf(secunda)?.answer).toBe('break');
+    expect(f.answerOf(irmgard)?.answer).toBe('brace');
+    expect(f.answerOf(tarchna)).toBeUndefined();
+    f.castLitany(secunda.uid);
+    expect(boss.status.charging).toBe(false);
+    expect(f.answerOf(irmgard)).toBeUndefined();
+  });
+});
