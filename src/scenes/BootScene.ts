@@ -6,6 +6,7 @@ import { setHomecoming } from '../systems/boosts';
 import { announceSettled } from '../ui/bgFight';
 import { catchUpMarch } from '../ui/marchUi';
 import Phaser from 'phaser';
+import { queuePoses } from '../ui/spriteAssets';
 import { TITLE_LINES, drawTitle, wickBar } from './TitleScene';
 
 import { CRUSADERS } from '../data/crusaders';
@@ -83,6 +84,8 @@ export class BootScene extends Phaser.Scene {
       // Full-body pixel figures are small (about 7 KB each), so battles can use them at once.
       const full = fullBodyUrl(c.id);
       if (full) this.load.image(`full-${c.id}`, full);
+      // Her pose sheet (STRIKE, CAST, LITANY, HURT), when ChatGPT has drawn one.
+      queuePoses(this.load, c.id);
     }
     for (const e of Object.values(ENEMIES)) {
       const url = pick(ENEMY_URLS, `../assets/enemies/${e.id}`) ?? (e.art ? pick(ENEMY_URLS, `../assets/enemies/${e.art}`) : undefined);

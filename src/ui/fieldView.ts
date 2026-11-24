@@ -34,6 +34,8 @@ export interface FieldFigure {
   face(dir: 1 | -1): void;
   walk(on: boolean): void;
   strike(nx: number, ny: number): void;
+  /** A ranged blow toward a point (her STRIKE pose where she has one). */
+  shoot?(nx: number, ny: number, color: number): void;
   cast(color: number, big?: boolean): void;
   pulse(color: number): void;
   hit(hurt: boolean): void;
@@ -65,6 +67,9 @@ class StillFigure implements FieldFigure {
   }
   strike(nx: number, ny: number) {
     this.sprite.strike(nx, ny);
+  }
+  shoot(nx: number, ny: number, color: number) {
+    this.sprite.shoot(nx, ny, color);
   }
   cast(color: number, big = false) {
     this.sprite.cast(color, big);
@@ -436,7 +441,11 @@ export class FieldView {
     let fig: FieldFigure;
     if (u.side === 'party' && this.scene.textures.exists(fullKey(u.ref))) {
       const sheets = ANIMS.some((a) => this.scene.textures.exists(animKey(u.ref, a)));
-      fig = sheets ? new SheetFigure(this.scene, u.ref, x, y, s, !this.o.compact) : new StillFigure(new SisterSprite(this.scene, u.ref, x, y, s, PAL.amber, this.o.compact ? undefined : RIM_PARTY));
+      // Small figures (the Vigil) use her mini: the still shrunk once, drawn pixel for pixel.
+      fig =
+        sheets && !this.o.compact
+          ? new SheetFigure(this.scene, u.ref, x, y, s, true)
+          : new StillFigure(new SisterSprite(this.scene, u.ref, x, y, s, PAL.amber, this.o.compact ? undefined : RIM_PARTY, { mini: s < 1 }));
     } else if (u.side === 'party') {
       fig = new PortraitFigure(this.scene, u, x, y, s);
     } else fig = this.scene.textures.exists(enemyFullKey(u.ref)) ? new EnemyFigure(this.scene, u, x, y, s, !this.o.compact) : new EnemyToken(this.scene, u, x, y, s);
@@ -579,7 +588,7 @@ export class FieldView {
       if (t && this.field.bodies.get(t)) {
         const to = this.pos(t);
         const d = Math.hypot(to.x - from.x, to.y - from.y) || 1;
-        if (e.ranged) v.fig.cast(fx.color);
+        if (e.ranged) (v.fig.shoot ? v.fig.shoot((to.x - from.x) / d, (to.y - from.y) / d, fx.color) : v.fig.cast(fx.color));
         else v.fig.strike((to.x - from.x) / d, (to.y - from.y) / d);
       } else v.fig.cast(fx.color);
     } else if (!e.litany) v.fig.cast(fx.color);
