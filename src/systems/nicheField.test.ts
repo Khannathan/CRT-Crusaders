@@ -2,7 +2,7 @@ import { beforeAll, describe, expect, it } from 'vitest';
 import type { Rarity } from '../data/types';
 import { KITS } from '../data/kits';
 import { HUNTS } from './hunts';
-import { SHINE_LABEL, nicheTable, rankIn, type NicheRow } from './niche';
+import { SHINE_LABEL, nicheTableAsync, rankIn, type NicheRow } from './niche';
 
 /**
  * The rarity budget on the open field: every hunt played in real time
@@ -11,8 +11,8 @@ import { SHINE_LABEL, nicheTable, rankIn, type NicheRow } from './niche';
  * stay as a second opinion on the kits themselves.
  */
 let rows: NicheRow[];
-beforeAll(() => {
-  rows = nicheTable({ seeds: 4, engine: 'field' });
+beforeAll(async () => {
+  rows = await nicheTableAsync({ seeds: 4, engine: 'field' });
 }, 180_000);
 
 const mean = (xs: number[]) => xs.reduce((a, b) => a + b, 0) / xs.length;

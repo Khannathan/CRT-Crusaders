@@ -89,10 +89,31 @@ export interface NicheRow {
 }
 
 /** Runs every Sister through every hunt and scales each role against its REF_RANK-th best SSR. */
-export function nicheTable(opts: { seeds?: number; level?: number; tier?: number; ids?: string[]; engine?: SimEngine } = {}): NicheRow[] {
+type NicheOpts = { seeds?: number; level?: number; tier?: number; ids?: string[]; engine?: SimEngine };
+
+export function nicheTable(opts: NicheOpts = {}): NicheRow[] {
   const sisters = CRUSADERS.filter((c) => !opts.ids || opts.ids.includes(c.id));
   const raw = new Map<string, Record<string, number>>();
   for (const c of sisters) raw.set(c.id, Object.fromEntries(HUNTS.map((h) => [h.id, huntRun(c.id, h, opts)])));
+  return nicheRows(sisters, raw);
+}
+
+/**
+ * nicheTable, but it gives the event loop a turn after each Sister. The whole
+ * roster takes minutes to simulate; run in one go it starves the test runner's
+ * own messages until they time out.
+ */
+export async function nicheTableAsync(opts: NicheOpts = {}): Promise<NicheRow[]> {
+  const sisters = CRUSADERS.filter((c) => !opts.ids || opts.ids.includes(c.id));
+  const raw = new Map<string, Record<string, number>>();
+  for (const c of sisters) {
+    raw.set(c.id, Object.fromEntries(HUNTS.map((h) => [h.id, huntRun(c.id, h, opts)])));
+    await new Promise((r) => setTimeout(r, 0));
+  }
+  return nicheRows(sisters, raw);
+}
+
+function nicheRows(sisters: typeof CRUSADERS, raw: Map<string, Record<string, number>>): NicheRow[] {
   const rows: NicheRow[] = [];
   for (const c of sisters) {
     const role = roleOf(c);
