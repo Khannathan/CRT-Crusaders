@@ -16,7 +16,7 @@ import type { PassiveDef } from './types';
 import { ROSTER } from './roster';
 import { OVERWATCH_HIT } from '../systems/keywords';
 
-/** What a Bell Sister's Peal does (every third toll). */
+/** What a Belfry Sister's Peal does (every third toll). */
 export interface Peal {
   /** She strikes every foe for this multiple of attack. */
   strikeAll?: number;
@@ -143,7 +143,7 @@ export interface Sig {
   peal?: Peal;
   startZeal?: number;
   // Zealot Initiative
-  /** Returns this share of every blow she takes to its striker (Glass Confession Reflection). */
+  /** Returns this share of every blow she takes to its striker (Confessors of Glass Reflection). */
   reflect?: number;
   /** The first killing blow shatters her instead: every foe takes `mult` x her attack and she reforms at `reform` of max HP. */
   shatterDeath?: { mult: number; reform: number };
@@ -636,7 +636,7 @@ K('SW-R-CON', (own) => ({
   ],
 }));
 
-// ======================= Candle Choir: Hymn =======================
+// ======================= Choir of the Pyre: Hymn =======================
 
 const HYMN = 2; // turns a Hymn's status lasts, so it holds until each Sister's own turn
 
@@ -650,7 +650,7 @@ K('CC-UR1', (own) => ({
     own({ name: 'Crescendo', desc: 'LITANY: five strikes on any enemy at 0.45x each; each one gives the party 4 Zeal.', target: 'enemy', mult: 0.45, hits: 5, zealPerHit: 4, rite: true }),
   ],
   seal: { name: 'The Note Held', desc: 'The first time a Hymn would end, it plays 2 more rounds.', kind: 'noteHeld' },
-  shines: ['Rot-Mother Hunt', 'Hunt damage scores', 'Candle Choir Order Tower'],
+  shines: ['Rot-Mother Hunt', 'Hunt damage scores', 'Choir of the Pyre Order Tower'],
 }));
 
 K('CC-LUR', (own) => ({
@@ -731,7 +731,7 @@ K('CC-R-CAN', (own) => ({
   ],
 }));
 
-// ======================= Thorn Covenant: Scars =======================
+// ======================= Verdant Martyrdom: Scars =======================
 
 K('TC-UR1', (own) => ({
   passive: sig('Crown of Living Briar', 'Each hit she takes gives her 1 Scar. Her counters deal 4% more per Scar and leave the attacker Bleeding for 2 turns.'),
@@ -743,11 +743,11 @@ K('TC-UR1', (own) => ({
     own({ name: 'Thicket', desc: 'LITANY: every ally gains Thorns (30% back) for 2 turns; she draws every attack.', target: 'allAllies', thorns: { pct: 0.3, turns: 2 }, taunt: 2, rite: true }),
   ],
   seal: { name: 'Unmasked', desc: 'The first time she drops under 30% HP, she heals 25% and goes to 10 Scars.', kind: 'unmasked' },
-  shines: ['Rot-Mother Hunt', 'Choirmaster Hunt', 'Thorn Covenant Order Tower', 'Rivals'],
+  shines: ['Rot-Mother Hunt', 'Choirmaster Hunt', 'Verdant Martyrdom Order Tower', 'Rivals'],
 }));
 
 K('TC-SSR-MAR', (own) => ({
-  passive: sig("Martyr's Gift", 'When she falls, every Sister gains 40 Zeal and +25% attack for 2 turns, and each Covenant Sister 1 Scar for every 2 she held.'),
+  passive: sig("Martyr's Gift", 'When she falls, every Sister gains 40 Zeal and +25% attack for 2 turns, and each Martyrdom Sister 1 Scar for every 2 she held.'),
   sig: { fallGift: { zeal: 40, empower: 0.25, scarsShare: 0.5 } },
   skills: [
     own({ name: 'Bleeding Smite', desc: 'Strike rank 1-2, leave it Bleeding for 2 turns, and heal for 35% of the damage.', from: [1, 2], target: 'enemy', reach: [1, 2], mult: 1.1, bleed: { mult: 0.2, turns: 2 }, drain: 0.35 }),
@@ -755,14 +755,14 @@ K('TC-SSR-MAR', (own) => ({
     st('martyr', 'blood-oath'),
     own({ name: 'Dawn of Thorns', desc: 'LITANY: burn every enemy with light, heal 50% of the damage, and draw attacks for 2 turns.', target: 'allEnemies', mult: 0.85, drain: 0.5, taunt: 2, rite: true }),
   ],
-  shines: ['Colossus Hunt', 'Rivals', 'Inquisition trials', 'Thorn Covenant Order Tower'],
+  shines: ['Colossus Hunt', 'Rivals', 'Inquisition trials', 'Verdant Martyrdom Order Tower'],
 }));
 
 K('TC-SSR-CAN', (own) => ({
-  passive: sig('Hymn of the Lash', 'Each Scar any Covenant Sister gains gives the party 2 Zeal.'),
+  passive: sig('Hymn of the Lash', 'Each Scar any Martyrdom Sister gains gives the party 2 Zeal.'),
   sig: { scarZeal: 2 },
   skills: [
-    own({ name: 'Psalm of Penance', desc: 'Every ally loses 5% HP and gains +35% attack for 2 turns (Covenant Sisters Scar from it). Cooldown 3.', target: 'allAllies', hurtAllies: 0.05, empower: { pct: 0.35, turns: 2 }, empowerTarget: true, cooldown: 3 }),
+    own({ name: 'Psalm of Penance', desc: 'Every ally loses 5% HP and gains +35% attack for 2 turns (Martyrdom Sisters Scar from it). Cooldown 3.', target: 'allAllies', hurtAllies: 0.05, empower: { pct: 0.35, turns: 2 }, empowerTarget: true, cooldown: 3 }),
     st('cantor', 'keening-note'),
     st('cantor', 'psalm-of-blades'),
     st('cantor', 'requiem-chorus'),
@@ -901,7 +901,7 @@ K('DL-R-SEN', (own) => ({
   ],
 }));
 
-// ======================= Glass Confession: Confess =======================
+// ======================= Confessors of Glass: Confess =======================
 
 K('GC-UR1', (own) => ({
   passive: sig('Nothing Hidden', 'Every foe starts the fight Confessed for 3 turns, and she acts first in round 1.'),
@@ -929,7 +929,7 @@ K('GC-SSR-ABB', (own) => ({
 }));
 
 K('GC-SSR-EXE', (own) => ({
-  passive: sig('Glass Confession', 'Her crits on a foe both Confessed and Accused Shatter for +20% more crit damage, and 30% of the hit splashes onto its neighbours.'),
+  passive: sig('Confessors of Glass', 'Her crits on a foe both Confessed and Accused Shatter for +20% more crit damage, and 30% of the hit splashes onto its neighbours.'),
   sig: { shatter: { crit: 0.2, splash: 0.3 } },
   skills: [
     own({ name: 'Accuse and Confess', desc: 'A light hit on any rank: Accused, Sundered (-25% armor) and Confessed for 3 turns.', from: [1, 2, 3], target: 'enemy', mult: 0.6, accuse: 3, sunder: { pct: 0.25, turns: 3 }, confess: 3 }),
@@ -937,7 +937,7 @@ K('GC-SSR-EXE', (own) => ({
     st('inquisitor', 'sentence'),
     own({ name: 'Mirror Verdict', desc: 'LITANY: a crushing blow on any enemy, doubled against the Accused; always a crit against the Confessed.', target: 'enemy', mult: 1.8, bonusIfAccused: 1, cond: { if: 'confessed', then: { critChance: 1 } }, rite: true }),
   ],
-  shines: ['Colossus Hunt', 'Rivals', 'Glass Confession Order Tower', 'Packed foes'],
+  shines: ['Colossus Hunt', 'Rivals', 'Confessors of Glass Order Tower', 'Packed foes'],
 }));
 
 K('GC-SR-CEN', (own) => ({
@@ -976,7 +976,7 @@ K('GC-R-HOS', (own) => ({
   ],
 }));
 
-// ======================= Red Pilgrimage: Stride =======================
+// ======================= Crimson Inquisition: Stride =======================
 
 K('RP-UR1', (own) => ({
   passive: sig('The Red Road', 'Each Stride gives her +6% damage. She may Step twice a turn instead of once.'),
@@ -988,7 +988,7 @@ K('RP-UR1', (own) => ({
     own({ name: "Pilgrim's Verdict", desc: 'LITANY: spend all Stride: a crushing blow on any enemy, 1.6x plus 0.3x per Stride, doubled against the Accused.', target: 'enemy', mult: 1.6, bonusIfAccused: 1, spend: { kw: 'stride', per: { multAdd: 0.3 } }, rite: true }),
   ],
   seal: { name: 'The Bell No One Hears', desc: 'The first time a Sister falls, Peregrina gains 5 Stride and Haste.', kind: 'bellNoOne' },
-  shines: ['Colossus Hunt', 'Red Cardinal Hunt', 'Free-movement Vigil and real-time field', 'Red Pilgrimage Order Tower'],
+  shines: ['Colossus Hunt', 'Red Cardinal Hunt', 'Free-movement Vigil and real-time field', 'Crimson Inquisition Order Tower'],
 }));
 
 K('RP-LUR', (own) => ({
@@ -1005,7 +1005,7 @@ K('RP-LUR', (own) => ({
 }));
 
 K('RP-SSR-CAN', (own) => ({
-  passive: sig('Marching Song', 'Whenever she sings (any of her skills), every Pilgrim gains 1 Stride.'),
+  passive: sig('Marching Song', 'Whenever she sings (any of her skills), every Inquisitor gains 1 Stride.'),
   sig: { singStride: 1 },
   skills: [
     own({ name: 'Processional', desc: 'The whole party steps one rank: the front Sister goes to the back, and the new front gains Haste; every Sister gains 8 Zeal. Cooldown 2.', target: 'self', rotate: true, zealGain: 8, zealAll: true, cooldown: 2 }),
@@ -1073,7 +1073,7 @@ K('RP-R-ADJ', (own) => ({
   ],
 }));
 
-// ======================= Hollow Bell: Toll =======================
+// ======================= Hallowed Belfry: Toll =======================
 
 K('HB-UR1', (own) => ({
   passive: sig('Cracked Bell', 'While she is under half HP, her skills ring the Bell twice. Peal: she strikes every enemy for 0.7x.'),
@@ -1085,7 +1085,7 @@ K('HB-UR1', (own) => ({
     own({ name: 'Midnight Toll', desc: 'LITANY: strike every enemy; the Bell rings three times.', target: 'allEnemies', mult: 0.95, gain: { toll: 2 }, rite: true }),
   ],
   seal: { name: 'Unbroken Vow', desc: 'The first killing blow leaves her at 1 HP, and Midnight comes at once if it has not yet.', kind: 'unbrokenMidnight' },
-  shines: ['Rot-Mother Hunt', 'Choirmaster Hunt', 'Bell Tower', 'Hollow Bell Order Tower'],
+  shines: ['Rot-Mother Hunt', 'Choirmaster Hunt', 'Bell Tower', 'Hallowed Belfry Order Tower'],
 }));
 
 K('HB-SSR-EXE', (own) => ({
@@ -1184,7 +1184,7 @@ K('RP-LSSR1', (own) => ({
     own({ name: 'Ember Retreat', desc: 'Set a foe Burning for 3 turns (stacks) and step a rank back. Cooldown 1.', target: 'enemy', mult: 0.5, poison: { mult: 0.4, turns: 3 }, stackPoison: true, move: 1, cooldown: 1 }),
     own({ name: 'Road of Ash', desc: 'LITANY: burn every enemy for 3 turns (stacks); spends her Stride for +10% each.', target: 'allEnemies', mult: 0.8, poison: { mult: 0.4, turns: 3 }, stackPoison: true, spend: { kw: 'stride', per: { multPct: 0.1 } }, rite: true }),
   ],
-  shines: ['Flayed Saint Hunt', 'Twofold Reliquary Hunt', 'Real-time field', 'Red Pilgrimage Order Tower'],
+  shines: ['Flayed Saint Hunt', 'Twofold Reliquary Hunt', 'Real-time field', 'Crimson Inquisition Order Tower'],
 }));
 
 K('AM-LSSR1', (own) => ({
@@ -1208,7 +1208,7 @@ K('CC-LSSR1', (own) => ({
     own({ name: 'Sentence in Song', desc: 'Drag any foe to the front and strike it; double damage under 30% HP. Cooldown 2.', from: [1, 2, 3], target: 'enemy', mult: 1.05, execute: 1, pull: true, cooldown: 2 }),
     own({ name: 'Verdict in Chorus', desc: 'LITANY: a crushing blow on any enemy, doubled against the Accused; every Sister gains 10 Zeal.', target: 'enemy', mult: 1.8, bonusIfAccused: 1, zealGain: 10, zealAll: true, rite: true }),
   ],
-  shines: ['Hunt damage scores', 'Candle Choir Order Tower'],
+  shines: ['Hunt damage scores', 'Choir of the Pyre Order Tower'],
 }));
 
 K('GC-LSSR1', (own) => ({
@@ -1220,7 +1220,7 @@ K('GC-LSSR1', (own) => ({
     own({ name: 'Mirror Flame', desc: 'Ignite all the burn on one foe at once for 1.5x; 2x on the Confessed. Cooldown 2.', target: 'enemy', mult: 0.3, detonate: 1.5, cond: { if: 'confessed', then: { detonate: 2 } }, cooldown: 2 }),
     own({ name: 'Pane of Fire', desc: 'LITANY: burn every enemy for 3 turns (stacks) and Confess them.', target: 'allEnemies', mult: 0.8, confess: 2, poison: { mult: 0.4, turns: 3 }, stackPoison: true, rite: true }),
   ],
-  shines: ['Iron Abbot Hunt', 'Self-buffing bosses', 'Glass Confession Order Tower'],
+  shines: ['Iron Abbot Hunt', 'Self-buffing bosses', 'Confessors of Glass Order Tower'],
 }));
 
 K('SW-LSSR1', (own) => ({
@@ -1244,7 +1244,7 @@ K('HB-LSSR1', (own) => ({
     own({ name: 'Cracked Bell Rite', desc: 'Strip the shield and blessings of every enemy. Cooldown 3.', target: 'allEnemies', mult: 0.4, purge: true, cooldown: 3 }),
     own({ name: 'Vespers of Flame', desc: 'LITANY: searing light on every enemy, then the Bell Peals at once.', target: 'allEnemies', mult: 0.9, pealNow: true, rite: true }),
   ],
-  shines: ['Flayed Saint Hunt', 'Twofold Reliquary Hunt', 'Bell Tower', 'Hollow Bell Order Tower'],
+  shines: ['Flayed Saint Hunt', 'Twofold Reliquary Hunt', 'Bell Tower', 'Hallowed Belfry Order Tower'],
 }));
 
 K('DL-LSSR1', (own) => ({
@@ -1268,7 +1268,7 @@ K('TC-LSSR1', (own) => ({
     own({ name: 'Briar Bolt', desc: 'A bolt that leaves any foe Bleeding for 3 turns. Cooldown 2.', target: 'enemy', mult: 1.2, bleed: { mult: 0.3, turns: 3 }, cooldown: 2 }),
     own({ name: 'Penitent Ballista', desc: 'LITANY: a crushing bolt through shields; spends her Scars for +8% each.', target: 'enemy', mult: 2.2, pierceShield: true, spend: { kw: 'scars', per: { multPct: 0.08 } }, rite: true }),
   ],
-  shines: ['Thorn Covenant Order Tower'],
+  shines: ['Verdant Martyrdom Order Tower'],
 }));
 
 /** Her four skills: her kit's, or her class's until she has one. */

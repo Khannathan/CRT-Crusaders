@@ -74,7 +74,7 @@ export const DEEP_HOSTS: DeepCrypt[] = [
       { tpl: 'lurker', id: 'rope-lurker', name: 'Rope Lurker', color: 0x4a4038, skills: ['Hangman\'s Pull', 'Rope Burn'], twist: 'none' },
       { tpl: 'golem', id: 'gibbet-golem', name: 'Gibbet Golem', color: 0x6e5a40, skills: ['Crush and Drop', 'The Long Drop'], twist: 'none' },
     ],
-    boss: { id: 'hanged-deacon', name: 'The Hanged Deacon', color: 0x5a3a3a, skills: ['Sermon from the Rope', 'Strangling Grip', 'Cut Down the Hanged'], phase2: ['Sermon from the Rope', 'Strangling Grip', 'Snap of the Rope', 'Cut Down the Hanged'], blasphemy: 'The Gallows Mass', text: 'The rope snaps. The Deacon does not fall.', twist: 'none', bane: 'Hollow Bell' },
+    boss: { id: 'hanged-deacon', name: 'The Hanged Deacon', color: 0x5a3a3a, skills: ['Sermon from the Rope', 'Strangling Grip', 'Cut Down the Hanged'], phase2: ['Sermon from the Rope', 'Strangling Grip', 'Snap of the Rope', 'Cut Down the Hanged'], blasphemy: 'The Gallows Mass', text: 'The rope snaps. The Deacon does not fall.', twist: 'none', bane: 'Hallowed Belfry' },
   },
   {
     crypt: 'bone-orchard',
@@ -84,7 +84,7 @@ export const DEEP_HOSTS: DeepCrypt[] = [
       { tpl: 'nun', id: 'root-nun', name: 'Root-Bound Nun', color: 0x5a6a3a, skills: ['Psalm of Spores', 'Grasping Root'], twist: 'stout' },
       { tpl: 'golem', id: 'ossuary-tree', name: 'Ossuary Tree', color: 0x8a8068, skills: ['Root Heave', 'Falling Bough'], twist: 'none' },
     ],
-    boss: { id: 'the-gardener', name: 'The Gardener', color: 0x4f5a30, skills: ['Prune', 'Graft', 'Sow the Dead'], phase2: ['Prune', 'Graft', 'Harvest', 'Sow the Dead'], blasphemy: 'The Bitter Harvest', text: 'The Gardener kneels, and the whole orchard bends toward you.', twist: 'regen', bane: 'Thorn Covenant' },
+    boss: { id: 'the-gardener', name: 'The Gardener', color: 0x4f5a30, skills: ['Prune', 'Graft', 'Sow the Dead'], phase2: ['Prune', 'Graft', 'Harvest', 'Sow the Dead'], blasphemy: 'The Bitter Harvest', text: 'The Gardener kneels, and the whole orchard bends toward you.', twist: 'regen', bane: 'Verdant Martyrdom' },
   },
   {
     crypt: 'salt-catacomb',
@@ -124,7 +124,7 @@ export const DEEP_HOSTS: DeepCrypt[] = [
       { tpl: 'ringer', id: 'chime-of-flame', name: 'Chime of Flame', color: 0xd08a40, skills: ['Burning Peal'], twist: 'none' },
       { tpl: 'bishop', id: 'chandler-bishop', name: 'Chandler Bishop', color: 0x8a5a2a, skills: ['Kindle', 'Hook of Wire', 'Pour a Candle'], twist: 'none' },
     ],
-    boss: { id: 'wick-keeper', name: 'The Wick-Keeper', color: 0xc08030, skills: ['Ten Thousand Flames', 'Snuff a Soul', 'Light Another'], phase2: ['Ten Thousand Flames', 'Snuff a Soul', 'The Great Flare', 'Light Another'], blasphemy: 'Every Candle Out', text: 'The Wick-Keeper pinches out its own flame. The maze goes dark.', twist: 'regen', bane: 'Candle Choir' },
+    boss: { id: 'wick-keeper', name: 'The Wick-Keeper', color: 0xc08030, skills: ['Ten Thousand Flames', 'Snuff a Soul', 'Light Another'], phase2: ['Ten Thousand Flames', 'Snuff a Soul', 'The Great Flare', 'Light Another'], blasphemy: 'Every Candle Out', text: 'The Wick-Keeper pinches out its own flame. The maze goes dark.', twist: 'regen', bane: 'Choir of the Pyre' },
   },
   {
     crypt: 'red-refectory',
@@ -134,7 +134,7 @@ export const DEEP_HOSTS: DeepCrypt[] = [
       { tpl: 'lurker', id: 'table-lurker', name: 'Under-Table Lurker', color: 0x4a2a2a, skills: ['Pull to the Table', 'Gnaw'], twist: 'none' },
       { tpl: 'warden', id: 'refectory-cook', name: 'The Cook', color: 0x7a5a4a, skills: ['Lid of the Pot', 'Cleaver Shove'], twist: 'bleed' },
     ],
-    boss: { id: 'the-cellarer', name: 'The Cellarer', color: 0x7a2030, skills: ['Pour the Red', 'Seat at the Table', 'More Guests'], phase2: ['Pour the Red', 'Seat at the Table', 'The Last Supper', 'More Guests'], blasphemy: 'Grace Before Meat', text: 'The Cellarer rings for the next course. You are on the menu.', twist: 'enrage', bane: 'Red Pilgrimage' },
+    boss: { id: 'the-cellarer', name: 'The Cellarer', color: 0x7a2030, skills: ['Pour the Red', 'Seat at the Table', 'More Guests'], phase2: ['Pour the Red', 'Seat at the Table', 'The Last Supper', 'More Guests'], blasphemy: 'Grace Before Meat', text: 'The Cellarer rings for the next course. You are on the menu.', twist: 'enrage', bane: 'Crimson Inquisition' },
   },
   {
     crypt: 'choir-loft',
@@ -144,7 +144,7 @@ export const DEEP_HOSTS: DeepCrypt[] = [
       { tpl: 'nun', id: 'alto-nun', name: 'Alto Nun', color: 0x6a5a7a, skills: ['Dissonant Hymn', 'Hush'], twist: 'zeal' },
       { tpl: 'bishop', id: 'precentor', name: 'The Precentor', color: 0x5a3a5a, skills: ['Keep Time', 'Baton Hook', 'Summon the Choir'], twist: 'none' },
     ],
-    boss: { id: 'the-cantor', name: 'The Cantor', color: 0x6a2a4a, skills: ['Endless Antiphon', 'Silence the Soloist', 'Call the Basses'], phase2: ['Endless Antiphon', 'Silence the Soloist', 'The Highest Note', 'Call the Basses'], blasphemy: 'Requiem for the Living', text: 'The Cantor holds a note that never ends.', twist: 'none', bane: 'Hollow Bell' },
+    boss: { id: 'the-cantor', name: 'The Cantor', color: 0x6a2a4a, skills: ['Endless Antiphon', 'Silence the Soloist', 'Call the Basses'], phase2: ['Endless Antiphon', 'Silence the Soloist', 'The Highest Note', 'Call the Basses'], blasphemy: 'Requiem for the Living', text: 'The Cantor holds a note that never ends.', twist: 'none', bane: 'Hallowed Belfry' },
   },
   {
     crypt: 'penitent-well',
@@ -154,7 +154,7 @@ export const DEEP_HOSTS: DeepCrypt[] = [
       { tpl: 'husk', id: 'stone-penitent', name: 'Stone Penitent', color: 0x7a7a70, skills: ['Kneeling Blow'], twist: 'none' },
       { tpl: 'golem', id: 'well-head', name: 'The Well-Head', color: 0x6a6a5a, skills: ['Grind of the Windlass', 'Bucket Drop'], twist: 'none' },
     ],
-    boss: { id: 'well-warden', name: 'The Well-Warden', color: 0x3a5050, skills: ['Draw Up the Sins', 'Down You Go', 'Call the Sins'], phase2: ['Draw Up the Sins', 'Down You Go', 'The Bottomless', 'Call the Sins'], blasphemy: 'Every Sin Returned', text: 'Everything thrown down the well climbs out at once.', twist: 'regen', bane: 'Glass Confession' },
+    boss: { id: 'well-warden', name: 'The Well-Warden', color: 0x3a5050, skills: ['Draw Up the Sins', 'Down You Go', 'Call the Sins'], phase2: ['Draw Up the Sins', 'Down You Go', 'The Bottomless', 'Call the Sins'], blasphemy: 'Every Sin Returned', text: 'Everything thrown down the well climbs out at once.', twist: 'regen', bane: 'Confessors of Glass' },
   },
   {
     crypt: 'thorned-sacristy',
@@ -164,7 +164,7 @@ export const DEEP_HOSTS: DeepCrypt[] = [
       { tpl: 'husk', id: 'vestment-husk', name: 'Empty Vestment', color: 0x6a3a5a, skills: ['Smother'], twist: 'none' },
       { tpl: 'bishop', id: 'thorn-sacristan', name: 'Thorn Sacristan', color: 0x4a5a2a, skills: ['Crown of Briars', 'Bramble Hook', 'Grow a Penitent'], twist: 'none' },
     ],
-    boss: { id: 'thorn-priest', name: 'The Thorn Priest', color: 0x3a4a20, skills: ['Mass of Thorns', 'Crowning', 'Seed the Pews'], phase2: ['Mass of Thorns', 'Crowning', 'The Briar Rises', 'Seed the Pews'], blasphemy: 'Crown for Every Head', text: 'The Priest\'s vestments split, and the briars pour out.', twist: 'none', bane: 'Thorn Covenant' },
+    boss: { id: 'thorn-priest', name: 'The Thorn Priest', color: 0x3a4a20, skills: ['Mass of Thorns', 'Crowning', 'Seed the Pews'], phase2: ['Mass of Thorns', 'Crowning', 'The Briar Rises', 'Seed the Pews'], blasphemy: 'Crown for Every Head', text: 'The Priest\'s vestments split, and the briars pour out.', twist: 'none', bane: 'Verdant Martyrdom' },
   },
   {
     crypt: 'mirror-crypt',
@@ -174,7 +174,7 @@ export const DEEP_HOSTS: DeepCrypt[] = [
       { tpl: 'wraith', id: 'reflection-wisp', name: 'Reflection', color: 0xb0b8d0, skills: ['Stolen Breath'], twist: 'swift' },
       { tpl: 'warden', id: 'mirror-warden', name: 'Mirror Warden', color: 0x7a8090, skills: ['Silvered Shield', 'Glass Bash'], twist: 'none' },
     ],
-    boss: { id: 'the-reflection', name: 'The Reflection', color: 0x8a90b0, skills: ['Mock', 'Turn the Blade', 'Another Mirror'], phase2: ['Mock', 'Turn the Blade', 'Shatter', 'Another Mirror'], blasphemy: 'Which One Is You', text: 'The Reflection steps out of the glass. Now there are two of every Sister.', twist: 'enrage', bane: 'Glass Confession' },
+    boss: { id: 'the-reflection', name: 'The Reflection', color: 0x8a90b0, skills: ['Mock', 'Turn the Blade', 'Another Mirror'], phase2: ['Mock', 'Turn the Blade', 'Shatter', 'Another Mirror'], blasphemy: 'Which One Is You', text: 'The Reflection steps out of the glass. Now there are two of every Sister.', twist: 'enrage', bane: 'Confessors of Glass' },
   },
   {
     crypt: 'plague-hospice',

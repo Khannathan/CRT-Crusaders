@@ -184,12 +184,12 @@ const ORDER_TWISTS: Record<string, string[]> = {
   'Ashen Mercy': ['stigmata', 'regen', 'drain', 'weaken', 'rapture'],
   'Veiled Tribunal': ['penance', 'silence', 'brand', 'accuse', 'hex'],
   'Sepulcher Watch': ['silence', 'weaken', 'martyrdom', 'sunder', 'zealGain'],
-  'Candle Choir': ['fervor', 'zealGain', 'critUp', 'regen', 'rapture'],
-  'Thorn Covenant': ['stigmata', 'fervor', 'thorns', 'drain', 'sunder'],
+  'Choir of the Pyre': ['fervor', 'zealGain', 'critUp', 'regen', 'rapture'],
+  'Verdant Martyrdom': ['stigmata', 'fervor', 'thorns', 'drain', 'sunder'],
   'Drowned Litany': ['silence', 'hex', 'drain', 'weaken', 'ward'],
-  'Glass Confession': ['images', 'brand', 'critChance', 'hex', 'penance'],
-  'Red Pilgrimage': ['fervor', 'martyrdom', 'armorPierce', 'drain', 'critChance'],
-  'Hollow Bell': ['silence', 'penance', 'accuse', 'zealGain', 'ward'],
+  'Confessors of Glass': ['images', 'brand', 'critChance', 'hex', 'penance'],
+  'Crimson Inquisition': ['fervor', 'martyrdom', 'armorPierce', 'drain', 'critChance'],
+  'Hallowed Belfry': ['silence', 'penance', 'accuse', 'zealGain', 'ward'],
 };
 const ALL_TWISTS = Object.keys(TWISTS);
 
@@ -199,12 +199,12 @@ export const ORDER_GROUND: Record<string, GroundKind> = {
   'Ashen Mercy': 'ash',
   'Veiled Tribunal': 'hallowed',
   'Sepulcher Watch': 'ash',
-  'Candle Choir': 'hallowed',
-  'Thorn Covenant': 'thorns',
+  'Choir of the Pyre': 'hallowed',
+  'Verdant Martyrdom': 'thorns',
   'Drowned Litany': 'flood',
-  'Glass Confession': 'lantern',
-  'Red Pilgrimage': 'thorns',
-  'Hollow Bell': 'hallowed',
+  'Confessors of Glass': 'lantern',
+  'Crimson Inquisition': 'thorns',
+  'Hallowed Belfry': 'hallowed',
 };
 export const GROUND_TEXT: Record<GroundKind, string> = {
   hallowed: 'Hallowed Ground (every Sister Regenerates 4% a round)',
@@ -239,7 +239,7 @@ const RULES: Record<string, Rule> = {
   shatterDeath: {
     key: 'shatterDeath',
     min: 2,
-    fits: (c) => c.order === 'Glass Confession',
+    fits: (c) => c.order === 'Confessors of Glass',
     sig: (v) => ({ shatterDeath: { mult: step([0.5, 0.5, 0.6, 0.8, 1], v), reform: 0.3 } }),
     text: (v) => `Shatter: the first killing blow breaks her into shards instead. Every foe takes ${step([0.5, 0.5, 0.6, 0.8, 1], v)}x her attack and she reforms at 30% HP.`,
   },
@@ -249,12 +249,12 @@ const ORDER_RULES: Record<string, string[]> = {
   'Ashen Mercy': ['lifesteal', 'groundStart', 'guard', 'dmgUnderHalf'],
   'Veiled Tribunal': ['penanceOnHit', 'brandOnCrit', 'dmgUnderHalf', 'startZeal'],
   'Sepulcher Watch': ['guard', 'startZeal', 'dmgUnderHalf', 'penanceOnHit'],
-  'Candle Choir': ['startZeal', 'fervorOnAct', 'groundStart', 'dotMult'],
-  'Thorn Covenant': ['lifesteal', 'fervorOnAct', 'reflect', 'dotMult'],
+  'Choir of the Pyre': ['startZeal', 'fervorOnAct', 'groundStart', 'dotMult'],
+  'Verdant Martyrdom': ['lifesteal', 'fervorOnAct', 'reflect', 'dotMult'],
   'Drowned Litany': ['groundStart', 'lifesteal', 'dmgUnderHalf', 'reflect'],
-  'Glass Confession': ['shatterDeath', 'reflect', 'imagesStart', 'brandOnCrit'],
-  'Red Pilgrimage': ['fervorOnAct', 'dmgUnderHalf', 'lifesteal', 'brandOnCrit'],
-  'Hollow Bell': ['penanceOnHit', 'startZeal', 'guard', 'groundStart'],
+  'Confessors of Glass': ['shatterDeath', 'reflect', 'imagesStart', 'brandOnCrit'],
+  'Crimson Inquisition': ['fervorOnAct', 'dmgUnderHalf', 'lifesteal', 'brandOnCrit'],
+  'Hallowed Belfry': ['penanceOnHit', 'startZeal', 'guard', 'groundStart'],
 };
 const ALL_RULES = Object.keys(RULES);
 
@@ -265,12 +265,12 @@ const PASSIVE_WORDS: Record<string, string[]> = {
   'Ashen Mercy': ['Ashen', 'Pyre', 'Cinder', 'Merciful', 'Smoke-Lunged', 'Last', 'Shrouded', 'Ember', 'Soot', 'Absolving'],
   'Veiled Tribunal': ['Veiled', 'Nailed', 'Sealed', 'Weighed', 'Blindfold', 'Gavel', 'Silent', 'Damning', 'Sentenced', 'Writ-Bound'],
   'Sepulcher Watch': ['Ossuary', 'Bone-Sworn', 'Whispering', 'Grave', 'Marrow', 'Crypt', 'Charnel', 'Tomb', 'Barrow', 'Skull-Kept'],
-  'Candle Choir': ['Wax-Scarred', 'Unbroken', 'Tallow', 'Burning', 'Gilded', 'Vesper', 'Choral', 'Candlelit', 'Wick', 'Molten'],
-  'Thorn Covenant': ['Briar-Born', 'Bleeding', 'Scourged', 'Thorned', 'Flayed', 'Rose', 'Barbed', 'Bramble', 'Scarred', 'Penitent'],
+  'Choir of the Pyre': ['Wax-Scarred', 'Unbroken', 'Tallow', 'Burning', 'Gilded', 'Vesper', 'Choral', 'Candlelit', 'Wick', 'Molten'],
+  'Verdant Martyrdom': ['Briar-Born', 'Bleeding', 'Scourged', 'Thorned', 'Flayed', 'Rose', 'Barbed', 'Bramble', 'Scarred', 'Penitent'],
   'Drowned Litany': ['Drowned', 'Barnacled', 'Brine', 'Undertow', 'Salt', 'Sunken', 'Tidal', 'Fathom', 'Pearl', 'Sea-Wet'],
-  'Glass Confession': ['Mirror', 'Faceless', 'Leaded', 'Shard', 'Silvered', 'Cracked', 'Stained', 'Prism', 'Smoked-Glass', 'Pane'],
-  'Red Pilgrimage': ['Barefoot', 'Bleeding-Foot', 'Long-Road', 'Scallop', 'Pilgrim', 'Crimson', 'Dust', 'Unresting', 'Wayfarer\'s', 'Shrine-Bound'],
-  'Hollow Bell': ['Silent', 'Tolling', 'Bronze', 'Rope-Scarred', 'Hollow', 'Clapper', 'Knelling', 'Midnight', 'Belfry', 'Muted'],
+  'Confessors of Glass': ['Mirror', 'Faceless', 'Leaded', 'Shard', 'Silvered', 'Cracked', 'Stained', 'Prism', 'Smoked-Glass', 'Pane'],
+  'Crimson Inquisition': ['Barefoot', 'Bleeding-Foot', 'Long-Road', 'Scallop', 'Pilgrim', 'Crimson', 'Dust', 'Unresting', 'Wayfarer\'s', 'Shrine-Bound'],
+  'Hallowed Belfry': ['Silent', 'Tolling', 'Bronze', 'Rope-Scarred', 'Hollow', 'Clapper', 'Knelling', 'Midnight', 'Belfry', 'Muted'],
 };
 const PASSIVE_NOUNS = ['Vow', 'Creed', 'Oath', 'Rule', 'Covenant', 'Canon', 'Tithe', 'Penance', 'Psalm', 'Seal', 'Zeal', 'Litany', 'Faith', 'Heresy-Bane'];
 
@@ -279,12 +279,12 @@ const CRY_OPEN: Record<string, string[]> = {
   'Ashen Mercy': ['Kneel, and I make it quick!', 'Ash to ash, and you first!', 'Mercy is a blade, and I am sharp!', 'Breathe the smoke of the faithful dead!', 'No one suffers long near me!', 'I burned a city to save it. I will burn you!', 'The pyre is lit, and it is hungry!', 'Hold still. This is the kind part!'],
   'Veiled Tribunal': ['Guilty, as charged and as born!', 'Your verdict is nailed to my armour!', 'I need no eyes to see your sin!', 'The court is in session, and there is no appeal!', 'Confess, or be confessed for!', 'The scales are already tipped, heretic!', 'I judged myself first. Now you!', 'Silence in my court!'],
   'Sepulcher Watch': ['The dead fight beside me!', 'Your bones will serve the Watch!', 'My Sisters\' skulls are watching you!', 'Rest is for the faithful. You get the crypt!', 'Every grave I keep is a soldier!', 'Death is no discharge from this war!', 'The tomb is open, and it calls your name!', 'Join the honoured dead, heretic!'],
-  'Candle Choir': ['Sing, and the dark recoils!', 'My candle burns down, and I burn brighter!', 'The hymn has not stopped in three hundred years!', 'Hear the choir, and despair!', 'Wax and fire and fury!', 'Louder, Sisters! Louder!', 'Every verse is a blade!', 'I will sing over your ashes!'],
-  'Thorn Covenant': ['Bleed, and be made holy!', 'Every scar is a prayer answered!', 'The briar grows from my wounds, and it hungers!', 'Pain is my psalm!', 'I count my sins in scars, and I have room for yours!', 'Cut me! I dare you!', 'My blood for the Covenant!', 'The thorns know your name!'],
+  'Choir of the Pyre': ['Sing, and the dark recoils!', 'My candle burns down, and I burn brighter!', 'The hymn has not stopped in three hundred years!', 'Hear the choir, and despair!', 'Wax and fire and fury!', 'Louder, Sisters! Louder!', 'Every verse is a blade!', 'I will sing over your ashes!'],
+  'Verdant Martyrdom': ['Bleed, and be made holy!', 'Every scar is a prayer answered!', 'The briar grows from my wounds, and it hungers!', 'Pain is my psalm!', 'I count my sins in scars, and I have room for yours!', 'Cut me! I dare you!', 'My blood for the Covenant!', 'The thorns know your name!'],
   'Drowned Litany': ['The water remembers you!', 'I drowned, and I came back angrier!', 'Speak for the drowned, Sisters!', 'The tide rises, and you sink!', 'Salt in the wound, salt in the soul!', 'What the sea takes, it consecrates!', 'Breathe deep, heretic. It is the last!', 'The deep sends its regards!'],
-  'Glass Confession': ['You said you were clean. The mirror says otherwise!', 'Look into me, and see your sin!', 'I hold every confession ever whispered!', 'Shatter me, and I cut you a thousand ways!', 'Nothing is hidden from the mirror!', 'Your face is the only one I wear!', 'Every crack in me is a sinner I broke!', 'The pane does not lie!'],
-  'Red Pilgrimage': ['The road is red, and so are you!', 'I never stop walking!', 'Every step toward the shrine is paid in blood!', 'March, Sisters! The holy land waits!', 'My feet bleed, and my blade drinks!', 'Out of my road, heretic!', 'Ten thousand miles, and you are one more!', 'The pilgrim\'s road runs through you!'],
-  'Hollow Bell': ['*the bell tolls once*', '*the bell tolls twice, then silence*', '*a cracked note, and then the hammer falls*', '*the hour rings, and it is yours*', '*a low knell that shakes the bone*', '*the bell rings midnight early*', '*three tolls, slow and sure*', '*the rope creaks, the bronze answers*'],
+  'Confessors of Glass': ['You said you were clean. The mirror says otherwise!', 'Look into me, and see your sin!', 'I hold every confession ever whispered!', 'Shatter me, and I cut you a thousand ways!', 'Nothing is hidden from the mirror!', 'Your face is the only one I wear!', 'Every crack in me is a sinner I broke!', 'The pane does not lie!'],
+  'Crimson Inquisition': ['The road is red, and so are you!', 'I never stop walking!', 'Every step toward the shrine is paid in blood!', 'March, Sisters! The holy land waits!', 'My feet bleed, and my blade drinks!', 'Out of my road, heretic!', 'Ten thousand miles, and you are one more!', 'The pilgrim\'s road runs through you!'],
+  'Hallowed Belfry': ['*the bell tolls once*', '*the bell tolls twice, then silence*', '*a cracked note, and then the hammer falls*', '*the hour rings, and it is yours*', '*a low knell that shakes the bone*', '*the bell rings midnight early*', '*three tolls, slow and sure*', '*the rope creaks, the bronze answers*'],
 };
 const CRY_CLOSE: Record<string, string[]> = {
   hierophant: ['Behind the relic, Sisters!', 'Break on my shield!', 'The saint in my shield has seen worse!', 'Not one step past me!', 'Hold the line!', 'My reliquary, your grave!'],
@@ -309,12 +309,12 @@ const ORDER_FX: Record<string, string> = {
   'Ashen Mercy': 'grey ash-flame and falling soot, a wine-red glow as wounds close',
   'Veiled Tribunal': 'violet scale-marks, nailed parchment verdicts and wax seals bursting',
   'Sepulcher Watch': 'bone-white light, orbiting skull tokens and spectral funerary keys',
-  'Candle Choir': 'candle-gold flame, dripping wax and floating hymn ribbons',
-  'Thorn Covenant': 'blood-red scar-light and lashing briar, rose petals torn loose',
+  'Choir of the Pyre': 'candle-gold flame, dripping wax and floating hymn ribbons',
+  'Verdant Martyrdom': 'blood-red scar-light and lashing briar, rose petals torn loose',
   'Drowned Litany': 'teal water rising upward, pearls and salt spray',
-  'Glass Confession': 'ice-blue mirror shards, hard white reflections and her inner light bleeding through cracks',
-  'Red Pilgrimage': 'red footprints of light, gold road-dust and scallop sigils',
-  'Hollow Bell': 'bronze sound-rings rippling out, rope shadows and a dull midnight shockwave',
+  'Confessors of Glass': 'ice-blue mirror shards, hard white reflections and her inner light bleeding through cracks',
+  'Crimson Inquisition': 'red footprints of light, gold road-dust and scallop sigils',
+  'Hallowed Belfry': 'bronze sound-rings rippling out, rope shadows and a dull midnight shockwave',
 };
 const CLASS_FX: Record<string, string> = {
   hierophant: 'her reliquary-shield flares and throws up a wall of light',

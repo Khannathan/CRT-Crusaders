@@ -207,8 +207,8 @@ describe('balance formulas', () => {
     expect(damageAfterArmor(120 * 1.4, 80)).toBeCloseTo(93.33, 1);
   });
 
-  it('crits multiply damage, and Glass Confession always crits the Accused', () => {
-    const inq = crusader('inq', 'inquisitor', 1, { passive: { name: 'Glass Confession', desc: '', kind: 'critOnAccused' } });
+  it('crits multiply damage, and Confessors of Glass always crits the Accused', () => {
+    const inq = crusader('inq', 'inquisitor', 1, { passive: { name: 'Confessors of Glass', desc: '', kind: 'critOnAccused' } });
     const e = makeEnemy('husk', 'e0', 1);
     e.armor = 0;
     e.status.accused = 3;

@@ -27,12 +27,12 @@ const WORDS: Record<string, string[]> = {
   'Ashen Mercy': ['Ash', 'Ember', 'Pyre', 'Mercy', 'Cinder', 'Soot', 'Pale', 'Shroud', 'Ashen', 'Absolving', 'Kindling', 'Last-Rite'],
   'Veiled Tribunal': ['Veil', 'Verdict', 'Sealed', 'Masked', 'Gavel', 'Wax', 'Silent', 'Black', 'Judged', 'Tribunal', 'Faceless', 'Weighed'],
   'Sepulcher Watch': ['Bone', 'Ossuary', 'Grave', 'Crypt', 'Barrow', 'Tomb', 'Marrow', 'Skull', 'Funeral', 'Ivory', 'Charnel', 'Sepulchral'],
-  'Candle Choir': ['Candle', 'Hymnal', 'Choir', 'Wick', 'Tallow', 'Psalm', 'Gilded', 'Vesper', 'Taper', 'Cantus', 'Matin', 'Chanted'],
-  'Thorn Covenant': ['Thorn', 'Briar', 'Scourge', 'Rose', 'Bramble', 'Bleeding', 'Barbed', 'Scarred', 'Bloom', 'Penitent', 'Vine', 'Flayed'],
+  'Choir of the Pyre': ['Candle', 'Hymnal', 'Choir', 'Wick', 'Tallow', 'Psalm', 'Gilded', 'Vesper', 'Taper', 'Cantus', 'Matin', 'Chanted'],
+  'Verdant Martyrdom': ['Thorn', 'Briar', 'Scourge', 'Rose', 'Bramble', 'Bleeding', 'Barbed', 'Scarred', 'Bloom', 'Penitent', 'Vine', 'Flayed'],
   'Drowned Litany': ['Tide', 'Drowned', 'Brine', 'Font', 'Deep', 'Undertow', 'Pearl', 'Flood', 'Sunken', 'Salt', 'Fathom', 'Coral'],
-  'Glass Confession': ['Mirror', 'Glass', 'Shard', 'Pane', 'Lens', 'Prism', 'Silvered', 'Splinter', 'Reflected', 'Cracked', 'Obsidian', 'Leaded'],
-  'Red Pilgrimage': ['Road', 'Pilgrim', 'Scallop', 'Dust', 'Wayfarer', 'Shrine', 'Barefoot', 'Mile', 'Crimson', 'Long-Road', 'Staff', 'Wander'],
-  'Hollow Bell': ['Bell', 'Toll', 'Knell', 'Bronze', 'Clapper', 'Hollow', 'Peal', 'Midnight', 'Belfry', 'Chime', 'Tocsin', 'Hour'],
+  'Confessors of Glass': ['Mirror', 'Glass', 'Shard', 'Pane', 'Lens', 'Prism', 'Silvered', 'Splinter', 'Reflected', 'Cracked', 'Obsidian', 'Leaded'],
+  'Crimson Inquisition': ['Road', 'Pilgrim', 'Scallop', 'Dust', 'Wayfarer', 'Shrine', 'Barefoot', 'Mile', 'Crimson', 'Long-Road', 'Staff', 'Wander'],
+  'Hallowed Belfry': ['Bell', 'Toll', 'Knell', 'Bronze', 'Clapper', 'Hollow', 'Peal', 'Midnight', 'Belfry', 'Chime', 'Tocsin', 'Hour'],
 };
 
 /** What each class calls its works. */
@@ -93,7 +93,7 @@ const TEMPLATES: Record<string, Partial<Record<Role, Template>>> = {
       sig: { dmgUnderHalf: 0.25, owZeal: 8 },
     },
   },
-  'Red Pilgrimage': {
+  'Crimson Inquisition': {
     Healer: {
       passive: sigP('Road Balm', 'Heals for 15% of the damage she deals, +5% per Stride. Each Stride gives her +4% damage.'),
       sig: { strideLifesteal: { base: 0.15, per: 0.05 }, strideDmg: 0.04 },
@@ -109,7 +109,7 @@ const TEMPLATES: Record<string, Partial<Record<Role, Template>>> = {
       sig: { guiltDmg: 0.05, passGuilt: true },
     },
   },
-  'Candle Choir': {
+  'Choir of the Pyre': {
     'Ranged DPS': {
       litany: { name: 'Choir of Wrath', desc: 'LITANY: heavy damage on every enemy; every Sister gains 8 Zeal.', target: 'allEnemies', mult: 1.1, zealGain: 8, zealAll: true, rite: true },
     },
@@ -139,7 +139,7 @@ const TEMPLATES: Record<string, Partial<Record<Role, Template>>> = {
       sig: { executeTide: { base: 0.25, per: 0.03 } },
     },
   },
-  'Glass Confession': {
+  'Confessors of Glass': {
     Tank: {
       skills: [
         { name: 'Mirror Guard', desc: 'Strike rank 1-2, Confess it for 2 turns and draw enemy attacks for 2 turns.', from: [1, 2], target: 'enemy', reach: [1, 2], mult: 0.8, taunt: 2, confess: 2 },
@@ -150,7 +150,7 @@ const TEMPLATES: Record<string, Partial<Record<Role, Template>>> = {
       sig: { confessAll: 2 },
     },
   },
-  'Hollow Bell': {
+  'Hallowed Belfry': {
     Tank: {
       passive: sigP('Iron Clapper', 'Peal: she heals 15% of her max HP and every foe is Accused for a turn.'),
       sig: { peal: { healSelf: 0.15, accuseAll: 1 } },
@@ -176,9 +176,9 @@ const TEMPLATES: Record<string, Partial<Record<Role, Template>>> = {
       sig: { remainsZeal: 6 },
     },
   },
-  'Thorn Covenant': {
+  'Verdant Martyrdom': {
     Buffer: {
-      litany: { name: 'Psalm of the Lash', desc: 'LITANY: every ally loses 5% HP and gains +40% attack for 2 turns (Covenant Sisters Scar from it); every Sister gains 10 Zeal.', target: 'allAllies', hurtAllies: 0.05, empower: { pct: 0.4, turns: 2 }, empowerTarget: true, zealGain: 10, zealAll: true, rite: true },
+      litany: { name: 'Psalm of the Lash', desc: 'LITANY: every ally loses 5% HP and gains +40% attack for 2 turns (Martyrdom Sisters Scar from it); every Sister gains 10 Zeal.', target: 'allAllies', hurtAllies: 0.05, empower: { pct: 0.4, turns: 2 }, empowerTarget: true, zealGain: 10, zealAll: true, rite: true },
     },
     'Melee DPS': {
       passive: sigP('Bone-Deep Lash', 'Heals for 12% of the damage she deals. Each Scar she holds lets her hits ignore 4% more Armor.'),
@@ -190,7 +190,7 @@ const TEMPLATES: Record<string, Partial<Record<Role, Template>>> = {
         { name: 'Communion of Scars', desc: 'Spend all her Scars: every ally heals 2% of max HP per Scar. Cooldown 2.', target: 'allAllies', spend: { kw: 'scars', per: { healPct: 0.02 } }, cooldown: 2 },
       ],
       litany: { name: 'Rose of Wounds', desc: 'LITANY: every ally heals 30% of max HP and gains Thorns (25% back) for 2 turns.', target: 'allAllies', healPct: 0.3, thorns: { pct: 0.25, turns: 2 }, rite: true },
-      passive: sigP('Hymn of the Lash', 'Each Scar any Covenant Sister gains gives the party 2 Zeal.'),
+      passive: sigP('Hymn of the Lash', 'Each Scar any Martyrdom Sister gains gives the party 2 Zeal.'),
       sig: { scarZeal: 2 },
     },
   },

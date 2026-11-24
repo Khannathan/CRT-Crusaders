@@ -48,7 +48,7 @@ export interface Status {
   critUp?: { pct: number; turns: number };
   /** Iron Vigil: reacts with this at the next foe to act; lapses after `turns` of her own. */
   overwatch?: { skill: SkillDef; turns: number };
-  /** Glass Confession: crits against it Shatter. Its own turns left. */
+  /** Confessors of Glass: crits against it Shatter. Its own turns left. */
   confessed?: number;
   /** Ashen Mercy: its Mercy line is this much higher. */
   foretold?: { pct: number; turns: number };
@@ -143,9 +143,9 @@ export interface Unit {
   bane?: string;
   /** Veiled Tribunal Guilt on a foe, 0-5. */
   guilt?: number;
-  /** Thorn Covenant Scars on a Sister, 0-10. */
+  /** Verdant Martyrdom Scars on a Sister, 0-10. */
   scars?: number;
-  /** Red Pilgrimage Stride on a Sister, 0-5. */
+  /** Crimson Inquisition Stride on a Sister, 0-5. */
   stride?: number;
   /** Sisters: her kit's signature rules and Saint's Seal (data/kits.ts). */
   sig?: Sig;
@@ -1639,7 +1639,7 @@ export class Battle {
     }
   }
 
-  /** Thorn Covenant: a Scar for each full step of max HP she loses to herself or bleeding. */
+  /** Verdant Martyrdom: a Scar for each full step of max HP she loses to herself or bleeding. */
   private scar(u: Unit, dmg: number, events: BattleEvent[]) {
     if (!this.isKw(u, 'scars') || dmg <= 0) return;
     this.scarFrac[u.uid] = (this.scarFrac[u.uid] ?? 0) + dmg / u.maxHp / KW.SCAR_STEP;
@@ -1649,7 +1649,7 @@ export class Battle {
     this.addScars(u, whole, events);
   }
 
-  /** Red Pilgrimage: Stride whenever a Pilgrim changes rank. */
+  /** Crimson Inquisition: Stride whenever an Inquisitor changes rank. */
   private stride(u: Unit, events: BattleEvent[], n = 1) {
     if (!this.isKw(u, 'stride') || u.hp <= 0) return;
     const before = u.stride ?? 0;
@@ -1846,7 +1846,7 @@ export class Battle {
     if (skill.pealNow) this.ring(KW.PEAL_EVERY - (this.kw.toll % KW.PEAL_EVERY), events);
   }
 
-  /** Hollow Bell: each toll rings; every third is a Peal; the twelfth is Midnight. */
+  /** Hallowed Belfry: each toll rings; every third is a Peal; the twelfth is Midnight. */
   private ring(n: number, events: BattleEvent[]) {
     for (let i = 0; i < n; i++) {
       this.kw.toll += 1;
@@ -1987,7 +1987,7 @@ export class Battle {
     for (const u of this.alive('party')) if (u.sig?.remainsSpendHeal) this.mend(u, u.maxHp * u.sig.remainsSpendHeal * n, events);
   }
 
-  /** Adds Scars to a Covenant Sister, with the Zeal they ring out. */
+  /** Adds Scars to a Martyrdom Sister, with the Zeal they ring out. */
   private addScars(u: Unit, n: number, events: BattleEvent[]) {
     if (!this.isKw(u, 'scars') || n <= 0) return;
     const before = u.scars ?? 0;
@@ -2043,7 +2043,7 @@ export class Battle {
     }
   }
 
-  /** Peals: each Bell Sister's own Peal effect. */
+  /** Peals: each Belfry Sister's own Peal effect. */
   private peal(events: BattleEvent[]) {
     for (const u of this.alive('party')) {
       const p = u.sig?.peal;

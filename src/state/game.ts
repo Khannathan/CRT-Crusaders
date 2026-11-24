@@ -1,6 +1,7 @@
 import { clearSave, loadSave, newSave, writeSave, type SaveData } from './save';
 import { current } from './run';
 import { moveIds } from './rosterMigration';
+import { renameOrders } from './orderRename';
 
 /** The live save, shared by every scene. Call commit() after changing it. */
 export const game: { save: SaveData } = { save: loadSave() };
@@ -26,7 +27,7 @@ function writeRun() {
 export function storedRun(): (Omit<NonNullable<typeof current.run>, 'crypt'> & { crypt: string }) | undefined {
   try {
     const raw = localStorage.getItem(RUN_KEY);
-    return raw ? JSON.parse(moveIds(raw)) : undefined;
+    return raw ? JSON.parse(renameOrders(moveIds(raw))) : undefined;
   } catch {
     return undefined;
   }

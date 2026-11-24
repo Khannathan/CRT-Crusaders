@@ -209,7 +209,7 @@ export interface SkillDef {
   steal?: boolean;
   /** Heals the most hurt Sister this share of max HP. */
   mendLowest?: number;
-  /** Each target ally loses this share of max HP (Scars for the Covenant). */
+  /** Each target ally loses this share of max HP (Scars for the Martyrdom). */
   hurtAllies?: number;
   /** Summoned foes arrive Delayed for the rest of the fight. */
   lockSummons?: boolean;

@@ -43,7 +43,7 @@ describe('Zealot Initiative mechanics', () => {
   });
 
   it('Rapture and Mirror Images swallow hits', () => {
-    const s = sister('s', 'Glass Confession');
+    const s = sister('s', 'Confessors of Glass');
     const foe = makeEnemy('husk', 'e0', 1);
     const b = new Battle([s], [foe], { rng: never });
     b.act(s, sk({ target: 'self', images: 2 }));
@@ -60,7 +60,7 @@ describe('Zealot Initiative mechanics', () => {
   });
 
   it('Fervor stacks to five and raises damage', () => {
-    const s = sister('s', 'Thorn Covenant');
+    const s = sister('s', 'Verdant Martyrdom');
     const foe = big('e0');
     const b = new Battle([s], [foe], { rng: never });
     for (let i = 0; i < 7; i++) b.act(s, sk({ target: 'self', fervor: 1 }));
@@ -69,7 +69,7 @@ describe('Zealot Initiative mechanics', () => {
   });
 
   it('Stigmata bleeds the foe and heals the Sister who cut it', () => {
-    const s = sister('s', 'Thorn Covenant', 1, { hp: 50 });
+    const s = sister('s', 'Verdant Martyrdom', 1, { hp: 50 });
     const foe = big('e0');
     const b = new Battle([s], [foe], { rng: never });
     b.act(s, sk({ mult: 0.01, stigmata: { mult: 1, turns: 2 } }), foe);
@@ -78,8 +78,8 @@ describe('Zealot Initiative mechanics', () => {
   });
 
   it('Martyrdom takes part of a blow aimed at another Sister', () => {
-    const m = sister('m', 'Red Pilgrimage', 2, { maxHp: 1000, hp: 1000 });
-    const s = sister('s', 'Red Pilgrimage', 1);
+    const m = sister('m', 'Crimson Inquisition', 2, { maxHp: 1000, hp: 1000 });
+    const s = sister('s', 'Crimson Inquisition', 1);
     const foe = makeEnemy('husk', 'e0', 1);
     const b = new Battle([s, m], [foe], { rng: never });
     b.act(m, sk({ target: 'self', martyrdom: { pct: 0.5, turns: 2 } }));
@@ -88,7 +88,7 @@ describe('Zealot Initiative mechanics', () => {
   });
 
   it('Silence breaks a charge and keeps a foe to its plainest skill', () => {
-    const s = sister('s', 'Hollow Bell');
+    const s = sister('s', 'Hallowed Belfry');
     const foe = makeEnemy('husk', 'e0', 1);
     const b = new Battle([s], [foe], { rng: never });
     foe.status.charging = true;
@@ -98,7 +98,7 @@ describe('Zealot Initiative mechanics', () => {
   });
 
   it('Shatter on death reforges a Glass Sister once and cuts every foe', () => {
-    const s = sister('s', 'Glass Confession', 1, { sig: { shatterDeath: { mult: 1, reform: 0.3 } } });
+    const s = sister('s', 'Confessors of Glass', 1, { sig: { shatterDeath: { mult: 1, reform: 0.3 } } });
     const foes = [big('e0'), big('e1', 2)];
     const b = new Battle([s], foes, { rng: never });
     b.act(foes[0], sk({ mult: 999, target: 'enemy' }), s);
@@ -122,7 +122,7 @@ describe('Zealot Initiative mechanics', () => {
   it('a Patron Miracle lifts only her own Order', () => {
     const p = sister('p', 'Iron Vigil', 1, { sig: { patron: { atk: 0.2, guard: 0.1 } } });
     const mate = sister('m', 'Iron Vigil', 2);
-    const other = sister('o', 'Candle Choir', 3);
+    const other = sister('o', 'Choir of the Pyre', 3);
     new Battle([p, mate, other], [big('e0')], { rng: never });
     expect(mate.bonusAtk).toBeCloseTo(0.2);
     expect(other.bonusAtk).toBe(0);
