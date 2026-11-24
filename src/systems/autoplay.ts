@@ -82,6 +82,8 @@ export function autoChoose(b: Battle, actor: Unit, opts: { noRite?: boolean } = 
     if (s.haste && !u.status.haste) v += u.atk * 0.5;
     if (s.overwatch && !u.status.overwatch) v += avgAtk * 0.6;
     if (s.giveStride) v += avgAtk * 0.1 * s.giveStride;
+    if (s.rapture && !u.status.rapture) v += (threat + avgAtk * 0.3) * s.rapture;
+    if (s.images && (u.status.images ?? 0) < 3) v += (threat + avgAtk * 0.3) * 0.6 * s.images;
     return v;
   };
   // Order keywords on a skill: a Hymn's verses, Overwatch, Zeal for the party.
@@ -97,6 +99,9 @@ export function autoChoose(b: Battle, actor: Unit, opts: { noRite?: boolean } = 
       v += avgAtk * 0.3;
     }
     if (s.zealGain && !s.selfDmgPct) v += s.zealGain * 0.6 * (s.zealAll ? allies.length : 1);
+    if (s.fervor && (actor.fervor ?? 0) < 5) v += actor.atk * 0.06 * s.fervor * 4;
+    if (s.martyrdom && !actor.status.martyr && ratio(actor) > 0.5) v += [...incoming.entries()].filter(([u]) => u !== actor).reduce((n, [, d]) => n + d, 0) * s.martyrdom.pct;
+    if (s.ground && !b.ground) v += avgAtk * 0.4 * s.ground.rounds;
     return v;
   };
   for (const s of skills) {
@@ -136,6 +141,10 @@ export function autoChoose(b: Battle, actor: Unit, opts: { noRite?: boolean } = 
       if (s.poison) v += Math.round(actor.atk * s.poison.mult * s.poison.turns * 0.7);
       if (s.accuse && !t.status.accused) v += avgAtk * 0.25 * 2;
       if (s.weaken && !t.status.weaken) v += t.atk * s.weaken.pct * 2;
+      if (s.penance && !t.status.penance) v += t.atk * s.penance.pct * s.penance.turns;
+      if (s.brand && !t.status.brand) v += avgAtk * s.brand;
+      if (s.silence && !t.status.silence) v += t.status.charging ? 40 : t.atk * 0.3;
+      if (s.stigmata) v += Math.round(actor.atk * s.stigmata.mult * s.stigmata.turns * 0.9);
       if (s.spreadPoison && t.status.poison) v += t.status.poison.dmg * t.status.poison.turns * (foes.length - 1) * 0.8;
       if (s.delay) v += t.status.charging ? 40 : 0;
       if (s.lifelink) v += Math.min(allies.reduce((n, u) => n + missing(u), 0), v * s.lifelink * allies.length) * 0.5;

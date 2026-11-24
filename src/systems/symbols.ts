@@ -68,9 +68,10 @@ const CLASS_PERK: Record<string, { name: string; desc: string }> = {
 };
 
 export function symbolPerks(c: CrusaderDef): SymbolPerk[] {
+  const relic = KITS[c.id]?.relic;
   const k = exalts(c) ? { name: `Exalted ${c.passive!.name}`, desc: `${c.passive!.name} is 25% stronger.` } : CLASS_PERK[c.classId] ?? CLASS_PERK.warsister;
   return [
-    { at: 5, name: 'Awakened', desc: 'Her skills deal and heal 10% more.' },
+    relic ? { at: 5, name: `Awakened: ${relic.name}`, desc: `Her skills deal and heal 10% more. ${relic.desc}` } : { at: 5, name: 'Awakened', desc: 'Her skills deal and heal 10% more.' },
     { at: 10, name: k.name, desc: k.desc },
     { at: 15, name: 'Sanctified', desc: 'Her Litany is 30% stronger.' },
   ];
@@ -91,12 +92,15 @@ export interface SymbolCombat {
   zeal: number;
   /** Her signature's shares grow by this (Exalted at +10). */
   exalt?: number;
+  /** Her Relic has woken (+5) and rewrites its skill. */
+  relic?: boolean;
 }
 
 export function symbolCombat(c: CrusaderDef, level: number | undefined): SymbolCombat | undefined {
   if (level === undefined) return undefined;
   const out: SymbolCombat = { mult: 1, heal: 1, guard: 0, rite: 0, crit: 0, zeal: 0 };
   if (level >= 5) out.mult = 1.1;
+  if (level >= 5 && KITS[c.id]?.relic) out.relic = true;
   if (level >= 10 && exalts(c)) out.exalt = EXALT;
   else if (level >= 10) {
     const role = CLASSES[c.classId]?.role;

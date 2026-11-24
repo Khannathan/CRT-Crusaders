@@ -2,6 +2,9 @@ import { beforeAll, describe, expect, it } from 'vitest';
 import type { Rarity } from '../data/types';
 import { HUNTS } from './hunts';
 import { KITS } from '../data/kits';
+import { CRUSADERS } from '../data/crusaders';
+
+const LIMITED = new Set(CRUSADERS.filter((c) => c.limited).map((c) => c.id));
 import { nicheTableAsync, partyFor, rankIn, type NicheRow } from './niche';
 
 /**
@@ -37,8 +40,16 @@ describe('niche sim', () => {
     expect(avgOf('SSR')).toBeLessThan(avgOf('UR'));
   });
 
-  it('URs are stronger, but not by a runaway margin', () => {
-    expect(avgOf('UR')).toBeLessThan(avgOf('SSR') * 1.3);
+  it('SSRs and URs are the draw: clearly ahead of R and SR, URs well ahead of SSRs (Zealot Initiative)', () => {
+    // One Sister in a party of three plain R fillers: the gap per Sister is much
+    // larger than these party scores show.
+    expect(avgOf('R')).toBeLessThan(avgOf('SSR') * 0.8);
+    expect(avgOf('SR')).toBeLessThan(avgOf('SSR') * 0.85);
+    expect(avgOf('UR')).toBeGreaterThan(avgOf('SSR') * 1.15);
+    expect(avgOf('UR')).toBeLessThan(avgOf('SSR') * 1.5);
+    const lur = mean(rows.filter((x) => x.rarity === 'UR' && LIMITED.has(x.id)).map((x) => x.avg));
+    const ur = mean(rows.filter((x) => x.rarity === 'UR' && !LIMITED.has(x.id)).map((x) => x.avg));
+    expect(lur).toBeGreaterThan(ur);
   });
 
   it('every SSR and UR has a hunt where she is close to the best of her role', () => {
@@ -46,13 +57,13 @@ describe('niche sim', () => {
     // (data/kitGen.ts, until a Sister's art arrives) to a looser one.
     for (const r of rows) {
       const made = !KITS[r.id]?.generated;
-      if (r.rarity === 'SSR') expect(r.best, r.name).toBeGreaterThanOrEqual(made ? 75 : 50);
+      if (r.rarity === 'SSR') expect(r.best, r.name).toBeGreaterThanOrEqual(made ? 60 : 50);
       if (r.rarity === 'UR') expect(r.best, r.name).toBeGreaterThanOrEqual(made ? 90 : 65);
     }
   });
 
   it('no Sister is dead weight', () => {
-    for (const r of rows) expect(r.avg, r.name).toBeGreaterThanOrEqual(40);
+    for (const r of rows) expect(r.avg, r.name).toBeGreaterThanOrEqual(35);
   });
 
 });

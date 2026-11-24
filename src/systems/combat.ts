@@ -21,7 +21,7 @@ export interface Status {
   /** Burn (Fire) or Poison (Blight): damage each turn, ignoring armor. */
   poison?: { dmg: number; turns: number; kind?: 'burn' | 'poison'; by?: string; guilt?: boolean };
   /** Bleeding (Steel): damage each turn, ignoring armor. */
-  bleed?: { dmg: number; turns: number };
+  bleed?: { dmg: number; turns: number; /** Stigmata: each tick heals this unit for half. */ by?: string };
   /** Turns left to lose. */
   stun?: number;
   sunder?: { pct: number; turns: number };
@@ -52,6 +52,18 @@ export interface Status {
   confessed?: number;
   /** Ashen Mercy: its Mercy line is this much higher. */
   foretold?: { pct: number; turns: number };
+  /** Takes this share of its own attack each time it acts. */
+  penance?: { pct: number; turns: number };
+  /** The next hit from its foes deals this much more, then it is spent. */
+  brand?: number;
+  /** Can use only its plainest skill. Its own turns left. */
+  silence?: number;
+  /** Takes no damage from foes. Its own turns left. */
+  rapture?: number;
+  /** Mirror Images left: each swallows a whole hit. */
+  images?: number;
+  /** Takes `pct` of every blow aimed at her Sisters. */
+  martyr?: { pct: number; turns: number };
 }
 
 /** What an enemy will do on its next turn, shown to the player in advance. */
@@ -141,6 +153,10 @@ export interface Unit {
   sealUsed?: boolean;
   /** Attack she has gained for the rest of the fight. */
   bonusAtk?: number;
+  /** Fervor stacks, 0-FERVOR_MAX: +FERVOR_DMG damage each. */
+  fervor?: number;
+  /** Set once her Shatter on death has reforged her. */
+  spentShatter?: boolean;
   /** Steps taken this turn. */
   steps?: number;
 }
@@ -180,6 +196,12 @@ export const BANE_MULT = 1.25;
 export const BANE_GUARD = 0.85;
 
 export const CRIT_MULT = 1.5;
+/** Fervor: stacks a Sister can hold, and the damage each gives. */
+export const FERVOR_MAX = 5;
+export const FERVOR_DMG = 0.06;
+export const IMAGES_MAX = 3;
+/** What each holy ground does (see GroundKind in data/skills.ts). */
+export const GROUND = { hallowedRegen: 0.04, ashHeal: 0.06, floodDmg: 0.1, thornsAtk: 0.15 } as const;
 /** Armor scale: damage is divided by (1 + armor / ARMOR_K). */
 export const ARMOR_K = 100;
 
@@ -204,8 +226,9 @@ export function skillsFor(u: Unit): SkillDef[] {
     return d.blasphemy && (u.wrath ?? 0) >= ZEAL_MAX ? [...base, d.blasphemy] : base;
   }
   const vow = u.vow ?? 0;
+  const kit = KITS[u.ref];
   return [
-    ...(KITS[u.ref]?.skills ?? CLASS_SKILLS[u.classId!]).map((s, i) => leveled(VOW_UPGRADES.some(([v, idx]) => idx === i && vow >= v) ? upgraded(s) : s, u.skillLv?.[i] ?? 1)),
+    ...(kit ? (u.symbol?.relic ? withRelic(kit) : kit.skills) : CLASS_SKILLS[u.classId!]).map((s, i) => leveled(VOW_UPGRADES.some(([v, idx]) => idx === i && vow >= v) ? upgraded(s) : s, u.skillLv?.[i] ?? 1)),
     SHIFT_SKILL,
   ];
 }
@@ -320,6 +343,8 @@ export class Battle {
   private reflecting?: { boss: Unit; sum: number };
   /** Summoned foes arrive Delayed (Lock the Crypt). */
   private locked = false;
+  /** Holy ground under the party: what, rounds left, and who laid it. */
+  ground?: { kind: import('../data/skills').GroundKind; rounds: number; by: string };
   /**
    * Space, when the fight is played on an open field (systems/field.ts). Left
    * unset in turn-based fights, where every Hymn reaches every ally and every
@@ -425,6 +450,7 @@ export class Battle {
     this.howl(events);
     this.bossTraits(events);
     this.roundKeywords(events);
+    this.groundRound(events);
     for (const uid of this.pendingRise.splice(0)) {
       const u = this.get(uid);
       if (u.hp > 0) continue;
@@ -576,6 +602,8 @@ export class Battle {
       events.push({ type: 'damage', uid: actor.uid, amount: dmg, blocked: 0 });
       if (actor.side === 'party') this.hurtZeal(actor, dmg, events);
       this.scar(actor, dmg, events);
+      const stig = st.bleed.by ? this.units.find((u) => u.uid === st.bleed!.by) : undefined;
+      if (stig && stig.hp > 0) this.mend(stig, dmg * 0.5, events);
       if (--st.bleed.turns <= 0) st.bleed = undefined;
       if (actor.hp <= 0) {
         this.kill(actor, events);
@@ -615,6 +643,9 @@ export class Battle {
     if (st.overwatch && --st.overwatch.turns <= 0) st.overwatch = undefined;
     if (st.confessed && --st.confessed <= 0) st.confessed = undefined;
     if (st.foretold && --st.foretold.turns <= 0) st.foretold = undefined;
+    if (st.silence && --st.silence <= 0) st.silence = undefined;
+    if (st.rapture && --st.rapture <= 0) st.rapture = undefined;
+    if (st.martyr && --st.martyr.turns <= 0) st.martyr = undefined;
     this.turnKits(actor, events);
     if (st.stun) {
       st.stun -= 1;
@@ -717,6 +748,14 @@ export class Battle {
       this.shift(actor, events);
       return events;
     }
+    // Penance: the sinner pays before it acts.
+    const pen = actor.status.penance;
+    if (pen) {
+      events.push({ type: 'status', uid: actor.uid, label: 'Penance' });
+      this.pierce(actor, Math.round(this.attackOf(actor) * pen.pct), events);
+      if (--pen.turns <= 0) actor.status.penance = undefined;
+      if (actor.hp <= 0) return events;
+    }
 
     if (skill.selfDmgPct) {
       const dmg = Math.min(actor.hp - 1, Math.round(actor.maxHp * skill.selfDmgPct));
@@ -788,6 +827,15 @@ export class Battle {
     if (skill.counter && actor.hp > 0) {
       actor.status.counter = { ...skill.counter };
       events.push({ type: 'status', uid: actor.uid, label: 'On guard' });
+    }
+    if (skill.fervor && actor.hp > 0) this.addFervor(actor, skill.fervor, events);
+    if (skill.martyrdom && actor.hp > 0) {
+      actor.status.martyr = { ...skill.martyrdom };
+      events.push({ type: 'status', uid: actor.uid, label: 'Martyrdom' });
+    }
+    if (skill.ground && actor.hp > 0) {
+      this.ground = { kind: skill.ground.kind, rounds: skill.ground.rounds, by: actor.uid };
+      events.push({ type: 'text', text: `${actor.name} hallows the ground: ${GROUND_NAME[skill.ground.kind]}` });
     }
     if (skill.empower && !skill.empowerTarget) {
       actor.status.empower = { ...skill.empower };
@@ -937,9 +985,10 @@ export class Battle {
     }
     if (skill.purge && t.side !== actor.side) {
       const st = t.status;
-      if (st.shield || st.empower || st.ward || st.regen || st.haste || st.thorns || st.counter || st.critUp) {
+      if (st.shield || st.empower || st.ward || st.regen || st.haste || st.thorns || st.counter || st.critUp || st.rapture || st.images) {
         st.shield = 0;
         st.empower = st.ward = st.regen = st.thorns = st.counter = st.critUp = undefined;
+        st.rapture = st.images = undefined;
         st.haste = undefined;
         events.push({ type: 'status', uid: t.uid, label: 'Purged' });
       }
@@ -967,6 +1016,49 @@ export class Battle {
         events.push({ type: 'intent' });
       }
     }
+    if (skill.penance) {
+      t.status.penance = { ...skill.penance };
+      events.push({ type: 'status', uid: t.uid, label: 'Penance' });
+    }
+    if (skill.brand) {
+      t.status.brand = Math.max(t.status.brand ?? 0, skill.brand);
+      events.push({ type: 'status', uid: t.uid, label: 'Branded' });
+    }
+    if (skill.silence) {
+      const turns = t.boss ? skill.silence - 1 : skill.silence;
+      if (turns <= 0) events.push({ type: 'status', uid: t.uid, label: 'Resists silence' });
+      else {
+        t.status.silence = Math.max(t.status.silence ?? 0, turns);
+        events.push({ type: 'status', uid: t.uid, label: 'Silenced' });
+        if (t.side === 'enemy') {
+          const plain = skillsFor(t)[0];
+          if (t.status.charging) {
+            t.status.charging = false;
+            events.push({ type: 'status', uid: t.uid, label: 'Charge broken!' });
+          }
+          if (plain && t.intent?.skillId !== plain.id) {
+            t.intent = { skillId: plain.id };
+            events.push({ type: 'intent' });
+          }
+        }
+      }
+    }
+    if (skill.rapture) {
+      support = true;
+      t.status.rapture = Math.max(t.status.rapture ?? 0, skill.rapture);
+      events.push({ type: 'status', uid: t.uid, label: 'Rapture' });
+    }
+    if (skill.images) {
+      support = true;
+      t.status.images = Math.min(IMAGES_MAX, (t.status.images ?? 0) + skill.images);
+      events.push({ type: 'status', uid: t.uid, label: `Mirror Images ${t.status.images}` });
+    }
+    if (skill.stigmata) {
+      const dmg = Math.max(1, Math.round(this.attackOf(actor) * skill.stigmata.mult * baneMult(actor, t)));
+      const old = t.status.bleed;
+      t.status.bleed = { dmg: Math.max(dmg, old?.dmg ?? 0), turns: Math.max(old?.turns ?? 0, skill.stigmata.turns), by: actor.uid };
+      events.push({ type: 'status', uid: t.uid, label: 'Stigmata' });
+    }
     this.keywordEffects(actor, t, skill, events);
     return support;
   }
@@ -978,7 +1070,7 @@ export class Battle {
   enemyChoose(actor: Unit): { skill: SkillDef; target?: Unit } {
     if (!actor.intent) this.planIntent(actor);
     const skills = skillsFor(actor);
-    let skill = skills.find((s) => s.id === actor.intent?.skillId);
+    let skill = actor.status.silence ? skills.find((s) => !s.rite && !s.windup && this.canUse(actor, s)) : skills.find((s) => s.id === actor.intent?.skillId);
     if (!skill || !this.canUse(actor, skill)) {
       this.planIntent(actor);
       skill = skills.find((s) => s.id === actor.intent!.skillId)!;
@@ -1138,6 +1230,13 @@ export class Battle {
     raw *= this.executeMult(actor, t, skill);
     if (actor.passive?.kind === 'executioner' && t.hp < t.maxHp / 2) raw *= 1 + (actor.passive.value ?? 0);
     raw *= this.keywordMult(actor, t) * this.sigMult(actor, t);
+    if (actor.fervor) raw *= 1 + (actor.sig?.fervorDmg ?? FERVOR_DMG) * actor.fervor;
+    if (t.status.brand && actor.side !== t.side) {
+      raw *= 1 + t.status.brand;
+      t.status.brand = undefined;
+      events.push({ type: 'status', uid: t.uid, label: 'Brand!' });
+    }
+    if (this.ground?.kind === 'flood' && t.side === 'enemy' && actor.side === 'party') raw *= 1 + GROUND.floodDmg;
     const mercyBoss = t.boss && this.isKw(actor, 'mercy') && t.hp < t.maxHp * this.mercyLine(t);
     if (mercyBoss) raw *= 1 + KW.MERCY_BOSS;
     const g = actor.side === 'party' ? actor.sig : undefined;
@@ -1161,7 +1260,36 @@ export class Battle {
     }
     dmg = Math.min(dmg, t.hp);
     if (skill.cannotKill && t.side !== actor.side) dmg = Math.max(0, Math.min(dmg, t.hp - Math.max(1, Math.ceil(t.maxHp * this.mercyLine(t)))));
+    if (actor.side !== t.side && dmg > 0 && t.status.rapture) {
+      events.push({ type: 'status', uid: t.uid, label: 'Rapture' });
+      dmg = 0;
+    } else if (actor.side !== t.side && dmg > 0 && t.status.images) {
+      t.status.images -= 1;
+      if (!t.status.images) t.status.images = undefined;
+      events.push({ type: 'status', uid: t.uid, label: 'Mirror Image shatters' });
+      dmg = 0;
+    }
+    if (actor.side === 'enemy' && t.side === 'party' && dmg > 0) {
+      const m = this.alive('party').find((u) => u !== t && u.status.martyr);
+      if (m) {
+        const share = Math.min(Math.round(dmg * m.status.martyr!.pct), m.hp - 1);
+        if (share > 0) {
+          dmg -= share;
+          m.hp -= share;
+          events.push({ type: 'status', uid: m.uid, label: 'Martyrdom' }, { type: 'damage', uid: m.uid, amount: share, blocked: 0 });
+        }
+      }
+    }
     if (actor.side === 'enemy' && t.side === 'party') dmg = this.guardKits(actor, t, dmg, events);
+    if (dmg > 0 && dmg >= t.hp && t.sig?.shatterDeath && !t.spentShatter) {
+      t.spentShatter = true;
+      const sd = t.sig.shatterDeath;
+      events.push({ type: 'status', uid: t.uid, label: 'Shattered... reforged!' });
+      dmg = 0;
+      t.hp = Math.max(1, Math.round(t.maxHp * sd.reform));
+      events.push({ type: 'heal', uid: t.uid, amount: 0 });
+      for (const f of this.alive(actor.side)) this.pierce(f, Math.round(this.attackOf(t) * sd.mult * baneMult(t, f)), events);
+    }
     if (dmg === t.hp && t.passive?.kind === 'unbroken' && !t.spentUnbroken) {
       t.spentUnbroken = true;
       dmg = t.hp - 1;
@@ -1190,9 +1318,17 @@ export class Battle {
     if (dmg > 0 && leech > 0 && actor.hp > 0) this.leech(actor, dmg * leech, events);
     if (dmg > 0 && skill.drain && actor.hp > 0) this.mend(actor, dmg * skill.drain, events);
     if (dmg > 0 && skill.lifelink) for (const a of this.alive(actor.side)) this.mend(a, dmg * skill.lifelink, events);
-    const thorns = (t.passive?.kind === 'thorns' ? (t.passive.value ?? 0) : 0) + (t.status.thorns?.pct ?? 0);
+    if (crit && g?.brandOnCrit && t.hp > 0) {
+      t.status.brand = Math.max(t.status.brand ?? 0, g.brandOnCrit);
+      events.push({ type: 'status', uid: t.uid, label: 'Branded' });
+    }
+    if (g?.penanceOnHit && dmg > 0 && t.hp > 0 && skill.id !== 'riposte') {
+      t.status.penance = { pct: Math.max(g.penanceOnHit, t.status.penance?.pct ?? 0), turns: 2 };
+      events.push({ type: 'status', uid: t.uid, label: 'Penance' });
+    }
+    const thorns = (t.passive?.kind === 'thorns' ? (t.passive.value ?? 0) : 0) + (t.status.thorns?.pct ?? 0) + (t.side === 'party' ? t.sig?.reflect ?? 0 : 0);
     if (dmg > 0 && thorns > 0 && actor !== t && actor.hp > 0) {
-      events.push({ type: 'status', uid: t.uid, label: t.status.thorns ? 'Thorns' : t.passive!.name });
+      events.push({ type: 'status', uid: t.uid, label: t.status.thorns ? 'Thorns' : t.passive?.kind === 'thorns' ? t.passive.name : 'Reflection' });
       this.pierce(actor, Math.round(dmg * thorns), events);
       if (actor.hp <= 0 && t.sig?.thornsMercy) {
         events.push({ type: 'status', uid: actor.uid, label: 'Mercy' });
@@ -1291,6 +1427,7 @@ export class Battle {
       if (s.rampart && u.rank === 1 && t.rank === 2) f *= 1 - s.rampart;
       if (s.hymnTauntWard && u.status.taunt && this.kw.hymns.length) f *= 1 - s.hymnTauntWard;
       if (s.tideGuard && this.kw.tide) f *= 1 - s.tideGuard * this.kw.tide;
+      if (s.patron && u.order && u.order === t.order) f *= 1 - s.patron.guard;
     }
     return f;
   }
@@ -1307,6 +1444,8 @@ export class Battle {
       raw *= this.executeMult(actor, t, skill);
       if (actor.passive?.kind === 'executioner' && t.hp < t.maxHp / 2) raw *= 1 + (actor.passive.value ?? 0);
       raw *= this.keywordMult(actor, t) * this.sigMult(actor, t);
+      if (actor.fervor) raw *= 1 + (actor.sig?.fervorDmg ?? FERVOR_DMG) * actor.fervor;
+      if (t.status.brand && actor.side !== t.side) raw *= 1 + t.status.brand;
       const critChance = t.status.accused && actor.passive?.kind === 'critOnAccused' ? 1 : Math.min(1, critOf(actor, skill));
       raw *= 1 + critChance * (CRIT_MULT - 1 + (actor.critDmg ?? 0));
       total += damageAfterArmor(raw, defenceAgainst(t, dmgOf(actor, skill)) * (1 - (skill.armorPierce ?? 0))) * this.guardOf(t);
@@ -1665,6 +1804,7 @@ export class Battle {
   /** After a Sister's skill: Hymns, counter gains, and the Bell. */
   private afterSkill(actor: Unit, skill: SkillDef, events: BattleEvent[]) {
     if (skill.id === 'shift') return;
+    if (actor.sig?.fervorOnAct && actor.hp > 0) this.addFervor(actor, actor.sig.fervorOnAct, events);
     if (skill.hymn) {
       const choir = this.isKw(actor, 'hymn');
       const h: KW.Hymn = { by: actor.uid, name: skill.hymn.name, rounds: skill.hymn.rounds, allies: skill.hymn.allies, foes: skill.hymn.foes, choir };
@@ -1746,6 +1886,9 @@ export class Battle {
       if (g.remainsCap) this.kw.remainsMax = Math.max(this.kw.remainsMax, g.remainsCap);
       if (g.confessAll) for (const e of enemies) e.status.confessed = Math.max(e.status.confessed ?? 0, g.confessAll);
       if (g.firstRound) u.status.haste = Math.max(u.status.haste ?? 0, 1);
+      if (g.imagesStart) u.status.images = Math.min(IMAGES_MAX, g.imagesStart);
+      if (g.patron) for (const a of party) if (a.order && a.order === u.order) a.bonusAtk = (a.bonusAtk ?? 0) + g.patron.atk;
+      if (g.groundStart) this.ground = { kind: g.groundStart.kind, rounds: g.groundStart.rounds, by: u.uid };
       if (g.openOverwatch) {
         const fast = [...party].filter((x) => x.hp > 0).sort((a, b) => b.spd - a.spd)[0];
         if (fast) fast.status.overwatch = { skill: KW.OVERWATCH_HIT, turns: KW.OVERWATCH_TURNS };
@@ -2192,6 +2335,7 @@ export class Battle {
 
   /** A foe has fallen: the Grave Garden. */
   private foeFellKits(events: BattleEvent[]) {
+    if (this.ground?.kind === 'ash') for (const a of this.alive('party')) this.mend(a, a.maxHp * GROUND.ashHeal, events);
     const gg = this.sigHolder('foeFallHeal');
     if (!gg) return;
     const sg = gg.sig!;
@@ -2226,6 +2370,33 @@ export class Battle {
   }
 
   /** Changes Zeal for one Sister, or (no `to`) for every living Sister. */
+  private addFervor(u: Unit, n: number, events: BattleEvent[]) {
+    const before = u.fervor ?? 0;
+    u.fervor = Math.min(FERVOR_MAX, before + n);
+    if (u.fervor !== before) events.push({ type: 'status', uid: u.uid, label: `Fervor ${u.fervor}` });
+  }
+
+  /** Holy ground works once a round, then wears away. */
+  private groundRound(events: BattleEvent[]) {
+    const gr = this.ground;
+    if (!gr) return;
+    const by = this.get(gr.by);
+    if (gr.kind === 'hallowed') for (const a of this.alive('party')) this.mend(a, a.maxHp * GROUND.hallowedRegen, events);
+    if (gr.kind === 'thorns' && by) for (const e of this.alive('enemy')) this.pierce(e, Math.round(this.attackOf(by) * GROUND.thornsAtk * baneMult(by, e)), events);
+    if (gr.kind === 'flood') for (const e of this.alive('enemy')) e.status.delayed = true;
+    if (gr.kind === 'lantern') {
+      const low = this.alive('party').sort((a, b) => a.hp / a.maxHp - b.hp / b.maxHp)[0];
+      if (low) {
+        low.status.overwatch = { skill: KW.OVERWATCH_HIT, turns: KW.OVERWATCH_TURNS };
+        events.push({ type: 'status', uid: low.uid, label: 'Overwatch' });
+      }
+    }
+    if (--gr.rounds <= 0) {
+      this.ground = undefined;
+      events.push({ type: 'text', text: 'The hallowed ground fades.' });
+    }
+  }
+
   private addZeal(n: number, events: BattleEvent[], reason: string, to?: Unit) {
     if (n > 0 && this.mods.zealMult && (reason === 'attack' || reason === 'support' || reason === 'wounds')) n = Math.max(0, Math.round(n * (1 + this.mods.zealMult)));
     const who = to ? (to.side === 'party' && to.hp > 0 ? [to] : []) : this.alive('party');
@@ -2239,6 +2410,27 @@ export class Battle {
     }
   }
 
+}
+
+export const GROUND_NAME: Record<import('../data/skills').GroundKind, string> = {
+  hallowed: 'Hallowed Ground',
+  ash: 'Field of Ash',
+  flood: 'Holy Flood',
+  thorns: 'Briar Ground',
+  lantern: 'Lantern Line',
+};
+
+/** Her kit's skills with her Relic's rewrite applied (Holy Symbol +5). */
+export function withRelic(kit: import('../data/kits').Kit): import('../data/kits').Kit['skills'] {
+  const r = kit.relic;
+  if (!r) return kit.skills;
+  const out = [...kit.skills] as import('../data/kits').Kit['skills'];
+  const s = out[r.skill];
+  // its own id, so skill levels and cooldowns never mix it up with the plain skill
+  let h = 0;
+  for (const ch of JSON.stringify(r.patch) + r.name) h = (Math.imul(h, 31) + ch.charCodeAt(0)) | 0;
+  out[r.skill] = { ...s, ...r.patch, id: `${s.id}~relic${(h >>> 0).toString(36)}`, icon: s.icon ?? s.id, name: s.name, desc: `${s.desc} RELIC: ${r.desc}` };
+  return out;
 }
 
 /** A Hymn's verse at double strength. */

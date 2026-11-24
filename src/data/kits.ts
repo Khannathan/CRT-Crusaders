@@ -11,7 +11,7 @@
  * start with the Sister's number so Vow upgrades never mix them up. The rules
  * behind `sig` and `seal` live in Battle (systems/combat.ts).
  */
-import { CLASS_SKILLS, type SkillDef } from './skills';
+import { CLASS_SKILLS, type GroundKind, type SkillDef } from './skills';
 import type { PassiveDef } from './types';
 import { ROSTER } from './roster';
 import { OVERWATCH_HIT } from '../systems/keywords';
@@ -142,6 +142,35 @@ export interface Sig {
   doubleRingLow?: boolean;
   peal?: Peal;
   startZeal?: number;
+  // Zealot Initiative
+  /** Returns this share of every blow she takes to its striker (Glass Confession Reflection). */
+  reflect?: number;
+  /** The first killing blow shatters her instead: every foe takes `mult` x her attack and she reforms at `reform` of max HP. */
+  shatterDeath?: { mult: number; reform: number };
+  /** Mirror Images she starts each fight with. */
+  imagesStart?: number;
+  /** Fervor she gains each action. */
+  fervorOnAct?: number;
+  /** Damage per Fervor, instead of FERVOR_DMG. */
+  fervorDmg?: number;
+  /** Her crits Brand the foe (+this on the next hit it takes). */
+  brandOnCrit?: number;
+  /** Her hits lay Penance (this share of the foe's attack, 2 turns). */
+  penanceOnHit?: number;
+  /** Patron Miracle (Limited URs): every Sister of her Order gains +atk attack and takes `guard` less damage. */
+  patron?: { atk: number; guard: number };
+  /** Holy ground she lays as the fight opens. */
+  groundStart?: { kind: GroundKind; rounds: number };
+}
+
+/** Her Relic: special equipment only she can wear. Woken at Holy Symbol +5, it rewrites one of her skills. */
+export interface Relic {
+  name: string;
+  /** What it adds, in the game's voice (also appended to the skill's text). */
+  desc: string;
+  /** Which of her four skills it rewrites (3 = her Litany). */
+  skill: 0 | 1 | 2 | 3;
+  patch: Partial<SkillDef>;
 }
 
 export type SealKind =
@@ -178,6 +207,16 @@ export interface Kit {
   shines?: string[];
   /** Built from her Order's skills (data/kitGen.ts) until her art arrives and her own kit is designed. */
   generated?: true;
+  /** Her special equipment. */
+  relic?: Relic;
+  /** Her battle cry, in the sermon voice. */
+  cry?: string;
+  /** What her skills look like on screen (for art). */
+  look?: string;
+  /** SSRs: what she will gain when she Ascends to UR (planned, not live). */
+  ascended?: string;
+  /** Rs: the troops she will lead in army battles (planned, not live). */
+  command?: string;
 }
 
 const any: number[] = [];

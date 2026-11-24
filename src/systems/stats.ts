@@ -1,7 +1,7 @@
 import { canonEffect } from './canon';
 import { symbolStatMult } from './symbols';
 import { bondStatsOf } from './bonds';
-import { RARITY_MULT } from '../data/classes';
+import { LIMITED_MULT, RARITY_MULT } from '../data/classes';
 import type { CrusaderDef } from '../data/types';
 import type { OwnedCrusader, SaveData } from '../state/save';
 import { equipped, gearBonus, type GearItem } from './gear';
@@ -65,7 +65,7 @@ export const levelUpCost = (level: number) => 50 * level;
 /** A Sister's stats from rarity, level, Vows and (optionally) the gear she wears. */
 export function statsFor(c: CrusaderDef, owned: OwnedCrusader, gear: GearItem[] = []): Stats {
   const base = CLASS_BASE[c.classId];
-  const mult = RARITY_MULT[c.rarity] * (1 + 0.08 * (owned.level - 1)) * oathMult(owned) * (1 + ASC_STAT * (owned.asc ?? 0)) * symbolStatMult(owned.symbol);
+  const mult = RARITY_MULT[c.rarity] * (c.limited ? LIMITED_MULT[c.rarity] ?? 1 : 1) * (1 + 0.08 * (owned.level - 1)) * oathMult(owned) * (1 + ASC_STAT * (owned.asc ?? 0)) * symbolStatMult(owned.symbol);
   const g = gearBonus(gear);
   return {
     hp: Math.round(base.hp * mult * (1 + g.hpPct)),

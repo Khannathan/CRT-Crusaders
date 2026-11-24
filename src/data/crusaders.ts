@@ -3,6 +3,7 @@ import { basePassive } from './passives';
 import { KITS } from './kits';
 import { ROSTER } from './roster';
 import { genKits } from './kitGen';
+import { forgeKits } from './kitForge';
 
 /**
  * The Sisters: Aaron's 500-Sister roster (sister bible, roster-500), built into
@@ -23,6 +24,9 @@ export const CRUSADERS: CrusaderDef[] = ROSTER;
 
 // Sisters without a hand-made kit get one from their Order's skills (data/kitGen.ts).
 genKits(CRUSADERS);
+// ...and the Kit Forge makes each one hers alone: twists, her own passive, her Relic, her battle cry.
+for (const c of CRUSADERS) c.passive ??= basePassive(c);
+forgeKits(CRUSADERS);
 
 // Every Sister carries a passive: her kit's signature (data/kits.ts), else her class's R/SR one.
 for (const c of CRUSADERS) c.passive = KITS[c.id]?.passive ?? c.passive ?? basePassive(c);
