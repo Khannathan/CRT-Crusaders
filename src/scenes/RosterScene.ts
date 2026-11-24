@@ -1126,8 +1126,10 @@ export class RosterScene extends Phaser.Scene {
       layer.add(row ? row.setTint(item ? edge : 0xffffff) : this.add.rectangle(GAME_W / 2, y, bw, 112, 0x1b131d).setStrokeStyle(1, edge));
       layer.add(this.add.text(left, y - 42, `${SLOT_NAME[slot].toUpperCase()} · ${SLOT_HINT[slot].toUpperCase()}`, text.hud(12, PAL.steel)));
       if (item) {
-        // gear-<id>.png for uniques, else gear-<slot>-<grade>.png, beside the piece's lines
-        const art = addArt(this, item.unique ? `gear-${item.unique}` : `gear-${slot}-${item.grade}`, left + 26, y + 2, 52);
+        // gear-<id>.png for uniques, else gear-<slot>-<grade>.png, else the old gear-<slot>-<rarity>.png
+        const keys = [item.unique && `gear-${item.unique}`, `gear-${slot}-${item.grade}`, `gear-${slot}-${item.rarity}`];
+        const key = keys.find((k): k is string => !!k && this.textures.exists(k));
+        const art = key ? addArt(this, key, left + 26, y + 2, 52) : null;
         const tx = art ? left + 62 : left;
         if (art) layer.add(art);
         const asleep = (item.edict || item.unique) && !powerAwake(worn, item, c.order);
