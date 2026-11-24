@@ -2,7 +2,7 @@ import { beforeAll, describe, expect, it } from 'vitest';
 import type { Rarity } from '../data/types';
 import { HUNTS } from './hunts';
 import { KITS } from '../data/kits';
-import { nicheTable, partyFor, rankIn, type NicheRow } from './niche';
+import { nicheTableAsync, partyFor, rankIn, type NicheRow } from './niche';
 
 /**
  * The rarity budget, checked in the niche sim: every Sister fights every
@@ -11,8 +11,8 @@ import { nicheTable, partyFor, rankIn, type NicheRow } from './niche';
  * a rarity out of order, makes URs run away, or leaves a Sister with no use.
  */
 let rows: NicheRow[];
-beforeAll(() => {
-  rows = nicheTable({ seeds: 4 });
+beforeAll(async () => {
+  rows = await nicheTableAsync({ seeds: 4 });
 }, 120_000);
 
 const mean = (xs: number[]) => xs.reduce((a, b) => a + b, 0) / xs.length;
