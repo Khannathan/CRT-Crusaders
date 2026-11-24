@@ -11,15 +11,15 @@
  *   each Guilt means more damage taken. Sentence skills spend it.
  * - Sepulcher Watch, Remains: every fall (foe, add or Sister) gives the party
  *   Remains while a Watch Sister stands; bosses give them at 75/50/25% HP.
- * - Candle Choir, Hymn: a party aura for a few rounds. A second Choir Hymn
+ * - Choir of the Pyre, Hymn: a party aura for a few rounds. A second Choir Hymn
  *   harmonises (both play) and gives every Sister Zeal.
- * - Thorn Covenant, Scars: a Covenant Sister scars from her own skills and from
+ * - Verdant Martyrdom, Scars: a Martyrdom Sister scars from her own skills and from
  *   bleeding; each Scar adds damage for the fight.
  * - Drowned Litany, Tide: rises each round while a Drowned Sister stands; Ebb
  *   skills spend it all.
- * - Glass Confession, Confess: a Confessed foe's crits Shatter for more damage.
- * - Red Pilgrimage, Stride: a Pilgrim gains Stride whenever she changes rank.
- * - Hollow Bell, Toll: Bell Sisters' skills ring the Bell; every 3rd toll is a
+ * - Confessors of Glass, Confess: a Confessed foe's crits Shatter for more damage.
+ * - Crimson Inquisition, Pursuit: an Inquisitor gains Pursuit whenever she changes rank.
+ * - Hallowed Belfry, Toll: Belfry Sisters' skills ring the Bell; every 3rd toll is a
  *   Peal, the 12th is Midnight, which raises the fallen once a fight.
  */
 import type { SkillDef } from '../data/skills';
@@ -29,12 +29,12 @@ export const KW_ORDER = {
   mercy: 'Ashen Mercy',
   guilt: 'Veiled Tribunal',
   remains: 'Sepulcher Watch',
-  hymn: 'Candle Choir',
-  scars: 'Thorn Covenant',
+  hymn: 'Choir of the Pyre',
+  scars: 'Verdant Martyrdom',
   tide: 'Drowned Litany',
-  confess: 'Glass Confession',
-  stride: 'Red Pilgrimage',
-  toll: 'Hollow Bell',
+  confess: 'Confessors of Glass',
+  stride: 'Crimson Inquisition',
+  toll: 'Hallowed Belfry',
 } as const;
 export type Keyword = keyof typeof KW_ORDER;
 
@@ -43,7 +43,7 @@ export const ORDER_KW: Record<string, Keyword> = Object.fromEntries(Object.entri
 
 export const KW_NAME: Record<Keyword, string> = {
   overwatch: 'Overwatch', mercy: 'Mercy', guilt: 'Guilt', remains: 'Remains', hymn: 'Hymn',
-  scars: 'Scars', tide: 'Tide', confess: 'Confess', stride: 'Stride', toll: 'Toll',
+  scars: 'Scars', tide: 'Tide', confess: 'Confess', stride: 'Pursuit', toll: 'Toll',
 };
 
 /** Overwatch: Wrath a reaction drains from a charging boss; own turns it waits before lapsing. */
@@ -81,14 +81,14 @@ export const TIDE_MAX = 5;
 /** Confess: extra critical damage against the Confessed (Shatter). */
 export const SHATTER = 0.2;
 
-/** Stride: cap. */
+/** Pursuit: cap. */
 export const STRIDE_MAX = 5;
 
 /** Toll: a Peal every this many tolls, Midnight at this many, and Midnight's raise. */
 export const PEAL_EVERY = 3;
 export const MIDNIGHT_AT = 12;
 export const MIDNIGHT_RAISE = 0.2;
-/** Zeal every Bell Sister gains on a Peal. */
+/** Zeal every Belfry Sister gains on a Peal. */
 export const PEAL_ZEAL = 5;
 
 /** A Hymn playing over the party. */
@@ -98,7 +98,7 @@ export interface Hymn {
   rounds: number;
   allies?: Partial<SkillDef>;
   foes?: Partial<SkillDef>;
-  /** Sung by a Candle Choir Sister (only those harmonise). */
+  /** Sung by a Choir of the Pyre Sister (only those harmonise). */
   choir: boolean;
   /** Plays at double strength (Burns at Both Ends). */
   double?: boolean;

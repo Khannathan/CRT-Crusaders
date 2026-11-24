@@ -158,7 +158,7 @@ export interface SkillDef {
   gain?: Partial<Record<'remains' | 'tide' | 'stride' | 'scars' | 'toll', number>>;
   /**
    * Spends an Order counter for more effect: `n` points (all when unset), each
-   * adding `per`. Guilt is spent from the target, Scars and Stride from the user,
+   * adding `per`. Guilt is spent from the target, Scars and Pursuit from the user,
    * Remains and Tide from the party.
    */
   spend?: {
@@ -195,11 +195,11 @@ export interface SkillDef {
   guiltWeaken?: number;
   /** Grows with the Tide: `per` for each point, and `then` once the Tide is at least `at`. */
   byTide?: { per?: { multPct?: number; drain?: number; shieldPct?: number; critPct?: number; regenPct?: number }; at?: number; then?: Partial<SkillDef> };
-  /** +this share of damage for each Stride the user holds (not spent). */
+  /** +this share of damage for each Pursuit the user holds (not spent). */
   perStride?: number;
   /** +this share of damage for each Scar the user holds (not spent). */
   perScar?: number;
-  /** Gives each target this much Stride. */
+  /** Gives each target this much Pursuit. */
   giveStride?: number;
   /** The whole party steps one rank: the front Sister goes to the back. */
   rotate?: boolean;
@@ -209,7 +209,7 @@ export interface SkillDef {
   steal?: boolean;
   /** Heals the most hurt Sister this share of max HP. */
   mendLowest?: number;
-  /** Each target ally loses this share of max HP (Scars for the Covenant). */
+  /** Each target ally loses this share of max HP (Scars for the Martyrdom). */
   hurtAllies?: number;
   /** Summoned foes arrive Delayed for the rest of the fight. */
   lockSummons?: boolean;

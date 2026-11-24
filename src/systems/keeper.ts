@@ -63,12 +63,12 @@ const ORDER_LINES: Record<string, string[]> = {
   'Ashen Mercy': ['Mercy is a blade that heals the faithful and ends the rest.', 'I have closed a thousand eyes. Each one thanked me.'],
   'Veiled Tribunal': ['Every heretic confesses in the end. I am patient.', 'Guilt hangs on them like smoke. I smell it from here.'],
   'Sepulcher Watch': ['The dead keep secrets. I keep the dead.', 'Every grave I guard is one less horror walking.'],
-  'Candle Choir': ['Sing with me. The dark hates harmony.', 'One candle is a prayer. A choir of them is a war.'],
-  'Thorn Covenant': ['Pain is only faith leaving the body. Let it go.', 'Every scar is a vow I kept.'],
+  'Choir of the Pyre': ['Sing with me. The dark hates harmony.', 'One candle is a prayer. A choir of them is a war.'],
+  'Verdant Martyrdom': ['Pain is only faith leaving the body. Let it go.', 'Every scar is a vow I kept.'],
   'Drowned Litany': ['The tide rises for the faithful. It drowns the rest.', 'I hear the bells under the water. They are calling for us.'],
-  'Glass Confession': ['I see their next blow before they do. Glass never lies.', 'Shatter them, and look at what spills out.'],
-  'Red Pilgrimage': ['The road is long and red. Keep walking!', 'Stand still and you are a target. Stride and you are a saint.'],
-  'Hollow Bell': ['Count the tolls. At twelve, the dead rise for us.', 'Every bell I ring is a heretic\'s last hour.'],
+  'Confessors of Glass': ['I see their next blow before they do. Glass never lies.', 'Shatter them, and look at what spills out.'],
+  'Crimson Inquisition': ['Confess, and burn clean. Then we hunt again!', 'Stand still and you are a target. Pursue, and you are a saint.'],
+  'Hallowed Belfry': ['Count the tolls. At twelve, the dead rise for us.', 'Every bell I ring is a heretic\'s last hour.'],
 };
 
 const hourOf = (now: number) => {

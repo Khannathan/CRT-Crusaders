@@ -112,9 +112,9 @@ describe('reasons to keep going', () => {
     const solo = startRun(save, ['SW-R-WAR', 'IV-R-EXE']);
     const pair = startRun(save, ['SW-R-WAR', 'SW-SR-CON']);
     expect(maxHpOf(save, pair, 'SW-R-WAR')).toBe(Math.round(maxHpOf(save, solo, 'SW-R-WAR') * 1.1));
-    expect(orderBonuses(['Glass Confession', 'Glass Confession', 'Glass Confession']).length).toBe(2);
-    expect(orderBonuses(['Glass Confession', 'Glass Confession', 'Glass Confession', 'Glass Confession']).length).toBe(3);
-    expect(orderBonuses(['Iron Vigil', 'Iron Vigil', 'Hollow Bell', 'Hollow Bell']).map((b) => b.id)).toEqual(['order:Iron Vigil:2', 'order:Hollow Bell:2']);
+    expect(orderBonuses(['Confessors of Glass', 'Confessors of Glass', 'Confessors of Glass']).length).toBe(2);
+    expect(orderBonuses(['Confessors of Glass', 'Confessors of Glass', 'Confessors of Glass', 'Confessors of Glass']).length).toBe(3);
+    expect(orderBonuses(['Iron Vigil', 'Iron Vigil', 'Hallowed Belfry', 'Hallowed Belfry']).map((b) => b.id)).toEqual(['order:Iron Vigil:2', 'order:Hallowed Belfry:2']);
   });
 
   it('Vows upgrade skills at ranks 2, 4 and 5', () => {

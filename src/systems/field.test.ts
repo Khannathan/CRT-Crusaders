@@ -324,7 +324,7 @@ describe('real-time field: Litany Chains', () => {
     // vs 70 of 80 now, near the ceiling). Hold the line that chaining never costs
     // a real share of fights; Litany Chains' own payoff is tested above.
     expect(held.wins).toBeGreaterThanOrEqual(now.wins - 4);
-  });
+  }, 20_000); // 160 simulated fights: about 3 s alone, over 5 s on a busy CI runner
 });
 
 describe('real-time field: played with no screen', () => {

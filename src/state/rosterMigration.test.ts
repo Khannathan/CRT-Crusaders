@@ -67,3 +67,15 @@ describe('moving an old save to the new roster', () => {
     expect(migrateRoster(s)).toBe(s);
   });
 });
+
+describe('Order renames', () => {
+  it('moves old Order names in a save to the new ones, and leaves new saves alone', async () => {
+    const { renameOrders } = await import('./orderRename');
+    const old = JSON.stringify({ banner: { order: 'Hollow Bell', target: 'HB-UR1' }, shards: { 'Thorn Covenant': 40, 'Iron Vigil': 3 }, bonus: 'order:Red Pilgrimage:2' });
+    const moved = JSON.parse(renameOrders(old));
+    expect(moved.banner.order).toBe('Hallowed Belfry');
+    expect(moved.shards).toEqual({ 'Verdant Martyrdom': 40, 'Iron Vigil': 3 });
+    expect(moved.bonus).toBe('order:Crimson Inquisition:2');
+    expect(renameOrders(renameOrders(old))).toBe(renameOrders(old));
+  });
+});

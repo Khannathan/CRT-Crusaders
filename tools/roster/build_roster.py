@@ -36,12 +36,12 @@ PLACE = {
     'Ashen Mercy': ('the burned cities', 'the pyres'),
     'Veiled Tribunal': ('the Tribunal', 'the black veil'),
     'Sepulcher Watch': ('the ossuary', 'the tombs'),
-    'Candle Choir': ('the Choir', 'the hymn'),
-    'Thorn Covenant': ('the briar', 'the lash'),
+    'Choir of the Pyre': ('the Choir', 'the hymn'),
+    'Verdant Martyrdom': ('the briar', 'the lash'),
     'Drowned Litany': ('the flooded abbey', 'the deep water'),
-    'Glass Confession': ('the black glass', 'the mirror'),
-    'Red Pilgrimage': ('the red road', 'the shrine road'),
-    'Hollow Bell': ('the cracked belfry', 'the bell'),
+    'Confessors of Glass': ('the black glass', 'the mirror'),
+    'Crimson Inquisition': ('the Question Room', 'the pyre court'),
+    'Hallowed Belfry': ('the cracked belfry', 'the bell'),
 }
 
 HOOKS = {

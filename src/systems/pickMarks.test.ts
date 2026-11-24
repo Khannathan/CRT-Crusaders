@@ -11,7 +11,7 @@ const foe = (o: Partial<Unit>): Unit => ({ side: 'enemy', maxHp: 100, armor: 50,
 
 describe('pick marks', () => {
   it('finds the bane and the thin guard of a boss, ignoring its minions', () => {
-    const w = foeWeakness([foe({ boss: true, bane: 'Iron Vigil', armor: 10, mres: 80 }), foe({ bane: 'Candle Choir', maxHp: 900 })]);
+    const w = foeWeakness([foe({ boss: true, bane: 'Iron Vigil', armor: 10, mres: 80 }), foe({ bane: 'Choir of the Pyre', maxHp: 900 })]);
     expect(w).toEqual({ banes: ['Iron Vigil'], weak: 'physical' });
   });
 

@@ -88,7 +88,7 @@ describe('Order banners', () => {
     const save = newSave();
     save.seals = 1e6;
     save.freeTenUsed = true;
-    save.banner = { order: 'Hollow Bell', target: 'HB-UR1' };
+    save.banner = { order: 'Hallowed Belfry', target: 'HB-UR1' };
     const rng = seeded(9);
     let urs = 0;
     let hits = 0;
@@ -254,10 +254,10 @@ describe('standard banner rate-up', () => {
   it('an old Order banner save moves to that Order UR with its SSR pair', async () => {
     const { syncBanner, boostedSSRs } = await import('./gacha');
     const save = newSave();
-    save.banner = { order: 'Candle Choir', target: 'nobody' };
+    save.banner = { order: 'Choir of the Pyre', target: 'nobody' };
     syncBanner(save);
-    const ur = CRUSADERS.find((c) => c.order === 'Candle Choir' && c.rarity === 'UR' && !c.limited)!;
+    const ur = CRUSADERS.find((c) => c.order === 'Choir of the Pyre' && c.rarity === 'UR' && !c.limited)!;
     expect(save.banner!.target).toBe(ur.id);
-    expect(boostedSSRs(save).every((c) => c.order === 'Candle Choir')).toBe(true);
+    expect(boostedSSRs(save).every((c) => c.order === 'Choir of the Pyre')).toBe(true);
   });
 });

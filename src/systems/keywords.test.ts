@@ -69,8 +69,8 @@ describe('Order keywords', () => {
   });
 
   it('a Hymn plays each round; a second Choir Hymn harmonises and gives Zeal', () => {
-    const a = sister('a', 'Candle Choir');
-    const c = sister('c', 'Candle Choir', 2);
+    const a = sister('a', 'Choir of the Pyre');
+    const c = sister('c', 'Choir of the Pyre', 2);
     const b = new Battle([a, c], [makeEnemy('golem', 'e0', 1)], { rng: never });
     b.act(a, sk({ target: 'self', hymn: { name: 'Hymn of Iron', rounds: 3, allies: { ward: { pct: 0.1, turns: 1 } } } }));
     expect(c.status.ward?.pct).toBe(0.1);
@@ -81,7 +81,7 @@ describe('Order keywords', () => {
   });
 
   it('Scars come from her own blood and add damage', () => {
-    const t = sister('t', 'Thorn Covenant');
+    const t = sister('t', 'Verdant Martyrdom');
     const b = new Battle([t], [makeEnemy('golem', 'e0', 1)], { rng: never });
     b.act(t, sk({ target: 'self', selfDmgPct: 0.2 }));
     expect(t.scars).toBe(4);
@@ -100,7 +100,7 @@ describe('Order keywords', () => {
 
   it('Confessed foes take Shattering crits', () => {
     const run = (confess: boolean) => {
-      const g = sister('g', 'Glass Confession', 1, { crit: 1 });
+      const g = sister('g', 'Confessors of Glass', 1, { crit: 1 });
       const foe = makeEnemy('golem', 'e0', 1);
       foe.maxHp = foe.hp = 100000;
       if (confess) foe.status.confessed = 3;
@@ -110,8 +110,8 @@ describe('Order keywords', () => {
     expect(run(true)).toBeGreaterThan(run(false) * 1.1);
   });
 
-  it('Stride comes from changing rank', () => {
-    const p = sister('p', 'Red Pilgrimage', 1);
+  it('Pursuit comes from changing rank', () => {
+    const p = sister('p', 'Crimson Inquisition', 1);
     const q = sister('q', 'Iron Vigil', 2);
     const b = new Battle([p, q], [makeEnemy('golem', 'e0', 1)], { rng: never });
     b.step(p, q);
@@ -136,7 +136,7 @@ describe('Order keywords', () => {
   });
 
   it('the Bell peals every third toll and Midnight raises the fallen once', () => {
-    const bell = sister('bell', 'Hollow Bell');
+    const bell = sister('bell', 'Hallowed Belfry');
     const dead = sister('dead', 'Iron Vigil', 2, { hp: 0 });
     const b = new Battle([bell, dead], [makeEnemy('golem', 'e0', 1)], { rng: never });
     for (let i = 0; i < KW.MIDNIGHT_AT; i++) b.act(bell, sk({ target: 'self' }));

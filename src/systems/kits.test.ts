@@ -159,7 +159,7 @@ describe('Sister kits: signatures', () => {
     expect(run(5)).toBeGreaterThan(run(0));
   });
 
-  it('Processional: the front Sister goes to the back and Pilgrims gain Stride', () => {
+  it('Processional: the front Sister goes to the back and Inquisitors gain Pursuit', () => {
     const c = sis('RP-SSR-CAN', 1);
     const p = sis('RP-UR1', 2);
     const b = new Battle([c, p], [tank('e0', 1)], { rng: never });

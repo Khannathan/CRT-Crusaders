@@ -540,7 +540,7 @@ export class FieldBattle {
         if (fb?.plan && fb.plan.skill.target === 'enemy' && fb.plan.targetUid !== u.uid) fb.plan = undefined;
       }
     }
-    // Ranks moved (Processional, Stride, Step, pulls): the formation follows.
+    // Ranks moved (Processional, Pursuit, Step, pulls): the formation follows.
     if (events.some((e) => e.type === 'move')) this.reform();
     this.applyDelays();
     out.push({ kind: 'act', uid: u.uid, skill, targetUid, events, ranged: me.reach !== 'melee', litany: !!skill.rite && !charge, charge });

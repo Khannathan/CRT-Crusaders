@@ -1,5 +1,6 @@
 import { starterGear, type GearItem } from '../systems/gear';
 import { ROSTER_VERSION, migrateRoster } from './rosterMigration';
+import { renameOrders } from './orderRename';
 import type { PilgrimageState } from '../systems/crusade';
 import type { MatinsState } from '../systems/matins';
 import type { RankState } from '../systems/rank';
@@ -204,7 +205,7 @@ export function loadSave(): SaveData {
 
 function parseSave(raw: string): SaveData | undefined {
   try {
-    const data = JSON.parse(raw) as SaveData;
+    const data = JSON.parse(renameOrders(raw)) as SaveData;
     if (data && data.version === 1 && typeof data.owned === 'object') {
       const moved = migrateRoster(data);
       return { ...newSave(), ...moved, gear: moved.gear ?? starterGear() };
@@ -311,7 +312,7 @@ export function importSave(text: string): SaveData | undefined {
       const bin = atob(body);
       json = new TextDecoder().decode(Uint8Array.from(bin, (c) => c.charCodeAt(0)));
     }
-    const data = JSON.parse(json) as SaveData;
+    const data = JSON.parse(renameOrders(json)) as SaveData;
     if (!data || data.version !== 1 || typeof data.owned !== 'object' || typeof data.seals !== 'number') return undefined;
     const moved = migrateRoster(data);
     return { ...newSave(), ...moved, gear: moved.gear ?? starterGear() };
