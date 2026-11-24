@@ -2,7 +2,7 @@ import { CLASSES } from '../data/classes';
 import { ENEMIES } from '../data/enemies';
 import type { SkillDef } from '../data/skills';
 import { autoChoose, autoStep } from './autoplay';
-import { Battle, ZEAL_MAX, skillsFor, type BattleEvent, type Unit } from './combat';
+import { BLASPHEMY_BREAK_AT, Battle, ZEAL_MAX, skillsFor, type BattleEvent, type Unit } from './combat';
 import { HOSANNA_MAX, HOSANNA_PER_ACT, HOSANNA_PER_LITANY, castHosanna, hosannaWorthIt, type HosannaDef } from './hosanna';
 
 /**
@@ -143,7 +143,8 @@ export function answerTo(s: SkillDef, foe: Unit): Answer | undefined {
   const blas = !!foe.boss && foe.intent?.skillId === ENEMIES[foe.ref]?.blasphemy?.id;
   // Bosses shrug off stuns and one turn of Silence.
   if (onFoe && (s.delay || (s.silence && (!foe.boss || s.silence > 1)) || (s.stun && !foe.boss))) return 'break';
-  if (blas && ((onFoe && s.wrathDrain) || s.alsoFoes?.wrathDrain)) return 'break';
+  const drain = (onFoe ? s.wrathDrain ?? 0 : 0) || (s.alsoFoes?.wrathDrain ?? 0);
+  if (blas && drain && (foe.wrath ?? 0) - drain < BLASPHEMY_BREAK_AT) return 'break';
   if (s.target === 'allAllies' && (s.ward || s.shieldPct)) return 'brace';
   return undefined;
 }

@@ -40,6 +40,8 @@ export interface Status {
   delayed?: boolean;
   /** Enemy is winding up its planned skill; it fires next turn unless delayed. */
   charging?: boolean;
+  /** This charge of its Blasphemy was already answered by a Litany (one Rebuke per charge). */
+  rebuked?: boolean;
   /** Strikes back for this multiple of attack when hit. */
   counter?: { mult: number; turns: number };
   /** Returns this share of damage taken to the attacker. */
@@ -219,13 +221,32 @@ const HURT_ZEAL = 2;
 export const ZEAL_HURT_CAP = 10;
 /** Boss Wrath: per boss action, and per full 2% of its max HP lost. */
 export const WRATH_ON_ACT = 20;
+/**
+ * A Blasphemy that lands hits this much harder than its listed power, and
+ * steals at least BLASPHEMY_ZEAL from every Sister it touches: worth answering.
+ */
+export const BLASPHEMY_POWER = 1.15;
+export const BLASPHEMY_ZEAL = 30;
+/**
+ * A Blasphemy once begun is committed: chip drains (Overwatch, Mercy, a basic
+ * skill) only slow it. It breaks when its Wrath falls below this mid-charge,
+ * which takes a real answer (a Wrath-draining Litany, a Delay, a Silence).
+ */
+export const BLASPHEMY_BREAK_AT = 75;
+/**
+ * Rebuke: a Litany that breaks or braces a Blasphemy gives its Sister this much
+ * Zeal back and tears the boss open (Sundered and Hexed by REBUKE_OPEN).
+ */
+export const REBUKE_ZEAL = 30;
+export const REBUKE_OPEN = { pct: 0.3, turns: 2 };
 const WRATH_STEP = 0.02;
 
 export function skillsFor(u: Unit): SkillDef[] {
   if (u.side === 'enemy') {
     const d = ENEMIES[u.ref];
     const base = u.phase === 2 && d.phase2 ? d.phase2.skills : d.skills;
-    return d.blasphemy && (u.wrath ?? 0) >= ZEAL_MAX ? [...base, d.blasphemy] : base;
+    const committed = !!d.blasphemy && !!u.status.charging && u.intent?.skillId === d.blasphemy.id;
+    return d.blasphemy && ((u.wrath ?? 0) >= ZEAL_MAX || committed) ? [...base, d.blasphemy] : base;
   }
   const vow = u.vow ?? 0;
   const kit = KITS[u.ref];
@@ -743,7 +764,7 @@ export class Battle {
   canUse(actor: Unit, skill: SkillDef): boolean {
     if ((actor.cooldowns?.[skill.id] ?? 0) > 0) return false;
     if (skill.rite && actor.side === 'party' && (actor.zeal ?? 0) < ZEAL_MAX) return false;
-    if (skill.rite && actor.side === 'enemy' && (actor.wrath ?? 0) < ZEAL_MAX) return false;
+    if (skill.rite && actor.side === 'enemy' && (actor.wrath ?? 0) < ZEAL_MAX && !(actor.status.charging && actor.intent?.skillId === skill.id)) return false;
     if (skill.from.length && !skill.from.includes(actor.rank)) return false;
     if (skill.summon && this.alive('enemy').length >= 4) return false;
     if (skill.volley && this.kw.remains <= 0) return false;
@@ -790,6 +811,7 @@ export class Battle {
     }
     if (actor.side === 'enemy' && skill.windup && !actor.status.charging) {
       actor.status.charging = true;
+      actor.status.rebuked = false;
       const pre: BattleEvent[] = [];
       actor.intent = { skillId: skill.id };
       this.chargeKits(actor, pre);
@@ -831,6 +853,7 @@ export class Battle {
     }
     if (skill.rite && actor.side === 'party') this.litanyGear(actor, events);
     if (skill.rite && actor.side === 'enemy') {
+      skill = { ...skill, mult: (skill.mult ?? 0) * BLASPHEMY_POWER, zealDrain: Math.max(skill.zealDrain ?? 0, BLASPHEMY_ZEAL) };
       actor.wrath = 0;
       events.push({ type: 'phase', uid: actor.uid, text: `BLASPHEMY: ${skill.name}` });
       this.blasphemyKits(actor, events);
@@ -896,6 +919,9 @@ export class Battle {
       if (this.applyEffects(actor, t, sk, events)) support = true;
       if (sk.perGuilt?.partyHealPct && t.guilt && t.side !== actor.side) for (const a of this.alive(actor.side)) this.mend(a, a.maxHp * sk.perGuilt.partyHealPct * t.guilt, events);
     }
+    // A Litany that Wards or shields every Sister braces them against a Blasphemy winding up.
+    if (actor.side === 'party' && skill.rite && skill.target === 'allAllies' && (skill.ward || skill.shieldPct))
+      for (const boss of this.alive('enemy')) if (this.chargingBlasphemy(boss)) this.rebuke(boss, actor, skill, events);
     if (this.reflecting) {
       const r = this.reflecting;
       this.reflecting = undefined;
@@ -1092,9 +1118,11 @@ export class Battle {
       }
     }
     if (skill.wrathDrain && t.wrath !== undefined && t.wrath > 0) {
-      t.wrath = Math.max(0, t.wrath - skill.wrathDrain);
-      events.push({ type: 'status', uid: t.uid, label: `-${skill.wrathDrain} Wrath` });
-      this.wrathLost(t, events);
+      // Full strength only against a boss winding up: saved for the tell, it counts double.
+      const n = t.status.charging ? skill.wrathDrain : Math.ceil(skill.wrathDrain / 2);
+      t.wrath = Math.max(0, t.wrath - n);
+      events.push({ type: 'status', uid: t.uid, label: `-${n} Wrath` });
+      this.wrathLost(t, events, actor, skill);
     }
     if (skill.accuse) {
       t.status.accused = skill.accuse;
@@ -1108,6 +1136,7 @@ export class Battle {
       } else t.status.delayed = true;
       events.push({ type: 'status', uid: t.uid, label: 'Delayed' });
       if (t.status.charging) {
+        if (this.chargingBlasphemy(t)) this.rebuke(t, actor, skill, events);
         t.status.charging = false;
         this.log.push(`  ${t.name}'s charge is broken`);
         events.push({ type: 'status', uid: t.uid, label: 'Charge broken!' });
@@ -1132,6 +1161,7 @@ export class Battle {
         if (t.side === 'enemy') {
           const plain = skillsFor(t)[0];
           if (t.status.charging) {
+            if (this.chargingBlasphemy(t)) this.rebuke(t, actor, skill, events);
             t.status.charging = false;
             events.push({ type: 'status', uid: t.uid, label: 'Charge broken!' });
           }
@@ -2209,14 +2239,35 @@ export class Battle {
    * charge breaks at once (its mark leaves the ground), and its next move is an
    * ordinary one, which winds up again in plain sight if it is a charged blow.
    */
-  private wrathLost(t: Unit, events: BattleEvent[]) {
+  private wrathLost(t: Unit, events: BattleEvent[], by?: Unit, bySkill?: SkillDef) {
     const prof = t.boss ? ENEMIES[t.ref]?.blasphemy : undefined;
-    if (!prof || !t.status.charging || t.intent?.skillId !== prof.id || (t.wrath ?? 0) >= ZEAL_MAX) return;
+    if (!prof || !t.status.charging || t.intent?.skillId !== prof.id || (t.wrath ?? 0) >= BLASPHEMY_BREAK_AT) return;
+    if (by && bySkill) this.rebuke(t, by, bySkill, events);
     t.status.charging = false;
     this.log.push(`  ${t.name}'s ${prof.name} is broken`);
     events.push({ type: 'status', uid: t.uid, label: 'Blasphemy broken!' }, { type: 'text', text: `${prof.name} is broken!` });
     this.planIntent(t);
     events.push({ type: 'intent' });
+  }
+
+  /** The boss is winding up its Blasphemy right now. */
+  chargingBlasphemy(t: Unit) {
+    const prof = t.boss && t.hp > 0 ? ENEMIES[t.ref]?.blasphemy : undefined;
+    return !!prof && !!t.status.charging && t.intent?.skillId === prof.id;
+  }
+
+  /**
+   * Rebuke: a Sister's Litany broke or braced a Blasphemy. She gets Zeal back
+   * and the boss is torn open (Sundered and Hexed). Once per charge.
+   */
+  private rebuke(boss: Unit, by: Unit, bySkill: SkillDef, events: BattleEvent[]) {
+    if (by.side !== 'party' || !bySkill.rite || boss.status.rebuked) return;
+    boss.status.rebuked = true;
+    this.addZeal(REBUKE_ZEAL, events, 'Rebuke', by);
+    boss.status.sunder = { ...REBUKE_OPEN };
+    boss.status.hex = { ...REBUKE_OPEN };
+    this.log.push(`  ${by.name} rebukes ${boss.name}`);
+    events.push({ type: 'status', uid: boss.uid, label: 'Rebuked!' }, { type: 'status', uid: by.uid, label: `+${REBUKE_ZEAL} Zeal` });
   }
 
   /** A foe starts charging: The Mirror Judges and Never Sleep answer it. */
