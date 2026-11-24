@@ -4,6 +4,7 @@ import { renameOrders } from './orderRename';
 import type { PilgrimageState } from '../systems/crusade';
 import type { MatinsState } from '../systems/matins';
 import type { RankState } from '../systems/rank';
+import type { AbyssState } from '../systems/abyss';
 import type { TowerState } from '../systems/tower';
 import type { InquisitionState } from '../systems/inquisition';
 import type { BondState } from '../systems/bonds';
@@ -144,6 +145,8 @@ export interface SaveData {
   trials?: TrialState;
   /** The Bell Tower: highest floor cleared. */
   tower?: TowerState;
+  /** The Abyssal Crypt: best tier, the Penitent's Due and the Sigil carried. */
+  abyss?: AbyssState;
   /** The Inquisition: this rotation's Brands, Sisters used and rewards paid. */
   inquisition?: InquisitionState;
   /** Sister bonds: bond XP and confessions heard, by Sister id. */

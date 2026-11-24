@@ -29,6 +29,7 @@ import { codexBlock } from '../systems/codex';
 import { claimable as setsClaimable, SETS } from '../systems/collection';
 import { CRYPTS, PILGRIMAGE_CLEARS, cryptUnlocked, pilgrimageLeft } from '../systems/crusade';
 import { towerOf } from '../systems/tower';
+import { abyssOf, DUE_MAX } from '../systems/abyss';
 import { TRIAL_ENTRIES } from '../systems/trials';
 import { rotation, totalBrands } from '../systems/inquisition';
 import { untilText } from './modeScreen';
@@ -132,6 +133,11 @@ export const RITES: RiteEntry[] = [
     label: 'Reliquary Procession', scene: 'Procession', icon: 'flame', rank: 5, home: 'labors', bg: 'bg-candle-maze', ready: (s) => processionLeft(s) > 0,
     blurb: 'Guard the relics. Win offerings.',
     status: (s) => `${processionLeft(s)} of ${PROCESSION_ENTRIES} entries left  ·  honours the ${honouredToday().name}`,
+  },
+  {
+    label: 'Abyssal Crypt', scene: 'Abyss', icon: 'blade', rank: 4, home: 'crypts', bg: 'bg-abyssal-ossuary',
+    blurb: 'No end, no limit. Farm the dark for gear!',
+    status: (s) => `Deepest tier ${abyssOf(s).best}  ·  Due ${abyssOf(s).due}/${DUE_MAX}  ·  ${abyssOf(s).runs} descents`,
   },
   {
     label: 'Bell Tower', scene: 'Tower', icon: 'sanctum', rank: 6, home: 'crypts', bg: 'bg-tower', boost: 'tower',

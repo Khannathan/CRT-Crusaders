@@ -46,6 +46,7 @@ import { FeastScene } from './scenes/FeastScene';
 import { ArmoryScene } from './scenes/ArmoryScene';
 import { ChapterScene } from './scenes/ChapterScene';
 import { TowerScene } from './scenes/TowerScene';
+import { AbyssScene } from './scenes/AbyssScene';
 import { ProcessionScene } from './scenes/ProcessionScene';
 import { InquisitionScene } from './scenes/InquisitionScene';
 import { ConfessionScene } from './scenes/ConfessionScene';
@@ -120,6 +121,7 @@ function start() {
       ArmoryScene,
       ChapterScene,
       TowerScene,
+      AbyssScene,
       ProcessionScene,
       InquisitionScene,
       ConfessionScene,
