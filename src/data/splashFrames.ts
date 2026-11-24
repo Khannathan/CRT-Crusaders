@@ -14,5 +14,5 @@ export const SPLASH_FRAMES: Record<string, SplashFrame> = {
   'VT-SSR-VEI': [0.45, 0.3, 0.85],
   'DL-SSR-EXE': [0.45, 0.28, 0.85],
   // Living Saints (pixel-art splashes from the new roster)
-  'IV-LUR': [0.47, 0.14, 0.95],
+  'IV-LUR': [0.5, 0.15, 0.95],
 };
