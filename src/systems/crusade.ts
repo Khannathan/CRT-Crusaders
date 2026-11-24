@@ -444,7 +444,7 @@ export function makeBattle(save: SaveData, run: RunState, encounter: string, rng
     cn.zeal += sa.zeal;
     const traited = cn.litanyPct || cn.dmgPct || cn.guard || cn.healPct;
     const base = symbolCombat(c, save.owned[id].symbol) ?? (traited ? { mult: 1, heal: 1, guard: 0, rite: 0, crit: 0, zeal: 0 } : undefined);
-    // Canon traits ride on her Symbol's combat hooks (damage, Litany, heals, guard).
+    // Canon traits ride on her weapon's combat hooks (damage, Litany, heals, guard).
     const sym = base && traited ? { ...base, mult: base.mult * (1 + cn.dmgPct), heal: base.heal * (1 + cn.healPct), guard: base.guard + cn.guard, rite: base.rite + cn.litanyPct } : base;
     symbolZeal += sym?.zeal ?? 0;
     party.push({

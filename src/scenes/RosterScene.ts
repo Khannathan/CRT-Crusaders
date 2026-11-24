@@ -56,7 +56,8 @@ import { levelCap, sisterStats } from '../systems/stats';
 import { UNCTIONS, UNCTION_EXP, expOf, expToNext, feedPlan, usePlan, useUnction } from '../systems/exp';
 import { drawItemIcon } from '../ui/itemIcon';
 import { ascend, ascendBlock, costLine, nextAscension } from '../systems/ascension';
-import { SYMBOL_ASC, SYMBOL_MAX, WAKE_COST, WAKE_TITHES, raiseSymbol, symbolBlock, symbolName, symbolPerks, symbolStatMult, upgradeCost } from '../systems/symbols';
+import { SYMBOL_ASC, WAKE_COST, WAKE_TITHES, raiseSymbol, symbolBlock, symbolPerks, symbolStatMult, upgradeCost, weaponOf } from '../systems/symbols';
+import { weaponKey } from '../ui/weaponArt';
 import { ROMAN_RANK } from '../systems/rank';
 import { VOW_LITANY, VOW_STAT, VOW_ZEAL, secondTitle, takeSecondVows, tookVows, vowBlock as secondVowBlock, vowTrials } from '../systems/secondVows';
 import { CANON_STAT, MAX_CANON, PATHS, TRAITS, canCanonize, canonBlock, canonCost, canonOf, canonize, pointsLeft, resetTraits, takeTrait, traitBlock, traitPoints, traitsOf } from '../systems/canon';
@@ -88,7 +89,7 @@ const TABS: [Tab, string][] = [
   ['vows', 'Vows'],
   ['skills', 'Skills'],
   ['gear', 'Gear'],
-  ['symbol', 'Symbol'],
+  ['symbol', 'Weapon'],
   ['canon', 'Canon'],
 ];
 const STAT_LABEL = { atk: 'ATK', hp: 'HP', armor: 'ARM', spd: 'SPD' } as const;
@@ -640,7 +641,7 @@ export class RosterScene extends Phaser.Scene {
     return y + hook.height + 16;
   }
 
-  /** Her Holy Symbol: her own relic, woken after her first Ascension and raised +1 to +15 on Grace. */
+  /** Her signature weapon (once her Holy Symbol): woken after her first Ascension, raised on Grace to +15, +20 or +25 by tier. */
   private symbolTab(list: ScrollArea, c: CrusaderDef, y: number): number {
     const save = game.save;
     const have = save.owned[c.id];
@@ -649,30 +650,50 @@ export class RosterScene extends Phaser.Scene {
     const left = PAD + 8;
     const lv = have.symbol;
     const woke = lv !== undefined;
-    // symbol-<id>.png: her own Holy Symbol, dark while it sleeps
-    const art = addArt(this, `symbol-${c.id}`, GAME_W - PAD - 44, y + 30, 64);
-    if (art) layer.add(woke ? art : art.setTint(0x4a3c48));
-    layer.add(this.add.text(left, y, woke ? `HOLY SYMBOL  +${lv} / ${SYMBOL_MAX}` : 'HOLY SYMBOL  ·  SLEEPING', text.hud(15, woke ? PAL.amber : PAL.steel)));
-    y += 26;
-    layer.add(this.add.text(left, y, symbolName(c), text.display(20, woke ? 0xfff1d6 : PAL.muted)));
+    const w = weaponOf(c);
+    const max = w.max;
+    // Her weapon art (from her prop sheet) or her class's stand-in, in a frame of her tier's colour; dark while it sleeps.
+    const artX = GAME_W - PAD - 62;
+    layer.add(this.add.rectangle(artX, y + 52, 104, 104, 0x0d090f).setStrokeStyle(2, woke ? w.color : PAL.armorShadow));
+    const art = this.add.image(artX, y + 52, weaponKey(this, c)).setDisplaySize(96, 96);
+    layer.add(woke ? art : art.setTint(0x4a3c48));
+    const tw = bw - 120;
+    layer.add(this.add.text(left, y, woke ? `SIGNATURE WEAPON  +${lv} / ${max}` : 'SIGNATURE WEAPON  ·  SLEEPING', text.hud(14, woke ? PAL.amber : PAL.steel)));
+    y += 24;
+    const tier = this.add.text(left + 8, y + 4, w.label.toUpperCase(), text.hud(12, w.color));
+    layer.add([this.add.rectangle(left, y, tier.width + 16, tier.height + 8, 0x0d090f).setOrigin(0, 0).setStrokeStyle(1, w.color), tier]);
     y += 30;
-    if (c.relic) {
-      const t = this.add.text(left, y, `Her own relic: ${c.relic}.`, { ...text.body(15, PAL.muted), fontStyle: 'italic', wordWrap: { width: bw } });
+    const name = this.add.text(left, y, w.name, { ...text.display(19, woke ? 0xfff1d6 : PAL.muted), wordWrap: { width: tw } });
+    layer.add(name);
+    y = Math.max(y + name.height + 8, y + 58);
+    if (w.look) {
+      const t = this.add.text(left, y, `${w.look[0].toUpperCase()}${w.look.slice(1)}.`, { ...text.body(14, PAL.muted), fontStyle: 'italic', wordWrap: { width: bw } });
       layer.add(t);
       y += t.height + 8;
     }
+    // Her Relic: the charm she carries on the weapon, woken at +5.
+    const relic = KITS[c.id]?.relic;
+    if (relic || c.relic) {
+      const icon = addArt(this, `symbol-${c.id}`, left + 14, y + 14, 28);
+      if (icon) layer.add(lv !== undefined && lv >= 5 ? icon : icon.setTint(0x4a3c48));
+      const t = this.add.text(left + (icon ? 36 : 0), y, `Her Relic: ${relic?.name ?? c.relic}. It wakes on her weapon at +5.`, { ...text.body(14, PAL.steel), wordWrap: { width: bw - (icon ? 36 : 0) } });
+      layer.add(t);
+      y += Math.max(t.height, 28) + 10;
+    }
     // Stats now, and after the next step.
     const pct = (l: number | undefined) => Math.round((symbolStatMult(l) - 1) * 1000) / 10;
-    const next = !woke ? 0 : lv! < SYMBOL_MAX ? lv! + 1 : undefined;
-    layer.add(this.add.text(left, y, `All her stats +${pct(lv)}%${next !== undefined ? `  →  +${pct(next)}% at +${next}` : ''}`, text.body(16, PAL.ivory)));
+    const next = !woke ? 0 : lv! < max ? lv! + 1 : undefined;
+    layer.add(this.add.text(left, y, woke ? `All her stats +${pct(lv)}%${next !== undefined ? `  →  +${pct(next)}% at +${next}` : ''}` : `All her stats +${pct(0)}% once woken`, text.body(16, PAL.ivory)));
     y += 30;
-    // The three blessings.
+    // The blessings (three for Epic and Legendary, four for Mythic, five for Divine Arsenal).
     for (const p of symbolPerks(c)) {
       const on = woke && lv! >= p.at;
-      layer.add(this.add.rectangle(GAME_W / 2, y + 26, bw, 52, on ? 0x2a1e24 : 0x150e17).setStrokeStyle(1, on ? PAL.amber : PAL.armorShadow));
+      const d = this.add.text(left + 10, y + 24, p.desc, { ...text.body(15, on ? PAL.ivory : PAL.muted), wordWrap: { width: bw - 20 } });
+      const h = Math.max(52, d.height + 30);
+      layer.add(this.add.rectangle(GAME_W / 2, y + h / 2, bw, h, on ? 0x2a1e24 : 0x150e17).setStrokeStyle(1, on ? PAL.amber : PAL.armorShadow));
       layer.add(this.add.text(left + 10, y + 6, `+${p.at}  ${p.name.toUpperCase()}`, text.hud(12, on ? PAL.amber : PAL.steel)));
-      layer.add(this.add.text(left + 10, y + 24, p.desc, text.body(15, on ? PAL.ivory : PAL.muted)));
-      y += 60;
+      layer.add(d);
+      y += h + 8;
     }
     y += 4;
     // Grace held (tap for sources).
@@ -680,22 +701,22 @@ export class RosterScene extends Phaser.Scene {
     (['grace1', 'grace2', 'grace3'] as const).forEach((g, i) => {
       const x = left + i * uw;
       layer.add(drawItemIcon(this, x + 20, y + 18, g, 36));
-      layer.add(tapForSources(this, this.add.text(x + 44, y + 4, `×${countOf(save, g)}\n+${i * 5 + 1} to +${i * 5 + 5}`, text.body(13, countOf(save, g) ? PAL.ivory : PAL.steel)), g));
+      layer.add(tapForSources(this, this.add.text(x + 44, y + 4, `×${countOf(save, g)}\n+${i * 5 + 1} to +${i === 2 ? max : i * 5 + 5}`, text.body(13, countOf(save, g) ? PAL.ivory : PAL.steel)), g));
     });
     y += 50;
     const block = symbolBlock(save, c.id);
-    if (woke && lv! >= SYMBOL_MAX) {
-      layer.add(this.add.text(left, y, 'Her Symbol is wholly sanctified!', text.body(16, PAL.amber)));
-      return y + 40;
+    if (woke && lv! >= max) {
+      layer.add(this.add.text(left, y, `${w.name.split(' of ')[0]} is wholly sanctified!`, { ...text.body(16, PAL.amber), wordWrap: { width: bw } }));
+      return y + 50;
     }
     if (!woke && (have.asc ?? 0) < SYMBOL_ASC) {
-      layer.add(this.add.text(left, y, 'Her Symbol wakes once she ascends (Grow tab, at her cap).', { ...text.body(15, PAL.steel), wordWrap: { width: bw } }));
+      layer.add(this.add.text(left, y, 'Her weapon wakes once she ascends (Grow tab, at her cap).', { ...text.body(15, PAL.steel), wordWrap: { width: bw } }));
       return y + 50;
     }
     const cost = woke ? upgradeCost(lv! + 1) : { items: WAKE_COST, tithes: WAKE_TITHES };
     layer.add(tapCost(this, this.add.text(left, y, `${woke ? `To +${lv! + 1}` : 'To wake'}: ${costLine(save, cost)}  ›`, { ...text.body(14, block ? PAL.steel : PAL.amber), wordWrap: { width: bw } }), cost.items, cost.tithes));
     y += 30;
-    const b = makeButton(this, GAME_W / 2, y + 28, bw, 56, woke ? `Raise to +${lv! + 1}` : 'Wake the Symbol', () => {
+    const b = makeButton(this, GAME_W / 2, y + 28, bw, 56, woke ? `Temper to +${lv! + 1}` : 'Wake the Weapon', () => {
       if (list.dragging) return;
       if (raiseSymbol(save, c.id)) {
         commit();
@@ -1061,10 +1082,10 @@ export class RosterScene extends Phaser.Scene {
       layer.add([name, t, d]);
       y += 56 + d.height;
     }
-    // Her Relic (woken at Holy Symbol +5), the future lines, and her battle cry.
+    // Her Relic (woken at signature weapon +5), the future lines, and her battle cry.
     const kit = KITS[c.id];
     const extra: { title: string; tag: string; desc: string; color: number }[] = [];
-    if (kit?.relic) extra.push({ title: kit.relic.name, tag: `RELIC · HOLY SYMBOL +5 · ${kit.skills[kit.relic.skill].name.toUpperCase()}`, desc: kit.relic.desc, color: PAL.amber });
+    if (kit?.relic) extra.push({ title: kit.relic.name, tag: `RELIC · WEAPON +5 · ${kit.skills[kit.relic.skill].name.toUpperCase()}`, desc: kit.relic.desc, color: PAL.amber });
     if (kit?.ascended) extra.push({ title: 'Ascension', tag: 'SSR TO UR · COMING', desc: kit.ascended, color: PAL.steel });
     if (kit?.command) extra.push({ title: 'Command', tag: 'ARMY BATTLES · COMING', desc: kit.command, color: PAL.steel });
     if (kit?.cry) extra.push({ title: 'Battle cry', tag: 'SERMON', desc: `"${kit.cry}"`, color: PAL.ivory });

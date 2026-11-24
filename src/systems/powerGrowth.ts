@@ -4,7 +4,7 @@ import { earn } from './currency';
 import { accountPower, sisterPower } from './power';
 import { skillLevels } from './skillLevels';
 import { MAX_ASCENSION, levelCap } from './stats';
-import { SYMBOL_MAX } from './symbols';
+import { symbolMax } from './symbols';
 
 /**
  * Power you can feel: every rise in account Power pops on screen, and round
@@ -80,8 +80,8 @@ export function growTarget(save: SaveData, party?: string[]): GrowTarget | undef
         ? 'Ascend her'
         : skillLevels(save, weakest.id).some((l) => l < 5)
           ? 'Raise her skills'
-          : (o.symbol ?? -1) < SYMBOL_MAX
-            ? 'Raise her Holy Symbol'
+          : (o.symbol ?? -1) < symbolMax(weakest)
+            ? 'Temper her weapon'
             : 'Take her Vows, and arm her';
   return { id: weakest.id, name: weakest.name.split(' ')[0], hint };
 }

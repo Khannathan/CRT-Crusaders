@@ -7,15 +7,85 @@ import { give } from './items';
 import { seeded } from './rng';
 import { sisterStats } from './stats';
 import { KITS, exaltSig } from '../data/kits';
-import { Battle, makeEnemy, type Unit } from './combat';
-import { EXALT, SYMBOL_MAX, exalts, raiseSymbol, symbolBlock, symbolCombat, symbolName, symbolPerks, upgradeCost } from './symbols';
+import { Battle, makeEnemy, skillsFor, type Unit } from './combat';
+import type { SkillDef } from '../data/skills';
+import { DIVINE_WRATH, EXALT, SYMBOL_MAX, SYMBOL_TOP, exalts, symbolMax, weaponOf, raiseSymbol, symbolBlock, symbolCombat, symbolName, symbolPerks, upgradeCost } from './symbols';
 
 const hiero = CRUSADERS.find((c) => c.classId === 'hierophant' && c.rarity === 'R')!;
+
+describe('Signature weapons', () => {
+  const byId = (id: string) => CRUSADERS.find((c) => c.id === id)!;
+
+  it('every Sister has a named weapon whose tier matches her rarity', () => {
+    const tier = { R: 'epic', SR: 'legendary', SSR: 'mythic', UR: 'divine' } as const;
+    for (const c of CRUSADERS) {
+      const w = weaponOf(c);
+      expect(w.name.length).toBeGreaterThan(3);
+      expect(w.tier).toBe(tier[c.rarity]);
+    }
+    expect(weaponOf(byId('IV-LUR'))).toMatchObject({ name: 'The Seventh Trumpet of the Eternal Watch', label: 'Divine Arsenal', max: 25 });
+    expect(new Set(CRUSADERS.map((c) => weaponOf(c).name)).size).toBeGreaterThan(CRUSADERS.length * 0.95);
+  });
+
+  it('Epic and Legendary stop at +15, Mythic at +20, Divine Arsenal at +25', () => {
+    expect(symbolMax(byId('IV-R-EXE'))).toBe(15);
+    expect(symbolMax(byId('IV-SR-HIE'))).toBe(15);
+    expect(symbolMax(byId('IV-LSSR1'))).toBe(20);
+    expect(symbolMax(byId('IV-UR1'))).toBe(SYMBOL_TOP);
+    expect(symbolPerks(byId('IV-R-EXE')).map((p) => p.at)).toEqual([5, 10, 15]);
+    expect(symbolPerks(byId('IV-LSSR1')).map((p) => p.at)).toEqual([5, 10, 15, 20]);
+    expect(symbolPerks(byId('IV-UR1')).map((p) => p.at)).toEqual([5, 10, 15, 20, 25]);
+  });
+
+  it('a Divine Arsenal climbs to +25 on Crowns; an old +15 save keeps its level and climbs on', () => {
+    const ur = byId('IV-UR1');
+    const save = newSave();
+    save.owned[ur.id] = { level: 20, vow: 0, asc: 1, symbol: 15 };
+    save.tithes = 1e8;
+    give(save, { grace3: 10000 });
+    expect(symbolBlock(save, ur.id)).toBeUndefined();
+    expect(Object.keys(upgradeCost(22).items)).toEqual(['grace3']);
+    while (raiseSymbol(save, ur.id));
+    expect(save.owned[ur.id].symbol).toBe(25);
+    expect(symbolBlock(save, ur.id)).toMatch(/sanctified/);
+  });
+
+  it('+20 burns and lifts the Litany; +25 brings Divine Wrath', () => {
+    const ur = byId('IV-UR1');
+    expect(symbolCombat(ur, 19)!.glow).toBeUndefined();
+    expect(symbolCombat(ur, 20)!.glow).toBe(true);
+    expect(symbolCombat(ur, 20)!.rite).toBeCloseTo(0.45, 5);
+    expect(symbolCombat(ur, 24)!.echo).toBeUndefined();
+    expect(symbolCombat(ur, 25)!.echo).toBe(DIVINE_WRATH);
+  });
+
+  it('Divine Wrath makes her Litany hit harder', () => {
+    const ur = byId('IV-UR1');
+    const dealt = (lv: number) => {
+      let sum = 0;
+      for (let i = 0; i < 40; i++) {
+        const save = newSave();
+        save.owned[ur.id] = { level: 30, vow: 0, asc: 1, symbol: lv };
+        const b = skirmish(save, [ur.id], OSSUARY.boss, 0, seeded(900 + i));
+        const me = b.units.find((u) => u.side === 'party')!;
+        const foe = b.units.find((u) => u.side === 'enemy')!;
+        foe.maxHp = foe.hp = 1e9;
+        me.zeal = 100;
+        const before = foe.hp;
+        const rite = skillsFor(me).find((k) => k.rite && k.mult)!;
+        (b as unknown as { resolve: (a: Unit, s: SkillDef, t?: Unit) => unknown }).resolve(me, rite, foe);
+        sum += before - foe.hp;
+      }
+      return sum;
+    };
+    expect(dealt(25)).toBeGreaterThan(dealt(24) * 1.2);
+  });
+});
 
 describe('Holy Symbols', () => {
   it('every Sister has a relic to name her Symbol', () => {
     expect(CRUSADERS.every((c) => c.relic)).toBe(true);
-    expect(symbolName(CRUSADERS.find((c) => c.id === 'IV-R-EXE')!)).toBe('Interrogation Seal');
+    expect(symbolName(CRUSADERS.find((c) => c.id === 'IV-R-EXE')!)).toBe('Gateward Headsman');
   });
 
   it('wakes after her first Ascension, then rises to +15 on tiered Grace', () => {
