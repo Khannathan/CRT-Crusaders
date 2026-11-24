@@ -62,8 +62,13 @@ export const classIcon = (id: string) => `class-${CLASSES[id]?.icon ?? id}`;
 /** Texture key with its own art first, then the borrowed emblem. */
 export const classIconFor = (scene: { textures: { exists(k: string): boolean } }, id: string) => (scene.textures.exists(`class-${id}`) ? `class-${id}` : classIcon(id));
 
-/** Base-stat multiplier per rarity (design doc: +0/10/25/40%). */
-export const RARITY_MULT: Record<Rarity, number> = { R: 1, SR: 1.1, SSR: 1.25, UR: 1.4 };
+/**
+ * Base-stat multiplier per rarity. The Zealot Initiative pulled SSR and UR well
+ * ahead (was +0/10/25/40%): Demigoddesses and Deities are the draw.
+ */
+export const RARITY_MULT: Record<Rarity, number> = { R: 1, SR: 1.1, SSR: 1.4, UR: 1.8 };
+/** Limited Sisters stand above the rest of their rank: Patron Deities (UR) most of all. */
+export const LIMITED_MULT: Partial<Record<Rarity, number>> = { SSR: 1.05, UR: 1.1 };
 
 /** Frame colour per rarity, drawn as a separate UI layer over portraits (UI preview colours). */
 export const RARITY_COLOR: Record<Rarity, number> = {

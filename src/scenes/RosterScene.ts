@@ -1006,7 +1006,7 @@ export class RosterScene extends Phaser.Scene {
         ...(up ? [isUp ? 'VOW UPGRADED +25%' : `VOW ${up[0]}: +25%`] : []),
       ].join(' · ');
       // skill-<id>.png (32 x 32) to the left of the name when present
-      const icon = addArt(this, `skill-${s.id}`, left + 16, y + 18, 32);
+      const icon = addArt(this, `skill-${s.icon ?? s.id}`, left + 16, y + 18, 32);
       const tx = icon ? left + 44 : left;
       const name = this.add.text(tx, y, `${s.name}${isUp ? '+' : ''}`, { ...text.body(20, s.rite ? PAL.amber : PAL.ivory), fontStyle: '600' });
       const t = this.add.text(tx, y + 28, tag, text.hud(11, isUp ? PAL.amber : PAL.steel));
@@ -1059,6 +1059,22 @@ export class RosterScene extends Phaser.Scene {
       const t = this.add.text(left, y + 38, "SAINT'S SEAL · ONCE A FIGHT", text.hud(11, PAL.steel));
       const d = this.add.text(left, y + 56, noOrphan(seal.desc), { ...text.body(15, PAL.muted), wordWrap: { width } });
       layer.add([name, t, d]);
+      y += 56 + d.height;
+    }
+    // Her Relic (woken at Holy Symbol +5), the future lines, and her battle cry.
+    const kit = KITS[c.id];
+    const extra: { title: string; tag: string; desc: string; color: number }[] = [];
+    if (kit?.relic) extra.push({ title: kit.relic.name, tag: `RELIC · HOLY SYMBOL +5 · ${kit.skills[kit.relic.skill].name.toUpperCase()}`, desc: kit.relic.desc, color: PAL.amber });
+    if (kit?.ascended) extra.push({ title: 'Ascension', tag: 'SSR TO UR · COMING', desc: kit.ascended, color: PAL.steel });
+    if (kit?.command) extra.push({ title: 'Command', tag: 'ARMY BATTLES · COMING', desc: kit.command, color: PAL.steel });
+    if (kit?.cry) extra.push({ title: 'Battle cry', tag: 'SERMON', desc: `"${kit.cry}"`, color: PAL.ivory });
+    for (const e of extra) {
+      y += 14;
+      layer.add(this.add.rectangle(GAME_W / 2, y, width, 1, PAL.armorShadow));
+      const name = this.add.text(left, y + 10, e.title, { ...text.body(20, e.color), fontStyle: '600' });
+      const tg = this.add.text(left, y + 38, e.tag, text.hud(11, PAL.steel));
+      const d = this.add.text(left, y + 56, noOrphan(e.desc), { ...text.body(15, PAL.muted), wordWrap: { width } });
+      layer.add([name, tg, d]);
       y += 56 + d.height;
     }
     // Where she shines: hunt entries are checked against the niche sim.

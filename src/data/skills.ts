@@ -10,10 +10,22 @@ export const DMG_COLOR: Record<DmgType, number> = { physical: 0xd8b48a, magic: 0
 
 export type TargetKind = 'enemy' | 'ally' | 'self' | 'allEnemies' | 'allAllies';
 
+/**
+ * Ground a skill lays on the field for some rounds:
+ * - hallowed: every Sister Regenerates 4% of max HP a round
+ * - ash: each foe that falls heals every Sister 6% of max HP
+ * - flood: foes take 10% more damage and act later
+ * - thorns: each foe takes 15% of the caster's attack every round
+ * - lantern: each round the Sister with the least HP goes on Overwatch
+ */
+export type GroundKind = 'hallowed' | 'ash' | 'flood' | 'thorns' | 'lantern';
+
 export interface SkillDef {
   id: string;
   name: string;
   desc: string;
+  /** Art id for its icon (skill-<icon>.png) when it differs from its id (a twisted staple keeps its staple's icon). */
+  icon?: string;
   /** Damage type of its hit; unset = the user's own tag. */
   dmg?: DmgType;
   /** Hexed targets have this much less Magic Resist. */
@@ -118,6 +130,26 @@ export interface SkillDef {
   purge?: boolean;
   /** Extra damage multiplier against bosses. */
   bossBonus?: number;
+
+  // ---- Zealot Initiative effects (see systems/combat.ts) ----
+  /** Penance: each time the target acts it takes this share of its own attack, for `turns` of its turns. */
+  penance?: { pct: number; turns: number };
+  /** Brand: the next hit any foe of the target lands on it deals this much more, then the Brand is spent. */
+  brand?: number;
+  /** Silenced foes can use only their first, plainest skill, and a charge is broken. Bosses resist (1 turn less). */
+  silence?: number;
+  /** Rapture: the targets take no damage from foes for this many of their own turns. */
+  rapture?: number;
+  /** Mirror Images on the targets (up to 3): each one swallows a whole hit. */
+  images?: number;
+  /** The user gains this many Fervor (up to 5): each gives +6% damage for the rest of the fight. */
+  fervor?: number;
+  /** Stigmata: a Bleed whose every tick heals the user for half of it. */
+  stigmata?: { mult: number; turns: number };
+  /** Martyrdom: for this many of her turns the user takes `pct` of every blow aimed at another Sister. */
+  martyrdom?: { pct: number; turns: number };
+  /** Holy ground under the party for this many rounds (one ground at a time; see GROUND in combat.ts). */
+  ground?: { kind: GroundKind; rounds: number };
 
   // ---- Order keywords (see systems/keywords.ts) ----
   /** Adds this much Guilt to the target (Veiled Tribunal). */

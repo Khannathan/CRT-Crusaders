@@ -25,8 +25,9 @@ describe('niche sim on the field', () => {
     expect(avgOf('SSR')).toBeLessThan(avgOf('UR'));
   });
 
-  it('URs are stronger, but not by a runaway margin', () => {
-    expect(avgOf('UR')).toBeLessThan(avgOf('SSR') * 1.3);
+  it('URs are well ahead of SSRs on the field too, but not by a runaway margin', () => {
+    expect(avgOf('UR')).toBeGreaterThan(avgOf('SSR') * 1.1);
+    expect(avgOf('UR')).toBeLessThan(avgOf('SSR') * 1.5);
   });
 
   it('no Sister is useless on the field', () => {

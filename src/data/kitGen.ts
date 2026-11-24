@@ -200,7 +200,7 @@ const TEMPLATES: Record<string, Partial<Record<Role, Template>>> = {
  * A borrowed skill is re-cut to her rarity: a Conscript's copy of a Saintess's
  * skill hits softer, a Saintess's copy of an Officer's harder.
  */
-const POWER: Record<Rarity, number> = { R: 0.8, SR: 0.9, SSR: 1.05, UR: 1.15 };
+const POWER: Record<Rarity, number> = { R: 0.8, SR: 0.9, SSR: 1.1, UR: 1.25 };
 /** Fields scaled with her rarity. Shares (pct, healPct, ...) are shown in the text and change with it. */
 const SCALE_MULT = new Set(['mult', 'heal']);
 const SCALE_SHARE = new Set(['pct', 'healPct', 'shieldPct', 'drain', 'lifelink', 'revive']);
