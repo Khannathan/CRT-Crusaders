@@ -4,6 +4,7 @@ import { MINI_SCALE, POSE, glowKey, miniKey, posesKey, type PoseName } from './s
 import { hasFullBody } from './placeholderPortrait';
 import { standInKey } from './standIn';
 import { RIG_CLIPS, rigKey, type RigClip } from './pixelRig';
+import { knockout } from './knockout';
 
 /**
  * A Sister's full-body pixel figure, brought to life with sprite-style motion
@@ -458,6 +459,21 @@ export class SisterSprite {
     }
   }
 
+  /** Knocked out: blasted off the screen (ui/knockout.ts) instead of crumbling. Calls done once she's gone. */
+  knockout(dir: { x: number; y: number }, color: number, done?: () => void) {
+    if (this.dead) return;
+    this.dead = true;
+    this.stopSheet();
+    this.stopClip();
+    this.setActiveOff();
+    this.walking?.remove();
+    this.walking = undefined;
+    const m = this.root.getWorldTransformMatrix();
+    const h = Math.round(FIGURE_H * this.k) * this.u;
+    this.root.setVisible(false);
+    knockout(this.scene, { key: this.still(), x: m.tx, y: m.ty + this.px(FOOT_PAD) - h / 2, scale: this.u, flipX: this.facing < 0, dir, color, done });
+  }
+
   private setActiveOff() {
     this.kill(this.stance, this.ring);
     this.active = false;
@@ -468,6 +484,7 @@ export class SisterSprite {
   /** Back on her feet (a revive, or a fight resumed). */
   revive() {
     this.dead = false;
+    this.root.setVisible(true);
     this.kill(this.pose);
     this.reset();
     this.pose.setAlpha(1);

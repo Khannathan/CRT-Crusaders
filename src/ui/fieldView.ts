@@ -14,6 +14,8 @@ import { dmgOf } from '../systems/combat';
 import { sfx } from '../audio/sfx';
 import { crusaderById } from '../data/crusaders';
 import { weaponOf } from '../systems/symbols';
+import { ORDERS } from '../data/orders';
+import { knockout, launchDir } from './knockout';
 
 /**
  * Draws a FieldBattle: figures that walk, strike, cast and fall where the
@@ -42,6 +44,8 @@ export interface FieldFigure {
   pulse(color: number): void;
   hit(hurt: boolean): void;
   die(done?: () => void): void;
+  /** Blasted off the screen, spinning (ui/knockout.ts), where the figure can be. */
+  knockout?(dir: { x: number; y: number }, color: number, done?: () => void): void;
   cheer(delay?: number): void;
   /** A boss winding up its Blasphemy (its Blasphemy pose, where it has one). */
   charge?(on: boolean): void;
@@ -85,6 +89,10 @@ class StillFigure implements FieldFigure {
   die(done?: () => void) {
     this.sprite.walk(false);
     this.sprite.die(done);
+  }
+  knockout(dir: { x: number; y: number }, color: number, done?: () => void) {
+    this.sprite.walk(false);
+    this.sprite.knockout(dir, color, done);
   }
   cheer(delay = 0) {
     this.sprite.walk(false);
@@ -272,6 +280,14 @@ class EnemyFigure implements FieldFigure {
     this.scene.time.delayedCall(60, () => !this.dead && this.img.setTint(0xff7070));
     this.scene.time.delayedCall(200, () => !this.dead && this.img.clearTint());
     this.scene.tweens.add({ targets: this.img, x: { from: -4 * this.s, to: 4 * this.s }, duration: 40, yoyo: true, repeat: 2, onComplete: () => this.img.setX(0) });
+  }
+  knockout(dir: { x: number; y: number }, color: number, done?: () => void) {
+    if (this.dead) return;
+    this.dead = true;
+    this.bob.remove();
+    const m = this.root.getWorldTransformMatrix();
+    this.root.setVisible(false);
+    knockout(this.scene, { key: this.img.texture.key, x: m.tx, y: m.ty + 8 * this.s - (FIGURE_H * this.s) / 2, scale: this.s, flipX: this.facing < 0, dir, color, done });
   }
   die(done?: () => void) {
     if (this.dead) return;
@@ -743,7 +759,12 @@ export class FieldView {
           break;
         case 'death': {
           const u = this.b.get(e.uid);
-          v?.fig.die();
+          // Knocked out: blasted off the screen, spinning (the Vigil's small figures just fall).
+          if (v && u && v.fig.knockout && !this.o.compact) {
+            const m = v.fig.root.getWorldTransformMatrix();
+            const color = u.side === 'party' ? (ORDERS[u.order ?? '']?.color ?? 0xf2e6c9) : u.boss ? 0xffd75a : 0xff7a3a;
+            v.fig.knockout(launchDir(m.tx, u.side === 'party'), color);
+          } else v?.fig.die();
           if (!this.o.compact && u) sfx(u.side === 'party' ? 'fall' : 'kill');
           if (u) this.o.onDeath?.(u);
           break;
