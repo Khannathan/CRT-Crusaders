@@ -73,7 +73,8 @@ export class OrderBookScene extends Phaser.Scene {
       y += creed.height + 4;
       const lore = add(this.add.text(PAD + 4, y, noOrphan(o.lore), { ...text.body(14, PAL.muted), wordWrap: { width: GAME_W - PAD * 2 - 8 }, lineSpacing: 1 }));
       y += lore.height + 4;
-      add(this.add.text(PAD + 4, y, `SWORN RIVAL · ${o.rival.toUpperCase()}`, text.hud(12, 0xd06060)));
+      add(this.add.text(PAD + 4, y, `THE ${o.cross.toUpperCase()}`, text.hud(12, PAL.amber)));
+      add(this.add.text(GAME_W - PAD, y, `RIVAL · ${o.rival.toUpperCase()}`, text.hud(12, 0xd06060)).setOrigin(1, 0));
       y += 28;
 
       const sisters = sistersOf(o.id);

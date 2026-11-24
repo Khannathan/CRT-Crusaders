@@ -21,7 +21,7 @@ export interface StoryScene {
 }
 
 // The cast: the Vigil's company on the road.
-export const AURELIA = 'IV-UR1'; // Mother Excubitrix, Iron Vigil, leads the march
+export const AURELIA = 'IV-UR1'; // Mother Propugna, Iron Vigil, leads the march
 export const PEREGRINA = 'RP-UR1'; // Confessora, Crimson Inquisition, walked the road before
 export const OCTAVIA = 'VT-SSR-VEI'; // Obscura, Veiled Tribunal, the knife in the dark
 export const PERPETUA = 'TC-UR1'; // Cruentia, Verdant Martyrdom, the wall
@@ -185,7 +185,7 @@ export const STORY: StoryScene[] = [
   {
     id: 'c5-mid', stage: 46, when: 'before', title: 'Doubt',
     lines: [
-      { who: MARINA, text: 'Mother Excubitrix. If the rot is in the cathedral, who sent us?' },
+      { who: MARINA, text: 'Mother Propugna. If the rot is in the cathedral, who sent us?' },
       { who: AURELIA, text: 'God sent us, Abyssa. The cathedral only signed the order.' },
       { who: OCTAVIA, text: 'And if the one who signed it is waiting at the door?' },
       { who: AURELIA, text: 'Then he will learn what he sent.' },
