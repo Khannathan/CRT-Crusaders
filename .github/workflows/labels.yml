@@ -1,0 +1,22 @@
+name: Repo labels
+
+# Makes sure the "for-claude" label exists (ChatGPT's code-request issues use it).
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/labels.yml']
+  workflow_dispatch:
+
+permissions:
+  issues: write
+
+jobs:
+  labels:
+    runs-on: ubuntu-latest
+    steps:
+      - env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          gh label create "for-claude" --color "8B0000" \
+            --description "Code change requested from Claude (often by ChatGPT's art lane)" --force

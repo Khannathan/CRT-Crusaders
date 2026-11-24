@@ -1,0 +1,33 @@
+name: Art lane guard
+
+# Fails any art PR (branch art/* or title "Art: ...") that touches anything
+# outside the art folders in ASSETS_GUIDE section 5. Other PRs pass at once.
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, edited]
+  # The sprite intake bot re-runs this after it pushes to an art branch.
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  art-lane:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Check changed files (pull request)
+        if: github.event_name == 'pull_request'
+        env:
+          BASE: ${{ github.event.pull_request.base.sha }}
+          HEAD: ${{ github.event.pull_request.head.sha }}
+          BRANCH: ${{ github.event.pull_request.head.ref }}
+          TITLE: ${{ github.event.pull_request.title }}
+        run: python3 tools/art_guard.py "$BASE" "$HEAD" "$BRANCH" "$TITLE"
+      - name: Check changed files (re-run on a branch)
+        if: github.event_name == 'workflow_dispatch'
+        env:
+          BRANCH: ${{ github.ref_name }}
+        run: python3 tools/art_guard.py "$(git merge-base origin/main HEAD)" HEAD "$BRANCH" ""

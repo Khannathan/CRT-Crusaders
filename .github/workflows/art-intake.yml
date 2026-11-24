@@ -1,0 +1,66 @@
+name: Sprite intake
+
+# When an art PR adds or replaces a raw battle sprite
+# (art-inbox/full-body/<id>_raw.png), run the game's intake at 16 colours and
+# commit the result (src/assets/full-body/<id>.png) plus a 4x preview
+# (art-inbox/review/<id>_sprite_preview.png) back onto the same branch.
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths: ['art-inbox/full-body/**']
+
+permissions:
+  contents: write
+  actions: write
+
+concurrency:
+  group: intake-${{ github.event.pull_request.number }}
+  cancel-in-progress: false
+
+jobs:
+  intake:
+    # Only branches in this repo (a fork's branch can't be pushed to).
+    if: startsWith(github.event.pull_request.head.ref, 'art/') && github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install pillow==13.0.0
+      - name: Run intake on new raw sprites
+        env:
+          BASE: ${{ github.event.pull_request.base.sha }}
+        run: |
+          set -e
+          files=$(git diff --name-only --diff-filter=AM "$BASE"...HEAD -- 'art-inbox/full-body/*_raw.png')
+          if [ -z "$files" ]; then echo "No raw sprites in this PR."; exit 0; fi
+          for f in $files; do
+            id=$(basename "$f" _raw.png)
+            echo "::group::$id"
+            python3 tools/intake_sprite.py --colors 16 --preview "art-inbox/review/${id}_sprite_preview.png" "$f"
+            echo "::endgroup::"
+          done
+      - name: Commit results to the PR branch
+        id: commit
+        run: |
+          git add src/assets/full-body art-inbox/review
+          if git diff --cached --quiet; then echo "Nothing new to commit."; exit 0; fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Intake: battle sprites from art-inbox (16 colours)"
+          git push
+          echo "pushed=yes" >> "$GITHUB_OUTPUT"
+      # A bot push doesn't start checks by itself, so start them on the new commit
+      # (otherwise the required checks never report and the PR can't be merged).
+      - name: Re-run checks on the new commit
+        if: steps.commit.outputs.pushed == 'yes'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BRANCH: ${{ github.event.pull_request.head.ref }}
+        run: |
+          gh workflow run ci.yml --ref "$BRANCH"
+          gh workflow run art-guard.yml --ref "$BRANCH"
