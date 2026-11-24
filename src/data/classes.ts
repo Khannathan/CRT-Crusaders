@@ -81,11 +81,5 @@ export const CLASS_DMG: Record<string, DmgType> = {
   warsister: 'physical', inquisitor: 'physical', veilblade: 'physical',
   censer: 'magic', arbalist: 'physical', exorcist: 'magic',
 };
-/** Titles that fight with the other damage type from their class. */
-export const TITLE_DMG: Record<string, DmgType> = {
-  Inquisitor: 'magic', // sigils and seals, not steel
-  'Bone Archivist': 'physical',
-  'Dawn Martyr': 'magic', // radiant
-  'Witchfire Deacon': 'magic',
-};
-export const dmgTagOf = (c: Pick<CrusaderDef, 'classId' | 'dmg'> & { title?: string }): DmgType => c.dmg ?? (c.title ? TITLE_DMG[c.title] : undefined) ?? CLASS_DMG[c.classId] ?? 'physical';
+/** Her damage type: her own (data/roster.ts sets it for Sisters who hit unlike their class), else her class's. */
+export const dmgTagOf = (c: Pick<CrusaderDef, 'classId' | 'dmg'>): DmgType => c.dmg ?? CLASS_DMG[c.classId] ?? 'physical';

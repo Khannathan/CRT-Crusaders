@@ -15,7 +15,7 @@ import { addSplash, loadSplash, portraitKey, queueSplash, splashKey } from '../u
 import { SisterSprite, fullKey } from '../ui/sisterSprite';
 import type { CrusaderDef } from '../data/types';
 import { TAB_BAR_H, addTabBar } from '../ui/tabBar';
-import { PAD, addBackdrop, addBadge, addFrame, addPanel, addScreenGlow, fade, text } from '../ui/theme';
+import { PAD, addBackdrop, fitLine, addBadge, addFrame, addPanel, addScreenGlow, fade, text } from '../ui/theme';
 import { holdForCard, justHeld } from '../ui/sisterCard';
 import { cardGridBottom, cardSlot, drawRosterCard } from '../ui/rosterCard';
 import { addScrollArea } from '../ui/scroll';
@@ -407,7 +407,7 @@ export class RecruitScene extends Phaser.Scene {
       const grad = graduationDate(w.saint.id);
       list.content.add([
         this.add.text(160, cy - 72, w.saint.name, { ...text.body(19, PAL.ivory), fontStyle: '600' }),
-        this.add.text(160, cy - 48, `${w.saint.title} · ${w.saint.order}`, text.body(15, PAL.muted)),
+        fitLine(this.add.text(160, cy - 48, w.saint.title ?? '', { ...text.body(15, PAL.muted), fontStyle: 'italic' }), GAME_W - 160 - PAD),
         this.add.text(160, cy - 26, k === 0 ? `Up now · leaves in ${timeLeft(w.ends)}` : `Opens ${day(w.starts)} · in ${timeLeft(w.starts)}`, text.body(15, PAL.amber)),
         this.add.text(GAME_W - 46, cy + 22, `SSR: ${w.ssrs.map((c) => c.name.split(' ')[0]).join(', ')}`, { ...text.body(14, PAL.ivory), align: 'right', wordWrap: { width: 190 } }).setOrigin(1, 0),
         this.add.text(GAME_W - 46, cy + 56, grad ? `Standard from ${day(grad)}` : `Standard ${GRADUATE_AFTER} banners later`, text.hud(11, PAL.steel)).setOrigin(1, 0),

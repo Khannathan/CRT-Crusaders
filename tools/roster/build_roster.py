@@ -8,6 +8,10 @@ title, rarity, age, relic and, for some, a hook. The 89 Sisters who return
 from the old 90-Sister roster keep their old hook and are tagged with their
 old id (`legacy`) so old saves move over. Everyone else gets a hook from the
 class lines below (placeholders until her art and story arrive).
+
+Then run apply_epithets.py: it sets each title to her epithet from
+names-and-epithets.csv. (The cards have since moved to the epithet format; this
+parser reads the earlier one, kept as roster.ts.)
 """
 import hashlib
 import json

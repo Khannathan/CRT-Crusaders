@@ -329,9 +329,10 @@ export class RevealScene extends Phaser.Scene {
     const textY = Math.max(SIZE / 2, fy + h / 2 + 6);
     const texts = [
       this.add.text(0, textY + 44, c.name, { ...style, fontSize: '30px' }).setOrigin(0.5),
-      this.add.text(0, textY + 82, `${c.rarity} ${rankTitle(c)} · ${CLASSES[c.classId].name}`, { ...style, fontSize: '19px', color: hex(color) }).setOrigin(0.5),
+      fitLine(this.add.text(0, textY + 74, c.title ?? '', { ...style, fontSize: '17px', fontStyle: 'italic', color: hex(PAL.muted) }), GAME_W - 40).setOrigin(0.5),
+      this.add.text(0, textY + 100, `${c.rarity} ${rankTitle(c)} · ${CLASSES[c.classId].name}`, { ...style, fontSize: '19px', color: hex(color) }).setOrigin(0.5),
       this.add
-        .text(0, textY + 124, tag, { ...style, fontSize: '20px', color: hex(r.isNew ? PAL.amber : PAL.steel) })
+        .text(0, textY + 138, tag, { ...style, fontSize: '20px', color: hex(r.isNew ? PAL.amber : PAL.steel) })
         .setOrigin(0.5),
     ];
     texts.forEach((t) => t.setAlpha(0));
