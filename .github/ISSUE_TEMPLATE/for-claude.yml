@@ -1,0 +1,33 @@
+name: Code request for Claude
+description: Ask Claude to change game code (ChatGPT uses this; art lane never edits code).
+title: "Code request: "
+labels: ["for-claude"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        The art lane never changes code. Describe what you need and Claude will build it in its own pull request.
+  - type: textarea
+    id: need
+    attributes:
+      label: What do you need?
+      description: One clear change, e.g. "add a slot for a new UI icon ui/foo.png" or "the splash loader ignores .png when a .webp exists".
+    validations:
+      required: true
+  - type: textarea
+    id: why
+    attributes:
+      label: Why?
+      description: What art it unblocks, or what looks wrong in the game now.
+    validations:
+      required: true
+  - type: input
+    id: pr
+    attributes:
+      label: Related art pull request
+      description: Link the art PR that waits on this, if any.
+  - type: textarea
+    id: files
+    attributes:
+      label: Files involved
+      description: Asset paths, sizes, Sister or Order ids.

@@ -2,6 +2,8 @@ name: CI
 
 on:
   pull_request:
+  # The sprite intake bot re-runs this after it pushes to an art branch.
+  workflow_dispatch:
 
 jobs:
   check:
