@@ -11,7 +11,7 @@ import { MAX_VOW, copiesFor, standIn, takeVow, tierOf, vowCost } from './tiers';
 /**
  * One-tap conveniences found in most gachas: Quick Vow (every Vow her copies
  * already pay for, across the whole roster), Quick Send and Claim all for
- * Holy Errands, Melt spares for the armory, and Enhance to the next substat
+ * Sworn Errands, Melt spares for the armory, and Enhance to the next substat
  * roll. Each has a plan (what it would do, for the confirm sheet) and the act.
  */
 
@@ -81,7 +81,7 @@ export function takeQuickVows(save: SaveData): VowPlan {
 export const quickVowReady = (save: SaveData) =>
   Object.values(save.owned).some((o) => o.vow < MAX_VOW && (o.tokens ?? 0) >= copiesFor(tierOf(o), o.vow) && save.tithes >= vowCost(o));
 
-// ---- Holy Errands ------------------------------------------------------------
+// ---- Sworn Errands ------------------------------------------------------------
 
 /**
  * The Sisters an errand would take: the bonus Sister first, then the weakest

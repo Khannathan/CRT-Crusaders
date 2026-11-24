@@ -11,7 +11,7 @@ import { sisterPower } from './power';
 import { dayKey, grant, type Reward } from './tasks';
 
 /**
- * Hallowed Hunts, after AFK Journey's Dream Realm: one great beast a day from
+ * Purge Hunts, after AFK Journey's Dream Realm: one great beast a day from
  * a pool of six, each with mechanics that call for different Sisters. A hunt
  * lasts HUNT_ROUNDS rounds and is scored by the damage dealt; today's best
  * score pays milestones of Grace (for signature weapons). Felling the beast opens

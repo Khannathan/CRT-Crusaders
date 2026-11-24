@@ -7,8 +7,8 @@ import { bagText, give, hasAll, spend, type Bag } from './items';
 
 /**
  * Gear (rebuilt in round 9): five slots per Sister. Each piece has a rarity, a
- * main stat that grows when enhanced (Tithes to +10, then Blessed Iron too, up
- * to +15), 0-3 substats (one per rarity step above R) that Blessed Iron can
+ * main stat that grows when enhanced (Tithes to +10, then Consecrated Iron too, up
+ * to +15), 0-3 substats (one per rarity step above R) that Consecrated Iron can
  * reroll, and one of eight sets: two pieces of a set add a bonus, four add a
  * bigger one.
  *
@@ -47,7 +47,7 @@ export const STAT_NAME: Record<GearStat, string> = { atkPct: 'ATK', hpPct: 'HP',
 
 /** Tithes alone take a piece this far. */
 export const MAX_GEAR_LEVEL = 10;
-/** Refinement past +10 needs Blessed Iron as well. */
+/** Refinement past +10 needs Consecrated Iron as well. */
 export const MAX_REFINE = 15;
 /** Iron for each level past +10: index 0 is the step to +11. */
 export const REFINE_IRON: Bag[] = [{ iron1: 10 }, { iron1: 15 }, { iron2: 4 }, { iron2: 6 }, { iron2: 6, iron3: 2 }];
@@ -115,19 +115,19 @@ export const enhanceCost = (item: GearItem) => Math.round(25 * (item.level + 1) 
 export const FRAGMENTS_FOR: Record<Rarity, number> = { R: 0, SR: 0, SSR: 1, UR: 15 };
 export const salvageValue = (item: GearItem) => Math.round(15 * GEAR_RARITY_MULT[item.rarity] * (1 + item.level));
 
-/** Blessed Iron for the next level, past +10. */
+/** Consecrated Iron for the next level, past +10. */
 export const refineIron = (item: GearItem): Bag | undefined => (item.level >= MAX_GEAR_LEVEL ? REFINE_IRON[item.level - MAX_GEAR_LEVEL] : undefined);
 
 /** Why the piece cannot be enhanced now, or undefined. */
 export function enhanceBlock(save: SaveData, item: GearItem): string | undefined {
   if (item.level >= MAX_REFINE) return 'Fully refined';
   const iron = refineIron(item);
-  if (iron && !hasAll(save, iron)) return 'Not enough Blessed Iron';
+  if (iron && !hasAll(save, iron)) return 'Not enough Consecrated Iron';
   if (save.tithes < enhanceCost(item)) return 'Not enough Tithes';
   return undefined;
 }
 
-/** Spends Tithes (and Blessed Iron past +10) to raise a piece one level. Returns false if it can't. */
+/** Spends Tithes (and Consecrated Iron past +10) to raise a piece one level. Returns false if it can't. */
 export function enhance(save: SaveData, item: GearItem, rng: Rng = Math.random): boolean {
   if (enhanceBlock(save, item)) return false;
   const iron = refineIron(item);
@@ -144,7 +144,7 @@ export function enhance(save: SaveData, item: GearItem, rng: Rng = Math.random):
 
 export function rerollBlock(save: SaveData, item: GearItem): string | undefined {
   if (!item.subs.length) return 'No substats';
-  if (!hasAll(save, REROLL_COST.items)) return 'Not enough Blessed Iron';
+  if (!hasAll(save, REROLL_COST.items)) return 'Not enough Consecrated Iron';
   if (save.tithes < REROLL_COST.tithes) return 'Not enough Tithes';
   return undefined;
 }

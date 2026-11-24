@@ -21,12 +21,12 @@ export interface StoryScene {
 }
 
 // The cast: the Vigil's company on the road.
-export const AURELIA = 'IV-UR1'; // Mother Aurelia, Iron Vigil, leads the march
-export const PEREGRINA = 'RP-UR1'; // Peregrina, Crimson Inquisition, walked the road before
-export const OCTAVIA = 'VT-SSR-VEI'; // Octavia, Veiled Tribunal, the knife in the dark
-export const PERPETUA = 'TC-UR1'; // Perpetua, Verdant Martyrdom, the wall
-export const CASSIA = 'IV-SSR-ORA'; // Cassia, Ash Oracle, reads the omens
-export const MARINA = 'DL-UR1'; // Marina, Drowned Litany, hears the water
+export const AURELIA = 'IV-UR1'; // Mother Propugna, Iron Vigil, leads the march
+export const PEREGRINA = 'RP-UR1'; // Confessora, Crimson Inquisition, walked the road before
+export const OCTAVIA = 'VT-SSR-VEI'; // Obscura, Veiled Tribunal, the knife in the dark
+export const PERPETUA = 'TC-UR1'; // Cruentia, Verdant Martyrdom, the wall
+export const CASSIA = 'IV-SSR-ORA'; // Fortitudo, Ash Oracle, reads the omens
+export const MARINA = 'DL-UR1'; // Abyssa, Drowned Litany, hears the water
 
 export const CAST = [AURELIA, PEREGRINA, OCTAVIA, PERPETUA, CASSIA, MARINA];
 
@@ -128,7 +128,7 @@ export const STORY: StoryScene[] = [
       { who: N, text: 'At the end of the mile, a nun turns. Her face is wet with black tears.' },
       { who: PEREGRINA, text: 'Sister. It is me. The pilgrim girl.' },
       { who: N, text: 'Sister Lament smiles. Her mouth opens far too wide.' },
-      { who: AURELIA, text: 'She is gone, Peregrina. Grieve later. Strike now!' },
+      { who: AURELIA, text: 'She is gone, Confessora. Grieve later. Strike now!' },
     ],
   },
   {
@@ -185,8 +185,8 @@ export const STORY: StoryScene[] = [
   {
     id: 'c5-mid', stage: 46, when: 'before', title: 'Doubt',
     lines: [
-      { who: MARINA, text: 'Mother Aurelia. If the rot is in the cathedral, who sent us?' },
-      { who: AURELIA, text: 'God sent us, Marina. The cathedral only signed the order.' },
+      { who: MARINA, text: 'Mother Propugna. If the rot is in the cathedral, who sent us?' },
+      { who: AURELIA, text: 'God sent us, Abyssa. The cathedral only signed the order.' },
       { who: OCTAVIA, text: 'And if the one who signed it is waiting at the door?' },
       { who: AURELIA, text: 'Then he will learn what he sent.' },
     ],

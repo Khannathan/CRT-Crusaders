@@ -85,7 +85,7 @@ export class ResultsScene extends Phaser.Scene {
 
     // Notes, then the nearest real goal beside March again.
     const notes: string[] = [];
-    if (r.pilgrimage) notes.push(`Pilgrimage blessing: +${r.pilgrimage.seals} Seals, +${r.pilgrimage.tithes} Tithes. ${r.pilgrimage.left} blessed clear${r.pilgrimage.left === 1 ? '' : 's'} left today.`);
+    if (r.pilgrimage) notes.push(`Pilgrimage bonus: +${r.pilgrimage.seals} Seals, +${r.pilgrimage.tithes} Tithes. ${r.pilgrimage.left} sworn clear${r.pilgrimage.left === 1 ? '' : 's'} left today.`);
     if (r.melted) notes.push(`Armory full: spare gear melted for +${r.melted} Tithes.`);
     if (r.firstClear) notes.push('First clear! Heresy I is open.');
     if (r.heresyCleared) notes.push(`Heresy ${ROMAN[r.heresyCleared - 1]} cleared: +${HERESY_FIRST_CLEAR_SEALS} Seals. Heresy ${ROMAN[r.heresyCleared]} is open.`);

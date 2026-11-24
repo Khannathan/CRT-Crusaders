@@ -285,7 +285,7 @@ export const CLASS_SKILLS: Record<string, [SkillDef, SkillDef, SkillDef, SkillDe
     { id: 'sealed-sepulcher', name: 'Sealed Sepulcher', desc: 'LITANY: Ward every ally (-25% damage taken) for 2 turns. She draws every attack and strikes back hard for 2 turns.', from: any, target: 'allAllies', ward: { pct: 0.25, turns: 2 }, rite: true, taunt: 2, counter: { mult: 0.9, turns: 2 } },
   ],
   martyr: [
-    { id: 'radiant-smite', name: 'Radiant Smite', desc: 'Strike rank 1-2 and heal for 35% of the damage dealt.', from: [1, 2], target: 'enemy', reach: [1, 2], mult: 1.1, drain: 0.35 },
+    { id: 'radiant-smite', name: 'Searing Smite', desc: 'Strike rank 1-2 and heal for 35% of the damage dealt.', from: [1, 2], target: 'enemy', reach: [1, 2], mult: 1.1, drain: 0.35 },
     { id: 'intercession', name: 'Intercession', desc: 'Draw enemy attacks for 2 turns, Ward herself (-20% damage) and Regenerate 5% a turn. Cooldown 2.', from: any, target: 'self', taunt: 2, ward: { pct: 0.2, turns: 2 }, regen: { pct: 0.05, turns: 2 }, cooldown: 2 },
     { id: 'blood-oath', name: 'Blood Oath', desc: 'Sacrifice 12% HP. Every ally gains +20% attack for 2 turns. Cooldown 3.', from: any, target: 'allAllies', selfDmgPct: 0.12, empower: { pct: 0.2, turns: 2 }, empowerTarget: true, cooldown: 3 },
     { id: 'dawnbreak', name: 'Dawnbreak', desc: 'LITANY: burn every enemy with light, heal for 50% of the damage dealt and draw attacks for 2 turns.', from: any, target: 'allEnemies', mult: 0.8, drain: 0.5, rite: true, taunt: 2 },
@@ -321,7 +321,7 @@ export const CLASS_SKILLS: Record<string, [SkillDef, SkillDef, SkillDef, SkillDe
     { id: 'thousand-cuts', name: 'Thousand Cuts', desc: 'LITANY: savage blow on any enemy, +50% critical chance, double damage under 30% HP.', from: any, target: 'enemy', mult: 1.9, critChance: 0.5, execute: 1, rite: true },
   ],
   arbalist: [
-    { id: 'blessed-bolt', name: 'Blessed Bolt', desc: 'A heavy bolt on any rank that ignores 30% of its Armor.', from: [2, 3, 4], target: 'enemy', mult: 1.25, armorPierce: 0.3 },
+    { id: 'blessed-bolt', name: 'Consecrated Bolt', desc: 'A heavy bolt on any rank that ignores 30% of its Armor.', from: [2, 3, 4], target: 'enemy', mult: 1.25, armorPierce: 0.3 },
     { id: 'marking-shot', name: 'Marking Shot', desc: 'Light bolt that Accuses any foe (+25% damage taken) for 2 turns. Cooldown 1.', from: any, target: 'enemy', mult: 0.6, accuse: 2, cooldown: 1 },
     { id: 'shieldbreaker', name: 'Shieldbreaker', desc: 'A bolt through any shield: Sundered (-30% armor) for 2 turns. Cooldown 2.', from: any, target: 'enemy', mult: 1.0, pierceShield: true, sunder: { pct: 0.3, turns: 2 }, cooldown: 2 },
     { id: 'saints-ballista', name: "Saint's Ballista", desc: 'LITANY: a crushing bolt on any enemy, through shields and half its Armor.', from: any, target: 'enemy', mult: 2.3, armorPierce: 0.5, pierceShield: true, rite: true },

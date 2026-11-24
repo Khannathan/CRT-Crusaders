@@ -7,8 +7,8 @@ import { ROSTER } from '../data/roster';
  * parties, errands, history) simply follows them to their new id.
  *
  * Junia Hypsaea did not come back: her Drowned Litany Executioner slot went to
- * Severa Ahala. A player who had Junia gets Severa in her place (with Junia's
- * levels and Vows) or, if Severa is already sworn, Junia's copies as Severa's
+ * Gurges Submersa. A player who had Junia gets Gurges in her place (with Junia's
+ * levels and Vows) or, if Gurges is already sworn, Junia's copies as Gurges's
  * Vow tokens.
  */
 export const ROSTER_VERSION = 2;
@@ -20,7 +20,7 @@ MAP.set(JUNIA, MAP.get(SEVERA_OLD)!);
 
 type Json = unknown;
 
-/** Junia's traces, where Severa is there too, are dropped rather than doubled. */
+/** Junia's traces, where Gurges is there too, are dropped rather than doubled. */
 function foldJunia(v: Json): Json {
   if (Array.isArray(v)) {
     const out = v.map(foldJunia);
@@ -60,7 +60,7 @@ export function migrateRoster<T extends { roster?: number; owned?: Record<string
   const junia = owned[JUNIA];
   const severa = owned[SEVERA_OLD];
   if (junia && severa) {
-    // Severa is already sworn: each copy of Junia becomes a Vow token for her.
+    // Gurges is already sworn: each copy of Junia becomes a Vow token for her.
     severa.tokens = (severa.tokens ?? 0) + 1 + (junia.vow ?? 0) + (junia.tokens ?? 0);
     delete owned[JUNIA];
   }

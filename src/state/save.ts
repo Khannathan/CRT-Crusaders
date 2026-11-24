@@ -157,7 +157,7 @@ export interface SaveData {
   shop?: import('../systems/shop').ShopState;
   /** The Kennel: hounds owned and the one going into battle. */
   hounds?: import('../systems/hounds').HoundState;
-  /** Hallowed Hunts: today's entries and best, tiers opened and records. */
+  /** Purge Hunts: today's entries and best, tiers opened and records. */
   hunts?: import('../systems/hunts').HuntState;
   /** Account Power last shown, for the "+N Power" pop (systems/powerGrowth.ts). */
   powerSeen?: number;
@@ -171,7 +171,7 @@ export interface SaveData {
   /** Lit Reliquary relic ids (systems/reliquary.ts). */
   reliquary?: string[];
   items?: import('../systems/items').Bag;
-  /** Holy Errands: today's sent errands and those still away (systems/errands.ts). */
+  /** Sworn Errands: today's sent errands and those still away (systems/errands.ts). */
   errands?: import('../systems/errands').ErrandState;
   /** Last party, in rank order, to pre-fill the muster screen. */
   lastParty: string[];

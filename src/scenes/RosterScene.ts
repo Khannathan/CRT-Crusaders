@@ -1172,7 +1172,7 @@ export class RosterScene extends Phaser.Scene {
     return y + t.height + 84;
   }
 
-  /** The Forge: enhance a piece (Blessed Iron past +10), reroll its substats, read its set. */
+  /** The Forge: enhance a piece (Consecrated Iron past +10), reroll its substats, read its set. */
   private forge(c: CrusaderDef, item: GearItem) {
     const save = game.save;
     const layer = this.add.container(0, 0).setDepth(30);

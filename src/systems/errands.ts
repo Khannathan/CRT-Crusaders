@@ -9,7 +9,7 @@ import { seeded } from './rng';
 import { dayKey, grant, type Reward } from './tasks';
 
 /**
- * Holy Errands: the Church sends Sisters away on timed duties (escorting
+ * Sworn Errands: the Church sends Sisters away on timed duties (escorting
  * relics, hearing a village's confession, burning a heretic's books). Pick an
  * errand from today's six, send the Sisters it asks for, and claim its spoils
  * when the time is up. A Sister of the named Order or calling makes it go
@@ -57,11 +57,11 @@ export interface ErrandState {
 /** Errand kinds: each pays mostly in one material family. */
 const KINDS: { family: Family; names: [string, string][] }[] = [
   { family: 'ash', names: [['Tend the Pyres', 'A heretic burns at dawn. Someone must keep the fire honest.'], ['Sweep the Ossuary', 'The bones are restless. The ash is useful.']] },
-  { family: 'page', names: [['Copy the Psalter', 'A blind scriptorium needs steady hands for a night.'], ['Burn the Heretic\'s Books', 'Read nothing. Burn everything.']] },
+  { family: 'page', names: [['Copy the Writs of Purge', 'A list of names, copied by dawn. Every one will burn.'], ['Burn the Heretic\'s Books', 'Read nothing. Burn everything.']] },
   { family: 'iron', names: [['Escort the Reliquary', 'A saint\'s finger travels past a rival Order\'s road.'], ['Nail the Coffins Shut', 'The plague village asks for iron and silence.']] },
-  { family: 'incense', names: [['Consecrate the Fields', 'Smoke over the barley. Burn any field the blight has touched.'], ['Keep Vigil at the Shrine', 'The candles must not go out before Lauds.']] },
-  { family: 'writ', names: [['Carry the Prioress\'s Letters', 'Sealed. Unread. Delivered by hand.'], ['Hear a Village\'s Confession', 'Every sin of a hamlet, in one long night.']] },
-  { family: 'unction', names: [['Anoint the Dying', 'The hospice has more beds than priests. Ease them, or end them.'], ['Wash the Pilgrims\' Feet', 'Humility is a discipline too.']] },
+  { family: 'incense', names: [['Consecrate the Fields', 'Smoke over the barley. Burn any field the blight has touched.'], ['Guard the Shrine from Rivals', 'A rival Order covets it. Let them come.']] },
+  { family: 'writ', names: [['Carry the Prioress\'s Letters', 'Sealed. Unread. Whoever stops you dies.'], ['Hear a Village\'s Confession', 'Every sin of a hamlet, in one long night. Then the pyre.']] },
+  { family: 'unction', names: [['Anoint the Dying', 'The hospice has more beds than priests. Ease them, or end them.'], ['Scourge the Penitents', 'They begged for the lash. Do not stop early.']] },
 ];
 
 const RARITY_ORDER: Rarity[] = ['R', 'SR', 'SSR', 'UR'];

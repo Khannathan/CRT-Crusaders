@@ -94,13 +94,13 @@ export const RITES: RiteEntry[] = [
     status: (s) => `Stage ${stageDef(nextStage(s)).label}  ·  Vigil ${Math.round(roadRates(s).tithes)} Tithes/h`,
   },
   {
-    label: 'Holy Errands', scene: 'Errands', icon: 'book', rank: 1, home: 'labors', bg: 'bg-altar', boost: 'errands', ready: (s) => anyErrandDone(s),
+    label: 'Sworn Errands', scene: 'Errands', icon: 'book', rank: 1, home: 'labors', bg: 'bg-altar', boost: 'errands', ready: (s) => anyErrandDone(s),
     blurb: 'Send Sisters on the Church\'s work.',
     status: (s) => `${errandsOf(s).active.length} of ${ERRAND_SLOTS} away  ·  ${openErrands(s).length} errands on offer`,
   },
   {
-    label: 'Hallowed Hunts', scene: 'Hunt', icon: 'blade', rank: 4, home: 'labors', bg: 'bg-battle', ready: (s) => huntEntriesLeft(s) > 0,
-    blurb: 'One beast a day. Wound it for Grace!',
+    label: 'Purge Hunts', scene: 'Hunt', icon: 'blade', rank: 4, home: 'labors', bg: 'bg-battle', ready: (s) => huntEntriesLeft(s) > 0,
+    blurb: 'One beast a day. Bleed it for Godblood!',
     status: (s) => `Today: ${ENEMIES[huntOn().boss].name}  ·  ${huntEntriesLeft(s)}/${HUNT_ENTRIES} hunts left`,
   },
   {

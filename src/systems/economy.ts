@@ -67,14 +67,14 @@ export function sealLedger(p: Player = STEADY): Line[] {
     { source: 'The Vigil (24 h a day, plus the free Fast Reward)', seals: 7 * (24 + FAST_FREE * FAST_HOURS) * rates.seals },
     { source: "Pilgrim's Pass, free lane and Overflow", seals: perWeek(freeSeals + overflowPerSeason * (OVERFLOW.seals ?? 0), SEASON_DAYS) },
     // A 20-hour errand pays a Seal; about one board errand in four is that long, and slots cap it.
-    { source: 'Holy Errands (20 h)', seals: 7 * Math.min(BOARD_SIZE / DURATIONS.length, (24 * ERRAND_SLOTS) / 20) * (errandReward('relic' as never, 20).seals ?? 0) },
+    { source: 'Sworn Errands (20 h)', seals: 7 * Math.min(BOARD_SIZE / DURATIONS.length, (24 * ERRAND_SLOTS) / 20) * (errandReward('relic' as never, 20).seals ?? 0) },
     { source: 'Feast milestones and stall', seals: perWeek(sum(FEAST_MARKS, (m) => m.reward.seals ?? 0) + sum(FEAST_STALL.filter((s) => s.reward.seals), (s) => s.stock * (s.reward.seals ?? 0)), FEAST_DAYS) },
     { source: 'Inquisition (9 Brands)', seals: perWeek(sum(BRAND_MARKS, (m) => m.seals ?? 0), INQ_DAYS), gilt: perWeek(sum(BRAND_MARKS, (m) => m.gilt ?? 0), INQ_DAYS) },
     { source: 'Ordeals', seals: ordealReward(p.ordealPlace, p.league).seals ?? 0, gilt: ordealReward(p.ordealPlace, p.league).gilt ?? 0 },
     { source: 'Chapter Siege', seals: sum(SIEGE_MILESTONES, (m) => m.reward.seals ?? 0) + sum(SIEGE_TIERS, (m) => m.reward.seals ?? 0) + (chapterPlace(p.siegePlace).seals ?? 0) },
     { source: 'Chapter War', seals: p.warWins * (WAR_WIN.seals ?? 0) + (1 - p.warWins) * (WAR_LOSS.seals ?? 0), gilt: p.warWins * (WAR_WIN.gilt ?? 0) },
     { source: 'Raid clear chest', seals: CLEAR_CHEST.seals, gilt: CLEAR_CHEST.gilt },
-    { source: 'Weekly Pilgrimage (blessed crypt clears)', seals: 7 * PILGRIMAGE_CLEARS * PILGRIMAGE_BONUS.seals },
+    { source: 'Weekly Pilgrimage (sworn crypt clears)', seals: 7 * PILGRIMAGE_CLEARS * PILGRIMAGE_BONUS.seals },
     { source: 'Shop: Tithe Exchange', seals: sum(TITHE_OFFERS, (o) => (o.goods.seals ?? 0) * o.limit) },
     // The Abbess's Blessing, kept up all month: its price is Gilt spent, its daily Gilt comes back.
     { source: "The Abbess's Blessing", seals: perWeek((BLESSING.now.seals ?? 0) + BLESSING.days * (BLESSING.daily.seals ?? 0), BLESSING.days), gilt: perWeek(BLESSING.days * BLESSING.dailyGilt - BLESSING.price, BLESSING.days) },

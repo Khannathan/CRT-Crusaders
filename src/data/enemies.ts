@@ -289,7 +289,7 @@ export const ENCOUNTERS: Record<string, string[]> = {
   'belfry-elite-1': ['bishop', 'warden'],
   'belfry-elite-2': ['golem', 'nun', 'priest'],
   abbess: ['abbess', 'thief', 'nun'],
-  // Hallowed Hunts
+  // Purge Hunts
   'hunt-flayed-saint': ['flayed-saint'],
   'hunt-twofold-reliquary': ['twofold-reliquary'],
   'hunt-colossus': ['colossus'],

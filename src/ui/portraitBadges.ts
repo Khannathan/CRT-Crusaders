@@ -72,7 +72,7 @@ export function showBadgeKey(scene: Phaser.Scene, sample: CrusaderDef, save: Sav
   layer.add(drawPortraitBadges(scene, GAME_W / 2, cy, size, sample, save));
   const rows = [
     ['Top left', `Rarity: R, SR, SSR or UR.`],
-    ['Top right', `Her Order (${sample.order}). Two or more of one Order in a party earn its blessing.`],
+    ['Top right', `Her Order (${sample.order}). Two or more of one Order in a party earn its favour.`],
     ['Bottom left', `Her class (${CLASSES[sample.classId].name}).`],
     ['Bottom right', 'Her level.'],
     ['Right edge', 'Icons of the party presets she is in. Save presets from any party picker.'],

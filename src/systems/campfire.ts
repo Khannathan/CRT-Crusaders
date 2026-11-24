@@ -76,7 +76,7 @@ export function moraleOf(party: string[], talks: Talk[]) {
 
 /** What Morale gives every fight of the descent. */
 export function moraleBuff(morale?: number): { atkPct: number; zeal: number; name: string } {
-  if (morale === undefined || morale < 50) return { atkPct: 0, zeal: 0, name: 'No blessing' };
+  if (morale === undefined || morale < 50) return { atkPct: 0, zeal: 0, name: 'No boon' };
   if (morale >= 90) return { atkPct: 0.1, zeal: 15, name: 'Fervent' };
   if (morale >= 70) return { atkPct: 0.06, zeal: 10, name: 'Resolute' };
   return { atkPct: 0.03, zeal: 5, name: 'Steady' };

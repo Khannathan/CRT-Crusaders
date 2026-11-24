@@ -48,7 +48,7 @@ export class InquisitionScene extends Phaser.Scene {
     this.add.text(PAD + 16, y + 12, rot.edict.name.toUpperCase(), text.display(20, 0xfff1d6));
     this.add.text(GAME_W - PAD - 16, y + 16, `ENDS IN ${untilText(rot.ends - now)}`, text.hud(11, PAL.muted)).setOrigin(1, 0);
     this.add.text(PAD + 16, y + 44, rot.edict.rule, { ...text.body(16, 0xe5a86a), fontStyle: '600' });
-    this.add.text(PAD + 16, y + 70, `Blessed: ${rot.featured.join(' and ')} (+${Math.round(FEATURED_BONUS * 100)}% ATK, HP)`, { ...text.body(14, PAL.steel), wordWrap: { width: bw - 32 } });
+    this.add.text(PAD + 16, y + 70, `Favoured: ${rot.featured.join(' and ')} (+${Math.round(FEATURED_BONUS * 100)}% ATK, HP)`, { ...text.body(14, PAL.steel), wordWrap: { width: bw - 32 } });
     y += 120;
 
     // Brands

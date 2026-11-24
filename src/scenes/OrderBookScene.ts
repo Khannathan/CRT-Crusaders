@@ -11,7 +11,7 @@ import { portraitKey } from '../ui/placeholderPortrait';
 import { addScrollArea } from '../ui/scroll';
 import { holdForCard } from '../ui/sisterCard';
 import { TAB_BAR_H } from '../ui/tabBar';
-import { PAD, noOrphan, text } from '../ui/theme';
+import { PAD, noOrphan, shrinkToFit, text } from '../ui/theme';
 
 const CARD = 84;
 
@@ -73,7 +73,8 @@ export class OrderBookScene extends Phaser.Scene {
       y += creed.height + 4;
       const lore = add(this.add.text(PAD + 4, y, noOrphan(o.lore), { ...text.body(14, PAL.muted), wordWrap: { width: GAME_W - PAD * 2 - 8 }, lineSpacing: 1 }));
       y += lore.height + 4;
-      add(this.add.text(PAD + 4, y, `SWORN RIVAL · ${o.rival.toUpperCase()}`, text.hud(12, 0xd06060)));
+      add(this.add.text(PAD + 4, y, `THE ${o.cross.toUpperCase()}`, text.hud(12, PAL.amber)));
+      add(this.add.text(GAME_W - PAD, y, `RIVAL · ${o.rival.toUpperCase()}`, text.hud(12, 0xd06060)).setOrigin(1, 0));
       y += 28;
 
       const sisters = sistersOf(o.id);
@@ -92,7 +93,7 @@ export class OrderBookScene extends Phaser.Scene {
         }
         holdForCard(this, img, c.id);
         if (set.members.includes(c.id)) add(this.add.text(x + CARD / 2 - 3, cy - CARD / 2 + 3, 'SET', { ...text.hud(10, sworn ? PAL.amber : PAL.steel), backgroundColor: '#1b121c', padding: { x: 3, y: 1 } }).setOrigin(1, 0));
-        add(this.add.text(x, cy + CARD / 2 + 12, c.name.split(' ')[0], text.body(14, sworn ? PAL.ivory : PAL.steel)).setOrigin(0.5));
+        add(shrinkToFit(this.add.text(x, cy + CARD / 2 + 12, c.name.split(' ')[0], text.body(14, sworn ? PAL.ivory : PAL.steel)).setOrigin(0.5), CARD + gap - 4));
         add(this.add.text(x, cy + CARD / 2 + 28, c.rarity, text.hud(11, sworn ? col : PAL.steel)).setOrigin(0.5));
       });
       y += CARD + 44;

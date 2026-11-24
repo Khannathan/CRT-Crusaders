@@ -26,7 +26,7 @@ import { makeButton } from '../ui/button';
 import { modeScreen, progressBar, toast, untilText } from '../ui/modeScreen';
 import { portraitKey } from '../ui/placeholderPortrait';
 import { holdForCard } from '../ui/sisterCard';
-import { PAD, addFrame, fitLine, text } from '../ui/theme';
+import { PAD, addFrame, fitLine, shrinkToFit, text } from '../ui/theme';
 
 /**
  * The Novitiate: seven days of tasks for a new player, the Novice Marks they
@@ -171,7 +171,7 @@ export class NovitiateScene extends Phaser.Scene {
         this.drawPick();
       });
       const owned = save.owned[c.id] ? ' · VOW' : '';
-      fitLine(this.add.text(x, y + size / 2 + 6, c.name.split(' ')[0], text.body(14, PAL.ivory)).setOrigin(0.5, 0), cell - 4);
+      shrinkToFit(this.add.text(x, y + size / 2 + 6, c.name.split(' ')[0], text.body(14, PAL.ivory)).setOrigin(0.5, 0), cell - 4);
       fitLine(this.add.text(x, y + size / 2 + 22, `${c.order.split(' ').pop()!.toUpperCase()}${owned}`, text.hud(9, PAL.steel)).setOrigin(0.5, 0), cell - 4);
     });
     const last = NOVICE_MARKS[NOVICE_MARKS.length - 1];

@@ -12,7 +12,7 @@ import { makeButton } from '../ui/button';
 import { formatPower, partyPower, powerVerdict } from '../systems/power';
 import { VERDICT_COLOR } from '../ui/recommended';
 import { portraitKey } from '../ui/placeholderPortrait';
-import { addIcon, addScreenGlow, text } from '../ui/theme';
+import { addIcon, addScreenGlow, shrinkToFit, text } from '../ui/theme';
 import { addScrollArea } from '../ui/scroll';
 import { holdForCard, justHeld } from '../ui/sisterCard';
 import { drawPortraitBadges } from '../ui/portraitBadges';
@@ -83,7 +83,7 @@ export class MusterScene extends Phaser.Scene {
       });
       holdForCard(this, img, id);
       drawPortraitBadges(this, x, slotY, 128, c, game.save);
-      this.add.text(x, slotY + 82, c.name.split(' ')[0], { ...text.body(18), fontStyle: '600' }).setOrigin(0.5);
+      shrinkToFit(this.add.text(x, slotY + 82, c.name.split(' ')[0], { ...text.body(18), fontStyle: '600' }).setOrigin(0.5), 112);
       this.add.text(x, slotY + 102, CLASSES[c.classId].role.toUpperCase(), text.hud(12, PAL.muted)).setOrigin(0.5);
     }
 
@@ -91,7 +91,7 @@ export class MusterScene extends Phaser.Scene {
     // Order bonuses this party turns on
     const orders = this.party.map((id) => CRUSADERS.find((c) => c.id === id)!.order);
     if (orderBonuses(orders).length || orders.length) drawOrderChips(this, GAME_W / 2, 314, orders, 5);
-    if (!orderBonuses(orders).length) this.add.text(GAME_W / 2, 332, 'Two Sisters of one Order kneel together for its blessing ›', text.body(13, PAL.muted)).setOrigin(0.5, 0);
+    if (!orderBonuses(orders).length) this.add.text(GAME_W / 2, 332, 'Two Sisters of one Order stand together for its favour ›', text.body(13, PAL.muted)).setOrigin(0.5, 0);
     this.add.rectangle(GAME_W / 2, 344, GAME_W - 32, 1, PAL.armorShadow);
     makeButton(this, GAME_W - 70, 314, 104, 34, 'Presets', () => {
       openPresets(this, game.save, [...this.party], 40, (ids) => {

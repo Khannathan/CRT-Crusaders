@@ -23,7 +23,7 @@ const DAY = 864e5;
 /**
  * Each Limited banner: an Order's Living Saint and the two Limited Commanders
  * sworn to her. Ten banners, one per Order, two weeks each: the lineup runs to
- * April 2027. Paulina Macra leads, as the first Saint with her art in.
+ * April 2027. Insomnia leads, as the first Saint with her art in.
  */
 const LINEUP: [string, string, string][] = (['IV', 'VT', 'RP', 'CC', 'SW', 'DL', 'AM', 'TC', 'GC', 'HB'] as const).map((o) => [`${o}-LUR`, `${o}-LSSR1`, `${o}-LSSR2`]);
 

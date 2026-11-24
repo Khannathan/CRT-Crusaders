@@ -83,7 +83,7 @@ describe('gear', () => {
 describe('the Forge', () => {
   const piece = (): GearItem => ({ uid: 'x', slot: 'blade', rarity: 'SSR', name: 'Test', level: 10, main: 'atkPct', subs: [{ stat: 'crit', value: 0.06 }, { stat: 'spd', value: 1 }] });
 
-  it('refines past +10 only with Blessed Iron, up to +15', () => {
+  it('refines past +10 only with Consecrated Iron, up to +15', () => {
     const save = newSave();
     save.tithes = 100_000;
     const item = piece();

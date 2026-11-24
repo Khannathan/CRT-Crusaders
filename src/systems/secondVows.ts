@@ -30,7 +30,7 @@ export const SECOND_TITLE: Record<string, string> = {
   cantor: 'Choir Mistress',
   adjudicator: 'High Adjudicator',
   warsister: 'Flagellant Saint',
-  inquisitor: 'Headsman of Heaven',
+  inquisitor: 'Headsman of the Order',
   veilblade: 'Shroud of Knives',
   censer: 'Thurifer of Wrath',
   arbalist: 'Siege Arbalist',

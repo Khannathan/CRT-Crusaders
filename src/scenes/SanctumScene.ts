@@ -264,7 +264,7 @@ export class SanctumScene extends Phaser.Scene {
     commit();
     if (tended && save.flame!.level > 1) {
       const lines = [`The Vigil Flame grows: ${save.flame!.level} days`];
-      if (tended.graced) lines.push(`Grace kept it for ${tended.graced} missed day${tended.graced > 1 ? 's' : ''}`);
+      if (tended.graced) lines.push(`A pardon kept it for ${tended.graced} missed day${tended.graced > 1 ? 's' : ''}`);
       if (tended.dimmed) lines.push(`It dimmed ${tended.dimmed} step${tended.dimmed > 1 ? 's' : ''} while you were away`);
       for (const t of tended.titles) lines.push(`New title: "${t}"`);
       toast(this, lines.join('\n'), top - 40);

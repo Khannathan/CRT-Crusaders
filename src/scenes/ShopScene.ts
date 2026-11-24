@@ -19,7 +19,7 @@ import { PAD, addFrame, addIcon, text } from '../ui/theme';
 
 type Tab = Counter | 'packs';
 const COUNTERS: [Tab, string, string][] = [
-  ['packs', 'Packs', 'One-time packs as your Rank climbs, and the Blessing.'],
+  ['packs', 'Packs', 'One-time packs as your Rank climbs, and the Anointing.'],
   ['gilt', 'Gilt', 'Limits reset daily.'],
   ['almonry', 'Almonry', 'New each dawn. One free refresh a day.'],
   ['tithes', 'Tithes', 'Limits reset each Monday.'],
@@ -106,21 +106,21 @@ export class ShopScene extends Phaser.Scene {
     const days = blessingDays(save);
     const bh = 132;
     list.content.add(addFrame(this, GAME_W / 2, cy + bh / 2, bw, bh, { fill: 0x2a1824, edge: PAL.amber }));
-    add(this.add.text(PAD + 16, cy + 12, "THE ABBESS'S BLESSING", text.hud(13, PAL.amber)));
+    add(this.add.text(PAD + 16, cy + 12, "THE ABBESS'S ANOINTING", text.hud(13, PAL.amber)));
     add(this.add.text(PAD + 16, cy + 32, `${goodsText(BLESSING.now)} at once, then ${goodsText(BLESSING.daily)} + ${BLESSING.dailyGilt} Gilt each day for ${BLESSING.days} days.`, { ...text.body(16, PAL.ivory), wordWrap: { width: bw - 32 } }));
-    add(this.add.text(PAD + 16, cy + 84, days ? `BLESSED · ${days} DAY${days > 1 ? 'S' : ''} LEFT` : 'Claim it daily, or it is lost that day.', text.hud(11, days ? PAL.amber : PAL.steel)));
+    add(this.add.text(PAD + 16, cy + 84, days ? `ANOINTED · ${days} DAY${days > 1 ? 'S' : ''} LEFT` : 'Claim it daily, or it is lost that day.', text.hud(11, days ? PAL.amber : PAL.steel)));
     const ready = blessingReady(save);
     const block = blessingBlock(save);
     const btn = ready
       ? makeButton(this, GAME_W - PAD - 92, cy + bh - 28, 160, 38, 'Claim today', () => {
           const got = claimBlessing(save);
           commit();
-          this.scene.restart({ counter: 'packs', notice: got ? `Blessed! ${got}.` : undefined });
+          this.scene.restart({ counter: 'packs', notice: got ? `Anointed! ${got}.` : undefined });
         }, { active: true, fontSize: 15 })
       : makeButton(this, GAME_W - PAD - 92, cy + bh - 28, 160, 38, block ?? `${BLESSING.price}`, () => {
           if (!buyBlessing(save)) return;
           commit();
-          this.scene.restart({ counter: 'packs', notice: `Blessed for ${BLESSING.days} days! ${goodsText(BLESSING.now)} received.` });
+          this.scene.restart({ counter: 'packs', notice: `Anointed for ${BLESSING.days} days! ${goodsText(BLESSING.now)} received.` });
         }, { active: !block, disabled: !!block, fontSize: 15, icon: block ? undefined : 'gilt' });
     list.content.add(btn.all);
     cy += bh + 14;

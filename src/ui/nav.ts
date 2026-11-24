@@ -25,7 +25,7 @@ export const TAB_ROOTS = ['Sanctum', 'Roster', 'Modes', 'Recruit', 'Shop'] as co
 
 /** The Crusade hub's wings, by Rite home, with the scene key of each wing's page. */
 export const WINGS = {
-  labors: { scene: 'WingLabors', title: 'Daily Labors', why: 'Materials, gear and Grace', line: 'Spoils renew each dawn. Take them!', art: 'wing-labors', bg: 'bg-iron-oubliette' },
+  labors: { scene: 'WingLabors', title: 'Daily Labors', why: 'Materials, gear and Godblood', line: 'Spoils renew each dawn. Take them!', art: 'wing-labors', bg: 'bg-iron-oubliette' },
   crypts: { scene: 'WingCrypts', title: 'The Crypts', why: 'Runs, relics and records', line: 'Descend. Purge. Climb without end.', art: 'wing-crypts', bg: 'bg-drowned-ossuary' },
   contest: { scene: 'WingContest', title: 'The Contest', why: 'Leagues and weekly ranks', line: 'Outshine every lesser Order.', art: 'wing-contest', bg: 'bg-red-refectory' },
   abyss: { scene: 'WingAbyss', title: 'The Abyss', why: 'Bosses for your best', line: 'Where Saints are broken. Go anyway.', art: 'wing-abyss', bg: 'bg-abyssal-ossuary' },

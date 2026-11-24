@@ -34,7 +34,7 @@ import { TAB_BAR_H } from '../ui/tabBar';
 import { PAD, text } from '../ui/theme';
 import { bonusMarks, bonusWho, joinMarks, rarityNeedMarks } from '../systems/pickMarks';
 
-/** Holy Errands: send Sisters away on timed duties and claim what they bring home. */
+/** Sworn Errands: send Sisters away on timed duties and claim what they bring home. */
 export class ErrandsScene extends Phaser.Scene {
   static listY = 0;
   private notice?: string;
@@ -50,7 +50,7 @@ export class ErrandsScene extends Phaser.Scene {
 
   create() {
     const save = game.save;
-    const { top, refresh } = modeScreen(this, 'Holy Errands', 'Sisters on errands can still fight.');
+    const { top, refresh } = modeScreen(this, 'Sworn Errands', 'Sisters on errands can still fight.');
     const bw = GAME_W - PAD * 2;
     const s = errandsOf(save);
     this.timers = [];

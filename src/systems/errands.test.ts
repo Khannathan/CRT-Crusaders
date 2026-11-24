@@ -13,7 +13,7 @@ function saveWithAll() {
   return s;
 }
 
-describe('Holy Errands', () => {
+describe('Sworn Errands', () => {
   it('offers the same six errands all day, one 1h, one 20h', () => {
     const a = boardFor('2026-11-22');
     expect(a).toEqual(boardFor('2026-11-22'));

@@ -19,7 +19,7 @@ export const BOOST_INFO: Record<BoostKind, { name: string; what: string; scene: 
   tower: { name: 'Bell Tower spoils', what: 'Tithes and materials from Bell Tower floors', scene: 'Tower' },
   trials: { name: 'Relic Trial spoils', what: 'Tithes, materials and Seals from Relic Trials; gear trials give an extra piece', scene: 'Trials' },
   vigil: { name: 'Vigil gathering', what: 'Tithes, materials and EXP the Vigil gathers', scene: 'Sanctum' },
-  errands: { name: 'Errand spoils', what: 'What Holy Errands bring home', scene: 'Errands' },
+  errands: { name: 'Errand spoils', what: 'What Sworn Errands bring home', scene: 'Errands' },
   bond: { name: 'Bond', what: 'Bond XP from every source', scene: 'Roster' },
   exp: { name: 'Battle EXP', what: 'EXP Sisters earn by winning fights', scene: 'Modes' },
   fragments: { name: "Saint's Fragments", what: "Saint's Fragments from every drop", scene: 'Armory' },

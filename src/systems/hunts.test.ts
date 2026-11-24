@@ -13,7 +13,7 @@ const saveAt = (level: number) => {
   return save;
 };
 
-describe('Hallowed Hunts', () => {
+describe('Purge Hunts', () => {
   it('turns one beast a day through all six', () => {
     const seen = new Set(Array.from({ length: 6 }, (_, i) => huntOn(T0 + i * 86_400_000).id));
     expect(seen.size).toBe(6);
