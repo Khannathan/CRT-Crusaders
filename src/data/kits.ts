@@ -1121,16 +1121,19 @@ K('VT-LSSR1', (own) => ({
   shines: ['Flayed Saint Hunt', 'Twofold Reliquary Hunt', 'Chapter Siege', 'Veiled Tribunal Order Tower'],
 }));
 
+// Scholastica Varro, Limited Commander of the Vigil (Adjudicator), from her art:
+// the scales with one pan of ash and one of bone, the great ledger she writes the
+// fallen into with a quill, and Paulina's token pinned over her heart.
 K('IV-LSSR1', (own) => ({
-  passive: sig('Standing Order', 'Each Overwatch reaction also Weakens its foe (-20% attack, 2 turns).'),
+  passive: sig('Roll of the Fallen', 'Each Overwatch reaction also Weakens its foe (-20% attack, 2 turns): she writes its name in the roll.'),
   sig: { owWeaken: 0.2 },
   skills: [
-    st('adjudicator', 'reflected-sentence'),
-    own({ name: 'Watch Order', desc: 'Put an ally on Overwatch and Ward her (-20%) for 2 turns. Cooldown 2.', target: 'ally', overwatch: OVERWATCH_HIT, ward: { pct: 0.2, turns: 2 }, cooldown: 2 }),
-    st('adjudicator', 'censure'),
-    own({ name: 'Judgment at the Gate', desc: 'LITANY: every Sister goes on Overwatch, and every foe loses 30 Wrath.', target: 'allAllies', overwatchAll: OVERWATCH_HIT, alsoFoes: { wrathDrain: 30 }, rite: true }),
+    own({ name: 'Weighed in Ash', desc: 'Weigh any enemy on her scales: -25% attack for 2 turns. Drains 15 Wrath from a boss.', target: 'enemy', mult: 0.75, weaken: { pct: 0.25, turns: 2 }, wrathDrain: 15 }),
+    own({ name: "The Saint's Token", desc: 'Put an ally on Overwatch and Ward her (-20%) for 2 turns. Cooldown 2.', target: 'ally', overwatch: OVERWATCH_HIT, ward: { pct: 0.2, turns: 2 }, cooldown: 2 }),
+    own({ name: 'Written in Ash', desc: 'Write every enemy into the roll: Accused (+25% damage taken) and Sundered (-15% armor) for 2 turns. Cooldown 3.', target: 'allEnemies', mult: 0.3, accuse: 2, sunder: { pct: 0.15, turns: 2 }, cooldown: 3 }),
+    own({ name: 'The Scales Are Read', desc: 'LITANY: every Sister goes on Overwatch, and every foe loses 30 Wrath.', target: 'allAllies', overwatchAll: OVERWATCH_HIT, alsoFoes: { wrathDrain: 30 }, rite: true }),
   ],
-  shines: ['Rot-Mother Hunt', 'Flayed Saint Hunt', 'Blasphemy bosses', 'Iron Vigil Order Tower'],
+  shines: ['Rot-Mother Hunt', 'Flayed Saint Hunt', 'Blasphemy bosses', 'Iron Vigil Order Tower', 'Alongside Paulina Macra'],
 }));
 
 K('RP-LSSR1', (own) => ({
