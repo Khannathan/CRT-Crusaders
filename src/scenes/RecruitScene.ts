@@ -167,7 +167,8 @@ export class RecruitScene extends Phaser.Scene {
       this.add.image(GAME_W - PAD - 30, bTop + 34, 'ui-arrow').setDisplaySize(22, 22);
     }
     const sub = limited ? `LIMITED · LEAVES IN ${timeLeft(win.ends).toUpperCase()}` : `STANDARD · BANNER ${page + 1} OF ${pages}`;
-    const subText = this.add.text(GAME_W / 2, bTop + 14, sub, { ...text.hud(11, limited ? PAL.amber : PAL.ivory), stroke: '#0b070c', strokeThickness: 4 }).setOrigin(0.5, 0).setDepth(1);
+    // under the title row, so a long Saint's name never runs into it
+    const subText = this.add.text(GAME_W / 2, bTop + 46, sub, { ...text.hud(11, limited ? PAL.amber : PAL.ivory), stroke: '#0b070c', strokeThickness: 4 }).setOrigin(0.5, 0).setDepth(1);
     this.add.rectangle(GAME_W / 2, subText.y + subText.height / 2, subText.width + 20, subText.height + 6, 0x0b070c, 0.6);
     this.add.text(GAME_W / 2, bTop + bh - 4, 'Tap a Sister for her splash · hold for her card', { ...text.body(14, PAL.muted), stroke: '#0b070c', strokeThickness: 3 }).setOrigin(0.5, 1);
 

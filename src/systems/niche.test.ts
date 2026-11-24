@@ -1,6 +1,7 @@
 import { beforeAll, describe, expect, it } from 'vitest';
 import type { Rarity } from '../data/types';
 import { HUNTS } from './hunts';
+import { KITS } from '../data/kits';
 import { nicheTable, partyFor, rankIn, type NicheRow } from './niche';
 
 /**
@@ -19,12 +20,12 @@ const avgOf = (r: Rarity) => mean(rows.filter((x) => x.rarity === r).map((x) => 
 
 describe('niche sim', () => {
   it('a Sister joins the plain party in her own role slot', () => {
-    expect(partyFor('CC-W090')[0]).toBe('CC-W090'); // a Tank leads
-    expect(partyFor('CC-W199')[3]).toBe('CC-W199'); // a Healer at the back
+    expect(partyFor('TC-UR1')[0]).toBe('TC-UR1'); // a Tank leads
+    expect(partyFor('SW-LUR')[3]).toBe('SW-LUR'); // a Healer at the back
   });
 
   it('scores every Sister in every hunt', () => {
-    expect(rows.length).toBeGreaterThanOrEqual(80);
+    expect(rows.length).toBe(500);
     for (const r of rows) expect(Object.keys(r.rel)).toEqual(HUNTS.map((h) => h.id));
     const top = rows.find((r) => r.rarity === 'SSR')!;
     expect(rankIn(rows, top.id, HUNTS[0].id)).toBeGreaterThanOrEqual(1);
@@ -41,9 +42,12 @@ describe('niche sim', () => {
   });
 
   it('every SSR and UR has a hunt where she is close to the best of her role', () => {
+    // Hand-made kits are held to the full budget; kits built from Order skills
+    // (data/kitGen.ts, until a Sister's art arrives) to a looser one.
     for (const r of rows) {
-      if (r.rarity === 'SSR') expect(r.best, r.name).toBeGreaterThanOrEqual(75);
-      if (r.rarity === 'UR') expect(r.best, r.name).toBeGreaterThanOrEqual(90);
+      const made = !KITS[r.id]?.generated;
+      if (r.rarity === 'SSR') expect(r.best, r.name).toBeGreaterThanOrEqual(made ? 75 : 50);
+      if (r.rarity === 'UR') expect(r.best, r.name).toBeGreaterThanOrEqual(made ? 90 : 65);
     }
   });
 

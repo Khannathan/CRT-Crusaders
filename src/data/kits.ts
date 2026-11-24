@@ -13,6 +13,7 @@
  */
 import { CLASS_SKILLS, type SkillDef } from './skills';
 import type { PassiveDef } from './types';
+import { ROSTER } from './roster';
 import { OVERWATCH_HIT } from '../systems/keywords';
 
 /** What a Bell Sister's Peal does (every third toll). */
@@ -175,6 +176,8 @@ export interface Kit {
   seal?: Seal;
   /** Content she is built for ("Shines in"). */
   shines?: string[];
+  /** Built from her Order's skills (data/kitGen.ts) until her art arrives and her own kit is designed. */
+  generated?: true;
 }
 
 const any: number[] = [];
@@ -192,14 +195,32 @@ const sig = (name: string, desc: string): PassiveDef => ({ name, desc, kind: 'si
 const ow = (mult: number, extra: Partial<SkillDef> = {}): SkillDef => ({ id: 'overwatch', name: 'Overwatch', desc: '', from: [], target: 'enemy', mult, ...extra });
 
 export const KITS: Record<string, Kit> = {};
+/** Old roster ids of the returning Sisters: their own skill ids keep the old prefix (w040-...). */
+const LEGACY = new Map(ROSTER.filter((c) => c.legacy).map((c) => [c.id, c.legacy!]));
 function K(id: string, build: (own: (s: Own) => SkillDef) => Kit) {
-  const pre = id.replace('CC-', '').toLowerCase();
+  const pre = (LEGACY.get(id) ?? id).replace('CC-', '').toLowerCase();
   KITS[id] = build((s) => ({ from: any, ...s, id: `${pre}-${slug(s.name)}` }));
 }
 
 // ======================= Iron Vigil: Overwatch =======================
 
-K('CC-W040', (own) => ({
+// Paulina Macra, the Vigil's Living Saint (Limited UR Arbalist), from her approved art:
+// the saint-forged crossbow of blessed light, the watch-key ring that locks the
+// gates, the amber eye-lantern that never goes out, and the burning scripture arm.
+K('IV-LUR', (own) => ({
+  passive: sig('Keeper of the Gates', '+20% damage from rank 3 or 4. Every Sister whose Overwatch fires gains 12 Zeal.'),
+  sig: { backRankDmg: 0.2, owZeal: 12 },
+  skills: [
+    own({ name: 'Bolt of Blessed Light', desc: 'A heavy bolt on any rank through 30% of its Armor; +50% against the Accused.', from: [2, 3, 4], target: 'enemy', mult: 1.35, armorPierce: 0.3, bonusIfAccused: 0.5 }),
+    own({ name: 'The Watch-Keys', desc: 'Lock a foe out: it is Accused for 2 turns and its turn goes to the end (breaks a charge). Then she goes on Overwatch, and her shot pierces 30% of Armor. Cooldown 2.', target: 'enemy', mult: 0.5, accuse: 2, delay: true, overwatch: ow(1.0, { armorPierce: 0.3 }), cooldown: 2 }),
+    own({ name: 'The Lantern Opens Its Eye', desc: 'Every Sister goes on Overwatch and gains +20% critical chance for 2 turns. Cooldown 3.', target: 'allAllies', overwatchAll: OVERWATCH_HIT, critUp: { pct: 0.2, turns: 2 }, cooldown: 3 }),
+    own({ name: 'No Gate Left Open', desc: 'LITANY: five bolts of blessed light at one foe (0.55x each), through shields and 30% of its Armor; then every Sister goes on Overwatch.', target: 'enemy', mult: 0.55, hits: 5, pierceShield: true, armorPierce: 0.3, overwatchAll: OVERWATCH_HIT, rite: true }),
+  ],
+  seal: { name: 'The Eye Never Closes', desc: 'The first time a Blasphemy lands, her lantern saw it coming: every Sister is Warded (-40%) against it.', kind: 'seenBefore' },
+  shines: ['Hunts and boss Wrath races', 'Iron Vigil Order Tower', 'Real-time field'],
+}));
+
+K('IV-UR1', (own) => ({
   passive: sig('Watchfire', 'At the start of each round she sets the foe that acts first Burning for 2 turns. Her burns and poisons are 15% stronger.'),
   sig: { burnFirst: 2, dotMult: 0.15 },
   skills: [
@@ -212,7 +233,7 @@ K('CC-W040', (own) => ({
   shines: ['Rot-Mother Hunt', 'Choirmaster Hunt', "Pilgrim's Road and crypt waves", 'Chapter Siege'],
 }));
 
-K('CC-W049', (own) => ({
+K('IV-SSR-ORA', (own) => ({
   passive: sig("Sentry's Omen", 'At the start of each fight your fastest Sister goes on Overwatch. A Sister whose Overwatch fires gains 10 Zeal.'),
   sig: { openOverwatch: true, owZeal: 10 },
   skills: [
@@ -224,7 +245,7 @@ K('CC-W049', (own) => ({
   shines: ['Iron Abbot Hunt', 'Colossus Hunt', 'Iron Vigil Order Tower', 'Real-time field'],
 }));
 
-K('CC-W058', (own) => ({
+K('IV-SSR-HIE', (own) => ({
   passive: sig('Rampart', 'While she stands in rank 1, the Sister behind her takes 20% less damage and fires a free hit whenever her Overwatch does.'),
   sig: { rampart: 0.2 },
   skills: [
@@ -236,7 +257,7 @@ K('CC-W058', (own) => ({
   shines: ['Guarding the back rank (The Choir Below)', 'Iron Vigil Order Tower'],
 }));
 
-K('CC-W094', (own) => ({
+K('IV-SR-MAR', (own) => ({
   passive: { name: 'Last Watch', desc: 'Once a fight, a killing blow leaves her at 1 HP and puts her on Overwatch.', kind: 'unbroken' },
   sig: { unbrokenOverwatch: true },
   skills: [
@@ -247,7 +268,7 @@ K('CC-W094', (own) => ({
   ],
 }));
 
-K('CC-W085', (own) => ({
+K('IV-SR-SEN', (own) => ({
   passive: sig('Key Ward', 'Her counter-hits deal 30% more while she is on Overwatch.'),
   sig: { owCounter: 0.3 },
   skills: [
@@ -258,7 +279,7 @@ K('CC-W085', (own) => ({
   ],
 }));
 
-K('CC-W001', (own) => ({
+K('IV-R-EXE', (own) => ({
   passive: { name: 'Watchful Eyes', desc: '+1 speed: she acts sooner.', kind: 'swift', value: 1 },
   skills: [
     st('inquisitor', 'accuse'),
@@ -268,7 +289,7 @@ K('CC-W001', (own) => ({
   ],
 }));
 
-K('CC-W232', (own) => ({
+K('IV-R-ARB', (own) => ({
   passive: sig('Wall Gunner', '+15% damage from rank 3 or 4.'),
   sig: { backRankDmg: 0.15 },
   skills: [
@@ -279,7 +300,7 @@ K('CC-W232', (own) => ({
   ],
 }));
 
-K('CC-W103', (own) => ({
+K('IV-R-ABB', (own) => ({
   passive: { name: 'Iron Rose', desc: 'Foes that strike her take 10% of the damage back.', kind: 'thorns', value: 0.1 },
   skills: [
     st('abbess', 'thorned-rebuke'),
@@ -291,7 +312,7 @@ K('CC-W103', (own) => ({
 
 // ======================= Ashen Mercy: Mercy =======================
 
-K('CC-W050', (own) => ({
+K('AM-UR1', (own) => ({
   passive: sig('Omen of Release', "Raises the party's Mercy line from 15% to 25%. Every Mercy kill gives every Sister 10 Zeal."),
   sig: { mercyUp: 0.1, mercyZeal: 10 },
   skills: [
@@ -301,10 +322,10 @@ K('CC-W050', (own) => ({
     own({ name: 'Absolution', desc: 'LITANY: heavy magic damage on every enemy; any common foe left under 30% HP is granted Mercy at once.', target: 'allEnemies', mult: 1.3, mercyLine: 0.3, rite: true }),
   ],
   seal: { name: 'Last Rites Heard', desc: 'The first time a Sister would fall, she is healed 30% instead and her attacker is Foretold.', kind: 'lastRites' },
-  shines: ['Red Cardinal Hunt', 'Waves and summons', "Pilgrim's Road", 'Crypt runs'],
+  shines: ['Waves and summons', "Pilgrim's Road", 'Crypt runs'],
 }));
 
-K('CC-W059', (own) => ({
+K('AM-SSR-HIE', (own) => ({
   passive: sig('Shield of Ash', 'When a shield she gave breaks, the attacker is Weakened (-15% attack) for a turn. Her shields are 50% larger on a Sister under 30% HP.'),
   sig: { shieldBreakWeaken: 0.15, lowShield: 0.5 },
   skills: [
@@ -316,7 +337,7 @@ K('CC-W059', (own) => ({
   shines: ['Crypt runs'],
 }));
 
-K('CC-W077', (own) => ({
+K('AM-SSR-WAR', (own) => ({
   passive: sig('Coup de Grâce', 'Her hits on foes under half HP always crit. Once a round, a Mercy kill gives her another action.'),
   sig: { critUnderHalf: true, mercyExtra: true },
   skills: [
@@ -328,7 +349,7 @@ K('CC-W077', (own) => ({
   shines: ['Clearing adds and summons', 'Ashen Mercy Order Tower'],
 }));
 
-K('CC-W095', (own) => ({
+K('AM-SR-MAR', (own) => ({
   passive: { name: 'Ashes Rise', desc: 'Once a fight, a killing blow leaves her at 1 HP and heals every Sister 5%.', kind: 'unbroken' },
   sig: { unbrokenHeal: 0.05 },
   skills: [
@@ -339,7 +360,7 @@ K('CC-W095', (own) => ({
   ],
 }));
 
-K('CC-W104', (own) => ({
+K('AM-SR-ABB', (own) => ({
   passive: { name: 'Ash Briars', desc: 'Foes that strike her take 15% back; a foe killed by her thorns counts as a Mercy kill.', kind: 'thorns', value: 0.15 },
   sig: { thornsMercy: true },
   skills: [
@@ -350,7 +371,7 @@ K('CC-W104', (own) => ({
   ],
 }));
 
-K('CC-W011', (own) => ({
+K('AM-R-WAR', (own) => ({
   skills: [
     st('warsister', 'penitent-blow'),
     st('warsister', 'blood-for-zeal'),
@@ -359,7 +380,7 @@ K('CC-W011', (own) => ({
   ],
 }));
 
-K('CC-W233', (own) => ({
+K('AM-R-ARB', (own) => ({
   passive: sig('Clean Death', '+20% damage to foes under 30% HP.'),
   sig: { dmgUnder30: 0.2 },
   skills: [
@@ -370,7 +391,7 @@ K('CC-W233', (own) => ({
   ],
 }));
 
-K('CC-W131', (own) => ({
+K('AM-R-EXO', (own) => ({
   skills: [
     st('exorcist', 'lantern-flare'),
     st('exorcist', 'witchfire'),
@@ -381,7 +402,7 @@ K('CC-W131', (own) => ({
 
 // ======================= Veiled Tribunal: Guilt =======================
 
-K('CC-W060', (own) => ({
+K('VT-UR1', (own) => ({
   passive: sig('Testimony', 'Each time she is struck, the attacker gains 1 Guilt. While she stands, foes that strike a Warded Sister gain Guilt too.'),
   sig: { guiltWhenStruck: 1, guiltOnWarded: true },
   skills: [
@@ -394,7 +415,7 @@ K('CC-W060', (own) => ({
   shines: ['Twofold Reliquary Hunt', 'Chapter Siege', 'Veiled Tribunal Order Tower'],
 }));
 
-K('CC-W069', (own) => ({
+K('VT-LUR', (own) => ({
   passive: sig('Vindication', 'While she stands, every Sister takes 8% less damage. Her counters add 1 Guilt; on a foe with 5 Guilt her counter becomes Vindicate and spends it for a heavy blow.'),
   sig: { guiltCounter: true, guard: 0.08 },
   skills: [
@@ -407,7 +428,7 @@ K('CC-W069', (own) => ({
   shines: ['Flayed Saint Hunt', 'Twofold Reliquary Hunt', 'One-shot bosses in the deeper crypts', 'Inquisition trials', 'Her Feast'],
 }));
 
-K('CC-W180', (own) => ({
+K('VT-SSR-VEI', (own) => ({
   passive: sig('Without Appeal', "Her crits spend the target's Guilt for +20% damage per stack. When she kills a foe, its Guilt passes to the next."),
   sig: { critConsumeGuilt: 0.2, passGuilt: true },
   skills: [
@@ -419,7 +440,7 @@ K('CC-W180', (own) => ({
   shines: ['Flayed Saint Hunt', 'Back-rank priority foes', 'Red Cardinal burst check'],
 }));
 
-K('CC-W198', (own) => ({
+K('VT-SSR-HOS', (own) => ({
   passive: sig('Chalice of Witness', 'Her overhealing becomes a shield. Her heals are 3% stronger for each Guilt on the most guilty foe.'),
   sig: { overhealShield: true, healPerGuilt: 0.03 },
   skills: [
@@ -431,7 +452,7 @@ K('CC-W198', (own) => ({
   shines: ['Hit-everyone bosses', 'Crypt runs', 'Veiled Tribunal Order Tower'],
 }));
 
-K('CC-W114', (own) => ({
+K('VT-SR-CAN', (own) => ({
   passive: { name: 'Grave Note', desc: 'Each foe she kills gives her 9 Zeal.', kind: 'zealOnKill', value: 9 },
   skills: [
     st('cantor', 'psalm-of-blades'),
@@ -441,7 +462,7 @@ K('CC-W114', (own) => ({
   ],
 }));
 
-K('CC-W234', (own) => ({
+K('VT-SR-ARB', (own) => ({
   skills: [
     st('arbalist', 'blessed-bolt'),
     st('arbalist', 'shieldbreaker'),
@@ -450,7 +471,7 @@ K('CC-W234', (own) => ({
   ],
 }));
 
-K('CC-W012', (own) => ({
+K('VT-R-WAR', (own) => ({
   skills: [
     st('warsister', 'penitent-blow'),
     st('warsister', 'flagellants-charge'),
@@ -459,7 +480,7 @@ K('CC-W012', (own) => ({
   ],
 }));
 
-K('CC-W141', (own) => ({
+K('VT-R-EXO', (own) => ({
   passive: { name: 'Witchfire Wick', desc: 'Her burns are 15% stronger.', kind: 'plague', value: 0.15 },
   skills: [
     st('exorcist', 'witchfire'),
@@ -471,7 +492,7 @@ K('CC-W141', (own) => ({
 
 // ======================= Sepulcher Watch: Remains =======================
 
-K('CC-W070', (own) => ({
+K('SW-UR1', (own) => ({
   passive: sig('Ossuary Oath', 'At 3 or more Remains, she and the Sisters beside her take 15% less damage. Each Remains the party spends heals her 4%.'),
   sig: { remainsGuard: 0.15, remainsSpendHeal: 0.04 },
   skills: [
@@ -481,10 +502,10 @@ K('CC-W070', (own) => ({
     own({ name: 'None Shall Wake', desc: 'LITANY: Ward every ally (-25%) for 2 turns, draw every attack and counter; summoned foes lose their next turn.', target: 'allAllies', ward: { pct: 0.25, turns: 2 }, taunt: 2, counter: { mult: 0.9, turns: 2 }, stunSummons: 1, rite: true }),
   ],
   seal: { name: 'The Only One Home', desc: 'If she is the last Sister standing, she heals 50%, gains Haste and +40% attack for the rest of the fight.', kind: 'onlyOne' },
-  shines: ['Red Cardinal Hunt', 'Rot-Mother Hunt', 'Summoner bosses', 'Add-heavy deeper crypts', 'Sepulcher Watch Order Tower'],
+  shines: ['Red Cardinal Hunt', 'Summoner bosses', 'Add-heavy deeper crypts', 'Sepulcher Watch Order Tower'],
 }));
 
-K('CC-W199', (own) => ({
+K('SW-LUR', (own) => ({
   passive: sig('Overflowing Chalice', 'Each Remains the party gains heals every Sister 6%. At the start of her turn she spends 3 Remains to raise a fallen Sister with 40% HP.'),
   sig: { remainsHeal: 0.06, raise3: 0.4 },
   skills: [
@@ -497,7 +518,7 @@ K('CC-W199', (own) => ({
   shines: ['Red Cardinal Hunt', 'Flayed Saint Hunt', 'Bell Tower and Heresy', 'Hunts', 'Her Feast'],
 }));
 
-K('CC-W079', (own) => ({
+K('SW-SSR-WAR', (own) => ({
   passive: sig('Harvest', 'Each Remains the party gains gives her 8 Zeal and +5% attack for the fight (up to +25%).'),
   sig: { remainsZeal: 8, remainsAtk: { per: 0.05, cap: 0.25 } },
   skills: [
@@ -509,7 +530,7 @@ K('CC-W079', (own) => ({
   shines: ['Swarm fights', "Pilgrim's Road"],
 }));
 
-K('CC-W088', (own) => ({
+K('SW-SSR-SEN', (own) => ({
   passive: sig('Keeper of the Keys', 'The Remains cap is 8 with her. When a Sister falls, she guards the body: draws attacks and counters for 2 turns.'),
   sig: { remainsCap: 8, guardBody: true },
   skills: [
@@ -521,7 +542,7 @@ K('CC-W088', (own) => ({
   shines: ['Summoner bosses'],
 }));
 
-K('CC-W235', (own) => ({
+K('SW-SSR-ARB', (own) => ({
   passive: sig('Saint-Fletched', 'Her bolts are cut from saints\' bones: each Remains she spends gives that bolt +20% damage and 15% more armor pierce.'),
   sig: {},
   skills: [
@@ -533,7 +554,7 @@ K('CC-W235', (own) => ({
   shines: ['Bosses with adds'],
 }));
 
-K('CC-W106', (own) => ({
+K('SW-SSR-ABB', (own) => ({
   passive: sig('Grave Garden', 'Each fallen foe leaves a briar: every Sister heals 6% and gains Thorns (15% back) for a turn.'),
   sig: { foeFallHeal: 0.06, foeFallThorns: 0.15 },
   skills: [
@@ -545,7 +566,7 @@ K('CC-W106', (own) => ({
   shines: ['Choirmaster Hunt', 'Font Leviathan Hunt', 'Crypt runs'],
 }));
 
-K('CC-W022', (own) => ({
+K('SW-SR-CON', (own) => ({
   passive: { name: 'Embalmer', desc: 'At the start of her turn every Sister heals 2% of max HP; 3% while the party holds any Remains.', kind: 'healAura', value: 0.02 },
   sig: { auraRemains: 0.01 },
   skills: [
@@ -556,7 +577,7 @@ K('CC-W022', (own) => ({
   ],
 }));
 
-K('CC-W013', (own) => ({
+K('SW-R-WAR', (own) => ({
   skills: [
     st('warsister', 'penitent-blow'),
     st('warsister', 'blood-for-zeal'),
@@ -565,7 +586,7 @@ K('CC-W013', (own) => ({
   ],
 }));
 
-K('CC-W151', (own) => ({
+K('SW-R-CON', (own) => ({
   passive: sig('Funeral Banner', 'While the party holds any Remains, every Sister has +5% attack.'),
   sig: { remainsAtkAll: 0.05 },
   skills: [
@@ -580,7 +601,7 @@ K('CC-W151', (own) => ({
 
 const HYMN = 2; // turns a Hymn's status lasts, so it holds until each Sister's own turn
 
-K('CC-W080', (own) => ({
+K('CC-UR1', (own) => ({
   passive: sig('Duet', 'While any Hymn plays, each of her strikes lands twice (the second at 60%), and every strike gives the party 3 Zeal.'),
   sig: { hymnDouble: 0.6, hymnStrikeZeal: 3 },
   skills: [
@@ -593,7 +614,7 @@ K('CC-W080', (own) => ({
   shines: ['Rot-Mother Hunt', 'Hunt damage scores', 'Candle Choir Order Tower'],
 }));
 
-K('CC-W209', (own) => ({
+K('CC-LUR', (own) => ({
   passive: sig('The Mirror Judges', 'A boss that starts charging while a Hymn plays loses 25 Wrath. Her Weakens last a turn longer.'),
   sig: { hymnWrath: 25, weakenPlus: 1 },
   skills: [
@@ -606,7 +627,7 @@ K('CC-W209', (own) => ({
   shines: ['Red Cardinal Hunt', 'Flayed Saint Hunt', "Every boss's Blasphemy", 'Chapter Siege', 'Her Feast'],
 }));
 
-K('CC-W089', (own) => ({
+K('CC-SSR-SEN', (own) => ({
   passive: sig('Bass Note', 'While she draws attacks and a Hymn plays, every Sister takes 10% less damage.'),
   sig: { hymnTauntWard: 0.1 },
   skills: [
@@ -615,10 +636,10 @@ K('CC-W089', (own) => ({
     st('sentinel', 'funeral-bash'),
     own({ name: 'Choir of Stone', desc: 'LITANY: Ward every ally (-25%) for 2 turns, draw every attack, and start Hold the Note.', target: 'allAllies', ward: { pct: 0.25, turns: 2 }, taunt: 2, hymn: { name: 'Hold the Note', rounds: 3, allies: { ward: { pct: 0.1, turns: HYMN } } }, rite: true }),
   ],
-  shines: ['Colossus Hunt', 'Hit-everyone bosses', 'The Choir Below'],
+  shines: ['Hit-everyone bosses', 'The Choir Below'],
 }));
 
-K('CC-W098', (own) => ({
+K('CC-SSR-MAR', (own) => ({
   passive: sig('Burns at Both Ends', 'Each round she loses 4% HP and the party gains 6 Zeal. When she falls, the Hymns playing double in strength until they end.'),
   sig: { burnRound: { hp: 0.04, zeal: 6 }, hymnOnFall: true },
   skills: [
@@ -630,7 +651,7 @@ K('CC-W098', (own) => ({
   shines: ['Litany-chain parties', 'Zeal-steal bosses'],
 }));
 
-K('CC-W134', (own) => ({
+K('CC-SSR-EXO', (own) => ({
   passive: sig('Lantern Hymn', 'While a Hymn plays, her burns tick twice.'),
   sig: { hymnBurnTwice: true },
   skills: [
@@ -642,7 +663,7 @@ K('CC-W134', (own) => ({
   shines: ['Rot-Mother Hunt', 'Colossus Hunt', 'Shielded and warded foes'],
 }));
 
-K('CC-W014', (own) => ({
+K('CC-SR-WAR', (own) => ({
   passive: sig('Marching Step', '+10% damage while a Hymn plays.'),
   sig: { hymnAtk: 0.1 },
   skills: [
@@ -653,7 +674,7 @@ K('CC-W014', (own) => ({
   ],
 }));
 
-K('CC-W032', (own) => ({
+K('CC-R-CEN', (own) => ({
   skills: [
     st('censer', 'incense-cloud'),
     st('censer', 'burning-thurible'),
@@ -662,7 +683,7 @@ K('CC-W032', (own) => ({
   ],
 }));
 
-K('CC-W161', (own) => ({
+K('CC-R-CAN', (own) => ({
   skills: [
     st('cantor', 'hymn-of-iron'),
     st('cantor', 'keening-note'),
@@ -673,7 +694,7 @@ K('CC-W161', (own) => ({
 
 // ======================= Thorn Covenant: Scars =======================
 
-K('CC-W090', (own) => ({
+K('TC-UR1', (own) => ({
   passive: sig('Crown of Living Briar', 'Each hit she takes gives her 1 Scar. Her counters deal 4% more per Scar and leave the attacker Bleeding for 2 turns.'),
   sig: { scarOnHit: 1, counterPerScar: 0.04, counterBleed: 2 },
   skills: [
@@ -686,7 +707,7 @@ K('CC-W090', (own) => ({
   shines: ['Rot-Mother Hunt', 'Choirmaster Hunt', 'Thorn Covenant Order Tower', 'Rivals'],
 }));
 
-K('CC-W099', (own) => ({
+K('TC-SSR-MAR', (own) => ({
   passive: sig("Martyr's Gift", 'When she falls, every Sister gains 40 Zeal and +25% attack for 2 turns, and each Covenant Sister 1 Scar for every 2 she held.'),
   sig: { fallGift: { zeal: 40, empower: 0.25, scarsShare: 0.5 } },
   skills: [
@@ -698,7 +719,7 @@ K('CC-W099', (own) => ({
   shines: ['Colossus Hunt', 'Rivals', 'Inquisition trials', 'Thorn Covenant Order Tower'],
 }));
 
-K('CC-W117', (own) => ({
+K('TC-SSR-CAN', (own) => ({
   passive: sig('Hymn of the Lash', 'Each Scar any Covenant Sister gains gives the party 2 Zeal.'),
   sig: { scarZeal: 2 },
   skills: [
@@ -710,7 +731,7 @@ K('CC-W117', (own) => ({
   shines: ['Font Leviathan Hunt'],
 }));
 
-K('CC-W006', (own) => ({
+K('TC-SR-EXE', (own) => ({
   skills: [
     st('inquisitor', 'accuse'),
     st('inquisitor', 'sentence'),
@@ -719,7 +740,7 @@ K('CC-W006', (own) => ({
   ],
 }));
 
-K('CC-W144', (own) => ({
+K('TC-SR-EXO', (own) => ({
   skills: [
     st('exorcist', 'witchfire'),
     st('exorcist', 'rite-of-expulsion'),
@@ -728,7 +749,7 @@ K('CC-W144', (own) => ({
   ],
 }));
 
-K('CC-W042', (own) => ({
+K('TC-R-ORA', (own) => ({
   skills: [
     st('oracle', 'ash-bolt'),
     st('oracle', 'grim-augury'),
@@ -737,7 +758,7 @@ K('CC-W042', (own) => ({
   ],
 }));
 
-K('CC-W171', (own) => ({
+K('TC-R-VEI', (own) => ({
   skills: [
     st('veilblade', 'veil-strike'),
     st('veilblade', 'hamstring'),
@@ -746,7 +767,7 @@ K('CC-W171', (own) => ({
   ],
 }));
 
-K('CC-W033', (own) => ({
+K('TC-R-CEN', (own) => ({
   skills: [
     st('censer', 'incense-cloud'),
     st('censer', 'burning-thurible'),
@@ -757,7 +778,7 @@ K('CC-W033', (own) => ({
 
 // ======================= Drowned Litany: Tide =======================
 
-K('CC-W100', (own) => ({
+K('DL-UR1', (own) => ({
   passive: sig('Drowned Heart', 'At the start of her turn every Sister heals 1% per Tide. At Tide 5 she draws attacks on her own.'),
   sig: { tideHeal: 0.01, tideTaunt: true },
   skills: [
@@ -767,10 +788,10 @@ K('CC-W100', (own) => ({
     own({ name: 'Flood Tide', desc: 'LITANY: smite every enemy and heal for 50% of the damage; the Tide rises to 5.', target: 'allEnemies', mult: 0.85, drain: 0.5, gain: { tide: 5 }, rite: true }),
   ],
   seal: { name: 'Drowned and Returned', desc: 'The first time she falls, she rises at the start of the next round with 50% HP, and the Tide goes to 5.', kind: 'drowned' },
-  shines: ['Colossus Hunt', 'Font Leviathan Hunt', 'Hunt damage scores', 'Chapter Siege', 'Deep Bell Tower floors'],
+  shines: ['Colossus Hunt', 'Hunt damage scores', 'Chapter Siege', 'Deep Bell Tower floors'],
 }));
 
-K('CC-W229', (own) => ({
+K('DL-LUR', (own) => ({
   passive: sig('Tide of Omens', 'The Tide starts at 2. At the start of each round every Sister gains 3 Zeal per Tide.'),
   sig: { tideStart: 2, tideZeal: 3 },
   skills: [
@@ -780,10 +801,10 @@ K('CC-W229', (own) => ({
     own({ name: 'Deluge Omen', desc: 'LITANY: heavy magic damage on every enemy, +10% per Tide.', target: 'allEnemies', mult: 1.3, byTide: { per: { multPct: 0.1 } }, rite: true }),
   ],
   seal: { name: 'High Water', desc: 'The first time the Tide reaches 5, every Sister gains 25 Zeal.', kind: 'highWater' },
-  shines: ['Choirmaster Hunt', 'Iron Abbot Hunt', 'Litany-chain parties', 'Her Feast'],
+  shines: ['Choirmaster Hunt', 'Litany-chain parties', 'Her Feast'],
 }));
 
-K('CC-W220', (own) => ({
+K('DL-SSR-EXE', (own) => ({
   passive: sig('Drowning Bell', 'Her hits deal double damage under 30% HP, plus 4% per Tide (50% at Tide 5).'),
   sig: { executeTide: { base: 0.3, per: 0.04 } },
   skills: [
@@ -795,19 +816,8 @@ K('CC-W220', (own) => ({
   shines: ['Font Leviathan Hunt', 'Flayed Saint Hunt', 'Finishing Hunt bosses', "Pilgrim's Road chapter bosses"],
 }));
 
-K('CC-W007', (own) => ({
-  passive: sig('Baptism', 'Accused foes lose 5% attack per Tide.'),
-  sig: { tideWeakAccused: 0.05 },
-  skills: [
-    own({ name: 'Accuse the Drowned', desc: 'A light hit on any rank: Accused and Hexed (-25% Magic Resist) for 3 turns.', from: [1, 2, 3], target: 'enemy', mult: 0.6, accuse: 3, hex: { pct: 0.25, turns: 3 } }),
-    own({ name: 'Hold Under', desc: 'Strike rank 1-2; at Tide 3 or more, Stun it (bosses are Delayed instead). Cooldown 3.', from: [1, 2], target: 'enemy', reach: [1, 2], mult: 1.1, byTide: { at: 3, then: { stun: 1, cond: { if: 'boss', then: { delay: true } } } }, cooldown: 3 }),
-    st('inquisitor', 'sentence'),
-    own({ name: 'Last Baptism', desc: 'LITANY: Ebb: a crushing blow on any enemy, +15% per Tide spent.', target: 'enemy', mult: 1.8, bonusIfAccused: 0.5, spend: { kw: 'tide', per: { multPct: 0.15 } }, rite: true }),
-  ],
-  shines: ['Font Leviathan Hunt', 'Bosses that grow stronger'],
-}));
 
-K('CC-W043', (own) => ({
+K('DL-SR-ORA', (own) => ({
   skills: [
     st('oracle', 'foresight'),
     st('oracle', 'grim-augury'),
@@ -816,7 +826,7 @@ K('CC-W043', (own) => ({
   ],
 }));
 
-K('CC-W154', (own) => ({
+K('DL-SR-CON', (own) => ({
   skills: [
     st('confessor', 'remedy'),
     st('confessor', 'contagion'),
@@ -825,7 +835,7 @@ K('CC-W154', (own) => ({
   ],
 }));
 
-K('CC-W163', (own) => ({
+K('DL-SR-CAN', (own) => ({
   skills: [
     st('cantor', 'hymn-of-iron'),
     st('cantor', 'psalm-of-blades'),
@@ -834,7 +844,7 @@ K('CC-W163', (own) => ({
   ],
 }));
 
-K('CC-W052', (own) => ({
+K('DL-R-HIE', (own) => ({
   skills: [
     st('hierophant', 'reliquary-bash'),
     st('hierophant', 'sanctuary'),
@@ -843,7 +853,7 @@ K('CC-W052', (own) => ({
   ],
 }));
 
-K('CC-W061', (own) => ({
+K('DL-R-SEN', (own) => ({
   skills: [
     st('sentinel', 'gravewarden-strike'),
     st('sentinel', 'tomb-stance'),
@@ -854,7 +864,7 @@ K('CC-W061', (own) => ({
 
 // ======================= Glass Confession: Confess =======================
 
-K('CC-W230', (own) => ({
+K('GC-UR1', (own) => ({
   passive: sig('Nothing Hidden', 'Every foe starts the fight Confessed for 3 turns, and she acts first in round 1.'),
   sig: { confessAll: 3, firstRound: true },
   skills: [
@@ -864,10 +874,10 @@ K('CC-W230', (own) => ({
     own({ name: 'Shattered Confession', desc: 'LITANY: heavy magic damage on every enemy; their blessings pass to your strongest Sister.', target: 'allEnemies', mult: 1.3, steal: true, rite: true }),
   ],
   seal: { name: 'Seen Before', desc: 'The first time a Blasphemy lands, she saw it coming: every Sister is Warded (-40%) against it.', kind: 'seenBefore' },
-  shines: ['Colossus Hunt', 'Inquisition trials', 'Self-buffing bosses'],
+  shines: ['Inquisition trials', 'Self-buffing bosses'],
 }));
 
-K('CC-W110', (own) => ({
+K('GC-SSR-ABB', (own) => ({
   passive: sig('Mirrored Penance', 'Whenever she cures a Sister, the poison, burn or bleed she removed is thrown onto the foe with the most HP.'),
   sig: { throwCures: true },
   skills: [
@@ -879,7 +889,7 @@ K('CC-W110', (own) => ({
   shines: ['Flayed Saint Hunt', 'Twofold Reliquary Hunt'],
 }));
 
-K('CC-W008', (own) => ({
+K('GC-SSR-EXE', (own) => ({
   passive: sig('Glass Confession', 'Her crits on a foe both Confessed and Accused Shatter for +20% more crit damage, and 30% of the hit splashes onto its neighbours.'),
   sig: { shatter: { crit: 0.2, splash: 0.3 } },
   skills: [
@@ -891,7 +901,7 @@ K('CC-W008', (own) => ({
   shines: ['Colossus Hunt', 'Rivals', 'Glass Confession Order Tower', 'Packed foes'],
 }));
 
-K('CC-W035', (own) => ({
+K('GC-SR-CEN', (own) => ({
   skills: [
     st('censer', 'incense-cloud'),
     st('censer', 'burning-thurible'),
@@ -900,7 +910,7 @@ K('CC-W035', (own) => ({
   ],
 }));
 
-K('CC-W026', (own) => ({
+K('GC-R-CON', (own) => ({
   skills: [
     st('confessor', 'remedy'),
     st('confessor', 'miasma'),
@@ -909,7 +919,7 @@ K('CC-W026', (own) => ({
   ],
 }));
 
-K('CC-W182', (own) => ({
+K('GC-R-ADJ', (own) => ({
   skills: [
     st('adjudicator', 'reflected-sentence'),
     st('adjudicator', 'mirror-ward'),
@@ -918,7 +928,7 @@ K('CC-W182', (own) => ({
   ],
 }));
 
-K('CC-W191', (own) => ({
+K('GC-R-HOS', (own) => ({
   skills: [
     st('hospitaller', 'chalice-draught'),
     st('hospitaller', 'tending-hands'),
@@ -929,7 +939,7 @@ K('CC-W191', (own) => ({
 
 // ======================= Red Pilgrimage: Stride =======================
 
-K('CC-W009', (own) => ({
+K('RP-UR1', (own) => ({
   passive: sig('The Red Road', 'Each Stride gives her +6% damage. She may Step twice a turn instead of once.'),
   sig: { strideDmg: 0.06, doubleStep: true },
   skills: [
@@ -942,7 +952,7 @@ K('CC-W009', (own) => ({
   shines: ['Colossus Hunt', 'Red Cardinal Hunt', 'Free-movement Vigil and real-time field', 'Red Pilgrimage Order Tower'],
 }));
 
-K('CC-W129', (own) => ({
+K('RP-LUR', (own) => ({
   passive: sig('Oath of Blood', 'She heals for 25% of the damage she deals. Healing past her max HP becomes a shield on the Sister behind her.'),
   sig: { lifesteal: 0.25, overhealBehind: true },
   skills: [
@@ -955,7 +965,7 @@ K('CC-W129', (own) => ({
   shines: ['Chapter Siege', 'Deeper-crypt bosses', 'Her Feast'],
 }));
 
-K('CC-W120', (own) => ({
+K('RP-SSR-CAN', (own) => ({
   passive: sig('Marching Song', 'Whenever she sings (any of her skills), every Pilgrim gains 1 Stride.'),
   sig: { singStride: 1 },
   skills: [
@@ -967,7 +977,7 @@ K('CC-W120', (own) => ({
   shines: ['Rank-movement parties', 'Shove-heavy foes', 'Real-time field'],
 }));
 
-K('CC-W018', (own) => ({
+K('RP-SSR-WAR', (own) => ({
   passive: sig('Communion of Blood', 'Heals for 15% of the damage she deals, +5% per Stride, and deals 5% more per Stride. Each fallen Sister gives her +15% attack.'),
   sig: { strideLifesteal: { base: 0.15, per: 0.05 }, atkPerFallen: 0.15, strideDmg: 0.05 },
   skills: [
@@ -979,7 +989,7 @@ K('CC-W018', (own) => ({
   shines: ['Rot-Mother Hunt', 'Bell Tower and Heresy', 'Last-stand fights'],
 }));
 
-K('CC-W054', (own) => ({
+K('RP-SR-HIE', (own) => ({
   skills: [
     st('hierophant', 'reliquary-bash'),
     st('hierophant', 'vigil-bell'),
@@ -988,7 +998,7 @@ K('CC-W054', (own) => ({
   ],
 }));
 
-K('CC-W174', (own) => ({
+K('RP-SR-VEI', (own) => ({
   skills: [
     st('veilblade', 'veil-strike'),
     st('veilblade', 'hamstring'),
@@ -997,7 +1007,7 @@ K('CC-W174', (own) => ({
   ],
 }));
 
-K('CC-W201', (own) => ({
+K('RP-SR-ADJ', (own) => ({
   skills: [
     st('adjudicator', 'reflected-sentence'),
     st('adjudicator', 'censure'),
@@ -1006,7 +1016,7 @@ K('CC-W201', (own) => ({
   ],
 }));
 
-K('CC-W192', (own) => ({
+K('RP-SR-HOS', (own) => ({
   skills: [
     st('hospitaller', 'chalice-draught'),
     st('hospitaller', 'lance-of-mercy'),
@@ -1015,7 +1025,7 @@ K('CC-W192', (own) => ({
   ],
 }));
 
-K('CC-W183', (own) => ({
+K('RP-R-ADJ', (own) => ({
   skills: [
     st('adjudicator', 'reflected-sentence'),
     st('adjudicator', 'censure'),
@@ -1026,7 +1036,7 @@ K('CC-W183', (own) => ({
 
 // ======================= Hollow Bell: Toll =======================
 
-K('CC-W019', (own) => ({
+K('HB-UR1', (own) => ({
   passive: sig('Cracked Bell', 'While she is under half HP, her skills ring the Bell twice. Peal: she strikes every enemy for 0.7x.'),
   sig: { doubleRingLow: true, peal: { strikeAll: 0.7 } },
   skills: [
@@ -1039,7 +1049,7 @@ K('CC-W019', (own) => ({
   shines: ['Rot-Mother Hunt', 'Choirmaster Hunt', 'Bell Tower', 'Hollow Bell Order Tower'],
 }));
 
-K('CC-W010', (own) => ({
+K('HB-SSR-EXE', (own) => ({
   passive: sig('Knell of Judgement', 'Peal: every foe is Accused for a turn.'),
   sig: { peal: { accuseAll: 1 } },
   skills: [
@@ -1051,7 +1061,7 @@ K('CC-W010', (own) => ({
   shines: ['Colossus Hunt', 'Chapter Siege', 'Crypt waves'],
 }));
 
-K('CC-W047', (own) => ({
+K('HB-SSR-ORA', (own) => ({
   passive: sig('Matins', 'Your Sisters start every fight with +15 Zeal. Peal: every Sister +8 Zeal.'),
   sig: { startZeal: 15, peal: { zealAll: 8 } },
   skills: [
@@ -1063,7 +1073,7 @@ K('CC-W047', (own) => ({
   shines: ['Choirmaster Hunt', 'Colossus Hunt', 'The Choir Below'],
 }));
 
-K('CC-W175', (own) => ({
+K('HB-SSR-VEI', (own) => ({
   passive: sig('The Last Veil', '+35% damage to foes under half HP. Peal: she strikes the foe with the lowest HP.'),
   sig: { dmgUnderHalf: 0.35, peal: { strikeLowest: 1.0 } },
   skills: [
@@ -1075,7 +1085,7 @@ K('CC-W175', (own) => ({
   shines: ['Font Leviathan Hunt', 'Back-rank healers in deeper crypts', 'Bell Tower boss floors'],
 }));
 
-K('CC-W055', (own) => ({
+K('HB-SR-HIE', (own) => ({
   passive: { name: 'Reliquary Ward', desc: 'While she stands, your Sisters take 5% less damage. Peal: shield every Sister for 8% of max HP.', kind: 'bulwark', value: 0.05 },
   sig: { peal: { shieldAll: 0.08 } },
   skills: [
@@ -1086,7 +1096,7 @@ K('CC-W055', (own) => ({
   ],
 }));
 
-K('CC-W091', (own) => ({
+K('HB-R-MAR', (own) => ({
   passive: { name: 'Last Breath', desc: 'Once a fight a killing blow leaves her at 1 HP. Peal: she heals 8%.', kind: 'unbroken' },
   sig: { peal: { healSelf: 0.08 } },
   skills: [
@@ -1099,7 +1109,7 @@ K('CC-W091', (own) => ({
 
 // ============ Limited SSRs (the Altar). Kits wait here until they join the roster. ============
 
-K('CC-W078', (own) => ({
+K('VT-LSSR1', (own) => ({
   passive: sig('Weight of Sin', '+6% damage per Guilt on her target, on top of Guilt\'s own.'),
   sig: { guiltDmg: 0.06 },
   skills: [
@@ -1111,7 +1121,7 @@ K('CC-W078', (own) => ({
   shines: ['Flayed Saint Hunt', 'Twofold Reliquary Hunt', 'Chapter Siege', 'Veiled Tribunal Order Tower'],
 }));
 
-K('CC-W187', (own) => ({
+K('IV-LSSR1', (own) => ({
   passive: sig('Standing Order', 'Each Overwatch reaction also Weakens its foe (-20% attack, 2 turns).'),
   sig: { owWeaken: 0.2 },
   skills: [
@@ -1123,7 +1133,7 @@ K('CC-W187', (own) => ({
   shines: ['Rot-Mother Hunt', 'Flayed Saint Hunt', 'Blasphemy bosses', 'Iron Vigil Order Tower'],
 }));
 
-K('CC-W147', (own) => ({
+K('RP-LSSR1', (own) => ({
   passive: sig('Lantern on the Road', 'Her burns are 10% stronger for each Stride she holds.'),
   sig: { dotPerStride: 0.1 },
   skills: [
@@ -1135,7 +1145,7 @@ K('CC-W147', (own) => ({
   shines: ['Flayed Saint Hunt', 'Twofold Reliquary Hunt', 'Real-time field', 'Red Pilgrimage Order Tower'],
 }));
 
-K('CC-W197', (own) => ({
+K('AM-LSSR1', (own) => ({
   passive: sig('Ash Unction', 'Mercy kills also heal every Sister 5% more and cure them.'),
   sig: { mercyCure: 0.05 },
   skills: [
@@ -1147,7 +1157,7 @@ K('CC-W197', (own) => ({
   shines: ['Crypt runs', 'Ashen Mercy Order Tower'],
 }));
 
-K('CC-W218', (own) => ({
+K('CC-LSSR1', (own) => ({
   passive: sig('Psalm of the Accuser', '+25% damage while a Hymn plays.'),
   sig: { hymnAtk: 0.25 },
   skills: [
@@ -1159,7 +1169,7 @@ K('CC-W218', (own) => ({
   shines: ['Hunt damage scores', 'Candle Choir Order Tower'],
 }));
 
-K('CC-W137', (own) => ({
+K('GC-LSSR1', (own) => ({
   passive: sig('Lantern of Glass', 'Her burns on Confessed foes are 60% stronger.'),
   sig: { dotConfessed: 0.6 },
   skills: [
@@ -1168,10 +1178,10 @@ K('CC-W137', (own) => ({
     own({ name: 'Mirror Flame', desc: 'Ignite all the burn on one foe at once for 1.5x; 2x on the Confessed. Cooldown 2.', target: 'enemy', mult: 0.3, detonate: 1.5, cond: { if: 'confessed', then: { detonate: 2 } }, cooldown: 2 }),
     own({ name: 'Pane of Fire', desc: 'LITANY: burn every enemy for 3 turns (stacks) and Confess them.', target: 'allEnemies', mult: 0.8, confess: 2, poison: { mult: 0.4, turns: 3 }, stackPoison: true, rite: true }),
   ],
-  shines: ['Iron Abbot Hunt', 'Choirmaster Hunt', 'Self-buffing bosses', 'Glass Confession Order Tower'],
+  shines: ['Iron Abbot Hunt', 'Self-buffing bosses', 'Glass Confession Order Tower'],
 }));
 
-K('CC-W217', (own) => ({
+K('SW-LSSR1', (own) => ({
   passive: sig('Grave Judge', '+5% critical chance for each Remains the party holds.'),
   sig: { critPerRemains: 0.05 },
   skills: [
@@ -1183,7 +1193,7 @@ K('CC-W217', (own) => ({
   shines: ['Twofold Reliquary Hunt', 'Red Cardinal Hunt', 'Summoner bosses', 'Sepulcher Watch Order Tower'],
 }));
 
-K('CC-W148', (own) => ({
+K('HB-LSSR1', (own) => ({
   passive: sig('Bell of Embers', 'Peal: every foe Burns for 2 turns.'),
   sig: { peal: { burnAll: 0.3 } },
   skills: [
@@ -1195,7 +1205,7 @@ K('CC-W148', (own) => ({
   shines: ['Flayed Saint Hunt', 'Twofold Reliquary Hunt', 'Bell Tower', 'Hollow Bell Order Tower'],
 }));
 
-K('CC-W127', (own) => ({
+K('DL-LSSR1', (own) => ({
   passive: sig('Deep Vigil', 'While she stands, every Sister takes 2% less damage per Tide.'),
   sig: { tideGuard: 0.02 },
   skills: [
@@ -1207,14 +1217,14 @@ K('CC-W127', (own) => ({
   shines: ['Hunts', 'Chapter Siege'],
 }));
 
-K('CC-W237', (own) => ({
+K('TC-LSSR1', (own) => ({
   passive: sig('Bone-Deep Aim', 'Each Scar she holds lets her hits ignore 5% more Armor.'),
   sig: { scarPierce: 0.05 },
   skills: [
-    own({ name: 'Bloodied Bolt', desc: 'Sacrifice 5% HP; a heavy bolt on any rank through 20% of its Armor.', from: [2, 3, 4], target: 'enemy', selfDmgPct: 0.05, mult: 1.3, armorPierce: 0.2 }),
+    own({ name: 'Bloodied Bolt', desc: 'Sacrifice 5% HP; a heavy bolt on any rank through 25% of its Armor.', from: [2, 3, 4], target: 'enemy', selfDmgPct: 0.05, mult: 1.7, armorPierce: 0.25 }),
     st('arbalist', 'marking-shot'),
-    own({ name: 'Briar Bolt', desc: 'A bolt that leaves any foe Bleeding for 3 turns. Cooldown 2.', target: 'enemy', mult: 1.0, bleed: { mult: 0.3, turns: 3 }, cooldown: 2 }),
-    own({ name: 'Penitent Ballista', desc: 'LITANY: a crushing bolt through shields; spends her Scars for +8% each.', target: 'enemy', mult: 2.0, pierceShield: true, spend: { kw: 'scars', per: { multPct: 0.08 } }, rite: true }),
+    own({ name: 'Briar Bolt', desc: 'A bolt that leaves any foe Bleeding for 3 turns. Cooldown 2.', target: 'enemy', mult: 1.2, bleed: { mult: 0.3, turns: 3 }, cooldown: 2 }),
+    own({ name: 'Penitent Ballista', desc: 'LITANY: a crushing bolt through shields; spends her Scars for +8% each.', target: 'enemy', mult: 2.2, pierceShield: true, spend: { kw: 'scars', per: { multPct: 0.08 } }, rite: true }),
   ],
   shines: ['Thorn Covenant Order Tower'],
 }));

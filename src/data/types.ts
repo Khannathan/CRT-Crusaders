@@ -36,7 +36,7 @@ export interface PassiveDef {
 }
 
 export interface CrusaderDef {
-  /** Roster id; also the portrait file name: public/portraits/<id>.png */
+  /** Roster slot id from the sister bible (IV-LUR, IV-SSR-ARB, ...); also her art file name. */
   id: string;
   name: string;
   classId: string;
@@ -53,4 +53,6 @@ export interface CrusaderDef {
   relic?: string;
   /** A limited Saint: only on the Limited banner while her window is open (systems/limited.ts). */
   limited?: true;
+  /** Her id in the old 90-Sister roster (CC-W###), for the 89 who came back. */
+  legacy?: string;
 }

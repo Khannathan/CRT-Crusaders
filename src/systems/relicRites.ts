@@ -87,8 +87,8 @@ export function riteBlock(save: SaveData, id: string, level: number, now = Date.
   return undefined;
 }
 
-function pay(save: SaveData, id: string, level: number) {
-  const r = ritesOf(save);
+function pay(save: SaveData, id: string, level: number, now: number) {
+  const r = ritesOf(save, now);
   const got = riteReward(level);
   r.used++;
   r.motes[id] = (r.motes[id] ?? 0) + got.motes;
@@ -101,13 +101,13 @@ export function finishRite(save: SaveData, id: string, level: number, won: boole
   if (!won || riteBlock(save, id, level, now)) return undefined;
   const r = ritesOf(save, now);
   r.best[id] = Math.max(r.best[id] ?? 0, level);
-  return pay(save, id, level);
+  return pay(save, id, level, now);
 }
 
 /** Sweep a level she has beaten (spends an entry). */
 export function sweepRite(save: SaveData, id: string, level: number, now = Date.now()) {
   if (level > riteBest(save, id) || riteBlock(save, id, level, now)) return undefined;
-  return pay(save, id, level);
+  return pay(save, id, level, now);
 }
 
 // The Sanctified Litany lives in sanctity.ts (battle setup reads it without pulling in the Rites).

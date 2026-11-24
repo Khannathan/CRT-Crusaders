@@ -8,7 +8,7 @@ import { sisterPower } from './power';
 import { seeded } from './rng';
 import { sisterStats, MAX_LEVEL } from './stats';
 
-const ID = 'CC-W013';
+const ID = 'SW-R-WAR';
 const ready = () => {
   const save = newSave();
   save.owned[ID] = { level: MAX_LEVEL, vow: 0, asc: 3 };

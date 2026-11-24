@@ -3,18 +3,25 @@ import { PAL } from '../config';
 import { RARITY_COLOR } from '../data/classes';
 import type { CrusaderDef } from '../data/types';
 import { DEFAULT_FRAME, SPLASH_FRAMES } from '../data/splashFrames';
+import { standInKey } from './standIn';
 
 /** Native portrait size the art guide proposes. Real PNGs can be 128 or 256 square. */
 export const PORTRAIT_SIZE = 128;
 
-export const portraitKey = (id: string) => `portrait-${id}`;
+/** Bust art: src/assets/portraits/<id>.png (or .webp), 128 x 128. */
+const PORTRAIT_URLS = import.meta.glob<string>('../assets/portraits/*.{png,webp}', { eager: true, query: '?url', import: 'default' });
+/** True when this Sister's own bust is in. */
+export const hasPortrait = (id: string) => !!(PORTRAIT_URLS[`../assets/portraits/${id}.png`] ?? PORTRAIT_URLS[`../assets/portraits/${id}.webp`]);
+
+/** Texture key of her bust: her own art, else her Order-and-class stand-in (ui/standIn.ts). */
+export const portraitKey = (id: string) => (hasPortrait(id) ? `portrait-${id}` : (standInKey('bust', id) ?? `portrait-${id}`));
 
 /**
  * Draws a 128x128 stand-in portrait (hooded silhouette on charcoal) for any crusader
  * whose PNG is not in public/portraits yet, so art can arrive in any order.
  */
 export function makePlaceholderPortrait(scene: Phaser.Scene, c: CrusaderDef) {
-  const key = portraitKey(c.id);
+  const key = `portrait-${c.id}`;
   if (scene.textures.exists(key)) return;
   const s = PORTRAIT_SIZE;
   const g = scene.make.graphics({}, false);
@@ -45,7 +52,7 @@ export const hasFullBody = (id: string) => !!fullBodyUrl(id);
 /** Texture key of her full body once loaded, else her bust (see loadFullBody). */
 export function fullBodyKey(scene: Phaser.Scene, id: string) {
   const key = `full-${id}`;
-  return scene.textures.exists(key) ? key : portraitKey(id);
+  return scene.textures.exists(key) ? key : (standInKey('full', id) ?? portraitKey(id));
 }
 
 /**

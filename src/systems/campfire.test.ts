@@ -5,7 +5,7 @@ import { bondOf } from './bonds';
 import { MORALE_BASE, TOPICS, bestTalks, makeCamp, moraleBuff, moraleOf, reactionOf, topicsOf } from './campfire';
 import { skirmish, startRun } from './crusade';
 
-const PARTY = ['CC-W013', 'CC-W052', 'CC-W001', 'CC-W022'];
+const PARTY = ['SW-R-WAR', 'DL-R-HIE', 'IV-R-EXE', 'SW-SR-CON'];
 
 describe('the Campfire', () => {
   it('every Sister loves two topics and loathes a third, and Sisters differ', () => {
@@ -17,8 +17,8 @@ describe('the Campfire', () => {
       seen.add(t.loves.join());
     }
     expect(seen.size).toBeGreaterThan(20);
-    expect(reactionOf('CC-W013', topicsOf('CC-W013').loves[0])).toBe('love');
-    expect(reactionOf('CC-W013', topicsOf('CC-W013').loathes)).toBe('loathe');
+    expect(reactionOf('SW-R-WAR', topicsOf('SW-R-WAR').loves[0])).toBe('love');
+    expect(reactionOf('SW-R-WAR', topicsOf('SW-R-WAR').loathes)).toBe('loathe');
   });
 
   it('a good camp beats no camp, and Morale buys a blessing', () => {

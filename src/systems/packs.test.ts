@@ -61,7 +61,7 @@ describe('the weekly discounted 10-pull', () => {
 describe('welcome back', () => {
   it('sends a gift and starts a Homecoming week after 3 days away', () => {
     const s = newSave();
-    s.owned['CC-W001'] = { level: 1, vow: 0 };
+    s.owned['IV-R-EXE'] = { level: 1, vow: 0 };
     expect(checkReturn(s, T0)).toBeUndefined();
     expect(checkReturn(s, T0 + 2 * DAY)).toBeUndefined();
     expect(checkReturn(s, T0 + 7 * DAY)).toBe(5);

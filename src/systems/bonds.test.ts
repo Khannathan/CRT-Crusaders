@@ -5,7 +5,7 @@ import { BOND_AT, BOND_CORE, MAX_BOND, addBond, anyBondRewards, anyUnheard, bond
 import { claimVigil } from './vigil';
 import { sisterStats } from './stats';
 
-const id = 'CC-W001';
+const id = 'IV-R-EXE';
 
 describe('Sister bonds', () => {
   it('levels from XP, caps at 30, and only for owned Sisters', () => {
