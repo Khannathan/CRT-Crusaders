@@ -91,7 +91,7 @@ export interface Unit {
   healed?: number;
   /** Hunt-boss mechanics. */
   traits?: import('../data/enemies').EnemyTraits;
-  /** Her Holy Symbol's battle effects, once woken. */
+  /** Her signature weapon's battle effects, once woken. */
   symbol?: import('./symbols').SymbolCombat;
   side: Side;
   name: string;
@@ -377,7 +377,7 @@ export class Battle {
       u.bonusAtk = 0;
       u.steps = 0;
     }
-    // Opening Zeal (Holy Symbols, the Sisters' own passives) goes to every Sister.
+    // Opening Zeal (signature weapons, the Sisters' own passives) goes to every Sister.
     const passiveZeal = party.reduce((s, u) => s + (u.passive?.kind === 'startZeal' ? u.passive.value ?? 0 : 0) + (u.sig?.startZeal ?? 0), 0);
     for (const u of party) u.zeal = Math.min(ZEAL_MAX, (u.zeal ?? 0) + (opts.zeal ?? 0) + passiveZeal);
     for (const e of enemies) if (e.boss && ENEMIES[e.ref]?.blasphemy) e.wrath = e.wrath ?? 0;
@@ -406,7 +406,7 @@ export class Battle {
     return f;
   }
 
-  /** Holy Symbol: +10% at +5, a Confessor's +20% at +10, and the Rite bonus at +15. */
+  /** Signature weapon: +10% at +5, a healer's +20% at +10, and the Litany bonus from +15. */
   private symbolHeal(actor: Unit, skill: SkillDef) {
     const chain = skill.rite && actor.side === 'party' ? this.chainMult : 1;
     const sy = actor.symbol;
@@ -793,6 +793,12 @@ export class Battle {
       if (sk.mult) {
         offensive = true;
         this.strike(actor, t, sk, events);
+        // Divine Wrath (signature weapon +25): her Litany strikes again.
+        const echo = skill.rite && actor.side === 'party' ? actor.symbol?.echo : undefined;
+        if (echo && t.hp > 0) {
+          events.push({ type: 'status', uid: t.uid, label: 'Divine Wrath!' });
+          this.hit(actor, t, { ...sk, mult: sk.mult * echo * (sk.target === 'enemy' ? sk.hits ?? 1 : 1), hits: undefined }, events);
+        }
       }
       if (t.hp <= 0) continue;
       if (this.applyEffects(actor, t, sk, events)) support = true;
@@ -2420,7 +2426,7 @@ export const GROUND_NAME: Record<import('../data/skills').GroundKind, string> = 
   lantern: 'Lantern Line',
 };
 
-/** Her kit's skills with her Relic's rewrite applied (Holy Symbol +5). */
+/** Her kit's skills with her Relic's rewrite applied (signature weapon +5). */
 export function withRelic(kit: import('../data/kits').Kit): import('../data/kits').Kit['skills'] {
   const r = kit.relic;
   if (!r) return kit.skills;

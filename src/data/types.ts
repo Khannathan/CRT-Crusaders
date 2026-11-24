@@ -49,7 +49,7 @@ export interface CrusaderDef {
   age: number;
   hook: string;
   passive?: PassiveDef;
-  /** Her signature relic from the roster: what her Holy Symbol is. */
+  /** Her signature relic from the roster: the charm on her signature weapon (and its name if her card names no weapon). */
   relic?: string;
   /** A limited Saint: only on the Limited banner while her window is open (systems/limited.ts). */
   limited?: true;

@@ -163,7 +163,7 @@ export interface Sig {
   groundStart?: { kind: GroundKind; rounds: number };
 }
 
-/** Her Relic: special equipment only she can wear. Woken at Holy Symbol +5, it rewrites one of her skills. */
+/** Her Relic: special equipment only she can wear. Woken at signature weapon +5, it rewrites one of her skills. */
 export interface Relic {
   name: string;
   /** What it adds, in the game's voice (also appended to the skill's text). */
@@ -1277,7 +1277,7 @@ export function kitSkills(id: string, classId: string): [SkillDef, SkillDef, Ski
 }
 
 /**
- * Holy Symbol +10 for a Sister with a signature: every share in it (the
+ * Signature weapon +10 for a Sister with a signature: every share in it (the
  * fractions: damage, guard, heal and the like) and every Zeal or Wrath amount
  * grows by `f`. Counts and turns stay as they are. Returns undefined when there
  * is nothing to raise (her +10 is then the class blessing).

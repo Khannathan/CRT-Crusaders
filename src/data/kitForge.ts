@@ -10,7 +10,7 @@
  *   UR 4 twists, stronger with rarity. SSR and UR Litanies also lay holy ground.
  * - passive: every Sister, R to UR, carries a passive of her own: her Order or
  *   class base plus one personal rule.
- * - Relic: her special equipment (her Holy Symbol), woken at +5, rewrites one
+ * - Relic: her special equipment (the charm on her signature weapon), woken at +5, rewrites one
  *   of her skills with one more effect and a harder hit.
  * - Patron Miracle: every Limited UR lifts every Sister of her Order.
  * - cry, look, ascended (SSR) and command (R) lines for the Sister page and the
@@ -454,8 +454,8 @@ function relicFor(c: CrusaderDef, kit: Kit, salt: number, name: string): Relic |
   return undefined;
 }
 
-const titleCase = (s: string) => s.replace(/\b\w/g, (m) => m.toUpperCase());
-const relicName = (c: CrusaderDef) => titleCase((c.relic ?? 'Holy Symbol').split(',')[0].trim());
+const titleCase = (s: string) => s.replace(/(^|[\s-])\w/g, (m) => m.toUpperCase());
+const relicName = (c: CrusaderDef) => titleCase((c.relic ?? 'Sacred Relic').split(',')[0].trim());
 
 /** A canonical form of a kit's rules, for the uniqueness check. */
 export function kitShape(kit: Kit): string {

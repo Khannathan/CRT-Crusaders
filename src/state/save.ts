@@ -29,7 +29,7 @@ export interface OwnedCrusader {
   tier?: number;
   /** Ascensions taken, 0-3. Each raises the level cap by 10. */
   asc?: number;
-  /** Holy Symbol level: undefined while it sleeps, 0-15 once woken (systems/symbols.ts). */
+  /** Signature weapon level (the field kept its Holy Symbol name): undefined while it sleeps, 0-15/20/25 by tier once woken (systems/symbols.ts). */
   symbol?: number;
   /** Canonization past level 50: rank 0-20 and the traits taken (systems/canon.ts). */
   canon?: { rank: number; traits: string[] };

@@ -12,6 +12,8 @@ import { ICONED_LABELS, RIM_FOE, RIM_PARTY, pixelShadow, rimKey, statusIconKey, 
 import { damageSize } from './juice';
 import { dmgOf } from '../systems/combat';
 import { sfx } from '../audio/sfx';
+import { crusaderById } from '../data/crusaders';
+import { weaponOf } from '../systems/symbols';
 
 /**
  * Draws a FieldBattle: figures that walk, strike, cast and fall where the
@@ -388,6 +390,8 @@ interface View {
   ring?: Phaser.GameObjects.Ellipse;
   /** Second Vows: a crimson-gold ring round her feet. */
   aura?: Phaser.GameObjects.Ellipse;
+  /** Signature weapon +20: her weapon burns in its tier's colour. */
+  blade?: Phaser.GameObjects.Arc;
   barW: number;
   /** Status glyphs in a row over the health bar (battle screen only). */
   icons?: Phaser.GameObjects.Image[];
@@ -473,6 +477,12 @@ export class FieldView {
       this.scene.tweens.add({ targets: v.aura, scaleX: 1.15, scaleY: 1.15, alpha: 0.55, duration: 700, yoyo: true, repeat: -1 });
       this.objects.push(v.aura);
     }
+    const def = u.side === 'party' && u.symbol?.glow ? crusaderById(u.ref) : undefined;
+    if (def) {
+      v.blade = this.scene.add.circle(x, y, 10 * (s / 0.75), weaponOf(def).color, 0.55).setBlendMode(Phaser.BlendModes.ADD);
+      this.scene.tweens.add({ targets: v.blade, scale: 1.5, alpha: 0.2, duration: 420, yoyo: true, repeat: -1, ease: 'Sine.inOut' });
+      this.objects.push(v.blade);
+    }
     this.views.set(u.uid, v);
     this.objects.push(fig.root, hpBack, hp, shield, ...(meter ? [meter] : []));
   }
@@ -497,6 +507,8 @@ export class FieldView {
         v.ring.setStrokeStyle(lit ? 3 : 2, lit ? 0xfff1d6 : u.side === 'party' ? PAL.amber : 0xd0402a, lit ? 1 : 0.75);
       }
       v.aura?.setPosition(x, y).setDepth(this.depth - 0.55).setVisible(u.hp > 0);
+      // her weapon hand: her right, the viewer's left as she faces right
+      v.blade?.setPosition(x - body.face * v.fig.height * 0.16, y - v.fig.height * 0.45).setDepth(this.depth + body.y / 1000 + 0.001).setVisible(u.hp > 0);
       if (this.focusMark && this.focusUid === u.uid) {
         this.focusMark.setPosition(x, y - v.fig.height - 30).setDepth(this.depth + 0.95).setVisible(u.hp > 0);
       }

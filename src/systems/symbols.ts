@@ -1,35 +1,66 @@
 import { CLASSES } from '../data/classes';
+import { crusaderById } from '../data/crusaders';
 import { KITS, exaltSig } from '../data/kits';
 import type { CrusaderDef } from '../data/types';
+import { WEAPONS } from '../data/weapons';
+import { TIER_OF_RARITY, WEAPON_TIER, type WeaponTier } from '../data/weaponTiers';
 import type { SaveData } from '../state/save';
 import { bagText, hasAll, spend, type Bag } from './items';
 
 /**
- * Holy Symbols: each Sister's own relic, like an exclusive weapon. It wakes
- * once she has ascended, then rises +1 to +15 on Grace (Embers for +1 to +5,
- * Tears for +6 to +10, Crowns for +11 to +15). Every level lifts her stats,
- * and +5, +10 and +15 each add a blessing. The one at +10 is her own: a Sister
- * with a signature has it Exalted (its shares 25% stronger); the rest take a
- * blessing by class.
+ * Signature Weapons (once called Holy Symbols): each Sister's own named weapon
+ * from her card, tiered by rarity (R Epic, SR Legendary, SSR Mythic, UR Divine
+ * Arsenal). It wakes once she has ascended, then rises on Grace (Embers for +1
+ * to +5, Tears for +6 to +10, Crowns from +11). Epic and Legendary weapons stop
+ * at +15, Mythic at +20 and Divine Arsenal at +25. Every level lifts her stats,
+ * and +5, +10, +15, +20 and +25 each add a blessing. The one at +10 is her own:
+ * a Sister with a signature has it Exalted (its shares 25% stronger); the rest
+ * take a blessing by class. The +5 blessing wakes her Relic, the charm she
+ * carries on the weapon.
+ *
+ * Saves keep the old field name: `owned[id].symbol` is her weapon level.
  */
+/** The cap of Epic and Legendary weapons (and of every weapon before Mythic and Divine Arsenal climbed higher). */
 export const SYMBOL_MAX = 15;
+/** The highest any weapon climbs (Divine Arsenal). */
+export const SYMBOL_TOP = 25;
 /** All stats when the Symbol wakes, and per level after. */
 export const SYMBOL_WAKE = 0.05;
 export const SYMBOL_PER_LEVEL = 0.015;
-/** Ascensions she needs before her Symbol can wake. */
+/** Ascensions she needs before her weapon can wake. */
 export const SYMBOL_ASC = 1;
 export const WAKE_COST: Bag = { grace1: 10 };
 export const WAKE_TITHES = 2000;
 
 export const symbolOf = (save: SaveData, id: string): number | undefined => save.owned[id]?.symbol;
 
-/** Her Symbol's name: the first part of her roster relic, in title case. */
-export function symbolName(c: CrusaderDef): string {
-  const base = (c.relic ?? 'Holy Symbol').split(',')[0].trim();
-  return base.replace(/\b\w/g, (m) => m.toUpperCase());
+export interface Weapon {
+  name: string;
+  tier: WeaponTier;
+  /** Tier name: Epic, Legendary, Mythic or Divine Arsenal. */
+  label: string;
+  color: number;
+  /** What it looks like, from her card (empty when her card names none). */
+  look: string;
+  /** The highest level it climbs to. */
+  max: number;
 }
 
-/** Grace and Tithes for the step to `level` (1..15). */
+/** Her signature weapon: from her card, or named after her relic when her card has none. */
+export function weaponOf(c: CrusaderDef): Weapon {
+  const w = WEAPONS[c.id];
+  const tier = w?.tier ?? TIER_OF_RARITY[c.rarity];
+  const name = w?.name ?? (c.relic ?? 'Signature Weapon').split(',')[0].trim().replace(/(^|[\s-])\w/g, (m) => m.toUpperCase());
+  return { name, tier, look: w?.look ?? '', ...WEAPON_TIER[tier] };
+}
+
+/** Her weapon's name. */
+export const symbolName = (c: CrusaderDef): string => weaponOf(c).name;
+
+/** The highest level her weapon climbs to. */
+export const symbolMax = (c: CrusaderDef): number => weaponOf(c).max;
+
+/** Grace and Tithes for the step to `level` (1..25). */
 export function upgradeCost(level: number): { items: Bag; tithes: number } {
   if (level <= 5) return { items: { grace1: 4 * level }, tithes: 400 * level };
   if (level <= 10) return { items: { grace2: 3 * (level - 5) }, tithes: 400 * level };
@@ -67,22 +98,29 @@ const CLASS_PERK: Record<string, { name: string; desc: string }> = {
   exorcist: { name: 'Lantern Oil', desc: 'Her skills deal 12% more damage.' },
 };
 
+/** Litany bonus at +20 (on top of +15's), and the second Litany blow at +25. */
+export const HALLOWED_RITE = 0.15;
+export const DIVINE_WRATH = 0.4;
+
 export function symbolPerks(c: CrusaderDef): SymbolPerk[] {
   const relic = KITS[c.id]?.relic;
   const k = exalts(c) ? { name: `Exalted ${c.passive!.name}`, desc: `${c.passive!.name} is 25% stronger.` } : CLASS_PERK[c.classId] ?? CLASS_PERK.warsister;
-  return [
+  const perks = [
     relic ? { at: 5, name: `Awakened: ${relic.name}`, desc: `Her skills deal and heal 10% more. ${relic.desc}` } : { at: 5, name: 'Awakened', desc: 'Her skills deal and heal 10% more.' },
     { at: 10, name: k.name, desc: k.desc },
     { at: 15, name: 'Sanctified', desc: 'Her Litany is 30% stronger.' },
+    { at: 20, name: 'Hallowed Edge', desc: 'Her Litany is 15% stronger still, and her weapon burns in battle!' },
+    { at: 25, name: 'Divine Wrath', desc: 'Her Litany strikes twice: the second blow lands at 40%!' },
   ];
+  return perks.filter((p) => p.at <= symbolMax(c));
 }
 
-/** Stat multiplier from her Symbol (1 while it sleeps). */
+/** Stat multiplier from her weapon (1 while it sleeps). */
 export function symbolStatMult(level: number | undefined): number {
   return level === undefined ? 1 : 1 + SYMBOL_WAKE + SYMBOL_PER_LEVEL * level;
 }
 
-/** What her Symbol does in battle. */
+/** What her weapon does in battle. */
 export interface SymbolCombat {
   mult: number;
   heal: number;
@@ -94,6 +132,10 @@ export interface SymbolCombat {
   exalt?: number;
   /** Her Relic has woken (+5) and rewrites its skill. */
   relic?: boolean;
+  /** Her weapon burns in battle (+20). */
+  glow?: boolean;
+  /** Divine Wrath (+25): her Litany strikes each foe again at this share. */
+  echo?: number;
 }
 
 export function symbolCombat(c: CrusaderDef, level: number | undefined): SymbolCombat | undefined {
@@ -112,10 +154,15 @@ export function symbolCombat(c: CrusaderDef, level: number | undefined): SymbolC
     else out.crit = 0.12;
   }
   if (level >= 15) out.rite = 0.3;
+  if (level >= 20) {
+    out.rite += HALLOWED_RITE;
+    out.glow = true;
+  }
+  if (level >= 25) out.echo = DIVINE_WRATH;
   return out;
 }
 
-/** Why her Symbol cannot wake or rise now, or undefined if it can. */
+/** Why her weapon cannot wake or rise now, or undefined if it can. */
 export function symbolBlock(save: SaveData, id: string): string | undefined {
   const o = save.owned[id];
   if (!o) return 'Not sworn';
@@ -126,14 +173,15 @@ export function symbolBlock(save: SaveData, id: string): string | undefined {
     if (save.tithes < WAKE_TITHES) return 'Not enough Tithes';
     return undefined;
   }
-  if (lv >= SYMBOL_MAX) return 'Fully sanctified';
+  const c = crusaderById(id);
+  if (lv >= (c ? symbolMax(c) : SYMBOL_MAX)) return 'Fully sanctified';
   const cost = upgradeCost(lv + 1);
   if (!hasAll(save, cost.items)) return `Needs ${bagText(cost.items)}`;
   if (save.tithes < cost.tithes) return 'Not enough Tithes';
   return undefined;
 }
 
-/** Wakes her Symbol, or raises it a level. */
+/** Wakes her weapon, or raises it a level. */
 export function raiseSymbol(save: SaveData, id: string): boolean {
   if (symbolBlock(save, id)) return false;
   const o = save.owned[id];
