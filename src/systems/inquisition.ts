@@ -6,7 +6,7 @@ import type { SaveData } from '../state/save';
 import type { Battle } from './combat';
 import { BELFRY, skirmish } from './crusade';
 import type { Rng } from './gacha';
-import { claimGear, makeGear, rollGearRarity, type GearItem } from './gear';
+import { claimGear, dropIp, makeGear, playerIp, rollGearRarity, type GearItem } from './gear';
 import { recommendedPower } from './power';
 import { bagText, give, type Bag } from './items';
 import { track, weekKey } from './tasks';
@@ -213,7 +213,7 @@ export function finishAct(save: SaveData, act: number, battle: Battle, rng: Rng 
     if (m.gear) {
       const r = rollGearRarity(rng, 0.2);
       const before = save.gear?.length ?? 0;
-      claimGear(save, [makeGear(rng, r === 'R' || r === 'SR' ? 'SSR' : r)]);
+      claimGear(save, [makeGear(rng, r === 'R' || r === 'SR' ? 'SSR' : r, undefined, { ip: dropIp(rng, playerIp(save) + 25) })]);
       if ((save.gear?.length ?? 0) > before) res.gear.push(save.gear![save.gear!.length - 1]);
     }
     res.paid.push(m);

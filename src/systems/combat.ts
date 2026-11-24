@@ -93,6 +93,8 @@ export interface Unit {
   traits?: import('../data/enemies').EnemyTraits;
   /** Her signature weapon's battle effects, once woken. */
   symbol?: import('./symbols').SymbolCombat;
+  /** Her gear's battle lines, Edicts and unique powers (Relics of War). */
+  gear?: import('./gear').GearCombat;
   side: Side;
   name: string;
   /** Crusader id or enemy type id. */
@@ -343,6 +345,11 @@ export class Battle {
   private reflecting?: { boss: Unit; sum: number };
   /** Summoned foes arrive Delayed (Lock the Crypt). */
   private locked = false;
+  /** Relics of War: attacks per Sister (Edict of the Bell), the Sister whose attack tolls now, Vigilia's Key spent, and the Unsleeping Watch's marks. */
+  private swings: Record<string, number> = {};
+  private tolling?: Unit;
+  private keyUsed = false;
+  private watchMark?: { order?: string; pct: number; uids: Set<string> };
   /** Holy ground under the party: what, rounds left, and who laid it. */
   ground?: { kind: import('../data/skills').GroundKind; rounds: number; by: string };
   /**
@@ -380,6 +387,7 @@ export class Battle {
     // Opening Zeal (signature weapons, the Sisters' own passives) goes to every Sister.
     const passiveZeal = party.reduce((s, u) => s + (u.passive?.kind === 'startZeal' ? u.passive.value ?? 0 : 0) + (u.sig?.startZeal ?? 0), 0);
     for (const u of party) u.zeal = Math.min(ZEAL_MAX, (u.zeal ?? 0) + (opts.zeal ?? 0) + passiveZeal);
+    this.openGear(party);
     for (const e of enemies) if (e.boss && ENEMIES[e.ref]?.blasphemy) e.wrath = e.wrath ?? 0;
     for (const e of enemies) this.planIntent(e);
     this.openKits(party, enemies);
@@ -388,6 +396,81 @@ export class Battle {
       const avg = party.reduce((n, u) => n + u.atk, 0) / party.length;
       const dmg = Math.max(1, Math.round(avg * this.mods.openingBurn * (1 + this.mods.burnMult)));
       for (const e of enemies) e.status.poison = { dmg, turns: 3, kind: 'burn' };
+    }
+  }
+
+  /** Relics of War at the first blow: Pilgrim's Zeal, the Pyre-Walker's Zeal, One Creed's ATK. */
+  private openGear(party: Unit[]) {
+    for (const u of party) {
+      const g = u.gear;
+      if (!g) continue;
+      g.spent = {};
+      g.scourge = 0;
+      const kin = party.filter((a) => a !== u && a.order && a.order === u.order).length;
+      g.creed = (g.edicts.oneCreed ?? 0) * kin;
+      if (g.edicts.pilgrim) u.zeal = Math.min(ZEAL_MAX, (u.zeal ?? 0) + g.edicts.pilgrim);
+      const walk = g.uniques.pyreSabatons;
+      if (walk) for (const a of party) if (a.order && a.order === u.order) a.zeal = Math.min(ZEAL_MAX, (a.zeal ?? 0) + walk * (kin + 1));
+    }
+  }
+
+  /** Relics of War on a blow: what the attacker's gear adds and the target's gear takes away. */
+  private gearMult(actor: Unit, t: Unit, skill: SkillDef, events: BattleEvent[]) {
+    let m = 1;
+    const g = actor.side === 'party' ? actor.gear : undefined;
+    if (g && t.side === 'enemy') {
+      if (t.boss) m *= 1 + g.bossDmg;
+      if (skill.rite) m *= 1 + g.litanyDmg;
+      if (g.edicts.lastRites && t.hp < t.maxHp * EXECUTE_AT) m *= 1 + g.edicts.lastRites;
+      if (g.edicts.flagellant && actor.hp < actor.maxHp / 2) m *= 1 + g.edicts.flagellant;
+      if (g.scourge) m *= 1 + g.scourge;
+      if (g.creed) m *= 1 + g.creed;
+      if (this.tolling === actor && g.edicts.bell) m *= 1 + g.edicts.bell;
+    }
+    const w = this.watchMark;
+    if (w && actor.side === 'party' && t.side === 'enemy' && w.uids.has(t.uid) && actor.order === w.order) m *= 1 + w.pct;
+    const d = t.side === 'party' && actor.side !== 'party' ? t.gear : undefined;
+    if (d) {
+      if (d.dmgTaken) m *= 1 - d.dmgTaken;
+      if (d.uniques.ashMail) m *= 1 - Math.min(0.4, d.uniques.ashMail * (t.rank === 1 ? 2 : 1));
+      if (d.edicts.cloister && !d.spent?.cloister) {
+        (d.spent ??= {}).cloister = true;
+        m *= 1 - d.edicts.cloister;
+        events.push({ type: 'status', uid: t.uid, label: 'Cloister' });
+      }
+    }
+    return m;
+  }
+
+  /** Relics of War when a Sister is struck: the Hairshirt's reflection, the Ossuary's barrier. */
+  private struckGear(foe: Unit, t: Unit, dmg: number, events: BattleEvent[]) {
+    const d = t.gear;
+    if (!d) return;
+    if (d.edicts.hairshirt && foe.hp > 0) this.pierce(foe, Math.max(1, Math.round(dmg * d.edicts.hairshirt)), events);
+    if (d.edicts.ossuary && t.hp > 0 && t.hp < t.maxHp * 0.4 && !d.spent?.ossuary) {
+      (d.spent ??= {}).ossuary = true;
+      const amt = Math.round(t.maxHp * d.edicts.ossuary);
+      t.status.shield = (t.status.shield ?? 0) + amt;
+      events.push({ type: 'status', uid: t.uid, label: 'Ossuary' }, { type: 'shield', uid: t.uid, amount: amt });
+    }
+  }
+
+  /** Relics of War after a Litany: the Censer's refund, the Scourge's price, the Visor's heal, the Watch's marks. */
+  private litanyGear(actor: Unit, events: BattleEvent[]) {
+    const g = actor.gear;
+    if (!g || actor.side !== 'party') return;
+    if (g.edicts.censer) this.addZeal(Math.round(ZEAL_MAX * g.edicts.censer), events, 'Edict of the Censer', actor);
+    if (g.edicts.scourge) {
+      const cost = Math.min(actor.hp - 1, Math.round(actor.maxHp * 0.02));
+      if (cost > 0) (actor.hp -= cost), events.push({ type: 'damage', uid: actor.uid, amount: cost, blocked: 0 });
+      g.scourge = (g.scourge ?? 0) + g.edicts.scourge;
+      events.push({ type: 'status', uid: actor.uid, label: 'Scourged' });
+    }
+    if (g.uniques.crossVisor) for (const a of this.alive('party')) this.mend(a, actor.maxHp * g.uniques.crossVisor, events);
+    if (g.uniques.unsleepingFlail) {
+      const foes = this.alive('enemy');
+      this.watchMark = { order: actor.order, pct: g.uniques.unsleepingFlail, uids: new Set(foes.map((e) => e.uid)) };
+      for (const e of foes) events.push({ type: 'status', uid: e.uid, label: 'Watched' });
     }
   }
 
@@ -419,7 +502,7 @@ export class Battle {
   }
 
   private healOf(u: Unit) {
-    return u.side === 'party' ? this.partyHeal : 1;
+    return u.side === 'party' ? this.partyHeal * (1 + (u.gear?.healRecv ?? 0)) : 1;
   }
 
   alive(side?: Side) {
@@ -738,6 +821,13 @@ export class Battle {
     const single = skill.target === 'enemy' || skill.target === 'ally';
     this.log.push(`${actor.name} uses ${skill.name}${single && target ? ` on ${target.name}` : ''}`);
     if (skill.rite && actor.side === 'party') this.addZeal(-ZEAL_MAX, events, 'Sacrament', actor);
+    // Edict of the Bell: every fourth attack tolls.
+    this.tolling = undefined;
+    if (actor.gear?.edicts.bell && skill.mult && !skill.rite && ((this.swings[actor.uid] = (this.swings[actor.uid] ?? 0) + 1) % 4 === 0)) {
+      this.tolling = actor;
+      events.push({ type: 'status', uid: actor.uid, label: 'The Bell tolls' });
+    }
+    if (skill.rite && actor.side === 'party') this.litanyGear(actor, events);
     if (skill.rite && actor.side === 'enemy') {
       actor.wrath = 0;
       events.push({ type: 'phase', uid: actor.uid, text: `BLASPHEMY: ${skill.name}` });
@@ -1243,13 +1333,15 @@ export class Battle {
       events.push({ type: 'status', uid: t.uid, label: 'Brand!' });
     }
     if (this.ground?.kind === 'flood' && t.side === 'enemy' && actor.side === 'party') raw *= 1 + GROUND.floodDmg;
+    raw *= this.gearMult(actor, t, skill, events);
     const mercyBoss = t.boss && this.isKw(actor, 'mercy') && t.hp < t.maxHp * this.mercyLine(t);
     if (mercyBoss) raw *= 1 + KW.MERCY_BOSS;
     const g = actor.side === 'party' ? actor.sig : undefined;
-    const crit = (t.status.accused && actor.passive?.kind === 'critOnAccused') || (!!g?.critUnderHalf && t.hp < t.maxHp / 2) || this.rng() < critOf(actor, skill) + this.critBonus(actor);
+    const crit = (t.status.accused && actor.passive?.kind === 'critOnAccused') || (!!g?.critUnderHalf && t.hp < t.maxHp / 2) || this.rng() < critOf(actor, skill) + this.critBonus(actor) + (t.boss ? actor.gear?.edicts.inquisitor ?? 0 : 0);
     const shatter = crit && !!g?.shatter && !!t.status.confessed && !!t.status.accused;
     if (crit) {
-      raw *= CRIT_MULT + (actor.critDmg ?? 0) + (t.status.confessed ? KW.SHATTER : 0) + (shatter ? g!.shatter!.crit : 0);
+      const headsman = actor.gear?.edicts.executioner && actor.hp > actor.maxHp * 0.7 ? actor.gear.edicts.executioner : 0;
+      raw *= CRIT_MULT + (actor.critDmg ?? 0) + headsman + (t.status.confessed ? KW.SHATTER : 0) + (shatter ? g!.shatter!.crit : 0);
       if (g?.critConsumeGuilt && t.guilt) {
         raw *= 1 + g.critConsumeGuilt * t.guilt;
         events.push({ type: 'status', uid: t.uid, label: `Guilt -${t.guilt}` });
@@ -1308,6 +1400,7 @@ export class Battle {
     }
     t.hp -= dmg;
     events.push({ type: 'damage', uid: t.uid, amount: dmg, blocked, crit });
+    if (t.side === 'party' && actor.side === 'enemy' && dmg > 0) this.struckGear(actor, t, dmg, events);
     if (t.side === 'party' && actor.side === 'enemy') this.hurtZeal(t, dmg, events);
     if (t.side === 'enemy' && actor.side === 'party') this.woundWrath(t, dmg, events);
     if (t.side === 'party' && dmg > 0) this.struckKits(actor, t, events);
@@ -1320,7 +1413,7 @@ export class Battle {
         events.push({ type: 'status', uid: actor.uid, label: 'Shield of Ash' });
       }
     }
-    const leech = (actor.passive?.kind === 'lifesteal' ? actor.passive.value ?? 0 : 0) + (g?.lifesteal ?? 0) + (g?.strideLifesteal ? g.strideLifesteal.base + g.strideLifesteal.per * (actor.stride ?? 0) : 0);
+    const leech = (actor.passive?.kind === 'lifesteal' ? actor.passive.value ?? 0 : 0) + (g?.lifesteal ?? 0) + (actor.side === 'party' ? actor.gear?.lifesteal ?? 0 : 0) + (g?.strideLifesteal ? g.strideLifesteal.base + g.strideLifesteal.per * (actor.stride ?? 0) : 0);
     if (dmg > 0 && leech > 0 && actor.hp > 0) this.leech(actor, dmg * leech, events);
     if (dmg > 0 && skill.drain && actor.hp > 0) this.mend(actor, dmg * skill.drain, events);
     if (dmg > 0 && skill.lifelink) for (const a of this.alive(actor.side)) this.mend(a, dmg * skill.lifelink, events);
@@ -1390,6 +1483,7 @@ export class Battle {
         if (next) this.addGuilt(next, guiltLeft, events);
       }
       if (actor.side === 'party' && actor.passive?.kind === 'zealOnKill') this.addZeal(actor.passive.value ?? 0, events, actor.passive.name, actor);
+      if (actor.side === 'party' && t.side === 'enemy' && actor.gear?.uniques.lastLantern) this.addZeal(actor.gear.uniques.lastLantern, events, 'Lantern of the Last Watch');
     } else this.checkPhase(t, events);
   }
 
@@ -1508,6 +1602,15 @@ export class Battle {
     }
     if (u.side === 'enemy') this.foeFellKits(events);
     else this.sisterFellKits(u, events);
+    // Vigilia's Key of the Last Door: once a fight, the first Sister to fall rises.
+    if (u.side === 'party' && u.hp <= 0 && !this.keyUsed) {
+      const keeper = this.units.find((a) => a.side === 'party' && a.gear?.uniques.vigiliaKey && (a.hp > 0 || a === u));
+      if (keeper) {
+        this.keyUsed = true;
+        this.raiseOne(u, keeper.gear!.uniques.vigiliaKey!, events, 'The Last Door opens!');
+        u.zeal = ZEAL_MAX;
+      }
+    }
     if (u.side === 'party' && u.passive?.kind === 'martyr' && this.alive('party').length) {
       events.push({ type: 'text', text: `${u.name}'s sacrifice sets her Sisters ablaze!` });
       this.addZeal(u.passive.value ?? 0, events, u.passive.name);
@@ -2408,7 +2511,8 @@ export class Battle {
     const who = to ? (to.side === 'party' && to.hp > 0 ? [to] : []) : this.alive('party');
     for (const u of who) {
       const before = u.zeal ?? 0;
-      u.zeal = Math.max(0, Math.min(ZEAL_MAX, before + n));
+      const gain = n > 0 && u.gear?.zealGain ? Math.round(n * (1 + u.gear.zealGain)) : n;
+      u.zeal = Math.max(0, Math.min(ZEAL_MAX, before + gain));
       if (u.zeal !== before) {
         events.push({ type: 'zeal', amount: u.zeal - before, reason, uid: u.uid });
         this.log.push(`  zeal ${u.name} ${u.zeal - before > 0 ? '+' : ''}${u.zeal - before} (${reason}) = ${u.zeal}`);

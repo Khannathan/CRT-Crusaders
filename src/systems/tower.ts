@@ -9,7 +9,8 @@ import type { SaveData } from '../state/save';
 import type { Battle } from './combat';
 import { BELFRY, OSSUARY, skirmish } from './crusade';
 import type { Rng } from './gacha';
-import { claimGear, makeGear, rollGearRarity, type GearItem } from './gear';
+import { ANCIENT_IP, MAX_IP } from '../data/loot';
+import { claimGear, dropIp, makeGear, playerIp, rollGearRarity, type GearItem } from './gear';
 import { recommendedPower } from './power';
 import { addBags, bagText, floorDrops, give, type Bag } from './items';
 import { track } from './tasks';
@@ -127,7 +128,8 @@ export function finishFloor(save: SaveData, floor: number, battle: Battle, rng: 
     const before = save.gear?.length ?? 0;
     const rarity = rollGearRarity(rng, reward.gear === 'SSR' ? 0.2 : 0.08);
     const r = reward.gear === 'SSR' && (rarity === 'R' || rarity === 'SR') ? 'SSR' : rarity === 'R' ? 'SR' : rarity;
-    claimGear(save, [makeGear(rng, r)]);
+    // From floor 60 the Tower drops Ancient pieces.
+    claimGear(save, [makeGear(rng, r, undefined, { ip: floor >= 60 ? ANCIENT_IP + Math.round(rng() * (MAX_IP - ANCIENT_IP)) : dropIp(rng, playerIp(save) + 10) })]);
     if ((save.gear?.length ?? 0) > before) gear = save.gear![save.gear!.length - 1];
   }
   return { won, reward, gear };
@@ -192,7 +194,7 @@ export function finishOrderFloor(save: SaveData, order: string, floor: number, b
   let gear: GearItem | undefined;
   if (reward.gear) {
     const before = save.gear?.length ?? 0;
-    claimGear(save, [makeGear(rng, 'SSR')]);
+    claimGear(save, [makeGear(rng, 'SSR', undefined, { ip: dropIp(rng, playerIp(save) + 10) })]);
     if ((save.gear?.length ?? 0) > before) gear = save.gear![save.gear!.length - 1];
   }
   return { won, reward, gear };

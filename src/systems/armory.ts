@@ -2,19 +2,23 @@ import type { Rarity } from '../data/types';
 import type { SaveData } from '../state/save';
 import { giltOf } from './currency';
 import type { Rng } from './gacha';
-import { GEAR_SETS, GEAR_SLOTS, MAX_GEAR, claimGear, gearOf, makeGear, type GearItem, type GearSet, type GearSetId, type GearSlot } from './gear';
+import { GODFORGED, SAINTS_ARMS, uniqueDef, type UniqueDef, type UniqueId } from '../data/loot';
+import { GODSPARKS_TO_FORGE, MAX_GEAR, claimGear, gearOf, makeGear, playerIp, type GearItem } from './gear';
 import { countOf, give, spend } from './items';
 import { weekKey } from './tasks';
 
 /**
- * The Saints' Armory: where UR gear comes from (round 9). UR pieces never drop.
+ * The Saints' Armory: where Saint's Arms (named uniques) come from. They never
+ * drop from ordinary foes.
  *
  * - The banner: a pull costs one Armory Writ (or PULL_GILT Gilt). UR_RATE of
- *   pulls give a UR piece, FEATURED_SHARE of those in the week's featured
- *   set; the featured set changes every Monday. A UR is certain by PITY pulls,
- *   and the count carries over between weeks.
+ *   pulls give a Saint's Arms, FEATURED_SHARE of those the week's featured
+ *   piece; the featured piece changes every Monday. One is certain by PITY
+ *   pulls, and the count carries over between weeks. SSR pulls give Sworn or
+ *   Anathema pieces, SR pulls Consecrated or Sworn.
  * - The forge: FORGE_FRAGMENTS Saint's Fragments, or one Reliquary Mould,
- *   pour a UR piece of the slot and set you choose.
+ *   pour the Saint's Arms you choose; two Godsparks pour a Godforged relic.
+ *   Godforged are never on the banner and never sold.
  * - Every pull also leaves a Saint's Fragment, so bad luck still builds
  *   toward a forged piece.
  *
@@ -43,15 +47,15 @@ export const armoryOf = (save: SaveData): ArmoryState => (save.armory ??= { pity
 
 const EPOCH = new Date(2026, 0, 5);
 
-/** The set featured this week, and when the week ends. */
-export function featuredSet(now = Date.now()): { set: GearSet; ends: number } {
+/** The Saint's Arms featured this week, and when the week ends. */
+export function featuredArms(now = Date.now()): { arms: UniqueDef; ends: number } {
   const [y, m, d] = weekKey(now).split('-').map(Number);
   const monday = new Date(y, m - 1, d);
   const weeks = Math.round((monday.getTime() - EPOCH.getTime()) / (7 * 864e5));
-  const set = GEAR_SETS[((weeks % GEAR_SETS.length) + GEAR_SETS.length) % GEAR_SETS.length];
+  const arms = SAINTS_ARMS[((weeks % SAINTS_ARMS.length) + SAINTS_ARMS.length) % SAINTS_ARMS.length];
   const ends = new Date(monday);
   ends.setDate(ends.getDate() + 7);
-  return { set, ends: ends.getTime() };
+  return { arms, ends: ends.getTime() };
 }
 
 /** Gives the one-time Writs. Returns true the first time. */
@@ -74,7 +78,7 @@ export function pullBlock(save: SaveData, n: 1 | 10, pay: PullPay): string | und
 }
 
 /** Rolls one banner pull's rarity and set, moving the pity count. */
-export function rollPull(save: SaveData, rng: Rng, now = Date.now()): { rarity: Rarity; set?: GearSetId } {
+export function rollPull(save: SaveData, rng: Rng, now = Date.now()): { rarity: Rarity; unique?: UniqueId } {
   const a = armoryOf(save);
   a.pulls += 1;
   a.pity += 1;
@@ -82,8 +86,8 @@ export function rollPull(save: SaveData, rng: Rng, now = Date.now()): { rarity: 
   if (a.pity >= PITY || r < UR_RATE) {
     a.pity = 0;
     const featured = rng() < FEATURED_SHARE;
-    const set = featured ? featuredSet(now).set.id : GEAR_SETS[Math.floor(rng() * GEAR_SETS.length) % GEAR_SETS.length].id;
-    return { rarity: 'UR', set };
+    const unique = featured ? featuredArms(now).arms.id : SAINTS_ARMS[Math.floor(rng() * SAINTS_ARMS.length) % SAINTS_ARMS.length].id;
+    return { rarity: 'UR', unique };
   }
   if (r < UR_RATE + SSR_RATE) return { rarity: 'SSR' };
   return { rarity: 'SR' };
@@ -96,8 +100,8 @@ export function pullArmory(save: SaveData, n: 1 | 10, pay: PullPay, rng: Rng = M
   else save.gilt = giltOf(save) - (n === 10 ? TEN_GILT : PULL_GILT);
   const loot: GearItem[] = [];
   for (let i = 0; i < n; i++) {
-    const { rarity, set } = rollPull(save, rng, now);
-    loot.push(makeGear(rng, rarity, undefined, set));
+    const { rarity, unique } = rollPull(save, rng, now);
+    loot.push(makeGear(rng, rarity, undefined, { unique, ip: Math.max(400, playerIp(save)) }));
   }
   const before = gearOf(save).length;
   claimGear(save, loot);
@@ -105,17 +109,24 @@ export function pullArmory(save: SaveData, n: 1 | 10, pay: PullPay, rng: Rng = M
   return gearOf(save).slice(before);
 }
 
-export function forgeBlock(save: SaveData, pay: 'fragments' | 'mould'): string | undefined {
+export type ForgePay = 'fragments' | 'mould' | 'sparks';
+
+export function forgeBlock(save: SaveData, pay: ForgePay): string | undefined {
   if (gearOf(save).length >= MAX_GEAR) return 'The armory is full: melt some gear first';
   if (pay === 'fragments' && countOf(save, 'armory1') < FORGE_FRAGMENTS) return `Needs ${FORGE_FRAGMENTS} Saint's Fragments`;
   if (pay === 'mould' && countOf(save, 'armory3') < 1) return 'Needs a Reliquary Mould';
+  if (pay === 'sparks' && countOf(save, 'spark1') < GODSPARKS_TO_FORGE) return `Needs ${GODSPARKS_TO_FORGE} Godsparks`;
   return undefined;
 }
 
-/** Forges a UR piece of the chosen slot and set. */
-export function forgeUR(save: SaveData, slot: GearSlot, set: GearSetId, pay: 'fragments' | 'mould', rng: Rng = Math.random): GearItem | undefined {
-  if (forgeBlock(save, pay) || !GEAR_SLOTS.includes(slot)) return undefined;
-  spend(save, pay === 'fragments' ? { armory1: FORGE_FRAGMENTS } : { armory3: 1 });
-  claimGear(save, [makeGear(rng, 'UR', slot, set)]);
+/** Forges the chosen Saint's Arms (Fragments or a Mould) or Godforged relic (Godsparks). */
+export function forgeUnique(save: SaveData, id: UniqueId, pay: ForgePay, rng: Rng = Math.random): GearItem | undefined {
+  const u = uniqueDef(id);
+  if (!u || forgeBlock(save, pay)) return undefined;
+  if ((u.grade === 'godforged') !== (pay === 'sparks')) return undefined;
+  spend(save, pay === 'fragments' ? { armory1: FORGE_FRAGMENTS } : pay === 'mould' ? { armory3: 1 } : { spark1: GODSPARKS_TO_FORGE });
+  claimGear(save, [makeGear(rng, 'UR', u.slot, { unique: id })]);
   return gearOf(save).at(-1);
 }
+
+export { GODFORGED, SAINTS_ARMS };

@@ -3,7 +3,7 @@ import type { SaveData } from '../state/save';
 import { BELFRY, OSSUARY, skirmish, type CryptDef } from './crusade';
 import type { Battle } from './combat';
 import type { Rng } from './gacha';
-import { claimGear, makeGear, rollGearRarity, type GearItem, type GearSlot } from './gear';
+import { claimGear, dropIp, makeGear, playerIp, rollGearRarity, type GearItem, type GearSlot } from './gear';
 import { dayKey, track } from './tasks';
 import { addBags, bagText, give, type Bag } from './items';
 
@@ -134,7 +134,7 @@ function pay(save: SaveData, kind: TrialKind, tier: number, rng: Rng): TrialSpoi
     out.seals = [1, 1, 2, 2, 3][tier];
     out.tithes = 60 * (tier + 1);
   } else {
-    const pieces = Array.from({ length: tier >= 2 ? 2 : 1 }, () => makeGear(rng, rollGearRarity(rng, 0.05 * tier), kind));
+    const pieces = Array.from({ length: tier >= 2 ? 2 : 1 }, () => makeGear(rng, rollGearRarity(rng, 0.05 * tier), kind, { ip: dropIp(rng, playerIp(save) + 10 * tier) }));
     const before = save.gear?.length ?? 0;
     claimGear(save, pieces);
     out.gear = (save.gear ?? []).slice(before);
@@ -152,7 +152,7 @@ function pay(save: SaveData, kind: TrialKind, tier: number, rng: Rng): TrialSpoi
     out.seals = boostN(out.seals, m);
     if (out.gear.length) {
       const before = save.gear?.length ?? 0;
-      claimGear(save, [makeGear(rng, rollGearRarity(rng, 0.05 * tier), kind as GearSlot)]);
+      claimGear(save, [makeGear(rng, rollGearRarity(rng, 0.05 * tier), kind as GearSlot, { ip: dropIp(rng, playerIp(save) + 10 * tier) })]);
       out.gear.push(...(save.gear ?? []).slice(before));
     }
   }

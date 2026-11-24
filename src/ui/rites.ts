@@ -3,7 +3,7 @@ import { RAID_BOSSES, delvesLeft, raidOf } from '../systems/raid';
 import { HOLD_WAVES, holdLeft, holdOf } from '../systems/holdLine';
 import { HOUNDS } from '../data/hounds';
 import type { BoostKind } from '../systems/boosts';
-import { armoryOf, featuredSet, PITY } from '../systems/armory';
+import { armoryOf, featuredArms, PITY } from '../systems/armory';
 import { chapterLevel, chapterReady, siegeBeast } from '../systems/chapter';
 import { ENEMIES } from '../data/enemies';
 import { HUNT_ENTRIES, huntEntriesLeft, huntOn } from '../systems/hunts';
@@ -154,7 +154,7 @@ export const RITES: RiteEntry[] = [
     label: 'Gear', scene: 'Armory', icon: 'shield', rank: 1, home: 'altar', bg: 'bg-reliquary', data: { back: 'Altar' }, boost: 'fragments',
     ready: (s) => countOf(s, 'armory2') > 0 || !armoryOf(s).gifted,
     blurb: "Arm your Sisters with the Saints' own steel.",
-    status: (s) => `${countOf(s, 'armory2')} Writs  ·  ${featuredSet().set.name} featured  ·  UR within ${PITY - armoryOf(s).pity}`,
+    status: (s) => `${countOf(s, 'armory2')} Writs  ·  ${featuredArms().arms.name} featured  ·  Arms within ${PITY - armoryOf(s).pity}`,
   },
   {
     label: 'Hounds', scene: 'Kennel', icon: 'shield', rank: 1, home: 'altar', bg: 'bg-kennel',

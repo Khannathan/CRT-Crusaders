@@ -1,4 +1,4 @@
-import { featuredSet } from './armory';
+import { featuredArms } from './armory';
 import { BOOST_INFO, DAY_FEAST, WEEK_BOOSTS } from './boosts';
 import { feastName } from './feast';
 import { rotation } from './inquisition';
@@ -83,7 +83,7 @@ export function calendar(now = Date.now(), weeks = 4): CalWeek[] {
     const next = seasonAt(season.ends);
     if (inWeek(next.starts)) events.push({ kind: 'pass', title: `New season: ${next.name}`, sub: 'Unclaimed tiers go to your Missives. Claim them before!', at: next.starts, ends: next.ends });
     // Every Monday: the weekly turn.
-    events.push({ kind: 'weekly', title: 'The week turns', sub: `Ordeals judged, new Raid bosses, Armory set: ${featuredSet(starts + DAY / 2).set.name}.`, at: starts, ends });
+    events.push({ kind: 'weekly', title: 'The week turns', sub: `Ordeals judged, new Raid bosses, Armory: ${featuredArms(starts + DAY / 2).arms.name}.`, at: starts, ends });
     events.sort((a, b) => Number(!!b.running) - Number(!!a.running) || a.at - b.at);
     out.push({ starts, ends, events });
   }

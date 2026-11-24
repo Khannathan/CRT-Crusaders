@@ -53,9 +53,9 @@ export const MAX_LEVEL = BASE_LEVEL_CAP + ASC_LEVELS * MAX_ASCENSION;
 export const ASC_STAT = 0.05;
 export { VOW_BONUS } from './tiers';
 
-/** Gear Speed past this counts half, and all gear together adds at most GEAR_SPEED_CAP. */
-export const GEAR_SPEED_SOFT = 4;
-export const GEAR_SPEED_CAP = 8;
+/** Gear adds at most GEAR_SPEED_CAP Speed: none since Relics of War, so turn order stays the Sisters' own. */
+export const GEAR_SPEED_SOFT = 0;
+export const GEAR_SPEED_CAP = 0;
 export const gearSpeed = (n: number) => Math.round(Math.min(GEAR_SPEED_CAP, n <= GEAR_SPEED_SOFT ? n : GEAR_SPEED_SOFT + (n - GEAR_SPEED_SOFT) / 2));
 
 export const levelCap = (o: Pick<OwnedCrusader, 'asc'>) => BASE_LEVEL_CAP + ASC_LEVELS * (o.asc ?? 0);

@@ -117,7 +117,7 @@ export class InquisitionScene extends Phaser.Scene {
             let notice = 'Judgment failed. Try again.';
             if (r.brands) notice = r.gained ? `${r.brands} Brand${r.brands > 1 ? 's' : ''} earned!` : `${r.brands} Brand${r.brands > 1 ? 's' : ''}, no better than before`;
             for (const m of r.paid) notice += `\nMark ${m.at}: ${markText(m)}`;
-            for (const g of r.gear) notice += `\n${g.name} (${g.rarity})`;
+            for (const g of r.gear) notice += `\n${g.name} (IP ${g.ip})`;
             const rec = r.gained ? noteBrands(save, totalBrands(save)) : undefined;
             return { scene: 'Inquisition', data: { notice, record: rec && beatenText(rec) } };
           },
