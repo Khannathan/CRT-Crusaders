@@ -18,7 +18,7 @@ import { FAMILY_BONUS, RELICS, relicById, type RelicDef, type RelicFamily } from
 import type { SaveData } from '../state/save';
 import { Battle, VIGIL_DEFAULT, makeEnemy, type Unit } from './combat';
 import type { Rng } from './gacha';
-import { claimGear, makeGear, rollGearRarity, type GearItem } from './gear';
+import { GODFORGED_DROP, GODSPARK_DROP, claimGear, cryptIp, dropIp, gearCombat, equipped, makeGear, noteIp, rollGearRarity, smartFavour, type GearItem } from './gear';
 import { recommendedPower, sisterPower } from './power';
 import { addBags, give, roomDrops, type Bag } from './items';
 import { levelUpCost, sisterStats } from './stats';
@@ -465,6 +465,7 @@ export function makeBattle(save: SaveData, run: RunState, encounter: string, rng
       crit: st.crit + relics.reduce((n, r) => n + (r.critAdd ?? 0), 0) + (sym?.crit ?? 0),
       critDmg: st.critDmg,
       symbol: sym,
+      gear: gearCombat(equipped(save, id), c.order),
       zeal: cn.zeal || undefined,
       exalted: save.owned[id].secondVow || undefined,
       passive: c.passive,
@@ -569,7 +570,17 @@ export function winRoom(run: RunState, save?: SaveData, rng: Rng = Math.random) 
   const luck = Math.min(0.3, 0.03 * run.heresy + (run.crypt.rewardMult - 1) * 0.1 + (node.kind === 'boss' ? 0.12 : node.kind === 'elite' ? 0.06 : 0));
   const drops = node.kind === 'boss' ? 2 : node.kind === 'elite' ? 1 : rng() < REWARDS.fightGearChance ? 1 : 0;
   (run.loot ??= []);
-  for (let i = 0; i < drops; i++) run.loot.push(makeGear(rng, rollGearRarity(rng, luck)));
+  // Item Power from the crypt's depth and the Heresy tier; smart loot leans to the party's roles.
+  const idx = Math.max(0, CRYPTS.findIndex((c) => c.id === run.crypt.id));
+  const content = cryptIp(idx, CRYPTS.length, run.heresy, rng) + (node.kind === 'boss' ? 25 : node.kind === 'elite' ? 10 : 0);
+  const classes = run.party.map((id) => CRUSADERS.find((c) => c.id === id)?.classId);
+  for (let i = 0; i < drops; i++) run.loot.push(makeGear(rng, rollGearRarity(rng, luck), undefined, { ip: dropIp(rng, content), favour: smartFavour(rng, classes) }));
+  // The Godforged road: Heresy IV+ bosses may leave a Godspark, and very rarely a relic itself.
+  if (node.kind === 'boss' && run.heresy >= 4) {
+    if (rng() < GODSPARK_DROP) run.items = addBags(run.items, { spark1: 1 });
+    if (rng() < GODFORGED_DROP) run.loot.push(makeGear(rng, 'UR', undefined, { grade: 'godforged' }));
+  }
+  if (save) noteIp(save, content);
   run.items = addBags(run.items, roomDrops(node.kind === 'boss' ? 'boss' : node.kind === 'elite' ? 'elite' : 'fight', run.heresy + (run.crypt.rewardMult > 1 ? 1 : 0), rng));
   const fightHeal = relicsOf(run).reduce((n, r) => n + (r.fightHeal ?? 0), 0);
   if (save && fightHeal) healAll(save, run, fightHeal);

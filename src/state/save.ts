@@ -95,6 +95,11 @@ export interface SaveData {
   heresy?: Record<string, number>;
   /** Every piece of gear owned; `on` says who wears it. */
   gear?: GearItem[];
+  /** Relics of War: best Edict rolls melted (the Index), the loot filter, the IP side rewards drop at, and whether the reforging letter went out. */
+  edictIndex?: Partial<Record<import('../data/loot').EdictId, number>>;
+  lootFilter?: import('../systems/gear').LootFilter;
+  lootIp?: number;
+  lootGift?: boolean;
   nextGearId?: number;
   /** The Saints' Armory: UR gear banner pity and pulls. */
   armory?: ArmoryState;

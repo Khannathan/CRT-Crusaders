@@ -1,3 +1,4 @@
+import { CRUSADERS } from '../data/crusaders';
 import { boostBag, boostMult } from './boosts';
 import { BOND_XP, addBond } from './bonds';
 import { addExp, vigilExpRate } from './exp';
@@ -6,7 +7,7 @@ import type { SaveData } from '../state/save';
 import { suggestParty } from './crusade';
 import { FAST_HOURS, campaignOf, chaptersCleared, nextStage, roadRates, stageDef, useFast } from './campaign';
 import type { Rng } from './gacha';
-import { claimGear, makeGear, rollGearRarity, type GearItem } from './gear';
+import { claimGear, dropIp, makeGear, playerIp, rollGearRarity, smartFavour, type GearItem } from './gear';
 import { track } from './tasks';
 
 /**
@@ -85,7 +86,7 @@ function payOut(save: SaveData, hours: number, party: string[], rng: Rng): Vigil
     save.vigil.sealCarry = due - p.seals;
   }
   const luck = Math.min(0.2, chaptersCleared(save) * 0.04);
-  const gear = Array.from({ length: p.gear }, () => makeGear(rng, rollGearRarity(rng, luck)));
+  const gear = Array.from({ length: p.gear }, () => makeGear(rng, rollGearRarity(rng, luck), undefined, { ip: dropIp(rng, Math.max(100 + chaptersCleared(save) * 25, playerIp(save) - 30)), favour: smartFavour(rng, party.map((id) => CRUSADERS.find((c) => c.id === id)?.classId)) }));
   const melted = claimGear(save, gear);
   const m = boostMult('vigil');
   p.tithes = Math.round(p.tithes * m);

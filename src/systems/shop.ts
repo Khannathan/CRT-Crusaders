@@ -1,6 +1,6 @@
 import type { SaveData } from '../state/save';
 import type { Rng } from './gacha';
-import { claimGear, makeGear, rollGearRarity, type GearItem } from './gear';
+import { claimGear, dropIp, makeGear, playerIp, rollGearRarity, type GearItem } from './gear';
 import { bagText, give, type Bag } from './items';
 import { dayKey, weekKey } from './tasks';
 import { trialsOf } from './trials';
@@ -199,7 +199,7 @@ export function grantGoods(save: SaveData, g: Goods, opts: { sister?: string; rn
     const r = rollGearRarity(rng, g.gear === 'SSR' ? 0.2 : 0.08);
     const rarity: Rarity = g.gear === 'SSR' ? 'SSR' : r === 'R' ? 'SR' : r;
     const before = save.gear?.length ?? 0;
-    claimGear(save, [makeGear(rng, rarity)]);
+    claimGear(save, [makeGear(rng, rarity, undefined, { ip: dropIp(rng, playerIp(save)) })]);
     if ((save.gear?.length ?? 0) > before) out.gear = save.gear![save.gear!.length - 1];
   }
   return out;

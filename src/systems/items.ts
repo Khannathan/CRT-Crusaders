@@ -6,7 +6,7 @@ import type { Rng } from './gacha';
  * family feeds one growth system, so a player can tell at a glance what a drop
  * is for. Five of a tier refine into one of the next.
  */
-export type Family = 'ash' | 'page' | 'iron' | 'incense' | 'writ' | 'unction' | 'grace' | 'armory' | 'kennel' | 'canon';
+export type Family = 'ash' | 'page' | 'iron' | 'incense' | 'writ' | 'unction' | 'grace' | 'armory' | 'kennel' | 'canon' | 'spark';
 export type Tier = 1 | 2 | 3;
 export type ItemId = `${Family}${Tier}`;
 export type Bag = Partial<Record<ItemId, number>>;
@@ -29,6 +29,7 @@ export const FAMILIES: FamilyDef[] = [
   { id: 'unction', name: 'Unction', use: 'Sister EXP: fed on her Grow tab', color: 0x7fc4a0 },
   { id: 'armory', name: "The Saints' Armory", use: 'UR gear: forge it, or pull for it', color: 0xe19cc4 },
   { id: 'kennel', name: 'The Kennel', use: 'Hounds: whistle for them, or adopt the one you want', color: 0xc9a46a },
+  { id: 'spark', name: 'Godsparks', use: 'Godforged relics: two forge the one you choose', color: 0xd0263a },
   { id: 'canon', name: 'Canon', use: 'Canonization: raises a level 50 Sister past her cap', color: 0xe8e0c8 },
 ];
 
@@ -65,19 +66,20 @@ export const ITEMS: ItemDef[] = [
   def('unction', 1, 'Lesser Unction', 'Oil for the sick. 300 EXP.'),
   def('unction', 2, 'Last Unction', 'Oil for the dying, and for the pyre. 1,500 EXP.'),
   def('unction', 3, 'Extreme Unction', 'Oil for the last rites. She wakes stronger. 7,500 EXP.'),
-  def('armory', 1, "Saint's Fragment", 'A splinter of a saint\'s own arms. Sixty of them forge a UR piece.'),
+  def('armory', 1, "Saint's Fragment", 'A splinter of a saint\'s own arms. Sixty of them forge a Saint\'s Arms.'),
   def('armory', 2, 'Armory Writ', 'One pull at the Saints\' Armory, the UR gear banner.'),
-  def('armory', 3, 'Reliquary Mould', 'Pour any UR piece you like: choose its slot and set.'),
+  def('armory', 3, 'Reliquary Mould', 'Pour any Saint\'s Arms you like.'),
   def('kennel', 1, 'Marrow Bone', 'Left by every hound that answers. Enough of them buy the hound you want.'),
   def('kennel', 2, 'Hound Whistle', 'Carved from a saint\'s shin. One call at the Kennel.'),
   def('kennel', 3, "Saint's Leash", 'Braided leather, consecrated by decree. Adopt any hound you choose.'),
+  def('spark', 1, 'Godspark', 'A cinder from a god\'s own pyre. Two of them forge any Godforged relic you name.'),
   def('canon', 1, 'Vellum Scrap', 'A strip of a saint\'s life, in a hand no one can read.'),
   def('canon', 2, 'Hagiography', 'Her miracles, numbered and witnessed. Some witnesses recanted.'),
   def('canon', 3, 'Canon Seal', 'The last word of the Synod. Wax the colour of old blood.'),
 ];
 
 /** Families that never refine into their next tier. */
-export const NO_REFINE: Family[] = ['armory', 'kennel'];
+export const NO_REFINE: Family[] = ['armory', 'kennel', 'spark'];
 
 export const itemDef = (id: ItemId) => ITEMS.find((i) => i.id === id)!;
 export const familyDef = (f: Family) => FAMILIES.find((x) => x.id === f)!;

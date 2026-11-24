@@ -3,7 +3,7 @@ import type { CrusaderDef } from '../data/types';
 import type { SaveData } from '../state/save';
 import { CLASSES } from '../data/classes';
 import { CRIT_MULT, VOW_UPGRADES, type Battle } from './combat';
-import { GEAR_SLOTS, equipped, gearOf, type GearItem } from './gear';
+import { GEAR_SLOTS, equipped, gearOf, gearShare, type GearItem } from './gear';
 import { statsFor, sisterStats, type Stats } from './stats';
 import { bondStatsOf } from './bonds';
 import { skillLevelsGained } from './skillLevels';
@@ -64,7 +64,7 @@ export const powerOf = (c: CrusaderDef, s: Stats, vow: number, levels = 0) => Ma
 /** A Sister's power as she stands: level, Vows, gear and bond. */
 export function sisterPower(save: SaveData, c: CrusaderDef) {
   const o = save.owned[c.id];
-  return o ? powerOf(c, sisterStats(save, c), skillVow(o), skillLevelsGained(save, c.id)) : 0;
+  return o ? Math.round(powerOf(c, sisterStats(save, c), skillVow(o), skillLevelsGained(save, c.id)) * gearShare(equipped(save, c.id), c.order)) : 0;
 }
 
 export const sisterPowerById = (save: SaveData, id: string) => {
@@ -78,7 +78,9 @@ function powerWith(save: SaveData, c: CrusaderDef, gear: GearItem[]) {
   if (!o) return 0;
   const st = statsFor(c, o, gear);
   const bd = bondStatsOf(save, c.id);
-  return powerOf(c, { ...st, hp: Math.round(st.hp * (1 + bd.hp)), atk: Math.round(st.atk * (1 + bd.atk)), armor: Math.round(st.armor * (1 + bd.armor)), mres: Math.round(st.mres * (1 + bd.mres)), crit: Math.min(1, st.crit + bd.crit) }, skillVow(o), skillLevelsGained(save, c.id));
+  const raw = powerOf(c, { ...st, hp: Math.round(st.hp * (1 + bd.hp)), atk: Math.round(st.atk * (1 + bd.atk)), armor: Math.round(st.armor * (1 + bd.armor)), mres: Math.round(st.mres * (1 + bd.mres)), crit: Math.min(1, st.crit + bd.crit) }, skillVow(o), skillLevelsGained(save, c.id));
+  // Battle lines, Edicts and unique powers count too.
+  return Math.round(raw * gearShare(gear, c.order));
 }
 
 /** What a worn piece adds to her power: with it on versus off. */

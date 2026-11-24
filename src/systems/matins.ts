@@ -3,7 +3,7 @@ import { earn } from './currency';
 import type { Rarity } from '../data/types';
 import type { SaveData } from '../state/save';
 import { RARITY_ORDER, type Rng } from './gacha';
-import { claimGear, makeGear, type GearItem } from './gear';
+import { claimGear, dropIp, makeGear, playerIp, type GearItem } from './gear';
 import { dayKey } from './tasks';
 import { copiesLeft } from './tiers';
 
@@ -85,7 +85,7 @@ export function lightCandle(save: SaveData, now = Date.now(), sisterId?: string,
   earn(save, reward.gilt ?? 0);
   if (reward.gear) {
     const before = save.gear?.length ?? 0;
-    claimGear(save, [makeGear(rng, reward.gear)]);
+    claimGear(save, [makeGear(rng, reward.gear, undefined, { ip: dropIp(rng, playerIp(save)) })]);
     if ((save.gear?.length ?? 0) > before) gear = save.gear![save.gear!.length - 1];
   }
   m.last = dayKey(now);

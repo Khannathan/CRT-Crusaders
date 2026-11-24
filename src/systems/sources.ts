@@ -170,9 +170,14 @@ const FAMILY_SOURCES: Record<string, Record<1 | 2 | 3, Source[]>> = {
     2: [{ text: 'Bell Tower: boss floors', scene: 'Tower' }, INQ, WEEKLY, ALMONRY, REFINE('Writs of Passage')],
     3: [INQ, REFINE('Writs of Office')],
   },
+  spark: {
+    1: [{ text: 'Crusades: bosses at Heresy 4 and up, rarely', scene: 'Crusade' }, { text: 'Relics of War: a gift for old saves', scene: 'Roster' }],
+    2: [],
+    3: [],
+  },
 };
 
-const isItem = (id: ResourceId): id is ItemId => /^(ash|page|iron|incense|writ|unction|grace|armory|kennel|canon)[123]$/.test(id);
+const isItem = (id: ResourceId): id is ItemId => /^(ash|page|iron|incense|writ|unction|grace|armory|kennel|canon|spark)[123]$/.test(id);
 
 export function resourceInfo(id: ResourceId): ResourceInfo {
   if (!isItem(id)) return CURRENCIES[id];

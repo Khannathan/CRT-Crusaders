@@ -2,7 +2,6 @@ import { sfx } from '../audio/sfx';
 import Phaser from 'phaser';
 import { bagEmpty, bagText, type Bag, type ItemId } from '../systems/items';
 import { FONT, GAME_H, GAME_W, PAL, hex } from '../config';
-import { RARITY_COLOR } from '../data/classes';
 import { CRUSADERS } from '../data/crusaders';
 import { ORDER_LIST } from '../data/orders';
 import { game } from '../state/game';
@@ -10,7 +9,9 @@ import type { SaveData } from '../state/save';
 import { HERESY_FIRST_CLEAR_SEALS, ROMAN, type RunResult } from '../systems/crusade';
 import { expOf, expToNext } from '../systems/exp';
 import { COST_TEN } from '../systems/gacha';
-import { SLOT_NAME } from '../systems/gear';
+import { GRADE_COLOR, SLOT_NAME, gearName, isAncient } from '../systems/gear';
+import { GRADES } from '../data/loot';
+import { gearSwapDelta } from '../systems/power';
 import { codexGoal, leadOrder, nearGoals } from '../systems/goals';
 import { rankFromXp, rankOf } from '../systems/rank';
 import { makeButton } from '../ui/button';
@@ -159,24 +160,36 @@ export class ResultsScene extends Phaser.Scene {
       this.wait(200);
       return;
     }
-    const shown = items.slice(0, 5);
-    const w = 92;
+    // Best first: the rarest grade, then the highest Item Power.
+    const shown = [...items].sort((p, q) => GRADES.indexOf(q.grade) - GRADES.indexOf(p.grade) || q.ip - p.ip).slice(0, 5);
+    const save = game.save;
+    const party = this.result.party.map((id) => CRUSADERS.find((c) => c.id === id)).filter((c) => !!c && save.owned[c.id]);
+    const SHORT: Record<string, string> = { worn: 'WORN', consecrated: 'CONSEC.', sworn: 'SWORN', anathema: 'ANATHEMA', arms: "SAINT'S", godforged: 'GODFORGED' };
+    const w = 96;
     shown.forEach((g, i) => {
-      const x = GAME_W / 2 + (i - (shown.length - 1) / 2) * (w + 8);
-      const col = RARITY_COLOR[g.rarity];
+      const x = GAME_W / 2 + (i - (shown.length - 1) / 2) * (w + 6);
+      const col = GRADE_COLOR[g.grade];
+      const upgrade = party.some((c) => gearSwapDelta(save, c!, g) > 0);
       const card = this.add.container(x, y, [
-        this.add.rectangle(0, 0, w, 112, 0x1a1218).setStrokeStyle(3, col),
-        this.add.rectangle(0, -40, w - 6, 26, col, 0.25),
-        this.add.text(0, -40, g.rarity, { fontFamily: FONT, fontSize: '18px', color: hex(col) }).setOrigin(0.5),
-        this.add.text(0, -8, SLOT_NAME[g.slot], { fontFamily: FONT, fontSize: '15px', color: hex(PAL.steel) }).setOrigin(0.5),
-        this.add.text(0, 24, g.name, { fontFamily: FONT, fontSize: '14px', color: hex(PAL.ivory), align: 'center', wordWrap: { width: w - 8 } }).setOrigin(0.5),
+        this.add.rectangle(0, 0, w, 120, 0x1a1218).setStrokeStyle(3, col),
+        this.add.rectangle(0, -44, w - 6, 26, col, 0.25),
+        this.add.text(0, -44, SHORT[g.grade], { fontFamily: FONT, fontSize: '15px', color: hex(col) }).setOrigin(0.5),
+        this.add.text(0, -16, `${SLOT_NAME[g.slot]} · IP ${g.ip}`, { fontFamily: FONT, fontSize: '13px', color: hex(isAncient(g) ? 0xf0a040 : PAL.steel) }).setOrigin(0.5),
+        this.add.text(0, 18, gearName(g), { fontFamily: FONT, fontSize: '13px', color: hex(PAL.ivory), align: 'center', wordWrap: { width: w - 8 } }).setOrigin(0.5),
       ]);
+      if (upgrade) card.add(this.add.text(0, 50, 'UPGRADE ▲', { fontFamily: FONT, fontSize: '12px', color: hex(0x8fc07a) }).setOrigin(0.5));
       card.setAlpha(0).setScale(1.4).setY(y - 30);
       this.tweens.add({ targets: card, alpha: 1, scale: 1, y, delay: this.at, duration: 220, ease: 'Back.out' });
-      if (g.rarity === 'SSR' || g.rarity === 'UR') {
-        const glow = this.add.rectangle(x, y, w + 10, 122).setStrokeStyle(4, col).setAlpha(0);
+      // Loot beams: Sworn and up glow in their grade's colour; Anathema and up ring out.
+      const rank = GRADES.indexOf(g.grade);
+      if (rank >= GRADES.indexOf('sworn')) {
+        const beam = this.add.rectangle(x, y - 90, rank >= GRADES.indexOf('anathema') ? 26 : 14, 220, col, 0).setDepth(-1);
+        this.tweens.add({ targets: beam, alpha: { from: 0.55, to: 0 }, delay: this.at + 120, duration: 900 });
+        const glow = this.add.rectangle(x, y, w + 10, 130).setStrokeStyle(4, col).setAlpha(0);
         this.tweens.add({ targets: glow, alpha: { from: 0.9, to: 0 }, scale: 1.15, delay: this.at + 200, duration: 600 });
       }
+      if (rank >= GRADES.indexOf('anathema')) this.time.delayedCall(this.at + 150, () => sfx(rank >= GRADES.indexOf('arms') ? 'urReveal' : 'sealRare'));
+      if (g.grade === 'godforged') this.time.delayedCall(this.at + 150, () => this.cameras.main.shake(400, 0.01));
       this.wait(260);
     });
     if (items.length > shown.length) {
