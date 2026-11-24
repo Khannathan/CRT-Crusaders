@@ -114,6 +114,7 @@ export const UNLOCKS: Unlock[] = [
   { rank: 3, name: 'Relic Trials', desc: 'A daily spoil. Sweep what you have mastered.' },
   { rank: 3, name: 'The Ordeals', desc: 'A weekly league of twenty Orders. Rise, or be cast down!' },
   { rank: 4, name: 'Purge Hunts', desc: 'A great beast each day. Your best pays Godblood.' },
+  { rank: 4, name: 'The Abyssal Crypt', desc: 'Endless tiers, no limit. Farm the dark for gear.' },
   { rank: 4, name: 'Sweep', desc: 'Clear a beaten crypt again on Auto, several times over.' },
   { rank: 5, name: 'Confession', desc: 'Give offerings to raise bonds. Each level adds strength and a confession.' },
   { rank: 6, name: 'The Bell Tower', desc: 'An endless climb. Some floors admit one Order only, others only the humble.' },
