@@ -481,7 +481,9 @@ export class FieldScene extends Phaser.Scene {
     this.drawZones();
     this.view.sync();
     this.view.handle(events);
-    if (events.some((e) => e.kind === 'act' && e.events.some((x) => x.type === 'death' || (x.type === 'damage' && x.crit)))) this.hitStop = 0.07;
+    // A knockout freezes the fight a little longer, while the victim flickers (ui/knockout.ts).
+    if (events.some((e) => e.kind === 'act' && e.events.some((x) => x.type === 'death'))) this.hitStop = 0.28;
+    else if (events.some((e) => e.kind === 'act' && e.events.some((x) => x.type === 'damage' && x.crit))) this.hitStop = 0.07;
     // The Focused foe fell: the marker goes.
     if (this.field.focusUid && this.field.battle.get(this.field.focusUid).hp <= 0) {
       this.field.setFocus(undefined);
