@@ -117,7 +117,7 @@ export class ArmoryScene extends Phaser.Scene {
     const canForge = !forgeBlock(save, 'fragments') || !forgeBlock(save, 'mould');
     makeButton(this, GAME_W - PAD - 82, y + 92, 140, 48, 'Forge a UR', () => this.showForge(), { active: canForge, fontSize: 16 });
 
-    if (gifted) toast(this, `The Saints bless your first visit: ${FIRST_WRITS} Armory Writs!`);
+    if (gifted) toast(this, `The Order arms you: ${FIRST_WRITS} Armory Writs!`);
     else if (this.notice) toast(this, this.notice);
   }
 

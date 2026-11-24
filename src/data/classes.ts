@@ -24,8 +24,8 @@ export const CLASSES: Record<string, ClassDef> = {
   inquisitor: { id: 'inquisitor', name: 'Executioner', role: 'Melee DPS', summary: 'Names the heretic, then finishes it. Accused and wounded foes fall fast.' },
   veilblade: { id: 'veilblade', name: 'Veilblade', role: 'Melee DPS', icon: 'inquisitor', summary: 'Slips past the front line to the back ranks. Few strikes, huge critical hits.' },
   // Ranged DPS
-  censer: { id: 'censer', name: 'Censer', role: 'Ranged DPS', summary: 'Holy smoke chokes, burns and weakens every foe.' },
-  arbalist: { id: 'arbalist', name: 'Arbalist', role: 'Ranged DPS', icon: 'oracle', summary: 'Heavy blessed bolts on one foe at a time, through armor and shields.' },
+  censer: { id: 'censer', name: 'Censer', role: 'Ranged DPS', summary: 'Consecrated smoke chokes, burns and weakens every foe.' },
+  arbalist: { id: 'arbalist', name: 'Arbalist', role: 'Ranged DPS', icon: 'oracle', summary: 'Heavy consecrated bolts on one foe at a time, through armor and shields.' },
   exorcist: { id: 'exorcist', name: 'Exorcist', role: 'Ranged DPS', icon: 'censer', summary: 'Witchfire and lantern-light. Strips the foe\'s blessings and scours bosses.' },
 };
 

@@ -17,21 +17,23 @@ import { SisterSprite, fullKey } from './sisterSprite';
 import { addIcon, text } from './theme';
 
 /**
- * The Pilgrim's Road win card: PURGED!, the stage's three Candles lighting one
+ * The Pilgrim's Road win card: EXECUTED!, the stage's three Candles lighting one
  * by one, the Sister who did the most with a line of her own, the spoils
  * dropping into slots, the party's EXP filling, and Onward one tap away.
  */
 
 /** What the Most Zealous Sister says (Zealous sermon voice: short, fervent, to you). */
 const LINES = [
-  'The heretics are ash. Count them, Sister, and give thanks!',
-  'Not one of them knelt in time. Their loss!',
-  'Mark this ground. It is holy now, because we bled on it!',
-  'Again! Point me at the next one!',
-  'The road is cleaner for it. Walk on!',
-  'Did you feel the Saints guide my hand? I did!',
-  'They prayed to the wrong thing. We showed them!',
-  'Light another candle. We have earned it!',
+  'Sentence carried out. Count the ashes, Sister.',
+  'Not one of them knelt in time. Their loss.',
+  'Mark this ground. We bled on it, so now it is ours.',
+  'Again! Point me at the next heretic.',
+  'The road is cleaner for it. Burn the bodies and walk on.',
+  'They begged. The Order does not hear begging.',
+  'They prayed to the wrong god. We corrected them.',
+  'Light the pyre. The Order is fed tonight.',
+  'Judged, condemned, executed. In that order.',
+  'If the Order wills it, I do it again tomorrow.',
 ];
 
 export interface WinCardOpts {
@@ -77,8 +79,8 @@ export function showWinCard(scene: Phaser.Scene, o: WinCardOpts) {
   add(scene.add.rectangle(GAME_W / 2, GAME_H / 2, GAME_W, GAME_H, 0x09060b, 0.78).setInteractive());
   add(ditherVignette(scene, GAME_W / 2, GAME_H / 2, GAME_W, GAME_H, 0x09060b, 0.45));
 
-  // PURGED! slams in.
-  const title = add(scene.add.text(GAME_W / 2, 70, 'PURGED!', { ...text.display(54, 0xffd75a), stroke: '#09060b', strokeThickness: 8 }).setOrigin(0.5).setScale(2.2).setAlpha(0));
+  // EXECUTED! slams in.
+  const title = add(scene.add.text(GAME_W / 2, 70, 'EXECUTED!', { ...text.display(54, 0xffd75a), stroke: '#09060b', strokeThickness: 8 }).setOrigin(0.5).setScale(2.2).setAlpha(0));
   scene.tweens.add({ targets: title, scale: 1, alpha: 1, duration: 220, ease: 'Quad.in', onComplete: () => (sfx('slam'), scene.cameras.main.shake(160, 0.006, true)) });
   add(scene.add.text(GAME_W / 2, 126, `STAGE ${o.win.stage}${o.win.name ? `  ·  ${o.win.name.toUpperCase()}` : ''}`, text.hud(16, PAL.steel)).setOrigin(0.5));
 

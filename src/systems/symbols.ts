@@ -94,7 +94,7 @@ const CLASS_PERK: Record<string, { name: string; desc: string }> = {
   cantor: { name: 'Opening Hymn', desc: 'The party starts every fight with +8 Zeal.' },
   adjudicator: { name: 'Gavel of Ash', desc: 'Her skills deal 12% more damage.' },
   veilblade: { name: 'Edge of the Veil', desc: '+12% critical chance.' },
-  arbalist: { name: 'Blessed Fletching', desc: '+12% critical chance.' },
+  arbalist: { name: 'Consecrated Fletching', desc: '+12% critical chance.' },
   exorcist: { name: 'Lantern Oil', desc: 'Her skills deal 12% more damage.' },
 };
 

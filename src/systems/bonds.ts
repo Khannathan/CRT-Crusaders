@@ -226,7 +226,7 @@ const CLASS_SIN: Record<string, string> = {
   cantor: 'She hums before she speaks, a low funeral note. "Every hymn I know is for the dead. I have never once been asked to sing at a wedding."',
   adjudicator: 'She will not meet your eyes, only your reflection in the grate. "I judge by the mirror. It never lies. That is why I have stopped looking into it myself."',
   veilblade: 'She speaks so quietly you lean in to hear. "No one sees me do it. Not the heretic, not my Sisters. Some nights I wonder if the Lord sees it either."',
-  arbalist: 'She turns a blessed bolt over in her fingers. "From that far away they look like anyone. That is the mercy of it. That is the sin of it too."',
+  arbalist: 'She turns a consecrated bolt over in her fingers. "From that far away they look like anyone. That is the mercy of it. That is the sin of it too."',
   exorcist: 'Her lantern gutters as she talks. "I cast them out, and they go somewhere. I have never asked where. I am afraid it is into me."',
   oracle: 'Her eyes stay closed throughout. "I have seen how I die. It is not in the crypts. I will not tell you where, only that you were not there."',
 };

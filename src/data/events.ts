@@ -169,7 +169,7 @@ export const EVENTS: Record<string, EventDef> = {
     title: 'The Flooded Chapel',
     text: 'Pews float in black water. Something glints at the altar.',
     options: [
-      { label: 'Swim for it', hint: '60%: a relic. Otherwise lose 15% HP.', chance: 0.6, outcome: { text: 'Your fingers close on something holy.', relic: true }, fail: { text: 'Something below closes on you instead.', hurt: 0.15 } },
+      { label: 'Swim for it', hint: '60%: a relic. Otherwise lose 15% HP.', chance: 0.6, outcome: { text: 'Your fingers close on a relic.', relic: true }, fail: { text: 'Something below closes on you instead.', hurt: 0.15 } },
       { label: 'Skirt the water', hint: 'Nothing happens.', outcome: { text: 'You keep your boots, and your blood.' } },
     ],
   },
@@ -188,7 +188,7 @@ export const EVENTS: Record<string, EventDef> = {
     text: 'A statue of the Mother weeps oil that smells of myrrh.',
     options: [
       { label: 'Anoint the Sisters', hint: 'Heal everyone 35%.', outcome: { text: 'The oil closes every wound it touches.', heal: 0.35 } },
-      { label: 'Bottle the tears', hint: '+2 Seals.', outcome: { text: 'Holy oil fetches a holy price.', seals: 2 } },
+      { label: 'Bottle the tears', hint: '+2 Seals.', outcome: { text: 'Consecrated oil fetches a fat price.', seals: 2 } },
     ],
   },
   'confessor-ghost': {
@@ -215,7 +215,7 @@ export const EVENTS: Record<string, EventDef> = {
     text: 'A marble saint weeps real tears into a cracked basin.',
     options: [
       { label: 'Bathe your wounds', hint: 'Heal everyone 30%. The next Vigil candle is 2 rounds shorter.', outcome: { text: 'The tears are warm. The candle above you is not.', heal: 0.3, curseVigil: 2 } },
-      { label: 'Collect the tears', hint: '+1 Seal.', outcome: { text: 'You stopper a phial of holy grief.', seals: 1 } },
+      { label: 'Collect the tears', hint: '+1 Seal.', outcome: { text: 'You stopper a phial of consecrated grief.', seals: 1 } },
     ],
   },
   'confession-booth': {
@@ -242,7 +242,7 @@ export const EVENTS: Record<string, EventDef> = {
     text: 'Vestments float in black water. Something gleams below.',
     options: [
       { label: 'Dive for it', hint: '50%: a relic of the bell family. Otherwise lose 20% HP.', chance: 0.5, outcome: { text: 'You surface with a bell that rings underwater.', relic: true, family: 'bell' }, fail: { text: 'Hands in the water hold you down a moment too long.', hurt: 0.2 } },
-      { label: 'Wring out a stole', hint: 'Heal everyone 10%.', outcome: { text: 'Damp, but blessed.', heal: 0.1 } },
+      { label: 'Wring out a stole', hint: 'Heal everyone 10%.', outcome: { text: 'Damp, but consecrated.', heal: 0.1 } },
     ],
   },
   'pyre-embers': {
@@ -268,7 +268,7 @@ export const EVENTS: Record<string, EventDef> = {
     title: 'A Cracked Reliquary',
     text: 'A gilded box split down the middle. The finger bone inside points the way you came.',
     options: [
-      { label: 'Trade a relic for it', hint: 'Lose one relic you hold. Choose a new one.', outcome: { text: 'One holy thing for another. The bone points forward now.', dropRelic: true, relic: true } },
+      { label: 'Trade a relic for it', hint: 'Lose one relic you hold. Choose a new one.', outcome: { text: 'One relic for another. The bone points forward now.', dropRelic: true, relic: true } },
       { label: 'Follow where it points', hint: 'Heal everyone 15%.', outcome: { text: 'You step back into a pocket of quiet and catch your breath.', heal: 0.15 } },
     ],
   },

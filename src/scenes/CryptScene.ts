@@ -251,7 +251,7 @@ export class CryptScene extends Phaser.Scene {
       case 'shrine':
         return `Kneel and pray. Every Sister heals ${REWARDS.shrineHealPct * 100}%.`;
       case 'reliquary':
-        return 'Claim one holy relic for this crusade!';
+        return 'Seize one relic for this crusade!';
       case 'miracle':
         return `A Miracle! Every Sister, fallen or not, rises whole. +${MIRACLE_SEALS} Seals and a relic of your choice.`;
     }

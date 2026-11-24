@@ -49,7 +49,7 @@ export function showOrderBonuses(scene: Phaser.Scene, orders: string[], depth = 
   let y = GAME_H / 2 - h / 2 + 30;
   layer.add(scene.add.text(GAME_W / 2, y, 'ORDER BLESSINGS', text.display(22, PAL.amber)).setOrigin(0.5));
   y += 26;
-  layer.add(scene.add.text(GAME_W / 2, y, 'Each Sister of an Order adds to its blessing. Two pairs bless twice.', { ...text.body(14, PAL.muted), align: 'center', wordWrap: { width: GAME_W - 90 } }).setOrigin(0.5, 0));
+  layer.add(scene.add.text(GAME_W / 2, y, 'Each Sister of an Order adds to its favour. Two pairs earn two favours.', { ...text.body(14, PAL.muted), align: 'center', wordWrap: { width: GAME_W - 90 } }).setOrigin(0.5, 0));
   y += 40;
   for (const l of lines) {
     layer.add(scene.add.text(50, y, `${l.order}  ×${l.n}`, text.body(18, l.now.length ? PAL.amber : PAL.ivory)));

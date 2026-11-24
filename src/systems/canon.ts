@@ -88,13 +88,13 @@ export const PATHS: { id: PathId; name: string; desc: string }[] = [
 const T = (path: PathId, n: number, name: string, desc: string, fx: TraitEffect): TraitDef => ({ id: `${path}${n}`, path, name, desc, fx });
 
 export const TRAITS: TraitDef[] = [
-  T('wrath', 1, 'Righteous Arm', '+5% ATK.', { atkPct: 0.05 }),
+  T('wrath', 1, 'Wrathful Arm', '+5% ATK.', { atkPct: 0.05 }),
   T('wrath', 2, 'Keen Judgment', '+5% crit chance.', { crit: 0.05 }),
   T('wrath', 3, 'Searing Psalm', 'Her Litany +10% power.', { litanyPct: 0.1 }),
   T('wrath', 4, 'Iron Conviction', '+5% ATK.', { atkPct: 0.05 }),
   T('wrath', 5, 'Hand of God', 'All her damage +8%, and her Litany +10% more.', { dmgPct: 0.08, litanyPct: 0.1 }),
   T('ward', 1, 'Hair Shirt', '+6% HP.', { hpPct: 0.06 }),
-  T('ward', 2, 'Blessed Mail', '+8% armor and magic resistance.', { armorPct: 0.08 }),
+  T('ward', 2, 'Consecrated Mail', '+8% armor and magic resistance.', { armorPct: 0.08 }),
   T('ward', 3, 'Patience of Saints', 'Takes 4% less damage.', { guard: 0.04 }),
   T('ward', 4, 'Flesh of Stone', '+6% HP.', { hpPct: 0.06 }),
   T('ward', 5, 'Unbroken Vigil', 'Takes 8% less damage more (12% in all on this path).', { guard: 0.08 }),

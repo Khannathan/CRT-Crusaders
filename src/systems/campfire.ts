@@ -18,7 +18,7 @@ export interface Topic {
 
 export const TOPICS: Topic[] = [
   { id: 'saints', name: 'The Saints', line: 'They bled for less than you will. Be worthy!' },
-  { id: 'sin', name: 'Sin', line: 'Every sin is a door. Bar it, Sister!' },
+  { id: 'sin', name: 'Sin', line: 'Every sin is a door. Burn it down, Sister!' },
   { id: 'home', name: 'Home', line: 'There was a bell tower, once. You could hear it from the fields.' },
   { id: 'battle', name: 'The Battle Ahead', line: 'Front rank holds. No one breaks. No one!' },
   { id: 'relics', name: 'Relics', line: 'This finger bone has outlived three Abbesses.' },
@@ -27,8 +27,8 @@ export const TOPICS: Topic[] = [
   { id: 'feasts', name: 'Feast Days', line: 'Honey cakes on Saint Wen\'s day. Remember the honey cakes?' },
   { id: 'penance', name: 'Penance', line: 'The scourge teaches. Listen to it.' },
   { id: 'dead', name: 'The Dead', line: 'They are listening. They always listen.' },
-  { id: 'hounds', name: 'The Hounds', line: 'Good dogs. Better than most priests.' },
-  { id: 'vows', name: 'Vows', line: 'You swore. So did I. We keep them tonight.' },
+  { id: 'hounds', name: 'The Hounds', line: 'Good dogs. More loyal than the other Orders.' },
+  { id: 'vows', name: 'Vows', line: 'You swore. So did I. We keep them, whatever they cost.' },
 ];
 
 export const MORALE_BASE = 20;

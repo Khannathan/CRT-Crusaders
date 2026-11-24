@@ -632,7 +632,7 @@ export class RosterScene extends Phaser.Scene {
     layer.add(parts[0]);
     y += parts[0].height + 10;
     if (orderTier) {
-      const t = this.add.text(left, y, `${c.order} blessing, by her Order's Sisters in the party:\n${ORDERS[c.order].tiers.map((x) => `${x.need}: ${x.desc}`).join('\n')}`, { ...text.body(15, PAL.muted), wordWrap: { width: bw } });
+      const t = this.add.text(left, y, `${c.order} favour, by her Order's Sisters in the party:\n${ORDERS[c.order].tiers.map((x) => `${x.need}: ${x.desc}`).join('\n')}`, { ...text.body(15, PAL.muted), wordWrap: { width: bw } });
       layer.add(t);
       y += t.height + 10;
     }
@@ -1284,7 +1284,7 @@ export class RosterScene extends Phaser.Scene {
         commit();
         layer.destroy();
         this.gearPicker(c, slot);
-        toast(this, `${m.count} pieces melted for ${m.tithes} Tithes. Waste nothing holy!`, GAME_H / 2);
+        toast(this, `${m.count} pieces melted for ${m.tithes} Tithes. The Order wastes nothing.`, GAME_H / 2);
       });
     }, { fontSize: 14, disabled: !spares.length, icon: 'flame' });
     layer.add(meltAll.all);

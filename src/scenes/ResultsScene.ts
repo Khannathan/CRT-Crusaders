@@ -19,7 +19,7 @@ import { beatenText } from '../systems/records';
 import { portraitKey } from '../ui/placeholderPortrait';
 import { holdForCard } from '../ui/sisterCard';
 
-const TITLES = { victory: 'The crypt is purified!', defeat: 'The crusade is broken', retreat: 'You fall back to the Sanctum' };
+const TITLES = { victory: 'The crypt is purged by fire!', defeat: 'The crusade is broken', retreat: 'You fall back to the Sanctum' };
 
 /** One bar's journey: from (level, fraction) to (level, fraction). */
 interface Track {

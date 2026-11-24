@@ -43,7 +43,7 @@ export const HOUNDS: HoundDef[] = [
   { id: 'pyre', name: 'Pyre Hound', rarity: 'SSR', howlName: 'Ashen Howl', howl: { atk: 0.06, scent: 0.1 }, flavor: 'Whelped in the ashes of a burning. Its breath smells of smoke.', coat: 0x3a2020, eye: 0xff6a2a },
   { id: 'grave', name: 'Grave Mastiff', rarity: 'SSR', howlName: 'Churchyard Watch', howl: { ward: 0.06, shield: 0.12 }, flavor: 'Guards the graves of the Sisters. Nothing gets past it twice.', coat: 0x2e3238, eye: 0x9ad0ff },
   { id: 'shuck', name: 'Black Shuck', rarity: 'UR', howlName: 'Doom Howl', howl: { atk: 0.08, zeal: 3 }, flavor: 'A great black dog with eyes like coals. To hear it is to know the end is near, for someone.', coat: 0x15121a, eye: 0xff3a3a },
-  { id: 'wolfhound', name: "Saint's Wolfhound", rarity: 'UR', howlName: 'Blessed Chorus', howl: { ward: 0.06, mend: 0.04 }, flavor: 'Said to have walked beside the first Abbess. It has not aged a day.', coat: 0xe8e0d0, eye: 0xffd700 },
+  { id: 'wolfhound', name: "Saint's Wolfhound", rarity: 'UR', howlName: 'Sworn Chorus', howl: { ward: 0.06, mend: 0.04 }, flavor: 'Said to have walked beside the first Abbess. It has not aged a day.', coat: 0xe8e0d0, eye: 0xffd700 },
 ];
 
 export const houndDef = (id: string) => HOUNDS.find((h) => h.id === id);
