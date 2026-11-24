@@ -199,7 +199,7 @@ export function autoPanel(scene: Phaser.Scene) {
   layer.add(scene.add.rectangle(GAME_W / 2, H / 2, GAME_W, H, 0x09060b, 0.75).setInteractive().on('pointerup', () => layer.destroy()));
   layer.add(scene.add.rectangle(GAME_W / 2, H / 2, GAME_W - 60, 250, 0x241925).setStrokeStyle(2, PAL.goldEdge).setInteractive());
   const what = r.challenge ? r.challenge.label.split('.')[0] : 'A crypt fight';
-  layer.add(scene.add.text(GAME_W / 2, H / 2 - 80, `${what} is playing on Auto.${r.battle.round ? `\nRound ${r.battle.round}.` : ''}`, { fontFamily: FONT, fontSize: '19px', color: hex(PAL.ivory), align: 'center', wordWrap: { width: GAME_W - 100 } }).setOrigin(0.5));
+  layer.add(scene.add.text(GAME_W / 2, H / 2 - 80, `${what} is playing on Auto.${r.battle.round ? `\n${r.battle.round * 2}s in.` : ''}`, { fontFamily: FONT, fontSize: '19px', color: hex(PAL.ivory), align: 'center', wordWrap: { width: GAME_W - 100 } }).setOrigin(0.5));
   const watch = makeButton(scene, GAME_W / 2 - 110, H / 2 + 40, 190, 56, 'Watch', () => scene.scene.start('Battle', {}));
   const stop = makeButton(scene, GAME_W / 2 + 110, H / 2 + 40, 190, 56, 'Stop Auto', () => {
     const msg = stopAuto();

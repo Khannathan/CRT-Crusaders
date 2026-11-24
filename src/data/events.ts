@@ -61,7 +61,7 @@ export const EVENTS: Record<string, EventDef> = {
     title: 'The Tithe Box',
     text: "A poor box, overflowing. The dead won't miss it. Probably.",
     options: [
-      { label: 'Take the coins', hint: '+80 Tithes. The next Vigil candle is 3 rounds shorter.', outcome: { text: 'Somewhere above, a votive candle gutters out.', tithes: 80, curseVigil: 3 } },
+      { label: 'Take the coins', hint: '+80 Tithes. The next Vigil candle is 6s shorter.', outcome: { text: 'Somewhere above, a votive candle gutters out.', tithes: 80, curseVigil: 3 } },
       { label: 'Leave it', hint: 'Nothing happens.', outcome: { text: 'You walk on, hands clean, purse light.' } },
     ],
   },
@@ -97,7 +97,7 @@ export const EVENTS: Record<string, EventDef> = {
     title: 'A Silent Belfry',
     text: 'A rope hangs from a bell that has not rung in a century.',
     options: [
-      { label: 'Ring it', hint: 'Choose a Bell relic. The next Vigil candle is 2 rounds shorter.', outcome: { text: 'The note shakes dust from the vaults. Something below hears it too.', relic: true, family: 'bell', curseVigil: 2 } },
+      { label: 'Ring it', hint: 'Choose a Bell relic. The next Vigil candle is 4s shorter.', outcome: { text: 'The note shakes dust from the vaults. Something below hears it too.', relic: true, family: 'bell', curseVigil: 2 } },
       { label: 'Cut the rope', hint: '+60 Tithes.', outcome: { text: 'Hemp of good quality. The sexton will pay.', tithes: 60 } },
     ],
   },
@@ -151,7 +151,7 @@ export const EVENTS: Record<string, EventDef> = {
     title: 'A Guttering Reliquary',
     text: 'A candle burns down to the wick inside a cage of saint-bones.',
     options: [
-      { label: 'Take the Gutted Candle', hint: 'Lasting: Litanies +40%, but every Vigil candle is 2 rounds shorter.', outcome: { text: 'It flares in your hand, hungry.', gainRelic: 'gutted-candle' } },
+      { label: 'Take the Gutted Candle', hint: 'Lasting: Litanies +40%, but every Vigil candle is 4s shorter.', outcome: { text: 'It flares in your hand, hungry.', gainRelic: 'gutted-candle' } },
       { label: 'Let it burn out', hint: 'Next fight: +20 Zeal.', outcome: { text: 'You watch it die and feel its last warmth.', blessZeal: 20 } },
     ],
   },
@@ -196,7 +196,7 @@ export const EVENTS: Record<string, EventDef> = {
     title: 'A Confessor\'s Ghost',
     text: 'A dead priest sits in a confessional. "Speak your sins, and I shall weigh them."',
     options: [
-      { label: 'Confess everything', hint: '50%: +3 Seals. Otherwise the next Vigil is 3 rounds shorter.', chance: 0.5, outcome: { text: '"You are forgiven." He presses wax into your hand.', seals: 3 }, fail: { text: '"Unforgivable." The candles gutter.', curseVigil: 3 } },
+      { label: 'Confess everything', hint: '50%: +3 Seals. Otherwise the next Vigil is 6s shorter.', chance: 0.5, outcome: { text: '"You are forgiven." He presses wax into your hand.', seals: 3 }, fail: { text: '"Unforgivable." The candles gutter.', curseVigil: 3 } },
       { label: 'Confess nothing', hint: 'Nothing happens.', outcome: { text: 'He sighs, and fades.' } },
     ],
   },
@@ -214,7 +214,7 @@ export const EVENTS: Record<string, EventDef> = {
     title: 'A Marble Saint',
     text: 'A marble saint weeps real tears into a cracked basin.',
     options: [
-      { label: 'Bathe your wounds', hint: 'Heal everyone 30%. The next Vigil candle is 2 rounds shorter.', outcome: { text: 'The tears are warm. The candle above you is not.', heal: 0.3, curseVigil: 2 } },
+      { label: 'Bathe your wounds', hint: 'Heal everyone 30%. The next Vigil candle is 4s shorter.', outcome: { text: 'The tears are warm. The candle above you is not.', heal: 0.3, curseVigil: 2 } },
       { label: 'Collect the tears', hint: '+1 Seal.', outcome: { text: 'You stopper a phial of consecrated grief.', seals: 1 } },
     ],
   },
@@ -251,7 +251,7 @@ export const EVENTS: Record<string, EventDef> = {
     text: 'The stake still stands. The embers at its foot have never gone out.',
     options: [
       { label: 'Take an ember', hint: 'Choose a relic of the burn family. Lose 10% HP.', outcome: { text: 'It burns your palm and does not let go.', relic: true, family: 'burn', hurt: 0.1 } },
-      { label: 'Kneel in the ash', hint: 'Choose a relic of the martyr family. The next Vigil candle is 3 rounds shorter.', outcome: { text: 'The ash settles on your shoulders like a mantle.', relic: true, family: 'martyr', curseVigil: 3 } },
+      { label: 'Kneel in the ash', hint: 'Choose a relic of the martyr family. The next Vigil candle is 6s shorter.', outcome: { text: 'The ash settles on your shoulders like a mantle.', relic: true, family: 'martyr', curseVigil: 3 } },
     ],
   },
   'beggar-saint': {
@@ -277,7 +277,7 @@ export const EVENTS: Record<string, EventDef> = {
     title: 'A Forest of Bells',
     text: 'Hundreds of small bells hang from the ceiling. None of them has a clapper.',
     options: [
-      { label: 'Ring one anyway', hint: '50%: +2 Seals. Otherwise the next Vigil candle is 4 rounds shorter.', chance: 0.5, outcome: { text: 'It rings. Something far away answers with gold.', seals: 2 }, fail: { text: 'It rings, and every candle in the crypt leans toward the sound.', curseVigil: 4 } },
+      { label: 'Ring one anyway', hint: '50%: +2 Seals. Otherwise the next Vigil candle is 8s shorter.', chance: 0.5, outcome: { text: 'It rings. Something far away answers with gold.', seals: 2 }, fail: { text: 'It rings, and every candle in the crypt leans toward the sound.', curseVigil: 4 } },
       { label: 'Walk through quietly', hint: 'Next fight: +10 Zeal.', outcome: { text: 'Not one bell stirs. Your Sisters steady their breath.', blessZeal: 10 } },
     ],
   },

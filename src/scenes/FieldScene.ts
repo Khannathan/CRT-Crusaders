@@ -9,7 +9,7 @@ import { current } from '../state/run';
 import { nextSpeed, saveSettings, settings } from '../state/settings';
 import { CHAPTERS, STAGES_PER_CHAPTER, nextStage, stageBattle, stageDef } from '../systems/campaign';
 import { ZEAL_MAX, skillsFor, type Battle, type Unit } from '../systems/combat';
-import { CHAIN_SEC, FieldBattle, chainBonus, screenField } from '../systems/field';
+import { CHAIN_SEC, FieldBattle, ROUND_SEC, chainBonus, screenField } from '../systems/field';
 import { runFieldInBackground } from '../ui/bgFight';
 import { HOSANNAS, HOSANNA_MAX, battleHosanna, hosannaOpen, pickHosanna } from '../systems/hosanna';
 import { KW_ORDER, keywordLine, type Keyword } from '../systems/keywords';
@@ -493,7 +493,7 @@ export class FieldScene extends Phaser.Scene {
     const secs = Math.floor(this.field.time);
     const fb = this.field.battle;
     // Timed fights (hunts, the siege) count down their rounds; others show the Vigil candle.
-    const rounds = fb.roundLimit ? `R${Math.min(fb.round, fb.roundLimit)}/${fb.roundLimit}` : `R${fb.round} · CANDLE ${fb.vigil}`;
+    const rounds = fb.roundLimit ? `${Math.max(0, fb.roundLimit - fb.round) * ROUND_SEC}s LEFT` : fb.vigil > 0 ? `CANDLE ${fb.vigil * ROUND_SEC}s` : 'CANDLE OUT';
     this.timeText.setText(`${Math.floor(secs / 60)}:${String(secs % 60).padStart(2, '0')} · ${rounds}`);
     const end = events.find((e) => e.kind === 'end');
     if (end && end.kind === 'end') this.finish(end.outcome);
@@ -508,7 +508,7 @@ export class FieldScene extends Phaser.Scene {
   /** A Litany lands or a Blasphemy begins: its name across the screen, a beat of slow motion. */
   private ultimate(u: Unit, s: SkillDef, charging: boolean) {
     if (charging) {
-      this.log(`${u.name} begins ${s.name}! Strike hard or Delay it.`);
+      this.log(`${u.name} begins ${s.name}! Strike hard or Stagger it.`);
       shake(this, 'boss');
       sfx('blasphemy');
       return;
@@ -822,7 +822,7 @@ export class FieldScene extends Phaser.Scene {
     const dy = Math.round((GAME_H - BASE_H) / 2);
     layer.add(this.add.rectangle(GAME_W / 2, 440 + dy, GAME_W - 60, 300, 0x241925).setStrokeStyle(2, PAL.bronze));
     layer.add(this.add.text(GAME_W / 2, 340 + dy, won ? 'EXECUTED' : 'THE SISTERS FALL BACK', text.display(32, won ? PAL.amber : 0xd06060)).setOrigin(0.5));
-    layer.add(this.add.text(GAME_W / 2, 392 + dy, `${secs} seconds · ${this.field.battle.round} rounds\nPractice: no rewards, nothing lost.`, { ...text.body(18, PAL.steel), align: 'center' }).setOrigin(0.5));
+    layer.add(this.add.text(GAME_W / 2, 392 + dy, `${secs} seconds\nPractice: no rewards, nothing lost.`, { ...text.body(18, PAL.steel), align: 'center' }).setOrigin(0.5));
     const n = this.stageN;
     const bossN = Math.ceil(n / STAGES_PER_CHAPTER) * STAGES_PER_CHAPTER;
     const bw = 150;

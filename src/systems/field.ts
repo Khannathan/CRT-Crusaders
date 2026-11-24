@@ -49,9 +49,16 @@ const MAX_CATCHUP = 0.9;
 /** Seconds between a unit's actions at speed 10. */
 export const ACT_SEC = 2.2;
 /** Seconds per round (candle, relic Zeal, howl, boss traits). */
-export const ROUND_SEC = 2.2;
+export const ROUND_SEC = 2;
+/** The round clock before turns became seconds; candle and time limits were tuned on it. */
+const OLD_ROUND_SEC = 2.2;
 /** A delayed unit's next action waits this much longer. */
 export const DELAY_SEC = 1.6;
+/** Slowed foes (Drowning Flood) wait this much longer between actions. */
+export const FLOOD_SLOW = 1.25;
+/** A knocked-back foe is hurled this far (field units at 540 wide), over KNOCK_SEC. */
+export const KNOCK_DIST = 70;
+export const KNOCK_SEC = 0.25;
 /** An extra action (Coup de Grâce) comes this soon after the swing ends. */
 export const EXTRA_SEC = 0.15;
 /** Seconds a unit stands still after acting (the swing), and after a Litany. */
@@ -95,6 +102,8 @@ export interface Body {
   timer: number;
   /** Seconds it stands rooted (mid-swing). */
   lock: number;
+  /** Hurled or dragged: it slides this fast (units a second) for t more seconds and cannot act. */
+  slide?: { vx: number; vy: number; t: number };
   /** What it means to do when it gets in reach. */
   plan?: { skill: SkillDef; targetUid?: string; age: number };
   /** 1 = facing right, -1 = left. */
@@ -197,6 +206,12 @@ export class FieldBattle {
   ) {
     this.k = opts.w / BASE_W;
     this.rng = opts.rng ?? Math.random;
+    // Rounds pass every ROUND_SEC (2s, once 2.2s): the candle and timed fights keep their length in seconds.
+    if (!battle.timed && battle.round === 0) {
+      battle.vigil = Math.round((battle.vigil * OLD_ROUND_SEC) / ROUND_SEC);
+      if (battle.roundLimit) battle.roundLimit = Math.round((battle.roundLimit * OLD_ROUND_SEC) / ROUND_SEC);
+    }
+    battle.timed = true;
     for (const u of battle.units) this.addBody(u);
     battle.space = {
       inHymn: (singer, u) => {
@@ -208,6 +223,19 @@ export class FieldBattle {
         const z = this.zones.find((x) => x.bossUid === foe.uid);
         const me = this.bodies.get(u.uid);
         return !!z && !!me && Math.hypot(me.x - z.x, me.y - z.y) > z.r;
+      },
+      liveRank: (foe) => {
+        const pack = this.battle.alive(foe.side);
+        const party = this.battle.alive(foe.side === 'enemy' ? 'party' : 'enemy').map((p) => this.bodies.get(p.uid)).filter((x): x is Body => !!x);
+        if (!party.length) return foe.rank;
+        const cx = party.reduce((a, p) => a + p.x, 0) / party.length;
+        const cy = party.reduce((a, p) => a + p.y, 0) / party.length;
+        const d = (u: Unit) => {
+          const b = this.bodies.get(u.uid);
+          return b ? Math.hypot(b.x - cx, b.y - cy) : Infinity;
+        };
+        const mine = d(foe);
+        return 1 + pack.filter((o) => o !== foe && (d(o) < mine || (d(o) === mine && o.rank < foe.rank))).length;
       },
       inOverwatch: (watcher, foe) => {
         const a = this.bodies.get(watcher.uid);
@@ -294,7 +322,13 @@ export class FieldBattle {
   /** Seconds between this unit's actions: faster units act a little more often. */
   interval(u: Unit) {
     const f = Math.max(0.8, Math.min(1.25, 1 + (10 - u.spd) * 0.025));
-    return ACT_SEC * f * (u.status.haste ? 0.8 : 1) * (u.side === 'party' ? SISTER_PACE : 1);
+    return ACT_SEC * f * (u.status.haste ? 0.8 : 1) * (u.side === 'party' ? SISTER_PACE : 1) * (this.slowed(u) ? FLOOD_SLOW : 1);
+  }
+
+  /** Drowning Flood slows every foe; behind the Vigil's locked gate, summoned foes are slowed too. */
+  private slowed(u: Unit) {
+    if (u.side !== 'enemy') return false;
+    return this.battle.ground?.kind === 'flood' || (this.battle.locked && u.uid.startsWith('summon-'));
   }
 
   private dist(a: Body, b: Body) {
@@ -404,6 +438,18 @@ export class FieldBattle {
       if (events.length) out.push({ kind: 'tick', events });
     }
 
+    // Statuses, damage over time and cooldowns run on the clock.
+    if (this.engaged) {
+      const events: BattleEvent[] = [];
+      b.timePass(dt, events);
+      if (events.length) out.push({ kind: 'tick', events });
+      if (b.outcome()) {
+        this.done = true;
+        out.push({ kind: 'end', outcome: b.outcome()! });
+        return out;
+      }
+    }
+
     // Auto sings the Hosanna when it is full and worth it.
     if (!this.opts.manualLitany && this.hosannaReady() && hosannaWorthIt(b, this.opts.hosanna!)) {
       const e = this.castHosanna();
@@ -422,6 +468,14 @@ export class FieldBattle {
       me.lock = Math.max(0, me.lock - dt);
       me.timer -= dt;
       me.moving = false;
+      if (me.slide) {
+        const st = Math.min(dt, me.slide.t);
+        me.x = Math.max(me.radius, Math.min(this.opts.w - me.radius, me.x + me.slide.vx * st));
+        me.y = Math.max(me.radius, Math.min(this.opts.h - me.radius, me.y + me.slide.vy * st));
+        me.slide.t -= st;
+        if (me.slide.t <= 0) me.slide = undefined;
+        continue;
+      }
       if (me.lock > 0) continue;
       // Dragged: walk there, then hold while danger stands (no longer than a few seconds).
       if (me.order) {
@@ -436,6 +490,13 @@ export class FieldBattle {
       }
 
       // Ready: start-of-turn effects (once per action), then decide.
+      // Stunned: it stands dazed until the stun wears off, then acts at once.
+      if (u.status.stun) {
+        me.ready = false;
+        me.plan = undefined;
+        me.timer = Math.max(me.timer, 0.1);
+        continue;
+      }
       if (me.timer <= 0 && !me.ready) {
         const events: BattleEvent[] = [];
         const ok = b.beginTurn(u, events);
@@ -539,6 +600,18 @@ export class FieldBattle {
         const fb = this.bodies.get(f.uid);
         if (fb?.plan && fb.plan.skill.target === 'enemy' && fb.plan.targetUid !== u.uid) fb.plan = undefined;
       }
+    }
+    // Knocked back: hurled away from the blow. Dragged forward: hauled to the striker.
+    for (const e of events) {
+      if (e.type !== 'status' || (e.label !== 'Knocked back' && e.label !== 'Dragged forward')) continue;
+      const tb = this.bodies.get(e.uid);
+      if (!tb || tb === me) continue;
+      const dx = tb.x - me.x;
+      const dy = tb.y - me.y;
+      const d = Math.hypot(dx, dy) || 1;
+      const dist = e.label === 'Knocked back' ? KNOCK_DIST * this.k : -Math.max(0, Math.min(d - (me.range + tb.radius) * 0.8, 220 * this.k));
+      if (!dist) continue;
+      tb.slide = { vx: (dx / d) * dist / KNOCK_SEC, vy: (dy / d) * dist / KNOCK_SEC, t: KNOCK_SEC };
     }
     // Ranks moved (Processional, Pursuit, Step, pulls): the formation follows.
     if (events.some((e) => e.type === 'move')) this.reform();

@@ -79,7 +79,7 @@ export function pickHound(scene: Phaser.Scene, save: SaveData, depth: number, ch
   layer.add(scene.add.rectangle(GAME_W / 2, GAME_H / 2, GAME_W, GAME_H, 0x09060b, 0.96).setInteractive());
   layer.add(addFrame(scene, GAME_W / 2, GAME_H / 2, GAME_W - 24, GAME_H - 40, { fill: 0x241925 }));
   layer.add(scene.add.text(GAME_W / 2, 62, 'CHOOSE A HOUND', text.display(22, PAL.ivory)).setOrigin(0.5));
-  layer.add(scene.add.text(GAME_W / 2, 92, 'One hound runs into every fight and howls at the start of each round.', { ...text.body(15, PAL.muted), align: 'center', wordWrap: { width: GAME_W - 70 } }).setOrigin(0.5, 0));
+  layer.add(scene.add.text(GAME_W / 2, 92, 'One hound runs into every fight and howls every 2 seconds.', { ...text.body(15, PAL.muted), align: 'center', wordWrap: { width: GAME_W - 70 } }).setOrigin(0.5, 0));
   const owned = HOUNDS.filter((h) => s.owned[h.id]).reverse();
   const list = addScrollArea(scene, 140, GAME_H - 130, { parent: layer });
   const h = 96;

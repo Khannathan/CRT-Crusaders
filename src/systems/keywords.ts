@@ -125,6 +125,6 @@ export function keywordLine(k: PartyKeywords, orders: string[]): string {
   if (has('remains')) parts.push(`Remains ${k.remains}/${k.remainsMax}`);
   if (has('tide')) parts.push(`Tide ${k.tide}/${TIDE_MAX}`);
   if (has('toll')) parts.push(`Toll ${k.toll % PEAL_EVERY}/${PEAL_EVERY}${k.midnight ? '' : ` · Midnight ${Math.min(k.toll, MIDNIGHT_AT)}/${MIDNIGHT_AT}`}`);
-  for (const h of k.hymns) parts.push(`${h.name} ${h.rounds}`);
+  for (const h of k.hymns) parts.push(`${h.name} ${h.rounds * 2}s`);
   return parts.join('  ·  ');
 }
