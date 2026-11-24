@@ -6,7 +6,7 @@ import { game } from '../state/game';
 import { current } from '../state/run';
 import {
   HUNT_ENTRIES,
-  HUNT_ROUNDS,
+  HUNT_SECONDS,
   MILESTONES,
   baneOf,
   finishHunt,
@@ -59,7 +59,7 @@ export class HuntScene extends Phaser.Scene {
     const hunt = huntOn();
     const s = huntsOf(save);
     const boss = ENEMIES[hunt.boss];
-    const { top, refresh } = modeScreen(this, 'Purge Hunts', 'Twelve rounds to wound the beast. Your daily best pays Godblood.');
+    const { top, refresh } = modeScreen(this, 'Purge Hunts', `${HUNT_SECONDS} seconds to wound the beast. Your daily best pays Godblood.`);
     const bw = GAME_W - PAD * 2;
     const tier = Math.min(HuntScene.tier ?? s.tier, s.tier);
     const list = addScrollArea(this, top - 4, GAME_H - TAB_BAR_H, { start: HuntScene.listY, onScroll: (y) => (HuntScene.listY = y) });
@@ -82,7 +82,7 @@ export class HuntScene extends Phaser.Scene {
       addOrderSigil(this, tx + 10, y + 124, bane, 22);
       this.add.text(tx + 26, y + 114, `Bane: ${bane}`, text.body(15, PAL.ivory));
     }
-    this.add.text(tx, y + 142, `${HUNT_ROUNDS} rounds · ${huntEntriesLeft(save)}/${HUNT_ENTRIES} hunts left today`, text.body(14, PAL.muted));
+    this.add.text(tx, y + 142, `${HUNT_SECONDS} seconds · ${huntEntriesLeft(save)}/${HUNT_ENTRIES} hunts left today`, text.body(14, PAL.muted));
     this.add.text(PAD + 16, y + 176, hunt.lore, { ...text.body(14, PAL.muted), fontStyle: 'italic', wordWrap: { width: bw - 32 } });
     y += ch + 12;
 
@@ -193,11 +193,11 @@ export class HuntScene extends Phaser.Scene {
     pickParty(
       this,
       save,
-      { title: ENEMIES[hunt.boss].name, sub: `Tier ${tierLabel(tier)}. ${HUNT_ROUNDS} rounds. Tap in rank order.`, initial: save.lastParty, confirm: 'Hunt', suggest, hound: true, marks: huntMarks(save, hunt) },
+      { title: ENEMIES[hunt.boss].name, sub: `Tier ${tierLabel(tier)}. ${HUNT_SECONDS} seconds. Tap in line-up order.`, initial: save.lastParty, confirm: 'Hunt', suggest, hound: true, marks: huntMarks(save, hunt) },
       (party) => {
         save.lastParty = party;
         current.challenge = {
-          label: `The hunt begins: ${ENEMIES[hunt.boss].name}, tier ${tierLabel(tier)}. ${HUNT_ROUNDS} rounds to wound it!`,
+          label: `The hunt begins: ${ENEMIES[hunt.boss].name}, tier ${tierLabel(tier)}. ${HUNT_SECONDS} seconds to wound it!`,
           make: (rng) => huntBattle(save, party, hunt, tier, rng),
           finish: (_o, battle) => {
             const r = finishHunt(save, hunt, tier, battle);

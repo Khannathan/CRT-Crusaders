@@ -17,7 +17,7 @@ import { DMG_NAME, descNoCooldown, type SkillDef } from '../data/skills';
 import { KITS, kitSkills } from '../data/kits';
 import { showDetail as showSkillDetail } from '../ui/glossary';
 import { dmgTagOf } from '../data/classes';
-import { VOW_UPGRADES } from '../systems/combat';
+import { VOW_UPGRADES, cooldownSec } from '../systems/combat';
 import type { CrusaderDef } from '../data/types';
 import { commit, game } from '../state/game';
 import { MAX_TIER, MAX_VOW, TIER_BONUS, TIER_COLOR, TIER_NAME, TIER_STIGMATA, VOW_BONUS, copiesFor, oathComplete, oathMult, skillVow, standIn, STAND_IN_TIER, STIGMATA_PER_COPY, stigmataOf, takeVow, tierBlock, tierOf, tierTithes, tierUp, vowBlock, vowCost } from '../systems/tiers';
@@ -1254,6 +1254,32 @@ export class RosterScene extends Phaser.Scene {
   }
 }
 
+/** Where in the line-up a skill is used from (her slot: 1-2 Vanguard, 3-4 Rearguard). Empty = anywhere. */
+function lineName(from: number[]): string {
+  const f = [...new Set(from)].sort();
+  if (!f.length || f.length >= 4) return '';
+  const k = f.join('');
+  if (k === '12') return 'the Vanguard';
+  if (k === '34') return 'the Rearguard';
+  if (k === '1') return 'the head of the Vanguard';
+  if (k === '123') return 'the Vanguard or the head of the Rearguard';
+  if (k === '234') return 'anywhere but the head of the Vanguard';
+  return `line-up slot ${f.join(' or ')}`;
+}
+
+/** Which foes a strike can reach, by where they stand (1 = nearest your Sisters). */
+function reachName(reach?: number[]): string {
+  const r = [...new Set(reach ?? [])].sort();
+  if (!r.length || r.length >= 4) return '';
+  const k = r.join('');
+  if (k === '1') return 'only the foremost foe';
+  if (k === '12') return 'the front line (the 2 foes nearest your Sisters)';
+  if (k === '123') return 'the 3 foes nearest your Sisters';
+  if (k === '34') return 'the back line (all but the 2 nearest foes)';
+  if (k === '234') return 'any foe but the foremost';
+  return `foes ${r.join(', ')} by nearness`;
+}
+
 /** Plain facts about a skill for its detail card: damage, type, reach, level. */
 function skillFacts(c: CrusaderDef, s: SkillDef, lv: number, vowUp: boolean): string[] {
   const f = (1 + 0.06 * (lv - 1)) * (vowUp ? 1.25 : 1);
@@ -1263,10 +1289,13 @@ function skillFacts(c: CrusaderDef, s: SkillDef, lv: number, vowUp: boolean): st
   if (s.heal) out.push(`Heals ${Math.round(s.heal * f * 100)}% of her attack.`);
   if (s.healPct) out.push(`Heals ${Math.round(s.healPct * f * 100)}% of max HP.`);
   if (s.shieldPct) out.push(`Shield: ${Math.round(s.shieldPct * f * 100)}% of max HP.`);
-  if (s.poison) out.push(`Each tick: ${Math.round(s.poison.mult * f * 100)}% of her attack for ${s.poison.turns} turns.`);
-  if (s.bleed) out.push(`Bleed: ${Math.round(s.bleed.mult * f * 100)}% of her attack a turn for ${s.bleed.turns} turns.`);
-  if (s.from.length) out.push(`Used from rank ${s.from.join(', ')}.`);
-  if (s.reach?.length) out.push(`Reaches enemy rank ${s.reach.join(', ')}.`);
+  if (s.poison) out.push(`Each tick (every 2s): ${Math.round(s.poison.mult * f * 100)}% of her attack, for ${s.poison.turns * 2}s.`);
+  if (s.bleed) out.push(`Bleed: ${Math.round(s.bleed.mult * f * 100)}% of her attack every 2s, for ${s.bleed.turns * 2}s.`);
+  if (s.cooldown) out.push(`Cooldown: ${cooldownSec(s.cooldown)}s from when she uses it.`);
+  const from = lineName(s.from);
+  if (from) out.push(`Used from ${from}.`);
+  const reach = reachName(s.reach);
+  if (reach) out.push(`Reaches ${reach}.`);
   out.push(`Level ${lv}: +${Math.round((f / (vowUp ? 1.25 : 1) - 1) * 100)}% effect${vowUp ? ', and +25% from her Vow' : ''}.`);
   return out;
 }

@@ -4,6 +4,8 @@ import { KITS } from './kits';
 import { ROSTER } from './roster';
 import { genKits } from './kitGen';
 import { forgeKits } from './kitForge';
+import { CLASS_SKILLS } from './skills';
+import { realtimeText } from './realtimeText';
 
 /**
  * The Sisters: Aaron's 500-Sister roster (sister bible, roster-500), built into
@@ -30,6 +32,20 @@ forgeKits(CRUSADERS);
 
 // Every Sister carries a passive: her kit's signature (data/kits.ts), else her class's R/SR one.
 for (const c of CRUSADERS) c.passive = KITS[c.id]?.passive ?? c.passive ?? basePassive(c);
+
+// Combat is real time: every line a player reads speaks in seconds and positions
+// (data/realtimeText.ts). In place: kits share their class staples by reference.
+const rt = (x: { desc: string } | undefined) => {
+  if (x) x.desc = realtimeText(x.desc);
+};
+for (const kit of Object.values(KITS)) {
+  for (const s of kit.skills) rt(s);
+  rt(kit.passive);
+  rt(kit.seal);
+  rt(kit.relic);
+}
+for (const set of Object.values(CLASS_SKILLS)) for (const s of set) rt(s);
+for (const c of CRUSADERS) rt(c.passive);
 
 const BY_ID = new Map(CRUSADERS.map((c) => [c.id, c]));
 /** The Sister with this id. */

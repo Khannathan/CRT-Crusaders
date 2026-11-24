@@ -56,7 +56,7 @@ export const RELICS: RelicDef[] = [
 
   // Burn: fire and poison
   { id: 'censer-coal', name: 'Censer Coal', family: 'burn', desc: 'Burns and poisons your Sisters apply deal +25%.', burnMult: 0.25 },
-  { id: 'pitch-reliquary', name: 'Pitch Reliquary', family: 'burn', desc: 'Every fight opens with all foes Burning for 3 turns.', openingBurn: 0.35 },
+  { id: 'pitch-reliquary', name: 'Pitch Reliquary', family: 'burn', desc: 'Every fight opens with all foes Burning for 6s.', openingBurn: 0.35 },
   { id: 'phoenix-quill', name: 'Phoenix Quill', family: 'burn', desc: 'Fan the Flames and other detonations deal +40%.', detonateMult: 0.4 },
   { id: 'thurible-chain', name: 'Thurible Chain', family: 'burn', desc: 'Burns +15%, party attack +5%.', burnMult: 0.15, atkPct: 0.05 },
   { id: 'ash-of-saint-wen', name: 'Ash of Saint Wen', family: 'burn', desc: 'Foes open Burning (lightly); burns +10%.', openingBurn: 0.2, burnMult: 0.1 },
@@ -65,11 +65,11 @@ export const RELICS: RelicDef[] = [
 
   // Bell: Zeal and Rites
   { id: 'iron-rosary', name: 'Iron Rosary', family: 'bell', desc: 'Start every fight with 35 Zeal.', startZeal: 35 },
-  { id: 'ember-candle', name: 'Ember Candle', family: 'bell', desc: 'The Vigil candle burns 3 rounds longer.', vigilBonus: 3 },
-  { id: 'sanctus-bell', name: 'Sanctus Hand-bell', family: 'bell', desc: '+6 Zeal at the start of every round.', roundZeal: 6 },
+  { id: 'ember-candle', name: 'Ember Candle', family: 'bell', desc: 'The Vigil candle burns 6s longer.', vigilBonus: 3 },
+  { id: 'sanctus-bell', name: 'Sanctus Hand-bell', family: 'bell', desc: '+6 Zeal every 2s.', roundZeal: 6 },
   { id: 'bell-rope', name: 'Frayed Bell-rope', family: 'bell', desc: 'All Zeal gains +25%.', zealMult: 0.25 },
   { id: 'cracked-clapper', name: 'Cracked Clapper', family: 'bell', desc: 'Litanies hit 30% harder.', riteMult: 0.3 },
-  { id: 'tower-bronze', name: 'Tower Bronze', family: 'bell', desc: 'Party armor +15%, +3 Zeal each round.', armorPct: 0.15, roundZeal: 3 },
+  { id: 'tower-bronze', name: 'Tower Bronze', family: 'bell', desc: 'Party armor +15%, +3 Zeal every 2s.', armorPct: 0.15, roundZeal: 3 },
   { id: 'vesper-bell', name: 'Vesper Bell', family: 'bell', desc: 'Start fights with 25 Zeal; Zeal gains +10%.', startZeal: 25, zealMult: 0.1 },
 
   // Martyr: strength in suffering
@@ -88,7 +88,7 @@ export const BURDENS: RelicDef[] = [
   { id: 'blood-pact', name: 'Blood Pact', burden: true, desc: 'Party attack +25%. Max HP -15%.', atkPct: 0.25, hpPct: -0.15 },
   { id: 'vow-of-silence', name: 'Vow of Silence', burden: true, desc: 'Start fights with 40 Zeal. Zeal gains -30%.', startZeal: 40, zealMult: -0.3 },
   { id: 'heretics-brand', name: "Heretic's Brand", burden: true, desc: 'Crits +15%. Armor -20%.', critAdd: 0.15, armorPct: -0.2 },
-  { id: 'gutted-candle', name: 'Gutted Candle', burden: true, desc: 'Litanies +40%. The Vigil candle is 2 rounds shorter.', riteMult: 0.4, vigilBonus: -2 },
+  { id: 'gutted-candle', name: 'Gutted Candle', burden: true, desc: 'Litanies +40%. The Vigil candle is 4s shorter.', riteMult: 0.4, vigilBonus: -2 },
 ];
 
 export const FAMILY_NAME: Record<RelicFamily, string> = { burn: 'Burn', bell: 'Bell', martyr: 'Martyr' };
@@ -101,8 +101,8 @@ export const FAMILY_BONUS: Record<RelicFamily, [RelicDef, RelicDef]> = {
     { id: 'family:burn:3', name: 'Pyre (3 Burn)', desc: 'Burns +20% more, and foes open Burning.', burnMult: 0.2, openingBurn: 0.25 },
   ],
   bell: [
-    { id: 'family:bell:2', name: 'Peal (2 Bell)', desc: '+3 Zeal each round.', roundZeal: 3 },
-    { id: 'family:bell:3', name: 'Carillon (3 Bell)', desc: '+3 more Zeal each round. Litanies +25%.', roundZeal: 3, riteMult: 0.25 },
+    { id: 'family:bell:2', name: 'Peal (2 Bell)', desc: '+3 Zeal every 2s.', roundZeal: 3 },
+    { id: 'family:bell:3', name: 'Carillon (3 Bell)', desc: '+3 more Zeal every 2s. Litanies +25%.', roundZeal: 3, riteMult: 0.25 },
   ],
   martyr: [
     { id: 'family:martyr:2', name: 'Stigmata (2 Martyr)', desc: 'Below half HP, +15% damage.', lowHpAtk: 0.15 },

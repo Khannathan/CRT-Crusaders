@@ -123,7 +123,7 @@ export const ENEMIES: Record<string, EnemyDef> = {
     id: 'warden', name: 'Ossuary Warden', hp: 120, atk: 11, armor: 70, spd: 6, color: 0x5d5a52, shape: 'warden',
     skills: [
       { id: 'bone-bulwark', name: 'Bone Bulwark', desc: 'Shields the most hurt ally.', from: any, target: 'ally', shieldPct: 0.3, aim: 'weakest', weight: 1.4 },
-      { id: 'shield-bash', name: 'Shield Bash', desc: 'Knocks a Sister a rank back.', from: any, target: 'enemy', reach: [1, 2], mult: 0.9, aim: 'front', shove: 1 },
+      { id: 'shield-bash', name: 'Shield Bash', desc: 'Hurls a Sister back.', from: any, target: 'enemy', reach: [1, 2], mult: 0.9, aim: 'front', shove: 1 },
     ],
   },
   priest: {
@@ -136,14 +136,14 @@ export const ENEMIES: Record<string, EnemyDef> = {
   golem: {
     id: 'golem', name: 'Reliquary Golem', hp: 190, atk: 20, armor: 150, spd: 3, color: 0x8a7d63, shape: 'golem',
     skills: [
-      { id: 'grind', name: 'Grind', desc: 'Knocks a Sister two ranks back and Sunders her armor.', from: any, target: 'enemy', reach: [1, 2], mult: 0.9, aim: 'front', shove: 2, sunder: { pct: 0.3, turns: 2 } },
-      { id: 'reliquary-fall', name: 'Reliquary Fall', desc: 'A crushing blow after a turn of charging. Stuns its target.', from: any, target: 'enemy', reach: [1, 2, 3], mult: 2.2, windup: true, aim: 'weakest', stun: 1 },
+      { id: 'grind', name: 'Grind', desc: 'Hurls a Sister far back and Sunders her armor.', from: any, target: 'enemy', reach: [1, 2], mult: 0.9, aim: 'front', shove: 2, sunder: { pct: 0.3, turns: 2 } },
+      { id: 'reliquary-fall', name: 'Reliquary Fall', desc: 'A crushing blow after a wind-up. Stuns its target.', from: any, target: 'enemy', reach: [1, 2, 3], mult: 2.2, windup: true, aim: 'weakest', stun: 1 },
     ],
   },
   lurker: {
     id: 'lurker', name: 'Undertow Lurker', hp: 70, atk: 15, armor: 20, spd: 12, color: 0x2f4f5a, shape: 'lurker',
     skills: [
-      { id: 'drag-under', name: 'Drag Under', desc: 'Drags a back-rank Sister into the front line.', from: any, target: 'enemy', reach: [3, 4], mult: 0.8, pull: true, aim: 'back', weight: 1.3 },
+      { id: 'drag-under', name: 'Drag Under', desc: 'Drags a Rearguard Sister into the Vanguard.', from: any, target: 'enemy', reach: [3, 4], mult: 0.8, pull: true, aim: 'back', weight: 1.3 },
       { id: 'undertow-bite', name: 'Undertow Bite', desc: '', from: any, target: 'enemy', reach: [1, 2], mult: 1.0 },
     ],
   },
@@ -168,7 +168,7 @@ export const ENEMIES: Record<string, EnemyDef> = {
   bishop: {
     id: 'bishop', name: 'Grave Bishop', hp: 260, atk: 17, armor: 45, spd: 8, color: 0x4a2a3a, shape: 'bishop',
     skills: [
-      { id: 'grave-blessing', name: 'Grave Blessing', desc: 'Empowers itself for 3 turns.', from: any, target: 'self', empower: { pct: 0.3, turns: 3 }, weight: 0.7 },
+      { id: 'grave-blessing', name: 'Grave Blessing', desc: 'Empowers itself for 6s.', from: any, target: 'self', empower: { pct: 0.3, turns: 3 }, weight: 0.7 },
       { id: 'crozier', name: 'Crozier', desc: 'Hooks a Sister and drags her to the front.', from: any, target: 'enemy', mult: 1.2, aim: 'weakest', pull: true },
       { id: 'raise-the-penitent', name: 'Raise the Penitent', desc: '', from: any, target: 'self', summon: 'husk', weight: 0.5 },
     ],
@@ -178,7 +178,7 @@ export const ENEMIES: Record<string, EnemyDef> = {
     blasphemy: { id: 'excommunion', name: 'Excommunion', desc: 'BLASPHEMY: casts out every Sister, stealing 30 Zeal and Sundering their armor.', from: any, target: 'allEnemies', mult: 1.6, zealDrain: 30, sunder: { pct: 0.3, turns: 2 }, rite: true, windup: true },
     skills: [
       { id: 'toll-of-silence', name: 'Toll of Silence', desc: 'Hits everyone and steals Zeal.', from: any, target: 'allEnemies', mult: 0.55, zealDrain: 10 },
-      { id: 'excommunicate', name: 'Excommunicate', desc: 'Casts a Sister two ranks back.', from: any, target: 'enemy', mult: 1.5, aim: 'strongest', shove: 2 },
+      { id: 'excommunicate', name: 'Excommunicate', desc: 'Casts a Sister far back.', from: any, target: 'enemy', mult: 1.5, aim: 'strongest', shove: 2 },
       { id: 'call-the-bloated', name: 'Call the Bloated', desc: '', from: any, target: 'self', summon: 'pilgrim', weight: 0.5 },
     ],
     phase2: {
@@ -187,7 +187,7 @@ export const ENEMIES: Record<string, EnemyDef> = {
       atkPct: 0.15,
       skills: [
         { id: 'toll-of-silence', name: 'Toll of Silence', desc: 'Hits everyone and steals Zeal.', from: any, target: 'allEnemies', mult: 0.55, zealDrain: 10 },
-        { id: 'excommunicate', name: 'Excommunicate', desc: 'Casts a Sister two ranks back.', from: any, target: 'enemy', mult: 1.5, aim: 'strongest', shove: 2 },
+        { id: 'excommunicate', name: 'Excommunicate', desc: 'Casts a Sister far back.', from: any, target: 'enemy', mult: 1.5, aim: 'strongest', shove: 2 },
         { id: 'last-bell', name: 'The Last Bell', desc: '', from: any, target: 'allEnemies', mult: 1.2, windup: true, weight: 1.3 },
         { id: 'call-the-bloated', name: 'Call the Bloated', desc: '', from: any, target: 'self', summon: 'pilgrim', weight: 0.4 },
       ],
@@ -198,7 +198,7 @@ export const ENEMIES: Record<string, EnemyDef> = {
   'flayed-saint': {
     id: 'flayed-saint', name: 'The Flayed Saint', hp: 3200, atk: 21, armor: 20, spd: 7, boss: true, color: 0x8a4a4a, shape: 'abbess', art: 'abbess',
     traits: { regen: 0.04 },
-    blasphemy: { id: 'stigmata-rain', name: 'Rain of Stigmata', desc: 'BLASPHEMY: every Sister bleeds heavily for 3 turns.', from: any, target: 'allEnemies', mult: 1.1, bleed: { mult: 0.4, turns: 3 }, rite: true, windup: true },
+    blasphemy: { id: 'stigmata-rain', name: 'Rain of Stigmata', desc: 'BLASPHEMY: every Sister bleeds heavily for 6s.', from: any, target: 'allEnemies', mult: 1.1, bleed: { mult: 0.4, turns: 3 }, rite: true, windup: true },
     skills: [
       { id: 'martyrs-embrace', name: "Martyr's Embrace", desc: '', from: any, target: 'enemy', mult: 1.3, aim: 'strongest' },
       { id: 'weeping-wounds', name: 'Weeping Wounds', desc: 'Every Sister Bleeds.', from: any, target: 'allEnemies', mult: 0.45, bleed: { mult: 0.25, turns: 2 } },
@@ -217,7 +217,7 @@ export const ENEMIES: Record<string, EnemyDef> = {
     id: 'colossus', name: 'The Ossuary Colossus', hp: 3600, atk: 24, armor: 140, spd: 3, boss: true, color: 0x6a6052, shape: 'golem', art: 'warden',
     blasphemy: { id: 'ossuary-collapse', name: 'Ossuary Collapse', desc: 'BLASPHEMY: brings the crypt down on every Sister.', from: any, target: 'allEnemies', mult: 1.7, rite: true, windup: true },
     skills: [
-      { id: 'grave-slam', name: 'Grave Slam', desc: 'A huge blow on the front Sister after a turn of charging.', from: any, target: 'enemy', reach: [1], mult: 3.2, windup: true, aim: 'front', weight: 1.4 },
+      { id: 'grave-slam', name: 'Grave Slam', desc: 'A huge blow on the front Sister after a wind-up.', from: any, target: 'enemy', reach: [1], mult: 3.2, windup: true, aim: 'front', weight: 1.4 },
       { id: 'bone-sweep', name: 'Bone Sweep', desc: '', from: any, target: 'enemy', reach: [1, 2], mult: 1.1, aim: 'front' },
       { id: 'raise-the-dead', name: 'Raise the Dead', desc: '', from: any, target: 'self', summon: 'husk', weight: 0.4 },
     ],
@@ -245,7 +245,7 @@ export const ENEMIES: Record<string, EnemyDef> = {
     blasphemy: { id: 'deluge', name: 'The Deluge', desc: 'BLASPHEMY: a flood over every Sister that steals 20 Zeal.', from: any, target: 'allEnemies', mult: 1.5, zealDrain: 20, rite: true, windup: true },
     skills: [
       { id: 'tidal-surge', name: 'Tidal Surge', desc: 'Hits everyone and weakens them.', from: any, target: 'allEnemies', mult: 0.6, weaken: { pct: 0.15, turns: 2 } },
-      { id: 'swallow', name: 'Swallow', desc: 'Charges a turn, then swallows the strongest Sister and stuns her.', from: any, target: 'enemy', mult: 1.8, windup: true, aim: 'strongest', stun: 1, weight: 1.2 },
+      { id: 'swallow', name: 'Swallow', desc: 'Winds up, then swallows the strongest Sister and stuns her.', from: any, target: 'enemy', mult: 1.8, windup: true, aim: 'strongest', stun: 1, weight: 1.2 },
     ],
   },
   'iron-abbot': {

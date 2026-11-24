@@ -32,7 +32,7 @@ export class RivalsScene extends Phaser.Scene {
       .map(([k, rounds]) => {
         const [id, h] = k.split(':');
         const c = CRYPTS.find((x) => x.id === id);
-        return c ? `${c.name}${+h ? ` H${h}` : ''}: ${rounds} rounds` : '';
+        return c ? `${c.name}${+h ? ` H${h}` : ''}: ${Number(rounds) * 2}s` : '';
       })
       .filter(Boolean)
       .slice(0, 3);

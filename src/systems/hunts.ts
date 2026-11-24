@@ -18,6 +18,8 @@ import { dayKey, grant, type Reward } from './tasks';
  * the next difficulty, up to six tiers and then an endless climb.
  */
 export const HUNT_ROUNDS = 12;
+/** How long a hunt lasts on the real-time field (rounds were 2.2s, now 2s; field.ts keeps the length). */
+export const HUNT_SECONDS = Math.round((HUNT_ROUNDS * 2.2) / 2) * 2;
 export const HUNT_ENTRIES = 3;
 
 export interface HuntMechanic {
@@ -43,7 +45,7 @@ export const HUNTS: HuntDef[] = [
     id: 'flayed-saint', boss: 'flayed-saint', encounter: 'hunt-flayed-saint',
     lore: 'A saint who was skinned for her faith and would not stay dead. Her wounds close as fast as they are opened.',
     mechanics: [
-      { name: 'Unending Martyrdom', text: 'Heals 4% of her HP every round. Half as much while she Bleeds, Burns or is Poisoned.', answer: 'War-Sisters (Bleed) and Censers (Burn)' },
+      { name: 'Unending Martyrdom', text: 'Heals 4% of her HP every 2s. Half as much while she Bleeds, Burns or is Poisoned.', answer: 'War-Sisters (Bleed) and Censers (Burn)' },
       { name: 'Weeping Wounds', text: 'Makes every Sister Bleed.', answer: 'Confessors and Abbesses cure it' },
       { name: 'Thick Skin of Faith', text: 'Huge Magic Resist, thin Armor.', answer: 'Physical damage' },
     ],
@@ -53,8 +55,8 @@ export const HUNTS: HuntDef[] = [
     id: 'twofold-reliquary', boss: 'twofold-reliquary', encounter: 'hunt-twofold-reliquary',
     lore: 'A reliquary that holds two saints who hated each other. Every few breaths a different one wakes.',
     mechanics: [
-      { name: 'Two Saints', text: 'Every 3 rounds it swaps its Armor and Magic Resist. It starts weak to Magic.', answer: 'A party with both Physical and Magic damage' },
-      { name: 'Gilded Crush', text: 'Hammers the front ranks.', answer: 'A Hierophant up front' },
+      { name: 'Two Saints', text: 'Every 6s it swaps its Armor and Magic Resist. It starts weak to Magic.', answer: 'A party with both Physical and Magic damage' },
+      { name: 'Gilded Crush', text: 'Hammers the Vanguard.', answer: 'A Hierophant up front' },
       { name: 'Cracked Gilding', text: 'Sunder and Hex cut through whichever guard is up.', answer: 'Executioners and Sentinels (Sunder), Oracles and Cantors (Hex)' },
     ],
     classes: ['inquisitor', 'oracle', 'hierophant', 'censer', 'cantor', 'arbalist'],
@@ -63,7 +65,7 @@ export const HUNTS: HuntDef[] = [
     id: 'colossus', boss: 'colossus', encounter: 'hunt-colossus',
     lore: 'The ossuary built itself a body out of every bone it was given. It is very slow and very strong.',
     mechanics: [
-      { name: 'Grave Slam', text: 'Charges for a turn, then hits the front Sister for over three times its attack.', answer: 'A Hierophant with Taunt, Ward or a shield' },
+      { name: 'Grave Slam', text: 'Winds up, then hits the front Sister for over three times its attack.', answer: 'A Hierophant with Taunt, Ward or a shield' },
       { name: 'Raise the Dead', text: 'Calls Penitent Husks to stand in the way.', answer: 'Hits that strike every foe' },
       { name: 'Bone Armor', text: 'Very high Armor, almost no Magic Resist.', answer: 'Magic damage' },
     ],
@@ -93,7 +95,7 @@ export const HUNTS: HuntDef[] = [
     id: 'red-cardinal', boss: 'red-cardinal', encounter: 'hunt-red-cardinal',
     lore: 'A prince of the Church who signed a thousand burnings. His anger only grows.',
     mechanics: [
-      { name: 'Mounting Wrath', text: 'Gains 8% attack every round. Hit him hard and early.', answer: 'Burst: Executioners, Veilblades and War-Sisters' },
+      { name: 'Mounting Wrath', text: 'Gains 8% attack every 2s. Hit him hard and early.', answer: 'Burst: Executioners, Veilblades and War-Sisters' },
       { name: 'Scarlet Edict', text: 'Steals 15 Zeal from the party.', answer: 'Oracles and Cantors to refill Zeal and haste the party' },
       { name: "Cardinal's Rod", text: 'Beats the weakest Sister.', answer: 'A Hierophant to Taunt' },
     ],
@@ -103,8 +105,8 @@ export const HUNTS: HuntDef[] = [
     id: 'font-leviathan', boss: 'font-leviathan', encounter: 'hunt-font-leviathan',
     lore: 'The baptismal font of a drowned cathedral grew a thing in it. Everyone it swallows is born again.',
     mechanics: [
-      { name: 'Baptismal Waters', text: 'Heals 2% of its HP every round (half while it Bleeds, Burns or is Poisoned) and gains 4% attack a round.', answer: 'Damage over time early, burst late: Censers, Exorcists, War-Sisters' },
-      { name: 'Swallow', text: 'Charges a turn, then swallows the strongest Sister and stuns her.', answer: 'A Hierophant or Sentinel to Taunt' },
+      { name: 'Baptismal Waters', text: 'Heals 2% of its HP every 2s (half while it Bleeds, Burns or is Poisoned) and gains 4% attack every 2s.', answer: 'Damage over time early, burst late: Censers, Exorcists, War-Sisters' },
+      { name: 'Swallow', text: 'Winds up, then swallows the strongest Sister and stuns her.', answer: 'A Hierophant or Sentinel to Taunt' },
       { name: 'Tidal Surge', text: 'Hits and weakens every Sister.', answer: 'Confessors and Cantors to keep the party up' },
     ],
     classes: ['censer', 'exorcist', 'warsister', 'hierophant', 'confessor', 'cantor'],
@@ -114,7 +116,7 @@ export const HUNTS: HuntDef[] = [
     lore: 'An abbot who had himself cast in iron so he could keep his chair forever. His wardens keep it with him.',
     mechanics: [
       { name: 'The Wardens\' Wall', text: 'Takes 40% less damage while any Warden stands.', answer: 'Hits that strike every foe, and Executioners for the Wardens' },
-      { name: 'Iron and Glass', text: 'Every 4 rounds it swaps its Armor and Magic Resist.', answer: 'A party with both Physical and Magic damage' },
+      { name: 'Iron and Glass', text: 'Every 8s it swaps its Armor and Magic Resist.', answer: 'A party with both Physical and Magic damage' },
       { name: 'Iron Sermon', text: 'Hits every Sister and Sunders her armor.', answer: 'Martyrs and Abbesses to hold the line' },
     ],
     classes: ['censer', 'inquisitor', 'oracle', 'martyr', 'arbalist', 'abbess'],

@@ -18,6 +18,7 @@ import { makeIconTextures, makeNodeTextures, makeSigilTextures } from '../ui/ico
 import { animKey, type AnimName } from '../ui/fieldView';
 import { fullBodyUrl, portraitKey } from '../ui/placeholderPortrait';
 import { initStandIns, queueStandInMasks } from '../ui/standIn';
+import { reviewRequest } from '../ui/artReview';
 
 /**
  * Every PNG in src/assets/portraits, found at build time. Name files by roster id
@@ -137,6 +138,9 @@ export class BootScene extends Phaser.Scene {
     catchUpMarch();
     // A returning player's Homecoming boosts apply from the first claim (the welcome itself is given in the Sanctum).
     setHomecoming(game.save.welcome?.homecoming);
+    // ?artreview on the address opens the developer art viewer instead of the game.
+    const review = reviewRequest(window.location.search);
+    if (review !== undefined) return void this.scene.start('ArtReview', { id: review });
     // The title waits for a tap (which also wakes the music on phones).
     this.scene.start('Title', { line: this.line });
     if (settled) window.setTimeout(() => announceSettled(settled), 900);
