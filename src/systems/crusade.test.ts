@@ -107,7 +107,7 @@ describe('crypt maps', () => {
 describe('reasons to keep going', () => {
   it('two crusaders of one order turn on its bonus', () => {
     const save = newSave();
-    // Decima and Mustiola are both Sepulcher Watch: +10% max HP
+    // Tarchna and Cusinia are both Sepulcher Watch: +10% max HP
     for (const id of ['SW-R-WAR', 'SW-SR-CON', 'IV-R-EXE']) save.owned[id] = { level: 1, vow: 0 };
     const solo = startRun(save, ['SW-R-WAR', 'IV-R-EXE']);
     const pair = startRun(save, ['SW-R-WAR', 'SW-SR-CON']);

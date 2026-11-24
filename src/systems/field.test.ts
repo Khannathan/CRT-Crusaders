@@ -88,7 +88,7 @@ describe('real-time field: Sister kits', () => {
     return out;
   };
 
-  it('Coup de Grâce: a Mercy kill lets Justa Vindex strike again right after the swing', () => {
+  it('Coup de Grâce: a Mercy kill lets Mortifera Rogalis strike again right after the swing', () => {
     const m = sis('AM-SSR-WAR');
     const foes = [makeEnemy('husk', 'e0', 1), makeEnemy('husk', 'e1', 2)];
     foes[0].maxHp = 10000;

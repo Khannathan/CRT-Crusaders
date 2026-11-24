@@ -28,7 +28,7 @@ export interface HosannaDef {
 const ALL = [1, 2, 3, 4];
 
 export const HOSANNAS: HosannaDef[] = [
-  { id: 'wrath-choir', name: 'Choir of Wrath', desc: 'Heavy holy damage on every foe; they are Weakened (-15%) for 2 turns.', rank: 1, skill: { target: 'allEnemies', dmg: 'magic', mult: 1.2, weaken: { pct: 0.15, turns: 2 } } },
+  { id: 'wrath-choir', name: 'Choir of Wrath', desc: 'Heavy consecrated damage on every foe; they are Weakened (-15%) for 2 turns.', rank: 1, skill: { target: 'allEnemies', dmg: 'magic', mult: 1.2, weaken: { pct: 0.15, turns: 2 } } },
   { id: 'saints-mantle', name: "Saints' Mantle", desc: 'Every Sister gains a shield of 25% of her max HP.', rank: 1, wait: 'wounded', skill: { target: 'allAllies', shieldPct: 0.25 } },
   { id: 'living-waters', name: 'Living Waters', desc: 'Every Sister heals 30% of her max HP and is cleansed.', rank: 1, wait: 'wounded', skill: { target: 'allAllies', healPct: 0.3, cleanse: true } },
   { id: 'kindled-hearts', name: 'Kindled Hearts', desc: 'Every Sister gains 40 Zeal. Chain the Litanies that follow!', rank: 3, skill: { target: 'allAllies', zealGain: 40, zealAll: true } },

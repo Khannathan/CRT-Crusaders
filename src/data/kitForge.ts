@@ -209,7 +209,7 @@ export const ORDER_GROUND: Record<string, GroundKind> = {
 export const GROUND_TEXT: Record<GroundKind, string> = {
   hallowed: 'Hallowed Ground (every Sister Regenerates 4% a round)',
   ash: 'a Field of Ash (each fallen foe heals every Sister 6%)',
-  flood: 'a Holy Flood (foes take 10% more and act last)',
+  flood: 'a Drowning Flood (foes take 10% more and act last)',
   thorns: 'Briar Ground (every foe bleeds 15% of her attack a round)',
   lantern: 'a Lantern Line (each round the most hurt Sister goes on Overwatch)',
 };
@@ -305,7 +305,7 @@ const CRY_CLOSE: Record<string, string[]> = {
 };
 
 const ORDER_FX: Record<string, string> = {
-  'Iron Vigil': 'amber lantern-light and iron sparks, square rivet sigils flashing on impact',
+  'Iron Vigil': 'ember-orange crusade-fire and iron sparks, burning-cross sigils flashing on impact',
   'Ashen Mercy': 'grey ash-flame and falling soot, a wine-red glow as wounds close',
   'Veiled Tribunal': 'violet scale-marks, nailed parchment verdicts and wax seals bursting',
   'Sepulcher Watch': 'bone-white light, orbiting skull tokens and spectral funerary keys',
@@ -319,7 +319,7 @@ const ORDER_FX: Record<string, string> = {
 const CLASS_FX: Record<string, string> = {
   hierophant: 'her reliquary-shield flares and throws up a wall of light',
   sentinel: 'she plants her feet and every blow she takes flashes back as a riposte arc',
-  martyr: 'her own blood turns to holy fire across her sisters',
+  martyr: 'her own blood turns to consecrated fire across her sisters',
   confessor: 'a hand of light closes wounds and burns out poison',
   hospitaller: 'a chalice spills light that lifts the fallen',
   abbess: 'the crozier cracks like a whip, thorns mending as they cut',
@@ -330,7 +330,7 @@ const CLASS_FX: Record<string, string> = {
   inquisitor: 'the executioner\'s axe falls in one heavy flash',
   veilblade: 'she vanishes and reappears in a slash of dark silk',
   censer: 'the thurible swings out a choking cloud of burning incense',
-  arbalist: 'a single blessed bolt leaves a long streak of scripture-light',
+  arbalist: 'a single consecrated bolt leaves a long streak of scripture-light',
   exorcist: 'the lantern opens and witchfire pours out like a flamer',
 };
 const COMMAND: Record<string, string> = {
@@ -348,7 +348,7 @@ const COMMAND: Record<string, string> = {
   veilblade: 'a cell of veiled assassins',
   censer: 'thurible-swingers who smoke out the enemy ranks',
   arbalist: 'a line of crossbow nuns',
-  exorcist: 'lantern-bearers with holy fire',
+  exorcist: 'lantern-bearers with pyre-fire',
 };
 
 // ---------------------------------------------------------------- the forge
@@ -422,7 +422,7 @@ function forgeOne(c: CrusaderDef, base: Kit, salt: number): Forged {
   }
   // her own passive: the base plus one personal rule
   const rule = pickRule(c, kit, h, salt, v, kit.sig);
-  const words = PASSIVE_WORDS[c.order] ?? ['Holy'];
+  const words = PASSIVE_WORDS[c.order] ?? ['Sworn'];
   const pname = `${words[h % words.length]} ${PASSIVE_NOUNS[(h >>> 5) % PASSIVE_NOUNS.length]}`;
   if (rule) {
     const extra = rule.sig(v, c);
@@ -455,7 +455,7 @@ function relicFor(c: CrusaderDef, kit: Kit, salt: number, name: string): Relic |
 }
 
 const titleCase = (s: string) => s.replace(/(^|[\s-])\w/g, (m) => m.toUpperCase());
-const relicName = (c: CrusaderDef) => titleCase((c.relic ?? 'Sacred Relic').split(',')[0].trim());
+const relicName = (c: CrusaderDef) => titleCase((c.relic ?? 'Sworn Relic').split(',')[0].trim());
 
 /** A canonical form of a kit's rules, for the uniqueness check. */
 export function kitShape(kit: Kit): string {
@@ -534,7 +534,7 @@ export function forgeKits(all: CrusaderDef[]) {
     }
     seen.add(cry);
     const lit = kit.skills[3];
-    const look = `${ORDER_FX[c.order] ?? 'holy light'}; ${CLASS_FX[c.classId] ?? 'she strikes'}${lit.ground ? `; her Litany ${lit.name} hallows the ground in a ring of ${ORDER_FX[c.order]?.split(',')[0] ?? 'light'}` : ''}${kit.relic ? `; her ${kit.relic.name} blazes when woken` : ''}`;
+    const look = `${ORDER_FX[c.order] ?? 'pyre-light'}; ${CLASS_FX[c.classId] ?? 'she strikes'}${lit.ground ? `; her Litany ${lit.name} hallows the ground in a ring of ${ORDER_FX[c.order]?.split(',')[0] ?? 'light'}` : ''}${kit.relic ? `; her ${kit.relic.name} blazes when woken` : ''}`;
     const extra: Partial<Kit> = { cry: kit.cry ?? cry, look: kit.look ?? look };
     if (c.rarity === 'SSR' && !c.limited) extra.ascended = kit.ascended ?? `As a Deity, her ${lit.name} also grants Rapture (no damage for a turn) to every Sister, and her passive grows by half.`;
     if (c.rarity === 'R') extra.command = kit.command ?? `Leads ${COMMAND[c.classId] ?? 'a company of zealots'} of the ${c.order}.`;

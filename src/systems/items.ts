@@ -22,10 +22,10 @@ export interface FamilyDef {
 export const FAMILIES: FamilyDef[] = [
   { id: 'ash', name: "Martyr's Ash", use: 'Ascension: raises a Sister\'s level cap', color: 0xc98a5a },
   { id: 'page', name: 'Psalter Pages', use: 'Skill levels', color: 0xd8c79a },
-  { id: 'iron', name: 'Blessed Iron', use: 'Gear refinement and rerolls', color: 0x9aa7b4 },
+  { id: 'iron', name: 'Consecrated Iron', use: 'Gear refinement and rerolls', color: 0x9aa7b4 },
   { id: 'incense', name: 'Incense', use: 'The Reliquary, the account-wide tree', color: 0xb592c8 },
   { id: 'writ', name: 'Order Writs', use: 'Order Codex levels', color: 0xd36a5c },
-  { id: 'grace', name: 'Grace', use: 'Signature weapons: wake and temper a Sister\'s own weapon', color: 0xf0d27a },
+  { id: 'grace', name: 'Godblood', use: 'Signature weapons: wake and temper a Sister\'s own weapon', color: 0xf0d27a },
   { id: 'unction', name: 'Unction', use: 'Sister EXP: fed on her Grow tab', color: 0x7fc4a0 },
   { id: 'armory', name: "The Saints' Armory", use: 'UR gear: forge it, or pull for it', color: 0xe19cc4 },
   { id: 'kennel', name: 'The Kennel', use: 'Hounds: whistle for them, or adopt the one you want', color: 0xc9a46a },
@@ -51,19 +51,19 @@ export const ITEMS: ItemDef[] = [
   def('page', 2, 'Psalter Leaf', 'Copied by a nun who went blind finishing it.'),
   def('page', 3, 'Illuminated Folio', 'Gold leaf over a prayer no one is allowed to say aloud.'),
   def('iron', 1, 'Coffin Nail', 'Pulled from a lid that had been scratched from inside.'),
-  def('iron', 2, 'Blessed Iron', 'Quenched in oil, then in a heretic\'s blood.'),
+  def('iron', 2, 'Consecrated Iron', 'Quenched in oil, then in a heretic\'s blood.'),
   def('iron', 3, 'Reliquary Steel', 'Forged around a saint\'s finger bone.'),
   def('incense', 1, 'Myrrh', 'For the dead, and for those who keep them.'),
   def('incense', 2, 'Frankincense', 'The smoke rises straight even in a draught.'),
-  def('incense', 3, 'Holy Chrism', 'One drop anoints a bishop. You have a phial.'),
+  def('incense', 3, "Martyr's Chrism", 'One drop anoints a bishop. You have a phial.'),
   def('writ', 1, 'Writ of Passage', 'Lets a Sister pass the gates of another house.'),
   def('writ', 2, 'Writ of Office', 'Sealed by a Prioress. It names a duty.'),
   def('writ', 3, 'Papal Bull', 'Lead-sealed. It names a crusade.'),
-  def('grace', 1, 'Ember of Grace', 'A spark that will not go out. Tempers a signature weapon to +5.'),
-  def('grace', 2, 'Tear of Grace', 'Wept by a statue in a sealed chapel. Tempers a signature weapon to +10.'),
-  def('grace', 3, 'Crown of Grace', 'A circlet of light no hand can hold for long. Tempers a signature weapon from +11 to +25.'),
+  def('grace', 1, 'Drop of Godblood', 'Bled from a fallen god. Tempers a signature weapon to +5.'),
+  def('grace', 2, 'Phial of Godblood', 'Drawn from a Deity\'s wound, still warm. Tempers a signature weapon to +10.'),
+  def('grace', 3, 'Heart of Godblood', 'It still beats. No hand holds it long. Tempers a signature weapon from +11 to +25.'),
   def('unction', 1, 'Lesser Unction', 'Oil for the sick. 300 EXP.'),
-  def('unction', 2, 'Blessed Unction', 'Oil for the dying, and for the pyre. 1,500 EXP.'),
+  def('unction', 2, 'Last Unction', 'Oil for the dying, and for the pyre. 1,500 EXP.'),
   def('unction', 3, 'Extreme Unction', 'Oil for the last rites. She wakes stronger. 7,500 EXP.'),
   def('armory', 1, "Saint's Fragment", 'A splinter of a saint\'s own arms. Sixty of them forge a UR piece.'),
   def('armory', 2, 'Armory Writ', 'One pull at the Saints\' Armory, the UR gear banner.'),
@@ -180,7 +180,7 @@ export function vigilDrops(hours: number, rng: Rng = Math.random): Bag {
   return bag;
 }
 
-/** A Tower floor's first clear: Blessed Iron and Writs, rarer with height. */
+/** A Tower floor's first clear: Consecrated Iron and Writs, rarer with height. */
 export function floorDrops(floor: number): Bag {
   const boss = floor % 10 === 0;
   const bag: Bag = { iron1: 2 + Math.floor(floor / 6) };

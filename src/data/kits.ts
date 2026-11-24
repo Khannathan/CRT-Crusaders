@@ -243,17 +243,17 @@ function K(id: string, build: (own: (s: Own) => SkillDef) => Kit) {
 
 // ======================= Iron Vigil: Overwatch =======================
 
-// Paulina Macra, the Vigil's Living Saint (Limited UR Arbalist), from her approved art:
+// Insomnia, the Vigil's Living Saint (Limited UR Arbalist), from her approved art:
 // the saint-forged crossbow of blessed light, the watch-key ring that locks the
 // gates, the amber eye-lantern that never goes out, and the burning scripture arm.
 K('IV-LUR', (own) => ({
   passive: sig('Keeper of the Gates', '+20% damage from rank 3 or 4. Every Sister whose Overwatch fires gains 12 Zeal.'),
   sig: { backRankDmg: 0.2, owZeal: 12 },
   skills: [
-    own({ name: 'Bolt of Blessed Light', desc: 'A heavy bolt on any rank through 30% of its Armor; +50% against the Accused.', from: [2, 3, 4], target: 'enemy', mult: 1.35, armorPierce: 0.3, bonusIfAccused: 0.5 }),
+    own({ name: 'Bolt of Consecrated Light', desc: 'A heavy bolt on any rank through 30% of its Armor; +50% against the Accused.', from: [2, 3, 4], target: 'enemy', mult: 1.35, armorPierce: 0.3, bonusIfAccused: 0.5 }),
     own({ name: 'The Watch-Keys', desc: 'Lock a foe out: it is Accused for 2 turns and its turn goes to the end (breaks a charge). Then she goes on Overwatch, and her shot pierces 30% of Armor. Cooldown 2.', target: 'enemy', mult: 0.5, accuse: 2, delay: true, overwatch: ow(1.0, { armorPierce: 0.3 }), cooldown: 2 }),
     own({ name: 'The Lantern Opens Its Eye', desc: 'Every Sister goes on Overwatch and gains +20% critical chance for 2 turns. Cooldown 3.', target: 'allAllies', overwatchAll: OVERWATCH_HIT, critUp: { pct: 0.2, turns: 2 }, cooldown: 3 }),
-    own({ name: 'No Gate Left Open', desc: 'LITANY: five bolts of blessed light at one foe (0.55x each), through shields and 30% of its Armor; then every Sister goes on Overwatch.', target: 'enemy', mult: 0.55, hits: 5, pierceShield: true, armorPierce: 0.3, overwatchAll: OVERWATCH_HIT, rite: true }),
+    own({ name: 'No Gate Left Open', desc: 'LITANY: five bolts of consecrated light at one foe (0.55x each), through shields and 30% of its Armor; then every Sister goes on Overwatch.', target: 'enemy', mult: 0.55, hits: 5, pierceShield: true, armorPierce: 0.3, overwatchAll: OVERWATCH_HIT, rite: true }),
   ],
   seal: { name: 'The Eye Never Closes', desc: 'The first time a Blasphemy lands, her lantern saw it coming: every Sister is Warded (-40%) against it.', kind: 'seenBefore' },
   shines: ['Hunts and boss Wrath races', 'Iron Vigil Order Tower', 'Real-time field'],
@@ -425,7 +425,7 @@ K('AM-R-ARB', (own) => ({
   skills: [
     st('arbalist', 'blessed-bolt'),
     st('arbalist', 'marking-shot'),
-    own({ name: 'Grace Bolt', desc: 'A bolt on any rank whose Mercy line is 25%.', from: [2, 3, 4], target: 'enemy', mult: 1.1, mercyLine: 0.25 }),
+    own({ name: 'Mercy Bolt', desc: 'A bolt on any rank whose Mercy line is 25%.', from: [2, 3, 4], target: 'enemy', mult: 1.1, mercyLine: 0.25 }),
     st('arbalist', 'saints-ballista'),
   ],
 }));
@@ -463,7 +463,7 @@ K('VT-LUR', (own) => ({
     own({ name: 'Unsheathe the Oath', desc: "Spend a foe's Guilt: 0.8x plus 0.3x per Guilt. At 5 Guilt it is also Stunned (not bosses). Cooldown 2.", from: [1, 2, 3], target: 'enemy', mult: 0.8, spend: { kw: 'guilt', per: { multAdd: 0.3 }, full: { stun: 1 } }, cooldown: 2 }),
     own({ name: 'Judgment of the Wall', desc: 'LITANY: Ward every ally (-25% damage) for 2 turns; she draws every attack and counters at full attack.', target: 'allAllies', ward: { pct: 0.25, turns: 2 }, taunt: 2, counter: { mult: 1.0, turns: 2 }, rite: true }),
   ],
-  seal: { name: 'Saint of the Wall', desc: 'Once a fight, when a Sister would take a hit worth over 30% of her max HP, Verginia steps in and takes it at half damage.', kind: 'wallSaint' },
+  seal: { name: 'Saint of the Wall', desc: 'Once a fight, when a Sister would take a hit worth over 30% of her max HP, Velamina steps in and takes it at half damage.', kind: 'wallSaint' },
   shines: ['Flayed Saint Hunt', 'Twofold Reliquary Hunt', 'One-shot bosses in the deeper crypts', 'Inquisition trials', 'Her Feast'],
 }));
 
@@ -987,7 +987,7 @@ K('RP-UR1', (own) => ({
     own({ name: 'Retreat in Blood', desc: 'Step two ranks back; the foe in rank 1 Bleeds for 2 turns. Cooldown 1.', from: [1, 2], target: 'enemy', reach: [1], mult: 0.4, bleed: { mult: 0.25, turns: 2 }, move: 2, cooldown: 1 }),
     own({ name: "Inquisitor's Verdict", desc: 'LITANY: spend all Pursuit: a crushing blow on any enemy, 1.6x plus 0.3x per Pursuit, doubled against the Accused.', target: 'enemy', mult: 1.6, bonusIfAccused: 1, spend: { kw: 'stride', per: { multAdd: 0.3 } }, rite: true }),
   ],
-  seal: { name: 'The Bell No One Hears', desc: 'The first time a Sister falls, Peregrina gains 5 Pursuit and Haste.', kind: 'bellNoOne' },
+  seal: { name: 'The Bell No One Hears', desc: 'The first time a Sister falls, Confessora gains 5 Pursuit and Haste.', kind: 'bellNoOne' },
   shines: ['Colossus Hunt', 'Red Cardinal Hunt', 'Free-movement Vigil and real-time field', 'Crimson Inquisition Order Tower'],
 }));
 
@@ -1160,9 +1160,9 @@ K('VT-LSSR1', (own) => ({
   shines: ['Flayed Saint Hunt', 'Twofold Reliquary Hunt', 'Chapter Siege', 'Veiled Tribunal Order Tower'],
 }));
 
-// Scholastica Varro, Limited Commander of the Vigil (Adjudicator), from her art:
+// Excubia Catenata, Limited Commander of the Vigil (Adjudicator), from her art:
 // the scales with one pan of ash and one of bone, the great ledger she writes the
-// fallen into with a quill, and Paulina's token pinned over her heart.
+// fallen into with a quill, and Insomnia's token pinned over her heart.
 K('IV-LSSR1', (own) => ({
   passive: sig('Roll of the Fallen', 'Each Overwatch reaction also Weakens its foe (-20% attack, 2 turns): she writes its name in the roll.'),
   sig: { owWeaken: 0.2 },
@@ -1172,7 +1172,7 @@ K('IV-LSSR1', (own) => ({
     own({ name: 'Written in Ash', desc: 'Write every enemy into the roll: Accused (+25% damage taken) and Sundered (-15% armor) for 2 turns. Cooldown 3.', target: 'allEnemies', mult: 0.3, accuse: 2, sunder: { pct: 0.15, turns: 2 }, cooldown: 3 }),
     own({ name: 'The Scales Are Read', desc: 'LITANY: every Sister goes on Overwatch, and every foe loses 30 Wrath.', target: 'allAllies', overwatchAll: OVERWATCH_HIT, alsoFoes: { wrathDrain: 30 }, rite: true }),
   ],
-  shines: ['Rot-Mother Hunt', 'Flayed Saint Hunt', 'Blasphemy bosses', 'Iron Vigil Order Tower', 'Alongside Paulina Macra'],
+  shines: ['Rot-Mother Hunt', 'Flayed Saint Hunt', 'Blasphemy bosses', 'Iron Vigil Order Tower', 'Alongside Insomnia'],
 }));
 
 K('RP-LSSR1', (own) => ({

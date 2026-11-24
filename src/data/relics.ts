@@ -45,7 +45,7 @@ export interface RelicDef {
 export const RELICS: RelicDef[] = [
   // Unaligned
   { id: 'knucklebone', name: "Saint's Knucklebone", desc: 'Party attack +15%.', atkPct: 0.15 },
-  { id: 'holy-water', name: 'Vial of Holy Water', desc: 'Party max HP +20%.', hpPct: 0.2 },
+  { id: 'holy-water', name: 'Vial of Baptismal Brine', desc: 'Party max HP +20%.', hpPct: 0.2 },
   { id: 'bone-dice', name: 'Bone Dice', desc: 'Every Sister crits 10% more often.', critAdd: 0.1 },
   { id: 'pilgrims-flask', name: "Pilgrim's Flask", desc: 'Heal 10% after every won fight.', fightHeal: 0.1 },
   { id: 'reliquary-nail', name: 'Reliquary Nail', desc: 'Party attack and max HP +8%.', atkPct: 0.08, hpPct: 0.08 },

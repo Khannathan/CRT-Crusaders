@@ -6,7 +6,7 @@ import { current } from '../state/run';
 import { MORALE_MAX, REACT, TOPICS, makeCamp, moraleBuff, moraleOf, reactions, topicsOf, type Talk } from '../systems/campfire';
 import { makeButton } from '../ui/button';
 import { portraitKey } from '../ui/placeholderPortrait';
-import { PAD, addBackdrop, addHeading, addScreenGlow, text } from '../ui/theme';
+import { PAD, addBackdrop, addHeading, addScreenGlow, shrinkToFit, text } from '../ui/theme';
 
 const topicName = (id: string) => TOPICS.find((t) => t.id === id)!.name;
 const REACT_MARK = { love: '♥', neutral: '·', loathe: '✗' } as const;
@@ -45,7 +45,7 @@ export class CampScene extends Phaser.Scene {
     const party = run.party;
     if (this.textures.exists('event-pilgrim-camp')) addBackdrop(this, 'event-pilgrim-camp', GAME_W / 2, GAME_H / 2, GAME_W, GAME_H, { alpha: 0.5, fade: 0.55, fadeColor: 0x0e0d11 });
     addScreenGlow(this);
-    addHeading(this, 'The Campfire', 30, 'Two Sisters speak. Morale blesses the whole descent.');
+    addHeading(this, 'The Campfire', 30, 'Two Sisters speak. Morale steels the whole descent.');
 
     // The fire, in the middle.
     const fx = GAME_W / 2;
@@ -74,7 +74,7 @@ export class CampScene extends Phaser.Scene {
       const can = !spoke && this.talks.length < 2;
       const frame = this.add.rectangle(x, y, 104, 104, 0x110b13).setStrokeStyle(picked ? 3 : 2, picked ? 0xf2d27a : spoke ? PAL.steel : PAL.bronze);
       this.add.image(x, y, portraitKey(id)).setDisplaySize(100, 100).setAlpha(spoke ? 0.55 : 1);
-      this.add.text(x, y + 62, c.name.split(' ')[0].toUpperCase(), text.hud(13, picked ? 0xf2d27a : 0xfff1d6)).setOrigin(0.5);
+      shrinkToFit(this.add.text(x, y + 62, c.name.split(' ')[0].toUpperCase(), text.hud(13, picked ? 0xf2d27a : 0xfff1d6)).setOrigin(0.5), 96, 8);
       const t = topicsOf(id);
       this.add.text(x, y + 82, `♥ ${topicName(t.loves[0])}, ${topicName(t.loves[1])}`, { ...text.body(13, PAL.muted), align: 'center', wordWrap: { width: 200 } }).setOrigin(0.5, 0);
       this.add.text(x, y + 118, `✗ ${topicName(t.loathes)}`, text.body(13, 0xd07a70)).setOrigin(0.5, 0);

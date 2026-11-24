@@ -26,7 +26,7 @@ import { tapForSources } from '../ui/sources';
 import { PAD, addFrame, text } from '../ui/theme';
 import { fightMarks } from '../systems/pickMarks';
 
-const POTENCY_NAME = { common: 'common', fine: 'fine', holy: 'holy' } as const;
+const POTENCY_NAME = { common: 'common', fine: 'fine', holy: 'consecrated' } as const;
 
 /**
  * The Reliquary Procession: carry the relics through the dead. Three victories

@@ -24,7 +24,7 @@ import { makeButton } from '../ui/button';
 import { modeScreen, toast } from '../ui/modeScreen';
 import { pickParty } from '../ui/partyPicker';
 import { portraitKey } from '../ui/placeholderPortrait';
-import { PAD, addFrame, text } from '../ui/theme';
+import { PAD, addFrame, shrinkToFit, text } from '../ui/theme';
 import { cryptMarks } from '../systems/pickMarks';
 
 const rewardText = (held: number) => {
@@ -74,7 +74,7 @@ export class HoldScene extends Phaser.Scene {
       addFrame(this, GAME_W / 2, y + 120, bw, 240);
       const lines = [
         'Foes are set against your party\'s own Power: wave 1 is easy, wave 10 is three times your strength.',
-        'Between waves, take one of three blessings.',
+        'Between waves, take one of three boons.',
         `Rewards by waves held. All ten: ${rewardText(HOLD_WAVES)}.`,
       ];
       let ly = y + 18;
@@ -99,7 +99,7 @@ export class HoldScene extends Phaser.Scene {
         const hp = st.hp[id] ?? 0;
         const img = this.add.image(rx, y + 40, portraitKey(id)).setDisplaySize(76, 76);
         if (hp <= 0) img.setTint(0x555555).setAlpha(0.6);
-        this.add.text(rx, y + 88, c.name.split(' ')[0].toUpperCase(), text.hud(12, hp > 0 ? 0xfff1d6 : PAL.steel)).setOrigin(0.5);
+        shrinkToFit(this.add.text(rx, y + 88, c.name.split(' ')[0].toUpperCase(), text.hud(12, hp > 0 ? 0xfff1d6 : PAL.steel)).setOrigin(0.5), 96, 8);
         this.add.rectangle(rx, y + 104, 80, 8, 0x000000);
         this.add.rectangle(rx - 40, y + 104, (80 * Math.min(hp, max)) / max, 6, HP_PARTY).setOrigin(0, 0.5);
         if (hp <= 0) this.add.text(rx, y + 40, 'FALLEN', text.hud(13, 0xff6a5a)).setOrigin(0.5);
@@ -164,7 +164,7 @@ export class HoldScene extends Phaser.Scene {
       finish: (outcome, battle) => {
         const r = finishWave(save, outcome, battle);
         commit();
-        const notice = r.over ? this.endText(r) : `Wave ${r.held} held! Take a blessing.`;
+        const notice = r.over ? this.endText(r) : `Wave ${r.held} held! Take a boon.`;
         return { scene: 'Hold', data: { notice } };
       },
     };

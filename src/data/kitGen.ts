@@ -12,7 +12,7 @@
  * - UR Saintess: as SSR, plus her Order's Saint's Seal.
  *
  * Where an Order has no hand-made kit for a role yet, TEMPLATES fill in. When a
- * Sister's art arrives, her kit is designed by hand from it (as Paulina's was)
+ * Sister's art arrives, her kit is designed by hand from it (as Insomnia's was)
  * and replaces this one.
  */
 import { CLASS_SKILLS, type SkillDef } from './skills';
@@ -41,7 +41,7 @@ const NOUNS: Record<string, string[]> = {
   sentinel: ['Stand', 'Riposte', 'Bastion', 'Oath', 'Guard', 'Ward'],
   martyr: ['Wound', 'Sacrifice', 'Offering', 'Stigma', 'Passion', 'Vow'],
   confessor: ['Remedy', 'Absolution', 'Penance', 'Tincture', 'Shrift', 'Cure'],
-  hospitaller: ['Chalice', 'Draught', 'Mending', 'Balm', 'Communion', 'Grace'],
+  hospitaller: ['Chalice', 'Draught', 'Mending', 'Balm', 'Communion', 'Ash'],
   abbess: ['Crozier', 'Pruning', 'Rod', 'Cloister', 'Rebuke', 'Rule'],
   oracle: ['Omen', 'Augury', 'Portent', 'Sign', 'Foresight', 'Reading'],
   cantor: ['Hymn', 'Chant', 'Anthem', 'Verse', 'Refrain', 'Descant'],
@@ -290,7 +290,7 @@ function build(c: CrusaderDef, sameOrder: Donor[], roleOf: (c: CrusaderDef) => R
   }
 
   // names of her own: an Order word and a class noun, never twice in one kit
-  const words = WORDS[c.order] ?? ['Holy'];
+  const words = WORDS[c.order] ?? ['Sworn'];
   const nouns = NOUNS[c.classId] ?? ['Rite'];
   const used = new Set<string>();
   const name = (n: number, litany: boolean) => {

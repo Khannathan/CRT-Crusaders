@@ -69,7 +69,7 @@ export const blessingDays = (save: SaveData, now = Date.now()) => Math.max(0, Ma
 
 export function blessingBlock(save: SaveData, now = Date.now()): string | undefined {
   // A new Blessing may be bought in its last 3 days; the days add on.
-  if (blessingDays(save, now) > 3) return 'Already blessed';
+  if (blessingDays(save, now) > 3) return 'Already anointed';
   if (giltOf(save) < BLESSING.price) return 'Not enough Gilt';
   return undefined;
 }

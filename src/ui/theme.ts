@@ -199,6 +199,13 @@ export function addScreenGlow(scene: Phaser.Scene) {
 }
 
 /** Shortens a one-line text with "…" until it fits `width` (for names and lists that can run long). */
+/** Shrinks a one-line label's font (never below `min` px) until it fits `width`; long Sister names stay whole. */
+export function shrinkToFit<T extends Phaser.GameObjects.Text>(t: T, width: number, min = 10): T {
+  let size = parseInt(String(t.style.fontSize), 10) || 16;
+  while (t.width > width && size > min) t.setFontSize(--size);
+  return t;
+}
+
 export function fitLine<T extends Phaser.GameObjects.Text>(t: T, width: number): T {
   if (t.width <= width) return t;
   let s = t.text;

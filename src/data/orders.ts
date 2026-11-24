@@ -27,9 +27,9 @@ export interface OrderDef {
  */
 export const ORDER_LIST: OrderDef[] = [
   {
-    id: 'iron-vigil', name: 'Iron Vigil', color: 0x8a8f99, accent: 0xd6a15f,
+    id: 'iron-vigil', name: 'Iron Vigil', color: 0xe4dccb, accent: 0xe0622a,
     creed: 'The wall stands. Let the outside burn.',
-    lore: 'Sentinels who never sleep and never yield a wall. When the dark nears a village beyond it, they bar the gate and let it die.',
+    lore: 'Crusader-knights of the outer walls, under black-and-white siege banners and a burning cross. They never sleep and never yield a wall; when the dark nears a village beyond it, they bar the gate and let it burn.',
     rival: 'Drowned Litany',
     tiers: [{ need: 2, desc: 'Armor +15%.', armorPct: 0.15 }, { need: 3, desc: 'Armor +15% more, max HP +8%.', armorPct: 0.15, hpPct: 0.08 }, { need: 4, desc: 'Max HP +12%. When a Sister falls, the rest heal 15%.', hpPct: 0.12, fallHeal: 0.15 }],
   },

@@ -321,7 +321,7 @@ export const CLASS_SKILLS: Record<string, [SkillDef, SkillDef, SkillDef, SkillDe
     { id: 'thousand-cuts', name: 'Thousand Cuts', desc: 'LITANY: savage blow on any enemy, +50% critical chance, double damage under 30% HP.', from: any, target: 'enemy', mult: 1.9, critChance: 0.5, execute: 1, rite: true },
   ],
   arbalist: [
-    { id: 'blessed-bolt', name: 'Blessed Bolt', desc: 'A heavy bolt on any rank that ignores 30% of its Armor.', from: [2, 3, 4], target: 'enemy', mult: 1.25, armorPierce: 0.3 },
+    { id: 'blessed-bolt', name: 'Consecrated Bolt', desc: 'A heavy bolt on any rank that ignores 30% of its Armor.', from: [2, 3, 4], target: 'enemy', mult: 1.25, armorPierce: 0.3 },
     { id: 'marking-shot', name: 'Marking Shot', desc: 'Light bolt that Accuses any foe (+25% damage taken) for 2 turns. Cooldown 1.', from: any, target: 'enemy', mult: 0.6, accuse: 2, cooldown: 1 },
     { id: 'shieldbreaker', name: 'Shieldbreaker', desc: 'A bolt through any shield: Sundered (-30% armor) for 2 turns. Cooldown 2.', from: any, target: 'enemy', mult: 1.0, pierceShield: true, sunder: { pct: 0.3, turns: 2 }, cooldown: 2 },
     { id: 'saints-ballista', name: "Saint's Ballista", desc: 'LITANY: a crushing bolt on any enemy, through shields and half its Armor.', from: any, target: 'enemy', mult: 2.3, armorPierce: 0.5, pierceShield: true, rite: true },

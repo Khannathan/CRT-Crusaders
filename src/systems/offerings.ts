@@ -25,7 +25,7 @@ export interface OfferingDef {
 
 export const OFFERINGS: OfferingDef[] = [
   { id: 'tallow', name: 'Tallow Candle', potency: 'common', desc: 'Cheap, smoky, honest.' },
-  { id: 'bread', name: 'Blessed Bread', potency: 'common', desc: 'A heel of the altar loaf.' },
+  { id: 'bread', name: 'Altar Bread', potency: 'common', desc: 'A heel of the altar loaf.' },
   { id: 'rosary', name: 'Bone Rosary', potency: 'common', desc: 'Knuckle beads, worn smooth by prayer.' },
   { id: 'letter', name: 'Sealed Letter', potency: 'common', desc: 'Word from home, never opened.' },
   { id: 'lily', name: 'Grave Lily', potency: 'common', desc: 'Picked from a martyr\'s plot.' },

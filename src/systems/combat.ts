@@ -325,7 +325,7 @@ export class Battle {
   mods: BattleMods = { ...NO_MODS };
   /** The party's hound: it howls at the start of every round. */
   hound?: HoundHowl;
-  /** Scored fights (Hallowed Hunts) end after this many rounds. */
+  /** Scored fights (Purge Hunts) end after this many rounds. */
   roundLimit?: number;
   /** True once the round limit has passed. */
   timeUp = false;
@@ -2421,7 +2421,7 @@ export class Battle {
 export const GROUND_NAME: Record<import('../data/skills').GroundKind, string> = {
   hallowed: 'Hallowed Ground',
   ash: 'Field of Ash',
-  flood: 'Holy Flood',
+  flood: 'Drowning Flood',
   thorns: 'Briar Ground',
   lantern: 'Lantern Line',
 };

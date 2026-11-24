@@ -122,13 +122,13 @@ const CURRENCIES: Record<Currency, ResourceInfo> = {
 const FAMILY_SOURCES: Record<string, Record<1 | 2 | 3, Source[]>> = {
   grace: {
     1: [{ text: 'Crusades: every crypt boss', scene: 'Crusade' }],
-    2: [{ text: 'Crusades: bosses at Heresy 2 and up', scene: 'Crusade' }, REFINE('Embers of Grace')],
-    3: [{ text: 'Crusades: bosses at Heresy 5', scene: 'Crusade' }, REFINE('Tears of Grace')],
+    2: [{ text: 'Crusades: bosses at Heresy 2 and up', scene: 'Crusade' }, REFINE('Drops of Godblood')],
+    3: [{ text: 'Crusades: bosses at Heresy 5', scene: 'Crusade' }, REFINE('Phials of Godblood')],
   },
   unction: {
     1: [VIGIL, CRYPTS, ROAD, TITHE_SHOP],
     2: [CRYPT_BOSS, VIGIL, ROAD, GILT_SHOP, REFINE('Lesser Unction')],
-    3: [ROAD, ALMONRY, REFINE('Blessed Unction')],
+    3: [ROAD, ALMONRY, REFINE('Last Unction')],
   },
   ash: {
     1: [CRYPTS, VIGIL, { text: 'Relic Trials: the Ash trial (Mon, Thu, weekends)', scene: 'Trials' }, DAILY, TITHE_SHOP],
@@ -143,7 +143,7 @@ const FAMILY_SOURCES: Record<string, Record<1 | 2 | 3, Source[]>> = {
   iron: {
     1: [TOWER, CRYPTS, VIGIL, TITHE_SHOP],
     2: [{ text: 'Bell Tower: floors above 15', scene: 'Tower' }, CRYPT_ELITE, GILT_SHOP, ALMONRY, REFINE('Coffin Nails')],
-    3: [{ text: 'Bell Tower: boss floors from 30', scene: 'Tower' }, CRYPT_BOSS, ALMONRY, REFINE('Blessed Iron')],
+    3: [{ text: 'Bell Tower: boss floors from 30', scene: 'Tower' }, CRYPT_BOSS, ALMONRY, REFINE('Consecrated Iron')],
   },
   incense: {
     1: [CRYPTS, VIGIL, DAILY, TITHE_SHOP],

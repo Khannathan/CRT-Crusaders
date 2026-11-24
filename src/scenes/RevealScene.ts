@@ -12,7 +12,7 @@ import { NOISE_FRAMES, WAX_COLOR, noiseKey, sealKey } from '../ui/effects';
 import { addSplash, portraitKey, queueSplash, splashKey } from '../ui/placeholderPortrait';
 import { FIGURE_H, FIGURE_W, SisterSprite, fullKey } from '../ui/sisterSprite';
 import { holdForCard } from '../ui/sisterCard';
-import { fitLine } from '../ui/theme';
+import { fitLine, shrinkToFit } from '../ui/theme';
 import { settleTaps } from '../ui/modeScreen';
 
 const CY = 400;
@@ -149,7 +149,7 @@ export class RevealScene extends Phaser.Scene {
     const parts: Phaser.GameObjects.GameObject[] = [
       this.add.rectangle(0, 0, 90, 90, 0x000000).setStrokeStyle(4, col),
       this.add.image(0, 0, portraitKey(c.id)).setDisplaySize(84, 84),
-      this.add.text(0, 58, c.name.split(' ')[0], { fontFamily: FONT, fontSize: '15px', color: hex(PAL.ivory) }).setOrigin(0.5),
+      shrinkToFit(this.add.text(0, 58, c.name.split(' ')[0], { fontFamily: FONT, fontSize: '15px', color: hex(PAL.ivory) }).setOrigin(0.5), 96),
       this.add.text(0, 76, c.rarity, { fontFamily: FONT, fontSize: '14px', color: hex(col) }).setOrigin(0.5),
     ];
     if (r.isNew) parts.push(...newStamp(this, 26, -36, 0.7));

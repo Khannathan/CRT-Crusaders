@@ -26,7 +26,7 @@ export interface Blessing {
 export const BLESSINGS: Blessing[] = [
   { id: 'mend', name: 'Bell of Rest', desc: 'Heal every Sister 35% now.' },
   { id: 'zeal', name: 'Kindled Psalm', desc: 'Every wave after this starts with +25 Zeal.' },
-  { id: 'wrath', name: 'Holy Oil', desc: '+12% damage for the rest of the stand.' },
+  { id: 'wrath', name: 'Pyre Oil', desc: '+12% damage for the rest of the stand.' },
   { id: 'ward', name: 'Iron Bars', desc: 'Every wave starts with a shield of 15% HP.' },
   { id: 'raise', name: 'Last Rites', desc: 'Fallen Sisters rise at 40% HP.' },
   { id: 'haste', name: 'Quickened Step', desc: '+8% Speed for the rest of the stand.' },

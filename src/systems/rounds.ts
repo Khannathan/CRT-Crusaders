@@ -153,7 +153,7 @@ export function morningRounds(save: SaveData, now = Date.now(), rng: Rng = Math.
   if (paid.length) r.done.push(`${paid.length} Feast milestone${paid.length > 1 ? 's' : ''} paid`);
 
   // What still wants a fight.
-  if (unlocked(save, 4) && huntEntriesLeft(save, now) > 0) r.left.push(`Hallowed Hunts: ${huntEntriesLeft(save, now)} hunts left today.`);
+  if (unlocked(save, 4) && huntEntriesLeft(save, now) > 0) r.left.push(`Purge Hunts: ${huntEntriesLeft(save, now)} hunts left today.`);
   if (unlocked(save, 5) && processionLeft(save, now) > 0) r.left.push(`Reliquary Procession: ${processionLeft(save, now)} entries left.`);
 
   r.seals = save.seals - before.seals;

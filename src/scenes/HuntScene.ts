@@ -31,13 +31,13 @@ import { drawPortraitBadges } from '../ui/portraitBadges';
 import { addScrollArea } from '../ui/scroll';
 import { addOrderSigil, holdForCard } from '../ui/sisterCard';
 import { TAB_BAR_H } from '../ui/tabBar';
-import { PAD, addFrame, text } from '../ui/theme';
+import { PAD, addFrame, shrinkToFit, text } from '../ui/theme';
 import { huntMarks } from '../systems/pickMarks';
 
 /** Front-to-back order for a suggested hunting party. */
 const FRONT = ['sentinel', 'hierophant', 'martyr', 'warsister', 'inquisitor', 'veilblade', 'abbess', 'confessor', 'hospitaller', 'cantor', 'adjudicator', 'oracle', 'exorcist', 'censer', 'arbalist'];
 
-/** Hallowed Hunts: today's beast, its mechanics, who to bring, and the score track. */
+/** Purge Hunts: today's beast, its mechanics, who to bring, and the score track. */
 export class HuntScene extends Phaser.Scene {
   static listY = 0;
   /** Difficulty picked on this screen. */
@@ -59,7 +59,7 @@ export class HuntScene extends Phaser.Scene {
     const hunt = huntOn();
     const s = huntsOf(save);
     const boss = ENEMIES[hunt.boss];
-    const { top, refresh } = modeScreen(this, 'Hallowed Hunts', 'Twelve rounds to wound the beast. Your daily best pays Grace.');
+    const { top, refresh } = modeScreen(this, 'Purge Hunts', 'Twelve rounds to wound the beast. Your daily best pays Godblood.');
     const bw = GAME_W - PAD * 2;
     const tier = Math.min(HuntScene.tier ?? s.tier, s.tier);
     const list = addScrollArea(this, top - 4, GAME_H - TAB_BAR_H, { start: HuntScene.listY, onScroll: (y) => (HuntScene.listY = y) });
@@ -140,7 +140,7 @@ export class HuntScene extends Phaser.Scene {
       holdForCard(this, this.add.image(x, y + 50, portraitKey(r.c.id)).setDisplaySize(100, 100).setAlpha(have ? 1 : 0.45), r.c.id);
       drawPortraitBadges(this, x, y + 50, 100, r.c, save, { dim: !have });
       if (!have) this.add.text(x, y + 50, 'NOT OWNED', { ...text.hud(11, PAL.ivory), backgroundColor: '#140d14cc', padding: { x: 4, y: 2 } }).setOrigin(0.5);
-      this.add.text(x, y + 106, r.c.name.split(' ')[0], text.body(15, have ? PAL.ivory : PAL.muted)).setOrigin(0.5, 0);
+      shrinkToFit(this.add.text(x, y + 106, r.c.name.split(' ')[0], text.body(15, have ? PAL.ivory : PAL.muted)).setOrigin(0.5, 0), 96);
       this.add.text(x, y + 126, r.why.slice(0, 2).join('\n') || 'Strongest', { ...text.body(12, 0x9fd0a0), align: 'center' }).setOrigin(0.5, 0);
     });
     y += 164;

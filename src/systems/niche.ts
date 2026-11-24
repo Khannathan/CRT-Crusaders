@@ -20,10 +20,10 @@ import { seeded } from './rng';
 
 /** The plain party a Sister joins: one per role slot. */
 export const FILLER: Record<'tank' | 'healer' | 'dps' | 'flex', string> = {
-  tank: 'DL-R-HIE', // Aquilia Lepida, R Hierophant
-  healer: 'SW-R-CON', // Antonia Libo, R Confessor
-  dps: 'SW-R-WAR', // Decima Cursor, R War-Sister
-  flex: 'TC-R-VEI', // Lollia Casca, R Veilblade
+  tank: 'DL-R-HIE', // Crewenna Submersa, R Hierophant
+  healer: 'SW-R-CON', // Fastia Bustuaria, R Confessor
+  dps: 'SW-R-WAR', // Tarchna Feralis, R War-Sister
+  flex: 'TC-R-VEI', // Christina Flagellata, R Veilblade
 };
 
 /** Which filler she replaces. */

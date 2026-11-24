@@ -33,7 +33,7 @@ describe("the Abbess's Blessing", () => {
     s.gilt = 5000;
     expect(buyBlessing(s, T0)).toBe(true);
     expect(blessingReady(s, T0)).toBe(false); // the first day is claimed on purchase
-    expect(blessingBlock(s, T0)).toBe('Already blessed');
+    expect(blessingBlock(s, T0)).toBe('Already anointed');
     const seals = s.seals;
     expect(claimBlessing(s, T0 + DAY)).toBeDefined();
     expect(claimBlessing(s, T0 + DAY)).toBeUndefined();

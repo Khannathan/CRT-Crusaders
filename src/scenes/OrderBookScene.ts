@@ -11,7 +11,7 @@ import { portraitKey } from '../ui/placeholderPortrait';
 import { addScrollArea } from '../ui/scroll';
 import { holdForCard } from '../ui/sisterCard';
 import { TAB_BAR_H } from '../ui/tabBar';
-import { PAD, noOrphan, text } from '../ui/theme';
+import { PAD, noOrphan, shrinkToFit, text } from '../ui/theme';
 
 const CARD = 84;
 
@@ -92,7 +92,7 @@ export class OrderBookScene extends Phaser.Scene {
         }
         holdForCard(this, img, c.id);
         if (set.members.includes(c.id)) add(this.add.text(x + CARD / 2 - 3, cy - CARD / 2 + 3, 'SET', { ...text.hud(10, sworn ? PAL.amber : PAL.steel), backgroundColor: '#1b121c', padding: { x: 3, y: 1 } }).setOrigin(1, 0));
-        add(this.add.text(x, cy + CARD / 2 + 12, c.name.split(' ')[0], text.body(14, sworn ? PAL.ivory : PAL.steel)).setOrigin(0.5));
+        add(shrinkToFit(this.add.text(x, cy + CARD / 2 + 12, c.name.split(' ')[0], text.body(14, sworn ? PAL.ivory : PAL.steel)).setOrigin(0.5), CARD + gap - 4));
         add(this.add.text(x, cy + CARD / 2 + 28, c.rarity, text.hud(11, sworn ? col : PAL.steel)).setOrigin(0.5));
       });
       y += CARD + 44;

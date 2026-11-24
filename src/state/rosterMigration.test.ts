@@ -12,7 +12,7 @@ describe('the 500-Sister roster', () => {
     expect(CRUSADERS).toHaveLength(500);
     expect(new Set(CRUSADERS.map((c) => c.id)).size).toBe(500);
     expect(CRUSADERS.filter((c) => c.legacy)).toHaveLength(89);
-    expect(CRUSADERS.find((c) => c.id === 'IV-LUR')!.name).toBe('Paulina Macra');
+    expect(CRUSADERS.find((c) => c.id === 'IV-LUR')!.name).toBe('Insomnia');
     for (const c of CRUSADERS) expect(KITS[c.id], c.id).toBeDefined();
   });
 
@@ -46,7 +46,7 @@ describe('moving an old save to the new roster', () => {
     expect(migrateRoster(s)).toBe(s);
   });
 
-  it('gives Severa in place of Junia, or Junia\'s copies as Severa\'s Vow tokens', () => {
+  it('gives Gurges in place of Junia, or Junia\'s copies as Gurges\'s Vow tokens', () => {
     const lone = migrateRoster(old({ owned: { 'CC-W007': { level: 20, vow: 1 } }, lastParty: ['CC-W007'] }));
     expect(lone.owned['DL-SSR-EXE']).toEqual({ level: 20, vow: 1 });
     expect(lone.lastParty).toEqual(['DL-SSR-EXE']);

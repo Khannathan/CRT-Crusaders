@@ -52,7 +52,7 @@ export const GILT_OFFERS: Offer[] = [
   { id: 'g-trial', name: 'Extra Trial victory', price: 50, currency: 'gilt', goods: { trialEntry: true }, limit: 1 },
   { id: 'g-ash', name: "Martyr's Ash crate", price: 120, currency: 'gilt', goods: { items: { ash2: 5 } }, limit: 2 },
   { id: 'g-page', name: 'Psalter crate', price: 120, currency: 'gilt', goods: { items: { page2: 5 } }, limit: 2 },
-  { id: 'g-iron', name: 'Blessed Iron crate', price: 120, currency: 'gilt', goods: { items: { iron2: 5 } }, limit: 2 },
+  { id: 'g-iron', name: 'Consecrated Iron crate', price: 120, currency: 'gilt', goods: { items: { iron2: 5 } }, limit: 2 },
   { id: 'g-unction', name: 'Unction crate', price: 100, currency: 'gilt', goods: { items: { unction2: 5 } }, limit: 2 },
   { id: 'g-ssr', name: 'SSR gear', price: 300, currency: 'gilt', goods: { gear: 'SSR' }, limit: 1 },
   { id: 'g-writ', name: '1 Armory Writ', price: 60, currency: 'gilt', goods: { items: { armory2: 1 } }, limit: 3 },
@@ -78,7 +78,7 @@ export const TITHE_OFFERS: Offer[] = [
 export const ALMONRY_POOL: Offer[] = [
   { id: 'a-ash2', name: "3 Martyr's Ash", price: 45, currency: 'alms', goods: { items: { ash2: 3 } }, limit: 1 },
   { id: 'a-page2', name: '3 Psalter Leaves', price: 45, currency: 'alms', goods: { items: { page2: 3 } }, limit: 1 },
-  { id: 'a-iron2', name: '3 Blessed Iron', price: 45, currency: 'alms', goods: { items: { iron2: 3 } }, limit: 1 },
+  { id: 'a-iron2', name: '3 Consecrated Iron', price: 45, currency: 'alms', goods: { items: { iron2: 3 } }, limit: 1 },
   { id: 'a-incense2', name: '3 Frankincense', price: 45, currency: 'alms', goods: { items: { incense2: 3 } }, limit: 1 },
   { id: 'a-writ2', name: '2 Writs of Office', price: 60, currency: 'alms', goods: { items: { writ2: 2 } }, limit: 1 },
   { id: 'a-ash3', name: "1 Saint's Ash", price: 120, currency: 'alms', goods: { items: { ash3: 1 } }, limit: 1 },

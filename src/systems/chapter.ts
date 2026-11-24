@@ -80,7 +80,7 @@ export interface ChapterState {
 }
 
 // Latin first names no Sister uses (project files: names/latin-name-library.md), so a Chapter member is never mistaken for one.
-const FIRST = ['Agnes', 'Annia', 'Cocceia', 'Crescentia', 'Cyrilla', 'Domnina', 'Euphemia', 'Fannia', 'Galeria', 'Jucunda', 'Margarita', 'Melania', 'Nigrina', 'Ovinia', 'Plancia', 'Pomponia', 'Popillia', 'Prisca', 'Roscia', 'Salvia', 'Scribonia', 'Sempronia'];
+const FIRST = ['Gaudentia', 'Annia', 'Cocceia', 'Crescentia', 'Cyrilla', 'Domnina', 'Euphemia', 'Fannia', 'Galeria', 'Jucunda', 'Venantia', 'Romula', 'Nigrina', 'Ovinia', 'Plancia', 'Pomponia', 'Popillia', 'Prisca', 'Roscia', 'Salvia', 'Scribonia', 'Sempronia'];
 /** The members' first names before the Latin rename (2026-11-23), for cleaning old logs. */
 const OLD_MEMBER_LINE = new RegExp(`\\b(${['Agathe', 'Odile', 'Maren', 'Ysolde', 'Benedetta', 'Clothilde', 'Ilse', 'Perpetua', 'Sabine', 'Ottilie', 'Hroswitha', 'Lucia', 'Ermengarde', 'Felicitas', 'Gisela', 'Radegund', 'Walburga', 'Scholastica', 'Brunhild', 'Theodora', 'Cunegonde', 'Adelais'].join('|')}) (the |of |Ash|Lamp|Bell|Grave|Thorn|Candle)`);
 const EPITHET = ['the Penitent', 'of the Nails', 'Ashhand', 'the Unbowed', 'Lampwright', 'of Seven Sorrows', 'the Quiet', 'Bellrope', 'the Scourged', 'Gravewarden', 'of the Last Psalm', 'Thornveil', 'the Unshriven', 'Candlewick'];
@@ -147,8 +147,8 @@ export interface ChapterOffer {
 export const CHAPTER_SHOP: ChapterOffer[] = [
   { id: 'c-writ', name: '1 Armory Writ', price: 150, limit: 2, goods: { items: { armory2: 1 } } },
   { id: 'c-frag', name: "6 Saint's Fragments", price: 90, limit: 3, goods: { items: { armory1: 6 } } },
-  { id: 'c-iron', name: '4 Blessed Iron', price: 70, limit: 3, goods: { items: { iron2: 4 } } },
-  { id: 'c-unction', name: '3 Blessed Unction', price: 60, limit: 5, goods: { items: { unction2: 3 } } },
+  { id: 'c-iron', name: '4 Consecrated Iron', price: 70, limit: 3, goods: { items: { iron2: 4 } } },
+  { id: 'c-unction', name: '3 Last Unction', price: 60, limit: 5, goods: { items: { unction2: 3 } } },
   { id: 'c-writs', name: '3 Writs of Office', price: 90, limit: 3, goods: { items: { writ2: 3 } } },
   { id: 'c-seal', name: '1 Wax Seal', price: 120, limit: 3, goods: { seals: 1 } },
   { id: 'c-ash', name: "1 Saint's Ash", price: 110, limit: 2, goods: { items: { ash3: 1 } } },

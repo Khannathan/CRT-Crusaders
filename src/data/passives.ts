@@ -14,7 +14,7 @@ const BY_CLASS: Record<string, (sr: boolean) => PassiveDef> = {
   oracle: (sr) => ({ name: sr ? 'Ashen Augury' : 'Small Omen', desc: `Your Sisters start every fight with +${sr ? 7 : 5} Zeal.`, kind: 'startZeal', value: sr ? 7 : 5 }),
   sentinel: (sr) => ({ name: sr ? 'Tomb Riposte' : 'Warden\'s Reply', desc: `When struck, she strikes back for ${sr ? 35 : 25}% of her attack.`, kind: 'riposte', value: sr ? 0.35 : 0.25 }),
   martyr: (sr) => ({ name: sr ? 'Dawn Unbroken' : 'Last Breath', desc: 'Once a fight, a killing blow leaves her at 1 HP instead.', kind: 'unbroken' }),
-  hospitaller: (sr) => ({ name: sr ? 'Chalice Grace' : 'Gentle Hands', desc: `At the start of her turn, every Sister heals ${sr ? 2 : 1.5}% of max HP.`, kind: 'healAura', value: sr ? 0.02 : 0.015 }),
+  hospitaller: (sr) => ({ name: sr ? 'Chalice of Embers' : 'Bloody Hands', desc: `At the start of her turn, every Sister heals ${sr ? 2 : 1.5}% of max HP.`, kind: 'healAura', value: sr ? 0.02 : 0.015 }),
   abbess: (sr) => ({ name: sr ? 'Iron Briars' : 'Thorned Habit', desc: `Foes that strike her take ${sr ? 15 : 10}% of the damage back.`, kind: 'thorns', value: sr ? 0.15 : 0.1 }),
   cantor: (sr) => ({ name: sr ? 'Rising Chorus' : 'Grave Note', desc: `Each foe she kills gives her ${sr ? 9 : 6} Zeal.`, kind: 'zealOnKill', value: sr ? 9 : 6 }),
   adjudicator: (sr) => ({ name: sr ? 'Swift Verdict' : 'Watchful Eye', desc: `+${sr ? 2 : 1} speed: she acts sooner.`, kind: 'swift', value: sr ? 2 : 1 }),
