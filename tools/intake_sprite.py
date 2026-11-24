@@ -11,12 +11,12 @@ happens here instead, done properly:
   1. background out: kept if transparent, else a flat #FF00FF or a flat colour
      flooded in from the corners
   2. crop to her, then shrink with AREA AVERAGING (every source pixel counts)
-     so she fits the sprite box: soles on row 184, crown no higher than row 12,
-     inside x 6-122, centred on column 64
+     so she fits the sprite box: soles on row 184, crown no higher than row 13,
+     inside x 6-122, her torso (not her weapon) centred on column 64
   3. every pixel fully opaque or fully clear (no soft fringe)
   4. contrast and colour lifted a touch (--punch, default 1.2; 1 = off), since
      averaging flattens them
-  5. her colours cut to --colors (default 24, the UR cap; 16 for the EGA test) with no dithering, then lone
+  5. her colours cut to --colors (default 16, the EGA test; up to 24 for the UR cap) with no dithering, then lone
      speckle pixels merged into their neighbours
   6. a 1 px outline of her darkest colour round the silhouette (--no-outline to skip)
 
@@ -28,7 +28,7 @@ AM-SSR-ABB_Acilia_Ahenobarba_Sprite_1024x1536.png. Pose sheets, busts,
 splashes and weapon sheets in the same folder or zip are skipped. Pass --id to
 name the Sister yourself.
 
-Usage: python3 tools/intake_sprite.py [--id AM-SSR-ABB] [--colors 24] [--punch 1.2] [--no-outline] [--preview out.png] <folder|zip|png> [more ...]
+Usage: python3 tools/intake_sprite.py [--id AM-SSR-ABB] [--colors 16] [--punch 1.2] [--no-outline] [--preview out.png] <folder|zip|png> [more ...]
 """
 import io
 import re
@@ -167,18 +167,57 @@ def area_shrink(img: Image.Image, size) -> Image.Image:
     return out
 
 
+# Her torso, as a share of her height from the crown: chest (row ~56) to belt (row ~102)
+# on the sprite template, where nothing else may cross (sprite-plan rig zones).
+TORSO = (0.25, 0.52)
+# She never shrinks below this share of her full height to fit a long weapon in beside her.
+MIN_SHARE = 0.85
+
+
+def torso_centre(fig: Image.Image) -> float:
+    """Column of her torso's middle in the cropped figure: per row of the chest-to-belt band,
+    the middle of the widest solid run (her body, not an arm, cloak tail or weapon), then the median."""
+    a = fig.getchannel('A').load()
+    w, h = fig.size
+    mids = []
+    for y in range(int(h * TORSO[0]), max(int(h * TORSO[0]) + 1, int(h * TORSO[1]))):
+        best, run0 = (0, 0), None
+        for x in range(w + 1):
+            on = x < w and a[x, y] >= 128
+            if on and run0 is None:
+                run0 = x
+            elif not on and run0 is not None:
+                if x - run0 > best[1] - best[0]:
+                    best = (run0, x)
+                run0 = None
+        if best[1] > best[0]:
+            mids.append((best[0] + best[1] - 1) / 2)
+    if not mids:
+        return (w - 1) / 2
+    mids.sort()
+    return mids[len(mids) // 2]
+
+
 def place(fig: Image.Image) -> Image.Image:
-    """Shrinks the cropped figure into the sprite box, soles on FEET, centred on MID."""
+    """Shrinks the cropped figure into the sprite box, soles on FEET, her torso centred on MID
+    (a weapon reaching far out never slides her body off the middle; it shrinks her to fit instead)."""
     box = fig.getchannel('A').point(lambda v: 255 if v >= 128 else 0).getbbox()
     if not box:
         raise ValueError('no figure found')
     fig = fig.crop(box)
     fw, fh = fig.size
-    k = min((FEET + 1 - TOP) / fh, (RIGHT - LEFT) / fw)
+    c = torso_centre(fig)
+    left, right = c + 0.5, fw - c - 0.5
+    k_tall = (FEET + 1 - TOP) / fh
+    k = min(k_tall, (MID - LEFT) / left, (RIGHT - MID) / right)
+    if k < k_tall * MIN_SHARE:
+        # A huge weapon or wing: keep her at least MIN_SHARE of full height and let its tip run past the box.
+        k = k_tall * MIN_SHARE
+        print(f'  note: something reaches too far {"left" if left > right else "right"} of her torso; its tip is cut at the sprite edge')
     tw, th = max(1, round(fw * k)), max(1, round(fh * k))
     small = area_shrink(defringe(fig, 1 / k), (tw, th))
     out = Image.new('RGBA', (FW, FH))
-    x = max(LEFT, min(RIGHT - tw, MID - tw // 2))
+    x = MID - round((c + 0.5) * k)
     out.paste(small, (x, FEET + 1 - th))
     return out
 
@@ -268,7 +307,7 @@ def outline(img: Image.Image) -> Image.Image:
     return out
 
 
-def clean(raw: Image.Image, colors=24, ring=True, amount=1.2) -> Image.Image:
+def clean(raw: Image.Image, colors=16, ring=True, amount=1.2) -> Image.Image:
     fig = punch(place(key_background(raw)), amount)
     fig = despeckle(quantize(fig, colors - (1 if ring else 0)))
     return outline(fig) if ring else fig
@@ -281,7 +320,7 @@ def report(img: Image.Image) -> str:
 
 
 def main(argv):
-    opts = {'--id': None, '--colors': '24', '--punch': '1.2', '--preview': None}
+    opts = {'--id': None, '--colors': '16', '--punch': '1.2', '--preview': None}
     ring = True
     rest = []
     i = 0
