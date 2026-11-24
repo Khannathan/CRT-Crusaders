@@ -31,7 +31,7 @@ const WORDS: Record<string, string[]> = {
   'Verdant Martyrdom': ['Thorn', 'Briar', 'Scourge', 'Rose', 'Bramble', 'Bleeding', 'Barbed', 'Scarred', 'Bloom', 'Penitent', 'Vine', 'Flayed'],
   'Drowned Litany': ['Tide', 'Drowned', 'Brine', 'Font', 'Deep', 'Undertow', 'Pearl', 'Flood', 'Sunken', 'Salt', 'Fathom', 'Coral'],
   'Confessors of Glass': ['Mirror', 'Glass', 'Shard', 'Pane', 'Lens', 'Prism', 'Silvered', 'Splinter', 'Reflected', 'Cracked', 'Obsidian', 'Leaded'],
-  'Crimson Inquisition': ['Road', 'Pilgrim', 'Scallop', 'Dust', 'Wayfarer', 'Shrine', 'Barefoot', 'Mile', 'Crimson', 'Long-Road', 'Staff', 'Wander'],
+  'Crimson Inquisition': ['Writ', 'Brand', 'Seal', 'Ember', 'Inquest', 'Pyre', 'Rack', 'Question', 'Crimson', 'Verdict', 'Iron', 'Censure'],
   'Hallowed Belfry': ['Bell', 'Toll', 'Knell', 'Bronze', 'Clapper', 'Hollow', 'Peal', 'Midnight', 'Belfry', 'Chime', 'Tocsin', 'Hour'],
 };
 
@@ -95,7 +95,7 @@ const TEMPLATES: Record<string, Partial<Record<Role, Template>>> = {
   },
   'Crimson Inquisition': {
     Healer: {
-      passive: sigP('Road Balm', 'Heals for 15% of the damage she deals, +5% per Stride. Each Stride gives her +4% damage.'),
+      passive: sigP('Branded Balm', 'Heals for 15% of the damage she deals, +5% per Pursuit. Each Pursuit gives her +4% damage.'),
       sig: { strideLifesteal: { base: 0.15, per: 0.05 }, strideDmg: 0.04 },
     },
   },

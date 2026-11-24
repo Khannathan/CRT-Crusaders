@@ -110,7 +110,7 @@ describe('Order keywords', () => {
     expect(run(true)).toBeGreaterThan(run(false) * 1.1);
   });
 
-  it('Stride comes from changing rank', () => {
+  it('Pursuit comes from changing rank', () => {
     const p = sister('p', 'Crimson Inquisition', 1);
     const q = sister('q', 'Iron Vigil', 2);
     const b = new Battle([p, q], [makeEnemy('golem', 'e0', 1)], { rng: never });

@@ -269,7 +269,7 @@ const PASSIVE_WORDS: Record<string, string[]> = {
   'Verdant Martyrdom': ['Briar-Born', 'Bleeding', 'Scourged', 'Thorned', 'Flayed', 'Rose', 'Barbed', 'Bramble', 'Scarred', 'Penitent'],
   'Drowned Litany': ['Drowned', 'Barnacled', 'Brine', 'Undertow', 'Salt', 'Sunken', 'Tidal', 'Fathom', 'Pearl', 'Sea-Wet'],
   'Confessors of Glass': ['Mirror', 'Faceless', 'Leaded', 'Shard', 'Silvered', 'Cracked', 'Stained', 'Prism', 'Smoked-Glass', 'Pane'],
-  'Crimson Inquisition': ['Barefoot', 'Bleeding-Foot', 'Long-Road', 'Scallop', 'Pilgrim', 'Crimson', 'Dust', 'Unresting', 'Wayfarer\'s', 'Shrine-Bound'],
+  'Crimson Inquisition': ['Branding', 'Writ-Bearing', 'Wax-Sealed', 'Crimson', 'Questioning', 'Red-Hot', 'Inquest', 'Pyre-Lit', 'Unrelenting', 'Sentence-Bound'],
   'Hallowed Belfry': ['Silent', 'Tolling', 'Bronze', 'Rope-Scarred', 'Hollow', 'Clapper', 'Knelling', 'Midnight', 'Belfry', 'Muted'],
 };
 const PASSIVE_NOUNS = ['Vow', 'Creed', 'Oath', 'Rule', 'Covenant', 'Canon', 'Tithe', 'Penance', 'Psalm', 'Seal', 'Zeal', 'Litany', 'Faith', 'Heresy-Bane'];
@@ -283,7 +283,7 @@ const CRY_OPEN: Record<string, string[]> = {
   'Verdant Martyrdom': ['Bleed, and be made holy!', 'Every scar is a prayer answered!', 'The briar grows from my wounds, and it hungers!', 'Pain is my psalm!', 'I count my sins in scars, and I have room for yours!', 'Cut me! I dare you!', 'My blood for the Covenant!', 'The thorns know your name!'],
   'Drowned Litany': ['The water remembers you!', 'I drowned, and I came back angrier!', 'Speak for the drowned, Sisters!', 'The tide rises, and you sink!', 'Salt in the wound, salt in the soul!', 'What the sea takes, it consecrates!', 'Breathe deep, heretic. It is the last!', 'The deep sends its regards!'],
   'Confessors of Glass': ['You said you were clean. The mirror says otherwise!', 'Look into me, and see your sin!', 'I hold every confession ever whispered!', 'Shatter me, and I cut you a thousand ways!', 'Nothing is hidden from the mirror!', 'Your face is the only one I wear!', 'Every crack in me is a sinner I broke!', 'The pane does not lie!'],
-  'Crimson Inquisition': ['The road is red, and so are you!', 'I never stop walking!', 'Every step toward the shrine is paid in blood!', 'March, Sisters! The holy land waits!', 'My feet bleed, and my blade drinks!', 'Out of my road, heretic!', 'Ten thousand miles, and you are one more!', 'The pilgrim\'s road runs through you!'],
+  'Crimson Inquisition': ['Confess, and burn clean!', 'Kneel, heretic, and be questioned!', 'The writ is sealed, and so is your fate!', 'Every heretic\'s road ends in red!', 'The brand is hot, and so is my zeal!', 'I never stop hunting!', 'Ten thousand confessions, and you are one more!', 'The Inquisition has found you!'],
   'Hallowed Belfry': ['*the bell tolls once*', '*the bell tolls twice, then silence*', '*a cracked note, and then the hammer falls*', '*the hour rings, and it is yours*', '*a low knell that shakes the bone*', '*the bell rings midnight early*', '*three tolls, slow and sure*', '*the rope creaks, the bronze answers*'],
 };
 const CRY_CLOSE: Record<string, string[]> = {
@@ -313,7 +313,7 @@ const ORDER_FX: Record<string, string> = {
   'Verdant Martyrdom': 'blood-red scar-light and lashing briar, rose petals torn loose',
   'Drowned Litany': 'teal water rising upward, pearls and salt spray',
   'Confessors of Glass': 'ice-blue mirror shards, hard white reflections and her inner light bleeding through cracks',
-  'Crimson Inquisition': 'red footprints of light, gold road-dust and scallop sigils',
+  'Crimson Inquisition': 'crimson wax-seal sigils, red-hot brand-light and burning writs on the wind',
   'Hallowed Belfry': 'bronze sound-rings rippling out, rope shadows and a dull midnight shockwave',
 };
 const CLASS_FX: Record<string, string> = {

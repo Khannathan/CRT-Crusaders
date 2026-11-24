@@ -18,7 +18,7 @@
  * - Drowned Litany, Tide: rises each round while a Drowned Sister stands; Ebb
  *   skills spend it all.
  * - Confessors of Glass, Confess: a Confessed foe's crits Shatter for more damage.
- * - Crimson Inquisition, Stride: an Inquisitor gains Stride whenever she changes rank.
+ * - Crimson Inquisition, Pursuit: an Inquisitor gains Pursuit whenever she changes rank.
  * - Hallowed Belfry, Toll: Belfry Sisters' skills ring the Bell; every 3rd toll is a
  *   Peal, the 12th is Midnight, which raises the fallen once a fight.
  */
@@ -43,7 +43,7 @@ export const ORDER_KW: Record<string, Keyword> = Object.fromEntries(Object.entri
 
 export const KW_NAME: Record<Keyword, string> = {
   overwatch: 'Overwatch', mercy: 'Mercy', guilt: 'Guilt', remains: 'Remains', hymn: 'Hymn',
-  scars: 'Scars', tide: 'Tide', confess: 'Confess', stride: 'Stride', toll: 'Toll',
+  scars: 'Scars', tide: 'Tide', confess: 'Confess', stride: 'Pursuit', toll: 'Toll',
 };
 
 /** Overwatch: Wrath a reaction drains from a charging boss; own turns it waits before lapsing. */
@@ -81,7 +81,7 @@ export const TIDE_MAX = 5;
 /** Confess: extra critical damage against the Confessed (Shatter). */
 export const SHATTER = 0.2;
 
-/** Stride: cap. */
+/** Pursuit: cap. */
 export const STRIDE_MAX = 5;
 
 /** Toll: a Peal every this many tolls, Midnight at this many, and Midnight's raise. */

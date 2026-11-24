@@ -135,7 +135,7 @@ export interface Sig {
   confessAll?: number;
   firstRound?: boolean;
   throwCures?: boolean;
-  // Stride
+  // Pursuit
   doubleStep?: boolean;
   singStride?: number;
   // Toll
@@ -976,18 +976,18 @@ K('GC-R-HOS', (own) => ({
   ],
 }));
 
-// ======================= Crimson Inquisition: Stride =======================
+// ======================= Crimson Inquisition: Pursuit =======================
 
 K('RP-UR1', (own) => ({
-  passive: sig('The Red Road', 'Each Stride gives her +6% damage. She may Step twice a turn instead of once.'),
+  passive: sig('The Red Writ', 'Each Pursuit gives her +6% damage. She may Step twice a turn instead of once.'),
   sig: { strideDmg: 0.06, doubleStep: true },
   skills: [
-    own({ name: 'Accuse on the March', desc: 'Smite any rank, Accuse it for 3 turns and step a rank forward.', target: 'enemy', mult: 0.6, accuse: 3, move: -1 }),
-    own({ name: 'Barefoot Lunge', desc: 'Lunge two ranks forward into rank 1-3; +15% per Stride.', from: [2, 3, 4], target: 'enemy', reach: [1, 2, 3], mult: 1.1, perStride: 0.15, move: -2 }),
+    own({ name: 'Accuse on the Hunt', desc: 'Smite any rank, Accuse it for 3 turns and step a rank forward.', target: 'enemy', mult: 0.6, accuse: 3, move: -1 }),
+    own({ name: 'Brand-Iron Lunge', desc: 'Lunge two ranks forward into rank 1-3; +15% per Pursuit.', from: [2, 3, 4], target: 'enemy', reach: [1, 2, 3], mult: 1.1, perStride: 0.15, move: -2 }),
     own({ name: 'Retreat in Blood', desc: 'Step two ranks back; the foe in rank 1 Bleeds for 2 turns. Cooldown 1.', from: [1, 2], target: 'enemy', reach: [1], mult: 0.4, bleed: { mult: 0.25, turns: 2 }, move: 2, cooldown: 1 }),
-    own({ name: "Pilgrim's Verdict", desc: 'LITANY: spend all Stride: a crushing blow on any enemy, 1.6x plus 0.3x per Stride, doubled against the Accused.', target: 'enemy', mult: 1.6, bonusIfAccused: 1, spend: { kw: 'stride', per: { multAdd: 0.3 } }, rite: true }),
+    own({ name: "Inquisitor's Verdict", desc: 'LITANY: spend all Pursuit: a crushing blow on any enemy, 1.6x plus 0.3x per Pursuit, doubled against the Accused.', target: 'enemy', mult: 1.6, bonusIfAccused: 1, spend: { kw: 'stride', per: { multAdd: 0.3 } }, rite: true }),
   ],
-  seal: { name: 'The Bell No One Hears', desc: 'The first time a Sister falls, Peregrina gains 5 Stride and Haste.', kind: 'bellNoOne' },
+  seal: { name: 'The Bell No One Hears', desc: 'The first time a Sister falls, Peregrina gains 5 Pursuit and Haste.', kind: 'bellNoOne' },
   shines: ['Colossus Hunt', 'Red Cardinal Hunt', 'Free-movement Vigil and real-time field', 'Crimson Inquisition Order Tower'],
 }));
 
@@ -996,34 +996,34 @@ K('RP-LUR', (own) => ({
   sig: { lifesteal: 0.25, overhealBehind: true },
   skills: [
     own({ name: 'Oath Strike', desc: 'Strike rank 1-2, draw attacks for 2 turns, and heal for 35% of the damage.', from: [1, 2], target: 'enemy', reach: [1, 2], mult: 1.0, taunt: 2, drain: 0.35 }),
-    own({ name: 'Break the Vial', desc: 'Sacrifice 15% HP; every ally gains +25% attack for 2 turns and 1 Stride. Cooldown 3.', target: 'allAllies', selfDmgPct: 0.15, empower: { pct: 0.25, turns: 2 }, empowerTarget: true, giveStride: 1, cooldown: 3 }),
-    own({ name: "Pilgrim's Vanguard", desc: 'Step forward to rank 1, Ward herself (-25%) and draw attacks for 2 turns. Cooldown 2.', target: 'self', move: -3, ward: { pct: 0.25, turns: 2 }, taunt: 2, cooldown: 2 }),
-    own({ name: 'Crimson Pilgrimage', desc: 'LITANY: strike every enemy; every Sister heals 50% of the damage.', target: 'allEnemies', mult: 0.9, lifelink: 0.5, rite: true }),
+    own({ name: 'Break the Vial', desc: 'Sacrifice 15% HP; every ally gains +25% attack for 2 turns and 1 Pursuit. Cooldown 3.', target: 'allAllies', selfDmgPct: 0.15, empower: { pct: 0.25, turns: 2 }, empowerTarget: true, giveStride: 1, cooldown: 3 }),
+    own({ name: "Inquisitor's Vanguard", desc: 'Step forward to rank 1, Ward herself (-25%) and draw attacks for 2 turns. Cooldown 2.', target: 'self', move: -3, ward: { pct: 0.25, turns: 2 }, taunt: 2, cooldown: 2 }),
+    own({ name: 'Crimson Purge', desc: 'LITANY: strike every enemy; every Sister heals 50% of the damage.', target: 'allEnemies', mult: 0.9, lifelink: 0.5, rite: true }),
   ],
   seal: { name: 'I Walk Before You', desc: 'Once a fight, a killing blow meant for another Sister lands on her instead, if she can survive it.', kind: 'walkBefore' },
   shines: ['Chapter Siege', 'Deeper-crypt bosses', 'Her Feast'],
 }));
 
 K('RP-SSR-CAN', (own) => ({
-  passive: sig('Marching Song', 'Whenever she sings (any of her skills), every Inquisitor gains 1 Stride.'),
+  passive: sig('Hymn of the Hunt', 'Whenever she sings (any of her skills), every Inquisitor gains 1 Pursuit.'),
   sig: { singStride: 1 },
   skills: [
     own({ name: 'Processional', desc: 'The whole party steps one rank: the front Sister goes to the back, and the new front gains Haste; every Sister gains 8 Zeal. Cooldown 2.', target: 'self', rotate: true, zealGain: 8, zealAll: true, cooldown: 2 }),
     st('cantor', 'hymn-of-iron'),
     st('cantor', 'psalm-of-blades'),
-    own({ name: 'Song of the Long Road', desc: 'LITANY: every ally +30% attack for 2 turns and Haste; each gains 2 Stride.', target: 'allAllies', empower: { pct: 0.3, turns: 2 }, empowerTarget: true, haste: 1, giveStride: 2, rite: true }),
+    own({ name: 'Song of the Long Hunt', desc: 'LITANY: every ally +30% attack for 2 turns and Haste; each gains 2 Pursuit.', target: 'allAllies', empower: { pct: 0.3, turns: 2 }, empowerTarget: true, haste: 1, giveStride: 2, rite: true }),
   ],
   shines: ['Rank-movement parties', 'Shove-heavy foes', 'Real-time field'],
 }));
 
 K('RP-SSR-WAR', (own) => ({
-  passive: sig('Communion of Blood', 'Heals for 15% of the damage she deals, +5% per Stride, and deals 5% more per Stride. Each fallen Sister gives her +15% attack.'),
+  passive: sig('Communion of Blood', 'Heals for 15% of the damage she deals, +5% per Pursuit, and deals 5% more per Pursuit. Each fallen Sister gives her +15% attack.'),
   sig: { strideLifesteal: { base: 0.15, per: 0.05 }, atkPerFallen: 0.15, strideDmg: 0.05 },
   skills: [
     st('warsister', 'flagellants-charge'),
     st('warsister', 'blood-for-zeal'),
     st('warsister', 'penitent-blow'),
-    own({ name: 'Road of Martyrs', desc: 'LITANY: strike every enemy, Bleeding for 2 turns; +10% per Stride.', target: 'allEnemies', mult: 0.95, bleed: { mult: 0.25, turns: 2 }, perStride: 0.1, rite: true }),
+    own({ name: 'Pyre of Martyrs', desc: 'LITANY: strike every enemy, Bleeding for 2 turns; +10% per Pursuit.', target: 'allEnemies', mult: 0.95, bleed: { mult: 0.25, turns: 2 }, perStride: 0.1, rite: true }),
   ],
   shines: ['Rot-Mother Hunt', 'Bell Tower and Heresy', 'Last-stand fights'],
 }));
@@ -1032,8 +1032,8 @@ K('RP-SR-HIE', (own) => ({
   skills: [
     st('hierophant', 'reliquary-bash'),
     st('hierophant', 'vigil-bell'),
-    own({ name: 'Shrine on the Road', desc: 'Step a rank forward and shield the Sister now behind her for 25% of max HP. Cooldown 1.', target: 'self', move: -1, shieldBehind: 0.25, cooldown: 1 }),
-    own({ name: 'Wayside Wall', desc: 'LITANY: shield every ally for 25% of max HP.', target: 'allAllies', shieldPct: 0.25, rite: true }),
+    own({ name: 'Shield of the Writ', desc: 'Step a rank forward and shield the Sister now behind her for 25% of max HP. Cooldown 1.', target: 'self', move: -1, shieldBehind: 0.25, cooldown: 1 }),
+    own({ name: 'Wall of Writs', desc: 'LITANY: shield every ally for 25% of max HP.', target: 'allAllies', shieldPct: 0.25, rite: true }),
   ],
 }));
 
@@ -1041,8 +1041,8 @@ K('RP-SR-VEI', (own) => ({
   skills: [
     st('veilblade', 'veil-strike'),
     st('veilblade', 'hamstring'),
-    own({ name: 'Roadside Ambush', desc: 'Step back a rank and strike any foe with +25% critical chance. Cooldown 1.', from: [1, 2, 3], target: 'enemy', mult: 1.0, critChance: 0.25, move: 1, cooldown: 1 }),
-    own({ name: 'Red Knife', desc: 'LITANY: a savage blow on any enemy, +50% critical chance; +10% per Stride.', target: 'enemy', mult: 1.9, critChance: 0.5, perStride: 0.1, rite: true }),
+    own({ name: 'Inquest Ambush', desc: 'Step back a rank and strike any foe with +25% critical chance. Cooldown 1.', from: [1, 2, 3], target: 'enemy', mult: 1.0, critChance: 0.25, move: 1, cooldown: 1 }),
+    own({ name: 'Red Knife', desc: 'LITANY: a savage blow on any enemy, +50% critical chance; +10% per Pursuit.', target: 'enemy', mult: 1.9, critChance: 0.5, perStride: 0.1, rite: true }),
   ],
 }));
 
@@ -1051,7 +1051,7 @@ K('RP-SR-ADJ', (own) => ({
     st('adjudicator', 'reflected-sentence'),
     st('adjudicator', 'censure'),
     own({ name: 'Toll Gate', desc: 'Smite a foe, knock it a rank back and Weaken it (-20%) for 2 turns. Cooldown 2.', target: 'enemy', mult: 0.5, shove: 1, weaken: { pct: 0.2, turns: 2 }, cooldown: 2 }),
-    own({ name: 'Judgment on the Road', desc: 'LITANY: every enemy is Weakened (-30%) for 2 turns.', target: 'allEnemies', mult: 0.6, weaken: { pct: 0.3, turns: 2 }, rite: true }),
+    own({ name: 'Judgment of the Writ', desc: 'LITANY: every enemy is Weakened (-30%) for 2 turns.', target: 'allEnemies', mult: 0.6, weaken: { pct: 0.3, turns: 2 }, rite: true }),
   ],
 }));
 
@@ -1059,8 +1059,8 @@ K('RP-SR-HOS', (own) => ({
   skills: [
     st('hospitaller', 'chalice-draught'),
     st('hospitaller', 'lance-of-mercy'),
-    own({ name: 'Footbath', desc: 'Heal an ally 15% of max HP and give her 1 Stride. Cooldown 1.', target: 'ally', healPct: 0.15, giveStride: 1, cooldown: 1 }),
-    own({ name: "Pilgrim's Grail", desc: 'LITANY: raise fallen Sisters with 30% HP and heal every ally 25%.', target: 'allAllies', revive: 0.3, healPct: 0.25, rite: true }),
+    own({ name: 'Cleansing Brand', desc: 'Heal an ally 15% of max HP and give her 1 Pursuit. Cooldown 1.', target: 'ally', healPct: 0.15, giveStride: 1, cooldown: 1 }),
+    own({ name: "Inquisitor's Grail", desc: 'LITANY: raise fallen Sisters with 30% HP and heal every ally 25%.', target: 'allAllies', revive: 0.3, healPct: 0.25, rite: true }),
   ],
 }));
 
@@ -1068,7 +1068,7 @@ K('RP-R-ADJ', (own) => ({
   skills: [
     st('adjudicator', 'reflected-sentence'),
     st('adjudicator', 'censure'),
-    own({ name: 'Road Ledger', desc: 'Every Sister gains 1 Stride and 5 Zeal. Cooldown 2.', target: 'allAllies', giveStride: 1, zealGain: 5, zealAll: true, cooldown: 2 }),
+    own({ name: 'Ledger of the Accused', desc: 'Every Sister gains 1 Pursuit and 5 Zeal. Cooldown 2.', target: 'allAllies', giveStride: 1, zealGain: 5, zealAll: true, cooldown: 2 }),
     st('adjudicator', 'final-judgment'),
   ],
 }));
@@ -1176,13 +1176,13 @@ K('IV-LSSR1', (own) => ({
 }));
 
 K('RP-LSSR1', (own) => ({
-  passive: sig('Lantern on the Road', 'Her burns are 10% stronger for each Stride she holds.'),
+  passive: sig('Lantern of the Inquest', 'Her burns are 10% stronger for each Pursuit she holds.'),
   sig: { dotPerStride: 0.1 },
   skills: [
-    own({ name: "Wayfarer's Flare", desc: 'Step a rank forward, hit any enemy and strip its shield and blessings.', from: [2, 3, 4], target: 'enemy', mult: 0.9, purge: true, move: -1 }),
+    own({ name: "Witch-Hunter's Flare", desc: 'Step a rank forward, hit any enemy and strip its shield and blessings.', from: [2, 3, 4], target: 'enemy', mult: 0.9, purge: true, move: -1 }),
     st('exorcist', 'witchfire'),
     own({ name: 'Ember Retreat', desc: 'Set a foe Burning for 3 turns (stacks) and step a rank back. Cooldown 1.', target: 'enemy', mult: 0.5, poison: { mult: 0.4, turns: 3 }, stackPoison: true, move: 1, cooldown: 1 }),
-    own({ name: 'Road of Ash', desc: 'LITANY: burn every enemy for 3 turns (stacks); spends her Stride for +10% each.', target: 'allEnemies', mult: 0.8, poison: { mult: 0.4, turns: 3 }, stackPoison: true, spend: { kw: 'stride', per: { multPct: 0.1 } }, rite: true }),
+    own({ name: 'Pyre of Ash', desc: 'LITANY: burn every enemy for 3 turns (stacks); spends her Pursuit for +10% each.', target: 'allEnemies', mult: 0.8, poison: { mult: 0.4, turns: 3 }, stackPoison: true, spend: { kw: 'stride', per: { multPct: 0.1 } }, rite: true }),
   ],
   shines: ['Flayed Saint Hunt', 'Twofold Reliquary Hunt', 'Real-time field', 'Crimson Inquisition Order Tower'],
 }));

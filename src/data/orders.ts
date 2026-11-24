@@ -74,8 +74,8 @@ export const ORDER_LIST: OrderDef[] = [
   },
   {
     id: 'red-pilgrimage', name: 'Crimson Inquisition', color: 0x9a2a33, accent: 0xd6a15f,
-    creed: 'Every heretic\'s road ends in red!',
-    lore: 'Barefoot inquisitors who march from shrine to shrine, hunting heresy and leaving a red road behind them!',
+    creed: 'Confess, and burn clean.',
+    lore: 'Inquisitors in crimson coat-habits and wax-sealed hats, armed with writs and branding irons! They hunt heresy from town to town and leave a red road behind them.',
     tiers: [{ need: 2, desc: 'Heal 8% after every won fight.', fightHeal: 0.08 }, { need: 3, desc: 'Attack +8%.', atkPct: 0.08 }, { need: 4, desc: 'Attack +6%. Each fallen Sister gives the rest +15% attack.', atkPct: 0.06, fallenAtk: 0.15 }],
   },
   {

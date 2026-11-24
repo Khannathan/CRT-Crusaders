@@ -40,7 +40,7 @@ PLACE = {
     'Verdant Martyrdom': ('the briar', 'the lash'),
     'Drowned Litany': ('the flooded abbey', 'the deep water'),
     'Confessors of Glass': ('the black glass', 'the mirror'),
-    'Crimson Inquisition': ('the red road', 'the shrine road'),
+    'Crimson Inquisition': ('the Question Room', 'the pyre court'),
     'Hallowed Belfry': ('the cracked belfry', 'the bell'),
 }
 

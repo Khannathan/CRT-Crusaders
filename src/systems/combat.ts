@@ -145,7 +145,7 @@ export interface Unit {
   guilt?: number;
   /** Verdant Martyrdom Scars on a Sister, 0-10. */
   scars?: number;
-  /** Crimson Inquisition Stride on a Sister, 0-5. */
+  /** Crimson Inquisition Pursuit on a Sister, 0-5. */
   stride?: number;
   /** Sisters: her kit's signature rules and Saint's Seal (data/kits.ts). */
   sig?: Sig;
@@ -1649,12 +1649,12 @@ export class Battle {
     this.addScars(u, whole, events);
   }
 
-  /** Crimson Inquisition: Stride whenever an Inquisitor changes rank. */
+  /** Crimson Inquisition: Pursuit whenever an Inquisitor changes rank. */
   private stride(u: Unit, events: BattleEvent[], n = 1) {
     if (!this.isKw(u, 'stride') || u.hp <= 0) return;
     const before = u.stride ?? 0;
     u.stride = Math.min(KW.STRIDE_MAX, before + n);
-    if (u.stride > before) events.push({ type: 'status', uid: u.uid, label: `Stride ${u.stride}` });
+    if (u.stride > before) events.push({ type: 'status', uid: u.uid, label: `Pursuit ${u.stride}` });
   }
 
   /** Start of a round: the Tide rises and Hymns play. */
@@ -1952,7 +1952,7 @@ export class Battle {
     return out;
   }
 
-  /** The skill grown by the Guilt of the most guilty foe, and by the user's Stride and Scars. */
+  /** The skill grown by the Guilt of the most guilty foe, and by the user's Pursuit and Scars. */
   private growFor(actor: Unit, skill: SkillDef): SkillDef {
     let out = skill;
     if (skill.perGuilt) {
