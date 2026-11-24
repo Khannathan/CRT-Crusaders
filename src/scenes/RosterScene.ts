@@ -378,7 +378,7 @@ export class RosterScene extends Phaser.Scene {
     swipe.on('pointerup', (p: Phaser.Input.Pointer) => {
       if (Math.abs(p.x - downX) > 60) this.step(c, p.x < downX ? 1 : -1, tab);
       else if (splash && !(figure && p.x > STEP_X - 64 && p.y > STEP_FEET - 180 && p.y < STEP_FEET + 10)) this.viewSplash(splash);
-      else if (figure && have) poses++ % 2 ? figure.cast(order?.color ?? tint) : figure.attack(-1);
+      else if (figure && have) [() => figure?.attack(-1), () => figure?.cast(order?.color ?? tint), () => figure?.cast(order?.color ?? tint, true)][poses++ % (figure.hasPoses ? 3 : 2)]();
     });
     layer.add(swipe);
     if (splashArt) {

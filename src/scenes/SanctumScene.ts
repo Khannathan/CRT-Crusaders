@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import { MINI_SCALE } from '../ui/spriteAssets';
 import { GAME_H, GAME_W, PAL, hex } from '../config';
 import { CRUSADERS } from '../data/crusaders';
 import { commit, game } from '../state/game';
@@ -352,7 +353,8 @@ export class SanctumScene extends Phaser.Scene {
     const view = new FieldView(this, fb, {
       x: left,
       y: fieldTop,
-      scale: 0.4,
+      // her mini's size: drawn pixel for pixel (sisterSprite.ts)
+      scale: MINI_SCALE,
       compact: true,
       depth: 3,
       onDeath: (u) => {
