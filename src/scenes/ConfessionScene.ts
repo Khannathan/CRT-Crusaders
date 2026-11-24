@@ -88,7 +88,7 @@ export class ConfessionScene extends Phaser.Scene {
     const save = game.save;
     const c = CRUSADERS.find((x) => x.id === id)!;
     const b = bondInfo(save, id);
-    const { top } = modeScreen(this, c.name, `${c.title ?? ''} of the ${c.order}`, 'Confession');
+    const { top } = modeScreen(this, c.name, `${c.title} · ${c.order}`, 'Confession');
     const bw = GAME_W - PAD * 2;
     const list = addScrollArea(this, top - 4, GAME_H - TAB_BAR_H, { start: ConfessionScene.detailY, onScroll: (y) => (ConfessionScene.detailY = y) });
     const before = this.children.list.length;

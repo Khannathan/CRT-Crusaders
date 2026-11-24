@@ -79,7 +79,7 @@ import { CARD_COLS, CARD_GAP, CARD_H, cardSlot, drawRosterCard } from '../ui/ros
 import { addScrollArea } from '../ui/scroll';
 import { showSources, tapCost, tapForSources } from '../ui/sources';
 import { TAB_BAR_H, addTabBar } from '../ui/tabBar';
-import { PAD, addArt, addBackdrop, addBadge, addFrame, addScreenGlow, fade, noOrphan, text } from '../ui/theme';
+import { PAD, fitLine, addArt, addBackdrop, addBadge, addFrame, addScreenGlow, fade, noOrphan, text } from '../ui/theme';
 import { fightMarks, joinMarks, needMarks } from '../systems/pickMarks';
 
 type Tab = 'grow' | 'vows' | 'skills' | 'gear' | 'symbol' | 'canon';
@@ -410,11 +410,13 @@ export class RosterScene extends Phaser.Scene {
     layer.add([
       ...addBadge(this, PAD + 4, NAME_Y - 50, c.rarity, tint, 13),
       this.add.text(PAD + 4, NAME_Y - 28, have ? c.name.toUpperCase() : 'NOT YET SWORN', text.display(26, 0xfff1d6)),
-      this.add.text(PAD + 4, NAME_Y + 6, tookVows(have) ? `✠ ${secondTitle(c.classId)} · ${cls.role}` : `${rankTitle(c)} · ${c.title ?? cls.name} · ${cls.role}`, text.body(16, tookVows(have) ? 0xf2d27a : tint)),
+      // Her epithet, then her rank, class and role.
+      fitLine(this.add.text(PAD + 4, NAME_Y + 4, c.title ?? cls.name, { ...text.body(16, tint), fontStyle: 'italic' }), GAME_W - 2 * PAD - 8),
+      this.add.text(PAD + 4, NAME_Y + 26, tookVows(have) ? `✠ ${secondTitle(c.classId)} · ${cls.role}` : `${rankTitle(c)} · ${cls.name} · ${cls.role}`, text.body(14, tookVows(have) ? 0xf2d27a : PAL.ivory)),
     ]);
-    const sigil = addOrderSigil(this, PAD + 16, NAME_Y + 44, c.order, 26);
+    const sigil = addOrderSigil(this, PAD + 16, NAME_Y + 56, c.order, 24);
     if (sigil) layer.add(sigil);
-    layer.add(this.add.text(PAD + (sigil ? 36 : 4), NAME_Y + 44, `${c.order}${have ? '' : '  ·  her seal waits at the Altar!'}`, text.body(15, PAL.muted)).setOrigin(0, 0.5));
+    layer.add(this.add.text(PAD + (sigil ? 36 : 4), NAME_Y + 56, `${c.order}${have ? '' : '  ·  her seal waits at the Altar!'}`, text.body(15, PAL.muted)).setOrigin(0, 0.5));
     const emblem = addArt(this, classIconFor(this, c.classId), GAME_W - PAD - 26, NAME_Y - 12, 44);
     if (emblem) layer.add(emblem);
     if (have) {
