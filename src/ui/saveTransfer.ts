@@ -1,5 +1,5 @@
 import { PAL, hex } from '../config';
-import { exportSave, importSave, type SaveData } from '../state/save';
+import { autoBackups, exportSave, importSave, type SaveData } from '../state/save';
 
 /**
  * Save backup as a plain HTML panel over the game, since copying, pasting and
@@ -139,5 +139,25 @@ export function showImport(onLoad: (save: SaveData) => void) {
   });
   box.appendChild(row(button('Choose file', () => file.click()), load));
   box.appendChild(status);
+  // This device's own daily backups: one tap to arm, a second to restore.
+  const autos = autoBackups();
+  if (autos.length) {
+    box.appendChild(note('Or roll back to a daily backup kept on this device:'));
+    for (const a of autos) {
+      const label = `${a.day} · ${Object.keys(a.save.owned).length} Sisters · ${a.save.seals} Seals`;
+      const b = button(label, () => {
+        if (armed === a.save) {
+          onLoad(a.save);
+          close();
+          return;
+        }
+        armed = a.save;
+        status.style.color = hex(PAL.steel);
+        status.textContent = `The backup from ${a.day}. Tap it again to replace this device's progress.`;
+        load.textContent = 'Restore';
+      });
+      box.appendChild(row(b));
+    }
+  }
   box.appendChild(row(button('Cancel', close)));
 }

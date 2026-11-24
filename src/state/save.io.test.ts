@@ -5,7 +5,7 @@ describe('save export and import', () => {
   it('round-trips a save through a code and through raw JSON', () => {
     const s = newSave();
     s.seals = 1234;
-    s.owned['CC-W007'] = { level: 42, vow: 2 };
+    s.owned['VT-SSR-VEI'] = { level: 42, vow: 2 };
     (s as { note?: string }).note = 'Sœur Él';
     const code = exportSave(s);
     expect(code.startsWith('CRT1.')).toBe(true);

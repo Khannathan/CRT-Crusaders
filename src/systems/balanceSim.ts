@@ -37,7 +37,7 @@ import { seeded } from './rng';
  * - the Belfry wants a levelled party,
  * - the first Rite of the boss fight arrives around rounds 4-6.
  */
-const STARTER = ['CC-W013', 'CC-W052', 'CC-W001', 'CC-W022'];
+const STARTER = ['SW-R-WAR', 'DL-R-HIE', 'IV-R-EXE', 'SW-SR-CON'];
 export const N = 120;
 
 /** A plain path policy: rest when hurt, take elites only when healthy, events by their first option. */

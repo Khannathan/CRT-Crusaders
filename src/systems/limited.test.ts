@@ -25,7 +25,7 @@ describe('limited Saints', () => {
     for (const c of SAINTS) expect(c.rarity).toBe('UR');
     const save = newSave();
     save.seals = 100_000;
-    save.banner = { order: 'Iron Vigil', target: 'CC-W040' };
+    save.banner = { order: 'Iron Vigil', target: 'IV-UR1' };
     const rng = seeded(5);
     for (let i = 0; i < 300; i++) for (const r of pull(save, 'ten', rng)) expect(r.crusader.limited).toBeUndefined();
     expect(bannerPool(save).some((p) => p.c.limited)).toBe(false);
@@ -44,8 +44,9 @@ describe('limited Saints', () => {
     for (const b of LIMITED_BANNERS) {
       expect(b.saint.rarity).toBe('UR');
       expect(b.ssrs).toHaveLength(2);
+      // both Limited Commanders are sworn to her, from her own Order
       expect(b.ssrs[0].order).toBe(b.saint.order);
-      expect(b.ssrs[1].order).not.toBe(b.saint.order);
+      expect(b.ssrs[1].order).toBe(b.saint.order);
       for (const c of [b.saint, ...b.ssrs]) expect(c.limited).toBe(true);
       for (const c of b.ssrs) expect(c.rarity).toBe('SSR');
     }

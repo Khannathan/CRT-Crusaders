@@ -6,7 +6,7 @@ import { CRUSADERS } from '../data/crusaders';
 import { ORDERS } from '../data/orders';
 import { sigilKey } from '../ui/icons';
 import { commit, game } from '../state/game';
-import { BOOSTED_SSRS, COST_ONE, COST_TEN, PITY_LIMIT, RARITY_ORDER, RATES, bannerPool, boostedSSRs, chooseLimited, chooseStandard, customizeBanner, defaultSSRs, standardSSRs, standardURs, SPARK, UR_HARD, UR_SOFT, canPull, claimSpark, pull, shardsOf, sparkKey, syncBanner, urPityLeft, type PullKind } from '../systems/gacha';
+import { BOOSTED_SSRS, COST_ONE, PITY_LIMIT, RARITY_ORDER, RATES, bannerPool, boostedSSRs, chooseLimited, chooseStandard, customizeBanner, defaultSSRs, standardSSRs, standardURs, SPARK, UR_HARD, UR_SOFT, canPull, tenLabel, claimSpark, pull, shardsOf, sparkKey, syncBanner, urPityLeft, type PullKind } from '../systems/gacha';
 import { GRADUATE_AFTER, graduationDate, isStandard, limitedUnseen, limitedWindow, markLimitedSeen, timeLeft, upcoming, type LimitedWindow } from '../systems/limited';
 import { makeButton } from '../ui/button';
 import { CURRENCY_BAR_H, addCurrencyBar } from '../ui/currencyBar';
@@ -167,7 +167,8 @@ export class RecruitScene extends Phaser.Scene {
       this.add.image(GAME_W - PAD - 30, bTop + 34, 'ui-arrow').setDisplaySize(22, 22);
     }
     const sub = limited ? `LIMITED · LEAVES IN ${timeLeft(win.ends).toUpperCase()}` : `STANDARD · BANNER ${page + 1} OF ${pages}`;
-    const subText = this.add.text(GAME_W / 2, bTop + 14, sub, { ...text.hud(11, limited ? PAL.amber : PAL.ivory), stroke: '#0b070c', strokeThickness: 4 }).setOrigin(0.5, 0).setDepth(1);
+    // under the title row, so a long Saint's name never runs into it
+    const subText = this.add.text(GAME_W / 2, bTop + 46, sub, { ...text.hud(11, limited ? PAL.amber : PAL.ivory), stroke: '#0b070c', strokeThickness: 4 }).setOrigin(0.5, 0).setDepth(1);
     this.add.rectangle(GAME_W / 2, subText.y + subText.height / 2, subText.width + 20, subText.height + 6, 0x0b070c, 0.6);
     this.add.text(GAME_W / 2, bTop + bh - 4, 'Tap a Sister for her splash · hold for her card', { ...text.body(14, PAL.muted), stroke: '#0b070c', strokeThickness: 3 }).setOrigin(0.5, 1);
 
@@ -208,11 +209,10 @@ export class RecruitScene extends Phaser.Scene {
     const offerH = GAME_H - TAB_BAR_H - 8 - y;
     const half = (pw - 10) / 2;
     const btnY = y + offerH / 2;
-    const freeTen = !s.freeTenUsed;
     makeButton(this, px + half / 2, btnY, half, offerH, `Recruit ×1\n${COST_ONE} Seal`, () => this.doPull('one'), {
       disabled: !canPull(s, 'one'),
     });
-    makeButton(this, px + half + 10 + half / 2, btnY, half, offerH, freeTen ? 'Recruit ×10\nFree first time' : `Recruit ×10\n${COST_TEN} Seals`, () => this.doPull('ten'), {
+    makeButton(this, px + half + 10 + half / 2, btnY, half, offerH, `Recruit ×10\n${tenLabel(s)}`, () => this.doPull('ten'), {
       disabled: !canPull(s, 'ten'),
       active: true,
     });

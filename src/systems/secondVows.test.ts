@@ -8,7 +8,7 @@ import { SECOND_TITLE, VOW_HOLD, VOW_PENITENT, VOW_SEALS, VOW_TITHES, takeSecond
 import { sisterStats } from './stats';
 import { skirmish } from './crusade';
 
-const ID = 'CC-W090';
+const ID = 'TC-UR1';
 
 function ready() {
   const s = newSave();

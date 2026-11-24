@@ -1,7 +1,8 @@
 import { current } from '../state/run';
-import { storedRun } from '../state/game';
+import { game, storedRun } from '../state/game';
 import { restoreRun } from '../systems/crusade';
 import { playOutStoredFight } from '../systems/settle';
+import { setHomecoming } from '../systems/boosts';
 import { announceSettled } from '../ui/bgFight';
 import { catchUpMarch } from '../ui/marchUi';
 import Phaser from 'phaser';
@@ -14,11 +15,12 @@ import { enemyKey, makeEnemyTextures } from '../ui/enemyArt';
 import { ORDER_LIST } from '../data/orders';
 import { makeIconTextures, makeNodeTextures, makeSigilTextures } from '../ui/icons';
 import { animKey, type AnimName } from '../ui/fieldView';
-import { fullBodyUrl, makePlaceholderPortrait, portraitKey } from '../ui/placeholderPortrait';
+import { fullBodyUrl, portraitKey } from '../ui/placeholderPortrait';
+import { initStandIns, queueStandInMasks } from '../ui/standIn';
 
 /**
  * Every PNG in src/assets/portraits, found at build time. Name files by roster id
- * (CC-W001.png); crusaders without a file get a placeholder.
+ * (IV-R-EXE.png); crusaders without a file get a placeholder.
  */
 const PORTRAIT_URLS = import.meta.glob<string>('../assets/portraits/*.{png,webp}', { eager: true, query: '?url', import: 'default' });
 /** A .png beats a .webp of the same name, so a new PNG drop always wins. */
@@ -74,6 +76,7 @@ export class BootScene extends Phaser.Scene {
       const url = UI_URLS[`../assets/ui/${key}.png`] ?? UI_URLS[`../assets/ui/${key}.webp`];
       if (url) this.load.image(key, url);
     }
+    queueStandInMasks(this);
     for (const c of CRUSADERS) {
       const url = portraitUrl(c.id);
       if (url) this.load.image(portraitKey(c.id), url);
@@ -107,10 +110,11 @@ export class BootScene extends Phaser.Scene {
   }
 
   create() {
+    // Sisters without their own art stand in as an Order-and-class silhouette, drawn on first use.
+    initStandIns(this);
     for (const c of CRUSADERS) {
-      const key = portraitKey(c.id);
+      const key = `portrait-${c.id}`;
       if (this.textures.exists(key)) this.setFilter(key);
-      else makePlaceholderPortrait(this, c);
     }
     for (const e of Object.values(ENEMIES)) {
       const key = enemyKey(e.id);
@@ -128,6 +132,8 @@ export class BootScene extends Phaser.Scene {
     const settled = playOutStoredFight();
     // The Vigil's march catches up the time the game was closed.
     catchUpMarch();
+    // A returning player's Homecoming boosts apply from the first claim (the welcome itself is given in the Sanctum).
+    setHomecoming(game.save.welcome?.homecoming);
     // The title waits for a tap (which also wakes the music on phones).
     this.scene.start('Title', { line: this.line });
     if (settled) window.setTimeout(() => announceSettled(settled), 900);

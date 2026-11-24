@@ -24,7 +24,7 @@ describe('the Feast', () => {
   it('bonus Sisters add Candles, up to the cap', () => {
     const w = limitedWindow(NOW);
     expect(featuredBonus([w.saint.id, w.ssrs[0].id], NOW)).toBeCloseTo(0.5);
-    expect(featuredBonus(['CC-W001'], NOW)).toBe(w.saint.order === 'Iron Vigil' ? 0.25 : 0);
+    expect(featuredBonus(['IV-R-EXE'], NOW)).toBe(w.saint.order === 'Iron Vigil' ? 0.25 : 0);
     const save = newSave();
     expect(finishStage(save, 0, [w.saint.id, w.ssrs[0].id], true, NOW)).toBe(Math.round(FEAST_STAGES[0].first * 1.5));
   });

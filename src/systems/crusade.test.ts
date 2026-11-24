@@ -47,18 +47,18 @@ describe('the crypt ramp', () => {
 
   it('felling an act boss opens a Sanctuary that heals before the next act', () => {
     const save = newSave();
-    save.owned['CC-W013'] = { level: 1, vow: 0 };
-    const run = startRun(save, ['CC-W013'], OSSUARY, seeded(9), 2); // 15 floors: acts of 10 and 5
+    save.owned['SW-R-WAR'] = { level: 1, vow: 0 };
+    const run = startRun(save, ['SW-R-WAR'], OSSUARY, seeded(9), 2); // 15 floors: acts of 10 and 5
     expect(run.map.length).toBe(17);
     const end = run.map.findIndex((row) => row[0].actEnd);
     expect(end).toBe(10);
     run.floor = end;
     run.at = 0;
     run.resolved = false;
-    run.hp['CC-W013'] = 1;
+    run.hp['SW-R-WAR'] = 1;
     winRoom(run, save);
     expect(run.sanctuary).toBe(1);
-    expect(run.hp['CC-W013']).toBeGreaterThan(1);
+    expect(run.hp['SW-R-WAR']).toBeGreaterThan(1);
   });
 });
 
@@ -81,8 +81,8 @@ describe('crypt maps', () => {
 
   it('you can only step along a path, and events change the run', () => {
     const save = newSave();
-    save.owned['CC-W013'] = { level: 1, vow: 0 };
-    const run = startRun(save, ['CC-W013'], OSSUARY, seeded(4));
+    save.owned['SW-R-WAR'] = { level: 1, vow: 0 };
+    const run = startRun(save, ['SW-R-WAR'], OSSUARY, seeded(4));
     expect(choices(run)).toEqual(run.map[0].map((_, i) => i));
     enterNode(run, 0);
     expect(choices(run)).toEqual([]); // the fight is not done yet
@@ -108,10 +108,10 @@ describe('reasons to keep going', () => {
   it('two crusaders of one order turn on its bonus', () => {
     const save = newSave();
     // Decima and Mustiola are both Sepulcher Watch: +10% max HP
-    for (const id of ['CC-W013', 'CC-W022', 'CC-W001']) save.owned[id] = { level: 1, vow: 0 };
-    const solo = startRun(save, ['CC-W013', 'CC-W001']);
-    const pair = startRun(save, ['CC-W013', 'CC-W022']);
-    expect(maxHpOf(save, pair, 'CC-W013')).toBe(Math.round(maxHpOf(save, solo, 'CC-W013') * 1.1));
+    for (const id of ['SW-R-WAR', 'SW-SR-CON', 'IV-R-EXE']) save.owned[id] = { level: 1, vow: 0 };
+    const solo = startRun(save, ['SW-R-WAR', 'IV-R-EXE']);
+    const pair = startRun(save, ['SW-R-WAR', 'SW-SR-CON']);
+    expect(maxHpOf(save, pair, 'SW-R-WAR')).toBe(Math.round(maxHpOf(save, solo, 'SW-R-WAR') * 1.1));
     expect(orderBonuses(['Glass Confession', 'Glass Confession', 'Glass Confession']).length).toBe(2);
     expect(orderBonuses(['Glass Confession', 'Glass Confession', 'Glass Confession', 'Glass Confession']).length).toBe(3);
     expect(orderBonuses(['Iron Vigil', 'Iron Vigil', 'Hollow Bell', 'Hollow Bell']).map((b) => b.id)).toEqual(['order:Iron Vigil:2', 'order:Hollow Bell:2']);
@@ -119,8 +119,8 @@ describe('reasons to keep going', () => {
 
   it('Vows upgrade skills at ranks 2, 4 and 5', () => {
     const save = newSave();
-    save.owned['CC-W001'] = { level: 1, vow: 2 };
-    const run = startRun(save, ['CC-W001']);
+    save.owned['IV-R-EXE'] = { level: 1, vow: 2 };
+    const run = startRun(save, ['IV-R-EXE']);
     const unit = makeBattle(save, run, 'ossuary-1').units.find((u) => u.side === 'party')!;
     const skills = skillsFor(unit);
     expect(skills[0].name).toBe('Accuse+');
@@ -130,12 +130,12 @@ describe('reasons to keep going', () => {
 
   it('Heresy unlocks one tier at a time, makes enemies tougher and pays Seals once', () => {
     const save = newSave();
-    save.owned['CC-W013'] = { level: 1, vow: 0 };
+    save.owned['SW-R-WAR'] = { level: 1, vow: 0 };
     expect(heresyAvailable(save, OSSUARY)).toBe(0);
     save.cleared.push(OSSUARY.id);
     expect(heresyAvailable(save, OSSUARY)).toBe(1);
-    const run = startRun(save, ['CC-W013'], OSSUARY, seeded(1), 1);
-    const base = makeBattle(save, startRun(save, ['CC-W013']), 'ossuary-1').units.find((u) => u.side === 'enemy')!;
+    const run = startRun(save, ['SW-R-WAR'], OSSUARY, seeded(1), 1);
+    const base = makeBattle(save, startRun(save, ['SW-R-WAR']), 'ossuary-1').units.find((u) => u.side === 'enemy')!;
     const hard = makeBattle(save, run, 'ossuary-1').units.find((u) => u.side === 'enemy')!;
     expect(hard.maxHp).toBeGreaterThan(base.maxHp * 1.2);
     run.floor = run.map.length - 1;

@@ -17,6 +17,9 @@ import { KEEPER_BOND, blessingReady, chooseKeeper, keeperLines, keeperOf, visitK
 import { anyDeedReady } from '../systems/deeds';
 import { noviceDay, noviceOpen, noviceReady, NOVITIATE_DAYS } from '../systems/novitiate';
 import { anyClaimable } from '../systems/tasks';
+import { missivesReady } from '../systems/missives';
+import { nextSaint } from '../systems/calendar';
+import { checkReturn, homecomingLeft } from '../systems/welcome';
 import { matinsReady } from '../systems/matins';
 import { passReady } from '../systems/pass';
 import { chapterReady } from '../systems/chapter';
@@ -66,6 +69,10 @@ export class SanctumScene extends Phaser.Scene {
 
   create() {
     const save = game.save;
+    // Away three days or more: a gift in Missives and a Homecoming week.
+    const away = checkReturn(save);
+    commit();
+    if (away) this.time.delayedCall(400, () => toast(this, `Welcome home! ${away} days away. A gift waits in Missives, and a Homecoming week begins!`, GAME_H / 2 - 120));
     const owned = CRUSADERS.filter((c) => save.owned[c.id]);
     const areaTop = CURRENCY_BAR_H;
     const areaBot = GAME_H - TAB_BAR_H;
@@ -109,10 +116,10 @@ export class SanctumScene extends Phaser.Scene {
     this.drawRightRail(areaTop + 104);
     this.drawVigil(PAD, stripTop, GAME_W - PAD * 2, stripH);
 
-    // Onward: always the next stage of the Pilgrim's Road.
+    // Onward: straight to the team for the next stage of the Pilgrim's Road (Back shows the map).
     const stage = vigilStage(save);
     const done = roadDone(save);
-    makeButton(this, GAME_W / 2, onward, GAME_W - PAD * 2, 64, done ? 'The Road' : `Onward!  ·  ${stage.label}`, () => this.scene.start('Campaign'), { active: !done, icon: 'blade', fontSize: 24 });
+    makeButton(this, GAME_W / 2, onward, GAME_W - PAD * 2, 64, done ? 'The Road' : `Onward!  ·  ${stage.label}`, () => this.scene.start('Campaign', done ? { mode: 'road' } : { mode: 'road', fight: stage.n }), { active: !done, icon: 'blade', fontSize: 24 });
 
     addTabBar(this, 'Sanctum');
     // What the march cleared while you were away, or why it halted.
@@ -168,6 +175,7 @@ export class SanctumScene extends Phaser.Scene {
     const duty = GROUPS.duties.find((t) => (t.shown?.(save) ?? true) && t.ready?.(save)) ?? GROUPS.duties[0];
     const items: { label: string; icon: string; go: () => void; ready: boolean }[] = [
       { label: 'Duties', icon: 'book', go: () => this.scene.start(duty.scene, duty.data ?? {}), ready: groupReady(save, 'duties') },
+      { label: 'Missives', icon: 'book', go: () => this.scene.start('Missives'), ready: missivesReady(save) },
       { label: 'Matins', icon: 'matins', go: () => this.scene.start('Matins'), ready: matinsReady(save) },
       { label: 'Pass', icon: 'sigil', go: () => this.scene.start('Pass'), ready: passReady(save) },
       { label: 'Chapter', icon: 'chapter', go: () => this.scene.start('Chapter'), ready: chapterReady(save) },
@@ -204,6 +212,10 @@ export class SanctumScene extends Phaser.Scene {
         },
       },
     ];
+    const home = homecomingLeft(save);
+    if (home) items.unshift({ title: 'Homecoming', sub: `+100% VIGIL · ${timeLeft(Date.now() + home)}`, art: 'bg-altar', go: () => this.scene.start('Missives') });
+    const coming = nextSaint();
+    items.push({ title: 'Calendar', sub: coming ? `NEXT: ${coming.saint.name.split(' ')[0]} · ${timeLeft(coming.starts)}` : 'WHAT COMES', art: 'bg-hall', go: () => this.scene.start('Calendar') });
     if (noviceOpen(save)) items.push({ title: 'Novitiate', sub: `DAY ${Math.min(NOVITIATE_DAYS, noviceDay(save))} OF ${NOVITIATE_DAYS}`, art: 'bg-altar', go: () => this.scene.start('Novitiate'), ready: noviceReady(save) });
     if (giftsWaiting(save).length) items.push({ title: 'Rank gift', sub: 'CLAIM IT', art: 'bg-hall', go: () => this.scene.start('Rank'), ready: true });
     const w = 158;

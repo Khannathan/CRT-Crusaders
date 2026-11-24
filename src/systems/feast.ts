@@ -6,7 +6,8 @@ import { BELFRY, OSSUARY, skirmish } from './crusade';
 import { earn } from './currency';
 import type { Rng } from './gacha';
 import { bagText, give, type Bag } from './items';
-import { limitedWindow, type LimitedWindow } from './limited';
+import { limitedWindow, windowAt, type LimitedWindow } from './limited';
+import { send, sumLetters } from './missives';
 import { dayKey } from './tasks';
 import { addStigmata } from './tiers';
 
@@ -74,11 +75,11 @@ export const rewardText = (r: FeastReward, saint?: CrusaderDef) =>
 
 /** Paid on reaching each total of Candles earned this Feast. */
 export const FEAST_MARKS: { at: number; reward: FeastReward }[] = [
-  { at: 200, reward: { seals: 2, tithes: 500 } },
+  { at: 200, reward: { seals: 1, tithes: 500 } },
   { at: 500, reward: { favor: 10, gilt: 50 } },
-  { at: 1000, reward: { seals: 4, items: { ash2: 3, page2: 3 } } },
+  { at: 1000, reward: { seals: 2, items: { ash2: 3, page2: 3 } } },
   { at: 1800, reward: { favor: 15, stigmata: 2 } },
-  { at: 2800, reward: { seals: 6, gilt: 100 } },
+  { at: 2800, reward: { seals: 3, gilt: 100 } },
   { at: 4000, reward: { favor: 25, title: true } },
 ];
 
@@ -93,7 +94,7 @@ export interface StallItem {
 
 export const FEAST_STALL: StallItem[] = [
   { id: 'favor', name: "Saint's Favor ×10", cost: 250, stock: 5, reward: { favor: 10 } },
-  { id: 'seal', name: 'Seal', cost: 80, stock: 15, reward: { seals: 1 } },
+  { id: 'seal', name: 'Seal', cost: 80, stock: 3, reward: { seals: 1 } },
   { id: 'stigmata', name: 'Stigmata', cost: 150, stock: 5, reward: { stigmata: 1 } },
   { id: 'ash', name: "Martyr's Ash III", cost: 200, stock: 3, reward: { items: { ash3: 1 } } },
   { id: 'page', name: 'Psalter Pages III', cost: 200, stock: 3, reward: { items: { page3: 1 } } },
@@ -130,6 +131,13 @@ export function feastOf(save: SaveData, now = Date.now()): FeastState {
   const w = limitedWindow(now);
   let f = save.feast;
   if (!f || f.index !== w.index) {
+    // Milestones reached but never claimed go to Missives.
+    const missed = f ? FEAST_MARKS.filter((m) => f!.earned >= m.at && !f!.paid.includes(m.at)) : [];
+    if (missed.length) {
+      const old = windowAt(f!.index);
+      const r = sumLetters(missed.map((m) => ({ ...m.reward, favor: m.reward.favor ? { id: old.saint.id, name: old.saint.name.split(' ')[0], n: m.reward.favor } : undefined, title: m.reward.title ? feastTitle(old) : undefined })));
+      send(save, { from: feastName(old), title: 'The Feast is over!', body: 'You lit the candles but left the gifts on the table. They are yours. Take them!', reward: r }, now);
+    }
     const melted = f ? Math.floor(f.candles * ALMS_PER_CANDLE) : 0;
     if (melted) earn(save, 0, melted);
     f = save.feast = { index: w.index, candles: 0, earned: 0, won: [], paid: [], bought: {}, day: dayKey(now), repeats: 0, melted: melted || undefined };

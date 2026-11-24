@@ -20,10 +20,10 @@ import { seeded } from './rng';
 
 /** The plain party a Sister joins: one per role slot. */
 export const FILLER: Record<'tank' | 'healer' | 'dps' | 'flex', string> = {
-  tank: 'CC-W052', // Aquilia Lepida, R Hierophant
-  healer: 'CC-W151', // Antonia Libo, R Confessor
-  dps: 'CC-W013', // Decima Cursor, R War-Sister
-  flex: 'CC-W171', // Lollia Casca, R Veilblade
+  tank: 'DL-R-HIE', // Aquilia Lepida, R Hierophant
+  healer: 'SW-R-CON', // Antonia Libo, R Confessor
+  dps: 'SW-R-WAR', // Decima Cursor, R War-Sister
+  flex: 'TC-R-VEI', // Lollia Casca, R Veilblade
 };
 
 /** Which filler she replaces. */
@@ -65,6 +65,14 @@ export function huntRun(id: string, hunt: HuntDef, opts: { level?: number; tier?
   return total / n;
 }
 
+/**
+ * The yardstick is her role's REF_RANK-th best SSR in that hunt, not the very
+ * best: with 30-odd Commanders to a role in the 500-Sister roster, one outlier
+ * would otherwise set the scale for everyone (the old roster had about six, so
+ * its best sat near where the 5th best sits now).
+ */
+export const REF_RANK = 5;
+
 /** Relative scores count up to this much toward best and avg. */
 export const REL_CAP = 150;
 
@@ -80,7 +88,7 @@ export interface NicheRow {
   avg: number;
 }
 
-/** Runs every Sister through every hunt and scales each role against its best SSR. */
+/** Runs every Sister through every hunt and scales each role against its REF_RANK-th best SSR. */
 export function nicheTable(opts: { seeds?: number; level?: number; tier?: number; ids?: string[]; engine?: SimEngine } = {}): NicheRow[] {
   const sisters = CRUSADERS.filter((c) => !opts.ids || opts.ids.includes(c.id));
   const raw = new Map<string, Record<string, number>>();
@@ -90,7 +98,8 @@ export function nicheTable(opts: { seeds?: number; level?: number; tier?: number
     const role = roleOf(c);
     const rel: Record<string, number> = {};
     for (const h of HUNTS) {
-      const top = Math.max(1, ...sisters.filter((o) => o.rarity === 'SSR' && roleOf(o) === role).map((o) => raw.get(o.id)![h.id]));
+      const ssrs = sisters.filter((o) => o.rarity === 'SSR' && roleOf(o) === role).map((o) => raw.get(o.id)![h.id]).sort((a, b) => b - a);
+      const top = Math.max(1, ssrs[Math.min(REF_RANK, ssrs.length) - 1] ?? 1);
       rel[h.id] = Math.round((raw.get(c.id)![h.id] / top) * 100);
     }
     // A hunt where the role's best SSR barely scratches the beast gives wild ratios: clip them.

@@ -129,9 +129,9 @@ export interface Mark {
 }
 
 export const BRAND_MARKS: Mark[] = [
-  { at: 3, seals: 3, tithes: 300, gilt: 30, items: { writ2: 2 } },
-  { at: 6, seals: 5, tithes: 0, gilt: 50, gear: 'SSR', items: { ash3: 1, page3: 1, armory1: 10, canon2: 2 }, stigmata: 1 },
-  { at: 9, seals: 8, tithes: 500, gilt: 100, items: { writ3: 1, armory2: 3, canon3: 1 }, stigmata: 2 },
+  { at: 3, seals: 2, tithes: 300, gilt: 30, items: { writ2: 2 } },
+  { at: 6, seals: 3, tithes: 0, gilt: 50, gear: 'SSR', items: { ash3: 1, page3: 1, armory1: 10, canon2: 2 }, stigmata: 1 },
+  { at: 9, seals: 4, tithes: 500, gilt: 100, items: { writ3: 1, armory2: 3, canon3: 1 }, stigmata: 2 },
 ];
 
 export const markText = (m: Mark) => [m.seals ? `${m.seals} Seals` : '', m.tithes ? `${m.tithes} Tithes` : '', m.gear ? `${m.gear}+ gear` : '', m.gilt ? `${m.gilt} Gilt` : '', m.stigmata ? `${m.stigmata} Stigmata` : '', bagText(m.items)].filter(Boolean).join(' + ');

@@ -25,7 +25,7 @@ describe('Vigils', () => {
     const v = ensureVigil(save, 0)!;
     const four = vigilPending(save, v, 4 * H);
     expect(four.tithes).toBeGreaterThan(0);
-    expect(four.seals).toBe(1);
+    expect(four.seals).toBe(Math.floor(4 * vigilRates(save).seals));
     const capped = vigilPending(save, v, 40 * H);
     expect(capped.hours).toBe(VIGIL_CAP_HOURS);
     expect(capped.full).toBe(true);
@@ -41,6 +41,16 @@ describe('Vigils', () => {
     expect(rr.tithes).toBeGreaterThan(rf.tithes * 2);
     expect(rr.gear).toBeGreaterThan(rf.gear);
     expect(rr.seals).toBeGreaterThan(rf.seals);
+  });
+
+  it('carries part-Seals from claim to claim, so slow Seals still arrive', () => {
+    const save = newSave();
+    for (const c of CRUSADERS.slice(0, 4)) save.owned[c.id] = { level: 1, vow: 0 };
+    ensureVigil(save, 0);
+    const before = save.seals;
+    const rate = vigilRates(save).seals;
+    for (let i = 1; i <= 20; i++) claimVigil(save, i * VIGIL_CAP_HOURS * H, () => 0.5);
+    expect(save.seals - before).toBe(Math.floor(20 * VIGIL_CAP_HOURS * rate + 1e-9));
   });
 
   it('Fast Reward: two hours at once, free once a day, then for Gilt', () => {

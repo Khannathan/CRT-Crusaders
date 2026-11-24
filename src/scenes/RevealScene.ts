@@ -1,9 +1,10 @@
 import { sfx } from '../audio/sfx';
+import { rankTitle } from '../data/crusaders';
 import Phaser from 'phaser';
 import { NOVICE_COST, noviceTensLeft } from '../systems/novitiate';
 import { FONT, GAME_H, GAME_W, PAL, hex } from '../config';
 import { CLASSES, RARITY_COLOR } from '../data/classes';
-import { COST_ONE, COST_TEN, RARITY_ORDER, canPull, noviceTen, pull, type PullKind, type PullResult } from '../systems/gacha';
+import { COST_ONE, RARITY_ORDER, canPull, tenLabel, noviceTen, pull, type PullKind, type PullResult } from '../systems/gacha';
 import { music } from '../audio/music';
 import { commit, game } from '../state/game';
 import { makeButton } from '../ui/button';
@@ -328,7 +329,7 @@ export class RevealScene extends Phaser.Scene {
     const textY = Math.max(SIZE / 2, fy + h / 2 + 6);
     const texts = [
       this.add.text(0, textY + 44, c.name, { ...style, fontSize: '30px' }).setOrigin(0.5),
-      this.add.text(0, textY + 82, `${c.rarity} · ${CLASSES[c.classId].name}`, { ...style, fontSize: '19px', color: hex(color) }).setOrigin(0.5),
+      this.add.text(0, textY + 82, `${c.rarity} ${rankTitle(c)} · ${CLASSES[c.classId].name}`, { ...style, fontSize: '19px', color: hex(color) }).setOrigin(0.5),
       this.add
         .text(0, textY + 124, tag, { ...style, fontSize: '20px', color: hex(r.isNew ? PAL.amber : PAL.steel) })
         .setOrigin(0.5),
@@ -390,7 +391,7 @@ export class RevealScene extends Phaser.Scene {
       }, { fontSize: 20, disabled: !left || game.save.seals < NOVICE_COST, active: true });
     } else {
       again('one', GAME_W / 2 - 128, `Again ×1\n${COST_ONE} Seal`);
-      again('ten', GAME_W / 2 + 128, game.save.freeTenUsed ? `Again ×10\n${COST_TEN} Seals` : 'Again ×10\nFree first time');
+      again('ten', GAME_W / 2 + 128, `Again ×10\n${tenLabel(game.save)}`);
     }
 
     const hist = this.add.text(24, 56, 'Oath Record ›', { fontFamily: FONT, fontSize: '17px', color: hex(PAL.steel) }).setOrigin(0, 0.5).setInteractive({ useHandCursor: true });

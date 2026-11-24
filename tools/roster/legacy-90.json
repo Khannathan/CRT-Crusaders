@@ -1,0 +1,452 @@
+{
+ "Aurelia Torquata": {
+  "id": "CC-W040",
+  "relic": "bronze censer, with a smoky-glass central inset",
+  "hook": "She keeps every vow she has kept as an iron token, and the pouch grows heavy."
+ },
+ "Cassia Tuca": {
+  "id": "CC-W049",
+  "relic": "violet omen reliquary, with a smoky-glass central inset",
+  "hook": "She reads the ash of burned heretics and has never once read mercy there."
+ },
+ "Firmina Corbulo": {
+  "id": "CC-W058",
+  "relic": "miniature candlelit shrine, with a smoky-glass central inset",
+  "hook": "She carried the Vigil's reliquary out of a fallen fort on her back."
+ },
+ "Eugenia Laenas": {
+  "id": "CC-W094",
+  "relic": "fractured dawn icon, with a smoky-glass central inset",
+  "hook": "She stood the dawn watch alone for forty days after her Sisters fell."
+ },
+ "Quinta Scapula": {
+  "id": "CC-W001",
+  "relic": "interrogation seal, encased in dark iron lattice",
+  "hook": "She questions sentries at the gate, and the honest ones still sweat."
+ },
+ "Faustina Ambusta": {
+  "id": "CC-W050",
+  "relic": "violet omen reliquary, worn smooth around a single amber light",
+  "hook": "She foretold the burning of her own city and was not believed."
+ },
+ "Benigna Medullina": {
+  "id": "CC-W059",
+  "relic": "miniature candlelit shrine, worn smooth around a single amber light",
+  "hook": "She shields the dying so they may finish their last prayer."
+ },
+ "Justa Vindex": {
+  "id": "CC-W077",
+  "relic": "silver dueling gauntlet, worn smooth around a single amber light",
+  "hook": "She duels only the guilty, and has never lacked an opponent."
+ },
+ "Restituta Cossa": {
+  "id": "CC-W095",
+  "relic": "fractured dawn icon, worn smooth around a single amber light",
+  "hook": "She walked out of the pyre that was lit for her, and forgave no one."
+ },
+ "Tertia Macra": {
+  "id": "CC-W011",
+  "relic": "vow collar, hung from three red wax-sealed chains",
+  "hook": "She whips herself for every patient she could not save."
+ },
+ "Tacita Lamia": {
+  "id": "CC-W060",
+  "relic": "miniature candlelit shrine, inlaid with a small bone-white devotional figure",
+  "hook": "She has sealed a confession inside her reliquary that no one may hear."
+ },
+ "Octavia Atrata": {
+  "id": "CC-W180",
+  "relic": "concealed ritual dagger hilt, set in a square weathered bronze housing",
+  "hook": "She wears the veil so the condemned cannot plead with her face."
+ },
+ "Sulpicia Sacerdos": {
+  "id": "CC-W198",
+  "relic": "sealed silver chalice, set in a square weathered bronze housing",
+  "hook": "She tastes every cup she offers, in case the heretics poisoned it."
+ },
+ "Livia Merula": {
+  "id": "CC-W114",
+  "relic": "small cracked singing bell, inlaid with a small bone-white devotional figure",
+  "hook": "She sings the names of the judged so the Lord can find them."
+ },
+ "Sexta Pollio": {
+  "id": "CC-W012",
+  "relic": "vow collar, with a smoky-glass central inset",
+  "hook": "She confesses each blow she lands, then lands another."
+ },
+ "Postuma Vespillo": {
+  "id": "CC-W070",
+  "relic": "oath-bound sword hilt, bound in frayed crimson vow ribbons",
+  "hook": "She guards a tomb whose door she was ordered never to open."
+ },
+ "Ursula Messalla": {
+  "id": "CC-W079",
+  "relic": "silver dueling gauntlet, bound in frayed crimson vow ribbons",
+  "hook": "She duels the dead who rise in the ossuary, one at a time, every night."
+ },
+ "Januaria Tuditana": {
+  "id": "CC-W088",
+  "relic": "funerary key, bound in frayed crimson vow ribbons",
+  "hook": "She has stood at the same grave so long the moss climbs her greaves."
+ },
+ "Decima Cursor": {
+  "id": "CC-W013",
+  "relic": "vow collar, worn smooth around a single amber light",
+  "hook": "She buried her whole novitiate with her own hands."
+ },
+ "Mustiola Naso": {
+  "id": "CC-W022",
+  "relic": "lowered ivory beak mask, worn smooth around a single amber light",
+  "hook": "She hears the plague-dead confess, and keeps their sins from spreading."
+ },
+ "Caecilia Dolabella": {
+  "id": "CC-W080",
+  "relic": "silver dueling gauntlet, set in a square weathered bronze housing",
+  "hook": "She duels to the rhythm of a hymn only the Choir can hear."
+ },
+ "Candida Vala": {
+  "id": "CC-W089",
+  "relic": "funerary key, set in a square weathered bronze housing",
+  "hook": "She lit ten thousand candles for the dead and remembers every name."
+ },
+ "Agatha Nerva": {
+  "id": "CC-W098",
+  "relic": "fractured dawn icon, set in a square weathered bronze housing",
+  "hook": "She sings at dawn over the bodies, so they know the night is over."
+ },
+ "Flavia Bassa": {
+  "id": "CC-W014",
+  "relic": "vow collar, inlaid with a small bone-white devotional figure",
+  "hook": "She keeps time for the Choir with the flail she scourges herself with."
+ },
+ "Prima Tubero": {
+  "id": "CC-W032",
+  "relic": "bronze censer, inlaid with a small bone-white devotional figure",
+  "hook": "She tends the censers of a chapel that still receives anonymous candles."
+ },
+ "Perpetua Aspera": {
+  "id": "CC-W090",
+  "relic": "funerary key, engraved with a tiny ruined sanctuary",
+  "hook": "She wears a crown of briar under her helm and never takes it off."
+ },
+ "Blandina Bestia": {
+  "id": "CC-W099",
+  "relic": "fractured dawn icon, engraved with a tiny ruined sanctuary",
+  "hook": "She offers her own blood at every altar before she asks for anything."
+ },
+ "Thecla Lentula": {
+  "id": "CC-W117",
+  "relic": "small cracked singing bell, engraved with a tiny ruined sanctuary",
+  "hook": "She sings through the thorns in her throat, and the dead go quiet."
+ },
+ "Sabina Fimbria": {
+  "id": "CC-W006",
+  "relic": "interrogation seal, bound in frayed crimson vow ribbons",
+  "hook": "She hunts the fraud who wore her Order's sacred vestments."
+ },
+ "Nona Silana": {
+  "id": "CC-W042",
+  "relic": "violet omen reliquary, bound in frayed crimson vow ribbons",
+  "hook": "She reads omens in the scars on her own arms."
+ },
+ "Marina Gurges": {
+  "id": "CC-W100",
+  "relic": "fractured dawn icon, framed by a hinged silver protective cover",
+  "hook": "She drowned at her vows and was pulled from the font still praying."
+ },
+ "Severa Ahala": {
+  "id": "CC-W220",
+  "relic": "broken execution bell, encased in dark iron lattice",
+  "hook": "She rings the drowned bell once for every heretic she beheads."
+ },
+ "Junia Hypsaea": {
+  "id": "CC-W007",
+  "relic": "interrogation seal, set in a square weathered bronze housing",
+  "hook": "She interrogates the drowned, and the drowned answer."
+ },
+ "Aquilia Lepida": {
+  "id": "CC-W052",
+  "relic": "miniature candlelit shrine, set in a square weathered bronze housing",
+  "hook": "She hauled her Order's reliquary up from a flooded crypt."
+ },
+ "Nympha Sisenna": {
+  "id": "CC-W043",
+  "relic": "violet omen reliquary, set in a square weathered bronze housing",
+  "hook": "She hears the tide counting down the hours of the damned."
+ },
+ "Veronica Augurina": {
+  "id": "CC-W230",
+  "relic": "sunken saint medallion, hung from three red wax-sealed chains",
+  "hook": "She sees the truth in still water and has stopped looking at her own reflection."
+ },
+ "Lucretia Piso": {
+  "id": "CC-W110",
+  "relic": "iron rose reliquary, bearing a cracked oval mother-of-pearl inset",
+  "hook": "She tends a garden of thorns grown from the graves of liars."
+ },
+ "Digna Mancina": {
+  "id": "CC-W008",
+  "relic": "interrogation seal, engraved with a tiny ruined sanctuary",
+  "hook": "She breaks mirrors to see which ones bleed."
+ },
+ "Hortensia Luscina": {
+  "id": "CC-W026",
+  "relic": "lowered ivory beak mask, engraved with a tiny ruined sanctuary",
+  "hook": "She takes plague confessions through a pane of cracked glass."
+ },
+ "Speciosa Pictor": {
+  "id": "CC-W035",
+  "relic": "bronze censer, engraved with a tiny ruined sanctuary",
+  "hook": "She paints saints on glass with the ash of heretics."
+ },
+ "Peregrina Rufa": {
+  "id": "CC-W009",
+  "relic": "interrogation seal, framed by a hinged silver protective cover",
+  "hook": "She walked home from a pilgrimage that returned no one else."
+ },
+ "Silvia Pulchra": {
+  "id": "CC-W120",
+  "relic": "small cracked singing bell, encased in dark iron lattice",
+  "hook": "She sings marching hymns on roads that lead only to graves."
+ },
+ "Rutila Crassa": {
+  "id": "CC-W018",
+  "relic": "vow collar, framed by a hinged silver protective cover",
+  "hook": "She has worn out eleven pairs of boots on the red road."
+ },
+ "Germana Longa": {
+  "id": "CC-W054",
+  "relic": "miniature candlelit shrine, framed by a hinged silver protective cover",
+  "hook": "She carries a reliquary from shrine to shrine and never sleeps under a roof."
+ },
+ "Aula Philo": {
+  "id": "CC-W183",
+  "relic": "ivory-bound miniature codex, encased in dark iron lattice",
+  "hook": "She records every pilgrim who falls, so the road remembers them."
+ },
+ "Maxima Cornicen": {
+  "id": "CC-W019",
+  "relic": "vow collar, bearing a cracked oval mother-of-pearl inset",
+  "hook": "She hears a bell that no one else admits is ringing."
+ },
+ "Terentia Noctua": {
+  "id": "CC-W010",
+  "relic": "interrogation seal, bearing a cracked oval mother-of-pearl inset",
+  "hook": "She counts the tolls of the Hollow Bell and knows who each one is for."
+ },
+ "Claudia Cicurina": {
+  "id": "CC-W047",
+  "relic": "violet omen reliquary, encased in dark iron lattice",
+  "hook": "She reads the ash that falls when the great bell rings."
+ },
+ "Laeta Stolo": {
+  "id": "CC-W055",
+  "relic": "miniature candlelit shrine, bearing a cracked oval mother-of-pearl inset",
+  "hook": "She cast a bell from the armour of fallen Sisters."
+ },
+ "Felicitas Vulso": {
+  "id": "CC-W091",
+  "relic": "fractured dawn icon, bearing a cracked oval mother-of-pearl inset",
+  "hook": "She rings the dawn bell each morning, even in a besieged town."
+ },
+ "Valeria Falco": {
+  "id": "CC-W232",
+  "relic": "compact crossbow stock beside shoulder, inlaid with a small bone-white devotional figure",
+  "hook": "She has never missed a shot from the walls, and never fired twice."
+ },
+ "Bibiana Strabo": {
+  "id": "CC-W233",
+  "relic": "compact crossbow stock beside shoulder, bound in frayed crimson vow ribbons",
+  "hook": "She ends the suffering of the damned from a mercy's distance."
+ },
+ "Tullia Capito": {
+  "id": "CC-W234",
+  "relic": "compact crossbow stock beside shoulder, set in a square weathered bronze housing",
+  "hook": "She delivers the Tribunal's verdict by bolt when the guilty flee."
+ },
+ "Aemilia Nasica": {
+  "id": "CC-W235",
+  "relic": "compact crossbow stock beside shoulder, engraved with a tiny ruined sanctuary",
+  "hook": "She watches the graveyard from the bell tower with a loaded crossbow."
+ },
+ "Canidia Ravilla": {
+  "id": "CC-W141",
+  "relic": "covered witchfire brazier, inlaid with a small bone-white devotional figure",
+  "hook": "She burns the books the Tribunal condemns, and memorises them first."
+ },
+ "Furia Cethega": {
+  "id": "CC-W144",
+  "relic": "covered witchfire brazier, engraved with a tiny ruined sanctuary",
+  "hook": "She lights her witchfire from her own blood."
+ },
+ "Benedicta Pansa": {
+  "id": "CC-W131",
+  "relic": "iron exorcism lantern, worn smooth around a single amber light",
+  "hook": "She leads lost souls out of the crypts by lantern light."
+ },
+ "Lucilla Thurina": {
+  "id": "CC-W134",
+  "relic": "iron exorcism lantern, set in a square weathered bronze housing",
+  "hook": "She exorcises to the tune of the Choir, and the spirits flee in time."
+ },
+ "Domitilla Frugi": {
+  "id": "CC-W103",
+  "relic": "iron rose reliquary, with a smoky-glass central inset",
+  "hook": "She keeps the gate garden of the Vigil, every thorn a sentry."
+ },
+ "Fabiola Merenda": {
+  "id": "CC-W104",
+  "relic": "iron rose reliquary, worn smooth around a single amber light",
+  "hook": "She grows healing herbs among the thorns and bleeds to harvest them."
+ },
+ "Petronilla Cotta": {
+  "id": "CC-W106",
+  "relic": "iron rose reliquary, bound in frayed crimson vow ribbons",
+  "hook": "She plants a briar on every grave so the dead stay put."
+ },
+ "Lollia Casca": {
+  "id": "CC-W171",
+  "relic": "concealed ritual dagger hilt, engraved with a tiny ruined sanctuary",
+  "hook": "She cuts her vows into her own palm, one line at a time."
+ },
+ "Cornelia Mela": {
+  "id": "CC-W174",
+  "relic": "concealed ritual dagger hilt, encased in dark iron lattice",
+  "hook": "She strikes from the shadows of the pilgrim road."
+ },
+ "Drusilla Laeca": {
+  "id": "CC-W175",
+  "relic": "concealed ritual dagger hilt, hung from three red wax-sealed chains",
+  "hook": "She strikes only between the tolls of the bell."
+ },
+ "Concordia Esquilina": {
+  "id": "CC-W201",
+  "relic": "small mirrored judgment icon, encased in dark iron lattice",
+  "hook": "She judges pilgrims by their reflections at every well."
+ },
+ "Volumnia Licina": {
+  "id": "CC-W182",
+  "relic": "ivory-bound miniature codex, bearing a cracked oval mother-of-pearl inset",
+  "hook": "She catalogues the bones of saints that were never canonised."
+ },
+ "Antonia Libo": {
+  "id": "CC-W151",
+  "relic": "folded battle pennant, bound in frayed crimson vow ribbons",
+  "hook": "She carries the Watch's banner into every crypt, and out again."
+ },
+ "Fonteia Paeta": {
+  "id": "CC-W154",
+  "relic": "folded battle pennant, framed by a hinged silver protective cover",
+  "hook": "She raised her Order's banner from the bottom of a lake."
+ },
+ "Vitalia Sicula": {
+  "id": "CC-W191",
+  "relic": "sealed silver chalice, bearing a cracked oval mother-of-pearl inset",
+  "hook": "She mixes her cures with holy water and powdered glass."
+ },
+ "Honorata Gemella": {
+  "id": "CC-W192",
+  "relic": "sealed silver chalice, encased in dark iron lattice",
+  "hook": "She carries a chalice from the first pilgrimage and lets no one drink."
+ },
+ "Licinia Glabrio": {
+  "id": "CC-W163",
+  "relic": "resonating metal throat icon, framed by a hinged silver protective cover",
+  "hook": "She sings the drowned hymn in iron armour, and does not sink."
+ },
+ "Vibia Trio": {
+  "id": "CC-W033",
+  "relic": "bronze censer, bound in frayed crimson vow ribbons",
+  "hook": "She swings her censer through the briars and bleeds for the incense."
+ },
+ "Septima Carbo": {
+  "id": "CC-W061",
+  "relic": "oath-bound sword hilt, set in a square weathered bronze housing",
+  "hook": "She protects travellers while quietly questioning her own hierarchy."
+ },
+ "Constantia Camerina": {
+  "id": "CC-W085",
+  "relic": "funerary key, with a smoky-glass central inset",
+  "hook": "She keeps the relic of a mentor whose last order she refused."
+ },
+ "Hilaria Rulla": {
+  "id": "CC-W161",
+  "relic": "resonating metal throat icon, set in a square weathered bronze housing",
+  "hook": "She leads the Choir's battle hymn and has never once been out of tune."
+ },
+ "Verginia Imperiosa": {
+  "id": "CC-W069",
+  "relic": "oath-bound sword hilt, inlaid with a small bone-white devotional figure",
+  "hook": "She took the Tribunal's oath on a blade, and the blade agreed."
+ },
+ "Rubria Corvina": {
+  "id": "CC-W129",
+  "relic": "sealed crimson oath vial, encased in dark iron lattice",
+  "hook": "She signed her oath in blood and has bled for it every day since."
+ },
+ "Clara Capitolina": {
+  "id": "CC-W209",
+  "relic": "small mirrored judgment icon, framed by a hinged silver protective cover",
+  "hook": "She judges the Choir's singers by the mirrors they cannot see."
+ },
+ "Emerentiana Scaura": {
+  "id": "CC-W199",
+  "relic": "sealed silver chalice, engraved with a tiny ruined sanctuary",
+  "hook": "She brings the last cup to the dying, and the dead thank her."
+ },
+ "Pelagia Murena": {
+  "id": "CC-W229",
+  "relic": "sunken saint medallion, encased in dark iron lattice",
+  "hook": "She saw the end of the world in a font and is still waiting for it."
+ },
+ "Marcia Scaevola": {
+  "id": "CC-W078",
+  "relic": "silver dueling gauntlet, inlaid with a small bone-white devotional figure",
+  "hook": "She duels in a veil, and none who saw her face have spoken since."
+ },
+ "Scholastica Varro": {
+  "id": "CC-W187",
+  "relic": "ivory-bound miniature codex, inlaid with a small bone-white devotional figure",
+  "hook": "She keeps the Vigil's roll of the fallen, written in their own ash."
+ },
+ "Galla Fusca": {
+  "id": "CC-W147",
+  "relic": "covered witchfire brazier, encased in dark iron lattice",
+  "hook": "She lights her pyres with a torch carried from the first martyr's flame."
+ },
+ "Placidia Sura": {
+  "id": "CC-W197",
+  "relic": "sealed silver chalice, bound in frayed crimson vow ribbons",
+  "hook": "She believes mercy is a discipline that must be defended."
+ },
+ "Celsa Sanga": {
+  "id": "CC-W218",
+  "relic": "broken execution bell, framed by a hinged silver protective cover",
+  "hook": "She beheads to the beat of the Choir's drums."
+ },
+ "Eulalia Clepsina": {
+  "id": "CC-W137",
+  "relic": "iron exorcism lantern, bearing a cracked oval mother-of-pearl inset",
+  "hook": "She traps spirits in glass lanterns and keeps them as a warning."
+ },
+ "Hostilia Galba": {
+  "id": "CC-W217",
+  "relic": "broken execution bell, engraved with a tiny ruined sanctuary",
+  "hook": "She serves a ruined chapel where the dead still queue for judgment."
+ },
+ "Fulvia Hemina": {
+  "id": "CC-W148",
+  "relic": "covered witchfire brazier, hung from three red wax-sealed chains",
+  "hook": "She guards a forbidden testimony hidden inside her bell."
+ },
+ "Gaia Vatia": {
+  "id": "CC-W127",
+  "relic": "sealed crimson oath vial, framed by a hinged silver protective cover",
+  "hook": "She swore her blood oath underwater and came up changed."
+ },
+ "Crispina Aquila": {
+  "id": "CC-W237",
+  "relic": "compact crossbow stock beside shoulder, bearing a cracked oval mother-of-pearl inset",
+  "hook": "She fletches her bolts with thorns from the Covenant's briar."
+ }
+}

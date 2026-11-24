@@ -110,9 +110,9 @@ export const TITHES: { name: string; tithes?: number; gilt?: number; xp: number;
 export const SIEGE_MILESTONES: { at: number; reward: Reward & { marks: number } }[] = [
   { at: 0.1, reward: { marks: 40, tithes: 2000 } },
   { at: 0.25, reward: { marks: 60, items: { unction2: 3 } } },
-  { at: 0.5, reward: { marks: 80, seals: 2, items: { iron2: 3 } } },
+  { at: 0.5, reward: { marks: 80, seals: 1, items: { iron2: 3 } } },
   { at: 0.75, reward: { marks: 100, gilt: 60, items: { armory1: 8 } } },
-  { at: 1, reward: { marks: 150, seals: 5, items: { armory2: 2 } } },
+  { at: 1, reward: { marks: 150, seals: 1, items: { armory2: 3 } } },
 ];
 
 /**
@@ -121,18 +121,18 @@ export const SIEGE_MILESTONES: { at: number; reward: Reward & { marks: number } 
  */
 export const SIEGE_TIERS: { at: number; reward: Reward & { marks: number } }[] = [
   { at: 1, reward: { marks: 20, items: { canon1: 3 } } },
-  { at: 2.5, reward: { marks: 30, seals: 1, items: { canon1: 5 } } },
+  { at: 2.5, reward: { marks: 30, tithes: 1000, items: { canon1: 5 } } },
   { at: 4.5, reward: { marks: 40, gilt: 30, items: { canon2: 1 } } },
-  { at: 7, reward: { marks: 60, seals: 2, items: { canon2: 2 } } },
-  { at: 10, reward: { marks: 80, seals: 3, items: { canon3: 1 } } },
+  { at: 7, reward: { marks: 60, seals: 1, items: { canon2: 2 } } },
+  { at: 10, reward: { marks: 80, seals: 1, items: { canon3: 1 } } },
 ];
 
 /** Your place in the week's standings pays when the week turns. */
 export function placeReward(place: number): Reward & { marks: number } {
-  if (place === 1) return { marks: 120, seals: 5, items: { canon2: 3 } };
-  if (place <= 3) return { marks: 80, seals: 3, items: { canon2: 2 } };
-  if (place <= 5) return { marks: 50, seals: 2, items: { canon1: 6 } };
-  if (place <= 10) return { marks: 30, seals: 1, items: { canon1: 3 } };
+  if (place === 1) return { marks: 120, seals: 3, items: { canon2: 3 } };
+  if (place <= 3) return { marks: 80, seals: 2, items: { canon2: 2 } };
+  if (place <= 5) return { marks: 50, seals: 1, items: { canon1: 6 } };
+  if (place <= 10) return { marks: 30, items: { canon1: 5 } };
   return { marks: 15 };
 }
 

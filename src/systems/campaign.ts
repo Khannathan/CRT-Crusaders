@@ -171,7 +171,7 @@ export function finishStage(save: SaveData, n: number, outcome: 'victory' | 'def
 /* ---- Idle rates: what the Vigil gathers per hour, from the road ---- */
 
 /** Per hour on a fresh road. */
-export const BASE_RATES = { tithes: 60, gear: 0.3, seals: 0.25 };
+export const BASE_RATES = { tithes: 60, gear: 0.3, seals: 0.04 };
 
 /** Rates per hour from the highest stage cleared; each chapter cleared is a further step. */
 /** Each Bell Tower floor cleared adds this share to the Vigil's Tithes, gear and materials. */
@@ -186,7 +186,7 @@ export function roadRates(save: SaveData) {
   return {
     tithes: BASE_RATES.tithes * (1 + 0.06 * best) * (1 + 0.15 * ch) * bell,
     gear: (BASE_RATES.gear + 0.012 * best) * bell,
-    seals: BASE_RATES.seals + 0.004 * best,
+    seals: BASE_RATES.seals + 0.0005 * best,
     /** Extra materials per hour on top of the Vigil's base find. */
     items: (0.5 + 0.02 * best) * bell,
   };

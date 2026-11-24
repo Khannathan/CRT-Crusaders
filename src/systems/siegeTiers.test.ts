@@ -17,7 +17,7 @@ describe('the Siege: your damage tiers and weekly place', () => {
     const seals = s.seals;
     expect(claimTiers(s, D(0))).toHaveLength(2);
     expect(c.marks - marks).toBe(SIEGE_TIERS[0].reward.marks + SIEGE_TIERS[1].reward.marks);
-    expect(s.seals - seals).toBe(1);
+    expect(s.seals - seals).toBe((SIEGE_TIERS[0].reward.seals ?? 0) + (SIEGE_TIERS[1].reward.seals ?? 0));
     expect(tiersReady(s, D(0))).toEqual([]);
   });
 

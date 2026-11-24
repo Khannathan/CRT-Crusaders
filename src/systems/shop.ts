@@ -67,7 +67,7 @@ export const TITHE_OFFERS: Offer[] = [
   { id: 't-incense', name: '5 Myrrh', price: 400, currency: 'tithes', goods: { items: { incense1: 5 } }, limit: 10 },
   { id: 't-writ', name: '2 Writs of Passage', price: 600, currency: 'tithes', goods: { items: { writ1: 2 } }, limit: 5 },
   { id: 't-unction', name: '5 Lesser Unction', price: 300, currency: 'tithes', goods: { items: { unction1: 5 } }, limit: 10 },
-  { id: 't-seal', name: '1 Wax Seal', price: 2500, currency: 'tithes', goods: { seals: 1 }, limit: 2 },
+  { id: 't-seal', name: '1 Wax Seal', price: 2500, currency: 'tithes', goods: { seals: 1 }, limit: 1 },
   { id: 't-gear', name: 'SR+ gear', price: 700, currency: 'tithes', goods: { gear: 'SR' }, limit: 3 },
   { id: 't-stigmata', name: '1 Stigmata', price: 3000, currency: 'tithes', goods: { stigmata: 1 }, limit: 2 },
   { id: 't-whistle', name: '1 Hound Whistle', price: 1200, currency: 'tithes', goods: { items: { kennel2: 1 } }, limit: 3 },
@@ -91,7 +91,7 @@ export const ALMONRY_POOL: Offer[] = [
   { id: 'a-whistle', name: '3 Hound Whistles', price: 110, currency: 'alms', goods: { items: { kennel2: 3 } }, limit: 1 },
   { id: 'a-ssr', name: 'SSR gear', price: 150, currency: 'alms', goods: { gear: 'SSR' }, limit: 1 },
   { id: 'a-vow', name: 'Vow token of your choice', price: 400, currency: 'alms', goods: { vowToken: true }, limit: 1 },
-  { id: 'a-seal', name: '2 Wax Seals', price: 160, currency: 'alms', goods: { seals: 2 }, limit: 1 },
+  { id: 'a-seal', name: '1 Wax Seal', price: 90, currency: 'alms', goods: { seals: 1 }, limit: 1 },
   { id: 'a-stigmata', name: '2 Stigmata', price: 220, currency: 'alms', goods: { stigmata: 2 }, limit: 1 },
 ];
 
@@ -178,8 +178,13 @@ export function buy(save: SaveData, o: Offer, opts: { sister?: string; rng?: Rng
   else save.tithes -= o.price;
   const b = bucket(shopOf(save, now), o);
   b[o.id] = (b[o.id] ?? 0) + 1;
+  return grantGoods(save, o.goods, { ...opts, now });
+}
+
+/** Gives a Shop's goods (also used by Packs). A Vow token needs `sister`. */
+export function grantGoods(save: SaveData, g: Goods, opts: { sister?: string; rng?: Rng; now?: number } = {}): Purchase {
+  const now = opts.now ?? Date.now();
   const out: Purchase = {};
-  const g = o.goods;
   if (g.seals) save.seals += g.seals;
   addStigmata(save, g.stigmata ?? 0);
   if (g.items) give(save, g.items);
@@ -215,7 +220,7 @@ export function refreshAlmonry(save: SaveData, now = Date.now(), rng: Rng = Math
 }
 
 export const goodsText = (g: Goods) =>
-  [g.seals ? `${g.seals} Wax Seal${g.seals > 1 ? 's' : ''}` : '', bagText(g.items), g.gear ? `${g.gear}+ gear` : '', g.vowToken ? 'a Vow token' : '', g.trialEntry ? 'one more Trial victory today' : '', g.offering ? offeringDef(g.offering).name : '']
+  [g.seals ? `${g.seals} Wax Seal${g.seals > 1 ? 's' : ''}` : '', g.stigmata ? `${g.stigmata} Stigmata` : '', bagText(g.items), g.gear ? `${g.gear}+ gear` : '', g.vowToken ? 'a Vow token' : '', g.trialEntry ? 'one more Trial victory today' : '', g.offering ? offeringDef(g.offering).name : '']
     .filter(Boolean)
     .join(', ');
 

@@ -10,6 +10,9 @@ import { HUNT_ENTRIES, huntEntriesLeft, huntOn } from '../systems/hunts';
 import { freeWhistle, houndsOf } from '../systems/hounds';
 import type { SaveData } from '../state/save';
 import { matinsReady } from '../systems/matins';
+import { DISCOUNT_TEN, discountReady } from '../systems/gacha';
+import { packsReady } from '../systems/packs';
+import { missivesReady } from '../systems/missives';
 import { passReady } from '../systems/pass';
 import { BRACKET, LEAGUES, ORDEALS_PER_DAY, bracket, ordealsLeft, ordealsOf, ordealsReady } from '../systems/ordeals';
 import { unlocked } from '../systems/rank';
@@ -143,7 +146,7 @@ export const RITES: RiteEntry[] = [
   // The Sealed Altar: one card per thing you can pull for, each with its own currency.
   {
     label: 'Sisters', scene: 'Recruit', icon: 'seal', art: 'altar', rank: 1, home: 'altar', bg: 'bg-altar',
-    ready: (s) => limitedUnseen(s) || !s.freeTenUsed,
+    ready: (s) => limitedUnseen(s) || !s.freeTenUsed || (discountReady(s) && s.seals >= DISCOUNT_TEN),
     blurb: 'Call new Sisters to the faith!',
     status: (s) => `${s.seals} Seals  ·  ${limitedWindow().saint.name.split(' ')[0]} leaves in ${timeLeft(limitedWindow().ends)}`,
   },
@@ -176,7 +179,7 @@ export const RITES: RiteEntry[] = [
     blurb: 'Tithe daily. Besiege a beast each week.',
     status: (s) => (s.chapter ? `Level ${chapterLevel(s.chapter.xp)}  ·  Siege ${Math.min(100, Math.round((s.chapter.siege.dealt / siegeBeast(s).pool) * 100))}%  ·  ${s.chapter.marks} Marks` : 'Not yet joined'),
   },
-  { label: 'Shop', scene: 'Shop', icon: 'seal', art: 'shop', rank: 1, home: 'market', bg: 'bg-shop', blurb: 'The Church sells what it can spare.' },
+  { label: 'Shop', scene: 'Shop', icon: 'seal', art: 'shop', rank: 1, home: 'market', bg: 'bg-shop', blurb: 'The Church sells what it can spare.', ready: (s) => packsReady(s) },
   {
     label: 'Reliquary', scene: 'Reliquary', icon: 'flame', art: 'reliquary', rank: 1, home: 'sisters', bg: 'bg-reliquary', data: { tab: 'relics' },
     ready: (s) => RELICS.some((r) => !relicBlock(s, r.id)),
@@ -195,6 +198,8 @@ export const RITES: RiteEntry[] = [
     status: (s) => `${SETS.filter((x) => (s.sets ?? []).includes(x.id)).length} of ${SETS.length} sets complete`,
   },
   { label: 'Novitiate', scene: 'Novitiate', icon: 'sigil', rank: 1, home: 'duties', noRail: true, shown: (s) => noviceOpen(s), ready: (s) => noviceReady(s) },
+  { label: 'Missives', scene: 'Missives', icon: 'book', rank: 1, home: 'lobby', ready: (s) => missivesReady(s) },
+  { label: 'Calendar', scene: 'Calendar', icon: 'book', rank: 1, home: 'lobby' },
   { label: 'Matins', scene: 'Matins', icon: 'flame', rank: 1, home: 'lobby', ready: (s) => matinsReady(s) },
   { label: 'Pass', scene: 'Pass', icon: 'sigil', rank: 1, home: 'lobby', ready: (s) => passReady(s) },
   { label: 'Penance', scene: 'Penance', icon: 'book', rank: 2, home: 'duties', ready: (s) => anyClaimable(s) },

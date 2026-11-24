@@ -1,3 +1,4 @@
+import { weekKey } from './tasks';
 import { describe, expect, it } from 'vitest';
 import { newSave } from '../state/save';
 import { CRUSADERS } from '../data/crusaders';
@@ -31,6 +32,7 @@ describe('gacha', () => {
   it('first 10-pull is free, later ones cost 10 Seals', () => {
     const save = newSave();
     save.seals = 10;
+    save.discountWeek = weekKey(Date.now()); // this week's discount already used (see packs.test.ts)
     expect(pull(save, 'ten', seeded(2))).toHaveLength(10);
     expect(save.seals).toBe(10);
     expect(pull(save, 'ten', seeded(3))).toHaveLength(10);
@@ -86,7 +88,7 @@ describe('Order banners', () => {
     const save = newSave();
     save.seals = 1e6;
     save.freeTenUsed = true;
-    save.banner = { order: 'Hollow Bell', target: 'CC-W019' };
+    save.banner = { order: 'Hollow Bell', target: 'HB-UR1' };
     const rng = seeded(9);
     let urs = 0;
     let hits = 0;
@@ -95,7 +97,7 @@ describe('Order banners', () => {
       for (const r of pull(save, 'ten', rng)) {
         if (r.crusader.rarity !== 'UR') continue;
         urs++;
-        const hit = r.crusader.id === 'CC-W019';
+        const hit = r.crusader.id === 'HB-UR1';
         if (lastMissed) expect(hit).toBe(true);
         if (hit) hits++;
         lastMissed = !hit;
@@ -107,16 +109,19 @@ describe('Order banners', () => {
     expect(hits / urs).toBeLessThan(0.73);
   });
 
-  it('every Order has one UR to target, at least two SSRs, an SR and an R', () => {
+  it('every Order has two Saintesses to target, and a Commander, Officer and Conscript of each class', () => {
     for (const o of ORDER_LIST) {
       const sisters = CRUSADERS.filter((c) => c.order === o.name && !c.limited);
       const n = (r: string) => sisters.filter((c) => c.rarity === r).length;
-      expect(n('UR')).toBe(1);
-      expect(n('SSR')).toBeGreaterThanOrEqual(2);
-      expect(n('SR')).toBeGreaterThanOrEqual(1);
-      expect(n('R')).toBeGreaterThanOrEqual(1);
+      expect(n('UR')).toBe(2);
+      expect(n('SSR')).toBe(15);
+      expect(n('SR')).toBe(15);
+      expect(n('R')).toBe(15);
+      const limited = CRUSADERS.filter((c) => c.order === o.name && c.limited);
+      expect(limited.map((c) => c.rarity).sort()).toEqual(['SSR', 'SSR', 'UR']);
     }
-    expect(CRUSADERS.filter((c) => !c.limited)).toHaveLength(75);
+    expect(CRUSADERS).toHaveLength(500);
+    expect(CRUSADERS.filter((c) => !c.limited)).toHaveLength(470);
     expect(new Set(CRUSADERS.map((c) => c.id)).size).toBe(CRUSADERS.length);
   });
 
@@ -160,8 +165,8 @@ describe('Order banners', () => {
     const save = newSave();
     save.seals = 100_000;
     const ord = ORDER_LIST[2];
-    const ur = CRUSADERS.find((c) => c.order === ord.name && c.rarity === 'UR')!;
-    const other = CRUSADERS.find((c) => c.order !== ord.name && c.rarity === 'UR')!;
+    const ur = CRUSADERS.find((c) => c.order === ord.name && c.rarity === 'UR' && !c.limited)!;
+    const other = CRUSADERS.find((c) => c.order !== ord.name && c.rarity === 'UR' && !c.limited)!;
     save.banner = { order: ord.name, target: ur.id };
     for (let i = 0; i < SPARK / 10 - 1; i++) pull(save, 'ten', seeded(i));
     expect(shardsOf(save, ord.name)).toBe(SPARK - 10);
@@ -181,11 +186,11 @@ describe('bannerPool', () => {
     const { CRUSADERS } = await import('../data/crusaders');
     const { newSave } = await import('../state/save');
     const s = newSave();
-    s.banner = { order: 'Iron Vigil', target: 'CC-W040' };
+    s.banner = { order: 'Iron Vigil', target: 'IV-UR1' };
     const pool = bannerPool(s);
     expect(pool.length).toBe(CRUSADERS.filter((c) => !c.limited).length);
     expect(pool.reduce((a, p) => a + p.chance, 0)).toBeCloseTo(1, 6);
-    expect(pool.find((p) => p.c.id === 'CC-W040')!.chance).toBeCloseTo(0.0075, 6);
+    expect(pool.find((p) => p.c.id === 'IV-UR1')!.chance).toBeCloseTo(0.0075, 6);
   });
 });
 
@@ -214,8 +219,8 @@ describe('standard banner rate-up', () => {
         ssrN++;
         if (ssrs.some((c) => c.id === r.crusader.id)) up++;
       }
-    // half of SSRs are the boosted pair, plus their share of the other half
-    expect(up / ssrN).toBeGreaterThan(0.5);
+    // half of SSRs are the boosted pair, plus their (small, among 168) share of the other half
+    expect(up / ssrN).toBeGreaterThan(0.47);
     expect(up / ssrN).toBeLessThan(0.6);
     // Relic Shards go to the target's Order
     expect(shardsOf(save, ur.order)).toBe(20_000);

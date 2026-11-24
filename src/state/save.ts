@@ -1,4 +1,5 @@
 import { starterGear, type GearItem } from '../systems/gear';
+import { ROSTER_VERSION, migrateRoster } from './rosterMigration';
 import type { PilgrimageState } from '../systems/crusade';
 import type { MatinsState } from '../systems/matins';
 import type { RankState } from '../systems/rank';
@@ -48,6 +49,8 @@ export interface SaveData {
   /** Hosanna picks: per party (sorted Sister ids joined by +) and the last one picked. */
   hosanna?: { byParty?: Record<string, string>; last?: string };
   version: 1;
+  /** Which roster the ids are from: 2 = the 500-Sister roster (state/rosterMigration.ts). Unset = the old 90. */
+  roster?: number;
   seals: number;
   tithes: number;
   /** Pulls since the last SSR or UR. */
@@ -115,6 +118,14 @@ export interface SaveData {
   novitiate?: import('../systems/novitiate').NovitiateState;
   /** The Pilgrim's Pass for this season (systems/pass.ts). */
   pass?: import('../systems/pass').PassState;
+  /** Rank packs and the Abbess's Blessing (systems/packs.ts). */
+  packs?: import('../systems/packs').PacksState;
+  /** Welcome back: last seen and the Homecoming week (systems/welcome.ts). */
+  welcome?: import('../systems/welcome').WelcomeState;
+  /** Week key of the week's discounted 10-pull, once used (systems/gacha.ts). */
+  discountWeek?: string;
+  /** Missives: letters with rewards and news (systems/missives.ts). */
+  missives?: import('../systems/missives').MissivesState;
   /** The weekly Ordeals league (systems/ordeals.ts). */
   ordeals?: import('../systems/ordeals').OrdealState;
   /** Matins login calendar. */
@@ -172,15 +183,18 @@ const KEY = 'crt-crusaders.save.v1';
  * lets you try the altar beyond the free first 10-pull.
  */
 export function newSave(): SaveData {
-  return { version: 1, seals: 30, tithes: 500, pity: 0, totalPulls: 0, freeTenUsed: false, owned: {}, cleared: [], lastParty: [], gear: starterGear(), items: { unction1: 10 } };
+  return { version: 1, roster: ROSTER_VERSION, seals: 30, tithes: 500, pity: 0, totalPulls: 0, freeTenUsed: false, owned: {}, cleared: [], lastParty: [], gear: starterGear(), items: { unction1: 10 } };
 }
 
 export function loadSave(): SaveData {
   try {
     const raw = localStorage.getItem(KEY);
     if (raw) {
-      const data = JSON.parse(raw) as SaveData;
-      if (data && data.version === 1) return { ...newSave(), ...data, gear: data.gear ?? starterGear() };
+      const data = parseSave(raw);
+      if (data) return data;
+      // The save is damaged: fall back to the newest daily backup rather than starting over.
+      const auto = autoBackups()[0];
+      if (auto) return auto.save;
     }
   } catch {
     // storage blocked or corrupt: start fresh
@@ -188,11 +202,82 @@ export function loadSave(): SaveData {
   return newSave();
 }
 
+function parseSave(raw: string): SaveData | undefined {
+  try {
+    const data = JSON.parse(raw) as SaveData;
+    if (data && data.version === 1 && typeof data.owned === 'object') {
+      const moved = migrateRoster(data);
+      return { ...newSave(), ...moved, gear: moved.gear ?? starterGear() };
+    }
+  } catch {
+    // not JSON
+  }
+  return undefined;
+}
+
+/** Daily backups kept on the device: one snapshot per day played, the last AUTO_KEEP days. */
+export const AUTO_KEEP = 3;
+const AUTO_PREFIX = 'crt-crusaders.save.auto.';
+const dayStamp = (now: number) => {
+  const d = new Date(now);
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+};
+let autoDay = '';
+
+/** The first save of each day is also kept as that day's backup; older ones are pruned. */
+function writeAutoBackup(json: string, now = Date.now()) {
+  const day = dayStamp(now);
+  if (autoDay === day) return;
+  if (!localStorage.getItem(AUTO_PREFIX + day)) localStorage.setItem(AUTO_PREFIX + day, json);
+  autoDay = day;
+  const keys = autoKeys();
+  for (const k of keys.slice(AUTO_KEEP)) localStorage.removeItem(k);
+}
+
+/** Backup keys, newest first. */
+function autoKeys(): string[] {
+  const keys: string[] = [];
+  for (let i = 0; i < localStorage.length; i++) {
+    const k = localStorage.key(i);
+    if (k?.startsWith(AUTO_PREFIX)) keys.push(k);
+  }
+  return keys.sort().reverse();
+}
+
+/** The daily backups that still read as saves, newest first. */
+export function autoBackups(): { day: string; save: SaveData }[] {
+  try {
+    return autoKeys()
+      .map((k) => ({ day: k.slice(AUTO_PREFIX.length), save: parseSave(localStorage.getItem(k) ?? '') }))
+      .filter((b): b is { day: string; save: SaveData } => !!b.save);
+  } catch {
+    return [];
+  }
+}
+
 export function writeSave(data: SaveData) {
   try {
-    localStorage.setItem(KEY, JSON.stringify(data));
+    const json = JSON.stringify(data);
+    localStorage.setItem(KEY, json);
+    try {
+      writeAutoBackup(json);
+    } catch {
+      // out of room for a backup: the save itself is what matters
+    }
   } catch {
     // storage unavailable (private mode); progress lasts for this session only
+  }
+}
+
+/**
+ * Asks the browser to keep this game's storage when space runs low (Chrome
+ * grants it to sites you use often or install). Harmless where unsupported.
+ */
+export function askPersistentStorage() {
+  try {
+    void navigator.storage?.persist?.().catch(() => undefined);
+  } catch {
+    // not supported
   }
 }
 
@@ -228,7 +313,8 @@ export function importSave(text: string): SaveData | undefined {
     }
     const data = JSON.parse(json) as SaveData;
     if (!data || data.version !== 1 || typeof data.owned !== 'object' || typeof data.seals !== 'number') return undefined;
-    return { ...newSave(), ...data, gear: data.gear ?? starterGear() };
+    const moved = migrateRoster(data);
+    return { ...newSave(), ...moved, gear: moved.gear ?? starterGear() };
   } catch {
     return undefined;
   }
