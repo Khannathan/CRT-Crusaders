@@ -26,6 +26,7 @@ ALLOWED = [
     (r'art-inbox/full-body/[^/]+_raw\.png', True),
     (r'art-inbox/props/[^/]+_props\.png', True),
     (r'art-inbox/review/[^/]+\.png', True),
+    (r'art-inbox/ui-concepts/[^/]+\.png', True),       # UI redesign concepts (UI_BIBLE.md)
     (r'art-inbox/ART_LOG\.md', True),
 ]
 # The intake bot writes src/assets/full-body/<id>.png from art-inbox/full-body/<id>_raw.png.

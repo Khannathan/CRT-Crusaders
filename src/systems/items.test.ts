@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { CRUSADERS } from '../data/crusaders';
 import { newSave } from '../state/save';
 import { ascend, ascendBlock } from './ascension';
-import { addBags, countOf, give, refine, roomDrops, spend, vigilDrops } from './items';
+import { FAMILIES, addBags, countOf, give, itemDef, itemIds, refine, roomDrops, spend, vigilDrops } from './items';
 import { sisterPower } from './power';
 import { seeded } from './rng';
 import { levelCap } from './stats';
@@ -50,12 +50,11 @@ describe('Ascension', () => {
   });
 });
 
-describe('item families', () => {
-  it('every tier a family lists is a real item (the Satchel draws them all)', async () => {
-    const { FAMILIES, itemIds, itemDef } = await import('./items');
+describe('Satchel rows', () => {
+  it('lists only materials that exist, so every icon has a definition', () => {
     for (const f of FAMILIES) {
       const ids = itemIds(f.id);
-      expect(ids.length, f.id).toBeGreaterThan(0);
+      expect(ids.length).toBeGreaterThan(0);
       for (const id of ids) expect(itemDef(id), id).toBeDefined();
     }
   });
