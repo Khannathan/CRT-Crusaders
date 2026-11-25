@@ -2,7 +2,7 @@ import Phaser from 'phaser';
 import { pixelShadow, rimKey } from './pixelFx';
 import { MINI_SCALE, POSE, glowKey, miniKey, posesKey, type PoseName } from './spriteAssets';
 import { hasFullBody } from './placeholderPortrait';
-import { standInKey } from './standIn';
+import { standInKey, textureReady } from './standIn';
 import { RIG_CLIPS, rigKey, type RigClip } from './pixelRig';
 import { knockout } from './knockout';
 
@@ -41,7 +41,7 @@ const BREATH = [0, 0, 1, 1, 2, 2, 2, 1, 1, 0];
 const BEAT_MS = 150;
 
 /** Her figure's texture key: her own full-body art, else her Order-and-class stand-in (ui/standIn.ts). */
-export const fullKey = (id: string) => (hasFullBody(id) ? `full-${id}` : (standInKey('full', id) ?? `full-${id}`));
+export const fullKey = (id: string) => (hasFullBody(id) && textureReady(`full-${id}`) ? `full-${id}` : (standInKey('full', id) ?? `full-${id}`));
 /** Same key as fieldView's animKey: an animation sheet loaded by BootScene from src/assets/anim. */
 const sheetKey = (id: string, a: string) => `anim-${id}-${a}`;
 

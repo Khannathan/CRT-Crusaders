@@ -3,18 +3,23 @@ import { PAL } from '../config';
 import { RARITY_COLOR } from '../data/classes';
 import type { CrusaderDef } from '../data/types';
 import { DEFAULT_FRAME, SPLASH_FRAMES } from '../data/splashFrames';
-import { standInKey } from './standIn';
+import { standInKey, textureReady } from './standIn';
 
 /** Native portrait size the art guide proposes. Real PNGs can be 128 or 256 square. */
 export const PORTRAIT_SIZE = 128;
 
 /** Bust art: src/assets/portraits/<id>.png (or .webp), 128 x 128. */
 const PORTRAIT_URLS = import.meta.glob<string>('../assets/portraits/*.{png,webp}', { eager: true, query: '?url', import: 'default' });
+/** Her bust file's URL, when it is in. */
+export const portraitUrl = (id: string): string | undefined => PORTRAIT_URLS[`../assets/portraits/${id}.png`] ?? PORTRAIT_URLS[`../assets/portraits/${id}.webp`];
 /** True when this Sister's own bust is in. */
-export const hasPortrait = (id: string) => !!(PORTRAIT_URLS[`../assets/portraits/${id}.png`] ?? PORTRAIT_URLS[`../assets/portraits/${id}.webp`]);
+export const hasPortrait = (id: string) => !!portraitUrl(id);
 
-/** Texture key of her bust: her own art, else her Order-and-class stand-in (ui/standIn.ts). */
-export const portraitKey = (id: string) => (hasPortrait(id) ? `portrait-${id}` : (standInKey('bust', id) ?? `portrait-${id}`));
+/**
+ * Texture key of her bust: her own art once it has loaded (ui/sisterArt.ts
+ * loads it on demand), else her Order-and-class stand-in (ui/standIn.ts).
+ */
+export const portraitKey = (id: string) => (hasPortrait(id) && textureReady(`portrait-${id}`) ? `portrait-${id}` : (standInKey('bust', id) ?? `portrait-${id}`));
 
 /**
  * Draws a 128x128 stand-in portrait (hooded silhouette on charcoal) for any crusader
@@ -40,8 +45,8 @@ export function makePlaceholderPortrait(scene: Phaser.Scene, c: CrusaderDef) {
 
 /**
  * Full-body art: src/assets/full-body/<id>.png (or .webp), a 128 x 192 transparent
- * pixel-art figure, head to toe. Small enough to load at boot (see BootScene);
- * loadFullBody still fetches one on demand if it is missing.
+ * pixel-art figure, head to toe. Loaded with the rest of her art (ui/sisterArt.ts);
+ * loadFullBody fetches one at once when a screen needs it.
  */
 const FULL_BODY_URLS = import.meta.glob<string>('../assets/full-body/*.{png,webp}', { eager: true, query: '?url', import: 'default' });
 export const fullBodyUrl = (id: string) => FULL_BODY_URLS[`../assets/full-body/${id}.png`] ?? FULL_BODY_URLS[`../assets/full-body/${id}.webp`];

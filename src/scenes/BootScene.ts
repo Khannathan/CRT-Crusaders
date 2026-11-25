@@ -6,7 +6,7 @@ import { setHomecoming } from '../systems/boosts';
 import { announceSettled } from '../ui/bgFight';
 import { catchUpMarch } from '../ui/marchUi';
 import Phaser from 'phaser';
-import { queuePoses } from '../ui/spriteAssets';
+import { bootSisters, queueSisterArt, streamTheRest } from '../ui/sisterArt';
 import { TITLE_LINES, drawTitle, wickBar } from './TitleScene';
 
 import { CRUSADERS } from '../data/crusaders';
@@ -16,18 +16,11 @@ import { enemyKey, makeEnemyTextures } from '../ui/enemyArt';
 import { ORDER_LIST } from '../data/orders';
 import { makeIconTextures, makeNodeTextures, makeSigilTextures } from '../ui/icons';
 import { animKey, type AnimName } from '../ui/fieldView';
-import { fullBodyUrl, portraitKey } from '../ui/placeholderPortrait';
 import { initStandIns, queueStandInMasks } from '../ui/standIn';
 import { reviewRequest } from '../ui/artReview';
 
-/**
- * Every PNG in src/assets/portraits, found at build time. Name files by roster id
- * (IV-R-EXE.png); crusaders without a file get a placeholder.
- */
-const PORTRAIT_URLS = import.meta.glob<string>('../assets/portraits/*.{png,webp}', { eager: true, query: '?url', import: 'default' });
 /** A .png beats a .webp of the same name, so a new PNG drop always wins. */
 const pick = (urls: Record<string, string>, base: string) => urls[`${base}.png`] ?? urls[`${base}.webp`];
-const portraitUrl = (id: string) => pick(PORTRAIT_URLS, `../assets/portraits/${id}`);
 
 /** Enemy art: src/assets/enemies/<enemy id>.png (or .webp), for example husk.png. */
 const ENEMY_URLS = import.meta.glob<string>('../assets/enemies/*.{png,webp}', { eager: true, query: '?url', import: 'default' });
@@ -55,7 +48,7 @@ const ANIM_URLS = import.meta.glob<string>('../assets/anim/*.png', { eager: true
 const TITLE_FIRST = ['logo', 'title-keyart', 'bg-hall'];
 const fileKey = (path: string) => path.split('/').pop()!.replace(/\.(png|webp)$/, '');
 
-/** Loads every portrait it can find; anything missing gets a placeholder. */
+/** Loads the art the first screens need; every other Sister's art streams in behind the title (ui/sisterArt.ts). */
 export class BootScene extends Phaser.Scene {
   private line = '';
 
@@ -79,15 +72,9 @@ export class BootScene extends Phaser.Scene {
       if (url) this.load.image(key, url);
     }
     queueStandInMasks(this);
-    for (const c of CRUSADERS) {
-      const url = portraitUrl(c.id);
-      if (url) this.load.image(portraitKey(c.id), url);
-      // Full-body pixel figures are small (about 7 KB each), so battles can use them at once.
-      const full = fullBodyUrl(c.id);
-      if (full) this.load.image(`full-${c.id}`, full);
-      // Her pose sheet (STRIKE, CAST, LITANY, HURT), when ChatGPT has drawn one.
-      queuePoses(this.load, c.id);
-    }
+    // Only the Sisters you will see first (yours, the banner's, your Vigil's); the rest stream in after the title.
+    const review = reviewRequest(window.location.search);
+    for (const id of [...bootSisters(game.save), ...(review ? [review] : [])]) queueSisterArt(this.load, id);
     for (const e of Object.values(ENEMIES)) {
       const url = pick(ENEMY_URLS, `../assets/enemies/${e.id}`) ?? (e.art ? pick(ENEMY_URLS, `../assets/enemies/${e.art}`) : undefined);
       if (url) this.load.image(enemyKey(e.id), url);
@@ -143,6 +130,7 @@ export class BootScene extends Phaser.Scene {
     if (review !== undefined) return void this.scene.start('ArtReview', { id: review });
     // The title waits for a tap (which also wakes the music on phones).
     this.scene.start('Title', { line: this.line });
+    void streamTheRest(this.textures, game.save);
     if (settled) window.setTimeout(() => announceSettled(settled), 900);
   }
 

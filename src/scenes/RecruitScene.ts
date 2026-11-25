@@ -6,6 +6,8 @@ import { CRUSADERS } from '../data/crusaders';
 import { ORDERS } from '../data/orders';
 import { sigilKey } from '../ui/icons';
 import { commit, game } from '../state/game';
+import { current } from '../state/run';
+import { trialBattle } from '../systems/bannerTrial';
 import { BOOSTED_SSRS, STARTER_PULLS, COST_ONE, PITY_LIMIT, RARITY_ORDER, RATES, bannerPool, boostedSSRs, chooseLimited, chooseStandard, customizeBanner, defaultSSRs, standardSSRs, standardURs, SPARK, UR_HARD, UR_SOFT, canPull, tenLabel, claimSpark, pull, shardsOf, sparkKey, syncBanner, urPityLeft, type PullKind } from '../systems/gacha';
 import { GRADUATE_AFTER, graduationDate, isStandard, limitedUnseen, limitedWindow, markLimitedSeen, timeLeft, upcoming, type LimitedWindow } from '../systems/limited';
 import { makeButton } from '../ui/button';
@@ -166,6 +168,8 @@ export class RecruitScene extends Phaser.Scene {
       this.add.image(PAD + 30, bTop + 34, 'ui-arrow').setDisplaySize(22, 22).setFlipX(true);
       this.add.image(GAME_W - PAD - 30, bTop + 34, 'ui-arrow').setDisplaySize(22, 22);
     }
+    // Try the featured Sisters before pulling.
+    makeButton(this, GAME_W - PAD - 62, bTop + 96, 116, 34, 'Trial fight', () => this.trialFight(), { fontSize: 14, icon: 'blade' });
     const sub = limited ? `LIMITED · LEAVES IN ${timeLeft(win.ends).toUpperCase()}` : `STANDARD · BANNER ${page + 1} OF ${pages}`;
     // under the title row, so a long Saint's name never runs into it
     const subText = this.add.text(GAME_W / 2, bTop + 46, sub, { ...text.hud(11, limited ? PAL.amber : PAL.ivory), stroke: '#0b070c', strokeThickness: 4 }).setOrigin(0.5, 0).setDepth(1);
@@ -421,6 +425,21 @@ export class RecruitScene extends Phaser.Scene {
     list.fit(y);
     const close = makeButton(this, GAME_W / 2, GAME_H - 76, 240, 60, 'Close', () => layer.destroy());
     layer.add(close.all);
+  }
+
+  /** The banner trial: the featured Sisters, lent for one fight against the Choir Below. Nothing is paid or spent. */
+  private trialFight() {
+    const save = game.save;
+    current.challenge = {
+      label: 'Banner trial. Borrowed Sisters face the Choir Below!',
+      trial: true,
+      make: (rng) => trialBattle(save, rng),
+      finish: (outcome) => ({
+        scene: 'Recruit',
+        line: outcome === 'victory' ? 'The Choir is silenced! Pull, and make them yours.' : 'The borrowed Sisters fall back. Nothing was lost.',
+      }),
+    };
+    this.scene.start('Battle');
   }
 
   private showRates() {

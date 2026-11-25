@@ -2,11 +2,10 @@ import Phaser from 'phaser';
 import { GAME_H, GAME_W, PAL } from '../config';
 import { game } from '../state/game';
 import type { Bag } from '../systems/items';
-import { ROMAN_RANK, unlocked } from '../systems/rank';
+import { ROMAN_RANK, opened, rankFor } from '../systems/rank';
 import { amountOf, costFocus, resourceInfo, type ResourceId } from '../systems/sources';
 import { makeButton } from './button';
 import { drawItemIcon } from './itemIcon';
-import { RITES } from './rites';
 import { addFrame, addIcon, text } from './theme';
 
 const CURRENCY_ICON: Record<string, [string, number]> = {
@@ -20,8 +19,6 @@ const CURRENCY_ICON: Record<string, [string, number]> = {
   offerings: ['flame', 0xf2d27a],
 };
 
-/** Rank of Faith a screen needs (from the Rites), or 1. */
-const rankFor = (scene: string) => RITES.find((r) => r.scene === scene)?.rank ?? 1;
 
 /**
  * "Where do I get more?": a card over the screen with the resource, how many
@@ -60,7 +57,7 @@ export function showSources(scene: Phaser.Scene, id: ResourceId) {
     layer.add(scene.add.text(left, y, s.text, { ...text.body(15, PAL.ivory), wordWrap: { width: w - 170 } }).setOrigin(0, 0.5));
     if (!s.scene) return;
     const need = rankFor(s.scene);
-    const open = unlocked(save, need);
+    const open = opened(save, s.scene);
     const here = s.scene === scene.scene.key;
     const go = makeButton(scene, GAME_W - 20 - 66, y, 96, 38, here ? 'Here' : open ? 'Go' : `Rank ${ROMAN_RANK(need)}`, () => {
       if (here) return close();

@@ -4,7 +4,7 @@ import { ORDER_LIST } from '../data/orders';
 import { newSave } from '../state/save';
 import { bondInfo } from './bonds';
 import { autoBattle } from './autoplay';
-import { FAVOURED, OFFERINGS, PROCESSION_ENTRIES, POTENCY_XP, candleReady, finishProcession, giveOfferings, heldOf, lightCandle, offer, offeringOfDay, processionBattle, processionDrops, processionLeft, tierOpen } from './offerings';
+import { FAVOURED, OFFERINGS, PROCESSION_ENTRIES, POTENCY_XP, candleReady, finishProcession, giveOfferings, heldOf, lightCandle, offer, offeringOfDay, processionBattle, processionDrops, processionLeft, processionSweepTier, sweepProcession, tierOpen } from './offerings';
 import { buy, offersAt } from './shop';
 
 const c = CRUSADERS[0];
@@ -67,5 +67,22 @@ describe('offerings', () => {
     expect(processionLeft(save)).toBe(0);
     expect(tierOpen(save, 1)).toBe(true);
     expect(processionDrops(3).length).toBe(4);
+  });
+});
+
+describe('Procession sweeps', () => {
+  it('replays the highest tier won until entries run out', () => {
+    const save = newSave();
+    expect(processionSweepTier(save, DAY)).toBeUndefined();
+    save.procession = { day: '', used: 0, best: 3 }; // an older save: tiers 0-2 won
+    expect(processionSweepTier(save, DAY)).toBe(2);
+    let n = 0;
+    for (let p = sweepProcession(save, () => 0.5, DAY); p; p = sweepProcession(save, () => 0.5, DAY)) {
+      expect(p.tier).toBe(2);
+      expect(p.offerings.length).toBeGreaterThan(0);
+      n++;
+    }
+    expect(n).toBe(PROCESSION_ENTRIES);
+    expect(processionLeft(save, DAY)).toBe(0);
   });
 });

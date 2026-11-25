@@ -213,6 +213,17 @@ export function finishHunt(save: SaveData, hunt: HuntDef, tier: number, battle: 
   if (newBest) s.best = score;
   const newRecord = score > (s.records[hunt.id] ?? 0);
   if (newRecord) s.records[hunt.id] = score;
+  const rewards = payMilestones(save, s, hunt);
+  let unlocked: number | undefined;
+  if (felled && tier === s.tier) {
+    s.tier += 1;
+    unlocked = s.tier;
+  }
+  return { score, felled, rewards, newBest, newRecord, unlocked };
+}
+
+/** Pays every milestone today's best has newly reached. */
+function payMilestones(save: SaveData, s: HuntState, hunt: HuntDef): Reward[] {
   const units = s.best / scoreUnit(hunt);
   const rewards: Reward[] = [];
   while (s.paid < MILESTONES.length && units >= MILESTONES[s.paid].at) {
@@ -221,12 +232,33 @@ export function finishHunt(save: SaveData, hunt: HuntDef, tier: number, battle: 
     rewards.push(r);
     s.paid += 1;
   }
-  let unlocked: number | undefined;
-  if (felled && tier === s.tier) {
-    s.tier += 1;
-    unlocked = s.tier;
-  }
-  return { score, felled, rewards, newBest, newRecord, unlocked };
+  return rewards;
+}
+
+/** A sweep scores this share of your record against today's beast. */
+export const HUNT_SWEEP = 0.9;
+
+/** True when a sweep would raise today's best: you have a record against today's beast and an entry left. */
+export function huntSweepable(save: SaveData, now = Date.now()) {
+  const hunt = huntOn(now);
+  const s = huntsOf(save, now);
+  const record = s.records[hunt.id] ?? 0;
+  return record > 0 && huntEntriesLeft(save, now) > 0 && Math.round(record * HUNT_SWEEP) > s.best;
+}
+
+/**
+ * Sweep today's hunt: spends one entry and counts HUNT_SWEEP of your record
+ * against this beast as today's best, paying the milestones it reaches.
+ * Fight it yourself to beat your record.
+ */
+export function sweepHunt(save: SaveData, now = Date.now()): { score: number; rewards: Reward[] } | undefined {
+  if (!huntSweepable(save, now)) return undefined;
+  const hunt = huntOn(now);
+  const s = huntsOf(save, now);
+  s.entries += 1;
+  const score = Math.round((s.records[hunt.id] ?? 0) * HUNT_SWEEP);
+  s.best = Math.max(s.best, score);
+  return { score, rewards: payMilestones(save, s, hunt) };
 }
 
 /** The damage a beast is weak to (both, for the Twofold Reliquary). */
