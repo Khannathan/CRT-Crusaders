@@ -3,7 +3,7 @@ import { GAME_H, GAME_W, PAL } from '../config';
 import { addScrollArea } from '../ui/scroll';
 import { TAB_BAR_H } from '../ui/tabBar';
 import { commit, game } from '../state/game';
-import { MAX_RANK, ROMAN_RANK, UNLOCKS, claimGifts, giftsWaiting, rankGift, rankInfo } from '../systems/rank';
+import { MAX_RANK, ROMAN_RANK, UNLOCKS, claimGifts, giftsWaiting, opened, rankGift, rankInfo } from '../systems/rank';
 import { makeButton } from '../ui/button';
 import { modeScreen, progressBar } from '../ui/modeScreen';
 import { PAD, addFrame, text } from '../ui/theme';
@@ -60,7 +60,7 @@ export class RankScene extends Phaser.Scene {
     this.add.text(PAD, y, 'WHAT RANKS OPEN', text.hud(13, PAL.amber));
     y += 24;
     for (const u of UNLOCKS) {
-      const open = info.rank >= u.rank;
+      const open = opened(save, u.key);
       // the description wraps under the name; OPEN / SEALED sits on the name line, clear of it
       const row = this.add.rectangle(GAME_W / 2, y, bw, 60, open ? 0x221820 : 0x18111a).setStrokeStyle(1, open ? PAL.bronze : PAL.armorShadow).setOrigin(0.5, 0);
       const desc = this.add.text(PAD + 60, y + 32, u.desc, { ...text.body(16, PAL.muted), wordWrap: { width: bw - 74 } });

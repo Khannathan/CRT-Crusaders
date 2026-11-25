@@ -6,7 +6,7 @@ import { commit, game } from '../state/game';
 import { current } from '../state/run';
 import { PILGRIMAGE_BONUS, PILGRIMAGE_CLEARS, pilgrimageLeft, pilgrimageRenews, CRYPTS, heresyScale, HERESY_REWARD, REWARDS, ROMAN, canMuster, cryptRecommended, cryptUnlocked, cryptFloors, actsOf, heresyAvailable, reviveCost, revive, suggestParty, type CryptDef } from '../systems/crusade';
 import { canRepeat, repeatRuns } from '../systems/autorun';
-import { ROMAN_RANK, unlocked } from '../systems/rank';
+import { ROMAN_RANK, opened, rankFor } from '../systems/rank';
 import { pickParty } from '../ui/partyPicker';
 import { untilText } from '../ui/modeScreen';
 import { accountPower } from '../systems/power';
@@ -22,7 +22,6 @@ import { holdForCard } from '../ui/sisterCard';
 import { cryptMarks } from '../systems/pickMarks';
 
 /** Rank of Faith needed to repeat a cleared crypt on Auto. */
-const REPEAT_RANK = 4;
 
 /** Crusade tab: the crypt on offer, and crusaders recovering from a fall. */
 export class CrusadeScene extends Phaser.Scene {
@@ -151,10 +150,10 @@ export class CrusadeScene extends Phaser.Scene {
         this.add.text(cx, cardBottom - 48, tier ? `HERESY ${ROMAN[tier - 1]}` : 'NORMAL', text.hud(14, tier ? 0xe58a8a : PAL.ivory)).setOrigin(0.5);
         this.add.text(cx, cardBottom - 26, `up to ${ROMAN[maxTier - 1]}`, text.hud(12, PAL.muted)).setOrigin(0.5);
       }
-      // Sweep: a cleared crypt (at this tier) can be replayed on Auto from Rank IV.
+      // Sweep: a cleared crypt (at this tier) can be replayed on Auto once Sweep opens (rank.ts UNLOCKS).
       if (open && canRepeat(s, crypt, tier)) {
-        const ok = unlocked(s, REPEAT_RANK);
-        makeButton(this, GAME_W - PAD - 70, cardBottom - 196, 116, 42, ok ? 'Sweep' : `Rank ${ROMAN_RANK(REPEAT_RANK)}`, tap(() => this.repeat(crypt, tier)), {
+        const ok = opened(s, 'Repeat');
+        makeButton(this, GAME_W - PAD - 70, cardBottom - 196, 116, 42, ok ? 'Sweep' : `Rank ${ROMAN_RANK(rankFor('Repeat'))}`, tap(() => this.repeat(crypt, tier)), {
           fontSize: 16,
           icon: ok ? 'swap' : 'lock',
           disabled: !ok || !ready.length,

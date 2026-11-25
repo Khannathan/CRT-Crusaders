@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
 import { GAME_H, GAME_W, PAL } from '../config';
 import { game } from '../state/game';
-import { ROMAN_RANK, unlocked } from '../systems/rank';
+import { ROMAN_RANK, opened } from '../systems/rank';
 import { makeButton } from './button';
 import { CURRENCY_BAR_H, addCurrencyBar } from './currencyBar';
 import { RITES, type RiteHome } from './rites';
@@ -40,7 +40,7 @@ export function drawBoard(scene: Phaser.Scene, home: RiteHome, title: string, su
   const w = GAME_W - PAD * 2;
   entries.forEach((r, i) => {
     const cy = top + CARD_H / 2 + i * (CARD_H + GAP);
-    const open = unlocked(save, r.rank);
+    const open = opened(save, r.scene);
     const art = r.bg && scene.textures.exists(r.bg) ? r.bg : 'bg-hall';
     const bd = addBackdrop(scene, art, GAME_W / 2, cy, w, CARD_H, { fade: 0.82, fadeColor: 0x180d17, focusY: 0.5 });
     if (!open) bd.forEach((o) => (o as unknown as Phaser.GameObjects.Components.AlphaSingle).setAlpha?.(0.3));

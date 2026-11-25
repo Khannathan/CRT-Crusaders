@@ -15,7 +15,7 @@ import { packsReady } from '../systems/packs';
 import { missivesReady } from '../systems/missives';
 import { passReady } from '../systems/pass';
 import { BRACKET, LEAGUES, ORDEALS_PER_DAY, bracket, ordealsLeft, ordealsOf, ordealsReady } from '../systems/ordeals';
-import { unlocked } from '../systems/rank';
+import { opened, rankFor } from '../systems/rank';
 import { anyClaimable } from '../systems/tasks';
 import { noviceOpen, noviceReady } from '../systems/novitiate';
 import { anyDeedReady, deedPoints } from '../systems/deeds';
@@ -100,52 +100,52 @@ export const RITES: RiteEntry[] = [
     status: (s) => `${errandsOf(s).active.length} of ${ERRAND_SLOTS} away  ·  ${openErrands(s).length} errands on offer`,
   },
   {
-    label: 'Purge Hunts', scene: 'Hunt', icon: 'blade', rank: 4, home: 'labors', bg: 'bg-battle', ready: (s) => huntEntriesLeft(s) > 0,
+    label: 'Purge Hunts', scene: 'Hunt', icon: 'blade', rank: rankFor('Hunt'), home: 'labors', bg: 'bg-battle', ready: (s) => huntEntriesLeft(s) > 0,
     blurb: 'One beast a day. Bleed it for Godblood!',
     status: (s) => `Today: ${ENEMIES[huntOn().boss].name}  ·  ${huntEntriesLeft(s)}/${HUNT_ENTRIES} hunts left`,
   },
   {
-    label: 'The Ordeals', scene: 'Ordeals', icon: 'blade', rank: 3, home: 'contest', bg: 'bg-hall', ready: (s) => ordealsReady(s),
+    label: 'The Ordeals', scene: 'Ordeals', icon: 'blade', rank: rankFor('Ordeals'), home: 'contest', bg: 'bg-hall', ready: (s) => ordealsReady(s),
     blurb: 'Twenty Orders a week. Top four rise!',
     status: (s) => `${LEAGUES[ordealsOf(s).league]} League  ·  place ${bracket(s).place}/${BRACKET}  ·  ${ordealsLeft(s)}/${ORDEALS_PER_DAY} today`,
   },
   {
-    label: 'Relic Trials', scene: 'Trials', icon: 'shield', rank: 3, home: 'labors', bg: 'bg-iron-oubliette', boost: 'trials', ready: (s) => entriesLeft(s) > 0,
+    label: 'Relic Trials', scene: 'Trials', icon: 'shield', rank: rankFor('Trials'), home: 'labors', bg: 'bg-iron-oubliette', boost: 'trials', ready: (s) => entriesLeft(s) > 0,
     blurb: 'The dead guard a new spoil each dawn.',
     status: (s) => `${entriesLeft(s)} of ${TRIAL_ENTRIES} entries left today`,
   },
   {
-    label: 'Hold the Line', scene: 'Hold', icon: 'shield', rank: 4, home: 'crypts', bg: 'bg-candle-maze', ready: (s) => holdLeft(s) > 0 || !!holdOf(s).stand,
+    label: 'Hold the Line', scene: 'Hold', icon: 'shield', rank: rankFor('Hold'), home: 'crypts', bg: 'bg-candle-maze', ready: (s) => holdLeft(s) > 0 || !!holdOf(s).stand,
     blurb: 'Ten waves. Wounds carry. Hold!',
     status: (s) => `${holdOf(s).stand ? `Wave ${holdOf(s).stand!.held + 1} waits` : `${holdLeft(s)} stand left today`}  ·  best ${holdOf(s).best}/${HOLD_WAVES}`,
   },
   {
-    label: 'Nightmare Raid', scene: 'Raid', icon: 'blade', rank: 6, home: 'abyss', bg: 'bg-abyssal-ossuary', ready: (s) => delvesLeft(s) > 0 || !!raidOf(s).delve,
+    label: 'Nightmare Raid', scene: 'Raid', icon: 'blade', rank: rankFor('Raid'), home: 'abyss', bg: 'bg-abyssal-ossuary', ready: (s) => delvesLeft(s) > 0 || !!raidOf(s).delve,
     blurb: 'Three bosses. Three Squads. Its wounds carry!',
     status: (s) => `${raidOf(s).delve ? `Boss ${raidOf(s).delve!.boss + 1} waits` : `${delvesLeft(s)} delve left today`}  ·  week best ${raidOf(s).best}/${RAID_BOSSES}`,
   },
   {
-    label: 'Chapter War', scene: 'War', icon: 'blade', rank: 6, home: 'contest', bg: 'bg-chapter', ready: (s) => warReady(s),
+    label: 'Chapter War', scene: 'War', icon: 'blade', rank: rankFor('War'), home: 'contest', bg: 'bg-chapter', ready: (s) => warReady(s),
     blurb: 'Storm a rival Chapter\'s forts for stars!',
     status: (s) => (s.chapter ? `${warScore(s).us} to ${warScore(s).them} vs the ${rivalName(s)}  ·  ${attacksLeft(s)} storms left` : `Join the Chapter first  ·  ${FORTS.length} forts a week`),
   },
   {
-    label: 'Reliquary Procession', scene: 'Procession', icon: 'flame', rank: 5, home: 'labors', bg: 'bg-candle-maze', ready: (s) => processionLeft(s) > 0,
+    label: 'Reliquary Procession', scene: 'Procession', icon: 'flame', rank: rankFor('Procession'), home: 'labors', bg: 'bg-candle-maze', ready: (s) => processionLeft(s) > 0,
     blurb: 'Guard the relics. Win offerings.',
     status: (s) => `${processionLeft(s)} of ${PROCESSION_ENTRIES} entries left  ·  honours the ${honouredToday().name}`,
   },
   {
-    label: 'Abyssal Crypt', scene: 'Abyss', icon: 'blade', rank: 4, home: 'crypts', bg: 'bg-abyssal-ossuary',
+    label: 'Abyssal Crypt', scene: 'Abyss', icon: 'blade', rank: rankFor('Abyss'), home: 'crypts', bg: 'bg-abyssal-ossuary',
     blurb: 'No end, no limit. Farm the dark for gear!',
     status: (s) => `Deepest tier ${abyssOf(s).best}  ·  Due ${abyssOf(s).due}/${DUE_MAX}  ·  ${abyssOf(s).runs} descents`,
   },
   {
-    label: 'Bell Tower', scene: 'Tower', icon: 'sanctum', rank: 6, home: 'crypts', bg: 'bg-tower', boost: 'tower',
+    label: 'Bell Tower', scene: 'Tower', icon: 'sanctum', rank: rankFor('Tower'), home: 'crypts', bg: 'bg-tower', boost: 'tower',
     blurb: 'Climb without end. Ring every bell!',
     status: (s) => `Best floor ${towerOf(s).best}${towerOf(s).best ? `  ·  Vigil +${towerOf(s).best}%` : ''}  ·  Order floors ${Object.values(towerOf(s).orders ?? {}).reduce((a, b) => a + b, 0)}`,
   },
   {
-    label: 'Inquisition', scene: 'Inquisition', icon: 'blade', rank: 8, home: 'abyss', bg: 'bg-confessional',
+    label: 'Inquisition', scene: 'Inquisition', icon: 'blade', rank: rankFor('Inquisition'), home: 'abyss', bg: 'bg-confessional',
     blurb: 'Judge the heretics. Each Sister fights once.',
     status: (s) => `${totalBrands(s)} of ${BRAND_MAX} Brands  ·  ends in ${untilText(rotation().ends - Date.now())}`,
   },
@@ -206,14 +206,14 @@ export const RITES: RiteEntry[] = [
   { label: 'Novitiate', scene: 'Novitiate', icon: 'sigil', rank: 1, home: 'duties', noRail: true, shown: (s) => noviceOpen(s), ready: (s) => noviceReady(s) },
   { label: 'Missives', scene: 'Missives', icon: 'book', rank: 1, home: 'lobby', ready: (s) => missivesReady(s) },
   { label: 'Calendar', scene: 'Calendar', icon: 'book', rank: 1, home: 'lobby' },
-  { label: 'Matins', scene: 'Matins', icon: 'flame', rank: 1, home: 'lobby', ready: (s) => matinsReady(s) },
+  { label: 'Matins', scene: 'Matins', icon: 'flame', rank: rankFor('Matins'), home: 'lobby', ready: (s) => matinsReady(s) },
   { label: 'Pass', scene: 'Pass', icon: 'sigil', rank: 1, home: 'lobby', ready: (s) => passReady(s) },
-  { label: 'Penance', scene: 'Penance', icon: 'book', rank: 2, home: 'duties', ready: (s) => anyClaimable(s) },
-  { label: 'Confession', scene: 'Confession', icon: 'book', rank: 5, home: 'sisters', ready: (s) => anyUnheard(s) || anyBondRewards(s) || (Object.keys(s.owned).length > 0 && candleReady(s)) },
+  { label: 'Penance', scene: 'Penance', icon: 'book', rank: rankFor('Penance'), home: 'duties', ready: (s) => anyClaimable(s) },
+  { label: 'Confession', scene: 'Confession', icon: 'book', rank: rankFor('Confession'), home: 'sisters', ready: (s) => anyUnheard(s) || anyBondRewards(s) || (Object.keys(s.owned).length > 0 && candleReady(s)) },
 ];
 
 /** The Rite (or board) a scene belongs to, for its tab and its Back button. */
 export const homeOf = (sceneKey: string): RiteHome | undefined => RITES.find((r) => r.scene === sceneKey && r.scene !== 'Sanctum')?.home;
 
 /** True when a Rite in `home` has something to claim (for a dot on its tab). */
-export const anyReady = (save: SaveData, home: RiteHome) => RITES.some((r) => r.home === home && (r.shown?.(save) ?? true) && unlocked(save, r.rank) && r.ready?.(save));
+export const anyReady = (save: SaveData, home: RiteHome) => RITES.some((r) => r.home === home && (r.shown?.(save) ?? true) && opened(save, r.scene) && r.ready?.(save));

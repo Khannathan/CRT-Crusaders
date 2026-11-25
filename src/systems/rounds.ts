@@ -9,7 +9,7 @@ import { anyBondRewards, claimBondRewards } from './bonds';
 import { addBags, bagText, type Bag } from './items';
 import { lightCandle, matinsReady, vowCandidates, MATINS } from './matins';
 import { processionLeft } from './offerings';
-import { claimGifts, giftsWaiting, unlocked } from './rank';
+import { claimGifts, giftsWaiting, opened } from './rank';
 import { claimMark, claimable, type Period } from './tasks';
 import { TIERS, bestStars, entriesLeft, openTrials, spoilsText, sweep, type TrialKind } from './trials';
 import { claimVigil, ensureVigil, fastReward, vigilHours } from './vigil';
@@ -57,7 +57,7 @@ const needsVowPick = (save: SaveData) => !!MATINS[save.matins?.lit ?? 0]?.vowTok
 
 /** The best mastered (three-star) trial tier open today, if an entry is left. */
 function sweepableTrial(save: SaveData, now: number) {
-  if (!unlocked(save, 3) || entriesLeft(save, now) <= 0) return undefined;
+  if (!opened(save, 'Trials') || entriesLeft(save, now) <= 0) return undefined;
   let best: { kind: TrialKind; tier: number } | undefined;
   for (const t of openTrials(now)) {
     for (let tier = TIERS.length - 1; tier >= 0; tier--) {
@@ -139,7 +139,7 @@ export function morningRounds(save: SaveData, now = Date.now(), rng: Rng = Math.
     if (swept === 1) r.done.push(`Relic Trials swept: ${spoilsText(got)}`);
   }
   if (swept > 1) r.done[r.done.length - 1] += ` (×${swept})`;
-  if (unlocked(save, 3) && entriesLeft(save, now) > 0) r.left.push(`Relic Trials: ${entriesLeft(save, now)} victories left (no mastered tier to sweep).`);
+  if (opened(save, 'Trials') && entriesLeft(save, now) > 0) r.left.push(`Relic Trials: ${entriesLeft(save, now)} victories left (no mastered tier to sweep).`);
 
   // The Feast: sweep the richest won stage, then pay milestones.
   const f = feastOf(save, now);
@@ -153,8 +153,8 @@ export function morningRounds(save: SaveData, now = Date.now(), rng: Rng = Math.
   if (paid.length) r.done.push(`${paid.length} Feast milestone${paid.length > 1 ? 's' : ''} paid`);
 
   // What still wants a fight.
-  if (unlocked(save, 4) && huntEntriesLeft(save, now) > 0) r.left.push(`Purge Hunts: ${huntEntriesLeft(save, now)} hunts left today.`);
-  if (unlocked(save, 5) && processionLeft(save, now) > 0) r.left.push(`Reliquary Procession: ${processionLeft(save, now)} entries left.`);
+  if (opened(save, 'Hunt') && huntEntriesLeft(save, now) > 0) r.left.push(`Purge Hunts: ${huntEntriesLeft(save, now)} hunts left today.`);
+  if (opened(save, 'Procession') && processionLeft(save, now) > 0) r.left.push(`Reliquary Procession: ${processionLeft(save, now)} entries left.`);
 
   r.seals = save.seals - before.seals;
   r.tithes = save.tithes - before.tithes;

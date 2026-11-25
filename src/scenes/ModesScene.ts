@@ -7,7 +7,7 @@ import { CHAPTERS, STAGES_PER_CHAPTER, nextStage, roadDone, stageDef } from '../
 import { stageCandles } from '../systems/candles';
 import { boostLines, dayName } from '../systems/boosts';
 import { roundsReady } from '../systems/rounds';
-import { unlocked } from '../systems/rank';
+import { opened } from '../systems/rank';
 import { RITES, anyReady } from '../ui/rites';
 import { WINGS, WING_IDS, type WingId } from '../ui/nav';
 import { makeButton } from '../ui/button';
@@ -27,7 +27,7 @@ function readyDot(scene: Phaser.Scene, x: number, y: number) {
 /** The status line of a wing's first open mode that has one. */
 function wingStatus(wing: WingId) {
   const s = game.save;
-  const open = RITES.filter((r) => r.home === wing && unlocked(s, r.rank));
+  const open = RITES.filter((r) => r.home === wing && opened(s, r.scene));
   if (!open.length) {
     const first = RITES.filter((r) => r.home === wing).sort((a, b) => a.rank - b.rank)[0];
     return first ? `Opens at Rank ${first.rank}` : '';

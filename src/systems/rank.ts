@@ -52,6 +52,10 @@ export interface RankState {
   xp: number;
   /** Highest rank whose gift was claimed (1 = none yet). */
   gifted: number;
+  /** Unlock schedule this save is on (2 = modes spread over two weeks). */
+  sched?: number;
+  /** The rank a save had when the schedule changed: modes it had open stay open. */
+  kept?: number;
 }
 
 /** The rank state; an older save starts with Faith for what it has already done. */
@@ -59,7 +63,12 @@ export function rankOf(save: SaveData): RankState {
   if (!save.rank) {
     const levels = Object.values(save.owned).reduce((n, o) => n + o.level - 1, 0);
     const xp = levels * RANK_XP.levelUp + save.cleared.length * RANK_XP.cryptCleared * 2 + save.totalPulls * RANK_XP.pull;
-    save.rank = { xp, gifted: rankFromXp(xp).rank };
+    save.rank = { xp, gifted: rankFromXp(xp).rank, sched: 2 };
+  }
+  // A save from before the two-week schedule keeps every mode it had opened.
+  if (!save.rank.sched) {
+    save.rank.sched = 2;
+    save.rank.kept = rankFromXp(save.rank.xp).rank;
   }
   return save.rank;
 }
@@ -101,25 +110,48 @@ export function claimGifts(save: SaveData): RankGift {
   return total;
 }
 
-/** What each rank opens. Later modes add their entry here. */
+/**
+ * What each rank opens, keyed by the screen it opens (a scene key, or 'Repeat'
+ * for crypt Sweeps). The ranks are spread so a new mode arrives every day or
+ * two over a player's first two weeks (an active player gains roughly 500 to
+ * 900 Faith a day). `was` is the rank the mode needed before this schedule:
+ * a save that had reached it keeps the mode open (see opened).
+ */
 export interface Unlock {
+  key: string;
   rank: number;
+  was: number;
   name: string;
   desc: string;
 }
 
 export const UNLOCKS: Unlock[] = [
-  { rank: 1, name: 'Matins', desc: 'A candle each dawn, and gifts that never reset.' },
-  { rank: 2, name: 'Penance', desc: 'Daily and weekly devotions that pay in wax.' },
-  { rank: 3, name: 'Relic Trials', desc: 'A daily spoil. Sweep what you have mastered.' },
-  { rank: 3, name: 'The Ordeals', desc: 'A weekly league of twenty Orders. Rise, or be cast down!' },
-  { rank: 4, name: 'Purge Hunts', desc: 'A great beast each day. Your best pays Godblood.' },
-  { rank: 4, name: 'The Abyssal Crypt', desc: 'Endless tiers, no limit. Farm the dark for gear.' },
-  { rank: 4, name: 'Sweep', desc: 'Clear a beaten crypt again on Auto, several times over.' },
-  { rank: 5, name: 'Confession', desc: 'Give offerings to raise bonds. Each level adds strength and a confession.' },
-  { rank: 6, name: 'The Bell Tower', desc: 'An endless climb. Some floors admit one Order only, others only the humble.' },
-  { rank: 8, name: 'The Inquisition', desc: 'Three hard trials under a fortnightly edict. Earn Brands.' },
+  { key: 'Matins', rank: 1, was: 1, name: 'Matins', desc: 'A candle each dawn, and gifts that never reset.' },
+  { key: 'Penance', rank: 2, was: 2, name: 'Penance', desc: 'Daily and weekly devotions that pay in wax.' },
+  { key: 'Trials', rank: 3, was: 3, name: 'Relic Trials', desc: 'A daily spoil. Sweep what you have mastered.' },
+  { key: 'Hunt', rank: 4, was: 4, name: 'Purge Hunts', desc: 'A great beast each day. Your best pays Godblood.' },
+  { key: 'Ordeals', rank: 5, was: 3, name: 'The Ordeals', desc: 'A weekly league of twenty Orders. Rise, or be cast down!' },
+  { key: 'Confession', rank: 6, was: 5, name: 'Confession', desc: 'Give offerings to raise bonds. Each level adds strength and a confession.' },
+  { key: 'Repeat', rank: 7, was: 4, name: 'Sweep', desc: 'Clear a beaten crypt again on Auto, several times over.' },
+  { key: 'Abyss', rank: 8, was: 4, name: 'The Abyssal Crypt', desc: 'Endless tiers, no limit. Farm the dark for gear.' },
+  { key: 'Tower', rank: 9, was: 6, name: 'The Bell Tower', desc: 'An endless climb. Some floors admit one Order only, others only the humble.' },
+  { key: 'Procession', rank: 10, was: 5, name: 'The Reliquary Procession', desc: 'Guard the relics. Win offerings.' },
+  { key: 'Hold', rank: 11, was: 4, name: 'Hold the Line', desc: 'Ten waves. Wounds carry. Hold!' },
+  { key: 'War', rank: 13, was: 6, name: 'Chapter War', desc: 'Storm a rival Chapter\'s forts, two storms a day. Stars win the war.' },
+  { key: 'Raid', rank: 15, was: 6, name: 'The Nightmare Raid', desc: 'Three bosses. Three Squads. Its wounds carry!' },
+  { key: 'Inquisition', rank: 17, was: 8, name: 'The Inquisition', desc: 'Three hard trials under a fortnightly edict. Earn Brands.' },
 ];
+
+/** Rank of Faith a screen needs (1 when nothing gates it). */
+export const rankFor = (key: string) => UNLOCKS.find((u) => u.key === key)?.rank ?? 1;
+
+/** True when the screen `key` is open: its rank reached, or already reached under the old schedule. */
+export function opened(save: SaveData, key: string): boolean {
+  const u = UNLOCKS.find((x) => x.key === key);
+  if (!u) return true;
+  const kept = rankOf(save).kept ?? 0;
+  return rankInfo(save).rank >= u.rank || kept >= u.was;
+}
 
 export const unlocked = (save: SaveData, rank: number) => rankInfo(save).rank >= rank;
 

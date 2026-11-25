@@ -10,7 +10,7 @@ import { candleReady } from '../systems/offerings';
 import { quickVowReady } from '../systems/quick';
 import { claimable as setsClaimable } from '../systems/collection';
 import { freeWhistle } from '../systems/hounds';
-import { unlocked } from '../systems/rank';
+import { opened } from '../systems/rank';
 import { makeButton } from './button';
 import { PAD } from './theme';
 
@@ -53,7 +53,7 @@ export const GROUPS: Record<'duties' | 'sisters' | 'altar', SubTab[]> = {
   ],
   sisters: [
     { label: 'Sisters', scene: 'Roster', ready: (s) => quickVowReady(s) },
-    { label: 'Bonds', scene: 'Confession', shown: (s) => unlocked(s, 5), ready: (s) => anyUnheard(s) || anyBondRewards(s) || (Object.keys(s.owned).length > 0 && candleReady(s)) },
+    { label: 'Bonds', scene: 'Confession', shown: (s) => opened(s, 'Confession'), ready: (s) => anyUnheard(s) || anyBondRewards(s) || (Object.keys(s.owned).length > 0 && candleReady(s)) },
     { label: 'Satchel', scene: 'Inventory' },
     { label: 'Relics', scene: 'Reliquary', data: { tab: 'relics' }, match: (t) => t !== 'Order Codex' },
     { label: 'Codex', scene: 'Reliquary', data: { tab: 'codex' }, match: (t) => t === 'Order Codex' },
