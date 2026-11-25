@@ -4,15 +4,16 @@ This is Aaron’s record of decisions for the ground-up redesign. Update it when
 
 ## Order roster
 
-**2 of 10 Orders are locked.** Finish choosing all ten before refining the two already selected.
+**3 of 10 Order core concepts are locked.** A lock reserves a roster place for an idea Aaron wants to develop. Names, rites, lore, and visual details can be refined during the Order art phase after all ten concepts are chosen.
 
 | Slot | Locked choice | Scope of approval |
 | --- | --- | --- |
 | 1 | The Scarlet Succession | Aaron selected the Order built around sacred duels for the right to rule. The victor inherits the office and must answer its next challenger. |
 | 2 | The Confessors of Glass (working name) | Aaron selected the Order. Its Sisters are constructs made of mirror, stained glass, and related materials. The Order is to be reimagined and renamed. |
-| 3–10 | Open | Eight Orders remain to be chosen. |
+| 3 | The See of the Black Noon | An eclipse Order whose Sisters receive divine judgment during totality. Its rites and visual execution will be refined at the art stage. |
+| 4–10 | Open | Seven Orders remain to be chosen. |
 
-Aaron requested an eclipse-based Order for consideration. Its place, name, patron, and doctrine are open. **The Vesperglass Testament** is a proposed name for the glass Order and awaits Aaron’s decision.
+**The Vesperglass Testament** is a proposed name for the glass Order and awaits Aaron’s decision.
 
 ## Creative direction
 
@@ -43,3 +44,4 @@ Aaron requested an eclipse-based Order for consideration. Its place, name, patro
 | --- | --- |
 | 2026-11-25 | Closed the Orsanne setting exploration. Its single dominant theme was too narrow. Adopted the five-phase sequence above, beginning with Orders. |
 | 2026-11-25 | Locked The Scarlet Succession and the glass Order. Requested a rename for the latter and an eclipse Order candidate. Deferred edits to selected Orders until all ten have been chosen. |
+| 2026-11-25 | Locked The See of the Black Noon as the third core concept. Aaron clarified that a lock selects the idea to refine during the Order art phase. |
