@@ -196,6 +196,14 @@ Head motif by rarity (every Order): see the head-by-rank table below. Limited UR
 
 ## Iron Vigil
 
+### Gatewardens
+
+Aaron chose the gatehouse as the Order’s visual identity. A Gatewarden is recognizable by a squared outer edge, black iron against bone-white cloth, and an ember glimpsed beyond the wall. Pick one piece of gate hardware and give it a real job on the costume. A hinge fastens a mantle. A square iron plate protects the arm holding a shield. Keep heavy bars, gate teeth and locking mechanisms at architectural scale in the scene.
+
+Fit the silhouette to the Sister’s duty. A Sentinel can bear the width of a parapet across a shield and leading shoulder. A Hospitaller needs room to bend and lift. Give her squared folds of split wool and a hinged clasp on a roll of dressings. An Arbalist needs room to raise the stock, bend her elbows and sight along the bow. Keep the firing shoulder low, shape the half-armour to her ribs, and carry the squared profile on a mantle edge or the off shoulder. Preserve the cut of each adult Sister’s habit and her individual gesture.
+
+In a pull illustration, use the opening between two gate bars to show the cost of a decision. A village window going dark or a figure waiting outside says why these Sisters are feared. Insomnia’s lit watch lantern inside her divine halo is her Patron sign. Other Gatewardens can carry ordinary watch lights in their scenes. The class determines how much weight each costume can carry; the rank ladder determines how far the miracle extends.
+
 **Creed:** "The wall stands. Let the outside burn."
 
 **What her god demands:** Never sleep and never yield a wall. A Sister who flees her post is walled up alive inside it, and villages beyond the wall are sealed out to die if the dark is near them.
