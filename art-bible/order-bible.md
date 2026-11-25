@@ -233,6 +233,14 @@ In a pull illustration, use the opening between two gate bars to show the cost o
 
 ## Ashen Mercy
 
+### House of Last Faces
+
+[Approved Misericordia concept at splash size](references/ashen-mercy-last-faces.png)
+
+A woman comes to the hospice with a fever. A Sister knows her name, remembers her son, and sets a fired impression of her face beside the bed. She turns it toward the wall so the patient can sleep. The family recognized the face on the kiln shelf yesterday.
+
+The Sisters believe the pyre can free a soul only after someone has undertaken to remember its face. The caregiver who accepts that duty can declare the patient incurable. Give her a gentle, practiced gesture. Let the waiting effigy reveal what she has decided.
+
 **Creed:** "All mercy ends in fire."
 
 **What her god demands:** Mercy by fire. The sick, the cursed and the doubtful are "spared" in the flames, and plague villages burn with the living inside.
@@ -244,7 +252,7 @@ In a pull illustration, use the opening between two gate bars to show the cost o
 **Insignia (on both pauldrons of every Sister):** the Ash Roundel: a round ash-white badge ringed in wine, a black pyre stake crowned by an ember ring.
 
 **Who they are:** Hospitallers of the burned cities who grant the last rites, and sometimes the last blow. Gentle hands, merciless judgement.
-**Mood:** soot, smoke, quiet, a field hospital after the fire.
+**Mood:** the hush of a hospice sharing a wall with a kiln. Ash-white linen cradles dull fired clay. One thumbprint identifies the Sister who took the impression. Her own face stays human and visible.
 
 - **Palette:** ash-white lead (dirtied, never clean white), deep wine trim, soot-black mail. Grey ash smudges everywhere.
 - **Head:** white wimple and coif with an ash thumbprint on the brow. SR ornament: a tiny sheltered candle cup pinned at the temple.
@@ -252,6 +260,9 @@ In a pull illustration, use the opening between two gate bars to show the cost o
 - **Materials:** smoke-stained linen, soot-black mail, bandage rolls, ash pouches, a small sheltered candle in a cup.
 - **Symbols:** the sheltered candle, a thumbprint of ash, a bandaged hand, a mercy dagger (misericorde).
 - **Signature details to vary Sisters (worn on her, never carried or hung):** a scorched sleeve, ash-grey hands, soot under the eyes, wine-red cord wound on a bracer, burn scars on the forearms.
+- **Class variations:** A Hospitaller smooths a wet impression. A Sentinel places a fired face inside her shield where she can see it. An Executioner turns the finished likeness toward the family. An Arbalist fixes a single votive at the shoulder clear of her stock. Preserve each card’s equipment and vary the duty and placement across the roster.
+- **Rank:** An R Commander carries a chipped effigy. An SR Legend carries a recognizable likeness with a history. An SSR Demigoddess has her first wings and partial halo, and one clay face opens its eyes. A UR Deity floats on many wings of effigies that turn toward the living around her full halo. Misericordia alone carries an unfinished face. During Cinder Gloria it takes the likeness of a fallen foe, and a wine-red ember passes to her Sisters with the healing from Field of Ash. At splash size, use a few large faces to define the wings. Keep them folded on the battle sprite.
+- **Sworn rivalry in pictures:** Sepulcher Watch arrives for a body already promised a place beside the kiln. Each Sister addresses the deceased by name. Both look past the family waiting between them.
 - **Splash settings:** a burned hospice with cots of ash; a smouldering city street; a chapel roof open to falling ash; a pyre field at dusk.
 - **Light:** low grey haze (drawn as hard pixel bands), a single candle as the warm point.
 - **Combat tie-in (Mercy):** a grey ash-flame flickers over foes under the Mercy line; a Mercy kill bursts into falling ash and a wine-red glow over the party.
