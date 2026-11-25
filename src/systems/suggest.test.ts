@@ -37,3 +37,17 @@ describe('suggestParty on a fresh pull', () => {
     expect(party.filter((id) => roleOf(id) === 'Buffer')).toHaveLength(2);
   });
 });
+
+describe('suggestParty with Healers to spare', () => {
+  it('fields a weaker damage dealer over a second Healer', () => {
+    const s = newSave();
+    const of = (role: string) => CRUSADERS.filter((c) => CLASSES[c.classId].role === role);
+    // no Tank: two strong Healers, a Buffer, two weaker damage dealers
+    for (const c of of('Healer').slice(0, 2)) s.owned[c.id] = { level: 20, vow: 0 } as never;
+    s.owned[of('Buffer')[0].id] = { level: 20, vow: 0 } as never;
+    for (const c of [of('Melee DPS')[0], of('Ranged DPS')[0]]) s.owned[c.id] = { level: 1, vow: 0 } as never;
+    const party = suggestParty(s);
+    expect(party.filter((id) => roleOf(id) === 'Healer')).toHaveLength(1);
+    expect(party.filter((id) => roleOf(id).endsWith('DPS'))).toHaveLength(2);
+  });
+});

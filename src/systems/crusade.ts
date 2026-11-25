@@ -845,9 +845,10 @@ export function suggestParty(save: SaveData): string[] {
     const best = byPower.find((c) => want(c) && !picked.includes(c));
     if (best) picked.push(best);
   }
-  // The rest by Power, but never a party of Buffers: one Buffer while anyone else can stand in.
-  const buffers = () => picked.filter((c) => roleOf(c) === 'Buffer').length;
-  for (const c of byPower) if (picked.length < MAX_PARTY && !picked.includes(c) && (roleOf(c) !== 'Buffer' || buffers() < 1)) picked.push(c);
+  // The rest by Power, but one Buffer and one Healer while anyone else can stand in
+  // (a second Healer over a damage dealer just drags a fight out).
+  const count = (role: string) => picked.filter((c) => roleOf(c) === role).length;
+  for (const c of byPower) if (picked.length < MAX_PARTY && !picked.includes(c) && ((roleOf(c) !== 'Buffer' && roleOf(c) !== 'Healer') || count(roleOf(c)) < 1)) picked.push(c);
   for (const c of byPower) if (picked.length < MAX_PARTY && !picked.includes(c)) picked.push(c);
   return picked
     .slice(0, MAX_PARTY)
