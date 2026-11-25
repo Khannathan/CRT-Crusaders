@@ -142,7 +142,7 @@ The Edicts (12 gear powers) use text only for now; no icons needed.
 
 ## 5. Delivering art through GitHub (ChatGPT's lane)
 
-ChatGPT connects to the game repo (Khannathan/CRT-Crusaders) to read the art bible, look at the game and deliver art. Claude writes the game code and keeps the art bible in the same repo, so ChatGPT stays strictly in the art lane below. Aaron merges everything. An automatic check, the **Art lane guard**, enforces this table on every art pull request.
+ChatGPT connects to the game repo (Khannathan/CRT-Crusaders) to read the art bible, look at the game and deliver art. Claude writes the game code and keeps the art bible in the same repo, so ChatGPT stays strictly in the art lane below. Aaron (or Claude, on his standing say-so) merges every pull request. An automatic check, the **Art lane guard**, enforces this table on every art pull request.
 
 **Reading:** anything in the repo: `art-bible/` (these rules and the cards), code, data, existing art, issues and pull requests. Always read from `main`.
 
@@ -170,7 +170,7 @@ ChatGPT connects to the game repo (Khannathan/CRT-Crusaders) to read the art bib
 2. Commit only files from the table, with a message like `Art: AM-SR-EXO bust and splash`, and add one `ART_LOG.md` line per file.
 3. Open one pull request per batch titled `Art: <what>`. In the body list every file with its real size and colour count and the prompt that made it.
 4. Wait for the checks: **Art lane guard** (paths), **Sprite intake** (only when a raw sprite is in the PR) and **CI** (the game still builds). If one fails, fix it only by replacing your own art files on the same branch.
-5. Do not merge. Aaron reviews and merges. Merged art shows on the live build within a few minutes: `https://khannathan.github.io/CRT-Crusaders/?artreview=<id>` opens the art viewer on that Sister (battle, roster, Sanctum, Altar and bust screens).
+5. Do not merge. Aaron or Claude looks at the pictures and merges once the checks pass. Merged art shows on the live build within a few minutes: `https://khannathan.github.io/CRT-Crusaders/?artreview=<id>` opens the art viewer on that Sister (battle, roster, Sanctum, Altar and bust screens).
 
 **Needs a code change?** Never make it. Open an issue with the **"Code request for Claude"** form (it adds the `for-claude` label): what you need, why, the related art PR and the files. Link it from your PR and carry on with other art.
 
