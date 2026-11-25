@@ -31,12 +31,14 @@ export interface Settled {
 export function settleBattle(battle: Battle, outcome: 'victory' | 'defeat'): Settled {
   const won = outcome === 'victory';
   const challenge = current.challenge;
-  const exp = expBattle(game.save, battle);
+  const exp = challenge?.trial ? { exp: 0, levelled: [] } : expBattle(game.save, battle);
   const expLine = exp.exp ? `  +${exp.exp} EXP${exp.levelled.length ? ', level up!' : ''}` : '';
   if (challenge) {
     current.challenge = undefined;
-    bondBattle(game.save, battle);
-    if (won) countWin(battle);
+    if (!challenge.trial) {
+      bondBattle(game.save, battle);
+      if (won) countWin(battle);
+    }
     const next = challenge.finish(outcome, battle);
     commit();
     return { ...next, won, exp, line: next.line ?? (won ? `The trial is passed by decree.${expLine}` : 'Your Sisters fall back, bloodied but alive.') };
