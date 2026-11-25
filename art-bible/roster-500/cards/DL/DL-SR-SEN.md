@@ -13,7 +13,7 @@ ANGEL (SR): iron-feather pauldrons.
 FANATIC: tears of blood dried on her cheeks; blend into her expression: eyes blazing with zeal.
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (bold): on top of her neckline, show skin-tight sheer black sleeves and gloves to the shoulder, and a chain harness across her bare waist. SPLASH POSE (splash only; the bust and battle sprite use their own framing): kneeling in prayer with the weapon planted, looking up through her lashes. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
-ZEALOT: grimdark fanatic zeal, no technology at all, only steel, fire, wax and faith: sea-worn verdigris plate, purity seals bleached by salt, salt crusting every rivet.
+ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: sea-worn verdigris plate, purity seals bleached by salt, salt crusting every rivet.
 KIT (her battle identity; let it show in her weapon, pose and effects):
 - SKILL I Gravewarden Strike: Strike a front-line foe and draw enemy attacks for 4s. For 4s she strikes back at anyone who hits her.
 - SKILL II Tomb Stance: Brace: -30% damage taken for 4s and draw enemy attacks. Cooldown 6s.

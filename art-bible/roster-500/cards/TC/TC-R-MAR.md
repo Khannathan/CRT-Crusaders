@@ -13,7 +13,7 @@ ANGEL (R): six-winged seraph heraldry on her tabard.
 FANATIC: vow chains locked around her wrists; blend into her expression: eyes blazing with zeal.
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (confident): on top of her neckline, show thigh-high boots with bare skin above, held by garter straps of chain, and bare thighs between greaves and a high-cut tabard slit. SPLASH POSE (splash only; the bust and battle sprite use their own framing): twisting at the waist mid-swing, hair flying. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
-ZEALOT: grimdark fanatic zeal, no technology at all, only steel, fire, wax and faith: scourged gothic plate wrapped in barbed briar, purity seals soaked in her own blood, flagellant scars.
+ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: scourged gothic plate wrapped in barbed briar, purity seals soaked in her own blood, flagellant scars.
 KIT (her battle identity; let it show in her weapon, pose and effects):
 - SKILL I Searing Smite: Strike a front-line foe and heal for 35% of the damage dealt.
 - SKILL II Intercession: Draw enemy attacks for 4s, Ward herself (-20% damage) and Regenerate 5% every 2s. Cooldown 6s.

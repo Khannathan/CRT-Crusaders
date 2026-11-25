@@ -13,7 +13,7 @@ ANGEL (SR): an engraved ring-of-eyes sigil on her breastplate that faintly glows
 FANATIC: tally marks of the purged cut into her bracer; blend into her expression: in fanatic rapture.
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (bold): on top of her neckline, show a bare midriff under a short breastplate, and a corset cinched tight under the bust. SPLASH POSE (splash only; the bust and battle sprite use their own framing): striding forward out of smoke, cape snapping behind. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
-ZEALOT: grimdark fanatic zeal, no technology at all, only steel, fire, wax and faith: ossuary plate with the bones of the honoured dead fused into it, purity seals on skull-shaped bosses, coffin nails driven through her belt.
+ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: ossuary plate with the bones of the honoured dead fused into it, purity seals on skull-shaped bosses, coffin nails driven through her belt.
 KIT (her battle identity; let it show in her weapon, pose and effects):
 - SKILL I Veil Strike: Strike any foe, with +25% critical chance.
 - SKILL II Shadowstep: Haste herself, +20% attack and +30% critical chance for 4s. Cooldown 6s.

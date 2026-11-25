@@ -29,7 +29,7 @@ ANGEL (SSR): two wings of ash-grey feathers shedding embers folded behind her, e
 FANATIC: a crown of nails she drove in herself; blend into her expression: burning with consecrated fury.
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (daring): on top of her neckline, show a corset cinched tight under the bust, and thigh-high boots with bare skin above, held by garter straps of chain. SPLASH POSE (splash only; the bust and battle sprite use their own framing): back arched, hip cocked, cloak swept back over one shoulder. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
-ZEALOT: grimdark fanatic zeal, no technology at all, only steel, fire, wax and faith: soot-black gothic plate, purity seals scorched at the edges, a funeral pyre burning behind her (splash only).
+ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: soot-black gothic plate, purity seals scorched at the edges, a funeral pyre burning behind her (splash only).
 KIT (her battle identity; let it show in her weapon, pose and effects):
 - SKILL I Funeral Bash: Crack a front-line foe with the tomb key: Sundered (-25% armor) for 4s and Stunned for 2s (not bosses). Cooldown 8s.
 - SKILL II Kindling Bastion: Shield an ally for 30% of max HP. Her ally Regenerates 4% of max HP every 2s for 4s. Cooldown 4s.

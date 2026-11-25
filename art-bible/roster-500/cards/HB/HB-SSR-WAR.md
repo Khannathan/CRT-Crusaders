@@ -29,7 +29,7 @@ ANGEL (SSR): two wings of bronze bell-metal feathers that chime folded behind he
 FANATIC: vow chains locked around her wrists; blend into her expression: burning with consecrated fury.
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (daring): on top of her neckline, show thigh-high boots with bare skin above, held by garter straps of chain, and a chain harness across her bare waist. SPLASH POSE (splash only; the bust and battle sprite use their own framing): twisting at the waist mid-swing, hair flying. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
-ZEALOT: grimdark fanatic zeal, no technology at all, only steel, fire, wax and faith: blackened gothic plate with bell-shaped pauldrons, purity seals on bell-rope cords, a cracked cathedral bell hung behind her (splash only).
+ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: blackened gothic plate with bell-shaped pauldrons, purity seals on bell-rope cords, a cracked cathedral bell hung behind her (splash only).
 KIT (her battle identity; let it show in her weapon, pose and effects):
 - SKILL I Flagellant's Charge: Crash into a near foe and charge forward. +60% against the Weakened. Cooldown 6s.
 - SKILL II Tocsin Lash: Strike a near foe and Stagger it. Silences it for 2s: only its plainest skill, and any charge breaks. Cooldown 6s.

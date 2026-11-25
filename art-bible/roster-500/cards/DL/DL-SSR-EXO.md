@@ -29,7 +29,7 @@ ANGEL (SSR): two wings of wet black feathers dripping seawater folded behind her
 FANATIC: knuckles split and bound in charred prayer cloth; blend into her expression: burning with consecrated fury.
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (daring): on top of her neckline, show a chain harness across her bare waist, and a corset cinched tight under the bust. SPLASH POSE (splash only; the bust and battle sprite use their own framing): striding forward out of smoke, cape snapping behind. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
-ZEALOT: grimdark fanatic zeal, no technology at all, only steel, fire, wax and faith: sea-worn verdigris plate, purity seals bleached by salt, salt crusting every rivet.
+ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: sea-worn verdigris plate, purity seals bleached by salt, salt crusting every rivet.
 KIT (her battle identity; let it show in her weapon, pose and effects):
 - SKILL I Lantern Flare: Smite any enemy and strip its shield and blessings. +30% against bosses.
 - SKILL II Deep Banishing: Strike every enemy and Hex it (-15% Magic Resist) for 4s; the Tide rises by 1. She heals 20% of the damage dealt. Cooldown 6s.

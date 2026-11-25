@@ -29,7 +29,7 @@ ANGEL (SSR): two wings of crimson feathers trailing smoke from the pyres folded 
 FANATIC: flagellant scars criss-crossing her arms; blend into her expression: in fanatic rapture.
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (daring): on top of her neckline, show thigh-high boots with bare skin above, held by garter straps of chain, and a chain harness across her bare waist. SPLASH POSE (splash only; the bust and battle sprite use their own framing): twisting at the waist mid-swing, hair flying. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
-ZEALOT: grimdark fanatic zeal, no technology at all, only steel, fire, wax and faith: blood-lacquered inquisitor plate studded with confession nails, purity seals stamped with the Inquisition's brand, the names of the condemned scratched into her plate.
+ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: blood-lacquered inquisitor plate studded with confession nails, purity seals stamped with the Inquisition's brand, the names of the condemned scratched into her plate.
 KIT (her battle identity; let it show in her weapon, pose and effects):
 - SKILL I Searing Smite: Strike a front-line foe and heal for 35% of the damage dealt.
 - SKILL II Crimson Wound: Strike a front-line foe, draw attacks for 4s, and heal for 31% of the damage. She gains 1 Fervor (+6% damage each, up to 5).

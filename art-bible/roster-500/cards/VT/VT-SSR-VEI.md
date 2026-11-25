@@ -28,7 +28,7 @@ SPLASH a candlelit tribunal hall, a great bronze scale behind a veiled bench. Sh
 TONE dark, gritty occult zeal: inquisition, crusade, heresy and pyres. Soot, blood, wax, chains and smoke in the scene; candle and fire light against black.
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (daring): on top of her neckline, show a bare midriff under a short breastplate, and a side-cut tabard open from ribs to hip. SPLASH POSE (splash only; the bust and battle sprite use their own framing): one knee raised on a heretic's skull, leaning into the weapon. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
-ZEALOT: grimdark fanatic zeal, no technology at all, only steel, fire, wax and faith: judicial gothic plate hung with nailed verdicts and chained scripture, purity seals stamped with the scales, heretics kneeling in chains.
+ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: judicial gothic plate hung with nailed verdicts and chained scripture, purity seals stamped with the scales, heretics kneeling in chains.
 KIT (her battle identity; let it show in her weapon, pose and effects):
 - SKILL I Hidden Blade: Strike any foe and add 2 Guilt. Accuses the foe for 4s (+25% damage taken).
 - SKILL II Faceless: Haste herself and +30% critical chance for 4s. She gains 1 Fervor (+6% damage each, up to 5). Cooldown 6s.

@@ -31,7 +31,7 @@ ANGEL (SSR): two wings of black feathers edged in crimson, sealed with wax folde
 FANATIC: scripture branded into her thigh; blend into her expression: with a fanatic's wild stare.
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (bold): on top of her neckline, show a chain harness across her bare waist, and thigh-high boots with bare skin above, held by garter straps of chain. SPLASH POSE (splash only; the bust and battle sprite use their own framing): standing tall with weight on one leg, chin raised in contempt. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
-ZEALOT: grimdark fanatic zeal, no technology at all, only steel, fire, wax and faith: judicial gothic plate hung with nailed verdicts and chained scripture, purity seals stamped with the scales, heretics kneeling in chains behind her (splash only).
+ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: judicial gothic plate hung with nailed verdicts and chained scripture, purity seals stamped with the scales, heretics kneeling in chains behind her (splash only).
 KIT (her battle identity; let it show in her weapon, pose and effects):
 - SKILL I Scourge of Witness: Strike a front-line foe, Accuse it for 4s and add 1 Guilt. Lays Penance on the foe for 4s: each act costs the sinner 25% of its own attack.
 - SKILL II Confess Through Pain: Sacrifice 10% HP; +25 of her own Zeal and +25% attack for 4s. Wards her (-15% damage taken) for 4s. Cooldown 6s.

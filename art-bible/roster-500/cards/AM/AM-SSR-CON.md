@@ -29,7 +29,7 @@ ANGEL (SSR): two wings of ash-grey feathers shedding embers folded behind her, e
 FANATIC: a heretic's sigil branded into her forearm; blend into her expression: eyes blazing with zeal.
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (daring): on top of her neckline, show bare thighs between greaves and a high-cut tabard slit, and a bare midriff under a short breastplate. SPLASH POSE (splash only; the bust and battle sprite use their own framing): kneeling in prayer with the weapon planted, looking up through her lashes. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
-ZEALOT: grimdark fanatic zeal, no technology at all, only steel, fire, wax and faith: soot-black gothic plate, purity seals scorched at the edges, a funeral pyre burning behind her (splash only).
+ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: soot-black gothic plate, purity seals scorched at the edges, a funeral pyre burning behind her (splash only).
 KIT (her battle identity; let it show in her weapon, pose and effects):
 - SKILL I Miasma: Smite a near foe and Poison it for 6s. Stacks on poison or burns.
 - SKILL II Ashen Remedy: Strike a near foe and Foretell it (+15% Mercy line) for 4s; every Sister heals 30% of the damage. Opens Stigmata: it bleeds 0.25x every 2s for 4s, and every drop heals her for half.

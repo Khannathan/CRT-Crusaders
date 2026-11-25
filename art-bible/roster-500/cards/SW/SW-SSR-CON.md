@@ -29,7 +29,7 @@ ANGEL (SSR): two wings of bone feathers folded behind her, eyes opening along th
 FANATIC: tears of blood dried on her cheeks; blend into her expression: eyes blazing with zeal.
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (daring): on top of her neckline, show a corset cinched tight under the bust, and a chain harness across her bare waist. SPLASH POSE (splash only; the bust and battle sprite use their own framing): back arched, hip cocked, cloak swept back over one shoulder. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
-ZEALOT: grimdark fanatic zeal, no technology at all, only steel, fire, wax and faith: ossuary plate with the bones of the honoured dead fused into it, purity seals on skull-shaped bosses, coffin nails driven through her belt.
+ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: ossuary plate with the bones of the honoured dead fused into it, purity seals on skull-shaped bosses, coffin nails driven through her belt.
 KIT (her battle identity; let it show in her weapon, pose and effects):
 - SKILL I Miasma: Smite a near foe and Poison it for 6s. Stacks on poison or burns.
 - SKILL II Barrow Penance: Heal every ally 11% of max HP. She gains 6 Zeal. Cooldown 4s.

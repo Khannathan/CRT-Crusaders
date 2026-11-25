@@ -29,7 +29,7 @@ ANGEL (SSR): two wings of bone feathers folded behind her, eyes opening along th
 FANATIC: flagellant scars criss-crossing her arms; blend into her expression: with a fanatic's wild stare.
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (daring): on top of her neckline, show a chain harness across her bare waist, and a torn habit that bares hip and leg. SPLASH POSE (splash only; the bust and battle sprite use their own framing): one knee raised on a heretic's skull, leaning into the weapon. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
-ZEALOT: grimdark fanatic zeal, no technology at all, only steel, fire, wax and faith: ossuary plate with the bones of the honoured dead fused into it, purity seals on skull-shaped bosses, coffin nails driven through her belt.
+ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: ossuary plate with the bones of the honoured dead fused into it, purity seals on skull-shaped bosses, coffin nails driven through her belt.
 KIT (her battle identity; let it show in her weapon, pose and effects):
 - SKILL I Reliquary Bash: Strike a front-line foe, hurl it back and draw enemy attacks for 4s.
 - SKILL II Charnel Bulwark: Spend 2 Remains to shield every ally for 18% of max HP; with fewer, shield only herself for 22%. Martyrdom: for 4s she takes 30% of every blow aimed at her Sisters. Cooldown 6s.

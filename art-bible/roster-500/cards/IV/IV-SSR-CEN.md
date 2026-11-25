@@ -29,7 +29,7 @@ ANGEL (SSR): two wings of steel feathers trailing black-and-white banner cloth f
 FANATIC: a rope of confessions knotted around her waist; blend into her expression: with a fanatic's wild stare.
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (daring): on top of her neckline, show a corset cinched tight under the bust, and a side-cut tabard open from ribs to hip. SPLASH POSE (splash only; the bust and battle sprite use their own framing): twisting at the waist mid-swing, hair flying. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
-ZEALOT: grimdark fanatic zeal, no technology at all, only steel, fire, wax and faith: prayer-etched steel plate over a chainmail hauberk, a burning cross on the surcoat, wax purity seals with long ribbon scrolls on every plate, sworn to the war that never ends.
+ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: prayer-etched steel plate over a chainmail hauberk, a burning cross on the surcoat, wax purity seals with long ribbon scrolls on every plate, sworn to the war that never ends.
 KIT (her battle identity; let it show in her weapon, pose and effects):
 - SKILL I Burning Thurible: Dash forward, swing at a front-line foe and set it Burning for 4s. Stacks on poison.
 - SKILL II Rampart Coals: Spread one foe's burn to every foe, then ignite it all on that foe. Brands the foe: the next blow on it lands 30% harder. Cooldown 8s.

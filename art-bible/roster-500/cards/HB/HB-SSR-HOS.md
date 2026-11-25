@@ -29,7 +29,7 @@ ANGEL (SSR): two wings of bronze bell-metal feathers that chime folded behind he
 FANATIC: scripture branded into her thigh; blend into her expression: with a fanatic's wild stare.
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (daring): on top of her neckline, show a torn habit that bares hip and leg, and a chain harness across her bare waist. SPLASH POSE (splash only; the bust and battle sprite use their own framing): striding forward out of smoke, cape snapping behind. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
-ZEALOT: grimdark fanatic zeal, no technology at all, only steel, fire, wax and faith: blackened gothic plate with bell-shaped pauldrons, purity seals on bell-rope cords, a cracked cathedral bell hung behind her (splash only).
+ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: blackened gothic plate with bell-shaped pauldrons, purity seals on bell-rope cords, a cracked cathedral bell hung behind her (splash only).
 KIT (her battle identity; let it show in her weapon, pose and effects):
 - SKILL I Lance of Mercy: Strike a near foe with the hospital lance: -25% attack for 4s.
 - SKILL II Peal Communion: Heal an ally and cure her. She gains 6 Zeal.

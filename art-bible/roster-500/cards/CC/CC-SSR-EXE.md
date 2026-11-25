@@ -29,7 +29,7 @@ ANGEL (SSR): two wings of wax feathers dripping and burning at the tips folded b
 FANATIC: flagellant scars criss-crossing her arms; blend into her expression: in fanatic rapture.
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (daring): on top of her neckline, show a torn habit that bares hip and leg, and a bare midriff under a short breastplate. SPLASH POSE (splash only; the bust and battle sprite use their own framing): one knee raised on a heretic's skull, leaning into the weapon. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
-ZEALOT: grimdark fanatic zeal, no technology at all, only steel, fire, wax and faith: gilded gothic plate dripping with candle wax, purity seals as hymn sheets, a battle hymn screamed not sung, consecrated fire in her eyes and on her blade.
+ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: gilded gothic plate dripping with candle wax, purity seals as hymn sheets, a battle hymn screamed not sung, consecrated fire in her eyes and on her blade.
 KIT (her battle identity; let it show in her weapon, pose and effects):
 - SKILL I Duelist's Thrust: Lunge at a near foe. +50% against the Accused.
 - SKILL II Taper Sentence: Drag any foe to the front and strike it; double damage under 30% HP. She gains 1 Fervor (+6% damage each, up to 5). Cooldown 6s.

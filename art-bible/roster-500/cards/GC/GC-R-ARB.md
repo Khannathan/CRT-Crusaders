@@ -14,7 +14,7 @@ ANGEL (R): wing-shaped pauldrons of plate.
 FANATIC: fresh scourge marks across her shoulders; blend into her expression: eyes blazing with zeal.
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (confident): on top of her neckline, show skin-tight sheer black sleeves and gloves to the shoulder, and a corset cinched tight under the bust. SPLASH POSE (splash only; the bust and battle sprite use their own framing): twisting at the waist mid-swing, hair flying. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
-ZEALOT: grimdark fanatic zeal, no technology at all, only steel, fire, wax and faith: cathedral-window armour of leaded stained glass, purity seals of black wax with silver ribbon, a rose window shattering behind her (splash only).
+ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: cathedral-window armour of leaded stained glass, purity seals of black wax with silver ribbon, a rose window shattering behind her (splash only).
 KIT (her battle identity; let it show in her weapon, pose and effects):
 - SKILL I Consecrated Bolt: A heavy bolt on any foe that ignores 30% of its Armor.
 - SKILL II Marking Shot: Light bolt that Accuses any foe (+25% damage taken) for 4s. Cooldown 4s.

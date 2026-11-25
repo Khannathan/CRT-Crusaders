@@ -13,7 +13,7 @@ ANGEL (SR): a small closed eye sigil glowing on her brow.
 FANATIC: a rope of confessions knotted around her waist; blend into her expression: with a fanatic's wild stare.
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (bold): on top of her neckline, show a side-cut tabard open from ribs to hip, and a chain harness across her bare waist. SPLASH POSE (splash only; the bust and battle sprite use their own framing): striding forward out of smoke, cape snapping behind. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
-ZEALOT: grimdark fanatic zeal, no technology at all, only steel, fire, wax and faith: sea-worn verdigris plate, purity seals bleached by salt, salt crusting every rivet.
+ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: sea-worn verdigris plate, purity seals bleached by salt, salt crusting every rivet.
 KIT (her battle identity; let it show in her weapon, pose and effects):
 - SKILL I Foresight: Smite any enemy, Stagger it and Hex it (-25% Magic Resist) for 4s. Breaks a charge. Cooldown 6s.
 - SKILL II Grim Augury: Grant an ally +30% attack for 4s and Haste (acts 25% faster for 2s), and every Sister 10 Zeal. Cooldown 8s.

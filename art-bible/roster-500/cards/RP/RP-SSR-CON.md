@@ -29,7 +29,7 @@ ANGEL (SSR): two wings of crimson feathers trailing smoke from the pyres folded 
 FANATIC: knuckles split and bound in charred prayer cloth; blend into her expression: eyes blazing with zeal.
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (daring): on top of her neckline, show a chain harness across her bare waist, and a bare midriff under a short breastplate. SPLASH POSE (splash only; the bust and battle sprite use their own framing): one knee raised on a heretic's skull, leaning into the weapon. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
-ZEALOT: grimdark fanatic zeal, no technology at all, only steel, fire, wax and faith: blood-lacquered inquisitor plate studded with confession nails, purity seals stamped with the Inquisition's brand, the names of the condemned scratched into her plate.
+ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: blood-lacquered inquisitor plate studded with confession nails, purity seals stamped with the Inquisition's brand, the names of the condemned scratched into her plate.
 KIT (her battle identity; let it show in her weapon, pose and effects):
 - SKILL I Miasma: Smite a near foe and Poison it for 6s. Stacks on poison or burns.
 - SKILL II Inquest Penance: Heal an ally 18% of max HP and give her 1 Pursuit. She gains 6 Zeal. Cooldown 4s.

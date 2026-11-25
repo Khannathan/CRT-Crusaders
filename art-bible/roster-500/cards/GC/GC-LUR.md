@@ -31,7 +31,7 @@ ANGEL (UR): six wings of stained-glass shard wings (two framing her head, two sp
 FANATIC: fresh scourge marks across her shoulders; blend into her expression: eyes blazing with zeal.
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (bold): on top of her neckline, show bare thighs between greaves and a high-cut tabard slit, and skin-tight sheer black sleeves and gloves to the shoulder. SPLASH POSE (splash only; the bust and battle sprite use their own framing): twisting at the waist mid-swing, hair flying. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
-ZEALOT: grimdark fanatic zeal, no technology at all, only steel, fire, wax and faith: cathedral-window armour of leaded stained glass, purity seals of black wax with silver ribbon, a rose window shattering behind her (splash only).
+ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: cathedral-window armour of leaded stained glass, purity seals of black wax with silver ribbon, a rose window shattering behind her (splash only).
 KIT (her battle identity; let it show in her weapon, pose and effects):
 - SKILL I Reflected Sentence: Smite any enemy: -25% attack for 4s. Drains 15 Wrath from a boss. Brands the foe: the next blow on it lands 40% harder.
 - SKILL II Obsidian Writ: Confess a foe for 4s; for the rest of the fight its kind takes +5% damage from your party. Lays Penance on the foe for 4s: each act costs the sinner 35% of its own attack. Cooldown 6s.

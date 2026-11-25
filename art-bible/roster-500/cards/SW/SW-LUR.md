@@ -31,7 +31,7 @@ ANGEL (UR): six wings of bone feathers (two framing her head, two spread, two fo
 FANATIC: a crown of nails she drove in herself; blend into her expression: eyes blazing with zeal.
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (bold): on top of her neckline, show a side-cut tabard open from ribs to hip, and a bare midriff under a short breastplate. SPLASH POSE (splash only; the bust and battle sprite use their own framing): standing tall with weight on one leg, chin raised in contempt. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
-ZEALOT: grimdark fanatic zeal, no technology at all, only steel, fire, wax and faith: ossuary plate with the bones of the honoured dead fused into it, purity seals on skull-shaped bosses, coffin nails driven through her belt.
+ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: ossuary plate with the bones of the honoured dead fused into it, purity seals on skull-shaped bosses, coffin nails driven through her belt.
 KIT (her battle identity; let it show in her weapon, pose and effects):
 - SKILL I Chalice Draught: Heal one ally, shield her for 15% of max HP and cure poison, burns and bleeding. She gains 10 Zeal.
 - SKILL II Ossuary Tending: Every ally Regenerates 6% every 2s for 6s; spend 2 Remains to also Ward them (-15%) for 4s. Every Sister gains 2 Mirror Images (each swallows a whole hit). Cooldown 6s.

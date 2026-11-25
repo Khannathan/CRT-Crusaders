@@ -29,7 +29,7 @@ ANGEL (SSR): two wings of wet black feathers dripping seawater folded behind her
 FANATIC: tally marks of the purged cut into her bracer; blend into her expression: in fanatic rapture.
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (daring): on top of her neckline, show skin-tight sheer black sleeves and gloves to the shoulder, and a chain harness across her bare waist. SPLASH POSE (splash only; the bust and battle sprite use their own framing): back arched, hip cocked, cloak swept back over one shoulder. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
-ZEALOT: grimdark fanatic zeal, no technology at all, only steel, fire, wax and faith: sea-worn verdigris plate, purity seals bleached by salt, salt crusting every rivet.
+ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: sea-worn verdigris plate, purity seals bleached by salt, salt crusting every rivet.
 KIT (her battle identity; let it show in her weapon, pose and effects):
 - SKILL I Searing Smite: Strike a front-line foe and heal for 35% of the damage dealt.
 - SKILL II Fathom Offering: Strike a front-line foe and heal for 31% of the damage, plus 4% per Tide. Silences it for 2s: only its plainest skill, and any charge breaks.

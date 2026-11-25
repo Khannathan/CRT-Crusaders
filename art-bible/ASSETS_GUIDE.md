@@ -5,7 +5,7 @@ Every asset type the game uses: its native size, background, where it shows and 
 ## 1. Rules for every asset
 
 - **Style (the most important rule):** PC-98: every asset looks like it came from a late-1980s or early-1990s Japanese PC-98 computer game. Crisp hand-placed square pixels, anime-styled dark-fantasy characters with clean dark linework, heavy patterned dither for shading, skies and glows, high contrast. **At most 16 colours** per image, picked from a 4,096-colour palette (Sisters use exactly 16). Never painterly, HD, photoreal, 3D or modern cel-shaded anime; no anti-aliasing, blur, gradients, airbrush or bloom; no scanlines or CRT effects (the game adds them).
-- **Vibe:** grimdark fanatic crusade, no technology. Steel, fire, wax, bone, blood, smoke. Fire is the main light. Divine things look terrible first, beautiful second.
+- **Vibe:** grimdark fanatic crusade with no modern or future technology: no guns, motors, electronics or sci-fi gear. Medieval craft is fine (forged steel, crossbows, siege engines, bells, censers, stained glass). Steel, fire, wax, bone, blood, smoke. Fire is the main light. Divine things look terrible first, beautiful second.
 - **Order colours:** anything tied to an Order uses that Order's lead and trim colours and its approved insignia (section 3b, order-bible.md).
 - **Order first:** each Order's crucifix icon and insignia are made and approved before any of its Sisters.
 - **Replacing a file:** open the current file in the repo first (`src/assets/...`) and match its exact pixel size, background (opaque or transparent) and framing. Many existing icons are trimmed a few pixels under the table size; keep the existing size. A brand-new file uses the table size.

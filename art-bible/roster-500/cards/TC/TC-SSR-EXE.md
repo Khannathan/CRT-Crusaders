@@ -29,7 +29,7 @@ ANGEL (SSR): two wings of briar wings with red rose-feathers folded behind her, 
 FANATIC: fresh scourge marks across her shoulders; blend into her expression: burning with consecrated fury.
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (daring): on top of her neckline, show a corset cinched tight under the bust, and a torn habit that bares hip and leg. SPLASH POSE (splash only; the bust and battle sprite use their own framing): kneeling in prayer with the weapon planted, looking up through her lashes. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
-ZEALOT: grimdark fanatic zeal, no technology at all, only steel, fire, wax and faith: scourged gothic plate wrapped in barbed briar, purity seals soaked in her own blood, flagellant scars.
+ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: scourged gothic plate wrapped in barbed briar, purity seals soaked in her own blood, flagellant scars.
 KIT (her battle identity; let it show in her weapon, pose and effects):
 - SKILL I Duelist's Thrust: Lunge at a near foe. +50% against the Accused.
 - SKILL II Penitent Beheading: Sacrifice 8% HP; strike any foe, +50% against the Accused. She gains 1 Fervor (+6% damage each, up to 5).

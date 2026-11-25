@@ -29,7 +29,7 @@ ANGEL (SSR): two wings of crimson feathers trailing smoke from the pyres folded 
 FANATIC: flagellant scars criss-crossing her arms; blend into her expression: in fanatic rapture.
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (daring): on top of her neckline, show a side-cut tabard open from ribs to hip, and a corset cinched tight under the bust. SPLASH POSE (splash only; the bust and battle sprite use their own framing): one knee raised on a heretic's skull, leaning into the weapon. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
-ZEALOT: grimdark fanatic zeal, no technology at all, only steel, fire, wax and faith: blood-lacquered inquisitor plate studded with confession nails, purity seals stamped with the Inquisition's brand, the names of the condemned scratched into her plate.
+ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: blood-lacquered inquisitor plate studded with confession nails, purity seals stamped with the Inquisition's brand, the names of the condemned scratched into her plate.
 KIT (her battle identity; let it show in her weapon, pose and effects):
 - SKILL I Lantern Flare: Smite any enemy and strip its shield and blessings. +30% against bosses.
 - SKILL II Iron Banishing: Set a foe Burning for 6s (stacks) and leap back. Goes through 20% of Armor and Magic Resist. Cooldown 4s.

@@ -30,7 +30,7 @@ ANGEL (SSR): two wings of briar wings with red rose-feathers folded behind her, 
 FANATIC: tears of blood dried on her cheeks; blend into her expression: in fanatic rapture.
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (daring): on top of her neckline, show bare thighs between greaves and a high-cut tabard slit, and skin-tight sheer black sleeves and gloves to the shoulder. SPLASH POSE (splash only; the bust and battle sprite use their own framing): kneeling in prayer with the weapon planted, looking up through her lashes. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
-ZEALOT: grimdark fanatic zeal, no technology at all, only steel, fire, wax and faith: scourged gothic plate wrapped in barbed briar, purity seals soaked in her own blood, flagellant scars.
+ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: scourged gothic plate wrapped in barbed briar, purity seals soaked in her own blood, flagellant scars.
 KIT (her battle identity; let it show in her weapon, pose and effects):
 - SKILL I Psalm of Penance: Every ally loses 5% HP and gains +35% attack for 4s (Covenant Sisters Scar from it). Martyrdom: for 4s she takes 30% of every blow aimed at her Sisters. Cooldown 8s.
 - SKILL II Keening Note: Smite any enemy: Sundered (-20% armor) and Hexed (-20% Magic Resist) for 4s.

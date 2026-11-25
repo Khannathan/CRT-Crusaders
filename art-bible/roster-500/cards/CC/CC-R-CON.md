@@ -13,7 +13,7 @@ ANGEL (R): a feathered crest on her helm.
 FANATIC: scripture branded into her thigh; blend into her expression: burning with consecrated fury.
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (confident): on top of her neckline, show a side-cut tabard open from ribs to hip, and bare thighs between greaves and a high-cut tabard slit. SPLASH POSE (splash only; the bust and battle sprite use their own framing): one knee raised on a heretic's skull, leaning into the weapon. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
-ZEALOT: grimdark fanatic zeal, no technology at all, only steel, fire, wax and faith: gilded gothic plate dripping with candle wax, purity seals as hymn sheets, a battle hymn screamed not sung, consecrated fire in her eyes and on her blade.
+ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: gilded gothic plate dripping with candle wax, purity seals as hymn sheets, a battle hymn screamed not sung, consecrated fire in her eyes and on her blade.
 KIT (her battle identity; let it show in her weapon, pose and effects):
 - SKILL I Remedy: Heal one ally, cure poison, burns and bleeding, and let her Regenerate 3% every 2s for 4s.
 - SKILL II Miasma: Smite a near foe and Poison it for 6s. Stacks on poison or burns.

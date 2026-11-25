@@ -29,7 +29,7 @@ ANGEL (SSR): two wings of bronze bell-metal feathers that chime folded behind he
 FANATIC: a crown of nails she drove in herself; blend into her expression: with a fanatic's wild stare.
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (daring): on top of her neckline, show a bare midriff under a short breastplate, and a torn habit that bares hip and leg. SPLASH POSE (splash only; the bust and battle sprite use their own framing): one knee raised on a heretic's skull, leaning into the weapon. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
-ZEALOT: grimdark fanatic zeal, no technology at all, only steel, fire, wax and faith: blackened gothic plate with bell-shaped pauldrons, purity seals on bell-rope cords, a cracked cathedral bell hung behind her (splash only).
+ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: blackened gothic plate with bell-shaped pauldrons, purity seals on bell-rope cords, a cracked cathedral bell hung behind her (splash only).
 KIT (her battle identity; let it show in her weapon, pose and effects):
 - SKILL I Burning Thurible: Dash forward, swing at a front-line foe and set it Burning for 4s. Stacks on poison.
 - SKILL II Knell Smoke: Strip the shield and blessings of every enemy. She gains 6 Zeal. Cooldown 8s.

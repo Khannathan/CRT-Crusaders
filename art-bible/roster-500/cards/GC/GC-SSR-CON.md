@@ -30,7 +30,7 @@ ANGEL (SSR): two wings of stained-glass shard wings folded behind her, eyes open
 FANATIC: tally marks of the purged cut into her bracer; blend into her expression: eyes blazing with zeal.
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (daring): on top of her neckline, show a chain harness across her bare waist, and a side-cut tabard open from ribs to hip. SPLASH POSE (splash only; the bust and battle sprite use their own framing): one knee raised on a heretic's skull, leaning into the weapon. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
-ZEALOT: grimdark fanatic zeal, no technology at all, only steel, fire, wax and faith: cathedral-window armour of leaded stained glass, purity seals of black wax with silver ribbon, a rose window shattering behind her (splash only).
+ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: cathedral-window armour of leaded stained glass, purity seals of black wax with silver ribbon, a rose window shattering behind her (splash only).
 KIT (her battle identity; let it show in her weapon, pose and effects):
 - SKILL I Miasma: Smite a near foe and Poison it for 6s. Stacks on poison or burns.
 - SKILL II Mirror Shrift: Confess a foe for 4s and heal the most hurt Sister 10%. Brands the foe: the next blow on it lands 30% harder. Cooldown 4s.

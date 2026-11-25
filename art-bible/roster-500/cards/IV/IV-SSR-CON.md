@@ -29,7 +29,7 @@ ANGEL (SSR): two wings of steel feathers trailing black-and-white banner cloth f
 FANATIC: scripture branded into her thigh; blend into her expression: eyes blazing with zeal.
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (daring): on top of her neckline, show bare thighs between greaves and a high-cut tabard slit, and a bare midriff under a short breastplate. SPLASH POSE (splash only; the bust and battle sprite use their own framing): kneeling in prayer with the weapon planted, looking up through her lashes. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
-ZEALOT: grimdark fanatic zeal, no technology at all, only steel, fire, wax and faith: prayer-etched steel plate over a chainmail hauberk, a burning cross on the surcoat, wax purity seals with long ribbon scrolls on every plate, sworn to the war that never ends.
+ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: prayer-etched steel plate over a chainmail hauberk, a burning cross on the surcoat, wax purity seals with long ribbon scrolls on every plate, sworn to the war that never ends.
 KIT (her battle identity; let it show in her weapon, pose and effects):
 - SKILL I Miasma: Smite a near foe and Poison it for 6s. Stacks on poison or burns.
 - SKILL II Bastion Cure: Overwatch: when the next foe acts, she heals the most hurt Sister 21% of max HP. Wards her (-15% damage taken) for 4s. Cooldown 6s.

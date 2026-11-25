@@ -30,7 +30,7 @@ ANGEL (SSR): two wings of crimson feathers trailing smoke from the pyres folded 
 FANATIC: candle wax poured over her own collarbone as penance; blend into her expression: eyes blazing with zeal.
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (daring): on top of her neckline, show a torn habit that bares hip and leg, and thigh-high boots with bare skin above, held by garter straps of chain. SPLASH POSE (splash only; the bust and battle sprite use their own framing): striding forward out of smoke, cape snapping behind. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
-ZEALOT: grimdark fanatic zeal, no technology at all, only steel, fire, wax and faith: blood-lacquered inquisitor plate studded with confession nails, purity seals stamped with the Inquisition's brand, the names of the condemned scratched into her plate.
+ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: blood-lacquered inquisitor plate studded with confession nails, purity seals stamped with the Inquisition's brand, the names of the condemned scratched into her plate.
 KIT (her battle identity; let it show in her weapon, pose and effects):
 - SKILL I Processional: The whole party shifts its line: the front Sister goes to the back, and the new front gains Haste; every Sister gains 8 Zeal. She gains 1 Fervor (+6% damage each, up to 5). Cooldown 6s.
 - SKILL II Hymn of Iron: Every ally gains +30% attack for 4s. Cooldown 6s.

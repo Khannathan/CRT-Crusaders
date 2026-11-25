@@ -29,7 +29,7 @@ ANGEL (SSR): two wings of ash-grey feathers shedding embers folded behind her, e
 FANATIC: a rope of confessions knotted around her waist; blend into her expression: in fanatic rapture.
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (daring): on top of her neckline, show a corset cinched tight under the bust, and a side-cut tabard open from ribs to hip. SPLASH POSE (splash only; the bust and battle sprite use their own framing): back arched, hip cocked, cloak swept back over one shoulder. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
-ZEALOT: grimdark fanatic zeal, no technology at all, only steel, fire, wax and faith: soot-black gothic plate, purity seals scorched at the edges, a funeral pyre burning behind her (splash only).
+ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: soot-black gothic plate, purity seals scorched at the edges, a funeral pyre burning behind her (splash only).
 KIT (her battle identity; let it show in her weapon, pose and effects):
 - SKILL I Lantern Flare: Smite any enemy and strip its shield and blessings. +30% against bosses.
 - SKILL II Pyre Witchfire: Strip a foe's shield and blessings and Weaken it (-28% attack) for 4s. Opens Stigmata: it bleeds 0.25x every 2s for 4s, and every drop heals her for half. Cooldown 6s.

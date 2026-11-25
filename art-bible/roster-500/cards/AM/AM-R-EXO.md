@@ -13,7 +13,7 @@ ANGEL (R): an eye-in-a-wheel painted on her shield or breastplate.
 FANATIC: tally marks of the purged cut into her bracer; blend into her expression: with a fanatic's wild stare.
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (confident): on top of her neckline, show a chain harness across her bare waist, and thigh-high boots with bare skin above, held by garter straps of chain. SPLASH POSE (splash only; the bust and battle sprite use their own framing): one knee raised on a heretic's skull, leaning into the weapon. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
-ZEALOT: grimdark fanatic zeal, no technology at all, only steel, fire, wax and faith: soot-black gothic plate, purity seals scorched at the edges, a funeral pyre burning behind her (splash only).
+ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: soot-black gothic plate, purity seals scorched at the edges, a funeral pyre burning behind her (splash only).
 KIT (her battle identity; let it show in her weapon, pose and effects):
 - SKILL I Lantern Flare: Smite any enemy and strip its shield and blessings. +30% against bosses.
 - SKILL II Witchfire: Set any enemy Burning for 6s. Stacks on poison or burns.

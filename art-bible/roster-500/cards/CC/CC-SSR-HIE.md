@@ -29,7 +29,7 @@ ANGEL (SSR): two wings of wax feathers dripping and burning at the tips folded b
 FANATIC: tally marks of the purged cut into her bracer; blend into her expression: with a fanatic's wild stare.
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (daring): on top of her neckline, show bare thighs between greaves and a high-cut tabard slit, and a bare midriff under a short breastplate. SPLASH POSE (splash only; the bust and battle sprite use their own framing): twisting at the waist mid-swing, hair flying. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
-ZEALOT: grimdark fanatic zeal, no technology at all, only steel, fire, wax and faith: gilded gothic plate dripping with candle wax, purity seals as hymn sheets, a battle hymn screamed not sung, consecrated fire in her eyes and on her blade.
+ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: gilded gothic plate dripping with candle wax, purity seals as hymn sheets, a battle hymn screamed not sung, consecrated fire in her eyes and on her blade.
 KIT (her battle identity; let it show in her weapon, pose and effects):
 - SKILL I Reliquary Bash: Strike a front-line foe, hurl it back and draw enemy attacks for 4s.
 - SKILL II Matin Bulwark: A Hymn for 6s: every ally Regenerates 4% every 2s. She gains 1 Fervor (+6% damage each, up to 5). Cooldown 8s.

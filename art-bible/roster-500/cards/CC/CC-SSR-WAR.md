@@ -29,7 +29,7 @@ ANGEL (SSR): two wings of wax feathers dripping and burning at the tips folded b
 FANATIC: scripture branded into her thigh; blend into her expression: burning with consecrated fury.
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (daring): on top of her neckline, show a corset cinched tight under the bust, and a torn habit that bares hip and leg. SPLASH POSE (splash only; the bust and battle sprite use their own framing): twisting at the waist mid-swing, hair flying. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
-ZEALOT: grimdark fanatic zeal, no technology at all, only steel, fire, wax and faith: gilded gothic plate dripping with candle wax, purity seals as hymn sheets, a battle hymn screamed not sung, consecrated fire in her eyes and on her blade.
+ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: gilded gothic plate dripping with candle wax, purity seals as hymn sheets, a battle hymn screamed not sung, consecrated fire in her eyes and on her blade.
 KIT (her battle identity; let it show in her weapon, pose and effects):
 - SKILL I Flagellant's Charge: Crash into a near foe and charge forward. +60% against the Weakened. Cooldown 6s.
 - SKILL II Gilded Fury: A Hymn for 6s: every ally +13% critical chance. She gains 6 Zeal. Cooldown 8s.

@@ -30,7 +30,7 @@ ANGEL (UR): six wings of wet black feathers dripping seawater (two framing her h
 FANATIC: prayer strips nailed into her armour; blend into her expression: in fanatic rapture.
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (boldest in her Order): on top of her neckline, show a chain harness across her bare waist, and a torn habit that bares hip and leg. SPLASH POSE (splash only; the bust and battle sprite use their own framing): striding forward out of smoke, cape snapping behind. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
-ZEALOT: grimdark fanatic zeal, no technology at all, only steel, fire, wax and faith: sea-worn verdigris plate, purity seals bleached by salt, salt crusting every rivet.
+ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: sea-worn verdigris plate, purity seals bleached by salt, salt crusting every rivet.
 KIT (her battle identity; let it show in her weapon, pose and effects):
 - SKILL I Brine Smite: Strike a front-line foe and heal for 35% of the damage, plus 5% per Tide. Silences it for 4s: only its plainest skill, and any charge breaks.
 - SKILL II Sink: Ebb: spend all the Tide to shield every ally for 6% of max HP per Tide. She gains 8 Zeal. Cooldown 6s.

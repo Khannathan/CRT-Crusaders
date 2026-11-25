@@ -29,7 +29,7 @@ ANGEL (SSR): two wings of bone feathers folded behind her, eyes opening along th
 FANATIC: flagellant scars criss-crossing her arms; blend into her expression: with a fanatic's wild stare.
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (daring): on top of her neckline, show bare thighs between greaves and a high-cut tabard slit, and skin-tight sheer black sleeves and gloves to the shoulder. SPLASH POSE (splash only; the bust and battle sprite use their own framing): kneeling in prayer with the weapon planted, looking up through her lashes. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
-ZEALOT: grimdark fanatic zeal, no technology at all, only steel, fire, wax and faith: ossuary plate with the bones of the honoured dead fused into it, purity seals on skull-shaped bosses, coffin nails driven through her belt.
+ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: ossuary plate with the bones of the honoured dead fused into it, purity seals on skull-shaped bosses, coffin nails driven through her belt.
 KIT (her battle identity; let it show in her weapon, pose and effects):
 - SKILL I Burning Thurible: Dash forward, swing at a front-line foe and set it Burning for 4s. Stacks on poison.
 - SKILL II Grave Smoke: Spend up to 4 Remains: one bolt (1.1x, through 15% of its Armor) at a random foe for each. Sunders every foe it strikes (-20% armor) for 4s. Cooldown 6s.

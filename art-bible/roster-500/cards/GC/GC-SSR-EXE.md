@@ -31,7 +31,7 @@ ANGEL (SSR): two wings of stained-glass shard wings folded behind her, eyes open
 FANATIC: a heretic's sigil branded into her forearm; blend into her expression: in fanatic rapture.
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (daring): on top of her neckline, show a bare midriff under a short breastplate, and a corset cinched tight under the bust. SPLASH POSE (splash only; the bust and battle sprite use their own framing): one knee raised on a heretic's skull, leaning into the weapon. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
-ZEALOT: grimdark fanatic zeal, no technology at all, only steel, fire, wax and faith: cathedral-window armour of leaded stained glass, purity seals of black wax with silver ribbon, a rose window shattering behind her (splash only).
+ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: cathedral-window armour of leaded stained glass, purity seals of black wax with silver ribbon, a rose window shattering behind her (splash only).
 KIT (her battle identity; let it show in her weapon, pose and effects):
 - SKILL I Accuse and Confess: A light hit on any foe: Accused, Sundered (-25% armor) and Confessed for 6s. Brands the foe: the next blow on it lands 30% harder.
 - SKILL II Shard Thrust: Lunge at a near foe with +30% critical chance. Hexes the foe (-20% Magic Resist) for 4s.

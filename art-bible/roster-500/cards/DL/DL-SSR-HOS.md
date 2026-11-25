@@ -29,7 +29,7 @@ ANGEL (SSR): two wings of wet black feathers dripping seawater folded behind her
 FANATIC: vow chains locked around her wrists; blend into her expression: with a fanatic's wild stare.
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (daring): on top of her neckline, show a side-cut tabard open from ribs to hip, and skin-tight sheer black sleeves and gloves to the shoulder. SPLASH POSE (splash only; the bust and battle sprite use their own framing): standing tall with weight on one leg, chin raised in contempt. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
-ZEALOT: grimdark fanatic zeal, no technology at all, only steel, fire, wax and faith: sea-worn verdigris plate, purity seals bleached by salt, salt crusting every rivet.
+ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: sea-worn verdigris plate, purity seals bleached by salt, salt crusting every rivet.
 KIT (her battle identity; let it show in her weapon, pose and effects):
 - SKILL I Lance of Mercy: Strike a near foe with the hospital lance: -25% attack for 4s.
 - SKILL II Sunken Chalice: Every ally Regenerates 2% plus 1% per Tide every 2s for 6s. Wards every Sister (-15% damage taken) for 4s. Cooldown 6s.

@@ -30,7 +30,7 @@ ANGEL (UR): six wings of bronze bell-metal feathers that chime (two framing her 
 FANATIC: candle wax poured over her own collarbone as penance; blend into her expression: in fanatic rapture.
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (boldest in her Order): on top of her neckline, show a side-cut tabard open from ribs to hip, and bare thighs between greaves and a high-cut tabard slit. SPLASH POSE (splash only; the bust and battle sprite use their own framing): standing tall with weight on one leg, chin raised in contempt. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
-ZEALOT: grimdark fanatic zeal, no technology at all, only steel, fire, wax and faith: blackened gothic plate with bell-shaped pauldrons, purity seals on bell-rope cords, a cracked cathedral bell hung behind her (splash only).
+ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: blackened gothic plate with bell-shaped pauldrons, purity seals on bell-rope cords, a cracked cathedral bell hung behind her (splash only).
 KIT (her battle identity; let it show in her weapon, pose and effects):
 - SKILL I Clapper Blow: Smite a front-line foe hard; +40% while she is under half HP. She gains 8 Zeal.
 - SKILL II Ring the Hours: Sacrifice 10% HP; +25 of her own Zeal, and the Bell rings twice. She gains 2 Fervor (+6% damage each, up to 5). Cooldown 6s.

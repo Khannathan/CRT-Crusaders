@@ -29,7 +29,7 @@ ANGEL (SSR): two wings of briar wings with red rose-feathers folded behind her, 
 FANATIC: a rope of confessions knotted around her waist; blend into her expression: eyes blazing with zeal.
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (daring): on top of her neckline, show a bare midriff under a short breastplate, and a side-cut tabard open from ribs to hip. SPLASH POSE (splash only; the bust and battle sprite use their own framing): one knee raised on a heretic's skull, leaning into the weapon. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
-ZEALOT: grimdark fanatic zeal, no technology at all, only steel, fire, wax and faith: scourged gothic plate wrapped in barbed briar, purity seals soaked in her own blood, flagellant scars.
+ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: scourged gothic plate wrapped in barbed briar, purity seals soaked in her own blood, flagellant scars.
 KIT (her battle identity; let it show in her weapon, pose and effects):
 - SKILL I Reliquary Bash: Strike a front-line foe, hurl it back and draw enemy attacks for 4s.
 - SKILL II Rose Reliquary: Strike a front-line foe, draw attacks and counter, for 4s. Sunders the foe (-20% armor) for 4s.

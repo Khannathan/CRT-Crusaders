@@ -29,7 +29,7 @@ ANGEL (SSR): two wings of steel feathers trailing black-and-white banner cloth f
 FANATIC: flagellant scars criss-crossing her arms; blend into her expression: with a fanatic's wild stare.
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (daring): on top of her neckline, show bare thighs between greaves and a high-cut tabard slit, and a side-cut tabard open from ribs to hip. SPLASH POSE (splash only; the bust and battle sprite use their own framing): twisting at the waist mid-swing, hair flying. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
-ZEALOT: grimdark fanatic zeal, no technology at all, only steel, fire, wax and faith: prayer-etched steel plate over a chainmail hauberk, a burning cross on the surcoat, wax purity seals with long ribbon scrolls on every plate, sworn to the war that never ends.
+ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: prayer-etched steel plate over a chainmail hauberk, a burning cross on the surcoat, wax purity seals with long ribbon scrolls on every plate, sworn to the war that never ends.
 KIT (her battle identity; let it show in her weapon, pose and effects):
 - SKILL I Lance of Mercy: Strike a near foe with the hospital lance: -25% attack for 4s.
 - SKILL II Gate Balm: Overwatch: when the next foe acts, she heals the most hurt Sister 21% of max HP. Martyrdom: for 4s she takes 30% of every blow aimed at her Sisters. Cooldown 6s.

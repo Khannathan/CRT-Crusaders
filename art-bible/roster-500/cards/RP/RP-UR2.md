@@ -29,7 +29,7 @@ ANGEL (UR): six wings of crimson feathers trailing smoke from the pyres (two fra
 FANATIC: a heretic's sigil branded into her forearm; blend into her expression: eyes blazing with zeal.
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (boldest in her Order): on top of her neckline, show a corset cinched tight under the bust, and thigh-high boots with bare skin above, held by garter straps of chain. SPLASH POSE (splash only; the bust and battle sprite use their own framing): kneeling in prayer with the weapon planted, looking up through her lashes. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
-ZEALOT: grimdark fanatic zeal, no technology at all, only steel, fire, wax and faith: blood-lacquered inquisitor plate studded with confession nails, purity seals stamped with the Inquisition's brand, the names of the condemned scratched into her plate.
+ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: blood-lacquered inquisitor plate studded with confession nails, purity seals stamped with the Inquisition's brand, the names of the condemned scratched into her plate.
 KIT (her battle identity; let it show in her weapon, pose and effects):
 - SKILL I Lance of Mercy: Strike a near foe with the hospital lance: -25% attack for 4s. Goes through 25% of Armor and Magic Resist.
 - SKILL II Iron Mending: Heal an ally 21% of max HP and give her 1 Pursuit. She gains 8 Zeal. Cooldown 4s.
