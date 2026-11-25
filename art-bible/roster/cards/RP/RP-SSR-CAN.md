@@ -1,4 +1,28 @@
-<!-- Crimson Inquisition (RP) card RP-SSR-CAN. Generated from the sister bible; do not edit here. -->
+<!-- Crimson Inquisition (RP) card RP-SSR-CAN. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: RP-SSR-CAN
+name: Ignominia Torquens
+epithet: Blood of the Inquisitor Star
+rarity: SSR
+rank: Demigoddess
+order: Crimson Inquisition (order id red-pilgrimage, code RP)
+class: Cantor (class id cantor, role Buffer)
+age: 24
+weapon: Bell of the Red Rack (Mythic)
+relic: small cracked singing bell, encased in dark iron lattice (a game item)
+kit:
+- SKILL I Processional: The whole party shifts its line: the front Sister goes to the back, and the new front gains Haste; every Sister gains 8 Zeal. She gains 1 Fervor (+6% damage each, up to 5). Cooldown 6s.
+- SKILL II Hymn of Iron: Every ally gains +30% attack for 4s. Cooldown 6s.
+- SKILL III Psalm of Blades: Every ally gains +20% critical chance for 4s, and every Sister 8 Zeal. Cooldown 8s.
+- LITANY Song of the Long Hunt: LITANY: every ally +30% attack for 4s and Haste; each gains 2 Pursuit. Rapture: every Sister takes no damage for 2s. It hallows the ground: Briar Ground (every foe bleeds 15% of her attack every 2s) for 4s.
+- PASSIVE Hymn of the Hunt: Whenever she sings (any of her skills), every Inquisitor gains 1 Pursuit.
+- RELIC Small Cracked Singing Bell (game item; not drawn in her art): Psalm of Blades: Martyrdom: for 4s she takes 30% of every blow aimed at her Sisters.
+- ASCENSION (coming): As a Deity, her Song of the Long Hunt also grants Rapture (no damage for 2s) to every Sister, and her passive grows by half.
+- BATTLE CRY: "No confession? I will brand one out of you. The hymn rises!"
+```
+<!-- END GAME DATA -->
 
 Read the Crimson Inquisition section of order-bible.md first. Cloth: blood crimson #9a2a33 lead, antique gold #d6a15f trim, blackened steel and chain. Head: wide-brimmed inquisitor's hat with a wax seal. Hem: long, sharp, spattered hems.
 
@@ -31,15 +55,7 @@ FANATIC: candle wax poured over her own collarbone as penance; blend into her ex
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (daring): on top of her neckline, show a torn habit that bares hip and leg, and thigh-high boots with bare skin above, held by garter straps of chain. SPLASH POSE (splash only; the bust and battle sprite use their own framing): striding forward out of smoke, cape snapping behind. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: blood-lacquered inquisitor plate studded with confession nails, purity seals stamped with the Inquisition's brand, the names of the condemned scratched into her plate.
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Processional: The whole party shifts its line: the front Sister goes to the back, and the new front gains Haste; every Sister gains 8 Zeal. She gains 1 Fervor (+6% damage each, up to 5). Cooldown 6s.
-- SKILL II Hymn of Iron: Every ally gains +30% attack for 4s. Cooldown 6s.
-- SKILL III Psalm of Blades: Every ally gains +20% critical chance for 4s, and every Sister 8 Zeal. Cooldown 8s.
-- LITANY Song of the Long Hunt: LITANY: every ally +30% attack for 4s and Haste; each gains 2 Pursuit. Rapture: every Sister takes no damage for 2s. It hallows the ground: Briar Ground (every foe bleeds 15% of her attack every 2s) for 4s.
-- PASSIVE Hymn of the Hunt: Whenever she sings (any of her skills), every Inquisitor gains 1 Pursuit.
-- RELIC Small Cracked Singing Bell (game item; not drawn in her art): Psalm of Blades: Martyrdom: for 4s she takes 30% of every blow aimed at her Sisters.
-- ASCENSION (coming): As a Deity, her Song of the Long Hunt also grants Rapture (no damage for 2s) to every Sister, and her passive grows by half.
-- BATTLE CRY: "No confession? I will brand one out of you. The hymn rises!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: crimson wax-seal sigils, red-hot brand-light and burning writs on the wind; her voice is visible as rings of flame; her Litany Song of the Long Hunt hallows the ground in a ring of crimson wax-seal sigils; her Small Cracked Singing Bell blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Ignominia Torquens, Blood of the Inquisitor Star. Draw only these objects: her Mythic weapon, Bell of the Red Rack, a floating cracked bell that weeps light of red-hot brand-light and gold sparks from its crack, struck with a tuning-staff topped by small iron wings, heat-blackened from the brazier, a writ nailed to it; and her open hymnal. Sizes in her head-heights (she is about 7.3 heads tall): staff 3 heads tall, bell 1 head. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

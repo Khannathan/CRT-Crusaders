@@ -1,4 +1,28 @@
-<!-- Hallowed Belfry (HB) card HB-SSR-EXO. Generated from the sister bible; do not edit here. -->
+<!-- Hallowed Belfry (HB) card HB-SSR-EXO. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: HB-SSR-EXO
+name: Echoa Sonora
+epithet: Child of the Great Bell
+rarity: SSR
+rank: Demigoddess
+order: Hallowed Belfry (order id hollow-bell, code HB)
+class: Exorcist (class id exorcist, role Ranged DPS)
+age: 24
+weapon: Brazier of the Storm Bell (Mythic)
+relic: covered witchfire brazier, with a small cracked bell (a game item)
+kit:
+- SKILL I Lantern Flare: Smite any enemy and strip its shield and blessings. +30% against bosses.
+- SKILL II Tocsin Banishing: Strip the shield and blessings of every enemy. Lays Penance on every foe it strikes for 4s: each act costs the sinner 25% of its own attack. Cooldown 8s.
+- SKILL III Bronze Brand: Set any enemy Burning for 6s (stacks); the Bell rings twice. She gains 6 Zeal.
+- LITANY Belfry Anathema: LITANY: searing light on every enemy, then the Bell Peals at once. She heals 20% of the damage dealt. It hallows the ground: Hallowed Ground (every Sister Regenerates 4% every 2s) for 4s.
+- PASSIVE Knelling Creed: Peal: every foe Burns for 4s. While she stands, every Sister takes 4% less damage.
+- RELIC Covered Witchfire Brazier (game item; not drawn in her art): Bronze Brand: Silences it for 2s: only its plainest skill, and any charge breaks. It hits 12% harder.
+- ASCENSION (coming): As a Deity, her Belfry Anathema also grants Rapture (no damage for 2s) to every Sister, and her passive grows by half.
+- BATTLE CRY: "*the bell rings midnight early* Begone, foul thing!"
+```
+<!-- END GAME DATA -->
 
 Read the Hallowed Belfry section of order-bible.md first. Cloth: bell bronze #8b6848 lead, parchment #c6baa4 trim, blackened iron. Head: bell-shaped hood or coif hung with small hand-bells. Hem: scalloped, bell-curved hem.
 
@@ -30,15 +54,7 @@ FANATIC: a heretic's sigil branded into her forearm; blend into her expression: 
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (daring): on top of her neckline, show a bare midriff under a short breastplate, and thigh-high boots with bare skin above, held by garter straps of chain. SPLASH POSE (splash only; the bust and battle sprite use their own framing): standing tall with weight on one leg, chin raised in contempt. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: blackened gothic plate with bell-shaped pauldrons, purity seals on bell-rope cords, a cracked cathedral bell hung behind her (splash only).
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Lantern Flare: Smite any enemy and strip its shield and blessings. +30% against bosses.
-- SKILL II Tocsin Banishing: Strip the shield and blessings of every enemy. Lays Penance on every foe it strikes for 4s: each act costs the sinner 25% of its own attack. Cooldown 8s.
-- SKILL III Bronze Brand: Set any enemy Burning for 6s (stacks); the Bell rings twice. She gains 6 Zeal.
-- LITANY Belfry Anathema: LITANY: searing light on every enemy, then the Bell Peals at once. She heals 20% of the damage dealt. It hallows the ground: Hallowed Ground (every Sister Regenerates 4% every 2s) for 4s.
-- PASSIVE Knelling Creed: Peal: every foe Burns for 4s. While she stands, every Sister takes 4% less damage.
-- RELIC Covered Witchfire Brazier (game item; not drawn in her art): Bronze Brand: Silences it for 2s: only its plainest skill, and any charge breaks. It hits 12% harder.
-- ASCENSION (coming): As a Deity, her Belfry Anathema also grants Rapture (no damage for 2s) to every Sister, and her passive grows by half.
-- BATTLE CRY: "*the bell rings midnight early* Begone, foul thing!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: bronze sound-rings rippling out, rope shadows and a dull midnight shockwave; the lantern opens and witchfire pours out like a flamer; her Litany Belfry Anathema hallows the ground in a ring of bronze sound-rings rippling out; her Covered Witchfire Brazier blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Echoa Sonora, Child of the Great Bell. Draw only these objects: her Mythic weapon, Brazier of the Storm Bell, a lantern holding a captured angel's fire, small iron wings around the cage, burning bronze sound-rings, ringing with a small black death-knell bell tied to it. Sizes in her head-heights (she is about 7.3 heads tall): pole 4 heads tall, lantern 1 head. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

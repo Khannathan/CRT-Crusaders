@@ -1,4 +1,28 @@
-<!-- Choir of the Pyre (CC) card CC-R-CAN. Generated from the sister bible; do not edit here. -->
+<!-- Choir of the Pyre (CC) card CC-R-CAN. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: CC-R-CAN
+name: Hannah Hymnifera
+epithet: Standard-Bearer of the Red Seal
+rarity: R
+rank: Commander
+order: Choir of the Pyre (order id candle-choir, code CC)
+class: Cantor (class id cantor, role Buffer)
+age: 26
+weapon: Waxsworn War-Bell (Epic)
+relic: resonating metal throat icon, set in a square weathered bronze housing (a game item)
+kit:
+- SKILL I Hymn of Iron: Every ally gains +30% attack for 4s. Cooldown 6s.
+- SKILL II Keening Note: Smite any enemy: Sundered (-20% armor) and Hexed (-20% Magic Resist) for 4s.
+- SKILL III Iron Verse: A Hymn for 4s (it harmonises with other Choir Hymns), and every Sister gains 8 Zeal now. Cooldown 8s.
+- LITANY Requiem Chorus: LITANY: every ally gains +30% attack and +25% critical chance for 4s, and Haste.
+- PASSIVE Grave Note: Each foe she kills gives her 6 Zeal.
+- RELIC Resonating Metal Throat Icon (game item; not drawn in her art): Requiem Chorus: Every Sister Regenerates 3% of max HP every 2s for 4s.
+- COMMAND (coming): Leads a hymn-chanting war-choir that lifts every soldier's spirit of the Choir of the Pyre.
+- BATTLE CRY: "Hear the choir, and burn. Every verse, a killing blow!"
+```
+<!-- END GAME DATA -->
 
 Read the Choir of the Pyre section of order-bible.md first. Cloth: candle gold #d6a15f lead, wine #652b3b trim, bronze. Head: crown of dripping candles. Hem: ribbon streamers.
 
@@ -14,15 +38,7 @@ FANATIC: tears of blood dried on her cheeks; blend into her expression: burning 
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (confident): on top of her neckline, show a bare midriff under a short breastplate, and a corset cinched tight under the bust. SPLASH POSE (splash only; the bust and battle sprite use their own framing): one knee raised on a heretic's skull, leaning into the weapon. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: gilded gothic plate dripping with candle wax, purity seals as hymn sheets, a battle hymn screamed not sung, consecrated fire in her eyes and on her blade.
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Hymn of Iron: Every ally gains +30% attack for 4s. Cooldown 6s.
-- SKILL II Keening Note: Smite any enemy: Sundered (-20% armor) and Hexed (-20% Magic Resist) for 4s.
-- SKILL III Iron Verse: A Hymn for 4s (it harmonises with other Choir Hymns), and every Sister gains 8 Zeal now. Cooldown 8s.
-- LITANY Requiem Chorus: LITANY: every ally gains +30% attack and +25% critical chance for 4s, and Haste.
-- PASSIVE Grave Note: Each foe she kills gives her 6 Zeal.
-- RELIC Resonating Metal Throat Icon (game item; not drawn in her art): Requiem Chorus: Every Sister Regenerates 3% of max HP every 2s for 4s.
-- COMMAND (coming): Leads a hymn-chanting war-choir that lifts every soldier's spirit of the Choir of the Pyre.
-- BATTLE CRY: "Hear the choir, and burn. Every verse, a killing blow!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: candle-gold flame, dripping wax and floating hymn ribbons; her voice is visible as rings of flame; her Resonating Metal Throat Icon blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Hannah Hymnifera, Standard-Bearer of the Red Seal. Draw only these objects: her Epic weapon, Waxsworn War-Bell, a war-bell of dull bronze dripping with red wax on a hammer haft, engraved with dripping candles and hymn ribbons, and a clasped hymnal, with charred hymn-pages nailed along it; and her open hymnal. Sizes in her head-heights (she is about 7.3 heads tall): staff 3 heads tall, bell 1 head. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

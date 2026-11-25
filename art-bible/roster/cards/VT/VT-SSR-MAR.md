@@ -1,4 +1,28 @@
-<!-- Veiled Tribunal (VT) card VT-SSR-MAR. Generated from the sister bible; do not edit here. -->
+<!-- Veiled Tribunal (VT) card VT-SSR-MAR. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: VT-SSR-MAR
+name: Probatio Tacens
+epithet: Child of the Silent Judge
+rarity: SSR
+rank: Demigoddess
+order: Veiled Tribunal (order id veiled-tribunal, code VT)
+class: Martyr (class id martyr, role Tank)
+age: 29
+weapon: Stigma of the Final Verdict (Mythic)
+relic: nail from a martyr's pyre, wrapped in a parchment writ (a game item)
+kit:
+- SKILL I Searing Smite: Strike a front-line foe and heal for 35% of the damage dealt.
+- SKILL II Gavel Offering: Ward every ally (-13% damage taken) for 4s. She gains 6 Zeal. Cooldown 8s.
+- SKILL III Tribunal Vow: Strike a front-line foe, draw attacks and counter anyone who hits her, for 4s. Lays Penance on the foe for 4s: each act costs the sinner 25% of its own attack.
+- LITANY Sealed Requiem: LITANY: Ward every ally (-22% damage) for 4s; she draws every attack and counters at full attack. Every Sister gains a Mirror Image (each swallows a whole hit). It hallows the ground: Hallowed Ground (every Sister Regenerates 4% every 2s) for 4s.
+- PASSIVE Sentenced Heresy-Bane: While she stands, every Sister takes 8% less damage. Her counters add 1 Guilt; on a foe with 5 Guilt her counter becomes Vindicate and spends it for a heavy blow. Her blows lay Penance: for 4s each act costs the foe 12% of its own attack.
+- RELIC Nail From A Martyr'S Pyre (game item; not drawn in her art): Sealed Requiem: Rapture: every Sister takes no damage for 2s.
+- ASCENSION (coming): As a Deity, her Sealed Requiem also grants Rapture (no damage for 2s) to every Sister, and her passive grows by half.
+- BATTLE CRY: "There is no appeal in my court. My wounds are their shield!"
+```
+<!-- END GAME DATA -->
 
 Read the Veiled Tribunal section of order-bible.md first. Cloth: dusk violet #6e5a8c lead, parchment #c6baa4 trim, black steel with crimson silk lining. Head: sheer black veil over the eyes, high angular collar. Hem: sharp angular points.
 
@@ -30,15 +54,7 @@ FANATIC: candle wax poured over her own collarbone as penance; blend into her ex
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (daring): on top of her neckline, show bare thighs between greaves and a high-cut tabard slit, and skin-tight sheer black sleeves and gloves to the shoulder. SPLASH POSE (splash only; the bust and battle sprite use their own framing): twisting at the waist mid-swing, hair flying. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: judicial gothic plate hung with nailed verdicts and chained scripture, purity seals stamped with the scales, heretics kneeling in chains behind her (splash only).
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Searing Smite: Strike a front-line foe and heal for 35% of the damage dealt.
-- SKILL II Gavel Offering: Ward every ally (-13% damage taken) for 4s. She gains 6 Zeal. Cooldown 8s.
-- SKILL III Tribunal Vow: Strike a front-line foe, draw attacks and counter anyone who hits her, for 4s. Lays Penance on the foe for 4s: each act costs the sinner 25% of its own attack.
-- LITANY Sealed Requiem: LITANY: Ward every ally (-22% damage) for 4s; she draws every attack and counters at full attack. Every Sister gains a Mirror Image (each swallows a whole hit). It hallows the ground: Hallowed Ground (every Sister Regenerates 4% every 2s) for 4s.
-- PASSIVE Sentenced Heresy-Bane: While she stands, every Sister takes 8% less damage. Her counters add 1 Guilt; on a foe with 5 Guilt her counter becomes Vindicate and spends it for a heavy blow. Her blows lay Penance: for 4s each act costs the foe 12% of its own attack.
-- RELIC Nail From A Martyr'S Pyre (game item; not drawn in her art): Sealed Requiem: Rapture: every Sister takes no damage for 2s.
-- ASCENSION (coming): As a Deity, her Sealed Requiem also grants Rapture (no damage for 2s) to every Sister, and her passive grows by half.
-- BATTLE CRY: "There is no appeal in my court. My wounds are their shield!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: violet scale-marks, nailed parchment verdicts and wax seals bursting; her own blood turns to consecrated fire across her sisters; her Litany Sealed Requiem hallows the ground in a ring of violet scale-marks; her Nail From A Martyr'S Pyre blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Probatio Tacens, Child of the Silent Judge. Draw only these objects: her Mythic weapon, Stigma of the Final Verdict, a broadsword that bleeds light from five wounds along its blade in violet judgement-light, and a buckler crowned with a broken halo that still spins, notched once for every soul she condemned. Sizes in her head-heights (she is about 7.3 heads tall): broadsword 2.5 heads, buckler 1 head across. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

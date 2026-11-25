@@ -1,4 +1,28 @@
-<!-- Hallowed Belfry (HB) card HB-UR2. Generated from the sister bible; do not edit here. -->
+<!-- Hallowed Belfry (HB) card HB-UR2. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: HB-UR2
+name: Zvonara
+epithet: the Silent Peal, Goddess of Death's Call
+rarity: UR
+rank: Deity
+order: Hallowed Belfry (order id hollow-bell, code HB)
+class: Veilblade (class id veilblade, role Melee DPS)
+age: 21
+weapon: The Halo-Shard Fangs of the Last Toll (Divine Arsenal)
+relic: black prayer book with a hollow spine, bound in bell-rope (a game item)
+kit:
+- SKILL I Veil Strike: Strike any foe, with +25% critical chance. She gains 8 Zeal.
+- SKILL II Knell Knife: Haste herself and +34% critical chance for 4s. She is Thorned (30% of blows back) for 4s. Cooldown 6s.
+- SKILL III Hamstring: Cut any foe: Bleeding for 6s and Staggered. Accuses the foe for 4s (+25% damage taken). Cooldown 6s.
+- LITANY Bell Psalm: LITANY: a crushing blow on any enemy, doubled against the Accused, then the Bell Peals at once. Sunders the foe (-25% armor) for 4s. It hallows the ground: Hallowed Ground (every Sister Regenerates 4% every 2s) for 6s.
+- PASSIVE Belfry Penance: +35% damage to foes under half HP. Peal: she strikes the foe with the lowest HP. While she stands, every Sister takes 5% less damage.
+- SAINT'S SEAL Unbroken Vow: The first killing blow leaves her at 1 HP, and Midnight comes at once if it has not yet.
+- RELIC Black Prayer Book With A Hollow Spine (game item; not drawn in her art): Hamstring: Silences it for 4s: only its plainest skill, and any charge breaks. It hits 15% harder.
+- BATTLE CRY: "*one toll, one life* A whisper, then nothing!"
+```
+<!-- END GAME DATA -->
 
 Read the Hallowed Belfry section of order-bible.md first. Cloth: bell bronze #8b6848 lead, parchment #c6baa4 trim, blackened iron. Head: bell-shaped hood or coif hung with small hand-bells. Hem: scalloped, bell-curved hem.
 
@@ -30,15 +54,7 @@ FANATIC: fresh scourge marks across her shoulders; blend into her expression: ey
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (boldest in her Order): on top of her neckline, show a chain harness across her bare waist, and bare thighs between greaves and a high-cut tabard slit. SPLASH POSE (splash only; the bust and battle sprite use their own framing): striding forward out of smoke, cape snapping behind. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: blackened gothic plate with bell-shaped pauldrons, purity seals on bell-rope cords, a cracked cathedral bell hung behind her (splash only).
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Veil Strike: Strike any foe, with +25% critical chance. She gains 8 Zeal.
-- SKILL II Knell Knife: Haste herself and +34% critical chance for 4s. She is Thorned (30% of blows back) for 4s. Cooldown 6s.
-- SKILL III Hamstring: Cut any foe: Bleeding for 6s and Staggered. Accuses the foe for 4s (+25% damage taken). Cooldown 6s.
-- LITANY Bell Psalm: LITANY: a crushing blow on any enemy, doubled against the Accused, then the Bell Peals at once. Sunders the foe (-25% armor) for 4s. It hallows the ground: Hallowed Ground (every Sister Regenerates 4% every 2s) for 6s.
-- PASSIVE Belfry Penance: +35% damage to foes under half HP. Peal: she strikes the foe with the lowest HP. While she stands, every Sister takes 5% less damage.
-- SAINT'S SEAL Unbroken Vow: The first killing blow leaves her at 1 HP, and Midnight comes at once if it has not yet.
-- RELIC Black Prayer Book With A Hollow Spine (game item; not drawn in her art): Hamstring: Silences it for 4s: only its plainest skill, and any charge breaks. It hits 15% harder.
-- BATTLE CRY: "*one toll, one life* A whisper, then nothing!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: bronze sound-rings rippling out, rope shadows and a dull midnight shockwave; she vanishes and reappears in a slash of dark silk; her Litany Bell Psalm hallows the ground in a ring of bronze sound-rings rippling out; her Black Prayer Book With A Hollow Spine blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Zvonara, the Silent Peal, Goddess of Death's Call. Draw only these objects: her Divine Arsenal weapon, The Halo-Shard Fangs of the Last Toll, twin daggers that are shards of a fallen seraph's halo; every cut opens a hanging eye of bronze sound-rings that watches the victim die, with a bell-rope braided from the hair of the punished wrapped round the grip. Sizes in her head-heights (she is about 7.3 heads tall): daggers 1 head each. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

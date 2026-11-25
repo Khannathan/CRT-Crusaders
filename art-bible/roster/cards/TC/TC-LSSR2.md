@@ -1,4 +1,27 @@
-<!-- The Verdant Martyrdom (TC) card TC-LSSR2. Generated from the sister bible; do not edit here. -->
+<!-- The Verdant Martyrdom (TC) card TC-LSSR2. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: TC-LSSR2
+name: Vepris Sentosa
+epithet: Half-Born of the Bloom Eternal
+rarity: SSR (Limited)
+rank: Demigoddess
+order: Verdant Martyrdom (order id thorn-covenant, code TC)
+class: War-Sister (class id warsister, role Melee DPS)
+age: 25
+weapon: Wrath of the Thorn Crown (Mythic)
+relic: silver dueling gauntlet, stained with an old blood mark (a game item)
+kit:
+- SKILL I Flagellant's Charge: Crash into a near foe and charge forward. +60% against the Weakened. Cooldown 6s.
+- SKILL II Bramble Lash: Strike any foe and leave it Bleeding for 6s. She heals 20% of the damage dealt. Cooldown 4s.
+- SKILL III Penitent Charge: Sacrifice 8% HP; strike any foe, +50% against the Accused. Sunders the foe (-20% armor) for 4s.
+- LITANY Scourge Requiem: LITANY: a crushing blow on any enemy, +5% per Scar she holds. Lays Penance on the foe for 4s: each act costs the sinner 25% of its own attack. It hallows the ground: Briar Ground (every foe bleeds 15% of her attack every 2s) for 4s.
+- PASSIVE Briar-Born Zeal: Heals for 12% of the damage she deals. Each Scar she holds lets her hits ignore 4% more Armor. Each action stokes 1 Fervor (+6% damage, up to 5).
+- RELIC Silver Dueling Gauntlet (game item; not drawn in her art): Scourge Requiem: She heals 20% of the damage dealt. It hits 12% harder.
+- BATTLE CRY: "The thorns know your name. Bleed with me!"
+```
+<!-- END GAME DATA -->
 
 Read the Verdant Martyrdom section of order-bible.md first. Cloth: moss green #5a7a3a lead, blood red #9a2a33 trim, old bronze. Head: crown of living briar. Hem: thorny tatters.
 
@@ -31,14 +54,7 @@ FANATIC: fresh scourge marks across her shoulders; blend into her expression: bu
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (bold): on top of her neckline, show a corset cinched tight under the bust, and a side-cut tabard open from ribs to hip. SPLASH POSE (splash only; the bust and battle sprite use their own framing): kneeling in prayer with the weapon planted, looking up through her lashes. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: scourged gothic plate wrapped in barbed briar, purity seals soaked in her own blood, flagellant scars.
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Flagellant's Charge: Crash into a near foe and charge forward. +60% against the Weakened. Cooldown 6s.
-- SKILL II Bramble Lash: Strike any foe and leave it Bleeding for 6s. She heals 20% of the damage dealt. Cooldown 4s.
-- SKILL III Penitent Charge: Sacrifice 8% HP; strike any foe, +50% against the Accused. Sunders the foe (-20% armor) for 4s.
-- LITANY Scourge Requiem: LITANY: a crushing blow on any enemy, +5% per Scar she holds. Lays Penance on the foe for 4s: each act costs the sinner 25% of its own attack. It hallows the ground: Briar Ground (every foe bleeds 15% of her attack every 2s) for 4s.
-- PASSIVE Briar-Born Zeal: Heals for 12% of the damage she deals. Each Scar she holds lets her hits ignore 4% more Armor. Each action stokes 1 Fervor (+6% damage, up to 5).
-- RELIC Silver Dueling Gauntlet (game item; not drawn in her art): Scourge Requiem: She heals 20% of the damage dealt. It hits 12% harder.
-- BATTLE CRY: "The thorns know your name. Bleed with me!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: blood-red scar-light and lashing briar, rose petals torn loose; the flail spins in a red arc and her scourge-marks glow; her Litany Scourge Requiem hallows the ground in a ring of blood-red scar-light and lashing briar; her Silver Dueling Gauntlet blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Vepris Sentosa, Half-Born of the Bloom Eternal. Draw only these objects: her Mythic weapon, Wrath of the Thorn Crown, a flail of three burning seraph-eyes on chains of white iron, each eye trailing light of green-grey light with red thorn sparks, wound with barbed briar that drinks her blood. Sizes in her head-heights (she is about 7.3 heads tall): flail haft 1.5 heads, chain 1 head. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

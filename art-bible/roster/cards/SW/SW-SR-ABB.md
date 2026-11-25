@@ -1,4 +1,27 @@
-<!-- Sepulcher Watch (SW) card SW-SR-ABB. Generated from the sister bible; do not edit here. -->
+<!-- Sepulcher Watch (SW) card SW-SR-ABB. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: SW-SR-ABB
+name: Velthura Sepulcralis
+epithet: Who Walked Out of the Deep Stair
+rarity: SR
+rank: Legend
+order: Sepulcher Watch (order id sepulcher-watch, code SW)
+class: Abbess (class id abbess, role Healer)
+age: 24
+weapon: Crozier of the Bone Plague (Legendary)
+relic: seal of her abbey, in an ivory reliquary (a game item)
+kit:
+- SKILL I Thorned Rebuke: Lash a near foe, leaving it Bleeding for 4s. Every Sister heals 45% of the damage dealt.
+- SKILL II Briar Mantle: Heal every ally 5% of max HP and dress them in thorns: foes that strike them take 35% back, for 4s. Cooldown 6s.
+- SKILL III Ivory Cloister: Spend 2 Remains to heal every ally 12% and cure poison, burns and bleeding. She gains 5 Zeal. Cooldown 6s.
+- LITANY Bone Psalm: LITANY: raise every fallen Sister with 29% HP, heal every ally 22%, and the party gains 2 Remains. Every Sister gains +10% critical chance for 4s.
+- PASSIVE Bone-Sworn Covenant: Foes that strike her take 15% of the damage back. +8% damage on foes under half HP.
+- RELIC Seal Of Her Abbey (game item; not drawn in her art): Briar Mantle: Martyrdom: for 4s she takes 25% of every blow aimed at her Sisters.
+- BATTLE CRY: "Death is no discharge from this war. Pain is the lesson!"
+```
+<!-- END GAME DATA -->
 
 Read the Sepulcher Watch section of order-bible.md first. Cloth: bone-tan #b8ab8a lead, slate #383845 trim, dark steel with aged ivory trim. Head: bone-tan hood with a finger-bone circlet. Hem: heavy straight hem weighted with keys.
 
@@ -14,14 +37,7 @@ FANATIC: a rope of confessions knotted around her waist; blend into her expressi
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (bold): on top of her neckline, show a torn habit that bares hip and leg, and a bare midriff under a short breastplate. SPLASH POSE (splash only; the bust and battle sprite use their own framing): striding forward out of smoke, cape snapping behind. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: ossuary plate with the bones of the honoured dead fused into it, purity seals on skull-shaped bosses, coffin nails driven through her belt.
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Thorned Rebuke: Lash a near foe, leaving it Bleeding for 4s. Every Sister heals 45% of the damage dealt.
-- SKILL II Briar Mantle: Heal every ally 5% of max HP and dress them in thorns: foes that strike them take 35% back, for 4s. Cooldown 6s.
-- SKILL III Ivory Cloister: Spend 2 Remains to heal every ally 12% and cure poison, burns and bleeding. She gains 5 Zeal. Cooldown 6s.
-- LITANY Bone Psalm: LITANY: raise every fallen Sister with 29% HP, heal every ally 22%, and the party gains 2 Remains. Every Sister gains +10% critical chance for 4s.
-- PASSIVE Bone-Sworn Covenant: Foes that strike her take 15% of the damage back. +8% damage on foes under half HP.
-- RELIC Seal Of Her Abbey (game item; not drawn in her art): Briar Mantle: Martyrdom: for 4s she takes 25% of every blow aimed at her Sisters.
-- BATTLE CRY: "Death is no discharge from this war. Pain is the lesson!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: bone-white light, orbiting skull tokens and spectral funerary keys; the crozier cracks like a whip, thorns mending as they cut; her Seal Of Her Abbey blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Velthura Sepulcralis, Who Walked Out of the Deep Stair. Draw only these objects: her Legendary weapon, Crozier of the Bone Plague, an iron crozier of dark steel inlaid with ivory and bone with a spiral hook set with a glowing relic, thorns in bloom, and runes along the shaft, crusted with grave dirt and burial lime. Sizes in her head-heights (she is about 7.3 heads tall): crozier 4 heads tall. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

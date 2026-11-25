@@ -1,4 +1,28 @@
-<!-- Veiled Tribunal (VT) card VT-R-ADJ. Generated from the sister bible; do not edit here. -->
+<!-- Veiled Tribunal (VT) card VT-R-ADJ. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: VT-R-ADJ
+name: Eudokia Ponderatrix
+epithet: Marshal of the Veiled Bench
+rarity: R
+rank: Commander
+order: Veiled Tribunal (order id veiled-tribunal, code VT)
+class: Adjudicator (class id adjudicator, role Buffer)
+age: 26
+weapon: Verdict Ledger (Epic)
+relic: bone stylus, wrapped in a parchment writ (a game item)
+kit:
+- SKILL I Reflected Sentence: Smite any enemy: -25% attack for 4s. Drains 15 Wrath from a boss.
+- SKILL II Mirror Ward: Ward an ally (-25% damage) and give her thorns (30% back) for 4s. Cooldown 6s.
+- SKILL III Veil Verdict: Every foe gains 1 Guilt and is Accused for 2s. Lays Penance on every foe it strikes for 4s: each act costs the sinner 15% of its own attack. Cooldown 6s.
+- LITANY Final Judgment: LITANY: every enemy is Weakened (-30% attack) for 4s and loses 40 Wrath.
+- PASSIVE Veiled Psalm: +1 speed: she acts sooner. Her crits Brand the foe: its next wound lands 15% harder.
+- RELIC Bone Stylus (game item; not drawn in her art): Final Judgment: Brands every foe it strikes: the next blow on it lands 20% harder. It hits 8% harder.
+- COMMAND (coming): Leads a court of inquisitors who mark heretic officers of the Veiled Tribunal.
+- BATTLE CRY: "The Tribunal has never acquitted. I will not be the first. Your strength is forfeit!"
+```
+<!-- END GAME DATA -->
 
 Read the Veiled Tribunal section of order-bible.md first. Cloth: dusk violet #6e5a8c lead, parchment #c6baa4 trim, black steel with crimson silk lining. Head: sheer black veil over the eyes, high angular collar. Hem: sharp angular points.
 
@@ -14,15 +38,7 @@ FANATIC: vow chains locked around her wrists; blend into her expression: burning
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (confident): on top of her neckline, show skin-tight sheer black sleeves and gloves to the shoulder, and a chain harness across her bare waist. SPLASH POSE (splash only; the bust and battle sprite use their own framing): kneeling in prayer with the weapon planted, looking up through her lashes. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: judicial gothic plate hung with nailed verdicts and chained scripture, purity seals stamped with the scales, heretics kneeling in chains behind her (splash only).
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Reflected Sentence: Smite any enemy: -25% attack for 4s. Drains 15 Wrath from a boss.
-- SKILL II Mirror Ward: Ward an ally (-25% damage) and give her thorns (30% back) for 4s. Cooldown 6s.
-- SKILL III Veil Verdict: Every foe gains 1 Guilt and is Accused for 2s. Lays Penance on every foe it strikes for 4s: each act costs the sinner 15% of its own attack. Cooldown 6s.
-- LITANY Final Judgment: LITANY: every enemy is Weakened (-30% attack) for 4s and loses 40 Wrath.
-- PASSIVE Veiled Psalm: +1 speed: she acts sooner. Her crits Brand the foe: its next wound lands 15% harder.
-- RELIC Bone Stylus (game item; not drawn in her art): Final Judgment: Brands every foe it strikes: the next blow on it lands 20% harder. It hits 8% harder.
-- COMMAND (coming): Leads a court of inquisitors who mark heretic officers of the Veiled Tribunal.
-- BATTLE CRY: "The Tribunal has never acquitted. I will not be the first. Your strength is forfeit!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: violet scale-marks, nailed parchment verdicts and wax seals bursting; giant scales of light tip and crush the foe; her Bone Stylus blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Eudokia Ponderatrix, Marshal of the Veiled Bench. Draw only these objects: her Epic weapon, Verdict Ledger, hanging scales of angular black steel with crimson silk with balance scales and angular wax seals, and an iron-bound ledger with a seal stamp, notched once for every soul she condemned. Sizes in her head-heights (she is about 7.3 heads tall): scales 1.5 heads tall, ledger 1 head. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

@@ -1,4 +1,28 @@
-<!-- The Verdant Martyrdom (TC) card TC-SSR-CEN. Generated from the sister bible; do not edit here. -->
+<!-- The Verdant Martyrdom (TC) card TC-SSR-CEN. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: TC-SSR-CEN
+name: Sentis Stigmata
+epithet: Chosen of the Scarred Saint
+rarity: SSR
+rank: Demigoddess
+order: Verdant Martyrdom (order id thorn-covenant, code TC)
+class: Censer (class id censer, role Ranged DPS)
+age: 21
+weapon: Brazier of the Wild Covenant (Mythic)
+relic: smoky-glass thurible, tied with a scourge cord (a game item)
+kit:
+- SKILL I Burning Thurible: Dash forward, swing at a front-line foe and set it Burning for 4s. Stacks on poison.
+- SKILL II Scarred Coals: Sacrifice 5% HP; Poison every enemy for 4s (stacks). Hexes every foe it strikes (-20% Magic Resist) for 4s. Cooldown 6s.
+- SKILL III Thorn Incense: Sacrifice 5% HP; a heavy bolt on any foe through 25% of its Armor. She heals 20% of the damage dealt.
+- LITANY Bleeding Dirge: LITANY: burn every enemy for 4s, and every one Bleeds as well. Accuses every foe it strikes for 4s (+25% damage taken). It hallows the ground: Briar Ground (every foe bleeds 15% of her attack every 2s) for 4s.
+- PASSIVE Rose Covenant: Each Scar she holds lets her hits ignore 5% more Armor. Each action stokes 1 Fervor (+6% damage, up to 5).
+- RELIC Smoky-Glass Thurible (game item; not drawn in her art): Burning Thurible: Opens Stigmata: it bleeds 0.25x every 2s for 4s, and every drop heals her for half. It hits 12% harder.
+- ASCENSION (coming): As a Deity, her Bleeding Dirge also grants Rapture (no damage for 2s) to every Sister, and her passive grows by half.
+- BATTLE CRY: "My blood for the roots, and yours for the harvest. The coals are consecrated!"
+```
+<!-- END GAME DATA -->
 
 Read the Verdant Martyrdom section of order-bible.md first. Cloth: moss green #5a7a3a lead, blood red #9a2a33 trim, old bronze. Head: crown of living briar. Hem: thorny tatters.
 
@@ -30,15 +54,7 @@ FANATIC: a rope of confessions knotted around her waist; blend into her expressi
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (daring): on top of her neckline, show skin-tight sheer black sleeves and gloves to the shoulder, and a corset cinched tight under the bust. SPLASH POSE (splash only; the bust and battle sprite use their own framing): kneeling in prayer with the weapon planted, looking up through her lashes. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: scourged gothic plate wrapped in barbed briar, purity seals soaked in her own blood, flagellant scars.
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Burning Thurible: Dash forward, swing at a front-line foe and set it Burning for 4s. Stacks on poison.
-- SKILL II Scarred Coals: Sacrifice 5% HP; Poison every enemy for 4s (stacks). Hexes every foe it strikes (-20% Magic Resist) for 4s. Cooldown 6s.
-- SKILL III Thorn Incense: Sacrifice 5% HP; a heavy bolt on any foe through 25% of its Armor. She heals 20% of the damage dealt.
-- LITANY Bleeding Dirge: LITANY: burn every enemy for 4s, and every one Bleeds as well. Accuses every foe it strikes for 4s (+25% damage taken). It hallows the ground: Briar Ground (every foe bleeds 15% of her attack every 2s) for 4s.
-- PASSIVE Rose Covenant: Each Scar she holds lets her hits ignore 5% more Armor. Each action stokes 1 Fervor (+6% damage, up to 5).
-- RELIC Smoky-Glass Thurible (game item; not drawn in her art): Burning Thurible: Opens Stigmata: it bleeds 0.25x every 2s for 4s, and every drop heals her for half. It hits 12% harder.
-- ASCENSION (coming): As a Deity, her Bleeding Dirge also grants Rapture (no damage for 2s) to every Sister, and her passive grows by half.
-- BATTLE CRY: "My blood for the roots, and yours for the harvest. The coals are consecrated!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: blood-red scar-light and lashing briar, rose petals torn loose; the thurible swings out a choking cloud of burning incense; her Litany Bleeding Dirge hallows the ground in a ring of blood-red scar-light and lashing briar; her Smoky-Glass Thurible blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Sentis Stigmata, Chosen of the Scarred Saint. Draw only these objects: her Mythic weapon, Brazier of the Wild Covenant, a censer shaped like a seraph's head with folded wings, breathing smoke that takes consecrated shapes in green-grey light with red thorn sparks, wound with barbed briar that drinks her blood. Sizes in her head-heights (she is about 7.3 heads tall): censer 1 head, chain 2 heads. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

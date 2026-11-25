@@ -1,4 +1,28 @@
-<!-- Choir of the Pyre (CC) card CC-UR1. Generated from the sister bible; do not edit here. -->
+<!-- Choir of the Pyre (CC) card CC-UR1. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: CC-UR1
+name: Ignifera
+epithet: the Undying Hymn, Goddess of Song
+rarity: UR
+rank: Deity
+order: Choir of the Pyre (order id candle-choir, code CC)
+class: War-Sister (class id warsister, role Melee DPS)
+age: 24
+weapon: The Seven-Star Scourge of the Unending Hymn (Divine Arsenal)
+relic: silver dueling gauntlet, set in a square weathered bronze housing (a game item)
+kit:
+- SKILL I Cadence Thrust: Lunge at a near foe; +50% while a Hymn plays. She gains 2 Fervor (+6% damage each, up to 5).
+- SKILL II Hymn of the Blade: A Hymn for 6s: every ally +15% critical chance. She gains +15% critical chance for 4s. Cooldown 8s.
+- SKILL III Candle Cut: Strike a front-line foe, leave it Bleeding for 4s and Stagger it. Hexes the foe (-25% Magic Resist) for 4s. Cooldown 6s.
+- LITANY Crescendo: LITANY: five strikes on any enemy at 0.45x each; each one gives the party 4 Zeal. +20% critical chance on it. It hallows the ground: Hallowed Ground (every Sister Regenerates 4% every 2s) for 6s.
+- PASSIVE Duet: While any Hymn plays, each of her strikes lands twice (the second at 60%), and every strike gives the party 3 Zeal.
+- SAINT'S SEAL The Note Held: The first time a Hymn would end, it plays 4s more.
+- RELIC Silver Dueling Gauntlet (game item; not drawn in her art): Hymn of the Blade: She gains 2 Fervor (+6% damage each, up to 5).
+- BATTLE CRY: "Wax and fire and fury. Burn it all!"
+```
+<!-- END GAME DATA -->
 
 Read the Choir of the Pyre section of order-bible.md first. Cloth: candle gold #d6a15f lead, wine #652b3b trim, bronze. Head: crown of dripping candles. Hem: ribbon streamers.
 
@@ -31,15 +55,7 @@ FANATIC: flagellant scars criss-crossing her arms; blend into her expression: in
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (boldest in her Order): on top of her neckline, show skin-tight sheer black sleeves and gloves to the shoulder, and a torn habit that bares hip and leg. SPLASH POSE (splash only; the bust and battle sprite use their own framing): back arched, hip cocked, cloak swept back over one shoulder. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: gilded gothic plate dripping with candle wax, purity seals as hymn sheets, a battle hymn screamed not sung, consecrated fire in her eyes and on her blade.
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Cadence Thrust: Lunge at a near foe; +50% while a Hymn plays. She gains 2 Fervor (+6% damage each, up to 5).
-- SKILL II Hymn of the Blade: A Hymn for 6s: every ally +15% critical chance. She gains +15% critical chance for 4s. Cooldown 8s.
-- SKILL III Candle Cut: Strike a front-line foe, leave it Bleeding for 4s and Stagger it. Hexes the foe (-25% Magic Resist) for 4s. Cooldown 6s.
-- LITANY Crescendo: LITANY: five strikes on any enemy at 0.45x each; each one gives the party 4 Zeal. +20% critical chance on it. It hallows the ground: Hallowed Ground (every Sister Regenerates 4% every 2s) for 6s.
-- PASSIVE Duet: While any Hymn plays, each of her strikes lands twice (the second at 60%), and every strike gives the party 3 Zeal.
-- SAINT'S SEAL The Note Held: The first time a Hymn would end, it plays 4s more.
-- RELIC Silver Dueling Gauntlet (game item; not drawn in her art): Hymn of the Blade: She gains 2 Fervor (+6% damage each, up to 5).
-- BATTLE CRY: "Wax and fire and fury. Burn it all!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: candle-gold flame, dripping wax and floating hymn ribbons; the flail spins in a red arc and her scourge-marks glow; her Litany Crescendo hallows the ground in a ring of candle-gold flame; her Silver Dueling Gauntlet blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Ignifera, the Undying Hymn, Goddess of Song. Draw only these objects: her Divine Arsenal weapon, The Seven-Star Scourge of the Unending Hymn, a flail of seven blazing stars on chains of light, orbiting her like a wheel of eyes and crashing down as judgement in golden candle-flame, with charred hymn-pages nailed along it. Sizes in her head-heights (she is about 7.3 heads tall): flail haft 1.5 heads, chain 1 head. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

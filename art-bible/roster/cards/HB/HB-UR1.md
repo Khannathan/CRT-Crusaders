@@ -1,4 +1,28 @@
-<!-- Hallowed Belfry (HB) card HB-UR1. Generated from the sister bible; do not edit here. -->
+<!-- Hallowed Belfry (HB) card HB-UR1. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: HB-UR1
+name: Tonitrix
+epithet: the Hollow Toll, Goddess of the Bell
+rarity: UR
+rank: Deity
+order: Hallowed Belfry (order id hollow-bell, code HB)
+class: War-Sister (class id warsister, role Melee DPS)
+age: 21
+weapon: The Seven-Star Scourge of the Last Toll (Divine Arsenal)
+relic: vow collar, bearing a cracked oval mother-of-pearl inset (a game item)
+kit:
+- SKILL I Clapper Blow: Smite a front-line foe hard; +40% while she is under half HP. She gains 8 Zeal.
+- SKILL II Ring the Hours: Sacrifice 10% HP; +25 of her own Zeal, and the Bell rings twice. She gains 2 Fervor (+6% damage each, up to 5). Cooldown 6s.
+- SKILL III Toll for the Wicked: Strike a near foe and Stagger it. Accuses the foe for 4s (+25% damage taken). Cooldown 6s.
+- LITANY Midnight Toll: LITANY: strike every enemy; the Bell rings three times. Weakens every foe it strikes (-20% attack) for 4s. It hallows the ground: Hallowed Ground (every Sister Regenerates 4% every 2s) for 6s.
+- PASSIVE Cracked Bell: While she is under half HP, her skills ring the Bell twice. Peal: she strikes every enemy for 0.7x.
+- SAINT'S SEAL Unbroken Vow: The first killing blow leaves her at 1 HP, and Midnight comes at once if it has not yet.
+- RELIC Vow Collar (game item; not drawn in her art): Ring the Hours: Wards her (-20% damage taken) for 4s.
+- BATTLE CRY: "*the bell tolls, and someone pays for it* Fury is faith!"
+```
+<!-- END GAME DATA -->
 
 Read the Hallowed Belfry section of order-bible.md first. Cloth: bell bronze #8b6848 lead, parchment #c6baa4 trim, blackened iron. Head: bell-shaped hood or coif hung with small hand-bells. Hem: scalloped, bell-curved hem.
 
@@ -31,15 +55,7 @@ FANATIC: candle wax poured over her own collarbone as penance; blend into her ex
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (boldest in her Order): on top of her neckline, show a side-cut tabard open from ribs to hip, and bare thighs between greaves and a high-cut tabard slit. SPLASH POSE (splash only; the bust and battle sprite use their own framing): standing tall with weight on one leg, chin raised in contempt. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: blackened gothic plate with bell-shaped pauldrons, purity seals on bell-rope cords, a cracked cathedral bell hung behind her (splash only).
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Clapper Blow: Smite a front-line foe hard; +40% while she is under half HP. She gains 8 Zeal.
-- SKILL II Ring the Hours: Sacrifice 10% HP; +25 of her own Zeal, and the Bell rings twice. She gains 2 Fervor (+6% damage each, up to 5). Cooldown 6s.
-- SKILL III Toll for the Wicked: Strike a near foe and Stagger it. Accuses the foe for 4s (+25% damage taken). Cooldown 6s.
-- LITANY Midnight Toll: LITANY: strike every enemy; the Bell rings three times. Weakens every foe it strikes (-20% attack) for 4s. It hallows the ground: Hallowed Ground (every Sister Regenerates 4% every 2s) for 6s.
-- PASSIVE Cracked Bell: While she is under half HP, her skills ring the Bell twice. Peal: she strikes every enemy for 0.7x.
-- SAINT'S SEAL Unbroken Vow: The first killing blow leaves her at 1 HP, and Midnight comes at once if it has not yet.
-- RELIC Vow Collar (game item; not drawn in her art): Ring the Hours: Wards her (-20% damage taken) for 4s.
-- BATTLE CRY: "*the bell tolls, and someone pays for it* Fury is faith!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: bronze sound-rings rippling out, rope shadows and a dull midnight shockwave; the flail spins in a red arc and her scourge-marks glow; her Litany Midnight Toll hallows the ground in a ring of bronze sound-rings rippling out; her Vow Collar blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Tonitrix, the Hollow Toll, Goddess of the Bell. Draw only these objects: her Divine Arsenal weapon, The Seven-Star Scourge of the Last Toll, a flail of seven blazing stars on chains of light, orbiting her like a wheel of eyes and crashing down as judgement in bronze sound-rings, ringing with a small black death-knell bell tied to it. Sizes in her head-heights (she is about 7.3 heads tall): flail haft 1.5 heads, chain 1 head. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

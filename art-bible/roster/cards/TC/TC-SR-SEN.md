@@ -1,4 +1,27 @@
-<!-- The Verdant Martyrdom (TC) card TC-SR-SEN. Generated from the sister bible; do not edit here. -->
+<!-- The Verdant Martyrdom (TC) card TC-SR-SEN. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: TC-SR-SEN
+name: Seraphia Spinifera
+epithet: Who Held the Rose Massacre
+rarity: SR
+rank: Legend
+order: Verdant Martyrdom (order id thorn-covenant, code TC)
+class: Sentinel (class id sentinel, role Tank)
+age: 25
+weapon: Bulwark of the Rose Massacre (Legendary)
+relic: oath-bound sword hilt, wound with living briar (a game item)
+kit:
+- SKILL I Gravewarden Strike: Strike a front-line foe and draw enemy attacks for 4s. For 4s she strikes back at anyone who hits her.
+- SKILL II Tomb Stance: Brace: -30% damage taken for 4s and draw enemy attacks. Cooldown 6s.
+- SKILL III Briar Riposte: Sacrifice 10% HP; Ward herself (-22%) and draw attacks for 4s. She gains 1 Fervor (+6% damage each, up to 5). Cooldown 6s.
+- LITANY Bramble Gloria: LITANY: every ally gains Thorns (22% back) for 4s; she draws every attack. Wards every Sister (-12% damage taken) for 4s.
+- PASSIVE Briar-Born Seal: When struck, she strikes back for 35% of her attack. She heals 5% of the damage she deals.
+- RELIC Oath-Bound Sword Hilt (game item; not drawn in her art): Bramble Gloria: Every Sister gains +10% critical chance for 4s.
+- BATTLE CRY: "Every scar is a prayer answered. Strike me, and I strike back!"
+```
+<!-- END GAME DATA -->
 
 Read the Verdant Martyrdom section of order-bible.md first. Cloth: moss green #5a7a3a lead, blood red #9a2a33 trim, old bronze. Head: crown of living briar. Hem: thorny tatters.
 
@@ -14,14 +37,7 @@ FANATIC: flagellant scars criss-crossing her arms; blend into her expression: ey
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (bold): on top of her neckline, show a bare midriff under a short breastplate, and bare thighs between greaves and a high-cut tabard slit. SPLASH POSE (splash only; the bust and battle sprite use their own framing): striding forward out of smoke, cape snapping behind. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: scourged gothic plate wrapped in barbed briar, purity seals soaked in her own blood, flagellant scars.
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Gravewarden Strike: Strike a front-line foe and draw enemy attacks for 4s. For 4s she strikes back at anyone who hits her.
-- SKILL II Tomb Stance: Brace: -30% damage taken for 4s and draw enemy attacks. Cooldown 6s.
-- SKILL III Briar Riposte: Sacrifice 10% HP; Ward herself (-22%) and draw attacks for 4s. She gains 1 Fervor (+6% damage each, up to 5). Cooldown 6s.
-- LITANY Bramble Gloria: LITANY: every ally gains Thorns (22% back) for 4s; she draws every attack. Wards every Sister (-12% damage taken) for 4s.
-- PASSIVE Briar-Born Seal: When struck, she strikes back for 35% of her attack. She heals 5% of the damage she deals.
-- RELIC Oath-Bound Sword Hilt (game item; not drawn in her art): Bramble Gloria: Every Sister gains +10% critical chance for 4s.
-- BATTLE CRY: "Every scar is a prayer answered. Strike me, and I strike back!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: blood-red scar-light and lashing briar, rose petals torn loose; she plants her feet and every blow she takes flashes back as a riposte arc; her Oath-Bound Sword Hilt blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Seraphia Spinifera, Who Held the Rose Massacre. Draw only these objects: her Legendary weapon, Bulwark of the Rose Massacre, a tall shield of old bronze wound with living briar carved with a knight effigy whose eyes glow, rune-cut edges, and an oath-bound longsword with a gilt crossguard, with thorns growing out of it, wet with blood. Sizes in her head-heights (she is about 7.3 heads tall): shield 3 heads tall, sword 2.5 heads. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

@@ -1,4 +1,27 @@
-<!-- Hallowed Belfry (HB) card HB-LSSR1. Generated from the sister bible; do not edit here. -->
+<!-- Hallowed Belfry (HB) card HB-LSSR1. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: HB-LSSR1
+name: Campanula Clangora
+epithet: Daughter of the Great Bell
+rarity: SSR (Limited)
+rank: Demigoddess
+order: Hallowed Belfry (order id hollow-bell, code HB)
+class: Exorcist (class id exorcist, role Ranged DPS)
+age: 25
+weapon: Brazier of the Great Bell (Mythic)
+relic: covered witchfire brazier, hung from three red wax-sealed chains (a game item)
+kit:
+- SKILL I Lantern Flare: Smite any enemy and strip its shield and blessings. +30% against bosses.
+- SKILL II Tolling Flame: Set any enemy Burning for 6s (stacks); the Bell rings twice. Silences it for 2s: only its plainest skill, and any charge breaks.
+- SKILL III Cracked Bell Rite: Strip the shield and blessings of every enemy. She gains 6 Zeal. Cooldown 8s.
+- LITANY Vespers of Flame: LITANY: searing light on every enemy, then the Bell Peals at once. Sunders every foe it strikes (-20% armor) for 4s. It hallows the ground: Hallowed Ground (every Sister Regenerates 4% every 2s) for 4s.
+- PASSIVE Bell of Embers: Peal: every foe Burns for 4s.
+- RELIC Covered Witchfire Brazier (game item; not drawn in her art): Cracked Bell Rite: Accuses every foe it strikes for 4s (+25% damage taken). It hits 12% harder.
+- BATTLE CRY: "*one toll, one life* Witchfire for the witch!"
+```
+<!-- END GAME DATA -->
 
 Read the Hallowed Belfry section of order-bible.md first. Cloth: bell bronze #8b6848 lead, parchment #c6baa4 trim, blackened iron. Head: bell-shaped hood or coif hung with small hand-bells. Hem: scalloped, bell-curved hem.
 
@@ -32,14 +55,7 @@ FANATIC: tears of blood dried on her cheeks; blend into her expression: with a f
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (bold): on top of her neckline, show bare thighs between greaves and a high-cut tabard slit, and a bare midriff under a short breastplate. SPLASH POSE (splash only; the bust and battle sprite use their own framing): twisting at the waist mid-swing, hair flying. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: blackened gothic plate with bell-shaped pauldrons, purity seals on bell-rope cords, a cracked cathedral bell hung behind her (splash only).
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Lantern Flare: Smite any enemy and strip its shield and blessings. +30% against bosses.
-- SKILL II Tolling Flame: Set any enemy Burning for 6s (stacks); the Bell rings twice. Silences it for 2s: only its plainest skill, and any charge breaks.
-- SKILL III Cracked Bell Rite: Strip the shield and blessings of every enemy. She gains 6 Zeal. Cooldown 8s.
-- LITANY Vespers of Flame: LITANY: searing light on every enemy, then the Bell Peals at once. Sunders every foe it strikes (-20% armor) for 4s. It hallows the ground: Hallowed Ground (every Sister Regenerates 4% every 2s) for 4s.
-- PASSIVE Bell of Embers: Peal: every foe Burns for 4s.
-- RELIC Covered Witchfire Brazier (game item; not drawn in her art): Cracked Bell Rite: Accuses every foe it strikes for 4s (+25% damage taken). It hits 12% harder.
-- BATTLE CRY: "*one toll, one life* Witchfire for the witch!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: bronze sound-rings rippling out, rope shadows and a dull midnight shockwave; the lantern opens and witchfire pours out like a flamer; her Litany Vespers of Flame hallows the ground in a ring of bronze sound-rings rippling out; her Covered Witchfire Brazier blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Campanula Clangora, Daughter of the Great Bell. Draw only these objects: her Mythic weapon, Brazier of the Great Bell, a lantern holding a captured angel's fire, small iron wings around the cage, burning bronze sound-rings, ringing with a small black death-knell bell tied to it. Sizes in her head-heights (she is about 7.3 heads tall): pole 4 heads tall, lantern 1 head. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

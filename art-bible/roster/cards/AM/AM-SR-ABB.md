@@ -1,4 +1,27 @@
-<!-- Ashen Mercy (AM) card AM-SR-ABB. Generated from the sister bible; do not edit here. -->
+<!-- Ashen Mercy (AM) card AM-SR-ABB. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: AM-SR-ABB
+name: Ustrina Favillaris
+epithet: Who Walked Out of the Smoke Road
+rarity: SR
+rank: Legend
+order: Ashen Mercy (order id ashen-mercy, code AM)
+class: Abbess (class id abbess, role Healer)
+age: 28
+weapon: Crozier of the Night of Embers (Legendary)
+relic: iron rose reliquary, worn smooth around a single amber light (a game item)
+kit:
+- SKILL I Pruning: Heal one ally, cure poison, burns and bleeding, and let her Regenerate 3% every 2s for 4s.
+- SKILL II Thorned Rebuke: Lash a near foe, leaving it Bleeding for 4s. Every Sister heals 45% of the damage dealt.
+- SKILL III Bandage of Ash: Heal an ally, cure poison, burns and bleeding, and Ward her (-10% damage) for 4s.
+- LITANY Ash Garden: LITANY: rake every enemy (Bleeding for 4s); every Sister heals 40% of the damage.
+- PASSIVE Ash Briars: Foes that strike her take 15% back; a foe killed by her thorns counts as a Mercy kill.
+- RELIC Iron Rose Reliquary (game item; not drawn in her art): Ash Garden: Weakens every foe it strikes (-12% attack) for 4s. It hits 10% harder.
+- BATTLE CRY: "Ash to ash. You first. The rod for you, the balm for them!"
+```
+<!-- END GAME DATA -->
 
 Read the Ashen Mercy section of order-bible.md first. Cloth: ash-white #c9c2b8 lead, wine #652b3b trim, soot-black mail. Head: white wimple and coif with an ash thumbprint on the brow. Hem: scorched edge.
 
@@ -14,14 +37,7 @@ FANATIC: tally marks of the purged cut into her bracer; blend into her expressio
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (bold): on top of her neckline, show a side-cut tabard open from ribs to hip, and a chain harness across her bare waist. SPLASH POSE (splash only; the bust and battle sprite use their own framing): standing tall with weight on one leg, chin raised in contempt. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: soot-black gothic plate, purity seals scorched at the edges, a funeral pyre burning behind her (splash only).
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Pruning: Heal one ally, cure poison, burns and bleeding, and let her Regenerate 3% every 2s for 4s.
-- SKILL II Thorned Rebuke: Lash a near foe, leaving it Bleeding for 4s. Every Sister heals 45% of the damage dealt.
-- SKILL III Bandage of Ash: Heal an ally, cure poison, burns and bleeding, and Ward her (-10% damage) for 4s.
-- LITANY Ash Garden: LITANY: rake every enemy (Bleeding for 4s); every Sister heals 40% of the damage.
-- PASSIVE Ash Briars: Foes that strike her take 15% back; a foe killed by her thorns counts as a Mercy kill.
-- RELIC Iron Rose Reliquary (game item; not drawn in her art): Ash Garden: Weakens every foe it strikes (-12% attack) for 4s. It hits 10% harder.
-- BATTLE CRY: "Ash to ash. You first. The rod for you, the balm for them!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: grey ash-flame and falling soot, a wine-red glow as wounds close; the crozier cracks like a whip, thorns mending as they cut; her Iron Rose Reliquary blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Ustrina Favillaris, Who Walked Out of the Smoke Road. Draw only these objects: her Legendary weapon, Crozier of the Night of Embers, an iron crozier of soot-blackened steel with wine-red wraps with a spiral hook set with a glowing relic, thorns in bloom, and runes along the shaft, caked with ash from the mercy-fires. Sizes in her head-heights (she is about 7.3 heads tall): crozier 4 heads tall. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

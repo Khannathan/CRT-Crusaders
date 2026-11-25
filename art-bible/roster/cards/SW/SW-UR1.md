@@ -1,4 +1,28 @@
-<!-- Sepulcher Watch (SW) card SW-UR1. Generated from the sister bible; do not edit here. -->
+<!-- Sepulcher Watch (SW) card SW-UR1. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: SW-UR1
+name: Culsu
+epithet: the Keeper of Keys, Goddess of Tombs
+rarity: UR
+rank: Deity
+order: Sepulcher Watch (order id sepulcher-watch, code SW)
+class: Sentinel (class id sentinel, role Tank)
+age: 23
+weapon: The Seraph-Sealed Sarcophagus of the Deathless Tomb (Divine Arsenal)
+relic: oath-bound sword hilt, bound in frayed crimson vow ribbons (a game item)
+kit:
+- SKILL I Bonewarden Strike: Strike a front-line foe, draw attacks and counter anyone who hits her, for 4s. Silences it for 4s: only its plainest skill, and any charge breaks.
+- SKILL II Ossuary Wall: Spend 2 Remains to shield every ally for 20% of max HP; with fewer, shield only herself for 25%. Martyrdom: for 4s she takes 35% of every blow aimed at her Sisters. Cooldown 6s.
+- SKILL III Walked Home: Ward herself (-30% damage) and draw attacks for 4s; the party gains 1 Remains. She is Thorned (30% of blows back) for 4s. Cooldown 6s.
+- LITANY None Shall Wake: LITANY: Ward every ally (-25%) for 4s, draw every attack and counter; summoned foes are Stunned for 2s. Every Sister gains +15% critical chance for 4s. It hallows the ground: a Field of Ash (each fallen foe heals every Sister 6%) for 6s.
+- PASSIVE Ossuary Oath: At 3 or more Remains, she and the Sisters beside her take 15% less damage. Each Remains the party spends heals her 4%.
+- SAINT'S SEAL The Only One Home: If she is the last Sister standing, she heals 50%, gains Haste and +40% attack for the rest of the fight.
+- RELIC Oath-Bound Sword Hilt (game item; not drawn in her art): Ossuary Wall: She gains 8 Zeal.
+- BATTLE CRY: "The dead are ours. So are you. Strike me, and I strike back!"
+```
+<!-- END GAME DATA -->
 
 Read the Sepulcher Watch section of order-bible.md first. Cloth: bone-tan #b8ab8a lead, slate #383845 trim, dark steel with aged ivory trim. Head: bone-tan hood with a finger-bone circlet. Hem: heavy straight hem weighted with keys.
 
@@ -31,15 +55,7 @@ FANATIC: prayer strips nailed into her armour; blend into her expression: in fan
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (boldest in her Order): on top of her neckline, show a chain harness across her bare waist, and thigh-high boots with bare skin above, held by garter straps of chain. SPLASH POSE (splash only; the bust and battle sprite use their own framing): standing tall with weight on one leg, chin raised in contempt. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: ossuary plate with the bones of the honoured dead fused into it, purity seals on skull-shaped bosses, coffin nails driven through her belt.
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Bonewarden Strike: Strike a front-line foe, draw attacks and counter anyone who hits her, for 4s. Silences it for 4s: only its plainest skill, and any charge breaks.
-- SKILL II Ossuary Wall: Spend 2 Remains to shield every ally for 20% of max HP; with fewer, shield only herself for 25%. Martyrdom: for 4s she takes 35% of every blow aimed at her Sisters. Cooldown 6s.
-- SKILL III Walked Home: Ward herself (-30% damage) and draw attacks for 4s; the party gains 1 Remains. She is Thorned (30% of blows back) for 4s. Cooldown 6s.
-- LITANY None Shall Wake: LITANY: Ward every ally (-25%) for 4s, draw every attack and counter; summoned foes are Stunned for 2s. Every Sister gains +15% critical chance for 4s. It hallows the ground: a Field of Ash (each fallen foe heals every Sister 6%) for 6s.
-- PASSIVE Ossuary Oath: At 3 or more Remains, she and the Sisters beside her take 15% less damage. Each Remains the party spends heals her 4%.
-- SAINT'S SEAL The Only One Home: If she is the last Sister standing, she heals 50%, gains Haste and +40% attack for the rest of the fight.
-- RELIC Oath-Bound Sword Hilt (game item; not drawn in her art): Ossuary Wall: She gains 8 Zeal.
-- BATTLE CRY: "The dead are ours. So are you. Strike me, and I strike back!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: bone-white light, orbiting skull tokens and spectral funerary keys; she plants her feet and every blow she takes flashes back as a riposte arc; her Litany None Shall Wake hallows the ground in a ring of bone-white light; her Oath-Bound Sword Hilt blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Culsu, the Keeper of Keys, Goddess of Tombs. Draw only these objects: her Divine Arsenal weapon, The Seraph-Sealed Sarcophagus of the Deathless Tomb, a sarcophagus-lid shield that is a door into heaven, cracked open on a blaze of bone-white grave-light and turning wheels of eyes; her greatsword is a single straight seraph feather of white iron, crusted with grave dirt and burial lime. Sizes in her head-heights (she is about 7.3 heads tall): shield 3 heads tall, sword 2.5 heads. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

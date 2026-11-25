@@ -1,4 +1,27 @@
-<!-- Ashen Mercy (AM) card AM-SR-MAR. Generated from the sister bible; do not edit here. -->
+<!-- Ashen Mercy (AM) card AM-SR-MAR. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: AM-SR-MAR
+name: Sordida Cinefacta
+epithet: Who Held the Cinder Siege
+rarity: SR
+rank: Legend
+order: Ashen Mercy (order id ashen-mercy, code AM)
+class: Martyr (class id martyr, role Tank)
+age: 28
+weapon: Vowblade of the Smoke Road (Legendary)
+relic: fractured dawn icon, worn smooth around a single amber light (a game item)
+kit:
+- SKILL I Searing Smite: Strike a front-line foe and heal for 35% of the damage dealt.
+- SKILL II Blood Oath: Sacrifice 12% HP. Every ally gains +20% attack for 4s. Cooldown 8s.
+- SKILL III Burnt Offering: Sacrifice 10% HP; every ally heals 8% of max HP. Cooldown 6s.
+- LITANY Pyre Dawn: LITANY: smite every enemy, heal 40% of the damage, and raise every foe's Mercy line by 10% for 2s.
+- PASSIVE Ashes Rise: Once a fight, a killing blow leaves her at 1 HP and heals every Sister 5%.
+- RELIC Fractured Dawn Icon (game item; not drawn in her art): Blood Oath: Every Sister Regenerates 4% of max HP every 2s for 4s.
+- BATTLE CRY: "Mercy is a blade, and I keep it sharp. Not yet!"
+```
+<!-- END GAME DATA -->
 
 Read the Ashen Mercy section of order-bible.md first. Cloth: ash-white #c9c2b8 lead, wine #652b3b trim, soot-black mail. Head: white wimple and coif with an ash thumbprint on the brow. Hem: scorched edge.
 
@@ -14,14 +37,7 @@ FANATIC: scripture branded into her thigh; blend into her expression: burning wi
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (bold): on top of her neckline, show skin-tight sheer black sleeves and gloves to the shoulder, and a chain harness across her bare waist. SPLASH POSE (splash only; the bust and battle sprite use their own framing): back arched, hip cocked, cloak swept back over one shoulder. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: soot-black gothic plate, purity seals scorched at the edges, a funeral pyre burning behind her (splash only).
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Searing Smite: Strike a front-line foe and heal for 35% of the damage dealt.
-- SKILL II Blood Oath: Sacrifice 12% HP. Every ally gains +20% attack for 4s. Cooldown 8s.
-- SKILL III Burnt Offering: Sacrifice 10% HP; every ally heals 8% of max HP. Cooldown 6s.
-- LITANY Pyre Dawn: LITANY: smite every enemy, heal 40% of the damage, and raise every foe's Mercy line by 10% for 2s.
-- PASSIVE Ashes Rise: Once a fight, a killing blow leaves her at 1 HP and heals every Sister 5%.
-- RELIC Fractured Dawn Icon (game item; not drawn in her art): Blood Oath: Every Sister Regenerates 4% of max HP every 2s for 4s.
-- BATTLE CRY: "Mercy is a blade, and I keep it sharp. Not yet!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: grey ash-flame and falling soot, a wine-red glow as wounds close; her own blood turns to consecrated fire across her sisters; her Fractured Dawn Icon blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Sordida Cinefacta, Who Held the Cinder Siege. Draw only these objects: her Legendary weapon, Vowblade of the Smoke Road, an engraved broadsword of soot-blackened steel with wine-red wraps with a glowing wound-rune on the blade, vow chains on the grip, and a buckler with an Order boss, caked with ash from the mercy-fires. Sizes in her head-heights (she is about 7.3 heads tall): broadsword 2.5 heads, buckler 1 head across. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

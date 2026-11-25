@@ -1,4 +1,28 @@
-<!-- Veiled Tribunal (VT) card VT-UR2. Generated from the sister bible; do not edit here. -->
+<!-- Veiled Tribunal (VT) card VT-UR2. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: VT-UR2
+name: Silentium
+epithet: the Black Scale, Goddess of the Final Verdict
+rarity: UR
+rank: Deity
+order: Veiled Tribunal (order id veiled-tribunal, code VT)
+class: Adjudicator (class id adjudicator, role Buffer)
+age: 25
+weapon: The Scales of Six Wings of the Final Verdict (Divine Arsenal)
+relic: ivory-bound miniature codex, with a crimson silk tassel (a game item)
+kit:
+- SKILL I Reflected Sentence: Smite any enemy: -25% attack for 4s. Drains 15 Wrath from a boss. Accuses the foe for 4s (+25% damage taken).
+- SKILL II Faceless Writ: Every foe gains 1 Guilt and is Accused for 2s. Lays Penance on every foe it strikes for 4s: each act costs the sinner 30% of its own attack. Cooldown 6s.
+- SKILL III Censure: Every enemy: -20% attack and Sundered (-15% armor) for 4s. She gains 2 Fervor (+6% damage each, up to 5). Cooldown 8s.
+- LITANY Judged Anathema: LITANY: every ally +42% attack for 4s, +5% more per Guilt on the most guilty foe. Wards every Sister (-20% damage taken) for 4s. It hallows the ground: Hallowed Ground (every Sister Regenerates 4% every 2s) for 6s.
+- PASSIVE Sentenced Canon: Each time she is struck, the attacker gains 1 Guilt. While she stands, foes that strike a Warded Sister gain Guilt too. +12% damage on foes under half HP.
+- SAINT'S SEAL Saint of the Wall: Once a fight, when a Sister would take a hit worth over 30% of her max HP, Silentium steps in and takes it at half damage.
+- RELIC Ivory-Bound Miniature Codex (game item; not drawn in her art): Censure: Accuses every foe it strikes for 4s (+25% damage taken). It hits 15% harder.
+- BATTLE CRY: "The verdict was written before you were born. Weighed, and wanting!"
+```
+<!-- END GAME DATA -->
 
 Read the Veiled Tribunal section of order-bible.md first. Cloth: dusk violet #6e5a8c lead, parchment #c6baa4 trim, black steel with crimson silk lining. Head: sheer black veil over the eyes, high angular collar. Hem: sharp angular points.
 
@@ -30,15 +54,7 @@ FANATIC: tally marks of the purged cut into her bracer; blend into her expressio
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (boldest in her Order): on top of her neckline, show skin-tight sheer black sleeves and gloves to the shoulder, and a side-cut tabard open from ribs to hip. SPLASH POSE (splash only; the bust and battle sprite use their own framing): twisting at the waist mid-swing, hair flying. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: judicial gothic plate hung with nailed verdicts and chained scripture, purity seals stamped with the scales, heretics kneeling in chains behind her (splash only).
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Reflected Sentence: Smite any enemy: -25% attack for 4s. Drains 15 Wrath from a boss. Accuses the foe for 4s (+25% damage taken).
-- SKILL II Faceless Writ: Every foe gains 1 Guilt and is Accused for 2s. Lays Penance on every foe it strikes for 4s: each act costs the sinner 30% of its own attack. Cooldown 6s.
-- SKILL III Censure: Every enemy: -20% attack and Sundered (-15% armor) for 4s. She gains 2 Fervor (+6% damage each, up to 5). Cooldown 8s.
-- LITANY Judged Anathema: LITANY: every ally +42% attack for 4s, +5% more per Guilt on the most guilty foe. Wards every Sister (-20% damage taken) for 4s. It hallows the ground: Hallowed Ground (every Sister Regenerates 4% every 2s) for 6s.
-- PASSIVE Sentenced Canon: Each time she is struck, the attacker gains 1 Guilt. While she stands, foes that strike a Warded Sister gain Guilt too. +12% damage on foes under half HP.
-- SAINT'S SEAL Saint of the Wall: Once a fight, when a Sister would take a hit worth over 30% of her max HP, Silentium steps in and takes it at half damage.
-- RELIC Ivory-Bound Miniature Codex (game item; not drawn in her art): Censure: Accuses every foe it strikes for 4s (+25% damage taken). It hits 15% harder.
-- BATTLE CRY: "The verdict was written before you were born. Weighed, and wanting!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: violet scale-marks, nailed parchment verdicts and wax seals bursting; giant scales of light tip and crush the foe; her Litany Judged Anathema hallows the ground in a ring of violet scale-marks; her Ivory-Bound Miniature Codex blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Silentium, the Black Scale, Goddess of the Final Verdict. Draw only these objects: her Divine Arsenal weapon, The Scales of Six Wings of the Final Verdict, colossal scales of white fire held up by six wings, an eye at the fulcrum; sins rise from the condemned as ash and are weighed in violet judgement-light, hung with the wax seals of signed death-verdicts; and her ledger. Sizes in her head-heights (she is about 7.3 heads tall): scales 1.5 heads tall, ledger 1 head. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

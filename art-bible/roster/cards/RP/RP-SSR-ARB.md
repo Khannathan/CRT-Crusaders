@@ -1,4 +1,28 @@
-<!-- Crimson Inquisition (RP) card RP-SSR-ARB. Generated from the sister bible; do not edit here. -->
+<!-- Crimson Inquisition (RP) card RP-SSR-ARB. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: RP-SSR-ARB
+name: Stigmatia Purgatrix
+epithet: Blood of the Red Rack
+rarity: SSR
+rank: Demigoddess
+order: Crimson Inquisition (order id red-pilgrimage, code RP)
+class: Arbalist (class id arbalist, role Ranged DPS)
+age: 23
+weapon: Verdict-Bow of the Endless Purge (Mythic)
+relic: bolt of consecrated iron, stamped with a crimson wax seal (a game item)
+kit:
+- SKILL I Consecrated Bolt: A heavy bolt on any foe that ignores 30% of its Armor.
+- SKILL II Brand Arbalest: Dash forward, hit any enemy and strip its shield and blessings. Goes through 20% of Armor and Magic Resist.
+- SKILL III Rack Volley: Set a foe Burning for 6s (stacks) and leap back. She gains 1 Fervor (+6% damage each, up to 5). Cooldown 4s.
+- LITANY Censure Compline: LITANY: burn every enemy for 6s (stacks); spends her Pursuit for +10% each. Brands every foe it strikes: the next blow on it lands 30% harder. It hallows the ground: Briar Ground (every foe bleeds 15% of her attack every 2s) for 4s.
+- PASSIVE Crimson Covenant: Her burns are 10% stronger for each Pursuit she holds. Her crits Brand the foe: its next wound lands 25% harder.
+- RELIC Bolt Of Consecrated Iron (game item; not drawn in her art): Brand Arbalest: She heals 20% of the damage dealt. It hits 12% harder.
+- ASCENSION (coming): As a Deity, her Censure Compline also grants Rapture (no damage for 2s) to every Sister, and her passive grows by half.
+- BATTLE CRY: "Confess, and burn clean. This quarrel has your name on it!"
+```
+<!-- END GAME DATA -->
 
 Read the Crimson Inquisition section of order-bible.md first. Cloth: blood crimson #9a2a33 lead, antique gold #d6a15f trim, blackened steel and chain. Head: wide-brimmed inquisitor's hat with a wax seal. Hem: long, sharp, spattered hems.
 
@@ -30,15 +54,7 @@ FANATIC: scripture branded into her thigh; blend into her expression: burning wi
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (daring): on top of her neckline, show skin-tight sheer black sleeves and gloves to the shoulder, and a torn habit that bares hip and leg. SPLASH POSE (splash only; the bust and battle sprite use their own framing): kneeling in prayer with the weapon planted, looking up through her lashes. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: blood-lacquered inquisitor plate studded with confession nails, purity seals stamped with the Inquisition's brand, the names of the condemned scratched into her plate.
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Consecrated Bolt: A heavy bolt on any foe that ignores 30% of its Armor.
-- SKILL II Brand Arbalest: Dash forward, hit any enemy and strip its shield and blessings. Goes through 20% of Armor and Magic Resist.
-- SKILL III Rack Volley: Set a foe Burning for 6s (stacks) and leap back. She gains 1 Fervor (+6% damage each, up to 5). Cooldown 4s.
-- LITANY Censure Compline: LITANY: burn every enemy for 6s (stacks); spends her Pursuit for +10% each. Brands every foe it strikes: the next blow on it lands 30% harder. It hallows the ground: Briar Ground (every foe bleeds 15% of her attack every 2s) for 4s.
-- PASSIVE Crimson Covenant: Her burns are 10% stronger for each Pursuit she holds. Her crits Brand the foe: its next wound lands 25% harder.
-- RELIC Bolt Of Consecrated Iron (game item; not drawn in her art): Brand Arbalest: She heals 20% of the damage dealt. It hits 12% harder.
-- ASCENSION (coming): As a Deity, her Censure Compline also grants Rapture (no damage for 2s) to every Sister, and her passive grows by half.
-- BATTLE CRY: "Confess, and burn clean. This quarrel has your name on it!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: crimson wax-seal sigils, red-hot brand-light and burning writs on the wind; a single consecrated bolt leaves a long streak of scripture-light; her Litany Censure Compline hallows the ground in a ring of crimson wax-seal sigils; her Bolt Of Consecrated Iron blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Stigmatia Purgatrix, Blood of the Red Rack. Draw only these objects: her Mythic weapon, Verdict-Bow of the Endless Purge, a crossbow whose limbs are two burning angel wings, firing bolts of white fire trailing red-hot brand-light and gold sparks, heat-blackened from the brazier, a writ nailed to it; and her quiver of bolts. Sizes in her head-heights (she is about 7.3 heads tall): crossbow 2 heads long. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

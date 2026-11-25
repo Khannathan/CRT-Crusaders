@@ -1,4 +1,28 @@
-<!-- Hallowed Belfry (HB) card HB-R-ARB. Generated from the sister bible; do not edit here. -->
+<!-- Hallowed Belfry (HB) card HB-R-ARB. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: HB-R-ARB
+name: Ludmila Resonans
+epithet: Prefect of the Midnight Roof
+rarity: R
+rank: Commander
+order: Hallowed Belfry (order id hollow-bell, code HB)
+class: Arbalist (class id arbalist, role Ranged DPS)
+age: 28
+weapon: Tollsworn Arbalest (Epic)
+relic: saint's arrowhead, with a bronze clapper (a game item)
+kit:
+- SKILL I Consecrated Bolt: A heavy bolt on any foe that ignores 30% of its Armor.
+- SKILL II Marking Shot: Light bolt that Accuses any foe (+25% damage taken) for 4s. Cooldown 4s.
+- SKILL III Knell Volley: Set any enemy Burning for 6s (stacks); the Bell rings twice. Lays Penance on the foe for 4s: each act costs the sinner 15% of its own attack.
+- LITANY Saint's Ballista: LITANY: a crushing bolt on any enemy, through shields and half its Armor.
+- PASSIVE Clapper Faith: Her hits on Accused foes always crit. While she stands, every Sister takes 2% less damage.
+- RELIC Saint'S Arrowhead (game item; not drawn in her art): Consecrated Bolt: She gains 4 Zeal. It hits 8% harder.
+- COMMAND (coming): Leads a line of crossbow zealots of the Hallowed Belfry.
+- BATTLE CRY: "*a cracked note, and then the hammer falls* Down you go!"
+```
+<!-- END GAME DATA -->
 
 Read the Hallowed Belfry section of order-bible.md first. Cloth: bell bronze #8b6848 lead, parchment #c6baa4 trim, blackened iron. Head: bell-shaped hood or coif hung with small hand-bells. Hem: scalloped, bell-curved hem.
 
@@ -14,15 +38,7 @@ FANATIC: tally marks of the purged cut into her bracer; blend into her expressio
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (confident): on top of her neckline, show skin-tight sheer black sleeves and gloves to the shoulder, and bare thighs between greaves and a high-cut tabard slit. SPLASH POSE (splash only; the bust and battle sprite use their own framing): back arched, hip cocked, cloak swept back over one shoulder. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: blackened gothic plate with bell-shaped pauldrons, purity seals on bell-rope cords, a cracked cathedral bell hung behind her (splash only).
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Consecrated Bolt: A heavy bolt on any foe that ignores 30% of its Armor.
-- SKILL II Marking Shot: Light bolt that Accuses any foe (+25% damage taken) for 4s. Cooldown 4s.
-- SKILL III Knell Volley: Set any enemy Burning for 6s (stacks); the Bell rings twice. Lays Penance on the foe for 4s: each act costs the sinner 15% of its own attack.
-- LITANY Saint's Ballista: LITANY: a crushing bolt on any enemy, through shields and half its Armor.
-- PASSIVE Clapper Faith: Her hits on Accused foes always crit. While she stands, every Sister takes 2% less damage.
-- RELIC Saint'S Arrowhead (game item; not drawn in her art): Consecrated Bolt: She gains 4 Zeal. It hits 8% harder.
-- COMMAND (coming): Leads a line of crossbow zealots of the Hallowed Belfry.
-- BATTLE CRY: "*a cracked note, and then the hammer falls* Down you go!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: bronze sound-rings rippling out, rope shadows and a dull midnight shockwave; a single consecrated bolt leaves a long streak of scripture-light; her Saint'S Arrowhead blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Ludmila Resonans, Prefect of the Midnight Roof. Draw only these objects: her Epic weapon, Tollsworn Arbalest, a steel-prod crossbow of blackened iron with bell-bronze fittings and rope with a tooled quiver, the stock carved with bells, cracks and bell-rope, ringing with a small black death-knell bell tied to it; and her quiver of bolts. Sizes in her head-heights (she is about 7.3 heads tall): crossbow 2 heads long. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

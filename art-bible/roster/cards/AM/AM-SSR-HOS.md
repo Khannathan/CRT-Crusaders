@@ -1,4 +1,28 @@
-<!-- Ashen Mercy (AM) card AM-SSR-HOS. Generated from the sister bible; do not edit here. -->
+<!-- Ashen Mercy (AM) card AM-SSR-HOS. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: AM-SSR-HOS
+name: Contumelia Cineraria
+epithet: Daughter of the Choking Smoke
+rarity: SSR
+rank: Demigoddess
+order: Ashen Mercy (order id ashen-mercy, code AM)
+class: Hospitaller (class id hospitaller, role Healer)
+age: 21
+weapon: Font of the Last Ember (Mythic)
+relic: bread-saint's wafer box, in a soot-blackened cage (a game item)
+kit:
+- SKILL I Lance of Mercy: Strike a near foe with the hospital lance: -25% attack for 4s.
+- SKILL II Kindling Mending: Heal every ally 10% and let them Regenerate 5% every 2s for 4s. Every Sister gains a Mirror Image (each swallows a whole hit). Cooldown 6s.
+- SKILL III Mercy Grace: Heal an ally, cure poison, burns and bleeding, and Ward her (-12% damage) for 4s. She gains 6 Zeal.
+- LITANY Ashen Anathema: LITANY: raise fallen Sisters with 30% HP, heal every ally 25%, and Foretell every foe for 4s. Every Sister gains +12% critical chance for 4s. It hallows the ground: a Field of Ash (each fallen foe heals every Sister 6%) for 4s.
+- PASSIVE Soot Litany: Mercy kills also heal every Sister 5% more and cure them. While she stands, every Sister takes 4% less damage.
+- RELIC Bread-Saint'S Wafer Box (game item; not drawn in her art): Mercy Grace: Her ally Regenerates 4% of max HP every 2s for 4s.
+- ASCENSION (coming): As a Deity, her Ashen Anathema also grants Rapture (no damage for 2s) to every Sister, and her passive grows by half.
+- BATTLE CRY: "Breathe the smoke. It is all that is left of the doubters. The grave gives them back to me!"
+```
+<!-- END GAME DATA -->
 
 Read the Ashen Mercy section of order-bible.md first. Cloth: ash-white #c9c2b8 lead, wine #652b3b trim, soot-black mail. Head: white wimple and coif with an ash thumbprint on the brow. Hem: scorched edge.
 
@@ -30,15 +54,7 @@ FANATIC: prayer strips nailed into her armour; blend into her expression: with a
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (daring): on top of her neckline, show bare thighs between greaves and a high-cut tabard slit, and skin-tight sheer black sleeves and gloves to the shoulder. SPLASH POSE (splash only; the bust and battle sprite use their own framing): back arched, hip cocked, cloak swept back over one shoulder. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: soot-black gothic plate, purity seals scorched at the edges, a funeral pyre burning behind her (splash only).
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Lance of Mercy: Strike a near foe with the hospital lance: -25% attack for 4s.
-- SKILL II Kindling Mending: Heal every ally 10% and let them Regenerate 5% every 2s for 4s. Every Sister gains a Mirror Image (each swallows a whole hit). Cooldown 6s.
-- SKILL III Mercy Grace: Heal an ally, cure poison, burns and bleeding, and Ward her (-12% damage) for 4s. She gains 6 Zeal.
-- LITANY Ashen Anathema: LITANY: raise fallen Sisters with 30% HP, heal every ally 25%, and Foretell every foe for 4s. Every Sister gains +12% critical chance for 4s. It hallows the ground: a Field of Ash (each fallen foe heals every Sister 6%) for 4s.
-- PASSIVE Soot Litany: Mercy kills also heal every Sister 5% more and cure them. While she stands, every Sister takes 4% less damage.
-- RELIC Bread-Saint'S Wafer Box (game item; not drawn in her art): Mercy Grace: Her ally Regenerates 4% of max HP every 2s for 4s.
-- ASCENSION (coming): As a Deity, her Ashen Anathema also grants Rapture (no damage for 2s) to every Sister, and her passive grows by half.
-- BATTLE CRY: "Breathe the smoke. It is all that is left of the doubters. The grave gives them back to me!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: grey ash-flame and falling soot, a wine-red glow as wounds close; a chalice spills light that lifts the fallen; her Litany Ashen Anathema hallows the ground in a ring of grey ash-flame and falling soot; her Bread-Saint'S Wafer Box blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Contumelia Cineraria, Daughter of the Choking Smoke. Draw only these objects: her Mythic weapon, Font of the Last Ember, a lance-staff whose head is a pair of open angel wings, and a chalice that overflows with liquid light of ash-grey light with wine embers that never spills, trailing thin smoke, its edges charred from the mercy-pyres. Sizes in her head-heights (she is about 7.3 heads tall): staff 4 heads tall, chalice 0.5 heads. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

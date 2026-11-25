@@ -1,4 +1,28 @@
-<!-- Confessors of Glass (GC) card GC-SSR-MAR. Generated from the sister bible; do not edit here. -->
+<!-- Confessors of Glass (GC) card GC-SSR-MAR. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: GC-SSR-MAR
+name: Silicia Vitrifacta
+epithet: Child of the Glass Saint
+rarity: SSR
+rank: Demigoddess
+order: Confessors of Glass (order id glass-confession, code GC)
+class: Martyr (class id martyr, role Tank)
+age: 21
+weapon: Stigma of the Clear Eye (Mythic)
+relic: blood-stained vow scroll, set with a stained-glass shard (a game item)
+kit:
+- SKILL I Searing Smite: Strike a front-line foe and heal for 35% of the damage dealt.
+- SKILL II Lens Offering: Shield every ally for 18% of max HP. Martyrdom: for 4s she takes 30% of every blow aimed at her Sisters. Cooldown 6s.
+- SKILL III Cracked Vow: Strike a front-line foe, Confess it for 4s and draw enemy attacks for 4s. +15% critical chance on it.
+- LITANY Shard Requiem: LITANY: Ward every ally (-25% damage) for 4s; she draws every attack and counters. Rapture: every Sister takes no damage for 2s. It hallows the ground: a Lantern Line (every 2s the most hurt Sister goes on Overwatch) for 4s.
+- PASSIVE Shard Tithe: Every foe starts the fight Confessed for 4s. Shatter: the first killing blow breaks her into shards instead. Every foe takes 0.6x her attack and she reforms at 30% HP.
+- RELIC Blood-Stained Vow Scroll (game item; not drawn in her art): Lens Offering: She gains 6 Zeal.
+- ASCENSION (coming): As a Deity, her Shard Requiem also grants Rapture (no damage for 2s) to every Sister, and her passive grows by half.
+- BATTLE CRY: "Shatter me, and I cut you a thousand ways. Death will have to wait its turn!"
+```
+<!-- END GAME DATA -->
 
 Read the Confessors of Glass section of order-bible.md first. Cloth: ice blue #9cc3d0 (as cold grey-blue cloth) lead, violet #6e5a8c trim, cold silver. Head: a faceless mirror faceplate under a tall coif with a black-glass pane, or a mirror circlet. Every Confessors of Glass Sister is a faceless construct of glass and mirror (see order-bible.md). Hem: crisp, clean hem.
 
@@ -31,15 +55,7 @@ FANATIC: knuckles split and bound in charred prayer cloth; blend into her expres
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (daring): on top of her neckline, show thigh-high boots with bare skin above, held by garter straps of chain, and a torn habit that bares hip and leg. SPLASH POSE (splash only; the bust and battle sprite use their own framing): kneeling in prayer with the weapon planted, looking up through her lashes. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: cathedral-window armour of leaded stained glass, purity seals of black wax with silver ribbon, a rose window shattering behind her (splash only).
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Searing Smite: Strike a front-line foe and heal for 35% of the damage dealt.
-- SKILL II Lens Offering: Shield every ally for 18% of max HP. Martyrdom: for 4s she takes 30% of every blow aimed at her Sisters. Cooldown 6s.
-- SKILL III Cracked Vow: Strike a front-line foe, Confess it for 4s and draw enemy attacks for 4s. +15% critical chance on it.
-- LITANY Shard Requiem: LITANY: Ward every ally (-25% damage) for 4s; she draws every attack and counters. Rapture: every Sister takes no damage for 2s. It hallows the ground: a Lantern Line (every 2s the most hurt Sister goes on Overwatch) for 4s.
-- PASSIVE Shard Tithe: Every foe starts the fight Confessed for 4s. Shatter: the first killing blow breaks her into shards instead. Every foe takes 0.6x her attack and she reforms at 30% HP.
-- RELIC Blood-Stained Vow Scroll (game item; not drawn in her art): Lens Offering: She gains 6 Zeal.
-- ASCENSION (coming): As a Deity, her Shard Requiem also grants Rapture (no damage for 2s) to every Sister, and her passive grows by half.
-- BATTLE CRY: "Shatter me, and I cut you a thousand ways. Death will have to wait its turn!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: ice-blue mirror shards, hard white reflections and her inner light bleeding through cracks; her own blood turns to consecrated fire across her sisters; her Litany Shard Requiem hallows the ground in a ring of ice-blue mirror shards; her Blood-Stained Vow Scroll blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, an anime-styled dark-fantasy heroine drawn as a faceless glass construct with a mirror faceplate, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading, glass and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Silicia Vitrifacta, Child of the Glass Saint. Draw only these objects: her Mythic weapon, Stigma of the Clear Eye, a broadsword that bleeds light from five wounds along its blade in ice-blue light through cracked glass, and a buckler crowned with a broken halo that still spins, with a shattered mirror-shard set in it that shows the sins of its target. Sizes in her head-heights (she is about 7.3 heads tall): broadsword 2.5 heads, buckler 1 head across. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

@@ -1,4 +1,28 @@
-<!-- Drowned Litany (DL) card DL-SSR-HIE. Generated from the sister bible; do not edit here. -->
+<!-- Drowned Litany (DL) card DL-SSR-HIE. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: DL-SSR-HIE
+name: Baptista Undosa
+epithet: Chosen of the Black Tide
+rarity: SSR
+rank: Demigoddess
+order: Drowned Litany (order id drowned-litany, code DL)
+class: Hierophant (class id hierophant, role Tank)
+age: 25
+weapon: Aegis of the Deep Font (Mythic)
+relic: reliquary of a saint's finger, crusted with salt (a game item)
+kit:
+- SKILL I Reliquary Bash: Strike a front-line foe, hurl it back and draw enemy attacks for 4s.
+- SKILL II Sunken Shrine: Shield every ally for 8% of max HP, plus 4% per Tide. Wards every Sister (-15% damage taken) for 4s. Cooldown 6s.
+- SKILL III Vigil Bell: Shield every ally for 15% of max HP and cure poison, burns and bleeding. Cooldown 8s.
+- LITANY Pearl Miserere: LITANY: smite every enemy, heal 50% of the damage, draw attacks for 4s, and the Tide rises by 2. Weakens every foe it strikes (-15% attack) for 4s. It hallows the ground: a Drowning Flood (foes take 10% more and act 25% slower) for 4s.
+- PASSIVE Brine Canon: While she stands, every Sister takes 2% less damage per Tide. The fight opens on a Drowning Flood (foes take 10% more and act 25% slower) for 4s.
+- RELIC Reliquary Of A Saint'S Finger (game item; not drawn in her art): Pearl Miserere: Hexes every foe it strikes (-20% Magic Resist) for 4s. It hits 12% harder.
+- ASCENSION (coming): As a Deity, her Pearl Miserere also grants Rapture (no damage for 2s) to every Sister, and her passive grows by half.
+- BATTLE CRY: "The deep wants you baptised. Hold the line, or die on it!"
+```
+<!-- END GAME DATA -->
 
 Read the Drowned Litany section of order-bible.md first. Cloth: sea-teal #3f6e78 lead, parchment #c6baa4 trim, verdigris, salt-worn bronze. Head: visor helm or a wet clinging veil. Hem: wet, clinging, dripping points.
 
@@ -30,15 +54,7 @@ FANATIC: flagellant scars criss-crossing her arms; blend into her expression: wi
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (daring): on top of her neckline, show bare thighs between greaves and a high-cut tabard slit, and a side-cut tabard open from ribs to hip. SPLASH POSE (splash only; the bust and battle sprite use their own framing): back arched, hip cocked, cloak swept back over one shoulder. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: sea-worn verdigris plate, purity seals bleached by salt, salt crusting every rivet.
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Reliquary Bash: Strike a front-line foe, hurl it back and draw enemy attacks for 4s.
-- SKILL II Sunken Shrine: Shield every ally for 8% of max HP, plus 4% per Tide. Wards every Sister (-15% damage taken) for 4s. Cooldown 6s.
-- SKILL III Vigil Bell: Shield every ally for 15% of max HP and cure poison, burns and bleeding. Cooldown 8s.
-- LITANY Pearl Miserere: LITANY: smite every enemy, heal 50% of the damage, draw attacks for 4s, and the Tide rises by 2. Weakens every foe it strikes (-15% attack) for 4s. It hallows the ground: a Drowning Flood (foes take 10% more and act 25% slower) for 4s.
-- PASSIVE Brine Canon: While she stands, every Sister takes 2% less damage per Tide. The fight opens on a Drowning Flood (foes take 10% more and act 25% slower) for 4s.
-- RELIC Reliquary Of A Saint'S Finger (game item; not drawn in her art): Pearl Miserere: Hexes every foe it strikes (-20% Magic Resist) for 4s. It hits 12% harder.
-- ASCENSION (coming): As a Deity, her Pearl Miserere also grants Rapture (no damage for 2s) to every Sister, and her passive grows by half.
-- BATTLE CRY: "The deep wants you baptised. Hold the line, or die on it!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: teal water rising upward, pearls and salt spray; her reliquary-shield flares and throws up a wall of light; her Litany Pearl Miserere hallows the ground in a ring of teal water rising upward; her Reliquary Of A Saint'S Finger blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Baptista Undosa, Chosen of the Black Tide. Draw only these objects: her Mythic weapon, Aegis of the Deep Font, a tower shield whose shrine is a huge lidded eye that opens and burns with teal sea-light and dripping water, two iron wings folded across its face, and a flanged mace wreathed in consecrated fire, crusted with barnacles and dripping black water. Sizes in her head-heights (she is about 7.3 heads tall): shield 2.5 heads tall, mace haft 1.5 heads. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

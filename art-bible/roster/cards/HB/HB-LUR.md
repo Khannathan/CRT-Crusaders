@@ -1,4 +1,28 @@
-<!-- Hallowed Belfry (HB) card HB-LUR. Generated from the sister bible; do not edit here. -->
+<!-- Hallowed Belfry (HB) card HB-LUR. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: HB-LUR
+name: Campanaria
+epithet: Campana Ascendant, Patron Goddess of the Hallowed Belfry
+rarity: UR (Limited)
+rank: Patron Deity
+order: Hallowed Belfry (order id hollow-bell, code HB)
+class: Hierophant (class id hierophant, role Tank)
+age: 26
+weapon: The Wall That Watches of the Last Toll (Divine Arsenal)
+relic: miniature candlelit shrine, bound in bell-rope (a game item)
+kit:
+- SKILL I Reliquary Bash: Strike a front-line foe, hurl it back and draw enemy attacks for 4s. She gains 10 Zeal.
+- SKILL II Knell Shrine: Shield an ally for 35% of max HP and ring the Bell. Her ally Regenerates 6% of max HP every 2s for 4s. Cooldown 4s.
+- SKILL III Midnight Aegis: Ring the Bell and draw attacks for 2s. She gains 2 Mirror Images (each swallows a whole hit). Cooldown 4s.
+- LITANY Bell Psalm: LITANY: shield every ally for 35% of max HP; the Bell rings twice. Wards every Sister (-25% damage taken) for 4s. It hallows the ground: Hallowed Ground (every Sister Regenerates 4% every 2s) for 6s.
+- PASSIVE Belfry Rule: Peal: she heals 15% of her max HP and every foe is Accused for 2s. While she stands, every Sister takes 6% less damage. PATRON MIRACLE: every Hallowed Belfry Sister in the party gains +12% attack and takes 8% less damage.
+- SAINT'S SEAL Unbroken Vow: The first killing blow leaves her at 1 HP, and Midnight comes at once if it has not yet.
+- RELIC Miniature Candlelit Shrine (game item; not drawn in her art): Midnight Aegis: She gains 10 Zeal.
+- BATTLE CRY: "*one toll, one life* Hold the line, or die on it!"
+```
+<!-- END GAME DATA -->
 
 Read the Hallowed Belfry section of order-bible.md first. Cloth: bell bronze #8b6848 lead, parchment #c6baa4 trim, blackened iron. Head: bell-shaped hood or coif hung with small hand-bells. Hem: scalloped, bell-curved hem.
 
@@ -31,15 +55,7 @@ FANATIC: tally marks of the purged cut into her bracer; blend into her expressio
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (bold): on top of her neckline, show a chain harness across her bare waist, and a side-cut tabard open from ribs to hip. SPLASH POSE (splash only; the bust and battle sprite use their own framing): striding forward out of smoke, cape snapping behind. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: blackened gothic plate with bell-shaped pauldrons, purity seals on bell-rope cords, a cracked cathedral bell hung behind her (splash only).
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Reliquary Bash: Strike a front-line foe, hurl it back and draw enemy attacks for 4s. She gains 10 Zeal.
-- SKILL II Knell Shrine: Shield an ally for 35% of max HP and ring the Bell. Her ally Regenerates 6% of max HP every 2s for 4s. Cooldown 4s.
-- SKILL III Midnight Aegis: Ring the Bell and draw attacks for 2s. She gains 2 Mirror Images (each swallows a whole hit). Cooldown 4s.
-- LITANY Bell Psalm: LITANY: shield every ally for 35% of max HP; the Bell rings twice. Wards every Sister (-25% damage taken) for 4s. It hallows the ground: Hallowed Ground (every Sister Regenerates 4% every 2s) for 6s.
-- PASSIVE Belfry Rule: Peal: she heals 15% of her max HP and every foe is Accused for 2s. While she stands, every Sister takes 6% less damage. PATRON MIRACLE: every Hallowed Belfry Sister in the party gains +12% attack and takes 8% less damage.
-- SAINT'S SEAL Unbroken Vow: The first killing blow leaves her at 1 HP, and Midnight comes at once if it has not yet.
-- RELIC Miniature Candlelit Shrine (game item; not drawn in her art): Midnight Aegis: She gains 10 Zeal.
-- BATTLE CRY: "*one toll, one life* Hold the line, or die on it!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: bronze sound-rings rippling out, rope shadows and a dull midnight shockwave; her reliquary-shield flares and throws up a wall of light; her Litany Bell Psalm hallows the ground in a ring of bronze sound-rings rippling out; her Miniature Candlelit Shrine blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Campanaria, Campana Ascendant, Patron Goddess of the Hallowed Belfry. Draw only these objects: her Divine Arsenal weapon, The Wall That Watches of the Last Toll, six interlocking shield-plates shaped like seraph wings, each ringed with open eyes, orbiting her and closing into a wall of bronze sound-rings; she holds a sceptre-mace crowned with a burning wheel, with a bell-rope braided from the hair of the punished wrapped round the grip. Sizes in her head-heights (she is about 7.3 heads tall): shield 2.5 heads tall, mace haft 1.5 heads. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

@@ -1,4 +1,28 @@
-<!-- Hallowed Belfry (HB) card HB-SSR-ABB. Generated from the sister bible; do not edit here. -->
+<!-- Hallowed Belfry (HB) card HB-SSR-ABB. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: HB-SSR-ABB
+name: Resonantia Aerea
+epithet: Half-Born of the Storm Bell
+rarity: SSR
+rank: Demigoddess
+order: Hallowed Belfry (order id hollow-bell, code HB)
+class: Abbess (class id abbess, role Healer)
+age: 24
+weapon: Briarstaff of the Storm Bell (Mythic)
+relic: seal of her abbey, with a small cracked bell (a game item)
+kit:
+- SKILL I Thorned Rebuke: Lash a near foe, leaving it Bleeding for 4s. Every Sister heals 45% of the damage dealt.
+- SKILL II Toll Rule: Every ally heals 12% of max HP, and the Bell rings. Wards every Sister (-15% damage taken) for 4s. Cooldown 6s.
+- SKILL III Peal Rod: Heal an ally and cure her. Her ally gains +12% critical chance for 4s.
+- LITANY Hour Compline: LITANY: every ally heals 30% of max HP, and the Bell rings three times. Rapture: every Sister takes no damage for 2s. It hallows the ground: Hallowed Ground (every Sister Regenerates 4% every 2s) for 4s.
+- PASSIVE Tolling Seal: Peal: every Sister is shielded for 10% of max HP. The fight opens on Hallowed Ground (every Sister Regenerates 4% every 2s) for 4s.
+- RELIC Seal Of Her Abbey (game item; not drawn in her art): Toll Rule: She gains 6 Zeal.
+- ASCENSION (coming): As a Deity, her Hour Compline also grants Rapture (no damage for 2s) to every Sister, and her passive grows by half.
+- BATTLE CRY: "*the bell tolls, and someone pays for it* Obey!"
+```
+<!-- END GAME DATA -->
 
 Read the Hallowed Belfry section of order-bible.md first. Cloth: bell bronze #8b6848 lead, parchment #c6baa4 trim, blackened iron. Head: bell-shaped hood or coif hung with small hand-bells. Hem: scalloped, bell-curved hem.
 
@@ -30,15 +54,7 @@ FANATIC: flagellant scars criss-crossing her arms; blend into her expression: bu
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (daring): on top of her neckline, show a torn habit that bares hip and leg, and thigh-high boots with bare skin above, held by garter straps of chain. SPLASH POSE (splash only; the bust and battle sprite use their own framing): striding forward out of smoke, cape snapping behind. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: blackened gothic plate with bell-shaped pauldrons, purity seals on bell-rope cords, a cracked cathedral bell hung behind her (splash only).
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Thorned Rebuke: Lash a near foe, leaving it Bleeding for 4s. Every Sister heals 45% of the damage dealt.
-- SKILL II Toll Rule: Every ally heals 12% of max HP, and the Bell rings. Wards every Sister (-15% damage taken) for 4s. Cooldown 6s.
-- SKILL III Peal Rod: Heal an ally and cure her. Her ally gains +12% critical chance for 4s.
-- LITANY Hour Compline: LITANY: every ally heals 30% of max HP, and the Bell rings three times. Rapture: every Sister takes no damage for 2s. It hallows the ground: Hallowed Ground (every Sister Regenerates 4% every 2s) for 4s.
-- PASSIVE Tolling Seal: Peal: every Sister is shielded for 10% of max HP. The fight opens on Hallowed Ground (every Sister Regenerates 4% every 2s) for 4s.
-- RELIC Seal Of Her Abbey (game item; not drawn in her art): Toll Rule: She gains 6 Zeal.
-- ASCENSION (coming): As a Deity, her Hour Compline also grants Rapture (no damage for 2s) to every Sister, and her passive grows by half.
-- BATTLE CRY: "*the bell tolls, and someone pays for it* Obey!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: bronze sound-rings rippling out, rope shadows and a dull midnight shockwave; the crozier cracks like a whip, thorns mending as they cut; her Litany Hour Compline hallows the ground in a ring of bronze sound-rings rippling out; her Seal Of Her Abbey blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Resonantia Aerea, Half-Born of the Storm Bell. Draw only these objects: her Mythic weapon, Briarstaff of the Storm Bell, a crozier whose hook is a curled angel wing of iron feathers, holding an open eye that blooms with bronze sound-rings, with a bell-rope braided from the hair of the punished wrapped round the grip. Sizes in her head-heights (she is about 7.3 heads tall): crozier 4 heads tall. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

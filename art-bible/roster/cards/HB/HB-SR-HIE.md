@@ -1,4 +1,27 @@
-<!-- Hallowed Belfry (HB) card HB-SR-HIE. Generated from the sister bible; do not edit here. -->
+<!-- Hallowed Belfry (HB) card HB-SR-HIE. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: HB-SR-HIE
+name: Gorislava Tonitrua
+epithet: Who Held the Silent Toll
+rarity: SR
+rank: Legend
+order: Hallowed Belfry (order id hollow-bell, code HB)
+class: Hierophant (class id hierophant, role Tank)
+age: 23
+weapon: Reliquary of the Hundred Rings (Legendary)
+relic: miniature candlelit shrine, bearing a cracked oval mother-of-pearl inset (a game item)
+kit:
+- SKILL I Reliquary Bash: Strike a front-line foe, hurl it back and draw enemy attacks for 4s.
+- SKILL II Vigil Bell: Shield every ally for 15% of max HP and cure poison, burns and bleeding. Cooldown 8s.
+- SKILL III Sanctus Bell: Shield an ally for 25% of max HP and ring the Bell. Cooldown 4s.
+- LITANY Cathedral Wall: LITANY: shield every ally for 25% of max HP; the Bell rings twice.
+- PASSIVE Reliquary Ward: While she stands, your Sisters take 5% less damage. Peal: shield every Sister for 8% of max HP.
+- RELIC Miniature Candlelit Shrine (game item; not drawn in her art): Reliquary Bash: She gains 5 Zeal. It hits 10% harder.
+- BATTLE CRY: "*a low knell that shakes the bone* Break on my shield!"
+```
+<!-- END GAME DATA -->
 
 Read the Hallowed Belfry section of order-bible.md first. Cloth: bell bronze #8b6848 lead, parchment #c6baa4 trim, blackened iron. Head: bell-shaped hood or coif hung with small hand-bells. Hem: scalloped, bell-curved hem.
 
@@ -14,14 +37,7 @@ FANATIC: prayer strips nailed into her armour; blend into her expression: eyes b
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (bold): on top of her neckline, show a side-cut tabard open from ribs to hip, and bare thighs between greaves and a high-cut tabard slit. SPLASH POSE (splash only; the bust and battle sprite use their own framing): standing tall with weight on one leg, chin raised in contempt. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: blackened gothic plate with bell-shaped pauldrons, purity seals on bell-rope cords, a cracked cathedral bell hung behind her (splash only).
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Reliquary Bash: Strike a front-line foe, hurl it back and draw enemy attacks for 4s.
-- SKILL II Vigil Bell: Shield every ally for 15% of max HP and cure poison, burns and bleeding. Cooldown 8s.
-- SKILL III Sanctus Bell: Shield an ally for 25% of max HP and ring the Bell. Cooldown 4s.
-- LITANY Cathedral Wall: LITANY: shield every ally for 25% of max HP; the Bell rings twice.
-- PASSIVE Reliquary Ward: While she stands, your Sisters take 5% less damage. Peal: shield every Sister for 8% of max HP.
-- RELIC Miniature Candlelit Shrine (game item; not drawn in her art): Reliquary Bash: She gains 5 Zeal. It hits 10% harder.
-- BATTLE CRY: "*a low knell that shakes the bone* Break on my shield!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: bronze sound-rings rippling out, rope shadows and a dull midnight shockwave; her reliquary-shield flares and throws up a wall of light; her Miniature Candlelit Shrine blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Gorislava Tonitrua, Who Held the Silent Toll. Draw only these objects: her Legendary weapon, Reliquary of the Hundred Rings, a gilt-edged tower shield of blackened iron with bell-bronze fittings and rope whose shrine doors stand open on a glowing saint figure, runes along the rim, and a flanged mace whose head glows with bronze sound-rings, with a bell-rope braided from the hair of the punished wrapped round the grip. Sizes in her head-heights (she is about 7.3 heads tall): shield 2.5 heads tall, mace haft 1.5 heads. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

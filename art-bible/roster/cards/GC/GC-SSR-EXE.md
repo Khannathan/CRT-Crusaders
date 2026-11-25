@@ -1,4 +1,28 @@
-<!-- Confessors of Glass (GC) card GC-SSR-EXE. Generated from the sister bible; do not edit here. -->
+<!-- Confessors of Glass (GC) card GC-SSR-EXE. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: GC-SSR-EXE
+name: Prisma Speculata
+epithet: Daughter of the Glass Saint
+rarity: SSR
+rank: Demigoddess
+order: Confessors of Glass (order id glass-confession, code GC)
+class: Executioner (class id inquisitor, role Melee DPS)
+age: 22
+weapon: Sentence of the Shattered Window (Mythic)
+relic: interrogation seal, engraved with a tiny ruined sanctuary (a game item)
+kit:
+- SKILL I Accuse and Confess: A light hit on any foe: Accused, Sundered (-25% armor) and Confessed for 6s. Brands the foe: the next blow on it lands 30% harder.
+- SKILL II Shard Thrust: Lunge at a near foe with +30% critical chance. Hexes the foe (-20% Magic Resist) for 4s.
+- SKILL III Sentence: Drag any foe to the front and strike it. Double damage under 30% HP. Cooldown 6s.
+- LITANY Mirror Verdict: LITANY: a crushing blow on any enemy, doubled against the Accused; always a crit against the Confessed. Accuses the foe for 4s (+25% damage taken). It hallows the ground: a Lantern Line (every 2s the most hurt Sister goes on Overwatch) for 4s.
+- PASSIVE Confessors of Glass: Her crits on a foe both Confessed and Accused Shatter for +20% more crit damage, and 30% of the hit splashes onto its neighbours.
+- RELIC Interrogation Seal (game item; not drawn in her art): Mirror Verdict: Brands the foe: the next blow on it lands 30% harder. It hits 12% harder.
+- ASCENSION (coming): As a Deity, her Mirror Verdict also grants Rapture (no damage for 2s) to every Sister, and her passive grows by half.
+- BATTLE CRY: "My Sister's reflection darkened. I broke her too. The axe is merciful!"
+```
+<!-- END GAME DATA -->
 
 Read the Confessors of Glass section of order-bible.md first. Cloth: ice blue #9cc3d0 (as cold grey-blue cloth) lead, violet #6e5a8c trim, cold silver. Head: a faceless mirror faceplate under a tall coif with a black-glass pane, or a mirror circlet. Every Confessors of Glass Sister is a faceless construct of glass and mirror (see order-bible.md). Hem: crisp, clean hem.
 
@@ -32,15 +56,7 @@ FANATIC: a heretic's sigil branded into her forearm; blend into her expression: 
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (daring): on top of her neckline, show a bare midriff under a short breastplate, and a corset cinched tight under the bust. SPLASH POSE (splash only; the bust and battle sprite use their own framing): one knee raised on a heretic's skull, leaning into the weapon. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: cathedral-window armour of leaded stained glass, purity seals of black wax with silver ribbon, a rose window shattering behind her (splash only).
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Accuse and Confess: A light hit on any foe: Accused, Sundered (-25% armor) and Confessed for 6s. Brands the foe: the next blow on it lands 30% harder.
-- SKILL II Shard Thrust: Lunge at a near foe with +30% critical chance. Hexes the foe (-20% Magic Resist) for 4s.
-- SKILL III Sentence: Drag any foe to the front and strike it. Double damage under 30% HP. Cooldown 6s.
-- LITANY Mirror Verdict: LITANY: a crushing blow on any enemy, doubled against the Accused; always a crit against the Confessed. Accuses the foe for 4s (+25% damage taken). It hallows the ground: a Lantern Line (every 2s the most hurt Sister goes on Overwatch) for 4s.
-- PASSIVE Confessors of Glass: Her crits on a foe both Confessed and Accused Shatter for +20% more crit damage, and 30% of the hit splashes onto its neighbours.
-- RELIC Interrogation Seal (game item; not drawn in her art): Mirror Verdict: Brands the foe: the next blow on it lands 30% harder. It hits 12% harder.
-- ASCENSION (coming): As a Deity, her Mirror Verdict also grants Rapture (no damage for 2s) to every Sister, and her passive grows by half.
-- BATTLE CRY: "My Sister's reflection darkened. I broke her too. The axe is merciful!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: ice-blue mirror shards, hard white reflections and her inner light bleeding through cracks; the executioner's axe falls in one heavy flash; her Litany Mirror Verdict hallows the ground in a ring of ice-blue mirror shards; her Interrogation Seal blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, an anime-styled dark-fantasy heroine drawn as a faceless glass construct with a mirror faceplate, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading, glass and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Prisma Speculata, Daughter of the Glass Saint. Draw only these objects: her Mythic weapon, Sentence of the Shattered Window, a great axe whose blade is a single iron wing, its edge showing the sins of whoever it strikes in ice-blue light through cracked glass, with a shattered mirror-shard set in it that shows the sins of its target. Sizes in her head-heights (she is about 7.3 heads tall): axe 3 heads long. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

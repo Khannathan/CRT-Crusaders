@@ -1,4 +1,27 @@
-<!-- Confessors of Glass (GC) card GC-SR-HIE. Generated from the sister bible; do not edit here. -->
+<!-- Confessors of Glass (GC) card GC-SR-HIE. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: GC-SR-HIE
+name: Octogesima Speculata
+epithet: Who Held the Shattering
+rarity: SR
+rank: Legend
+order: Confessors of Glass (order id glass-confession, code GC)
+class: Hierophant (class id hierophant, role Tank)
+age: 29
+weapon: Reliquary of the Shattering (Legendary)
+relic: reliquary of a saint's finger, in cold silver (a game item)
+kit:
+- SKILL I Reliquary Bash: Strike a front-line foe, hurl it back and draw enemy attacks for 4s.
+- SKILL II Sanctuary: Shield an ally for 30% of max HP and Ward her: -15% damage taken for 4s. Cooldown 4s.
+- SKILL III Reflected Bulwark: Strike a front-line foe, Confess it for 4s and draw enemy attacks for 4s. Lays Penance on the foe for 4s: each act costs the sinner 20% of its own attack.
+- LITANY Leaded Compline: LITANY: Ward every ally (-20% damage) for 4s; she draws every attack and counters. Every Sister gains +10% critical chance for 4s.
+- PASSIVE Shard Canon: While she stands, your Sisters take 5% less damage. Her crits Brand the foe: its next wound lands 20% harder.
+- RELIC Reliquary Of A Saint'S Finger (game item; not drawn in her art): Reliquary Bash: +12% critical chance on it. It hits 10% harder.
+- BATTLE CRY: "Nothing is hidden. Nothing is spared. Hold the line, or die on it!"
+```
+<!-- END GAME DATA -->
 
 Read the Confessors of Glass section of order-bible.md first. Cloth: ice blue #9cc3d0 (as cold grey-blue cloth) lead, violet #6e5a8c trim, cold silver. Head: a faceless mirror faceplate under a tall coif with a black-glass pane, or a mirror circlet. Every Confessors of Glass Sister is a faceless construct of glass and mirror (see order-bible.md). Hem: crisp, clean hem.
 
@@ -15,14 +38,7 @@ FANATIC: tally marks of the purged cut into her bracer; blend into her expressio
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (bold): on top of her neckline, show bare thighs between greaves and a high-cut tabard slit, and a torn habit that bares hip and leg. SPLASH POSE (splash only; the bust and battle sprite use their own framing): kneeling in prayer with the weapon planted, looking up through her lashes. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: cathedral-window armour of leaded stained glass, purity seals of black wax with silver ribbon, a rose window shattering behind her (splash only).
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Reliquary Bash: Strike a front-line foe, hurl it back and draw enemy attacks for 4s.
-- SKILL II Sanctuary: Shield an ally for 30% of max HP and Ward her: -15% damage taken for 4s. Cooldown 4s.
-- SKILL III Reflected Bulwark: Strike a front-line foe, Confess it for 4s and draw enemy attacks for 4s. Lays Penance on the foe for 4s: each act costs the sinner 20% of its own attack.
-- LITANY Leaded Compline: LITANY: Ward every ally (-20% damage) for 4s; she draws every attack and counters. Every Sister gains +10% critical chance for 4s.
-- PASSIVE Shard Canon: While she stands, your Sisters take 5% less damage. Her crits Brand the foe: its next wound lands 20% harder.
-- RELIC Reliquary Of A Saint'S Finger (game item; not drawn in her art): Reliquary Bash: +12% critical chance on it. It hits 10% harder.
-- BATTLE CRY: "Nothing is hidden. Nothing is spared. Hold the line, or die on it!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: ice-blue mirror shards, hard white reflections and her inner light bleeding through cracks; her reliquary-shield flares and throws up a wall of light; her Reliquary Of A Saint'S Finger blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, an anime-styled dark-fantasy heroine drawn as a faceless glass construct with a mirror faceplate, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading, glass and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Octogesima Speculata, Who Held the Shattering. Draw only these objects: her Legendary weapon, Reliquary of the Shattering, a gilt-edged tower shield of cold silver set with black glass whose shrine doors stand open on a glowing saint figure, runes along the rim, and a flanged mace whose head glows with ice-blue light through cracked glass, with a shattered mirror-shard set in it that shows the sins of its target. Sizes in her head-heights (she is about 7.3 heads tall): shield 2.5 heads tall, mace haft 1.5 heads. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

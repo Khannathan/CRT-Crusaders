@@ -1,4 +1,28 @@
-<!-- Hallowed Belfry (HB) card HB-SSR-VEI. Generated from the sister bible; do not edit here. -->
+<!-- Hallowed Belfry (HB) card HB-SSR-VEI. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: HB-SSR-VEI
+name: Plangora Aerea
+epithet: Half-Born of the Hollow Toll
+rarity: SSR
+rank: Demigoddess
+order: Hallowed Belfry (order id hollow-bell, code HB)
+class: Veilblade (class id veilblade, role Melee DPS)
+age: 25
+weapon: Silence of the Hollow Toll (Mythic)
+relic: concealed ritual dagger hilt, hung from three red wax-sealed chains (a game item)
+kit:
+- SKILL I Veil Strike: Strike any foe, with +25% critical chance.
+- SKILL II Between Tolls: Haste herself and +30% critical chance for 4s. She gains 6 Zeal. Cooldown 6s.
+- SKILL III Hamstring: Cut any foe: Bleeding for 6s and Staggered. Cooldown 6s.
+- LITANY Funeral Knife: LITANY: a savage blow on any enemy, double damage under 30% HP. Accuses the foe for 4s (+25% damage taken). It hallows the ground: Hallowed Ground (every Sister Regenerates 4% every 2s) for 4s.
+- PASSIVE The Last Veil: +35% damage to foes under half HP. Peal: she strikes the foe with the lowest HP.
+- RELIC Concealed Ritual Dagger Hilt (game item; not drawn in her art): Funeral Knife: Lays Penance on the foe for 4s: each act costs the sinner 25% of its own attack. It hits 12% harder.
+- ASCENSION (coming): As a Deity, her Funeral Knife also grants Rapture (no damage for 2s) to every Sister, and her passive grows by half.
+- BATTLE CRY: "*the rope of braided hair creaks* A whisper, then nothing!"
+```
+<!-- END GAME DATA -->
 
 Read the Hallowed Belfry section of order-bible.md first. Cloth: bell bronze #8b6848 lead, parchment #c6baa4 trim, blackened iron. Head: bell-shaped hood or coif hung with small hand-bells. Hem: scalloped, bell-curved hem.
 
@@ -31,15 +55,7 @@ FANATIC: fresh scourge marks across her shoulders; blend into her expression: ey
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (daring): on top of her neckline, show a bare midriff under a short breastplate, and a chain harness across her bare waist. SPLASH POSE (splash only; the bust and battle sprite use their own framing): standing tall with weight on one leg, chin raised in contempt. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: blackened gothic plate with bell-shaped pauldrons, purity seals on bell-rope cords, a cracked cathedral bell hung behind her (splash only).
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Veil Strike: Strike any foe, with +25% critical chance.
-- SKILL II Between Tolls: Haste herself and +30% critical chance for 4s. She gains 6 Zeal. Cooldown 6s.
-- SKILL III Hamstring: Cut any foe: Bleeding for 6s and Staggered. Cooldown 6s.
-- LITANY Funeral Knife: LITANY: a savage blow on any enemy, double damage under 30% HP. Accuses the foe for 4s (+25% damage taken). It hallows the ground: Hallowed Ground (every Sister Regenerates 4% every 2s) for 4s.
-- PASSIVE The Last Veil: +35% damage to foes under half HP. Peal: she strikes the foe with the lowest HP.
-- RELIC Concealed Ritual Dagger Hilt (game item; not drawn in her art): Funeral Knife: Lays Penance on the foe for 4s: each act costs the sinner 25% of its own attack. It hits 12% harder.
-- ASCENSION (coming): As a Deity, her Funeral Knife also grants Rapture (no damage for 2s) to every Sister, and her passive grows by half.
-- BATTLE CRY: "*the rope of braided hair creaks* A whisper, then nothing!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: bronze sound-rings rippling out, rope shadows and a dull midnight shockwave; she vanishes and reappears in a slash of dark silk; her Litany Funeral Knife hallows the ground in a ring of bronze sound-rings rippling out; her Concealed Ritual Dagger Hilt blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Plangora Aerea, Half-Born of the Hollow Toll. Draw only these objects: her Mythic weapon, Silence of the Hollow Toll, twin daggers shaped like folded angel feathers that leave hanging cuts of bronze sound-rings in the air, ringing with a small black death-knell bell tied to it. Sizes in her head-heights (she is about 7.3 heads tall): daggers 1 head each. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

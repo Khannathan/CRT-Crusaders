@@ -1,4 +1,27 @@
-<!-- Hallowed Belfry (HB) card HB-SR-ORA. Generated from the sister bible; do not edit here. -->
+<!-- Hallowed Belfry (HB) card HB-SR-ORA. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: HB-SR-ORA
+name: Velislava Sonora
+epithet: Who Foretold the Foundry Fire
+rarity: SR
+rank: Legend
+order: Hallowed Belfry (order id hollow-bell, code HB)
+class: Oracle (class id oracle, role Buffer)
+age: 25
+weapon: Augury of the Belfry Siege (Legendary)
+relic: violet omen reliquary, with a bronze clapper (a game item)
+kit:
+- SKILL I Ash Bolt: Smite any foe hard. The recoil throws her back.
+- SKILL II Foresight: Smite any enemy, Stagger it and Hex it (-25% Magic Resist) for 4s. Breaks a charge. Cooldown 6s.
+- SKILL III Tocsin Foresight: An ally gains +25% attack for 4s and Haste. Wards her ally (-12% damage taken) for 4s. Cooldown 6s.
+- LITANY Toll Canticle: LITANY: heavy damage on every enemy; every Sister gains 15 Zeal. Lays Penance on every foe it strikes for 4s: each act costs the sinner 20% of its own attack.
+- PASSIVE Rope-Scarred Rule: Your Sisters start every fight with +7 Zeal. Every Sister starts the fight with +3 Zeal.
+- RELIC Violet Omen Reliquary (drawn as her floating omen relic): Foresight: Silences it for 2s: only its plainest skill, and any charge breaks. It hits 10% harder.
+- BATTLE CRY: "*three tolls, three graves* The omens want you dead!"
+```
+<!-- END GAME DATA -->
 
 Read the Hallowed Belfry section of order-bible.md first. Cloth: bell bronze #8b6848 lead, parchment #c6baa4 trim, blackened iron. Head: bell-shaped hood or coif hung with small hand-bells. Hem: scalloped, bell-curved hem.
 
@@ -14,14 +37,7 @@ FANATIC: vow chains locked around her wrists; blend into her expression: burning
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (bold): on top of her neckline, show a bare midriff under a short breastplate, and bare thighs between greaves and a high-cut tabard slit. SPLASH POSE (splash only; the bust and battle sprite use their own framing): one knee raised on a heretic's skull, leaning into the weapon. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: blackened gothic plate with bell-shaped pauldrons, purity seals on bell-rope cords, a cracked cathedral bell hung behind her (splash only).
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Ash Bolt: Smite any foe hard. The recoil throws her back.
-- SKILL II Foresight: Smite any enemy, Stagger it and Hex it (-25% Magic Resist) for 4s. Breaks a charge. Cooldown 6s.
-- SKILL III Tocsin Foresight: An ally gains +25% attack for 4s and Haste. Wards her ally (-12% damage taken) for 4s. Cooldown 6s.
-- LITANY Toll Canticle: LITANY: heavy damage on every enemy; every Sister gains 15 Zeal. Lays Penance on every foe it strikes for 4s: each act costs the sinner 20% of its own attack.
-- PASSIVE Rope-Scarred Rule: Your Sisters start every fight with +7 Zeal. Every Sister starts the fight with +3 Zeal.
-- RELIC Violet Omen Reliquary (drawn as her floating omen relic): Foresight: Silences it for 2s: only its plainest skill, and any charge breaks. It hits 10% harder.
-- BATTLE CRY: "*three tolls, three graves* The omens want you dead!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: bronze sound-rings rippling out, rope shadows and a dull midnight shockwave; omens burn in the air as smoke-runes; her Violet Omen Reliquary blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Velislava Sonora, Who Foretold the Foundry Fire. Draw only these objects: her Legendary weapon, Augury of the Belfry Siege, an engraved omen reliquary of blackened iron with bell-bronze fittings and rope on a short staff, runes spinning off it in bronze sound-rings, with a bell-rope braided from the hair of the punished wrapped round the grip; and her floating relic, a violet omen reliquary, with a bronze clapper. Sizes in her head-heights (she is about 7.3 heads tall): relic 1 head across, staff 2 heads. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

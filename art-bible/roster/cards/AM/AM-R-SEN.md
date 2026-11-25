@@ -1,4 +1,28 @@
-<!-- Ashen Mercy (AM) card AM-R-SEN. Generated from the sister bible; do not edit here. -->
+<!-- Ashen Mercy (AM) card AM-R-SEN. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: AM-R-SEN
+name: Pallida Torrefacta
+epithet: Marshal of the Burned Ward
+rarity: R
+rank: Commander
+order: Ashen Mercy (order id ashen-mercy, code AM)
+class: Sentinel (class id sentinel, role Tank)
+age: 22
+weapon: Cinderkind Ward (Epic)
+relic: oath-bound sword hilt, wrapped in a wine-red cord (a game item)
+kit:
+- SKILL I Gravewarden Strike: Strike a front-line foe and draw enemy attacks for 4s. For 4s she strikes back at anyone who hits her.
+- SKILL II Tomb Stance: Brace: -30% damage taken for 4s and draw enemy attacks. Cooldown 6s.
+- SKILL III Last-Rite Ward: Sacrifice 10% HP; every ally heals 7% of max HP. Every Sister Regenerates 3% of max HP every 2s for 4s. Cooldown 6s.
+- LITANY Sealed Sepulcher: LITANY: Ward every ally (-25% damage taken) for 4s. She draws every attack and strikes back hard for 4s.
+- PASSIVE Soot Faith: When struck, she strikes back for 25% of her attack. While she stands, every Sister takes 2% less damage.
+- RELIC Oath-Bound Sword Hilt (game item; not drawn in her art): Sealed Sepulcher: Rapture: every Sister takes no damage for 2s.
+- COMMAND (coming): Leads a phalanx of tomb guards with pikes of the Ashen Mercy.
+- BATTLE CRY: "The Mercy wills it. Every one of you burns. I am the door that does not open!"
+```
+<!-- END GAME DATA -->
 
 Read the Ashen Mercy section of order-bible.md first. Cloth: ash-white #c9c2b8 lead, wine #652b3b trim, soot-black mail. Head: white wimple and coif with an ash thumbprint on the brow. Hem: scorched edge.
 
@@ -14,15 +38,7 @@ FANATIC: knuckles split and bound in charred prayer cloth; blend into her expres
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (confident): on top of her neckline, show a chain harness across her bare waist, and a torn habit that bares hip and leg. SPLASH POSE (splash only; the bust and battle sprite use their own framing): standing tall with weight on one leg, chin raised in contempt. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: soot-black gothic plate, purity seals scorched at the edges, a funeral pyre burning behind her (splash only).
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Gravewarden Strike: Strike a front-line foe and draw enemy attacks for 4s. For 4s she strikes back at anyone who hits her.
-- SKILL II Tomb Stance: Brace: -30% damage taken for 4s and draw enemy attacks. Cooldown 6s.
-- SKILL III Last-Rite Ward: Sacrifice 10% HP; every ally heals 7% of max HP. Every Sister Regenerates 3% of max HP every 2s for 4s. Cooldown 6s.
-- LITANY Sealed Sepulcher: LITANY: Ward every ally (-25% damage taken) for 4s. She draws every attack and strikes back hard for 4s.
-- PASSIVE Soot Faith: When struck, she strikes back for 25% of her attack. While she stands, every Sister takes 2% less damage.
-- RELIC Oath-Bound Sword Hilt (game item; not drawn in her art): Sealed Sepulcher: Rapture: every Sister takes no damage for 2s.
-- COMMAND (coming): Leads a phalanx of tomb guards with pikes of the Ashen Mercy.
-- BATTLE CRY: "The Mercy wills it. Every one of you burns. I am the door that does not open!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: grey ash-flame and falling soot, a wine-red glow as wounds close; she plants her feet and every blow she takes flashes back as a riposte arc; her Oath-Bound Sword Hilt blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Pallida Torrefacta, Marshal of the Burned Ward. Draw only these objects: her Epic weapon, Cinderkind Ward, a tall coffin-lid shield of soot-blackened steel with wine-red wraps with iron bands and a sheltered candle cup and ash smudges, and a longsword, trailing thin smoke, its edges charred from the mercy-pyres. Sizes in her head-heights (she is about 7.3 heads tall): shield 3 heads tall, sword 2.5 heads. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

@@ -1,4 +1,28 @@
-<!-- The Verdant Martyrdom (TC) card TC-LUR. Generated from the sister bible; do not edit here. -->
+<!-- The Verdant Martyrdom (TC) card TC-LUR. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: TC-LUR
+name: Sanguirosa
+epithet: Spina Ascendant, Patron Goddess of the Verdant Martyrdom
+rarity: UR (Limited)
+rank: Patron Deity
+order: Verdant Martyrdom (order id thorn-covenant, code TC)
+class: Martyr (class id martyr, role Tank)
+age: 24
+weapon: The First Nail of the Bleeding Rose (Divine Arsenal)
+relic: fractured dawn icon, tied with a scourge cord (a game item)
+kit:
+- SKILL I Searing Smite: Strike a front-line foe and heal for 35% of the damage dealt. She gains 2 Fervor (+6% damage each, up to 5).
+- SKILL II Scarred Vow: Strike a front-line foe, leave it Bleeding for 4s, and heal for 40% of the damage. Hexes the foe (-30% Magic Resist) for 4s.
+- SKILL III Blood Oath: Sacrifice 12% HP. Every ally gains +20% attack for 4s. Wards every Sister (-25% damage taken) for 4s. Cooldown 8s.
+- LITANY Bleeding Dirge: LITANY: every ally gains Thorns (30% back) for 4s; she draws every attack. Rapture: every Sister takes no damage for 2s. It hallows the ground: Briar Ground (every foe bleeds 15% of her attack every 2s) for 6s.
+- PASSIVE Bleeding Zeal: When she falls, every Sister gains 40 Zeal and +25% attack for 4s, and each Covenant Sister 1 Scar for every 2 she held. Each action stokes 1 Fervor (+6% damage, up to 5). PATRON MIRACLE: every Verdant Martyrdom Sister in the party gains +12% attack and takes 8% less damage.
+- SAINT'S SEAL Unmasked: The first time she drops under 30% HP, she heals 25% and goes to 10 Scars.
+- RELIC Fractured Dawn Icon (game item; not drawn in her art): Searing Smite: Sunders the foe (-30% armor) for 4s. It hits 20% harder.
+- BATTLE CRY: "The briar grows from my wounds, and it hungers. Not yet!"
+```
+<!-- END GAME DATA -->
 
 Read the Verdant Martyrdom section of order-bible.md first. Cloth: moss green #5a7a3a lead, blood red #9a2a33 trim, old bronze. Head: crown of living briar. Hem: thorny tatters.
 
@@ -31,15 +55,7 @@ FANATIC: vow chains locked around her wrists; blend into her expression: eyes bl
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (bold): on top of her neckline, show a chain harness across her bare waist, and skin-tight sheer black sleeves and gloves to the shoulder. SPLASH POSE (splash only; the bust and battle sprite use their own framing): striding forward out of smoke, cape snapping behind. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: scourged gothic plate wrapped in barbed briar, purity seals soaked in her own blood, flagellant scars.
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Searing Smite: Strike a front-line foe and heal for 35% of the damage dealt. She gains 2 Fervor (+6% damage each, up to 5).
-- SKILL II Scarred Vow: Strike a front-line foe, leave it Bleeding for 4s, and heal for 40% of the damage. Hexes the foe (-30% Magic Resist) for 4s.
-- SKILL III Blood Oath: Sacrifice 12% HP. Every ally gains +20% attack for 4s. Wards every Sister (-25% damage taken) for 4s. Cooldown 8s.
-- LITANY Bleeding Dirge: LITANY: every ally gains Thorns (30% back) for 4s; she draws every attack. Rapture: every Sister takes no damage for 2s. It hallows the ground: Briar Ground (every foe bleeds 15% of her attack every 2s) for 6s.
-- PASSIVE Bleeding Zeal: When she falls, every Sister gains 40 Zeal and +25% attack for 4s, and each Covenant Sister 1 Scar for every 2 she held. Each action stokes 1 Fervor (+6% damage, up to 5). PATRON MIRACLE: every Verdant Martyrdom Sister in the party gains +12% attack and takes 8% less damage.
-- SAINT'S SEAL Unmasked: The first time she drops under 30% HP, she heals 25% and goes to 10 Scars.
-- RELIC Fractured Dawn Icon (game item; not drawn in her art): Searing Smite: Sunders the foe (-30% armor) for 4s. It hits 20% harder.
-- BATTLE CRY: "The briar grows from my wounds, and it hungers. Not yet!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: blood-red scar-light and lashing briar, rose petals torn loose; her own blood turns to consecrated fire across her sisters; her Litany Bleeding Dirge hallows the ground in a ring of blood-red scar-light and lashing briar; her Fractured Dawn Icon blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Sanguirosa, Spina Ascendant, Patron Goddess of the Verdant Martyrdom. Draw only these objects: her Divine Arsenal weapon, The First Nail of the Bleeding Rose, a cross-hilted greatsword forged from a nail of the first martyrdom, weeping consecrated light, with a halo of thorned wings for a buckler that circles her arm, wound with barbed briar that drinks her blood. Sizes in her head-heights (she is about 7.3 heads tall): broadsword 2.5 heads, buckler 1 head across. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

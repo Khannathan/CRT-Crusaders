@@ -1,4 +1,27 @@
-<!-- Choir of the Pyre (CC) card CC-LSSR2. Generated from the sister bible; do not edit here. -->
+<!-- Choir of the Pyre (CC) card CC-LSSR2. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: CC-LSSR2
+name: Hymnia Flammigera
+epithet: Half-Born of the Eternal Note
+rarity: SSR (Limited)
+rank: Demigoddess
+order: Choir of the Pyre (order id candle-choir, code CC)
+class: Exorcist (class id exorcist, role Ranged DPS)
+age: 29
+weapon: Brazier of the Unending Hymn (Mythic)
+relic: bottle of trapped spirit, dripping with red wax (a game item)
+kit:
+- SKILL I Lantern Flare: Smite any enemy and strip its shield and blessings. +30% against bosses.
+- SKILL II Hymnal Brand: A Hymn for 6s: every 2s strips every foe's shield and blessings. She gains 1 Fervor (+6% damage each, up to 5). Cooldown 8s.
+- SKILL III Gilded Banishing: A Hymn for 4s: every foe -14% attack. She gains +12% critical chance for 4s. Cooldown 8s.
+- LITANY Chanted Compline: LITANY: heavy damage on every enemy; every Sister gains 8 Zeal. Hexes every foe it strikes (-20% Magic Resist) for 4s. It hallows the ground: Hallowed Ground (every Sister Regenerates 4% every 2s) for 4s.
+- PASSIVE Vesper Litany: While a Hymn plays, her burns tick twice. The fight opens on Hallowed Ground (every Sister Regenerates 4% every 2s) for 4s.
+- RELIC Bottle Of Trapped Spirit (game item; not drawn in her art): Hymnal Brand: She gains 6 Zeal.
+- BATTLE CRY: "Wax and fire and fury. Burn, abomination!"
+```
+<!-- END GAME DATA -->
 
 Read the Choir of the Pyre section of order-bible.md first. Cloth: candle gold #d6a15f lead, wine #652b3b trim, bronze. Head: crown of dripping candles. Hem: ribbon streamers.
 
@@ -31,14 +54,7 @@ FANATIC: scripture branded into her thigh; blend into her expression: burning wi
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (bold): on top of her neckline, show bare thighs between greaves and a high-cut tabard slit, and thigh-high boots with bare skin above, held by garter straps of chain. SPLASH POSE (splash only; the bust and battle sprite use their own framing): back arched, hip cocked, cloak swept back over one shoulder. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: gilded gothic plate dripping with candle wax, purity seals as hymn sheets, a battle hymn screamed not sung, consecrated fire in her eyes and on her blade.
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Lantern Flare: Smite any enemy and strip its shield and blessings. +30% against bosses.
-- SKILL II Hymnal Brand: A Hymn for 6s: every 2s strips every foe's shield and blessings. She gains 1 Fervor (+6% damage each, up to 5). Cooldown 8s.
-- SKILL III Gilded Banishing: A Hymn for 4s: every foe -14% attack. She gains +12% critical chance for 4s. Cooldown 8s.
-- LITANY Chanted Compline: LITANY: heavy damage on every enemy; every Sister gains 8 Zeal. Hexes every foe it strikes (-20% Magic Resist) for 4s. It hallows the ground: Hallowed Ground (every Sister Regenerates 4% every 2s) for 4s.
-- PASSIVE Vesper Litany: While a Hymn plays, her burns tick twice. The fight opens on Hallowed Ground (every Sister Regenerates 4% every 2s) for 4s.
-- RELIC Bottle Of Trapped Spirit (game item; not drawn in her art): Hymnal Brand: She gains 6 Zeal.
-- BATTLE CRY: "Wax and fire and fury. Burn, abomination!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: candle-gold flame, dripping wax and floating hymn ribbons; the lantern opens and witchfire pours out like a flamer; her Litany Chanted Compline hallows the ground in a ring of candle-gold flame; her Bottle Of Trapped Spirit blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Hymnia Flammigera, Half-Born of the Eternal Note. Draw only these objects: her Mythic weapon, Brazier of the Unending Hymn, a lantern holding a captured angel's fire, small iron wings around the cage, burning golden candle-flame, trailing smoke from the pyres it lit. Sizes in her head-heights (she is about 7.3 heads tall): pole 4 heads tall, lantern 1 head. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

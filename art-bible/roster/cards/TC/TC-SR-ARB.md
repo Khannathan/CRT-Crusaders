@@ -1,4 +1,27 @@
-<!-- The Verdant Martyrdom (TC) card TC-SR-ARB. Generated from the sister bible; do not edit here. -->
+<!-- The Verdant Martyrdom (TC) card TC-SR-ARB. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: TC-SR-ARB
+name: Regina Cruciata
+epithet: Who Ended the Night of Red Petals
+rarity: SR
+rank: Legend
+order: Verdant Martyrdom (order id thorn-covenant, code TC)
+class: Arbalist (class id arbalist, role Ranged DPS)
+age: 21
+weapon: Wyrmbane of the Thorn Road (Legendary)
+relic: quiver badge, spiked with thorns (a game item)
+kit:
+- SKILL I Consecrated Bolt: A heavy bolt on any foe that ignores 30% of its Armor.
+- SKILL II Marking Shot: Light bolt that Accuses any foe (+25% damage taken) for 4s. Cooldown 4s.
+- SKILL III Thorn Bolt: Sacrifice 5% HP; a heavy bolt on any foe through 25% of its Armor. Opens Stigmata: it bleeds 0.2x every 2s for 4s, and every drop heals her for half.
+- LITANY Rose Vespers: LITANY: burn every enemy for 4s, and every one Bleeds as well. Sunders every foe it strikes (-15% armor) for 4s.
+- PASSIVE Penitent Vow: Her hits on Accused foes always crit. Her burns, poisons and bleeds run 10% hotter.
+- RELIC Quiver Badge (game item; not drawn in her art): Consecrated Bolt: She heals 15% of the damage dealt. It hits 10% harder.
+- BATTLE CRY: "Feed the roots. One bolt, one heretic!"
+```
+<!-- END GAME DATA -->
 
 Read the Verdant Martyrdom section of order-bible.md first. Cloth: moss green #5a7a3a lead, blood red #9a2a33 trim, old bronze. Head: crown of living briar. Hem: thorny tatters.
 
@@ -14,14 +37,7 @@ FANATIC: flagellant scars criss-crossing her arms; blend into her expression: ey
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (bold): on top of her neckline, show a corset cinched tight under the bust, and skin-tight sheer black sleeves and gloves to the shoulder. SPLASH POSE (splash only; the bust and battle sprite use their own framing): twisting at the waist mid-swing, hair flying. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: scourged gothic plate wrapped in barbed briar, purity seals soaked in her own blood, flagellant scars.
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Consecrated Bolt: A heavy bolt on any foe that ignores 30% of its Armor.
-- SKILL II Marking Shot: Light bolt that Accuses any foe (+25% damage taken) for 4s. Cooldown 4s.
-- SKILL III Thorn Bolt: Sacrifice 5% HP; a heavy bolt on any foe through 25% of its Armor. Opens Stigmata: it bleeds 0.2x every 2s for 4s, and every drop heals her for half.
-- LITANY Rose Vespers: LITANY: burn every enemy for 4s, and every one Bleeds as well. Sunders every foe it strikes (-15% armor) for 4s.
-- PASSIVE Penitent Vow: Her hits on Accused foes always crit. Her burns, poisons and bleeds run 10% hotter.
-- RELIC Quiver Badge (game item; not drawn in her art): Consecrated Bolt: She heals 15% of the damage dealt. It hits 10% harder.
-- BATTLE CRY: "Feed the roots. One bolt, one heretic!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: blood-red scar-light and lashing briar, rose petals torn loose; a single consecrated bolt leaves a long streak of scripture-light; her Quiver Badge blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Regina Cruciata, Who Ended the Night of Red Petals. Draw only these objects: her Legendary weapon, Wyrmbane of the Thorn Road, a heavy arbalest of old bronze wound with living briar strung with dragon sinew, bolts tipped with glowing green-grey light with red thorn sparks, with thorns growing out of it, wet with blood; and her quiver of bolts. Sizes in her head-heights (she is about 7.3 heads tall): crossbow 2 heads long. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

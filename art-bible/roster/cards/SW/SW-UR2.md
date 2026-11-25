@@ -1,4 +1,28 @@
-<!-- Sepulcher Watch (SW) card SW-UR2. Generated from the sister bible; do not edit here. -->
+<!-- Sepulcher Watch (SW) card SW-UR2. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: SW-UR2
+name: Nortia
+epithet: the Bone-White Light, Goddess of the Restless Dead
+rarity: UR
+rank: Deity
+order: Sepulcher Watch (order id sepulcher-watch, code SW)
+class: Abbess (class id abbess, role Healer)
+age: 24
+weapon: The Shepherd's Burning Crook of the Deathless Tomb (Divine Arsenal)
+relic: seal of her abbey, inlaid with bone (a game item)
+kit:
+- SKILL I Thorned Rebuke: Lash a near foe, leaving it Bleeding for 4s. Every Sister heals 45% of the damage dealt. Sunders the foe (-25% armor) for 4s.
+- SKILL II Charnel Rod: Spend 2 Remains to heal every ally 17% and cure poison, burns and bleeding. She gains 8 Zeal. Cooldown 6s.
+- SKILL III Crypt Rule: Every ally Regenerates 6% every 2s for 6s; spend 2 Remains to also Ward them (-15%) for 4s. Every Sister gains +15% critical chance for 4s. Cooldown 6s.
+- LITANY Funeral Anathema: LITANY: raise every fallen Sister with 40% HP, heal every ally 30%, and the party gains 2 Remains. Every Sister Regenerates 5% of max HP every 2s for 4s. It hallows the ground: a Field of Ash (each fallen foe heals every Sister 6%) for 6s.
+- PASSIVE Whispering Seal: Each fallen foe leaves a briar: every Sister heals 6% and gains Thorns (15% back) for 2s. +12% damage on foes under half HP.
+- SAINT'S SEAL Not Yet: The first Sister to fall each fight is raised at once with 25% HP.
+- RELIC Seal Of Her Abbey (game item; not drawn in her art): Crypt Rule: She gains 8 Zeal.
+- BATTLE CRY: "Your bones will serve the Watch. Obey, or join them!"
+```
+<!-- END GAME DATA -->
 
 Read the Sepulcher Watch section of order-bible.md first. Cloth: bone-tan #b8ab8a lead, slate #383845 trim, dark steel with aged ivory trim. Head: bone-tan hood with a finger-bone circlet. Hem: heavy straight hem weighted with keys.
 
@@ -30,15 +54,7 @@ FANATIC: scripture branded into her thigh; blend into her expression: eyes blazi
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (boldest in her Order): on top of her neckline, show a side-cut tabard open from ribs to hip, and thigh-high boots with bare skin above, held by garter straps of chain. SPLASH POSE (splash only; the bust and battle sprite use their own framing): standing tall with weight on one leg, chin raised in contempt. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: ossuary plate with the bones of the honoured dead fused into it, purity seals on skull-shaped bosses, coffin nails driven through her belt.
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Thorned Rebuke: Lash a near foe, leaving it Bleeding for 4s. Every Sister heals 45% of the damage dealt. Sunders the foe (-25% armor) for 4s.
-- SKILL II Charnel Rod: Spend 2 Remains to heal every ally 17% and cure poison, burns and bleeding. She gains 8 Zeal. Cooldown 6s.
-- SKILL III Crypt Rule: Every ally Regenerates 6% every 2s for 6s; spend 2 Remains to also Ward them (-15%) for 4s. Every Sister gains +15% critical chance for 4s. Cooldown 6s.
-- LITANY Funeral Anathema: LITANY: raise every fallen Sister with 40% HP, heal every ally 30%, and the party gains 2 Remains. Every Sister Regenerates 5% of max HP every 2s for 4s. It hallows the ground: a Field of Ash (each fallen foe heals every Sister 6%) for 6s.
-- PASSIVE Whispering Seal: Each fallen foe leaves a briar: every Sister heals 6% and gains Thorns (15% back) for 2s. +12% damage on foes under half HP.
-- SAINT'S SEAL Not Yet: The first Sister to fall each fight is raised at once with 25% HP.
-- RELIC Seal Of Her Abbey (game item; not drawn in her art): Crypt Rule: She gains 8 Zeal.
-- BATTLE CRY: "Your bones will serve the Watch. Obey, or join them!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: bone-white light, orbiting skull tokens and spectral funerary keys; the crozier cracks like a whip, thorns mending as they cut; her Litany Funeral Anathema hallows the ground in a ring of bone-white light; her Seal Of Her Abbey blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Nortia, the Bone-White Light, Goddess of the Restless Dead. Draw only these objects: her Divine Arsenal weapon, The Shepherd's Burning Crook of the Deathless Tomb, a crozier of living thorn crowned with a burning wheel of eyes; roses of bone-white grave-light bloom and fall from it wherever she points, with a mourner's wedding ring nailed into it. Sizes in her head-heights (she is about 7.3 heads tall): crozier 4 heads tall. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

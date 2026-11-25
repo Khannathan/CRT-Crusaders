@@ -1,4 +1,28 @@
-<!-- Sepulcher Watch (SW) card SW-R-CEN. Generated from the sister bible; do not edit here. -->
+<!-- Sepulcher Watch (SW) card SW-R-CEN. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: SW-R-CEN
+name: Hastia Ossuaria
+epithet: Knight-Commander of the Deep Stair
+rarity: R
+rank: Commander
+order: Sepulcher Watch (order id sepulcher-watch, code SW)
+class: Censer (class id censer, role Ranged DPS)
+age: 27
+weapon: Bonesworn Thurible (Epic)
+relic: coal-pan reliquary, carved with a small skull (a game item)
+kit:
+- SKILL I Incense Cloud: Smoke every enemy and leap back: small damage, -25% attack for 4s.
+- SKILL II Burning Thurible: Dash forward, swing at a front-line foe and set it Burning for 4s. Stacks on poison.
+- SKILL III Crypt Fumes: Spend up to 4 Remains: one bolt (0.8x, through 15% of its Armor) at a random foe for each. Weakens every foe it strikes (-10% attack) for 4s. Cooldown 6s.
+- LITANY Choking Smoke: LITANY: smite every enemy, -30% attack for 4s.
+- PASSIVE Marrow Vow: Her burns and poisons are 15% stronger. While she stands, every Sister takes 2% less damage.
+- RELIC Coal-Pan Reliquary (game item; not drawn in her art): Choking Smoke: Sunders every foe it strikes (-10% armor) for 4s. It hits 8% harder.
+- COMMAND (coming): Leads thurible-swingers who smoke out the enemy ranks of the Sepulcher Watch.
+- BATTLE CRY: "Rest is for the faithful. You get the vault. The thurible swings for you!"
+```
+<!-- END GAME DATA -->
 
 Read the Sepulcher Watch section of order-bible.md first. Cloth: bone-tan #b8ab8a lead, slate #383845 trim, dark steel with aged ivory trim. Head: bone-tan hood with a finger-bone circlet. Hem: heavy straight hem weighted with keys.
 
@@ -14,15 +38,7 @@ FANATIC: fresh scourge marks across her shoulders; blend into her expression: in
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (confident): on top of her neckline, show a torn habit that bares hip and leg, and a chain harness across her bare waist. SPLASH POSE (splash only; the bust and battle sprite use their own framing): one knee raised on a heretic's skull, leaning into the weapon. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: ossuary plate with the bones of the honoured dead fused into it, purity seals on skull-shaped bosses, coffin nails driven through her belt.
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Incense Cloud: Smoke every enemy and leap back: small damage, -25% attack for 4s.
-- SKILL II Burning Thurible: Dash forward, swing at a front-line foe and set it Burning for 4s. Stacks on poison.
-- SKILL III Crypt Fumes: Spend up to 4 Remains: one bolt (0.8x, through 15% of its Armor) at a random foe for each. Weakens every foe it strikes (-10% attack) for 4s. Cooldown 6s.
-- LITANY Choking Smoke: LITANY: smite every enemy, -30% attack for 4s.
-- PASSIVE Marrow Vow: Her burns and poisons are 15% stronger. While she stands, every Sister takes 2% less damage.
-- RELIC Coal-Pan Reliquary (game item; not drawn in her art): Choking Smoke: Sunders every foe it strikes (-10% armor) for 4s. It hits 8% harder.
-- COMMAND (coming): Leads thurible-swingers who smoke out the enemy ranks of the Sepulcher Watch.
-- BATTLE CRY: "Rest is for the faithful. You get the vault. The thurible swings for you!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: bone-white light, orbiting skull tokens and spectral funerary keys; the thurible swings out a choking cloud of burning incense; her Coal-Pan Reliquary blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Hastia Ossuaria, Knight-Commander of the Deep Stair. Draw only these objects: her Epic weapon, Bonesworn Thurible, a heavy censer of dark steel inlaid with ivory and bone on a chain, pierced with funerary keys and small skulls, trailing smoke, with a mourner's wedding ring nailed into it. Sizes in her head-heights (she is about 7.3 heads tall): censer 1 head, chain 2 heads. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

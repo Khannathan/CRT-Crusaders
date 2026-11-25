@@ -1,4 +1,27 @@
-<!-- Sepulcher Watch (SW) card SW-SR-EXO. Generated from the sister bible; do not edit here. -->
+<!-- Sepulcher Watch (SW) card SW-SR-EXO. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: SW-SR-EXO
+name: Spuria Mortualis
+epithet: Who Ended the Crypt Rising
+rarity: SR
+rank: Legend
+order: Sepulcher Watch (order id sepulcher-watch, code SW)
+class: Exorcist (class id exorcist, role Ranged DPS)
+age: 21
+weapon: Witchlight of the Night of Open Graves (Legendary)
+relic: iron exorcism lantern, in an ivory reliquary (a game item)
+kit:
+- SKILL I Lantern Flare: Smite any enemy and strip its shield and blessings. +30% against bosses.
+- SKILL II Witchfire: Set any enemy Burning for 6s. Stacks on poison or burns.
+- SKILL III Bone Witchfire: A heavy bolt on any foe; spend 1 Remains to also Sunder it (-20% armor) for 4s. She gains 5 Zeal.
+- LITANY Crypt Vespers: LITANY: a crushing bolt through shields and 30% of its Armor; spends every Remains for more. Weakens the foe (-12% attack) for 4s.
+- PASSIVE Grave Zeal: Her burns are 25% stronger. Her blows lay Penance: for 4s each act costs the foe 10% of its own attack.
+- RELIC Iron Exorcism Lantern (game item; not drawn in her art): Lantern Flare: Sunders the foe (-15% armor) for 4s. It hits 10% harder.
+- BATTLE CRY: "The vaults are hungry, and you are still warm. Out of this world!"
+```
+<!-- END GAME DATA -->
 
 Read the Sepulcher Watch section of order-bible.md first. Cloth: bone-tan #b8ab8a lead, slate #383845 trim, dark steel with aged ivory trim. Head: bone-tan hood with a finger-bone circlet. Hem: heavy straight hem weighted with keys.
 
@@ -14,14 +37,7 @@ FANATIC: candle wax poured over her own collarbone as penance; blend into her ex
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (bold): on top of her neckline, show a bare midriff under a short breastplate, and a torn habit that bares hip and leg. SPLASH POSE (splash only; the bust and battle sprite use their own framing): one knee raised on a heretic's skull, leaning into the weapon. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: ossuary plate with the bones of the honoured dead fused into it, purity seals on skull-shaped bosses, coffin nails driven through her belt.
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Lantern Flare: Smite any enemy and strip its shield and blessings. +30% against bosses.
-- SKILL II Witchfire: Set any enemy Burning for 6s. Stacks on poison or burns.
-- SKILL III Bone Witchfire: A heavy bolt on any foe; spend 1 Remains to also Sunder it (-20% armor) for 4s. She gains 5 Zeal.
-- LITANY Crypt Vespers: LITANY: a crushing bolt through shields and 30% of its Armor; spends every Remains for more. Weakens the foe (-12% attack) for 4s.
-- PASSIVE Grave Zeal: Her burns are 25% stronger. Her blows lay Penance: for 4s each act costs the foe 10% of its own attack.
-- RELIC Iron Exorcism Lantern (game item; not drawn in her art): Lantern Flare: Sunders the foe (-15% armor) for 4s. It hits 10% harder.
-- BATTLE CRY: "The vaults are hungry, and you are still warm. Out of this world!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: bone-white light, orbiting skull tokens and spectral funerary keys; the lantern opens and witchfire pours out like a flamer; her Iron Exorcism Lantern blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Spuria Mortualis, Who Ended the Crypt Rising. Draw only these objects: her Legendary weapon, Witchlight of the Night of Open Graves, a covered witchfire brazier of dark steel inlaid with ivory and bone on a staff, its trapped flame glowing bone-white grave-light, with a mourner's wedding ring nailed into it. Sizes in her head-heights (she is about 7.3 heads tall): pole 4 heads tall, lantern 1 head. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

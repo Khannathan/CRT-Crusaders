@@ -1,4 +1,27 @@
-<!-- Sepulcher Watch (SW) card SW-LSSR2. Generated from the sister bible; do not edit here. -->
+<!-- Sepulcher Watch (SW) card SW-LSSR2. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: SW-LSSR2
+name: Funera Sepulta
+epithet: Half-Born of the Deathless Watch
+rarity: SSR (Limited)
+rank: Demigoddess
+order: Sepulcher Watch (order id sepulcher-watch, code SW)
+class: Arbalist (class id arbalist, role Ranged DPS)
+age: 27
+weapon: Verdict-Bow of the Final Door (Mythic)
+relic: quiver badge, in an ivory reliquary (a game item)
+kit:
+- SKILL I Consecrated Bolt: A heavy bolt on any foe that ignores 30% of its Armor.
+- SKILL II Ivory Quarrel: A heavy bolt on any foe; spend 1 Remains to also Sunder it (-25% armor) for 4s. Silences it for 2s: only its plainest skill, and any charge breaks.
+- SKILL III Grave Salvo: Spend up to 4 Remains: one bolt (1.1x, through 15% of its Armor) at a random foe for each. She gains 6 Zeal. Cooldown 6s.
+- LITANY Skull Benediction: LITANY: a crushing bolt through shields and 30% of its Armor; spends every Remains for more. +15% critical chance on it. It hallows the ground: a Field of Ash (each fallen foe heals every Sister 6%) for 4s.
+- PASSIVE Tomb Penance: Her bolts are cut from saints' bones: each Remains she spends gives that bolt +20% damage and 15% more armor pierce. Her blows lay Penance: for 4s each act costs the foe 12% of its own attack.
+- RELIC Quiver Badge (game item; not drawn in her art): Ivory Quarrel: She gains 6 Zeal. It hits 12% harder.
+- BATTLE CRY: "Your bones will serve the Watch. Loose!"
+```
+<!-- END GAME DATA -->
 
 Read the Sepulcher Watch section of order-bible.md first. Cloth: bone-tan #b8ab8a lead, slate #383845 trim, dark steel with aged ivory trim. Head: bone-tan hood with a finger-bone circlet. Hem: heavy straight hem weighted with keys.
 
@@ -31,14 +54,7 @@ FANATIC: a heretic's sigil branded into her forearm; blend into her expression: 
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (bold): on top of her neckline, show thigh-high boots with bare skin above, held by garter straps of chain, and a chain harness across her bare waist. SPLASH POSE (splash only; the bust and battle sprite use their own framing): back arched, hip cocked, cloak swept back over one shoulder. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: ossuary plate with the bones of the honoured dead fused into it, purity seals on skull-shaped bosses, coffin nails driven through her belt.
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Consecrated Bolt: A heavy bolt on any foe that ignores 30% of its Armor.
-- SKILL II Ivory Quarrel: A heavy bolt on any foe; spend 1 Remains to also Sunder it (-25% armor) for 4s. Silences it for 2s: only its plainest skill, and any charge breaks.
-- SKILL III Grave Salvo: Spend up to 4 Remains: one bolt (1.1x, through 15% of its Armor) at a random foe for each. She gains 6 Zeal. Cooldown 6s.
-- LITANY Skull Benediction: LITANY: a crushing bolt through shields and 30% of its Armor; spends every Remains for more. +15% critical chance on it. It hallows the ground: a Field of Ash (each fallen foe heals every Sister 6%) for 4s.
-- PASSIVE Tomb Penance: Her bolts are cut from saints' bones: each Remains she spends gives that bolt +20% damage and 15% more armor pierce. Her blows lay Penance: for 4s each act costs the foe 12% of its own attack.
-- RELIC Quiver Badge (game item; not drawn in her art): Ivory Quarrel: She gains 6 Zeal. It hits 12% harder.
-- BATTLE CRY: "Your bones will serve the Watch. Loose!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: bone-white light, orbiting skull tokens and spectral funerary keys; a single consecrated bolt leaves a long streak of scripture-light; her Litany Skull Benediction hallows the ground in a ring of bone-white light; her Quiver Badge blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Funera Sepulta, Half-Born of the Deathless Watch. Draw only these objects: her Mythic weapon, Verdict-Bow of the Final Door, a crossbow whose limbs are two burning angel wings, firing bolts of white fire trailing bone-white grave-light, crusted with grave dirt and burial lime; and her quiver of bolts. Sizes in her head-heights (she is about 7.3 heads tall): crossbow 2 heads long. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

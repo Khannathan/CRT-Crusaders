@@ -1,4 +1,28 @@
-<!-- Ashen Mercy (AM) card AM-SSR-EXE. Generated from the sister bible; do not edit here. -->
+<!-- Ashen Mercy (AM) card AM-SSR-EXE. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: AM-SSR-EXE
+name: Fumosa Ustoria
+epithet: Daughter of the Hearth Unburned
+rarity: SSR
+rank: Demigoddess
+order: Ashen Mercy (order id ashen-mercy, code AM)
+class: Executioner (class id inquisitor, role Melee DPS)
+age: 23
+weapon: Sentence of the Hearth Unburned (Mythic)
+relic: heretic's branding iron, scorched along one edge (a game item)
+kit:
+- SKILL I Duelist's Thrust: Lunge at a near foe. +50% against the Accused.
+- SKILL II Ash Reckoning: Strike a front-line foe; a kill gives her 15 Zeal. Opens Stigmata: it bleeds 0.25x every 2s for 4s, and every drop heals her for half.
+- SKILL III Sentence: Drag any foe to the front and strike it. Double damage under 30% HP. Cooldown 6s.
+- LITANY Kindling Litany: LITANY: strike every enemy, double against foes under half HP. Weakens every foe it strikes (-15% attack) for 4s. It hallows the ground: a Field of Ash (each fallen foe heals every Sister 6%) for 4s.
+- PASSIVE Shrouded Tithe: Her hits on foes under half HP always crit. Once every 2s, a Mercy kill gives her another action. She heals 7% of the damage she deals.
+- RELIC Heretic'S Branding Iron (game item; not drawn in her art): Kindling Litany: She heals 20% of the damage dealt. It hits 12% harder.
+- ASCENSION (coming): As a Deity, her Kindling Litany also grants Rapture (no damage for 2s) to every Sister, and her passive grows by half.
+- BATTLE CRY: "I burned a city to save it. You are smaller. Accused, and executed!"
+```
+<!-- END GAME DATA -->
 
 Read the Ashen Mercy section of order-bible.md first. Cloth: ash-white #c9c2b8 lead, wine #652b3b trim, soot-black mail. Head: white wimple and coif with an ash thumbprint on the brow. Hem: scorched edge.
 
@@ -30,15 +54,7 @@ FANATIC: vow chains locked around her wrists; blend into her expression: in fana
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (daring): on top of her neckline, show skin-tight sheer black sleeves and gloves to the shoulder, and a corset cinched tight under the bust. SPLASH POSE (splash only; the bust and battle sprite use their own framing): kneeling in prayer with the weapon planted, looking up through her lashes. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: soot-black gothic plate, purity seals scorched at the edges, a funeral pyre burning behind her (splash only).
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Duelist's Thrust: Lunge at a near foe. +50% against the Accused.
-- SKILL II Ash Reckoning: Strike a front-line foe; a kill gives her 15 Zeal. Opens Stigmata: it bleeds 0.25x every 2s for 4s, and every drop heals her for half.
-- SKILL III Sentence: Drag any foe to the front and strike it. Double damage under 30% HP. Cooldown 6s.
-- LITANY Kindling Litany: LITANY: strike every enemy, double against foes under half HP. Weakens every foe it strikes (-15% attack) for 4s. It hallows the ground: a Field of Ash (each fallen foe heals every Sister 6%) for 4s.
-- PASSIVE Shrouded Tithe: Her hits on foes under half HP always crit. Once every 2s, a Mercy kill gives her another action. She heals 7% of the damage she deals.
-- RELIC Heretic'S Branding Iron (game item; not drawn in her art): Kindling Litany: She heals 20% of the damage dealt. It hits 12% harder.
-- ASCENSION (coming): As a Deity, her Kindling Litany also grants Rapture (no damage for 2s) to every Sister, and her passive grows by half.
-- BATTLE CRY: "I burned a city to save it. You are smaller. Accused, and executed!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: grey ash-flame and falling soot, a wine-red glow as wounds close; the executioner's axe falls in one heavy flash; her Litany Kindling Litany hallows the ground in a ring of grey ash-flame and falling soot; her Heretic'S Branding Iron blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Fumosa Ustoria, Daughter of the Hearth Unburned. Draw only these objects: her Mythic weapon, Sentence of the Hearth Unburned, a great axe whose blade is a single iron wing, its edge showing the sins of whoever it strikes in ash-grey light with wine embers, trailing thin smoke, its edges charred from the mercy-pyres. Sizes in her head-heights (she is about 7.3 heads tall): axe 3 heads long. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

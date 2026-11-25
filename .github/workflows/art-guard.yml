@@ -1,7 +1,8 @@
 name: Art lane guard
 
 # Fails any art PR (branch art/* or title "Art: ...") that touches anything
-# outside the art folders in ASSETS_GUIDE section 5. Other PRs pass at once.
+# outside ChatGPT's lane (art-bible/specs/GITHUB_LANE.md). Other PRs pass at once.
+# The guard always runs main's copy of its own script, so a PR can't rewrite its own check.
 on:
   pull_request:
     types: [opened, synchronize, reopened, edited]
@@ -25,9 +26,19 @@ jobs:
           HEAD: ${{ github.event.pull_request.head.sha }}
           BRANCH: ${{ github.event.pull_request.head.ref }}
           TITLE: ${{ github.event.pull_request.title }}
-        run: python3 tools/art_guard.py "$BASE" "$HEAD" "$BRANCH" "$TITLE"
+        run: |
+          mkdir -p /tmp/guard
+          for f in art_guard.py art_bible_data.py; do
+            git show "$BASE:tools/$f" > "/tmp/guard/$f" 2>/dev/null || cp "tools/$f" "/tmp/guard/$f"
+          done
+          python3 /tmp/guard/art_guard.py "$BASE" "$HEAD" "$BRANCH" "$TITLE"
       - name: Check changed files (re-run on a branch)
         if: github.event_name == 'workflow_dispatch'
         env:
           BRANCH: ${{ github.ref_name }}
-        run: python3 tools/art_guard.py "$(git merge-base origin/main HEAD)" HEAD "$BRANCH" ""
+        run: |
+          mkdir -p /tmp/guard
+          for f in art_guard.py art_bible_data.py; do
+            git show "origin/main:tools/$f" > "/tmp/guard/$f" 2>/dev/null || cp "tools/$f" "/tmp/guard/$f"
+          done
+          python3 /tmp/guard/art_guard.py "$(git merge-base origin/main HEAD)" HEAD "$BRANCH" ""

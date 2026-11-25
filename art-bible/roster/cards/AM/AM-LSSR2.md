@@ -1,4 +1,27 @@
-<!-- Ashen Mercy (AM) card AM-LSSR2. Generated from the sister bible; do not edit here. -->
+<!-- Ashen Mercy (AM) card AM-LSSR2. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: AM-LSSR2
+name: Caritas Rogalis
+epithet: Half-Born of the Grey Dawn
+rarity: SSR (Limited)
+rank: Demigoddess
+order: Ashen Mercy (order id ashen-mercy, code AM)
+class: Veilblade (class id veilblade, role Melee DPS)
+age: 21
+weapon: Silence of the Last Ember (Mythic)
+relic: concealed ritual dagger hilt, in a soot-blackened cage (a game item)
+kit:
+- SKILL I Veil Strike: Strike any foe, with +25% critical chance.
+- SKILL II Ember Kiss: A strike on a near foe that cannot kill: it leaves the foe at its Mercy line at least. She heals 20% of the damage dealt.
+- SKILL III Pale Needle: Strike a front-line foe; a kill gives her 15 Zeal. Weakens the foe (-15% attack) for 4s.
+- LITANY Last-Rite Compline: LITANY: strike every enemy, double against foes under half HP. Brands every foe it strikes: the next blow on it lands 30% harder. It hallows the ground: a Field of Ash (each fallen foe heals every Sister 6%) for 4s.
+- PASSIVE Absolving Covenant: Her hits on foes under half HP always crit. Once every 2s, a Mercy kill gives her another action. +10% damage on foes under half HP.
+- RELIC Concealed Ritual Dagger Hilt (game item; not drawn in her art): Ember Kiss: Weakens the foe (-15% attack) for 4s. It hits 12% harder.
+- BATTLE CRY: "The pyre is lit, and it is hungry. One cut is enough!"
+```
+<!-- END GAME DATA -->
 
 Read the Ashen Mercy section of order-bible.md first. Cloth: ash-white #c9c2b8 lead, wine #652b3b trim, soot-black mail. Head: white wimple and coif with an ash thumbprint on the brow. Hem: scorched edge.
 
@@ -31,14 +54,7 @@ FANATIC: tears of blood dried on her cheeks; blend into her expression: burning 
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (bold): on top of her neckline, show bare thighs between greaves and a high-cut tabard slit, and a chain harness across her bare waist. SPLASH POSE (splash only; the bust and battle sprite use their own framing): twisting at the waist mid-swing, hair flying. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: soot-black gothic plate, purity seals scorched at the edges, a funeral pyre burning behind her (splash only).
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Veil Strike: Strike any foe, with +25% critical chance.
-- SKILL II Ember Kiss: A strike on a near foe that cannot kill: it leaves the foe at its Mercy line at least. She heals 20% of the damage dealt.
-- SKILL III Pale Needle: Strike a front-line foe; a kill gives her 15 Zeal. Weakens the foe (-15% attack) for 4s.
-- LITANY Last-Rite Compline: LITANY: strike every enemy, double against foes under half HP. Brands every foe it strikes: the next blow on it lands 30% harder. It hallows the ground: a Field of Ash (each fallen foe heals every Sister 6%) for 4s.
-- PASSIVE Absolving Covenant: Her hits on foes under half HP always crit. Once every 2s, a Mercy kill gives her another action. +10% damage on foes under half HP.
-- RELIC Concealed Ritual Dagger Hilt (game item; not drawn in her art): Ember Kiss: Weakens the foe (-15% attack) for 4s. It hits 12% harder.
-- BATTLE CRY: "The pyre is lit, and it is hungry. One cut is enough!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: grey ash-flame and falling soot, a wine-red glow as wounds close; she vanishes and reappears in a slash of dark silk; her Litany Last-Rite Compline hallows the ground in a ring of grey ash-flame and falling soot; her Concealed Ritual Dagger Hilt blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Caritas Rogalis, Half-Born of the Grey Dawn. Draw only these objects: her Mythic weapon, Silence of the Last Ember, twin daggers shaped like folded angel feathers that leave hanging cuts of ash-grey light with wine embers in the air, caked with ash from the mercy-fires. Sizes in her head-heights (she is about 7.3 heads tall): daggers 1 head each. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

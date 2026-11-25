@@ -1,4 +1,27 @@
-<!-- Confessors of Glass (GC) card GC-SR-WAR. Generated from the sister bible; do not edit here. -->
+<!-- Confessors of Glass (GC) card GC-SR-WAR. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: GC-SR-WAR
+name: Postrema Fissa
+epithet: Slayer of the Mirror-Beast
+rarity: SR
+rank: Legend
+order: Confessors of Glass (order id glass-confession, code GC)
+class: War-Sister (class id warsister, role Melee DPS)
+age: 24
+weapon: Flail of the Frozen Synod (Legendary)
+relic: silver dueling gauntlet, with a cracked mirror pane (a game item)
+kit:
+- SKILL I Penitent Blow: Smite a front-line foe hard and leave it Bleeding for 4s. +40% while she is under half HP.
+- SKILL II Blood for Zeal: Sacrifice 10% HP. +30 of her own Zeal and +25% attack for 4s. Cooldown 6s.
+- SKILL III Reflected Lash: A light hit on any foe: Accused, Sundered (-20% armor) and Confessed for 6s. Brands the foe: the next blow on it lands 25% harder.
+- LITANY Leaded Compline: LITANY: a crushing blow on any enemy, doubled against the Accused; always a crit against the Confessed. Lays Penance on the foe for 4s: each act costs the sinner 20% of its own attack.
+- PASSIVE Pane Litany: Heals for 10% of the damage she deals. Reflection: 8% of every blow she takes cuts its striker.
+- RELIC Silver Dueling Gauntlet (game item; not drawn in her art): Penitent Blow: Brands the foe: the next blow on it lands 25% harder. It hits 10% harder.
+- BATTLE CRY: "Nothing is hidden. Nothing is spared. Fury is faith!"
+```
+<!-- END GAME DATA -->
 
 Read the Confessors of Glass section of order-bible.md first. Cloth: ice blue #9cc3d0 (as cold grey-blue cloth) lead, violet #6e5a8c trim, cold silver. Head: a faceless mirror faceplate under a tall coif with a black-glass pane, or a mirror circlet. Every Confessors of Glass Sister is a faceless construct of glass and mirror (see order-bible.md). Hem: crisp, clean hem.
 
@@ -15,14 +38,7 @@ FANATIC: scripture branded into her thigh; blend into her expression: with a fan
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (bold): on top of her neckline, show a corset cinched tight under the bust, and a chain harness across her bare waist. SPLASH POSE (splash only; the bust and battle sprite use their own framing): kneeling in prayer with the weapon planted, looking up through her lashes. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: cathedral-window armour of leaded stained glass, purity seals of black wax with silver ribbon, a rose window shattering behind her (splash only).
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Penitent Blow: Smite a front-line foe hard and leave it Bleeding for 4s. +40% while she is under half HP.
-- SKILL II Blood for Zeal: Sacrifice 10% HP. +30 of her own Zeal and +25% attack for 4s. Cooldown 6s.
-- SKILL III Reflected Lash: A light hit on any foe: Accused, Sundered (-20% armor) and Confessed for 6s. Brands the foe: the next blow on it lands 25% harder.
-- LITANY Leaded Compline: LITANY: a crushing blow on any enemy, doubled against the Accused; always a crit against the Confessed. Lays Penance on the foe for 4s: each act costs the sinner 20% of its own attack.
-- PASSIVE Pane Litany: Heals for 10% of the damage she deals. Reflection: 8% of every blow she takes cuts its striker.
-- RELIC Silver Dueling Gauntlet (game item; not drawn in her art): Penitent Blow: Brands the foe: the next blow on it lands 25% harder. It hits 10% harder.
-- BATTLE CRY: "Nothing is hidden. Nothing is spared. Fury is faith!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: ice-blue mirror shards, hard white reflections and her inner light bleeding through cracks; the flail spins in a red arc and her scourge-marks glow; her Silver Dueling Gauntlet blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, an anime-styled dark-fantasy heroine drawn as a faceless glass construct with a mirror faceplate, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading, glass and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Postrema Fissa, Slayer of the Mirror-Beast. Draw only these objects: her Legendary weapon, Flail of the Frozen Synod, a relic flail of cold silver set with black glass with a caged, burning saint-skull for a head and rune-cut links, with a shattered mirror-shard set in it that shows the sins of its target. Sizes in her head-heights (she is about 7.3 heads tall): flail haft 1.5 heads, chain 1 head. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

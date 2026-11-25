@@ -1,4 +1,28 @@
-<!-- The Verdant Martyrdom (TC) card TC-SSR-VEI. Generated from the sister bible; do not edit here. -->
+<!-- The Verdant Martyrdom (TC) card TC-SSR-VEI. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: TC-SSR-VEI
+name: Sanguina Vulnerata
+epithet: Half-Born of the Red Rose
+rarity: SSR
+rank: Demigoddess
+order: Verdant Martyrdom (order id thorn-covenant, code TC)
+class: Veilblade (class id veilblade, role Melee DPS)
+age: 24
+weapon: Silence of the Wild Covenant (Mythic)
+relic: poison ring, tied with a scourge cord (a game item)
+kit:
+- SKILL I Veil Strike: Strike any foe, with +25% critical chance.
+- SKILL II Briar Kiss: Strike any foe and leave it Bleeding for 6s. Sunders the foe (-20% armor) for 4s. Cooldown 4s.
+- SKILL III Barbed Needle: Sacrifice 8% HP; strike any foe, +50% against the Accused. Opens Stigmata: it bleeds 0.25x every 2s for 4s, and every drop heals her for half.
+- LITANY Flayed Compline: LITANY: a crushing blow on any enemy, +5% per Scar she holds. Weakens the foe (-15% attack) for 4s. It hallows the ground: Briar Ground (every foe bleeds 15% of her attack every 2s) for 4s.
+- PASSIVE Bleeding Heresy-Bane: Heals for 12% of the damage she deals. Each Scar she holds lets her hits ignore 4% more Armor. Each action stokes 1 Fervor (+6% damage, up to 5).
+- RELIC Poison Ring (game item; not drawn in her art): Briar Kiss: She gains 1 Fervor (+6% damage each, up to 5). It hits 12% harder.
+- ASCENSION (coming): As a Deity, her Flayed Compline also grants Rapture (no damage for 2s) to every Sister, and her passive grows by half.
+- BATTLE CRY: "I bled for the garden this morning. Now you will. A whisper, then nothing!"
+```
+<!-- END GAME DATA -->
 
 Read the Verdant Martyrdom section of order-bible.md first. Cloth: moss green #5a7a3a lead, blood red #9a2a33 trim, old bronze. Head: crown of living briar. Hem: thorny tatters.
 
@@ -30,15 +54,7 @@ FANATIC: a crown of nails she drove in herself; blend into her expression: in fa
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (daring): on top of her neckline, show skin-tight sheer black sleeves and gloves to the shoulder, and a bare midriff under a short breastplate. SPLASH POSE (splash only; the bust and battle sprite use their own framing): back arched, hip cocked, cloak swept back over one shoulder. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: scourged gothic plate wrapped in barbed briar, purity seals soaked in her own blood, flagellant scars.
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Veil Strike: Strike any foe, with +25% critical chance.
-- SKILL II Briar Kiss: Strike any foe and leave it Bleeding for 6s. Sunders the foe (-20% armor) for 4s. Cooldown 4s.
-- SKILL III Barbed Needle: Sacrifice 8% HP; strike any foe, +50% against the Accused. Opens Stigmata: it bleeds 0.25x every 2s for 4s, and every drop heals her for half.
-- LITANY Flayed Compline: LITANY: a crushing blow on any enemy, +5% per Scar she holds. Weakens the foe (-15% attack) for 4s. It hallows the ground: Briar Ground (every foe bleeds 15% of her attack every 2s) for 4s.
-- PASSIVE Bleeding Heresy-Bane: Heals for 12% of the damage she deals. Each Scar she holds lets her hits ignore 4% more Armor. Each action stokes 1 Fervor (+6% damage, up to 5).
-- RELIC Poison Ring (game item; not drawn in her art): Briar Kiss: She gains 1 Fervor (+6% damage each, up to 5). It hits 12% harder.
-- ASCENSION (coming): As a Deity, her Flayed Compline also grants Rapture (no damage for 2s) to every Sister, and her passive grows by half.
-- BATTLE CRY: "I bled for the garden this morning. Now you will. A whisper, then nothing!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: blood-red scar-light and lashing briar, rose petals torn loose; she vanishes and reappears in a slash of dark silk; her Litany Flayed Compline hallows the ground in a ring of blood-red scar-light and lashing briar; her Poison Ring blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Sanguina Vulnerata, Half-Born of the Red Rose. Draw only these objects: her Mythic weapon, Silence of the Wild Covenant, twin daggers shaped like folded angel feathers that leave hanging cuts of green-grey light with red thorn sparks in the air, with thorns growing out of it, wet with blood. Sizes in her head-heights (she is about 7.3 heads tall): daggers 1 head each. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

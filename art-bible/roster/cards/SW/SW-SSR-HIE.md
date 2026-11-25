@@ -1,4 +1,28 @@
-<!-- Sepulcher Watch (SW) card SW-SSR-HIE. Generated from the sister bible; do not edit here. -->
+<!-- Sepulcher Watch (SW) card SW-SSR-HIE. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: SW-SSR-HIE
+name: Tenebra Tumulata
+epithet: Chosen of the Sealed Tomb
+rarity: SSR
+rank: Demigoddess
+order: Sepulcher Watch (order id sepulcher-watch, code SW)
+class: Hierophant (class id hierophant, role Tank)
+age: 23
+weapon: Aegis of the Deathless Watch (Mythic)
+relic: reliquary of a saint's finger, tied with a coffin nail (a game item)
+kit:
+- SKILL I Reliquary Bash: Strike a front-line foe, hurl it back and draw enemy attacks for 4s.
+- SKILL II Charnel Bulwark: Spend 2 Remains to shield every ally for 18% of max HP; with fewer, shield only herself for 22%. Martyrdom: for 4s she takes 30% of every blow aimed at her Sisters. Cooldown 6s.
+- SKILL III Vigil Bell: Shield every ally for 15% of max HP and cure poison, burns and bleeding. Cooldown 8s.
+- LITANY Funeral Anathema: LITANY: Ward every ally (-22%) for 4s, draw every attack and counter; summoned foes are Stunned for 2s. Every Sister Regenerates 4% of max HP every 2s for 4s. It hallows the ground: a Field of Ash (each fallen foe heals every Sister 6%) for 4s.
+- PASSIVE Barrow Oath: At 3 or more Remains, she and the Sisters beside her take 15% less damage. Each Remains the party spends heals her 4%. +10% damage on foes under half HP.
+- RELIC Reliquary Of A Saint'S Finger (game item; not drawn in her art): Vigil Bell: Martyrdom: for 4s she takes 30% of every blow aimed at her Sisters.
+- ASCENSION (coming): As a Deity, her Funeral Anathema also grants Rapture (no damage for 2s) to every Sister, and her passive grows by half.
+- BATTLE CRY: "Death is no discharge from this war. Not one step past me!"
+```
+<!-- END GAME DATA -->
 
 Read the Sepulcher Watch section of order-bible.md first. Cloth: bone-tan #b8ab8a lead, slate #383845 trim, dark steel with aged ivory trim. Head: bone-tan hood with a finger-bone circlet. Hem: heavy straight hem weighted with keys.
 
@@ -30,15 +54,7 @@ FANATIC: flagellant scars criss-crossing her arms; blend into her expression: wi
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (daring): on top of her neckline, show a chain harness across her bare waist, and a torn habit that bares hip and leg. SPLASH POSE (splash only; the bust and battle sprite use their own framing): one knee raised on a heretic's skull, leaning into the weapon. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: ossuary plate with the bones of the honoured dead fused into it, purity seals on skull-shaped bosses, coffin nails driven through her belt.
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Reliquary Bash: Strike a front-line foe, hurl it back and draw enemy attacks for 4s.
-- SKILL II Charnel Bulwark: Spend 2 Remains to shield every ally for 18% of max HP; with fewer, shield only herself for 22%. Martyrdom: for 4s she takes 30% of every blow aimed at her Sisters. Cooldown 6s.
-- SKILL III Vigil Bell: Shield every ally for 15% of max HP and cure poison, burns and bleeding. Cooldown 8s.
-- LITANY Funeral Anathema: LITANY: Ward every ally (-22%) for 4s, draw every attack and counter; summoned foes are Stunned for 2s. Every Sister Regenerates 4% of max HP every 2s for 4s. It hallows the ground: a Field of Ash (each fallen foe heals every Sister 6%) for 4s.
-- PASSIVE Barrow Oath: At 3 or more Remains, she and the Sisters beside her take 15% less damage. Each Remains the party spends heals her 4%. +10% damage on foes under half HP.
-- RELIC Reliquary Of A Saint'S Finger (game item; not drawn in her art): Vigil Bell: Martyrdom: for 4s she takes 30% of every blow aimed at her Sisters.
-- ASCENSION (coming): As a Deity, her Funeral Anathema also grants Rapture (no damage for 2s) to every Sister, and her passive grows by half.
-- BATTLE CRY: "Death is no discharge from this war. Not one step past me!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: bone-white light, orbiting skull tokens and spectral funerary keys; her reliquary-shield flares and throws up a wall of light; her Litany Funeral Anathema hallows the ground in a ring of bone-white light; her Reliquary Of A Saint'S Finger blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Tenebra Tumulata, Chosen of the Sealed Tomb. Draw only these objects: her Mythic weapon, Aegis of the Deathless Watch, a tower shield whose shrine is a huge lidded eye that opens and burns with bone-white grave-light, two iron wings folded across its face, and a flanged mace wreathed in consecrated fire, crusted with grave dirt and burial lime. Sizes in her head-heights (she is about 7.3 heads tall): shield 2.5 heads tall, mace haft 1.5 heads. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

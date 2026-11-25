@@ -1,4 +1,28 @@
-<!-- Veiled Tribunal (VT) card VT-R-WAR. Generated from the sister bible; do not edit here. -->
+<!-- Veiled Tribunal (VT) card VT-R-WAR. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: VT-R-WAR
+name: Ariadne Silens
+epithet: Warden of the Black Court
+rarity: R
+rank: Commander
+order: Veiled Tribunal (order id veiled-tribunal, code VT)
+class: War-Sister (class id warsister, role Melee DPS)
+age: 21
+weapon: Sealsworn Scourge (Epic)
+relic: vow collar, with a smoky-glass central inset (a game item)
+kit:
+- SKILL I Penitent Blow: Smite a front-line foe hard and leave it Bleeding for 4s. +40% while she is under half HP.
+- SKILL II Flagellant's Charge: Crash into a near foe and charge forward. +60% against the Weakened. Cooldown 6s.
+- SKILL III Penitent Witness: Sacrifice 8% HP; the foremost foe is struck lightly and gains 2 Guilt. Cooldown 4s.
+- LITANY Martyr's Fury: LITANY: strike every enemy and leave them Bleeding for 4s.
+- PASSIVE Penitent Thirst: Heals for 7% of the damage she deals.
+- RELIC Vow Collar (game item; not drawn in her art): Martyr's Fury: Accuses every foe it strikes for 2s (+25% damage taken). It hits 8% harder.
+- COMMAND (coming): Leads a frenzied flail company of the Veiled Tribunal.
+- BATTLE CRY: "Silence. The sentence is read. Fury is faith!"
+```
+<!-- END GAME DATA -->
 
 Read the Veiled Tribunal section of order-bible.md first. Cloth: dusk violet #6e5a8c lead, parchment #c6baa4 trim, black steel with crimson silk lining. Head: sheer black veil over the eyes, high angular collar. Hem: sharp angular points.
 
@@ -14,15 +38,7 @@ FANATIC: candle wax poured over her own collarbone as penance; blend into her ex
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (confident): on top of her neckline, show a chain harness across her bare waist, and a torn habit that bares hip and leg. SPLASH POSE (splash only; the bust and battle sprite use their own framing): striding forward out of smoke, cape snapping behind. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: judicial gothic plate hung with nailed verdicts and chained scripture, purity seals stamped with the scales, heretics kneeling in chains behind her (splash only).
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Penitent Blow: Smite a front-line foe hard and leave it Bleeding for 4s. +40% while she is under half HP.
-- SKILL II Flagellant's Charge: Crash into a near foe and charge forward. +60% against the Weakened. Cooldown 6s.
-- SKILL III Penitent Witness: Sacrifice 8% HP; the foremost foe is struck lightly and gains 2 Guilt. Cooldown 4s.
-- LITANY Martyr's Fury: LITANY: strike every enemy and leave them Bleeding for 4s.
-- PASSIVE Penitent Thirst: Heals for 7% of the damage she deals.
-- RELIC Vow Collar (game item; not drawn in her art): Martyr's Fury: Accuses every foe it strikes for 2s (+25% damage taken). It hits 8% harder.
-- COMMAND (coming): Leads a frenzied flail company of the Veiled Tribunal.
-- BATTLE CRY: "Silence. The sentence is read. Fury is faith!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: violet scale-marks, nailed parchment verdicts and wax seals bursting; the flail spins in a red arc and her scourge-marks glow; her Vow Collar blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Ariadne Silens, Warden of the Black Court. Draw only these objects: her Epic weapon, Sealsworn Scourge, a spiked iron flail of angular black steel with crimson silk with a knotted-cord grip and balance scales and angular wax seals on the head, notched once for every soul she condemned. Sizes in her head-heights (she is about 7.3 heads tall): flail haft 1.5 heads, chain 1 head. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

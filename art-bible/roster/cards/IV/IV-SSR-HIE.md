@@ -1,4 +1,28 @@
-<!-- Iron Vigil (IV) card IV-SSR-HIE. Generated from the sister bible; do not edit here. -->
+<!-- Iron Vigil (IV) card IV-SSR-HIE. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: IV-SSR-HIE
+name: Pugna Excubitrix
+epithet: Chosen of the Amber Eye
+rarity: SSR
+rank: Demigoddess
+order: Iron Vigil (order id iron-vigil, code IV)
+class: Hierophant (class id hierophant, role Tank)
+age: 28
+weapon: Aegis of the Vigil Star (Mythic)
+relic: miniature candlelit shrine, with a smoky-glass central inset (a game item)
+kit:
+- SKILL I Shrine Bash: Strike a front-line foe, hurl it back and draw enemy attacks for 4s. Sunders the foe (-20% armor) for 4s.
+- SKILL II Iron Rampart: Shield the Sisters of the Vanguard for 28% of max HP. Wards every Sister (-15% damage taken) for 4s. Cooldown 4s.
+- SKILL III Hold the Gate: Overwatch: the next foe to attack in her sights is struck and Stunned (bosses are Staggered instead). She is Thorned (25% of blows back) for 4s. Cooldown 8s.
+- LITANY Walls of Iron: LITANY: shield every ally for 25% of max HP, draw every attack for 4s, and every Sister gains 10 Zeal. It hallows the ground: a Lantern Line (every 2s the most hurt Sister goes on Overwatch) for 4s.
+- PASSIVE Rampart: While she leads the Vanguard, the Sister behind her takes 20% less damage and fires a free hit whenever her Overwatch does.
+- RELIC Miniature Candlelit Shrine (game item; not drawn in her art): Iron Rampart: Martyrdom: for 4s she takes 30% of every blow aimed at her Sisters.
+- ASCENSION (coming): As a Deity, her Walls of Iron also grants Rapture (no damage for 2s) to every Sister, and her passive grows by half.
+- BATTLE CRY: "The lantern sees you. The wall forgets you. Behind the reliquary, Sisters!"
+```
+<!-- END GAME DATA -->
 
 Read the Iron Vigil section of order-bible.md first. Cloth: bone-white #e4dccb and charcoal-black #3a3640 halved surcoat lead, ember-orange #e0622a trim, steel chainmail. Head: mail coif with a burning-cross brow band (face always shown; no helm carried). Hem: straight square-cut hem.
 
@@ -31,15 +55,7 @@ FANATIC: a rope of confessions knotted around her waist; blend into her expressi
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (daring): on top of her neckline, show a side-cut tabard open from ribs to hip, and a chain harness across her bare waist. SPLASH POSE (splash only; the bust and battle sprite use their own framing): standing tall with weight on one leg, chin raised in contempt. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: prayer-etched steel plate over a chainmail hauberk, a burning cross on the surcoat, wax purity seals with long ribbon scrolls on every plate, sworn to the war that never ends.
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Shrine Bash: Strike a front-line foe, hurl it back and draw enemy attacks for 4s. Sunders the foe (-20% armor) for 4s.
-- SKILL II Iron Rampart: Shield the Sisters of the Vanguard for 28% of max HP. Wards every Sister (-15% damage taken) for 4s. Cooldown 4s.
-- SKILL III Hold the Gate: Overwatch: the next foe to attack in her sights is struck and Stunned (bosses are Staggered instead). She is Thorned (25% of blows back) for 4s. Cooldown 8s.
-- LITANY Walls of Iron: LITANY: shield every ally for 25% of max HP, draw every attack for 4s, and every Sister gains 10 Zeal. It hallows the ground: a Lantern Line (every 2s the most hurt Sister goes on Overwatch) for 4s.
-- PASSIVE Rampart: While she leads the Vanguard, the Sister behind her takes 20% less damage and fires a free hit whenever her Overwatch does.
-- RELIC Miniature Candlelit Shrine (game item; not drawn in her art): Iron Rampart: Martyrdom: for 4s she takes 30% of every blow aimed at her Sisters.
-- ASCENSION (coming): As a Deity, her Walls of Iron also grants Rapture (no damage for 2s) to every Sister, and her passive grows by half.
-- BATTLE CRY: "The lantern sees you. The wall forgets you. Behind the reliquary, Sisters!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: ember-orange crusade-fire and iron sparks, burning-cross sigils flashing on impact; her reliquary-shield flares and throws up a wall of light; her Litany Walls of Iron hallows the ground in a ring of ember-orange crusade-fire and iron sparks; her Miniature Candlelit Shrine blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Pugna Excubitrix, Chosen of the Amber Eye. Draw only these objects: her Mythic weapon, Aegis of the Vigil Star, a tower shield whose shrine is a huge lidded eye that opens and burns with ember-orange crusade-fire, two iron wings folded across its face, and a flanged mace wreathed in consecrated fire, scorched and notched from holding the gate while the outside burned. Sizes in her head-heights (she is about 7.3 heads tall): shield 2.5 heads tall, mace haft 1.5 heads. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

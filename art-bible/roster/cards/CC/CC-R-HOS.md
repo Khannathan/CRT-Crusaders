@@ -1,4 +1,28 @@
-<!-- Choir of the Pyre (CC) card CC-R-HOS. Generated from the sister bible; do not edit here. -->
+<!-- Choir of the Pyre (CC) card CC-R-HOS. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: CC-R-HOS
+name: Michal Incendia
+epithet: Banneret of the Thousand Candles
+rarity: R
+rank: Commander
+order: Choir of the Pyre (order id candle-choir, code CC)
+class: Hospitaller (class id hospitaller, role Healer)
+age: 27
+weapon: Candlemass Chalice (Epic)
+relic: pewter last-rites cup, dripping with red wax (a game item)
+kit:
+- SKILL I Chalice Draught: Heal one ally, shield her for 15% of max HP and cure poison, burns and bleeding.
+- SKILL II Tending Hands: Heal every ally 6% of max HP, then Regenerate 6% every 2s for 6s. Cooldown 6s.
+- SKILL III Vesper Draught: Heal an ally and cure her; heals 40% more while a Hymn plays. Her ally Regenerates 3% of max HP every 2s for 4s.
+- LITANY Grail of Return: LITANY: raise every fallen Sister with 35% HP, heal every ally 30% of max HP and Regenerate 4% every 2s for 4s.
+- PASSIVE Tallow Vow: Each time she acts, every Sister heals 1.5% of max HP. Every Sister starts the fight with +2 Zeal.
+- RELIC Pewter Last-Rites Cup (game item; not drawn in her art): Grail of Return: Every Sister gains +8% critical chance for 4s.
+- COMMAND (coming): Leads litter-bearers who drag the wounded back to the line of the Choir of the Pyre.
+- BATTLE CRY: "I will sing over your ashes. Mend, and march!"
+```
+<!-- END GAME DATA -->
 
 Read the Choir of the Pyre section of order-bible.md first. Cloth: candle gold #d6a15f lead, wine #652b3b trim, bronze. Head: crown of dripping candles. Hem: ribbon streamers.
 
@@ -14,15 +38,7 @@ FANATIC: flagellant scars criss-crossing her arms; blend into her expression: in
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (confident): on top of her neckline, show a side-cut tabard open from ribs to hip, and thigh-high boots with bare skin above, held by garter straps of chain. SPLASH POSE (splash only; the bust and battle sprite use their own framing): striding forward out of smoke, cape snapping behind. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: gilded gothic plate dripping with candle wax, purity seals as hymn sheets, a battle hymn screamed not sung, consecrated fire in her eyes and on her blade.
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Chalice Draught: Heal one ally, shield her for 15% of max HP and cure poison, burns and bleeding.
-- SKILL II Tending Hands: Heal every ally 6% of max HP, then Regenerate 6% every 2s for 6s. Cooldown 6s.
-- SKILL III Vesper Draught: Heal an ally and cure her; heals 40% more while a Hymn plays. Her ally Regenerates 3% of max HP every 2s for 4s.
-- LITANY Grail of Return: LITANY: raise every fallen Sister with 35% HP, heal every ally 30% of max HP and Regenerate 4% every 2s for 4s.
-- PASSIVE Tallow Vow: Each time she acts, every Sister heals 1.5% of max HP. Every Sister starts the fight with +2 Zeal.
-- RELIC Pewter Last-Rites Cup (game item; not drawn in her art): Grail of Return: Every Sister gains +8% critical chance for 4s.
-- COMMAND (coming): Leads litter-bearers who drag the wounded back to the line of the Choir of the Pyre.
-- BATTLE CRY: "I will sing over your ashes. Mend, and march!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: candle-gold flame, dripping wax and floating hymn ribbons; a chalice spills light that lifts the fallen; her Pewter Last-Rites Cup blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Michal Incendia, Banneret of the Thousand Candles. Draw only these objects: her Epic weapon, Candlemass Chalice, a tall lance-staff of dull bronze dripping with red wax with a ribbon and dripping candles and hymn ribbons, and a pewter chalice, with charred hymn-pages nailed along it. Sizes in her head-heights (she is about 7.3 heads tall): staff 4 heads tall, chalice 0.5 heads. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

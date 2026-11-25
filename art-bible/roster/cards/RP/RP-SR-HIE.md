@@ -1,4 +1,27 @@
-<!-- Crimson Inquisition (RP) card RP-SR-HIE. Generated from the sister bible; do not edit here. -->
+<!-- Crimson Inquisition (RP) card RP-SR-HIE. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: RP-SR-HIE
+name: Munia Delatrix
+epithet: Who Held the Red Purge
+rarity: SR
+rank: Legend
+order: Crimson Inquisition (order id red-pilgrimage, code RP)
+class: Hierophant (class id hierophant, role Tank)
+age: 25
+weapon: Reliquary of the Siege of the Black Abbey (Legendary)
+relic: miniature candlelit shrine, framed by a hinged silver protective cover (a game item)
+kit:
+- SKILL I Reliquary Bash: Strike a front-line foe, hurl it back and draw enemy attacks for 4s.
+- SKILL II Vigil Bell: Shield every ally for 15% of max HP and cure poison, burns and bleeding. Cooldown 8s.
+- SKILL III Shield of the Writ: Dash forward and shield the Sister now behind her for 25% of max HP. Cooldown 4s.
+- LITANY Wall of Writs: LITANY: shield every ally for 25% of max HP.
+- PASSIVE Reliquary Ward: While she stands, your Sisters take 5% less damage.
+- RELIC Miniature Candlelit Shrine (game item; not drawn in her art): Reliquary Bash: She gains 1 Fervor (+6% damage each, up to 5). It hits 10% harder.
+- BATTLE CRY: "The brand is hot, and so is my zeal. Hold the line, or die on it!"
+```
+<!-- END GAME DATA -->
 
 Read the Crimson Inquisition section of order-bible.md first. Cloth: blood crimson #9a2a33 lead, antique gold #d6a15f trim, blackened steel and chain. Head: wide-brimmed inquisitor's hat with a wax seal. Hem: long, sharp, spattered hems.
 
@@ -14,14 +37,7 @@ FANATIC: knuckles split and bound in charred prayer cloth; blend into her expres
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (bold): on top of her neckline, show thigh-high boots with bare skin above, held by garter straps of chain, and a side-cut tabard open from ribs to hip. SPLASH POSE (splash only; the bust and battle sprite use their own framing): back arched, hip cocked, cloak swept back over one shoulder. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: blood-lacquered inquisitor plate studded with confession nails, purity seals stamped with the Inquisition's brand, the names of the condemned scratched into her plate.
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Reliquary Bash: Strike a front-line foe, hurl it back and draw enemy attacks for 4s.
-- SKILL II Vigil Bell: Shield every ally for 15% of max HP and cure poison, burns and bleeding. Cooldown 8s.
-- SKILL III Shield of the Writ: Dash forward and shield the Sister now behind her for 25% of max HP. Cooldown 4s.
-- LITANY Wall of Writs: LITANY: shield every ally for 25% of max HP.
-- PASSIVE Reliquary Ward: While she stands, your Sisters take 5% less damage.
-- RELIC Miniature Candlelit Shrine (game item; not drawn in her art): Reliquary Bash: She gains 1 Fervor (+6% damage each, up to 5). It hits 10% harder.
-- BATTLE CRY: "The brand is hot, and so is my zeal. Hold the line, or die on it!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: crimson wax-seal sigils, red-hot brand-light and burning writs on the wind; her reliquary-shield flares and throws up a wall of light; her Miniature Candlelit Shrine blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Munia Delatrix, Who Held the Red Purge. Draw only these objects: her Legendary weapon, Reliquary of the Siege of the Black Abbey, a gilt-edged tower shield of blood-lacquered steel with red leather grips and Inquisition seals whose shrine doors stand open on a glowing saint figure, runes along the rim, and a flanged mace whose head glows with red-hot brand-light and gold sparks, with a branding iron's red-hot sigil fused into it. Sizes in her head-heights (she is about 7.3 heads tall): shield 2.5 heads tall, mace haft 1.5 heads. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

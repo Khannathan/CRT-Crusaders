@@ -1,4 +1,27 @@
-<!-- Crimson Inquisition (RP) card RP-SR-HOS. Generated from the sister bible; do not edit here. -->
+<!-- Crimson Inquisition (RP) card RP-SR-HOS. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: RP-SR-HOS
+name: Gontrodo Quaestrix
+epithet: Who Walked Out of the Witch Crusade
+rarity: SR
+rank: Legend
+order: Crimson Inquisition (order id red-pilgrimage, code RP)
+class: Hospitaller (class id hospitaller, role Healer)
+age: 29
+weapon: Grail-Lance of the Trial of Bones (Legendary)
+relic: sealed silver chalice, encased in dark iron lattice (a game item)
+kit:
+- SKILL I Chalice Draught: Heal one ally, shield her for 15% of max HP and cure poison, burns and bleeding.
+- SKILL II Lance of Mercy: Strike a near foe with the hospital lance: -25% attack for 4s.
+- SKILL III Cleansing Brand: Heal an ally 15% of max HP and give her 1 Pursuit. Cooldown 4s.
+- LITANY Inquisitor's Grail: LITANY: raise fallen Sisters with 30% HP and heal every ally 25%.
+- PASSIVE Chalice of Embers: Each time she acts, every Sister heals 2% of max HP.
+- RELIC Sealed Silver Chalice (game item; not drawn in her art): Chalice Draught: Her ally gains a Mirror Image (each swallows a whole hit).
+- BATTLE CRY: "The brand is hot, and so is my zeal. Mend, and march!"
+```
+<!-- END GAME DATA -->
 
 Read the Crimson Inquisition section of order-bible.md first. Cloth: blood crimson #9a2a33 lead, antique gold #d6a15f trim, blackened steel and chain. Head: wide-brimmed inquisitor's hat with a wax seal. Hem: long, sharp, spattered hems.
 
@@ -14,14 +37,7 @@ FANATIC: candle wax poured over her own collarbone as penance; blend into her ex
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (bold): on top of her neckline, show a bare midriff under a short breastplate, and thigh-high boots with bare skin above, held by garter straps of chain. SPLASH POSE (splash only; the bust and battle sprite use their own framing): striding forward out of smoke, cape snapping behind. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: blood-lacquered inquisitor plate studded with confession nails, purity seals stamped with the Inquisition's brand, the names of the condemned scratched into her plate.
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Chalice Draught: Heal one ally, shield her for 15% of max HP and cure poison, burns and bleeding.
-- SKILL II Lance of Mercy: Strike a near foe with the hospital lance: -25% attack for 4s.
-- SKILL III Cleansing Brand: Heal an ally 15% of max HP and give her 1 Pursuit. Cooldown 4s.
-- LITANY Inquisitor's Grail: LITANY: raise fallen Sisters with 30% HP and heal every ally 25%.
-- PASSIVE Chalice of Embers: Each time she acts, every Sister heals 2% of max HP.
-- RELIC Sealed Silver Chalice (game item; not drawn in her art): Chalice Draught: Her ally gains a Mirror Image (each swallows a whole hit).
-- BATTLE CRY: "The brand is hot, and so is my zeal. Mend, and march!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: crimson wax-seal sigils, red-hot brand-light and burning writs on the wind; a chalice spills light that lifts the fallen; her Sealed Silver Chalice blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Gontrodo Quaestrix, Who Walked Out of the Witch Crusade. Draw only these objects: her Legendary weapon, Grail-Lance of the Trial of Bones, a banner lance-staff of blood-lacquered steel with red leather grips and Inquisition seals with a gilt spearhead and a sealed silver chalice whose core glows with red-hot brand-light and gold sparks, with a branding iron's red-hot sigil fused into it. Sizes in her head-heights (she is about 7.3 heads tall): staff 4 heads tall, chalice 0.5 heads. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

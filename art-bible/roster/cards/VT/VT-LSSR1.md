@@ -1,4 +1,27 @@
-<!-- Veiled Tribunal (VT) card VT-LSSR1. Generated from the sister bible; do not edit here. -->
+<!-- Veiled Tribunal (VT) card VT-LSSR1. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: VT-LSSR1
+name: Veritas Ponderosa
+epithet: Daughter of the Final Verdict
+rarity: SSR (Limited)
+rank: Demigoddess
+order: Veiled Tribunal (order id veiled-tribunal, code VT)
+class: War-Sister (class id warsister, role Melee DPS)
+age: 26
+weapon: Wrath of the Night Writ (Mythic)
+relic: silver dueling gauntlet, inlaid with a small bone-white devotional figure (a game item)
+kit:
+- SKILL I Scourge of Witness: Strike a front-line foe, Accuse it for 4s and add 1 Guilt. Lays Penance on the foe for 4s: each act costs the sinner 25% of its own attack.
+- SKILL II Confess Through Pain: Sacrifice 10% HP; +25 of her own Zeal and +25% attack for 4s. Wards her (-15% damage taken) for 4s. Cooldown 6s.
+- SKILL III Weighed and Found Wanting: Strike a near foe, spending its Guilt for +25% damage each. Accuses the foe for 4s (+25% damage taken). Cooldown 6s.
+- LITANY Penance of the Court: LITANY: strike every enemy, add 1 Guilt and leave them Bleeding for 4s. It hallows the ground: Hallowed Ground (every Sister Regenerates 4% every 2s) for 4s.
+- PASSIVE Weight of Sin: +6% damage per Guilt on her target, on top of Guilt's own.
+- RELIC Silver Dueling Gauntlet (game item; not drawn in her art): Weighed and Found Wanting: Silences it for 2s: only its plainest skill, and any charge breaks. It hits 12% harder.
+- BATTLE CRY: "The verdict was written before you were born. Into them!"
+```
+<!-- END GAME DATA -->
 
 Read the Veiled Tribunal section of order-bible.md first. Cloth: dusk violet #6e5a8c lead, parchment #c6baa4 trim, black steel with crimson silk lining. Head: sheer black veil over the eyes, high angular collar. Hem: sharp angular points.
 
@@ -32,14 +55,7 @@ FANATIC: scripture branded into her thigh; blend into her expression: with a fan
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (bold): on top of her neckline, show a chain harness across her bare waist, and thigh-high boots with bare skin above, held by garter straps of chain. SPLASH POSE (splash only; the bust and battle sprite use their own framing): standing tall with weight on one leg, chin raised in contempt. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: judicial gothic plate hung with nailed verdicts and chained scripture, purity seals stamped with the scales, heretics kneeling in chains behind her (splash only).
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Scourge of Witness: Strike a front-line foe, Accuse it for 4s and add 1 Guilt. Lays Penance on the foe for 4s: each act costs the sinner 25% of its own attack.
-- SKILL II Confess Through Pain: Sacrifice 10% HP; +25 of her own Zeal and +25% attack for 4s. Wards her (-15% damage taken) for 4s. Cooldown 6s.
-- SKILL III Weighed and Found Wanting: Strike a near foe, spending its Guilt for +25% damage each. Accuses the foe for 4s (+25% damage taken). Cooldown 6s.
-- LITANY Penance of the Court: LITANY: strike every enemy, add 1 Guilt and leave them Bleeding for 4s. It hallows the ground: Hallowed Ground (every Sister Regenerates 4% every 2s) for 4s.
-- PASSIVE Weight of Sin: +6% damage per Guilt on her target, on top of Guilt's own.
-- RELIC Silver Dueling Gauntlet (game item; not drawn in her art): Weighed and Found Wanting: Silences it for 2s: only its plainest skill, and any charge breaks. It hits 12% harder.
-- BATTLE CRY: "The verdict was written before you were born. Into them!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: violet scale-marks, nailed parchment verdicts and wax seals bursting; the flail spins in a red arc and her scourge-marks glow; her Litany Penance of the Court hallows the ground in a ring of violet scale-marks; her Silver Dueling Gauntlet blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Veritas Ponderosa, Daughter of the Final Verdict. Draw only these objects: her Mythic weapon, Wrath of the Night Writ, a flail of three burning seraph-eyes on chains of white iron, each eye trailing light of violet judgement-light, notched once for every soul she condemned. Sizes in her head-heights (she is about 7.3 heads tall): flail haft 1.5 heads, chain 1 head. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

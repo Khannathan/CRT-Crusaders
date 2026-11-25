@@ -1,4 +1,28 @@
-<!-- Veiled Tribunal (VT) card VT-SSR-CON. Generated from the sister bible; do not edit here. -->
+<!-- Veiled Tribunal (VT) card VT-SSR-CON. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: VT-SSR-CON
+name: Umbra Sententia
+epithet: Spark of the Veiled Eye
+rarity: SSR
+rank: Demigoddess
+order: Veiled Tribunal (order id veiled-tribunal, code VT)
+class: Confessor (class id confessor, role Healer)
+age: 23
+weapon: Penance of the Unbroken Seal (Mythic)
+relic: plague-saint's rosary, with a crimson silk tassel (a game item)
+kit:
+- SKILL I Miasma: Smite a near foe and Poison it for 6s. Stacks on poison or burns.
+- SKILL II Gavel Penance: Every ally Regenerates 5% every 2s for 6s. Martyrdom: for 4s she takes 30% of every blow aimed at her Sisters. Cooldown 6s.
+- SKILL III Tribunal Cure: Smite any foe and add 2 Guilt; every Sister heals 4% for each Guilt it carries. Accuses the foe for 4s (+25% damage taken).
+- LITANY Sealed Requiem: LITANY: raise fallen Sisters with 30% HP, heal every ally 25%, and add 2 Guilt to every foe. Every Sister Regenerates 4% of max HP every 2s for 4s. It hallows the ground: Hallowed Ground (every Sister Regenerates 4% every 2s) for 4s.
+- PASSIVE Silent Tithe: Her overhealing becomes a shield. Her heals are 3% stronger for each Guilt on the most guilty foe. Her blows lay Penance: for 4s each act costs the foe 12% of its own attack.
+- RELIC Plague-Saint'S Rosary (game item; not drawn in her art): Sealed Requiem: Wards every Sister (-15% damage taken) for 4s.
+- ASCENSION (coming): As a Deity, her Sealed Requiem also grants Rapture (no damage for 2s) to every Sister, and her passive grows by half.
+- BATTLE CRY: "There is no appeal in my court. I will not lose another!"
+```
+<!-- END GAME DATA -->
 
 Read the Veiled Tribunal section of order-bible.md first. Cloth: dusk violet #6e5a8c lead, parchment #c6baa4 trim, black steel with crimson silk lining. Head: sheer black veil over the eyes, high angular collar. Hem: sharp angular points.
 
@@ -30,15 +54,7 @@ FANATIC: fresh scourge marks across her shoulders; blend into her expression: ey
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (daring): on top of her neckline, show a torn habit that bares hip and leg, and a corset cinched tight under the bust. SPLASH POSE (splash only; the bust and battle sprite use their own framing): striding forward out of smoke, cape snapping behind. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: judicial gothic plate hung with nailed verdicts and chained scripture, purity seals stamped with the scales, heretics kneeling in chains behind her (splash only).
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Miasma: Smite a near foe and Poison it for 6s. Stacks on poison or burns.
-- SKILL II Gavel Penance: Every ally Regenerates 5% every 2s for 6s. Martyrdom: for 4s she takes 30% of every blow aimed at her Sisters. Cooldown 6s.
-- SKILL III Tribunal Cure: Smite any foe and add 2 Guilt; every Sister heals 4% for each Guilt it carries. Accuses the foe for 4s (+25% damage taken).
-- LITANY Sealed Requiem: LITANY: raise fallen Sisters with 30% HP, heal every ally 25%, and add 2 Guilt to every foe. Every Sister Regenerates 4% of max HP every 2s for 4s. It hallows the ground: Hallowed Ground (every Sister Regenerates 4% every 2s) for 4s.
-- PASSIVE Silent Tithe: Her overhealing becomes a shield. Her heals are 3% stronger for each Guilt on the most guilty foe. Her blows lay Penance: for 4s each act costs the foe 12% of its own attack.
-- RELIC Plague-Saint'S Rosary (game item; not drawn in her art): Sealed Requiem: Wards every Sister (-15% damage taken) for 4s.
-- ASCENSION (coming): As a Deity, her Sealed Requiem also grants Rapture (no damage for 2s) to every Sister, and her passive grows by half.
-- BATTLE CRY: "There is no appeal in my court. I will not lose another!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: violet scale-marks, nailed parchment verdicts and wax seals bursting; a hand of light closes wounds and burns out poison; her Litany Sealed Requiem hallows the ground in a ring of violet scale-marks; her Plague-Saint'S Rosary blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Umbra Sententia, Spark of the Veiled Eye. Draw only these objects: her Mythic weapon, Penance of the Unbroken Seal, a mace whose head is a caged, many-eyed seraph skull breathing cure-smoke of violet judgement-light, and a beak mask with eyes painted along its length, hung with the wax seals of signed death-verdicts; and her plague beak mask. Sizes in her head-heights (she is about 7.3 heads tall): mace haft 1.5 heads, mask 1 head. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

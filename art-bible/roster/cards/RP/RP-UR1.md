@@ -1,4 +1,28 @@
-<!-- Crimson Inquisition (RP) card RP-UR1. Generated from the sister bible; do not edit here. -->
+<!-- Crimson Inquisition (RP) card RP-UR1. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: RP-UR1
+name: Confessora
+epithet: the Red Question, Goddess of Inquisitors
+rarity: UR
+rank: Deity
+order: Crimson Inquisition (order id red-pilgrimage, code RP)
+class: Executioner (class id inquisitor, role Melee DPS)
+age: 29
+weapon: The Headsman's Door of the Red Question (Divine Arsenal)
+relic: interrogation seal, framed by a hinged silver protective cover (a game item)
+kit:
+- SKILL I Accuse on the Hunt: Smite any foe, Accuse it for 6s and dash forward. She gains 2 Fervor (+6% damage each, up to 5).
+- SKILL II Brand-Iron Lunge: Lunge at a near foe; +15% per Pursuit. +20% critical chance on it.
+- SKILL III Retreat in Blood: Leap far back; the foremost foe Bleeds for 4s. Brands the foe: the next blow on it lands 35% harder. Cooldown 4s.
+- LITANY Inquisitor's Verdict: LITANY: spend all Pursuit: a crushing blow on any enemy, 1.6x plus 0.3x per Pursuit, doubled against the Accused. Sunders the foe (-25% armor) for 4s. It hallows the ground: Briar Ground (every foe bleeds 15% of her attack every 2s) for 6s.
+- PASSIVE The Red Writ: Each Pursuit gives her +6% damage. She may Step twice each time she acts instead of once.
+- SAINT'S SEAL The Bell No One Hears: The first time a Sister falls, Confessora gains 5 Pursuit and Haste.
+- RELIC Interrogation Seal (game item; not drawn in her art): Brand-Iron Lunge: She heals 25% of the damage dealt. It hits 15% harder.
+- BATTLE CRY: "Confess, and burn clean. The axe is merciful!"
+```
+<!-- END GAME DATA -->
 
 Read the Crimson Inquisition section of order-bible.md first. Cloth: blood crimson #9a2a33 lead, antique gold #d6a15f trim, blackened steel and chain. Head: wide-brimmed inquisitor's hat with a wax seal. Hem: long, sharp, spattered hems.
 
@@ -31,15 +55,7 @@ FANATIC: a rope of confessions knotted around her waist; blend into her expressi
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (boldest in her Order): on top of her neckline, show bare thighs between greaves and a high-cut tabard slit, and a torn habit that bares hip and leg. SPLASH POSE (splash only; the bust and battle sprite use their own framing): back arched, hip cocked, cloak swept back over one shoulder. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: blood-lacquered inquisitor plate studded with confession nails, purity seals stamped with the Inquisition's brand, the names of the condemned scratched into her plate.
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Accuse on the Hunt: Smite any foe, Accuse it for 6s and dash forward. She gains 2 Fervor (+6% damage each, up to 5).
-- SKILL II Brand-Iron Lunge: Lunge at a near foe; +15% per Pursuit. +20% critical chance on it.
-- SKILL III Retreat in Blood: Leap far back; the foremost foe Bleeds for 4s. Brands the foe: the next blow on it lands 35% harder. Cooldown 4s.
-- LITANY Inquisitor's Verdict: LITANY: spend all Pursuit: a crushing blow on any enemy, 1.6x plus 0.3x per Pursuit, doubled against the Accused. Sunders the foe (-25% armor) for 4s. It hallows the ground: Briar Ground (every foe bleeds 15% of her attack every 2s) for 6s.
-- PASSIVE The Red Writ: Each Pursuit gives her +6% damage. She may Step twice each time she acts instead of once.
-- SAINT'S SEAL The Bell No One Hears: The first time a Sister falls, Confessora gains 5 Pursuit and Haste.
-- RELIC Interrogation Seal (game item; not drawn in her art): Brand-Iron Lunge: She heals 25% of the damage dealt. It hits 15% harder.
-- BATTLE CRY: "Confess, and burn clean. The axe is merciful!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: crimson wax-seal sigils, red-hot brand-light and burning writs on the wind; the executioner's axe falls in one heavy flash; her Litany Inquisitor's Verdict hallows the ground in a ring of crimson wax-seal sigils; her Interrogation Seal blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Confessora, the Red Question, Goddess of Inquisitors. Draw only these objects: her Divine Arsenal weapon, The Headsman's Door of the Red Question, a headsman's blade as long as a cathedral door, its edge a line of judging eyes, every swing tolling in red-hot brand-light and gold sparks, heat-blackened from the brazier, a writ nailed to it. Sizes in her head-heights (she is about 7.3 heads tall): axe 3 heads long. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

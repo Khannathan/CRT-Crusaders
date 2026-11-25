@@ -1,4 +1,27 @@
-<!-- Veiled Tribunal (VT) card VT-SR-CAN. Generated from the sister bible; do not edit here. -->
+<!-- Veiled Tribunal (VT) card VT-SR-CAN. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: VT-SR-CAN
+name: Melania Iudicatrix
+epithet: Who Foretold the False Pope
+rarity: SR
+rank: Legend
+order: Veiled Tribunal (order id veiled-tribunal, code VT)
+class: Cantor (class id cantor, role Buffer)
+age: 27
+weapon: Toll of the Heretic Synod (Legendary)
+relic: small cracked singing bell, inlaid with a small bone-white devotional figure (a game item)
+kit:
+- SKILL I Psalm of Blades: Every ally gains +20% critical chance for 4s, and every Sister 8 Zeal. Cooldown 8s.
+- SKILL II Keening Note: Smite any enemy: Sundered (-20% armor) and Hexed (-20% Magic Resist) for 4s.
+- SKILL III Dirge of Accusation: Every foe gains 1 Guilt and is Accused for 2s. Cooldown 6s.
+- LITANY Requiem of the Court: LITANY: every ally +30% attack for 4s, +5% more per Guilt on the most guilty foe.
+- PASSIVE Grave Note: Each foe she kills gives her 9 Zeal.
+- RELIC Small Cracked Singing Bell (game item; not drawn in her art): Psalm of Blades: Wards every Sister (-12% damage taken) for 4s.
+- BATTLE CRY: "The Tribunal has never acquitted. I will not be the first. For the choir!"
+```
+<!-- END GAME DATA -->
 
 Read the Veiled Tribunal section of order-bible.md first. Cloth: dusk violet #6e5a8c lead, parchment #c6baa4 trim, black steel with crimson silk lining. Head: sheer black veil over the eyes, high angular collar. Hem: sharp angular points.
 
@@ -14,14 +37,7 @@ FANATIC: flagellant scars criss-crossing her arms; blend into her expression: bu
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (bold): on top of her neckline, show a bare midriff under a short breastplate, and a torn habit that bares hip and leg. SPLASH POSE (splash only; the bust and battle sprite use their own framing): striding forward out of smoke, cape snapping behind. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: judicial gothic plate hung with nailed verdicts and chained scripture, purity seals stamped with the scales, heretics kneeling in chains behind her (splash only).
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Psalm of Blades: Every ally gains +20% critical chance for 4s, and every Sister 8 Zeal. Cooldown 8s.
-- SKILL II Keening Note: Smite any enemy: Sundered (-20% armor) and Hexed (-20% Magic Resist) for 4s.
-- SKILL III Dirge of Accusation: Every foe gains 1 Guilt and is Accused for 2s. Cooldown 6s.
-- LITANY Requiem of the Court: LITANY: every ally +30% attack for 4s, +5% more per Guilt on the most guilty foe.
-- PASSIVE Grave Note: Each foe she kills gives her 9 Zeal.
-- RELIC Small Cracked Singing Bell (game item; not drawn in her art): Psalm of Blades: Wards every Sister (-12% damage taken) for 4s.
-- BATTLE CRY: "The Tribunal has never acquitted. I will not be the first. For the choir!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: violet scale-marks, nailed parchment verdicts and wax seals bursting; her voice is visible as rings of flame; her Small Cracked Singing Bell blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Melania Iudicatrix, Who Foretold the False Pope. Draw only these objects: her Legendary weapon, Toll of the Heretic Synod, a bronze bell-mace of angular black steel with crimson silk etched with nine sorrows, ringing visible rings of violet judgement-light, and an illuminated hymnal, hung with the wax seals of signed death-verdicts; and her open hymnal. Sizes in her head-heights (she is about 7.3 heads tall): staff 3 heads tall, bell 1 head. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

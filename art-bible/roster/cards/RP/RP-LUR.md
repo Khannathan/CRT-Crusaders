@@ -1,4 +1,28 @@
-<!-- Crimson Inquisition (RP) card RP-LUR. Generated from the sister bible; do not edit here. -->
+<!-- Crimson Inquisition (RP) card RP-LUR. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: RP-LUR
+name: Quaesitrix
+epithet: Inquisitrix Ascendant, Patron Goddess of the Crimson Inquisition
+rarity: UR (Limited)
+rank: Patron Deity
+order: Crimson Inquisition (order id red-pilgrimage, code RP)
+class: Martyr (class id martyr, role Tank)
+age: 28
+weapon: The First Nail of the Red Question (Divine Arsenal)
+relic: sealed crimson oath vial, encased in dark iron lattice (a game item)
+kit:
+- SKILL I Oath Strike: Strike a front-line foe, draw attacks for 4s, and heal for 35% of the damage. Martyrdom: for 4s she takes 40% of every blow aimed at her Sisters.
+- SKILL II Break the Vial: Sacrifice 15% HP; every ally gains +25% attack for 4s and 1 Pursuit. Every Sister gains 2 Mirror Images (each swallows a whole hit). Cooldown 8s.
+- SKILL III Inquisitor's Vanguard: Dash to the very front, Ward herself (-25%) and draw attacks for 4s. She gains 10 Zeal. Cooldown 6s.
+- LITANY Crimson Purge: LITANY: strike every enemy; every Sister heals 50% of the damage. Sunders every foe it strikes (-30% armor) for 4s. It hallows the ground: Briar Ground (every foe bleeds 15% of her attack every 2s) for 6s.
+- PASSIVE Oath of Blood: She heals for 25% of the damage she deals. Healing past her max HP becomes a shield on the Sister behind her. PATRON MIRACLE: every Crimson Inquisition Sister in the party gains +12% attack and takes 8% less damage.
+- SAINT'S SEAL I Walk Before You: Once a fight, a killing blow meant for another Sister lands on her instead, if she can survive it.
+- RELIC Sealed Crimson Oath Vial (game item; not drawn in her art): Inquisitor's Vanguard: She gains 2 Fervor (+6% damage each, up to 5).
+- BATTLE CRY: "Kneel, heretic, and be questioned. Death will have to wait its turn!"
+```
+<!-- END GAME DATA -->
 
 Read the Crimson Inquisition section of order-bible.md first. Cloth: blood crimson #9a2a33 lead, antique gold #d6a15f trim, blackened steel and chain. Head: wide-brimmed inquisitor's hat with a wax seal. Hem: long, sharp, spattered hems.
 
@@ -32,15 +56,7 @@ FANATIC: candle wax poured over her own collarbone as penance; blend into her ex
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (bold): on top of her neckline, show a corset cinched tight under the bust, and a chain harness across her bare waist. SPLASH POSE (splash only; the bust and battle sprite use their own framing): back arched, hip cocked, cloak swept back over one shoulder. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: blood-lacquered inquisitor plate studded with confession nails, purity seals stamped with the Inquisition's brand, the names of the condemned scratched into her plate.
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Oath Strike: Strike a front-line foe, draw attacks for 4s, and heal for 35% of the damage. Martyrdom: for 4s she takes 40% of every blow aimed at her Sisters.
-- SKILL II Break the Vial: Sacrifice 15% HP; every ally gains +25% attack for 4s and 1 Pursuit. Every Sister gains 2 Mirror Images (each swallows a whole hit). Cooldown 8s.
-- SKILL III Inquisitor's Vanguard: Dash to the very front, Ward herself (-25%) and draw attacks for 4s. She gains 10 Zeal. Cooldown 6s.
-- LITANY Crimson Purge: LITANY: strike every enemy; every Sister heals 50% of the damage. Sunders every foe it strikes (-30% armor) for 4s. It hallows the ground: Briar Ground (every foe bleeds 15% of her attack every 2s) for 6s.
-- PASSIVE Oath of Blood: She heals for 25% of the damage she deals. Healing past her max HP becomes a shield on the Sister behind her. PATRON MIRACLE: every Crimson Inquisition Sister in the party gains +12% attack and takes 8% less damage.
-- SAINT'S SEAL I Walk Before You: Once a fight, a killing blow meant for another Sister lands on her instead, if she can survive it.
-- RELIC Sealed Crimson Oath Vial (game item; not drawn in her art): Inquisitor's Vanguard: She gains 2 Fervor (+6% damage each, up to 5).
-- BATTLE CRY: "Kneel, heretic, and be questioned. Death will have to wait its turn!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: crimson wax-seal sigils, red-hot brand-light and burning writs on the wind; her own blood turns to consecrated fire across her sisters; her Litany Crimson Purge hallows the ground in a ring of crimson wax-seal sigils; her Sealed Crimson Oath Vial blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Quaesitrix, Inquisitrix Ascendant, Patron Goddess of the Crimson Inquisition. Draw only these objects: her Divine Arsenal weapon, The First Nail of the Red Question, a cross-hilted greatsword forged from a nail of the first martyrdom, weeping consecrated light, with a halo of thorned wings for a buckler that circles her arm, with a branding iron's red-hot sigil fused into it. Sizes in her head-heights (she is about 7.3 heads tall): broadsword 2.5 heads, buckler 1 head across. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

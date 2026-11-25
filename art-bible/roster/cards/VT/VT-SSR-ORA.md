@@ -1,4 +1,28 @@
-<!-- Veiled Tribunal (VT) card VT-SSR-ORA. Generated from the sister bible; do not edit here. -->
+<!-- Veiled Tribunal (VT) card VT-SSR-ORA. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: VT-SSR-ORA
+name: Testis Mutata
+epithet: Chosen of the Final Verdict
+rarity: SSR
+rank: Demigoddess
+order: Veiled Tribunal (order id veiled-tribunal, code VT)
+class: Oracle (class id oracle, role Buffer)
+age: 29
+weapon: Prophecy of the Black Scale (Mythic)
+relic: sunken saint medallion, wrapped in a parchment writ (a game item)
+kit:
+- SKILL I Ash Bolt: Smite any foe hard. The recoil throws her back.
+- SKILL II Veil Foresight: Every foe gains 1 Guilt and is Accused for 2s. Hexes every foe it strikes (-20% Magic Resist) for 4s. Cooldown 6s.
+- SKILL III Grim Augury: Grant an ally +30% attack for 4s and Haste (acts 25% faster for 2s), and every Sister 10 Zeal. Cooldown 8s.
+- LITANY Faceless Litany: LITANY: every ally +37% attack for 4s, +5% more per Guilt on the most guilty foe. Every Sister gains +12% critical chance for 4s. It hallows the ground: Hallowed Ground (every Sister Regenerates 4% every 2s) for 4s.
+- PASSIVE Sentenced Seal: Each time she is struck, the attacker gains 1 Guilt. While she stands, foes that strike a Warded Sister gain Guilt too. Her blows lay Penance: for 4s each act costs the foe 12% of its own attack.
+- RELIC Sunken Saint Medallion (drawn as her floating omen relic): Faceless Litany: Wards every Sister (-15% damage taken) for 4s.
+- ASCENSION (coming): As a Deity, her Faceless Litany also grants Rapture (no damage for 2s) to every Sister, and her passive grows by half.
+- BATTLE CRY: "Silence. The sentence is read. It is written, and I wrote it!"
+```
+<!-- END GAME DATA -->
 
 Read the Veiled Tribunal section of order-bible.md first. Cloth: dusk violet #6e5a8c lead, parchment #c6baa4 trim, black steel with crimson silk lining. Head: sheer black veil over the eyes, high angular collar. Hem: sharp angular points.
 
@@ -30,15 +54,7 @@ FANATIC: a heretic's sigil branded into her forearm; blend into her expression: 
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (daring): on top of her neckline, show a corset cinched tight under the bust, and a chain harness across her bare waist. SPLASH POSE (splash only; the bust and battle sprite use their own framing): twisting at the waist mid-swing, hair flying. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: judicial gothic plate hung with nailed verdicts and chained scripture, purity seals stamped with the scales, heretics kneeling in chains behind her (splash only).
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Ash Bolt: Smite any foe hard. The recoil throws her back.
-- SKILL II Veil Foresight: Every foe gains 1 Guilt and is Accused for 2s. Hexes every foe it strikes (-20% Magic Resist) for 4s. Cooldown 6s.
-- SKILL III Grim Augury: Grant an ally +30% attack for 4s and Haste (acts 25% faster for 2s), and every Sister 10 Zeal. Cooldown 8s.
-- LITANY Faceless Litany: LITANY: every ally +37% attack for 4s, +5% more per Guilt on the most guilty foe. Every Sister gains +12% critical chance for 4s. It hallows the ground: Hallowed Ground (every Sister Regenerates 4% every 2s) for 4s.
-- PASSIVE Sentenced Seal: Each time she is struck, the attacker gains 1 Guilt. While she stands, foes that strike a Warded Sister gain Guilt too. Her blows lay Penance: for 4s each act costs the foe 12% of its own attack.
-- RELIC Sunken Saint Medallion (drawn as her floating omen relic): Faceless Litany: Wards every Sister (-15% damage taken) for 4s.
-- ASCENSION (coming): As a Deity, her Faceless Litany also grants Rapture (no damage for 2s) to every Sister, and her passive grows by half.
-- BATTLE CRY: "Silence. The sentence is read. It is written, and I wrote it!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: violet scale-marks, nailed parchment verdicts and wax seals bursting; omens burn in the air as smoke-runes; her Litany Faceless Litany hallows the ground in a ring of violet scale-marks; her Sunken Saint Medallion blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Testis Mutata, Chosen of the Final Verdict. Draw only these objects: her Mythic weapon, Prophecy of the Black Scale, a floating reliquary shaped like a closed eye with six small iron wings, opening to show a burning prophecy in violet judgement-light, notched once for every soul she condemned; and her floating relic, a sunken saint medallion, wrapped in a parchment writ. Sizes in her head-heights (she is about 7.3 heads tall): relic 1 head across, staff 2 heads. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

@@ -1,4 +1,28 @@
-<!-- The Verdant Martyrdom (TC) card TC-R-ADJ. Generated from the sister bible; do not edit here. -->
+<!-- The Verdant Martyrdom (TC) card TC-R-ADJ. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: TC-R-ADJ
+name: Felicitas Vepreta
+epithet: Marshal of the Briar Chapel
+rarity: R
+rank: Commander
+order: Verdant Martyrdom (order id thorn-covenant, code TC)
+class: Adjudicator (class id adjudicator, role Buffer)
+age: 24
+weapon: Thornkiss Ledger (Epic)
+relic: bone stylus, spiked with thorns (a game item)
+kit:
+- SKILL I Reflected Sentence: Smite any enemy: -25% attack for 4s. Drains 15 Wrath from a boss.
+- SKILL II Mirror Ward: Ward an ally (-25% damage) and give her thorns (30% back) for 4s. Cooldown 6s.
+- SKILL III Flayed Scales: Sacrifice 10% HP; every Sister gains 12 Zeal. She gains 1 Fervor (+6% damage each, up to 5). Cooldown 8s.
+- LITANY Final Judgment: LITANY: every enemy is Weakened (-30% attack) for 4s and loses 40 Wrath.
+- PASSIVE Flayed Litany: +1 speed: she acts sooner. She heals 4% of the damage she deals.
+- RELIC Bone Stylus (game item; not drawn in her art): Final Judgment: Sunders every foe it strikes (-10% armor) for 4s. It hits 8% harder.
+- COMMAND (coming): Leads a court of inquisitors who mark heretic officers of the Verdant Martyrdom.
+- BATTLE CRY: "Pain is my psalm. The ledger is closed!"
+```
+<!-- END GAME DATA -->
 
 Read the Verdant Martyrdom section of order-bible.md first. Cloth: moss green #5a7a3a lead, blood red #9a2a33 trim, old bronze. Head: crown of living briar. Hem: thorny tatters.
 
@@ -14,15 +38,7 @@ FANATIC: prayer strips nailed into her armour; blend into her expression: burnin
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (confident): on top of her neckline, show a bare midriff under a short breastplate, and skin-tight sheer black sleeves and gloves to the shoulder. SPLASH POSE (splash only; the bust and battle sprite use their own framing): standing tall with weight on one leg, chin raised in contempt. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: scourged gothic plate wrapped in barbed briar, purity seals soaked in her own blood, flagellant scars.
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Reflected Sentence: Smite any enemy: -25% attack for 4s. Drains 15 Wrath from a boss.
-- SKILL II Mirror Ward: Ward an ally (-25% damage) and give her thorns (30% back) for 4s. Cooldown 6s.
-- SKILL III Flayed Scales: Sacrifice 10% HP; every Sister gains 12 Zeal. She gains 1 Fervor (+6% damage each, up to 5). Cooldown 8s.
-- LITANY Final Judgment: LITANY: every enemy is Weakened (-30% attack) for 4s and loses 40 Wrath.
-- PASSIVE Flayed Litany: +1 speed: she acts sooner. She heals 4% of the damage she deals.
-- RELIC Bone Stylus (game item; not drawn in her art): Final Judgment: Sunders every foe it strikes (-10% armor) for 4s. It hits 8% harder.
-- COMMAND (coming): Leads a court of inquisitors who mark heretic officers of the Verdant Martyrdom.
-- BATTLE CRY: "Pain is my psalm. The ledger is closed!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: blood-red scar-light and lashing briar, rose petals torn loose; giant scales of light tip and crush the foe; her Bone Stylus blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Felicitas Vepreta, Marshal of the Briar Chapel. Draw only these objects: her Epic weapon, Thornkiss Ledger, hanging scales of old bronze wound with living briar with briar, thorns and one red rose, and an iron-bound ledger with a seal stamp, with thorns growing out of it, wet with blood. Sizes in her head-heights (she is about 7.3 heads tall): scales 1.5 heads tall, ledger 1 head. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

@@ -1,4 +1,28 @@
-<!-- Drowned Litany (DL) card DL-R-HOS. Generated from the sister bible; do not edit here. -->
+<!-- Drowned Litany (DL) card DL-R-HOS. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: DL-R-HOS
+name: Madryn Demersa
+epithet: Banneret of the Salt Wall
+rarity: R
+rank: Commander
+order: Drowned Litany (order id drowned-litany, code DL)
+class: Hospitaller (class id hospitaller, role Healer)
+age: 29
+weapon: Floodward Chalice (Epic)
+relic: bread-saint's wafer box, crusted with salt (a game item)
+kit:
+- SKILL I Chalice Draught: Heal one ally, shield her for 15% of max HP and cure poison, burns and bleeding.
+- SKILL II Tending Hands: Heal every ally 6% of max HP, then Regenerate 6% every 2s for 6s. Cooldown 6s.
+- SKILL III Undertow Grace: Every ally Regenerates 2% plus 1% per Tide every 2s for 6s. Every Sister gains a Mirror Image (each swallows a whole hit). Cooldown 6s.
+- LITANY Grail of Return: LITANY: raise every fallen Sister with 35% HP, heal every ally 30% of max HP and Regenerate 4% every 2s for 4s.
+- PASSIVE Barnacled Rule: Each time she acts, every Sister heals 1.5% of max HP. +6% damage on foes under half HP.
+- RELIC Bread-Saint'S Wafer Box (game item; not drawn in her art): Chalice Draught: She gains 4 Zeal.
+- COMMAND (coming): Leads litter-bearers who drag the wounded back to the line of the Drowned Litany.
+- BATTLE CRY: "What the water takes, it consecrates. The grave gives them back to me!"
+```
+<!-- END GAME DATA -->
 
 Read the Drowned Litany section of order-bible.md first. Cloth: sea-teal #3f6e78 lead, parchment #c6baa4 trim, verdigris, salt-worn bronze. Head: visor helm or a wet clinging veil. Hem: wet, clinging, dripping points.
 
@@ -14,15 +38,7 @@ FANATIC: a heretic's sigil branded into her forearm; blend into her expression: 
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (confident): on top of her neckline, show a side-cut tabard open from ribs to hip, and thigh-high boots with bare skin above, held by garter straps of chain. SPLASH POSE (splash only; the bust and battle sprite use their own framing): striding forward out of smoke, cape snapping behind. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: sea-worn verdigris plate, purity seals bleached by salt, salt crusting every rivet.
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Chalice Draught: Heal one ally, shield her for 15% of max HP and cure poison, burns and bleeding.
-- SKILL II Tending Hands: Heal every ally 6% of max HP, then Regenerate 6% every 2s for 6s. Cooldown 6s.
-- SKILL III Undertow Grace: Every ally Regenerates 2% plus 1% per Tide every 2s for 6s. Every Sister gains a Mirror Image (each swallows a whole hit). Cooldown 6s.
-- LITANY Grail of Return: LITANY: raise every fallen Sister with 35% HP, heal every ally 30% of max HP and Regenerate 4% every 2s for 4s.
-- PASSIVE Barnacled Rule: Each time she acts, every Sister heals 1.5% of max HP. +6% damage on foes under half HP.
-- RELIC Bread-Saint'S Wafer Box (game item; not drawn in her art): Chalice Draught: She gains 4 Zeal.
-- COMMAND (coming): Leads litter-bearers who drag the wounded back to the line of the Drowned Litany.
-- BATTLE CRY: "What the water takes, it consecrates. The grave gives them back to me!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: teal water rising upward, pearls and salt spray; a chalice spills light that lifts the fallen; her Bread-Saint'S Wafer Box blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Madryn Demersa, Banneret of the Salt Wall. Draw only these objects: her Epic weapon, Floodward Chalice, a tall lance-staff of verdigris, salt-crusted bronze with pearls with a ribbon and waves, pearls and a drowned bell, and a pewter chalice, crusted with barnacles and dripping black water. Sizes in her head-heights (she is about 7.3 heads tall): staff 4 heads tall, chalice 0.5 heads. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

@@ -1,4 +1,28 @@
-<!-- Sepulcher Watch (SW) card SW-SSR-ARB. Generated from the sister bible; do not edit here. -->
+<!-- Sepulcher Watch (SW) card SW-SSR-ARB. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: SW-SSR-ARB
+name: Inferia Ossuaria
+epithet: Blood of the Quiet Grave
+rarity: SSR
+rank: Demigoddess
+order: Sepulcher Watch (order id sepulcher-watch, code SW)
+class: Arbalist (class id arbalist, role Ranged DPS)
+age: 26
+weapon: Verdict-Bow of the Quiet Grave (Mythic)
+relic: compact crossbow stock beside shoulder, engraved with a tiny ruined sanctuary (a game item)
+kit:
+- SKILL I Bone Bolt: A heavy bolt on any foe; spend 1 Remains to also Sunder it (-25% armor) for 4s. She gains 6 Zeal.
+- SKILL II Marking Shot: Light bolt that Accuses any foe (+25% damage taken) for 4s. Cooldown 4s.
+- SKILL III Reliquary Volley: Spend up to 4 Remains: one bolt (1.1x, through 15% of its Armor) at a random foe for each. Weakens every foe it strikes (-15% attack) for 4s. Cooldown 6s.
+- LITANY Ossuary Ballista: LITANY: a crushing bolt through shields and 30% of its Armor; spends every Remains for more. Accuses the foe for 4s (+25% damage taken). It hallows the ground: a Field of Ash (each fallen foe heals every Sister 6%) for 4s.
+- PASSIVE Saint-Fletched: Her bolts are cut from saints' bones: each Remains she spends gives that bolt +20% damage and 15% more armor pierce.
+- RELIC Compact Crossbow Stock Beside Shoulder (game item; not drawn in her art): Marking Shot: Sunders the foe (-20% armor) for 4s. It hits 12% harder.
+- ASCENSION (coming): As a Deity, her Ossuary Ballista also grants Rapture (no damage for 2s) to every Sister, and her passive grows by half.
+- BATTLE CRY: "The dead are ours. So are you. Down you go!"
+```
+<!-- END GAME DATA -->
 
 Read the Sepulcher Watch section of order-bible.md first. Cloth: bone-tan #b8ab8a lead, slate #383845 trim, dark steel with aged ivory trim. Head: bone-tan hood with a finger-bone circlet. Hem: heavy straight hem weighted with keys.
 
@@ -31,15 +55,7 @@ FANATIC: knuckles split and bound in charred prayer cloth; blend into her expres
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (daring): on top of her neckline, show a torn habit that bares hip and leg, and bare thighs between greaves and a high-cut tabard slit. SPLASH POSE (splash only; the bust and battle sprite use their own framing): one knee raised on a heretic's skull, leaning into the weapon. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: ossuary plate with the bones of the honoured dead fused into it, purity seals on skull-shaped bosses, coffin nails driven through her belt.
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Bone Bolt: A heavy bolt on any foe; spend 1 Remains to also Sunder it (-25% armor) for 4s. She gains 6 Zeal.
-- SKILL II Marking Shot: Light bolt that Accuses any foe (+25% damage taken) for 4s. Cooldown 4s.
-- SKILL III Reliquary Volley: Spend up to 4 Remains: one bolt (1.1x, through 15% of its Armor) at a random foe for each. Weakens every foe it strikes (-15% attack) for 4s. Cooldown 6s.
-- LITANY Ossuary Ballista: LITANY: a crushing bolt through shields and 30% of its Armor; spends every Remains for more. Accuses the foe for 4s (+25% damage taken). It hallows the ground: a Field of Ash (each fallen foe heals every Sister 6%) for 4s.
-- PASSIVE Saint-Fletched: Her bolts are cut from saints' bones: each Remains she spends gives that bolt +20% damage and 15% more armor pierce.
-- RELIC Compact Crossbow Stock Beside Shoulder (game item; not drawn in her art): Marking Shot: Sunders the foe (-20% armor) for 4s. It hits 12% harder.
-- ASCENSION (coming): As a Deity, her Ossuary Ballista also grants Rapture (no damage for 2s) to every Sister, and her passive grows by half.
-- BATTLE CRY: "The dead are ours. So are you. Down you go!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: bone-white light, orbiting skull tokens and spectral funerary keys; a single consecrated bolt leaves a long streak of scripture-light; her Litany Ossuary Ballista hallows the ground in a ring of bone-white light; her Compact Crossbow Stock Beside Shoulder blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Inferia Ossuaria, Blood of the Quiet Grave. Draw only these objects: her Mythic weapon, Verdict-Bow of the Quiet Grave, a crossbow whose limbs are two burning angel wings, firing bolts of white fire trailing bone-white grave-light, crusted with grave dirt and burial lime; and her quiver of bolts. Sizes in her head-heights (she is about 7.3 heads tall): crossbow 2 heads long. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

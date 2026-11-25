@@ -15,6 +15,8 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
+      # Every Sister card keeps exactly one locked GAME DATA block (art-bible/specs/LOCKS.md).
+      - run: python3 tools/art_bible_data.py check
       - run: npm test
       - run: npm run build
       # Opens every screen on a fresh and a mid-game save (tools/smoke/screens.mjs).

@@ -1,4 +1,28 @@
-<!-- Crimson Inquisition (RP) card RP-SSR-CON. Generated from the sister bible; do not edit here. -->
+<!-- Crimson Inquisition (RP) card RP-SSR-CON. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: RP-SSR-CON
+name: Supplicia Cauteria
+epithet: Spark of the Burning Writ
+rarity: SSR
+rank: Demigoddess
+order: Crimson Inquisition (order id red-pilgrimage, code RP)
+class: Confessor (class id confessor, role Healer)
+age: 27
+weapon: Penance of the Inquisitor Star (Mythic)
+relic: phial of pyre oil, stamped with a crimson wax seal (a game item)
+kit:
+- SKILL I Miasma: Smite a near foe and Poison it for 6s. Stacks on poison or burns.
+- SKILL II Inquest Penance: Heal an ally 18% of max HP and give her 1 Pursuit. She gains 6 Zeal. Cooldown 4s.
+- SKILL III Contagion: Spread one enemy's poison or burn to every other enemy. Cooldown 8s.
+- LITANY Seal Requiem: LITANY: raise fallen Sisters with 37% HP and heal every ally 31%. Wards every Sister (-15% damage taken) for 4s. It hallows the ground: Briar Ground (every foe bleeds 15% of her attack every 2s) for 4s.
+- PASSIVE Inquest Creed: Heals for 15% of the damage she deals, +5% per Pursuit. Each Pursuit gives her +4% damage. Each action stokes 1 Fervor (+6% damage, up to 5).
+- RELIC Phial Of Pyre Oil (game item; not drawn in her art): Seal Requiem: Every Sister Regenerates 4% of max HP every 2s for 4s.
+- ASCENSION (coming): As a Deity, her Seal Requiem also grants Rapture (no damage for 2s) to every Sister, and her passive grows by half.
+- BATTLE CRY: "Every heretic's road ends in red. Rise, Sister. The Order is not done with you!"
+```
+<!-- END GAME DATA -->
 
 Read the Crimson Inquisition section of order-bible.md first. Cloth: blood crimson #9a2a33 lead, antique gold #d6a15f trim, blackened steel and chain. Head: wide-brimmed inquisitor's hat with a wax seal. Hem: long, sharp, spattered hems.
 
@@ -30,15 +54,7 @@ FANATIC: knuckles split and bound in charred prayer cloth; blend into her expres
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (daring): on top of her neckline, show a chain harness across her bare waist, and a bare midriff under a short breastplate. SPLASH POSE (splash only; the bust and battle sprite use their own framing): one knee raised on a heretic's skull, leaning into the weapon. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: blood-lacquered inquisitor plate studded with confession nails, purity seals stamped with the Inquisition's brand, the names of the condemned scratched into her plate.
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Miasma: Smite a near foe and Poison it for 6s. Stacks on poison or burns.
-- SKILL II Inquest Penance: Heal an ally 18% of max HP and give her 1 Pursuit. She gains 6 Zeal. Cooldown 4s.
-- SKILL III Contagion: Spread one enemy's poison or burn to every other enemy. Cooldown 8s.
-- LITANY Seal Requiem: LITANY: raise fallen Sisters with 37% HP and heal every ally 31%. Wards every Sister (-15% damage taken) for 4s. It hallows the ground: Briar Ground (every foe bleeds 15% of her attack every 2s) for 4s.
-- PASSIVE Inquest Creed: Heals for 15% of the damage she deals, +5% per Pursuit. Each Pursuit gives her +4% damage. Each action stokes 1 Fervor (+6% damage, up to 5).
-- RELIC Phial Of Pyre Oil (game item; not drawn in her art): Seal Requiem: Every Sister Regenerates 4% of max HP every 2s for 4s.
-- ASCENSION (coming): As a Deity, her Seal Requiem also grants Rapture (no damage for 2s) to every Sister, and her passive grows by half.
-- BATTLE CRY: "Every heretic's road ends in red. Rise, Sister. The Order is not done with you!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: crimson wax-seal sigils, red-hot brand-light and burning writs on the wind; a hand of light closes wounds and burns out poison; her Litany Seal Requiem hallows the ground in a ring of crimson wax-seal sigils; her Phial Of Pyre Oil blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Supplicia Cauteria, Spark of the Burning Writ. Draw only these objects: her Mythic weapon, Penance of the Inquisitor Star, a mace whose head is a caged, many-eyed seraph skull breathing cure-smoke of red-hot brand-light and gold sparks, and a beak mask with eyes painted along its length, with a branding iron's red-hot sigil fused into it; and her plague beak mask. Sizes in her head-heights (she is about 7.3 heads tall): mace haft 1.5 heads, mask 1 head. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

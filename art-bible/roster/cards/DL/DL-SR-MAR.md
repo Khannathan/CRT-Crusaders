@@ -1,4 +1,27 @@
-<!-- Drowned Litany (DL) card DL-SR-MAR. Generated from the sister bible; do not edit here. -->
+<!-- Drowned Litany (DL) card DL-SR-MAR. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: DL-SR-MAR
+name: Meleri Undosa
+epithet: Who Held the Black Tide
+rarity: SR
+rank: Legend
+order: Drowned Litany (order id drowned-litany, code DL)
+class: Martyr (class id martyr, role Tank)
+age: 24
+weapon: Vowblade of the Leviathan Heresy (Legendary)
+relic: fractured dawn icon, with a small drowned bell (a game item)
+kit:
+- SKILL I Searing Smite: Strike a front-line foe and heal for 35% of the damage dealt.
+- SKILL II Intercession: Draw enemy attacks for 4s, Ward herself (-20% damage) and Regenerate 5% every 2s. Cooldown 6s.
+- SKILL III Deep Passion: Draw attacks for 4s, Ward herself (-16%) and Regenerate 2% plus 1% per Tide every 2s. Martyrdom: for 4s she takes 25% of every blow aimed at her Sisters. Cooldown 6s.
+- LITANY Flood Benediction: LITANY: smite every enemy and heal for 36% of the damage; the Tide rises to 5. Hexes every foe it strikes (-15% Magic Resist) for 4s.
+- PASSIVE Undertow Canon: Once a fight, a killing blow leaves her at 1 HP instead. Reflection: 8% of every blow she takes cuts its striker.
+- RELIC Fractured Dawn Icon (game item; not drawn in her art): Searing Smite: Silences it for 2s: only its plainest skill, and any charge breaks. It hits 10% harder.
+- BATTLE CRY: "Salt in the wound, salt in the soul. Take me first, and burn for it!"
+```
+<!-- END GAME DATA -->
 
 Read the Drowned Litany section of order-bible.md first. Cloth: sea-teal #3f6e78 lead, parchment #c6baa4 trim, verdigris, salt-worn bronze. Head: visor helm or a wet clinging veil. Hem: wet, clinging, dripping points.
 
@@ -14,14 +37,7 @@ FANATIC: vow chains locked around her wrists; blend into her expression: with a 
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (bold): on top of her neckline, show a chain harness across her bare waist, and a corset cinched tight under the bust. SPLASH POSE (splash only; the bust and battle sprite use their own framing): standing tall with weight on one leg, chin raised in contempt. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: sea-worn verdigris plate, purity seals bleached by salt, salt crusting every rivet.
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Searing Smite: Strike a front-line foe and heal for 35% of the damage dealt.
-- SKILL II Intercession: Draw enemy attacks for 4s, Ward herself (-20% damage) and Regenerate 5% every 2s. Cooldown 6s.
-- SKILL III Deep Passion: Draw attacks for 4s, Ward herself (-16%) and Regenerate 2% plus 1% per Tide every 2s. Martyrdom: for 4s she takes 25% of every blow aimed at her Sisters. Cooldown 6s.
-- LITANY Flood Benediction: LITANY: smite every enemy and heal for 36% of the damage; the Tide rises to 5. Hexes every foe it strikes (-15% Magic Resist) for 4s.
-- PASSIVE Undertow Canon: Once a fight, a killing blow leaves her at 1 HP instead. Reflection: 8% of every blow she takes cuts its striker.
-- RELIC Fractured Dawn Icon (game item; not drawn in her art): Searing Smite: Silences it for 2s: only its plainest skill, and any charge breaks. It hits 10% harder.
-- BATTLE CRY: "Salt in the wound, salt in the soul. Take me first, and burn for it!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: teal water rising upward, pearls and salt spray; her own blood turns to consecrated fire across her sisters; her Fractured Dawn Icon blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Meleri Undosa, Who Held the Black Tide. Draw only these objects: her Legendary weapon, Vowblade of the Leviathan Heresy, an engraved broadsword of verdigris, salt-crusted bronze with pearls with a glowing wound-rune on the blade, vow chains on the grip, and a buckler with an Order boss, dripping wet, with drowned prayer-ribbons tied to it. Sizes in her head-heights (she is about 7.3 heads tall): broadsword 2.5 heads, buckler 1 head across. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

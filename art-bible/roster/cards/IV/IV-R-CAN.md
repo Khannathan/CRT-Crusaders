@@ -1,4 +1,28 @@
-<!-- Iron Vigil (IV) card IV-R-CAN. Generated from the sister bible; do not edit here. -->
+<!-- Iron Vigil (IV) card IV-R-CAN. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: IV-R-CAN
+name: Adalind Murata
+epithet: Standard-Bearer of the Portcullis Guard
+rarity: R
+rank: Commander
+order: Iron Vigil (order id iron-vigil, code IV)
+class: Cantor (class id cantor, role Buffer)
+age: 25
+weapon: Rivetsworn War-Bell (Epic)
+relic: choir medallion, stamped with a burning cross (a game item)
+kit:
+- SKILL I Hymn of Iron: Every ally gains +30% attack for 4s. Cooldown 6s.
+- SKILL II Keening Note: Smite any enemy: Sundered (-20% armor) and Hexed (-20% Magic Resist) for 4s.
+- SKILL III Rivet Refrain: Haste an ally and put her on Overwatch. Her ally gains a Mirror Image (each swallows a whole hit). Cooldown 6s.
+- LITANY Requiem Chorus: LITANY: every ally gains +30% attack and +25% critical chance for 4s, and Haste.
+- PASSIVE Watchfire Rule: Each foe she kills gives her 6 Zeal. Every Sister starts the fight with +2 Zeal.
+- RELIC Choir Medallion (game item; not drawn in her art): Rivet Refrain: She gains 4 Zeal.
+- COMMAND (coming): Leads a hymn-chanting war-choir that lifts every soldier's spirit of the Iron Vigil.
+- BATTLE CRY: "The Vigil wills it. Let the outside burn. For the choir!"
+```
+<!-- END GAME DATA -->
 
 Read the Iron Vigil section of order-bible.md first. Cloth: bone-white #e4dccb and charcoal-black #3a3640 halved surcoat lead, ember-orange #e0622a trim, steel chainmail. Head: mail coif with a burning-cross brow band (face always shown; no helm carried). Hem: straight square-cut hem.
 
@@ -14,15 +38,7 @@ FANATIC: a heretic's sigil branded into her forearm; blend into her expression: 
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (confident): on top of her neckline, show bare thighs between greaves and a high-cut tabard slit, and a chain harness across her bare waist. SPLASH POSE (splash only; the bust and battle sprite use their own framing): back arched, hip cocked, cloak swept back over one shoulder. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: prayer-etched steel plate over a chainmail hauberk, a burning cross on the surcoat, wax purity seals with long ribbon scrolls on every plate, sworn to the war that never ends.
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Hymn of Iron: Every ally gains +30% attack for 4s. Cooldown 6s.
-- SKILL II Keening Note: Smite any enemy: Sundered (-20% armor) and Hexed (-20% Magic Resist) for 4s.
-- SKILL III Rivet Refrain: Haste an ally and put her on Overwatch. Her ally gains a Mirror Image (each swallows a whole hit). Cooldown 6s.
-- LITANY Requiem Chorus: LITANY: every ally gains +30% attack and +25% critical chance for 4s, and Haste.
-- PASSIVE Watchfire Rule: Each foe she kills gives her 6 Zeal. Every Sister starts the fight with +2 Zeal.
-- RELIC Choir Medallion (game item; not drawn in her art): Rivet Refrain: She gains 4 Zeal.
-- COMMAND (coming): Leads a hymn-chanting war-choir that lifts every soldier's spirit of the Iron Vigil.
-- BATTLE CRY: "The Vigil wills it. Let the outside burn. For the choir!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: ember-orange crusade-fire and iron sparks, burning-cross sigils flashing on impact; her voice is visible as rings of flame; her Choir Medallion blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Adalind Murata, Standard-Bearer of the Portcullis Guard. Draw only these objects: her Epic weapon, Rivetsworn War-Bell, a war-bell of blackened steel inlaid with a burning cross on a hammer haft, engraved with a burning cross and a watch-lantern, and a clasped hymnal, with a gate-chain wrapped round it and soot in every groove; and her open hymnal. Sizes in her head-heights (she is about 7.3 heads tall): staff 3 heads tall, bell 1 head. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

@@ -1,4 +1,27 @@
-<!-- Crimson Inquisition (RP) card RP-SR-CEN. Generated from the sister bible; do not edit here. -->
+<!-- Crimson Inquisition (RP) card RP-SR-CEN. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: RP-SR-CEN
+name: Guiomar Purgatrix
+epithet: Who Ended the Siege of the Black Abbey
+rarity: SR
+rank: Legend
+order: Crimson Inquisition (order id red-pilgrimage, code RP)
+class: Censer (class id censer, role Ranged DPS)
+age: 29
+weapon: Censer of the Witch Crusade (Legendary)
+relic: coal-pan reliquary, scorched by the branding fire (a game item)
+kit:
+- SKILL I Incense Cloud: Smoke every enemy and leap back: small damage, -25% attack for 4s.
+- SKILL II Burning Thurible: Dash forward, swing at a front-line foe and set it Burning for 4s. Stacks on poison.
+- SKILL III Writ Smoke: Dash forward, hit any enemy and strip its shield and blessings. She heals 15% of the damage dealt.
+- LITANY Ember Vespers: LITANY: burn every enemy for 6s (stacks); spends her Pursuit for +10% each. +12% critical chance on it.
+- PASSIVE Pyre-Lit Faith: Her burns and poisons are 25% stronger. +8% damage on foes under half HP.
+- RELIC Coal-Pan Reliquary (game item; not drawn in her art): Incense Cloud: Goes through 15% of Armor and Magic Resist. It hits 10% harder.
+- BATTLE CRY: "Confess, and burn clean. Choke on the smoke!"
+```
+<!-- END GAME DATA -->
 
 Read the Crimson Inquisition section of order-bible.md first. Cloth: blood crimson #9a2a33 lead, antique gold #d6a15f trim, blackened steel and chain. Head: wide-brimmed inquisitor's hat with a wax seal. Hem: long, sharp, spattered hems.
 
@@ -14,14 +37,7 @@ FANATIC: knuckles split and bound in charred prayer cloth; blend into her expres
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (bold): on top of her neckline, show a torn habit that bares hip and leg, and a chain harness across her bare waist. SPLASH POSE (splash only; the bust and battle sprite use their own framing): one knee raised on a heretic's skull, leaning into the weapon. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: blood-lacquered inquisitor plate studded with confession nails, purity seals stamped with the Inquisition's brand, the names of the condemned scratched into her plate.
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Incense Cloud: Smoke every enemy and leap back: small damage, -25% attack for 4s.
-- SKILL II Burning Thurible: Dash forward, swing at a front-line foe and set it Burning for 4s. Stacks on poison.
-- SKILL III Writ Smoke: Dash forward, hit any enemy and strip its shield and blessings. She heals 15% of the damage dealt.
-- LITANY Ember Vespers: LITANY: burn every enemy for 6s (stacks); spends her Pursuit for +10% each. +12% critical chance on it.
-- PASSIVE Pyre-Lit Faith: Her burns and poisons are 25% stronger. +8% damage on foes under half HP.
-- RELIC Coal-Pan Reliquary (game item; not drawn in her art): Incense Cloud: Goes through 15% of Armor and Magic Resist. It hits 10% harder.
-- BATTLE CRY: "Confess, and burn clean. Choke on the smoke!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: crimson wax-seal sigils, red-hot brand-light and burning writs on the wind; the thurible swings out a choking cloud of burning incense; her Coal-Pan Reliquary blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Guiomar Purgatrix, Who Ended the Siege of the Black Abbey. Draw only these objects: her Legendary weapon, Censer of the Witch Crusade, an engraved caged-lantern censer of blood-lacquered steel with red leather grips and Inquisition seals with a glowing core, its smoke lit with red-hot brand-light and gold sparks, with a branding iron's red-hot sigil fused into it. Sizes in her head-heights (she is about 7.3 heads tall): censer 1 head, chain 2 heads. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

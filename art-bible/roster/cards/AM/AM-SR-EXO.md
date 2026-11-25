@@ -1,4 +1,27 @@
-<!-- Ashen Mercy (AM) card AM-SR-EXO. Generated from the sister bible; do not edit here. -->
+<!-- Ashen Mercy (AM) card AM-SR-EXO. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: AM-SR-EXO
+name: Absoluta Ambusta
+epithet: Who Ended the Burning of Caelmoor
+rarity: SR
+rank: Legend
+order: Ashen Mercy (order id ashen-mercy, code AM)
+class: Exorcist (class id exorcist, role Ranged DPS)
+age: 23
+weapon: Witchlight of the Pyre Field (Legendary)
+relic: iron exorcism lantern, smudged with grey ash (a game item)
+kit:
+- SKILL I Lantern Flare: Smite any enemy and strip its shield and blessings. +30% against bosses.
+- SKILL II Witchfire: Set any enemy Burning for 6s. Stacks on poison or burns.
+- SKILL III Ash Witchfire: Strip a foe's shield and blessings and Weaken it (-23% attack) for 4s. She heals 15% of the damage dealt. Cooldown 6s.
+- LITANY Mercy Vespers: LITANY: heavy damage on every enemy; any common foe left under 30% HP is granted Mercy at once. Hexes every foe it strikes (-15% Magic Resist) for 4s.
+- PASSIVE Smoke-Lunged Seal: Her burns are 25% stronger. The fight opens on a Field of Ash (each fallen foe heals every Sister 6%) for 4s.
+- RELIC Iron Exorcism Lantern (game item; not drawn in her art): Ash Witchfire: Sunders the foe (-15% armor) for 4s. It hits 10% harder.
+- BATTLE CRY: "Kneel, and I make it quick. Begone, foul thing!"
+```
+<!-- END GAME DATA -->
 
 Read the Ashen Mercy section of order-bible.md first. Cloth: ash-white #c9c2b8 lead, wine #652b3b trim, soot-black mail. Head: white wimple and coif with an ash thumbprint on the brow. Hem: scorched edge.
 
@@ -14,14 +37,7 @@ FANATIC: scripture branded into her thigh; blend into her expression: burning wi
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (bold): on top of her neckline, show a chain harness across her bare waist, and skin-tight sheer black sleeves and gloves to the shoulder. SPLASH POSE (splash only; the bust and battle sprite use their own framing): striding forward out of smoke, cape snapping behind. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: soot-black gothic plate, purity seals scorched at the edges, a funeral pyre burning behind her (splash only).
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Lantern Flare: Smite any enemy and strip its shield and blessings. +30% against bosses.
-- SKILL II Witchfire: Set any enemy Burning for 6s. Stacks on poison or burns.
-- SKILL III Ash Witchfire: Strip a foe's shield and blessings and Weaken it (-23% attack) for 4s. She heals 15% of the damage dealt. Cooldown 6s.
-- LITANY Mercy Vespers: LITANY: heavy damage on every enemy; any common foe left under 30% HP is granted Mercy at once. Hexes every foe it strikes (-15% Magic Resist) for 4s.
-- PASSIVE Smoke-Lunged Seal: Her burns are 25% stronger. The fight opens on a Field of Ash (each fallen foe heals every Sister 6%) for 4s.
-- RELIC Iron Exorcism Lantern (game item; not drawn in her art): Ash Witchfire: Sunders the foe (-15% armor) for 4s. It hits 10% harder.
-- BATTLE CRY: "Kneel, and I make it quick. Begone, foul thing!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: grey ash-flame and falling soot, a wine-red glow as wounds close; the lantern opens and witchfire pours out like a flamer; her Iron Exorcism Lantern blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Absoluta Ambusta, Who Ended the Burning of Caelmoor. Draw only these objects: her Legendary weapon, Witchlight of the Pyre Field, a covered witchfire brazier of soot-blackened steel with wine-red wraps on a staff, its trapped flame glowing ash-grey light with wine embers, trailing thin smoke, its edges charred from the mercy-pyres. Sizes in her head-heights (she is about 7.3 heads tall): pole 4 heads tall, lantern 1 head. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

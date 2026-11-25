@@ -1,4 +1,27 @@
-<!-- Veiled Tribunal (VT) card VT-SR-ARB. Generated from the sister bible; do not edit here. -->
+<!-- Veiled Tribunal (VT) card VT-SR-ARB. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: VT-SR-ARB
+name: Xene Obvelata
+epithet: Who Ended the Burning of the Codex
+rarity: SR
+rank: Legend
+order: Veiled Tribunal (order id veiled-tribunal, code VT)
+class: Arbalist (class id arbalist, role Ranged DPS)
+age: 24
+weapon: Wyrmbane of the Night Assizes (Legendary)
+relic: compact crossbow stock beside shoulder, set in a square weathered bronze housing (a game item)
+kit:
+- SKILL I Consecrated Bolt: A heavy bolt on any foe that ignores 30% of its Armor.
+- SKILL II Shieldbreaker: A bolt through any shield: Sundered (-30% armor) for 4s. Cooldown 6s.
+- SKILL III Warrant Bolt: Accuse a foe for 4s and add 1 Guilt. Cooldown 4s.
+- LITANY Sentence Bolt: LITANY: a crushing bolt through 30% of its Armor; spends its Guilt for +25% damage each.
+- PASSIVE Marked Quarry: Her hits on Accused foes always crit.
+- RELIC Compact Crossbow Stock Beside Shoulder (game item; not drawn in her art): Sentence Bolt: Brands the foe: the next blow on it lands 25% harder. It hits 10% harder.
+- BATTLE CRY: "The scale is tipped, and you are on it. Loose!"
+```
+<!-- END GAME DATA -->
 
 Read the Veiled Tribunal section of order-bible.md first. Cloth: dusk violet #6e5a8c lead, parchment #c6baa4 trim, black steel with crimson silk lining. Head: sheer black veil over the eyes, high angular collar. Hem: sharp angular points.
 
@@ -14,14 +37,7 @@ FANATIC: fresh scourge marks across her shoulders; blend into her expression: ey
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (bold): on top of her neckline, show thigh-high boots with bare skin above, held by garter straps of chain, and a chain harness across her bare waist. SPLASH POSE (splash only; the bust and battle sprite use their own framing): twisting at the waist mid-swing, hair flying. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: judicial gothic plate hung with nailed verdicts and chained scripture, purity seals stamped with the scales, heretics kneeling in chains behind her (splash only).
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Consecrated Bolt: A heavy bolt on any foe that ignores 30% of its Armor.
-- SKILL II Shieldbreaker: A bolt through any shield: Sundered (-30% armor) for 4s. Cooldown 6s.
-- SKILL III Warrant Bolt: Accuse a foe for 4s and add 1 Guilt. Cooldown 4s.
-- LITANY Sentence Bolt: LITANY: a crushing bolt through 30% of its Armor; spends its Guilt for +25% damage each.
-- PASSIVE Marked Quarry: Her hits on Accused foes always crit.
-- RELIC Compact Crossbow Stock Beside Shoulder (game item; not drawn in her art): Sentence Bolt: Brands the foe: the next blow on it lands 25% harder. It hits 10% harder.
-- BATTLE CRY: "The scale is tipped, and you are on it. Loose!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: violet scale-marks, nailed parchment verdicts and wax seals bursting; a single consecrated bolt leaves a long streak of scripture-light; her Compact Crossbow Stock Beside Shoulder blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Xene Obvelata, Who Ended the Burning of the Codex. Draw only these objects: her Legendary weapon, Wyrmbane of the Night Assizes, a heavy arbalest of angular black steel with crimson silk strung with dragon sinew, bolts tipped with glowing violet judgement-light, hung with the wax seals of signed death-verdicts; and her quiver of bolts. Sizes in her head-heights (she is about 7.3 heads tall): crossbow 2 heads long. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

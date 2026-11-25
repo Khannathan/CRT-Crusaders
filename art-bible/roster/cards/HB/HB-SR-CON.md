@@ -1,4 +1,27 @@
-<!-- Hallowed Belfry (HB) card HB-SR-CON. Generated from the sister bible; do not edit here. -->
+<!-- Hallowed Belfry (HB) card HB-SR-CON. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: HB-SR-CON
+name: Sudislava Tinnula
+epithet: Who Walked Out of the Storm Night
+rarity: SR
+rank: Legend
+order: Hallowed Belfry (order id hollow-bell, code HB)
+class: Confessor (class id confessor, role Healer)
+age: 25
+weapon: Remedy of the Silent Toll (Legendary)
+relic: sealed medicine vial, engraved with twelve tolls (a game item)
+kit:
+- SKILL I Remedy: Heal one ally, cure poison, burns and bleeding, and let her Regenerate 3% every 2s for 4s.
+- SKILL II Miasma: Smite a near foe and Poison it for 6s. Stacks on poison or burns.
+- SKILL III Knell Penance: Every ally heals 10% of max HP, and the Bell rings. She gains 5 Zeal. Cooldown 6s.
+- LITANY Hollow Dirge: LITANY: every ally heals 25% of max HP, and the Bell rings three times. Every Sister gains +10% critical chance for 4s.
+- PASSIVE Midnight Heresy-Bane: Each time she acts, every Sister heals 2% of max HP. Every Sister starts the fight with +3 Zeal.
+- RELIC Sealed Medicine Vial (game item; not drawn in her art): Miasma: Silences it for 2s: only its plainest skill, and any charge breaks. It hits 10% harder.
+- BATTLE CRY: "*a cracked note, and then the hammer falls* Up! The war is not over!"
+```
+<!-- END GAME DATA -->
 
 Read the Hallowed Belfry section of order-bible.md first. Cloth: bell bronze #8b6848 lead, parchment #c6baa4 trim, blackened iron. Head: bell-shaped hood or coif hung with small hand-bells. Hem: scalloped, bell-curved hem.
 
@@ -14,14 +37,7 @@ FANATIC: knuckles split and bound in charred prayer cloth; blend into her expres
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (bold): on top of her neckline, show bare thighs between greaves and a high-cut tabard slit, and skin-tight sheer black sleeves and gloves to the shoulder. SPLASH POSE (splash only; the bust and battle sprite use their own framing): back arched, hip cocked, cloak swept back over one shoulder. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: blackened gothic plate with bell-shaped pauldrons, purity seals on bell-rope cords, a cracked cathedral bell hung behind her (splash only).
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Remedy: Heal one ally, cure poison, burns and bleeding, and let her Regenerate 3% every 2s for 4s.
-- SKILL II Miasma: Smite a near foe and Poison it for 6s. Stacks on poison or burns.
-- SKILL III Knell Penance: Every ally heals 10% of max HP, and the Bell rings. She gains 5 Zeal. Cooldown 6s.
-- LITANY Hollow Dirge: LITANY: every ally heals 25% of max HP, and the Bell rings three times. Every Sister gains +10% critical chance for 4s.
-- PASSIVE Midnight Heresy-Bane: Each time she acts, every Sister heals 2% of max HP. Every Sister starts the fight with +3 Zeal.
-- RELIC Sealed Medicine Vial (game item; not drawn in her art): Miasma: Silences it for 2s: only its plainest skill, and any charge breaks. It hits 10% harder.
-- BATTLE CRY: "*a cracked note, and then the hammer falls* Up! The war is not over!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: bronze sound-rings rippling out, rope shadows and a dull midnight shockwave; a hand of light closes wounds and burns out poison; her Sealed Medicine Vial blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Sudislava Tinnula, Who Walked Out of the Storm Night. Draw only these objects: her Legendary weapon, Remedy of the Silent Toll, a silver-capped beak mask, labelled glowing vials, and a censer-mace of blackened iron with bell-bronze fittings and rope that breathes medicinal smoke lit with bronze sound-rings, ringing with a small black death-knell bell tied to it; and her plague beak mask. Sizes in her head-heights (she is about 7.3 heads tall): mace haft 1.5 heads, mask 1 head. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

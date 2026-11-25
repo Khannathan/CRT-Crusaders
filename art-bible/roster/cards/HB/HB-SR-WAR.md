@@ -1,4 +1,27 @@
-<!-- Hallowed Belfry (HB) card HB-SR-WAR. Generated from the sister bible; do not edit here. -->
+<!-- Hallowed Belfry (HB) card HB-SR-WAR. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: HB-SR-WAR
+name: Zvonimira Vocifera
+epithet: Slayer of the Silence Wyrm
+rarity: SR
+rank: Legend
+order: Hallowed Belfry (order id hollow-bell, code HB)
+class: War-Sister (class id warsister, role Melee DPS)
+age: 24
+weapon: Flail of the Deaf Heresy (Legendary)
+relic: vow collar, bound in bell-rope (a game item)
+kit:
+- SKILL I Penitent Blow: Smite a front-line foe hard and leave it Bleeding for 4s. +40% while she is under half HP.
+- SKILL II Blood for Zeal: Sacrifice 10% HP. +30 of her own Zeal and +25% attack for 4s. Cooldown 6s.
+- SKILL III Belfry Lash: Strike a near foe and Stagger it. Lays Penance on the foe for 4s: each act costs the sinner 20% of its own attack. Cooldown 6s.
+- LITANY Hour Compline: LITANY: a crushing blow on any enemy, doubled against the Accused, then the Bell Peals at once. Opens Stigmata: it bleeds 0.2x every 2s for 4s, and every drop heals her for half.
+- PASSIVE Belfry Faith: Heals for 10% of the damage she deals. Every Sister starts the fight with +3 Zeal.
+- RELIC Vow Collar (game item; not drawn in her art): Belfry Lash: She gains 5 Zeal. It hits 10% harder.
+- BATTLE CRY: "*a low knell that shakes the bone* Fury is faith!"
+```
+<!-- END GAME DATA -->
 
 Read the Hallowed Belfry section of order-bible.md first. Cloth: bell bronze #8b6848 lead, parchment #c6baa4 trim, blackened iron. Head: bell-shaped hood or coif hung with small hand-bells. Hem: scalloped, bell-curved hem.
 
@@ -14,14 +37,7 @@ FANATIC: a crown of nails she drove in herself; blend into her expression: with 
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (bold): on top of her neckline, show a chain harness across her bare waist, and a side-cut tabard open from ribs to hip. SPLASH POSE (splash only; the bust and battle sprite use their own framing): one knee raised on a heretic's skull, leaning into the weapon. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: blackened gothic plate with bell-shaped pauldrons, purity seals on bell-rope cords, a cracked cathedral bell hung behind her (splash only).
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Penitent Blow: Smite a front-line foe hard and leave it Bleeding for 4s. +40% while she is under half HP.
-- SKILL II Blood for Zeal: Sacrifice 10% HP. +30 of her own Zeal and +25% attack for 4s. Cooldown 6s.
-- SKILL III Belfry Lash: Strike a near foe and Stagger it. Lays Penance on the foe for 4s: each act costs the sinner 20% of its own attack. Cooldown 6s.
-- LITANY Hour Compline: LITANY: a crushing blow on any enemy, doubled against the Accused, then the Bell Peals at once. Opens Stigmata: it bleeds 0.2x every 2s for 4s, and every drop heals her for half.
-- PASSIVE Belfry Faith: Heals for 10% of the damage she deals. Every Sister starts the fight with +3 Zeal.
-- RELIC Vow Collar (game item; not drawn in her art): Belfry Lash: She gains 5 Zeal. It hits 10% harder.
-- BATTLE CRY: "*a low knell that shakes the bone* Fury is faith!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: bronze sound-rings rippling out, rope shadows and a dull midnight shockwave; the flail spins in a red arc and her scourge-marks glow; her Vow Collar blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Zvonimira Vocifera, Slayer of the Silence Wyrm. Draw only these objects: her Legendary weapon, Flail of the Deaf Heresy, a relic flail of blackened iron with bell-bronze fittings and rope with a caged, burning saint-skull for a head and rune-cut links, with a bell-rope braided from the hair of the punished wrapped round the grip. Sizes in her head-heights (she is about 7.3 heads tall): flail haft 1.5 heads, chain 1 head. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

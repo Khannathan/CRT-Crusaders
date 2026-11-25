@@ -1,4 +1,28 @@
-<!-- Hallowed Belfry (HB) card HB-R-EXE. Generated from the sister bible; do not edit here. -->
+<!-- Hallowed Belfry (HB) card HB-R-EXE. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: HB-R-EXE
+name: Miroslava Aerea
+epithet: Castellan of the Storm Bell
+rarity: R
+rank: Commander
+order: Hallowed Belfry (order id hollow-bell, code HB)
+class: Executioner (class id inquisitor, role Melee DPS)
+age: 23
+weapon: Belfry Headsman (Epic)
+relic: interrogation seal, with a small cracked bell (a game item)
+kit:
+- SKILL I Accuse: Light hit on any foe. Accused takes +25% damage, and is Sundered (-25% armor), for 6s.
+- SKILL II Duelist's Thrust: Lunge at a near foe. +50% against the Accused.
+- SKILL III Toll Beheading: Lunge at a near foe; +50% against the Accused, and the Bell rings twice more if it kills. She gains 4 Zeal.
+- LITANY Verdict: LITANY: crushing blow on any enemy, doubled against the Accused. Stuns it for 2s (not bosses).
+- PASSIVE Bronze Penance: +1 speed: she acts sooner. Every Sister starts the fight with +2 Zeal.
+- RELIC Interrogation Seal (game item; not drawn in her art): Toll Beheading: Silences it for 2s: only its plainest skill, and any charge breaks. It hits 8% harder.
+- COMMAND (coming): Leads headsmen who hunt enemy captains of the Hallowed Belfry.
+- BATTLE CRY: "*one toll, one life* One stroke!"
+```
+<!-- END GAME DATA -->
 
 Read the Hallowed Belfry section of order-bible.md first. Cloth: bell bronze #8b6848 lead, parchment #c6baa4 trim, blackened iron. Head: bell-shaped hood or coif hung with small hand-bells. Hem: scalloped, bell-curved hem.
 
@@ -14,15 +38,7 @@ FANATIC: scripture branded into her thigh; blend into her expression: with a fan
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (confident): on top of her neckline, show a bare midriff under a short breastplate, and a side-cut tabard open from ribs to hip. SPLASH POSE (splash only; the bust and battle sprite use their own framing): striding forward out of smoke, cape snapping behind. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: blackened gothic plate with bell-shaped pauldrons, purity seals on bell-rope cords, a cracked cathedral bell hung behind her (splash only).
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Accuse: Light hit on any foe. Accused takes +25% damage, and is Sundered (-25% armor), for 6s.
-- SKILL II Duelist's Thrust: Lunge at a near foe. +50% against the Accused.
-- SKILL III Toll Beheading: Lunge at a near foe; +50% against the Accused, and the Bell rings twice more if it kills. She gains 4 Zeal.
-- LITANY Verdict: LITANY: crushing blow on any enemy, doubled against the Accused. Stuns it for 2s (not bosses).
-- PASSIVE Bronze Penance: +1 speed: she acts sooner. Every Sister starts the fight with +2 Zeal.
-- RELIC Interrogation Seal (game item; not drawn in her art): Toll Beheading: Silences it for 2s: only its plainest skill, and any charge breaks. It hits 8% harder.
-- COMMAND (coming): Leads headsmen who hunt enemy captains of the Hallowed Belfry.
-- BATTLE CRY: "*one toll, one life* One stroke!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: bronze sound-rings rippling out, rope shadows and a dull midnight shockwave; the executioner's axe falls in one heavy flash; her Interrogation Seal blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Miroslava Aerea, Castellan of the Storm Bell. Draw only these objects: her Epic weapon, Belfry Headsman, a heavy executioner's axe of blackened iron with bell-bronze fittings and rope with a writ nailed to the haft and bells, cracks and bell-rope on the blade, ringing with a small black death-knell bell tied to it. Sizes in her head-heights (she is about 7.3 heads tall): axe 3 heads long. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

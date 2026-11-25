@@ -1,4 +1,28 @@
-<!-- Veiled Tribunal (VT) card VT-R-HIE. Generated from the sister bible; do not edit here. -->
+<!-- Veiled Tribunal (VT) card VT-R-HIE. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: VT-R-HIE
+name: Euphrosyne Arbitra
+epithet: Captain of the Veiled Bench
+rarity: R
+rank: Commander
+order: Veiled Tribunal (order id veiled-tribunal, code VT)
+class: Hierophant (class id hierophant, role Tank)
+age: 25
+weapon: Writbound Bastion (Epic)
+relic: miniature candlelit shrine, sealed with angular red wax (a game item)
+kit:
+- SKILL I Reliquary Bash: Strike a front-line foe, hurl it back and draw enemy attacks for 4s.
+- SKILL II Sanctuary: Shield an ally for 30% of max HP and Ward her: -15% damage taken for 4s. Cooldown 4s.
+- SKILL III Masked Aegis: Strike a front-line foe, Accuse it and draw enemy attacks, for 4s. Silences it for 2s: only its plainest skill, and any charge breaks.
+- LITANY Wall of Saints: LITANY: shield every ally for 25% of max HP and Ward them: -20% damage taken for 4s.
+- PASSIVE Veiled Creed: While she stands, your Sisters take 3% less damage. Her blows lay Penance: for 4s each act costs the foe 8% of its own attack.
+- RELIC Miniature Candlelit Shrine (game item; not drawn in her art): Wall of Saints: Every Sister gains +8% critical chance for 4s.
+- COMMAND (coming): Leads a shield-wall of relic bearers of the Veiled Tribunal.
+- BATTLE CRY: "Silence. The sentence is read. Behind the reliquary, Sisters!"
+```
+<!-- END GAME DATA -->
 
 Read the Veiled Tribunal section of order-bible.md first. Cloth: dusk violet #6e5a8c lead, parchment #c6baa4 trim, black steel with crimson silk lining. Head: sheer black veil over the eyes, high angular collar. Hem: sharp angular points.
 
@@ -14,15 +38,7 @@ FANATIC: a rope of confessions knotted around her waist; blend into her expressi
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (confident): on top of her neckline, show a side-cut tabard open from ribs to hip, and a chain harness across her bare waist. SPLASH POSE (splash only; the bust and battle sprite use their own framing): standing tall with weight on one leg, chin raised in contempt. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: judicial gothic plate hung with nailed verdicts and chained scripture, purity seals stamped with the scales, heretics kneeling in chains behind her (splash only).
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Reliquary Bash: Strike a front-line foe, hurl it back and draw enemy attacks for 4s.
-- SKILL II Sanctuary: Shield an ally for 30% of max HP and Ward her: -15% damage taken for 4s. Cooldown 4s.
-- SKILL III Masked Aegis: Strike a front-line foe, Accuse it and draw enemy attacks, for 4s. Silences it for 2s: only its plainest skill, and any charge breaks.
-- LITANY Wall of Saints: LITANY: shield every ally for 25% of max HP and Ward them: -20% damage taken for 4s.
-- PASSIVE Veiled Creed: While she stands, your Sisters take 3% less damage. Her blows lay Penance: for 4s each act costs the foe 8% of its own attack.
-- RELIC Miniature Candlelit Shrine (game item; not drawn in her art): Wall of Saints: Every Sister gains +8% critical chance for 4s.
-- COMMAND (coming): Leads a shield-wall of relic bearers of the Veiled Tribunal.
-- BATTLE CRY: "Silence. The sentence is read. Behind the reliquary, Sisters!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: violet scale-marks, nailed parchment verdicts and wax seals bursting; her reliquary-shield flares and throws up a wall of light; her Miniature Candlelit Shrine blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Euphrosyne Arbitra, Captain of the Veiled Bench. Draw only these objects: her Epic weapon, Writbound Bastion, a tower shield of angular black steel with crimson silk with a small shrine set in its boss, edged with balance scales and angular wax seals, and a flanged mace, notched once for every soul she condemned. Sizes in her head-heights (she is about 7.3 heads tall): shield 2.5 heads tall, mace haft 1.5 heads. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

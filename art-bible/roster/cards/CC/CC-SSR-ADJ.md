@@ -1,4 +1,28 @@
-<!-- Choir of the Pyre (CC) card CC-SSR-ADJ. Generated from the sister bible; do not edit here. -->
+<!-- Choir of the Pyre (CC) card CC-SSR-ADJ. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: CC-SSR-ADJ
+name: Melodia Hymnifera
+epithet: Child of the Golden Choir
+rarity: SSR
+rank: Demigoddess
+order: Choir of the Pyre (order id candle-choir, code CC)
+class: Adjudicator (class id adjudicator, role Buffer)
+age: 28
+weapon: Judgement of the Burning Wax (Mythic)
+relic: small mirrored judgment icon, dripping with red wax (a game item)
+kit:
+- SKILL I Reflected Sentence: Smite any enemy: -25% attack for 4s. Drains 15 Wrath from a boss.
+- SKILL II Chanted Judgement: A Hymn for 6s: every foe -13% attack. She gains 1 Fervor (+6% damage each, up to 5). Cooldown 8s.
+- SKILL III Tallow Verdict: A Hymn for 4s (it harmonises with other Choir Hymns), and every Sister gains 8 Zeal now. Wards her (-15% damage taken) for 4s. Cooldown 8s.
+- LITANY Cantus Credo: LITANY: every enemy is Weakened (-26%) for 6s and loses 50 Wrath. Sunders every foe it strikes (-20% armor) for 4s. It hallows the ground: Hallowed Ground (every Sister Regenerates 4% every 2s) for 4s.
+- PASSIVE Unbroken Vow: A boss that starts charging while a Hymn plays loses 25 Wrath. Her Weakens last 2s longer. Every Sister starts the fight with +4 Zeal.
+- RELIC Small Mirrored Judgment Icon (game item; not drawn in her art): Reflected Sentence: She gains 1 Fervor (+6% damage each, up to 5). It hits 12% harder.
+- ASCENSION (coming): As a Deity, her Cantus Credo also grants Rapture (no damage for 2s) to every Sister, and her passive grows by half.
+- BATTLE CRY: "My choir-mother faltered. I lit her pyre myself. Guilty!"
+```
+<!-- END GAME DATA -->
 
 Read the Choir of the Pyre section of order-bible.md first. Cloth: candle gold #d6a15f lead, wine #652b3b trim, bronze. Head: crown of dripping candles. Hem: ribbon streamers.
 
@@ -30,15 +54,7 @@ FANATIC: prayer strips nailed into her armour; blend into her expression: with a
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (daring): on top of her neckline, show a torn habit that bares hip and leg, and skin-tight sheer black sleeves and gloves to the shoulder. SPLASH POSE (splash only; the bust and battle sprite use their own framing): standing tall with weight on one leg, chin raised in contempt. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: gilded gothic plate dripping with candle wax, purity seals as hymn sheets, a battle hymn screamed not sung, consecrated fire in her eyes and on her blade.
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Reflected Sentence: Smite any enemy: -25% attack for 4s. Drains 15 Wrath from a boss.
-- SKILL II Chanted Judgement: A Hymn for 6s: every foe -13% attack. She gains 1 Fervor (+6% damage each, up to 5). Cooldown 8s.
-- SKILL III Tallow Verdict: A Hymn for 4s (it harmonises with other Choir Hymns), and every Sister gains 8 Zeal now. Wards her (-15% damage taken) for 4s. Cooldown 8s.
-- LITANY Cantus Credo: LITANY: every enemy is Weakened (-26%) for 6s and loses 50 Wrath. Sunders every foe it strikes (-20% armor) for 4s. It hallows the ground: Hallowed Ground (every Sister Regenerates 4% every 2s) for 4s.
-- PASSIVE Unbroken Vow: A boss that starts charging while a Hymn plays loses 25 Wrath. Her Weakens last 2s longer. Every Sister starts the fight with +4 Zeal.
-- RELIC Small Mirrored Judgment Icon (game item; not drawn in her art): Reflected Sentence: She gains 1 Fervor (+6% damage each, up to 5). It hits 12% harder.
-- ASCENSION (coming): As a Deity, her Cantus Credo also grants Rapture (no damage for 2s) to every Sister, and her passive grows by half.
-- BATTLE CRY: "My choir-mother faltered. I lit her pyre myself. Guilty!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: candle-gold flame, dripping wax and floating hymn ribbons; giant scales of light tip and crush the foe; her Litany Cantus Credo hallows the ground in a ring of candle-gold flame; her Small Mirrored Judgment Icon blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Melodia Hymnifera, Child of the Golden Choir. Draw only these objects: her Mythic weapon, Judgement of the Burning Wax, scales whose beam is a pair of angel wings and whose pans hold a burning heart and a feather, weighing in golden candle-flame, trailing smoke from the pyres it lit; and her ledger. Sizes in her head-heights (she is about 7.3 heads tall): scales 1.5 heads tall, ledger 1 head. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

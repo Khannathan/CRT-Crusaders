@@ -1,4 +1,28 @@
-<!-- Ashen Mercy (AM) card AM-UR1. Generated from the sister bible; do not edit here. -->
+<!-- Ashen Mercy (AM) card AM-UR1. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: AM-UR1
+name: Exustrix
+epithet: the Pale Flame, Goddess of Mercy and Ash
+rarity: UR
+rank: Deity
+order: Ashen Mercy (order id ashen-mercy, code AM)
+class: Oracle (class id oracle, role Buffer)
+age: 22
+weapon: The Wheel Within a Wheel of the Merciful Pyre (Divine Arsenal)
+relic: violet omen reliquary, worn smooth around a single amber light (a game item)
+kit:
+- SKILL I Ashen Reading: Smite any enemy, Hex it (-20% Magic Resist) and Foretell it: its Mercy line is 15% higher, for 4s. She heals 25% of the damage dealt.
+- SKILL II Grant Peace: An ally gains +35% attack for 4s and Haste. Wards her ally (-20% damage taken) for 4s. Cooldown 6s.
+- SKILL III Smoke of the Pyre: Every enemy is Weakened (-20% attack) for 4s; foes under half HP are also Staggered. Accuses every foe it strikes for 4s (+25% damage taken). Cooldown 8s.
+- LITANY Absolution: LITANY: heavy magic damage on every enemy; any common foe left under 30% HP is granted Mercy at once. Hexes every foe it strikes (-25% Magic Resist) for 4s. It hallows the ground: a Field of Ash (each fallen foe heals every Sister 6%) for 6s.
+- PASSIVE Omen of Release: Raises the party's Mercy line from 15% to 25%. Every Mercy kill gives every Sister 10 Zeal.
+- SAINT'S SEAL Last Rites Heard: The first time a Sister would fall, she is healed 30% instead and her attacker is Foretold.
+- RELIC Violet Omen Reliquary (drawn as her floating omen relic): Grant Peace: Her ally Regenerates 5% of max HP every 2s for 4s.
+- BATTLE CRY: "The pyre is lit, and it is hungry. I know how this ends!"
+```
+<!-- END GAME DATA -->
 
 Read the Ashen Mercy section of order-bible.md first. Cloth: ash-white #c9c2b8 lead, wine #652b3b trim, soot-black mail. Head: white wimple and coif with an ash thumbprint on the brow. Hem: scorched edge.
 
@@ -31,15 +55,7 @@ FANATIC: vow chains locked around her wrists; blend into her expression: in fana
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (boldest in her Order): on top of her neckline, show thigh-high boots with bare skin above, held by garter straps of chain, and a side-cut tabard open from ribs to hip. SPLASH POSE (splash only; the bust and battle sprite use their own framing): back arched, hip cocked, cloak swept back over one shoulder. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: soot-black gothic plate, purity seals scorched at the edges, a funeral pyre burning behind her (splash only).
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Ashen Reading: Smite any enemy, Hex it (-20% Magic Resist) and Foretell it: its Mercy line is 15% higher, for 4s. She heals 25% of the damage dealt.
-- SKILL II Grant Peace: An ally gains +35% attack for 4s and Haste. Wards her ally (-20% damage taken) for 4s. Cooldown 6s.
-- SKILL III Smoke of the Pyre: Every enemy is Weakened (-20% attack) for 4s; foes under half HP are also Staggered. Accuses every foe it strikes for 4s (+25% damage taken). Cooldown 8s.
-- LITANY Absolution: LITANY: heavy magic damage on every enemy; any common foe left under 30% HP is granted Mercy at once. Hexes every foe it strikes (-25% Magic Resist) for 4s. It hallows the ground: a Field of Ash (each fallen foe heals every Sister 6%) for 6s.
-- PASSIVE Omen of Release: Raises the party's Mercy line from 15% to 25%. Every Mercy kill gives every Sister 10 Zeal.
-- SAINT'S SEAL Last Rites Heard: The first time a Sister would fall, she is healed 30% instead and her attacker is Foretold.
-- RELIC Violet Omen Reliquary (drawn as her floating omen relic): Grant Peace: Her ally Regenerates 5% of max HP every 2s for 4s.
-- BATTLE CRY: "The pyre is lit, and it is hungry. I know how this ends!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: grey ash-flame and falling soot, a wine-red glow as wounds close; omens burn in the air as smoke-runes; her Litany Absolution hallows the ground in a ring of grey ash-flame and falling soot; her Violet Omen Reliquary blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Exustrix, the Pale Flame, Goddess of Mercy and Ash. Draw only these objects: her Divine Arsenal weapon, The Wheel Within a Wheel of the Merciful Pyre, a great wheel within a wheel, rimmed with open eyes, turning slowly behind her and tracing the future in lines of ash-grey light with wine embers, caked with ash from the mercy-fires; and her floating relic, violet omen reliquary, worn smooth around a single amber light. Sizes in her head-heights (she is about 7.3 heads tall): relic 1 head across, staff 2 heads. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

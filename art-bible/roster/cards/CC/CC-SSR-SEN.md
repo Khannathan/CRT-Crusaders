@@ -1,4 +1,28 @@
-<!-- Choir of the Pyre (CC) card CC-SSR-SEN. Generated from the sister bible; do not edit here. -->
+<!-- Choir of the Pyre (CC) card CC-SSR-SEN. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: CC-SSR-SEN
+name: Doxologia Cremaria
+epithet: Blood of the Choir Above
+rarity: SSR
+rank: Demigoddess
+order: Choir of the Pyre (order id candle-choir, code CC)
+class: Sentinel (class id sentinel, role Tank)
+age: 29
+weapon: Gate of the Eternal Note (Mythic)
+relic: funerary key, set in a square weathered bronze housing (a game item)
+kit:
+- SKILL I Tolling Strike: Strike a front-line foe, draw attacks and counter, for 4s. She gains 1 Fervor (+6% damage each, up to 5).
+- SKILL II Hold the Note: A Hymn for 6s: every ally Warded (-10% damage). She gains +12% critical chance for 4s. Cooldown 8s.
+- SKILL III Funeral Bash: Crack a front-line foe with the tomb key: Sundered (-25% armor) for 4s and Stunned for 2s (not bosses). Cooldown 8s.
+- LITANY Choir of Stone: LITANY: Ward every ally (-25%) for 4s, draw every attack, and start Hold the Note. Every Sister gains a Mirror Image (each swallows a whole hit). It hallows the ground: Hallowed Ground (every Sister Regenerates 4% every 2s) for 4s.
+- PASSIVE Bass Note: While she draws attacks and a Hymn plays, every Sister takes 10% less damage.
+- RELIC Funerary Key (game item; not drawn in her art): Funeral Bash: She gains 1 Fervor (+6% damage each, up to 5). It hits 12% harder.
+- ASCENSION (coming): As a Deity, her Choir of Stone also grants Rapture (no damage for 2s) to every Sister, and her passive grows by half.
+- BATTLE CRY: "Every village that would not sing is ash now. Hit harder!"
+```
+<!-- END GAME DATA -->
 
 Read the Choir of the Pyre section of order-bible.md first. Cloth: candle gold #d6a15f lead, wine #652b3b trim, bronze. Head: crown of dripping candles. Hem: ribbon streamers.
 
@@ -31,15 +55,7 @@ FANATIC: tears of blood dried on her cheeks; blend into her expression: burning 
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (daring): on top of her neckline, show a chain harness across her bare waist, and a side-cut tabard open from ribs to hip. SPLASH POSE (splash only; the bust and battle sprite use their own framing): standing tall with weight on one leg, chin raised in contempt. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: gilded gothic plate dripping with candle wax, purity seals as hymn sheets, a battle hymn screamed not sung, consecrated fire in her eyes and on her blade.
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Tolling Strike: Strike a front-line foe, draw attacks and counter, for 4s. She gains 1 Fervor (+6% damage each, up to 5).
-- SKILL II Hold the Note: A Hymn for 6s: every ally Warded (-10% damage). She gains +12% critical chance for 4s. Cooldown 8s.
-- SKILL III Funeral Bash: Crack a front-line foe with the tomb key: Sundered (-25% armor) for 4s and Stunned for 2s (not bosses). Cooldown 8s.
-- LITANY Choir of Stone: LITANY: Ward every ally (-25%) for 4s, draw every attack, and start Hold the Note. Every Sister gains a Mirror Image (each swallows a whole hit). It hallows the ground: Hallowed Ground (every Sister Regenerates 4% every 2s) for 4s.
-- PASSIVE Bass Note: While she draws attacks and a Hymn plays, every Sister takes 10% less damage.
-- RELIC Funerary Key (game item; not drawn in her art): Funeral Bash: She gains 1 Fervor (+6% damage each, up to 5). It hits 12% harder.
-- ASCENSION (coming): As a Deity, her Choir of Stone also grants Rapture (no damage for 2s) to every Sister, and her passive grows by half.
-- BATTLE CRY: "Every village that would not sing is ash now. Hit harder!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: candle-gold flame, dripping wax and floating hymn ribbons; she plants her feet and every blow she takes flashes back as a riposte arc; her Litany Choir of Stone hallows the ground in a ring of candle-gold flame; her Funerary Key blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Doxologia Cremaria, Blood of the Choir Above. Draw only these objects: her Mythic weapon, Gate of the Eternal Note, a tomb-door shield that holds a sleeping angel in relief whose wings are real and flex, light of golden candle-flame leaking from its seams, and a greatsword that burns along its fuller, trailing smoke from the pyres it lit. Sizes in her head-heights (she is about 7.3 heads tall): shield 3 heads tall, sword 2.5 heads. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

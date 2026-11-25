@@ -1,4 +1,28 @@
-<!-- Crimson Inquisition (RP) card RP-R-ORA. Generated from the sister bible; do not edit here. -->
+<!-- Crimson Inquisition (RP) card RP-R-ORA. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: RP-R-ORA
+name: Beatriz Sententiaria
+epithet: Prefect of the Iron Maiden Gate
+rarity: R
+rank: Commander
+order: Crimson Inquisition (order id red-pilgrimage, code RP)
+class: Oracle (class id oracle, role Buffer)
+age: 25
+weapon: Brandsworn Omen (Epic)
+relic: ash bowl of burned prophecies, on a branding-chain (a game item)
+kit:
+- SKILL I Ash Bolt: Smite any foe hard. The recoil throws her back.
+- SKILL II Foresight: Smite any enemy, Stagger it and Hex it (-25% Magic Resist) for 4s. Breaks a charge. Cooldown 6s.
+- SKILL III Pyre Reading: Every Sister gains 1 Pursuit and 5 Zeal. Martyrdom: for 4s she takes 20% of every blow aimed at her Sisters. Cooldown 6s.
+- LITANY Omen of Ash: LITANY: heavy damage on every enemy.
+- PASSIVE Wax-Sealed Tithe: Your Sisters start every fight with +5 Zeal. +6% damage on foes under half HP.
+- RELIC Ash Bowl Of Burned Prophecies (drawn as her floating omen relic): Pyre Reading: Every Sister gains a Mirror Image (each swallows a whole hit).
+- COMMAND (coming): Leads a war-choir of seers who call the enemy's moves of the Crimson Inquisition.
+- BATTLE CRY: "Kneel, heretic, and be questioned. It is written, and I wrote it!"
+```
+<!-- END GAME DATA -->
 
 Read the Crimson Inquisition section of order-bible.md first. Cloth: blood crimson #9a2a33 lead, antique gold #d6a15f trim, blackened steel and chain. Head: wide-brimmed inquisitor's hat with a wax seal. Hem: long, sharp, spattered hems.
 
@@ -14,15 +38,7 @@ FANATIC: prayer strips nailed into her armour; blend into her expression: with a
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (confident): on top of her neckline, show bare thighs between greaves and a high-cut tabard slit, and a chain harness across her bare waist. SPLASH POSE (splash only; the bust and battle sprite use their own framing): back arched, hip cocked, cloak swept back over one shoulder. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: blood-lacquered inquisitor plate studded with confession nails, purity seals stamped with the Inquisition's brand, the names of the condemned scratched into her plate.
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Ash Bolt: Smite any foe hard. The recoil throws her back.
-- SKILL II Foresight: Smite any enemy, Stagger it and Hex it (-25% Magic Resist) for 4s. Breaks a charge. Cooldown 6s.
-- SKILL III Pyre Reading: Every Sister gains 1 Pursuit and 5 Zeal. Martyrdom: for 4s she takes 20% of every blow aimed at her Sisters. Cooldown 6s.
-- LITANY Omen of Ash: LITANY: heavy damage on every enemy.
-- PASSIVE Wax-Sealed Tithe: Your Sisters start every fight with +5 Zeal. +6% damage on foes under half HP.
-- RELIC Ash Bowl Of Burned Prophecies (drawn as her floating omen relic): Pyre Reading: Every Sister gains a Mirror Image (each swallows a whole hit).
-- COMMAND (coming): Leads a war-choir of seers who call the enemy's moves of the Crimson Inquisition.
-- BATTLE CRY: "Kneel, heretic, and be questioned. It is written, and I wrote it!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: crimson wax-seal sigils, red-hot brand-light and burning writs on the wind; omens burn in the air as smoke-runes; her Ash Bowl Of Burned Prophecies blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Beatriz Sententiaria, Prefect of the Iron Maiden Gate. Draw only these objects: her Epic weapon, Brandsworn Omen, an ash bowl of blood-lacquered steel with red leather grips and Inquisition seals on a short staff, carved with branding irons and sealed writs, holding glowing omen stones, with a branding iron's red-hot sigil fused into it; and her floating relic, an ash bowl of burned prophecies, on a branding-chain. Sizes in her head-heights (she is about 7.3 heads tall): relic 1 head across, staff 2 heads. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

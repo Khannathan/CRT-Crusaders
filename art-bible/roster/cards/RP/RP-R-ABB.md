@@ -1,4 +1,28 @@
-<!-- Crimson Inquisition (RP) card RP-R-ABB. Generated from the sister bible; do not edit here. -->
+<!-- Crimson Inquisition (RP) card RP-R-ABB. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: RP-R-ABB
+name: Urraca Sigillata
+epithet: Knight-Commander of the Writ Guard
+rarity: R
+rank: Commander
+order: Crimson Inquisition (order id red-pilgrimage, code RP)
+class: Abbess (class id abbess, role Healer)
+age: 22
+weapon: Gibbet Crook (Epic)
+relic: cloister key, wrapped in red wool (a game item)
+kit:
+- SKILL I Thorned Rebuke: Lash a near foe, leaving it Bleeding for 4s. Every Sister heals 45% of the damage dealt.
+- SKILL II Briar Mantle: Heal every ally 5% of max HP and dress them in thorns: foes that strike them take 35% back, for 4s. Cooldown 6s.
+- SKILL III Iron Rebuke: Heal an ally 13% of max HP and give her 1 Pursuit. She gains 4 Zeal. Cooldown 4s.
+- LITANY Garden of Thorns: LITANY: rake every enemy, leaving them Bleeding for 4s. Every Sister heals 40% of the damage dealt.
+- PASSIVE Inquest Zeal: Foes that strike her take 10% of the damage back. She heals 4% of the damage she deals.
+- RELIC Cloister Key (game item; not drawn in her art): Iron Rebuke: Her ally gains +8% critical chance for 4s.
+- COMMAND (coming): Leads a disciplined cloister of rod-armed novices of the Crimson Inquisition.
+- BATTLE CRY: "The writ is sealed, and so is your fate. Obey, or join them!"
+```
+<!-- END GAME DATA -->
 
 Read the Crimson Inquisition section of order-bible.md first. Cloth: blood crimson #9a2a33 lead, antique gold #d6a15f trim, blackened steel and chain. Head: wide-brimmed inquisitor's hat with a wax seal. Hem: long, sharp, spattered hems.
 
@@ -14,15 +38,7 @@ FANATIC: a heretic's sigil branded into her forearm; blend into her expression: 
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (confident): on top of her neckline, show a bare midriff under a short breastplate, and a side-cut tabard open from ribs to hip. SPLASH POSE (splash only; the bust and battle sprite use their own framing): standing tall with weight on one leg, chin raised in contempt. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: blood-lacquered inquisitor plate studded with confession nails, purity seals stamped with the Inquisition's brand, the names of the condemned scratched into her plate.
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Thorned Rebuke: Lash a near foe, leaving it Bleeding for 4s. Every Sister heals 45% of the damage dealt.
-- SKILL II Briar Mantle: Heal every ally 5% of max HP and dress them in thorns: foes that strike them take 35% back, for 4s. Cooldown 6s.
-- SKILL III Iron Rebuke: Heal an ally 13% of max HP and give her 1 Pursuit. She gains 4 Zeal. Cooldown 4s.
-- LITANY Garden of Thorns: LITANY: rake every enemy, leaving them Bleeding for 4s. Every Sister heals 40% of the damage dealt.
-- PASSIVE Inquest Zeal: Foes that strike her take 10% of the damage back. She heals 4% of the damage she deals.
-- RELIC Cloister Key (game item; not drawn in her art): Iron Rebuke: Her ally gains +8% critical chance for 4s.
-- COMMAND (coming): Leads a disciplined cloister of rod-armed novices of the Crimson Inquisition.
-- BATTLE CRY: "The writ is sealed, and so is your fate. Obey, or join them!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: crimson wax-seal sigils, red-hot brand-light and burning writs on the wind; the crozier cracks like a whip, thorns mending as they cut; her Cloister Key blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Urraca Sigillata, Knight-Commander of the Writ Guard. Draw only these objects: her Epic weapon, Gibbet Crook, a crozier of blood-lacquered steel with red leather grips and Inquisition seals wound with one thorn vine, its hook engraved with branding irons and sealed writs, with a branding iron's red-hot sigil fused into it. Sizes in her head-heights (she is about 7.3 heads tall): crozier 4 heads tall. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

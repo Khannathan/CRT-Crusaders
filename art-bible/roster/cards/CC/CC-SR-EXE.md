@@ -1,4 +1,27 @@
-<!-- Choir of the Pyre (CC) card CC-SR-EXE. Generated from the sister bible; do not edit here. -->
+<!-- Choir of the Pyre (CC) card CC-SR-EXE. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: CC-SR-EXE
+name: Tirzah Canticaria
+epithet: Slayer of the Wax Horror
+rarity: SR
+rank: Legend
+order: Choir of the Pyre (order id candle-choir, code CC)
+class: Executioner (class id inquisitor, role Melee DPS)
+age: 28
+weapon: Verdict-Axe of the Darkened Nave (Legendary)
+relic: interrogation seal, with a small candle stub (a game item)
+kit:
+- SKILL I Accuse: Light hit on any foe. Accused takes +25% damage, and is Sundered (-25% armor), for 6s.
+- SKILL II Duelist's Thrust: Lunge at a near foe. +50% against the Accused.
+- SKILL III Gilded Sentence: A Hymn for 6s: every foe is Accused. She gains 1 Fervor (+6% damage each, up to 5). Cooldown 8s.
+- LITANY Cantus Credo: LITANY: strike every enemy and leave them Bleeding for 4s. Lays Penance on every foe it strikes for 4s: each act costs the sinner 20% of its own attack.
+- PASSIVE Candlelit Rule: +2 speed: she acts sooner. Her burns, poisons and bleeds run 10% hotter.
+- RELIC Interrogation Seal (game item; not drawn in her art): Duelist's Thrust: She gains 1 Fervor (+6% damage each, up to 5). It hits 10% harder.
+- BATTLE CRY: "Every verse is a blade. Accused, and executed!"
+```
+<!-- END GAME DATA -->
 
 Read the Choir of the Pyre section of order-bible.md first. Cloth: candle gold #d6a15f lead, wine #652b3b trim, bronze. Head: crown of dripping candles. Hem: ribbon streamers.
 
@@ -14,14 +37,7 @@ FANATIC: tears of blood dried on her cheeks; blend into her expression: burning 
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (bold): on top of her neckline, show a side-cut tabard open from ribs to hip, and thigh-high boots with bare skin above, held by garter straps of chain. SPLASH POSE (splash only; the bust and battle sprite use their own framing): striding forward out of smoke, cape snapping behind. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: gilded gothic plate dripping with candle wax, purity seals as hymn sheets, a battle hymn screamed not sung, consecrated fire in her eyes and on her blade.
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Accuse: Light hit on any foe. Accused takes +25% damage, and is Sundered (-25% armor), for 6s.
-- SKILL II Duelist's Thrust: Lunge at a near foe. +50% against the Accused.
-- SKILL III Gilded Sentence: A Hymn for 6s: every foe is Accused. She gains 1 Fervor (+6% damage each, up to 5). Cooldown 8s.
-- LITANY Cantus Credo: LITANY: strike every enemy and leave them Bleeding for 4s. Lays Penance on every foe it strikes for 4s: each act costs the sinner 20% of its own attack.
-- PASSIVE Candlelit Rule: +2 speed: she acts sooner. Her burns, poisons and bleeds run 10% hotter.
-- RELIC Interrogation Seal (game item; not drawn in her art): Duelist's Thrust: She gains 1 Fervor (+6% damage each, up to 5). It hits 10% harder.
-- BATTLE CRY: "Every verse is a blade. Accused, and executed!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: candle-gold flame, dripping wax and floating hymn ribbons; the executioner's axe falls in one heavy flash; her Interrogation Seal blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Tirzah Canticaria, Slayer of the Wax Horror. Draw only these objects: her Legendary weapon, Verdict-Axe of the Darkened Nave, an engraved great axe of dull bronze dripping with red wax hung with a broken bell, its edge glowing with golden candle-flame, trailing smoke from the pyres it lit. Sizes in her head-heights (she is about 7.3 heads tall): axe 3 heads long. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

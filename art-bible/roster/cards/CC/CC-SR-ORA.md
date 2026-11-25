@@ -1,4 +1,27 @@
-<!-- Choir of the Pyre (CC) card CC-SR-ORA. Generated from the sister bible; do not edit here. -->
+<!-- Choir of the Pyre (CC) card CC-SR-ORA. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: CC-SR-ORA
+name: Jemimah Exardens
+epithet: Who Foretold the Long Hymn
+rarity: SR
+rank: Legend
+order: Choir of the Pyre (order id candle-choir, code CC)
+class: Oracle (class id oracle, role Buffer)
+age: 26
+weapon: Augury of the Heretic Chorus (Legendary)
+relic: cracked scrying stone, bound in a hymn ribbon (a game item)
+kit:
+- SKILL I Ash Bolt: Smite any foe hard. The recoil throws her back.
+- SKILL II Foresight: Smite any enemy, Stagger it and Hex it (-25% Magic Resist) for 4s. Breaks a charge. Cooldown 6s.
+- SKILL III Matin Foresight: A Hymn for 6s: every foe -11% attack. She gains 1 Fervor (+6% damage each, up to 5). Cooldown 8s.
+- LITANY Hymnal Canticle: LITANY: every enemy is Weakened (-22%) for 6s and loses 50 Wrath. +12% critical chance on it.
+- PASSIVE Burning Litany: Your Sisters start every fight with +7 Zeal. The fight opens on Hallowed Ground (every Sister Regenerates 4% every 2s) for 4s.
+- RELIC Cracked Scrying Stone (drawn as her floating omen relic): Foresight: She gains 5 Zeal. It hits 10% harder.
+- BATTLE CRY: "My choir-mother faltered. I lit her pyre myself. I know how this ends!"
+```
+<!-- END GAME DATA -->
 
 Read the Choir of the Pyre section of order-bible.md first. Cloth: candle gold #d6a15f lead, wine #652b3b trim, bronze. Head: crown of dripping candles. Hem: ribbon streamers.
 
@@ -14,14 +37,7 @@ FANATIC: scripture branded into her thigh; blend into her expression: burning wi
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (bold): on top of her neckline, show a corset cinched tight under the bust, and a side-cut tabard open from ribs to hip. SPLASH POSE (splash only; the bust and battle sprite use their own framing): back arched, hip cocked, cloak swept back over one shoulder. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: gilded gothic plate dripping with candle wax, purity seals as hymn sheets, a battle hymn screamed not sung, consecrated fire in her eyes and on her blade.
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Ash Bolt: Smite any foe hard. The recoil throws her back.
-- SKILL II Foresight: Smite any enemy, Stagger it and Hex it (-25% Magic Resist) for 4s. Breaks a charge. Cooldown 6s.
-- SKILL III Matin Foresight: A Hymn for 6s: every foe -11% attack. She gains 1 Fervor (+6% damage each, up to 5). Cooldown 8s.
-- LITANY Hymnal Canticle: LITANY: every enemy is Weakened (-22%) for 6s and loses 50 Wrath. +12% critical chance on it.
-- PASSIVE Burning Litany: Your Sisters start every fight with +7 Zeal. The fight opens on Hallowed Ground (every Sister Regenerates 4% every 2s) for 4s.
-- RELIC Cracked Scrying Stone (drawn as her floating omen relic): Foresight: She gains 5 Zeal. It hits 10% harder.
-- BATTLE CRY: "My choir-mother faltered. I lit her pyre myself. I know how this ends!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: candle-gold flame, dripping wax and floating hymn ribbons; omens burn in the air as smoke-runes; her Cracked Scrying Stone blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Jemimah Exardens, Who Foretold the Long Hymn. Draw only these objects: her Legendary weapon, Augury of the Heretic Chorus, an engraved omen reliquary of dull bronze dripping with red wax on a short staff, runes spinning off it in golden candle-flame, trailing smoke from the pyres it lit; and her floating relic, a cracked scrying stone, bound in a hymn ribbon. Sizes in her head-heights (she is about 7.3 heads tall): relic 1 head across, staff 2 heads. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

@@ -1,4 +1,28 @@
-<!-- Iron Vigil (IV) card IV-SSR-ORA. Generated from the sister bible; do not edit here. -->
+<!-- Iron Vigil (IV) card IV-SSR-ORA. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: IV-SSR-ORA
+name: Fortitudo Ferricrepa
+epithet: Chosen of the Unsleeping Flame
+rarity: SSR
+rank: Demigoddess
+order: Iron Vigil (order id iron-vigil, code IV)
+class: Oracle (class id oracle, role Buffer)
+age: 22
+weapon: Prophecy of the Watch-Fire (Mythic)
+relic: violet omen reliquary, with a smoky-glass central inset (a game item)
+kit:
+- SKILL I Ash on the Wind: Smite any enemy and Hex it (-20% Magic Resist) for 4s. Sunders the foe (-20% armor) for 4s.
+- SKILL II Stand Watch: Haste an ally and put her on Overwatch. She gains 6 Zeal. Cooldown 6s.
+- SKILL III Night Shift: Every ally +15% attack for 4s; allies on Overwatch +30% instead. Every Sister gains +12% critical chance for 4s. Cooldown 8s.
+- LITANY Watchtower Omen: LITANY: every Sister goes on Overwatch with a strong reaction (0.9x) and gains Haste. It hallows the ground: a Lantern Line (every 2s the most hurt Sister goes on Overwatch) for 4s.
+- PASSIVE Sentry's Omen: At the start of each fight your fastest Sister goes on Overwatch. A Sister whose Overwatch fires gains 10 Zeal.
+- RELIC Violet Omen Reliquary (drawn as her floating omen relic): Ash on the Wind: Brands the foe: the next blow on it lands 30% harder. It hits 12% harder.
+- ASCENSION (coming): As a Deity, her Watchtower Omen also grants Rapture (no damage for 2s) to every Sister, and her passive grows by half.
+- BATTLE CRY: "The Vigil wills it. Let the outside burn. The omens want you dead!"
+```
+<!-- END GAME DATA -->
 
 Read the Iron Vigil section of order-bible.md first. Cloth: bone-white #e4dccb and charcoal-black #3a3640 halved surcoat lead, ember-orange #e0622a trim, steel chainmail. Head: mail coif with a burning-cross brow band (face always shown; no helm carried). Hem: straight square-cut hem.
 
@@ -31,15 +55,7 @@ FANATIC: tally marks of the purged cut into her bracer; blend into her expressio
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (daring): on top of her neckline, show a bare midriff under a short breastplate, and a corset cinched tight under the bust. SPLASH POSE (splash only; the bust and battle sprite use their own framing): striding forward out of smoke, cape snapping behind. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: prayer-etched steel plate over a chainmail hauberk, a burning cross on the surcoat, wax purity seals with long ribbon scrolls on every plate, sworn to the war that never ends.
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Ash on the Wind: Smite any enemy and Hex it (-20% Magic Resist) for 4s. Sunders the foe (-20% armor) for 4s.
-- SKILL II Stand Watch: Haste an ally and put her on Overwatch. She gains 6 Zeal. Cooldown 6s.
-- SKILL III Night Shift: Every ally +15% attack for 4s; allies on Overwatch +30% instead. Every Sister gains +12% critical chance for 4s. Cooldown 8s.
-- LITANY Watchtower Omen: LITANY: every Sister goes on Overwatch with a strong reaction (0.9x) and gains Haste. It hallows the ground: a Lantern Line (every 2s the most hurt Sister goes on Overwatch) for 4s.
-- PASSIVE Sentry's Omen: At the start of each fight your fastest Sister goes on Overwatch. A Sister whose Overwatch fires gains 10 Zeal.
-- RELIC Violet Omen Reliquary (drawn as her floating omen relic): Ash on the Wind: Brands the foe: the next blow on it lands 30% harder. It hits 12% harder.
-- ASCENSION (coming): As a Deity, her Watchtower Omen also grants Rapture (no damage for 2s) to every Sister, and her passive grows by half.
-- BATTLE CRY: "The Vigil wills it. Let the outside burn. The omens want you dead!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: ember-orange crusade-fire and iron sparks, burning-cross sigils flashing on impact; omens burn in the air as smoke-runes; her Litany Watchtower Omen hallows the ground in a ring of ember-orange crusade-fire and iron sparks; her Violet Omen Reliquary blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Fortitudo Ferricrepa, Chosen of the Unsleeping Flame. Draw only these objects: her Mythic weapon, Prophecy of the Watch-Fire, a floating reliquary shaped like a closed eye with six small iron wings, opening to show a burning prophecy in ember-orange crusade-fire, scorched and notched from holding the gate while the outside burned; and her floating relic, violet omen reliquary, with a smoky-glass central inset. Sizes in her head-heights (she is about 7.3 heads tall): relic 1 head across, staff 2 heads. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

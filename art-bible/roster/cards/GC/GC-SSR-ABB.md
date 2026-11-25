@@ -1,4 +1,28 @@
-<!-- Confessors of Glass (GC) card GC-SSR-ABB. Generated from the sister bible; do not edit here. -->
+<!-- Confessors of Glass (GC) card GC-SSR-ABB. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: GC-SSR-ABB
+name: Lumina Crystallina
+epithet: Half-Born of the Last Confession
+rarity: SSR
+rank: Demigoddess
+order: Confessors of Glass (order id glass-confession, code GC)
+class: Abbess (class id abbess, role Healer)
+age: 22
+weapon: Briarstaff of the Ice Star (Mythic)
+relic: iron rose reliquary, bearing a cracked oval mother-of-pearl inset (a game item)
+kit:
+- SKILL I Glass Thorn: Lash a near foe (Bleeding for 4s) and Confess it; every Sister heals 45% of the damage. Hexes the foe (-20% Magic Resist) for 4s.
+- SKILL II Pruning: Heal one ally, cure poison, burns and bleeding, and let her Regenerate 3% every 2s for 4s.
+- SKILL III Briar Mirror: Every ally gains Thorns (35% back) and is Warded (-10%) for 4s. Every Sister gains +12% critical chance for 4s. Cooldown 6s.
+- LITANY Garden of Glass: LITANY: cure every ally (each cure is thrown back), heal every ally 25%, and rake every enemy (Bleeding 4s). Rapture: every Sister takes no damage for 2s. It hallows the ground: a Lantern Line (every 2s the most hurt Sister goes on Overwatch) for 4s.
+- PASSIVE Mirrored Penance: Whenever she cures a Sister, the poison, burn or bleed she removed is thrown onto the foe with the most HP.
+- RELIC Iron Rose Reliquary (game item; not drawn in her art): Pruning: Her ally gains a Mirror Image (each swallows a whole hit).
+- ASCENSION (coming): As a Deity, her Garden of Glass also grants Rapture (no damage for 2s) to every Sister, and her passive grows by half.
+- BATTLE CRY: "The mirror shows your sin. Pain is the lesson!"
+```
+<!-- END GAME DATA -->
 
 Read the Confessors of Glass section of order-bible.md first. Cloth: ice blue #9cc3d0 (as cold grey-blue cloth) lead, violet #6e5a8c trim, cold silver. Head: a faceless mirror faceplate under a tall coif with a black-glass pane, or a mirror circlet. Every Confessors of Glass Sister is a faceless construct of glass and mirror (see order-bible.md). Hem: crisp, clean hem.
 
@@ -32,15 +56,7 @@ FANATIC: vow chains locked around her wrists; blend into her expression: burning
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (daring): on top of her neckline, show a chain harness across her bare waist, and thigh-high boots with bare skin above, held by garter straps of chain. SPLASH POSE (splash only; the bust and battle sprite use their own framing): standing tall with weight on one leg, chin raised in contempt. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: cathedral-window armour of leaded stained glass, purity seals of black wax with silver ribbon, a rose window shattering behind her (splash only).
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Glass Thorn: Lash a near foe (Bleeding for 4s) and Confess it; every Sister heals 45% of the damage. Hexes the foe (-20% Magic Resist) for 4s.
-- SKILL II Pruning: Heal one ally, cure poison, burns and bleeding, and let her Regenerate 3% every 2s for 4s.
-- SKILL III Briar Mirror: Every ally gains Thorns (35% back) and is Warded (-10%) for 4s. Every Sister gains +12% critical chance for 4s. Cooldown 6s.
-- LITANY Garden of Glass: LITANY: cure every ally (each cure is thrown back), heal every ally 25%, and rake every enemy (Bleeding 4s). Rapture: every Sister takes no damage for 2s. It hallows the ground: a Lantern Line (every 2s the most hurt Sister goes on Overwatch) for 4s.
-- PASSIVE Mirrored Penance: Whenever she cures a Sister, the poison, burn or bleed she removed is thrown onto the foe with the most HP.
-- RELIC Iron Rose Reliquary (game item; not drawn in her art): Pruning: Her ally gains a Mirror Image (each swallows a whole hit).
-- ASCENSION (coming): As a Deity, her Garden of Glass also grants Rapture (no damage for 2s) to every Sister, and her passive grows by half.
-- BATTLE CRY: "The mirror shows your sin. Pain is the lesson!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: ice-blue mirror shards, hard white reflections and her inner light bleeding through cracks; the crozier cracks like a whip, thorns mending as they cut; her Litany Garden of Glass hallows the ground in a ring of ice-blue mirror shards; her Iron Rose Reliquary blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, an anime-styled dark-fantasy heroine drawn as a faceless glass construct with a mirror faceplate, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading, glass and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Lumina Crystallina, Half-Born of the Last Confession. Draw only these objects: her Mythic weapon, Briarstaff of the Ice Star, a crozier whose hook is a curled angel wing of iron feathers, holding an open eye that blooms with ice-blue light through cracked glass, with a shattered mirror-shard set in it that shows the sins of its target. Sizes in her head-heights (she is about 7.3 heads tall): crozier 4 heads tall. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

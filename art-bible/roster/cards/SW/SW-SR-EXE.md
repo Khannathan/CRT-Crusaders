@@ -1,4 +1,27 @@
-<!-- Sepulcher Watch (SW) card SW-SR-EXE. Generated from the sister bible; do not edit here. -->
+<!-- Sepulcher Watch (SW) card SW-SR-EXE. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: SW-SR-EXE
+name: Lautnita Funebris
+epithet: Slayer of the Bone Colossus
+rarity: SR
+rank: Legend
+order: Sepulcher Watch (order id sepulcher-watch, code SW)
+class: Executioner (class id inquisitor, role Melee DPS)
+age: 29
+weapon: Verdict-Axe of the Grave Choir (Legendary)
+relic: list of the condemned, on a funerary key ring (a game item)
+kit:
+- SKILL I Accuse: Light hit on any foe. Accused takes +25% damage, and is Sundered (-25% armor), for 6s.
+- SKILL II Duelist's Thrust: Lunge at a near foe. +50% against the Accused.
+- SKILL III Grave Axe: Lunge at a near foe, +50% against the Accused; the party gains 1 Remains. Sunders the foe (-15% armor) for 4s. Cooldown 6s.
+- LITANY Tomb Dirge: LITANY: strike every enemy; each kill adds 1 Remains. Goes through 15% of Armor and Magic Resist.
+- PASSIVE Barrow Penance: +2 speed: she acts sooner. Her blows lay Penance: for 4s each act costs the foe 10% of its own attack.
+- RELIC List Of The Condemned (game item; not drawn in her art): Grave Axe: Brands the foe: the next blow on it lands 25% harder. It hits 10% harder.
+- BATTLE CRY: "I buried the mourners with their dead. I will bury you. Name your sin, and lose your head!"
+```
+<!-- END GAME DATA -->
 
 Read the Sepulcher Watch section of order-bible.md first. Cloth: bone-tan #b8ab8a lead, slate #383845 trim, dark steel with aged ivory trim. Head: bone-tan hood with a finger-bone circlet. Hem: heavy straight hem weighted with keys.
 
@@ -14,14 +37,7 @@ FANATIC: knuckles split and bound in charred prayer cloth; blend into her expres
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (bold): on top of her neckline, show a side-cut tabard open from ribs to hip, and bare thighs between greaves and a high-cut tabard slit. SPLASH POSE (splash only; the bust and battle sprite use their own framing): standing tall with weight on one leg, chin raised in contempt. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: ossuary plate with the bones of the honoured dead fused into it, purity seals on skull-shaped bosses, coffin nails driven through her belt.
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Accuse: Light hit on any foe. Accused takes +25% damage, and is Sundered (-25% armor), for 6s.
-- SKILL II Duelist's Thrust: Lunge at a near foe. +50% against the Accused.
-- SKILL III Grave Axe: Lunge at a near foe, +50% against the Accused; the party gains 1 Remains. Sunders the foe (-15% armor) for 4s. Cooldown 6s.
-- LITANY Tomb Dirge: LITANY: strike every enemy; each kill adds 1 Remains. Goes through 15% of Armor and Magic Resist.
-- PASSIVE Barrow Penance: +2 speed: she acts sooner. Her blows lay Penance: for 4s each act costs the foe 10% of its own attack.
-- RELIC List Of The Condemned (game item; not drawn in her art): Grave Axe: Brands the foe: the next blow on it lands 25% harder. It hits 10% harder.
-- BATTLE CRY: "I buried the mourners with their dead. I will bury you. Name your sin, and lose your head!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: bone-white light, orbiting skull tokens and spectral funerary keys; the executioner's axe falls in one heavy flash; her List Of The Condemned blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Lautnita Funebris, Slayer of the Bone Colossus. Draw only these objects: her Legendary weapon, Verdict-Axe of the Grave Choir, an engraved great axe of dark steel inlaid with ivory and bone hung with a broken bell, its edge glowing with bone-white grave-light, crusted with grave dirt and burial lime. Sizes in her head-heights (she is about 7.3 heads tall): axe 3 heads long. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

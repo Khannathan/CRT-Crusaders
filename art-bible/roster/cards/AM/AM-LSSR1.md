@@ -1,4 +1,27 @@
-<!-- Ashen Mercy (AM) card AM-LSSR1. Generated from the sister bible; do not edit here. -->
+<!-- Ashen Mercy (AM) card AM-LSSR1. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: AM-LSSR1
+name: Pietas Favillaris
+epithet: Daughter of the Last Ember
+rarity: SSR (Limited)
+rank: Demigoddess
+order: Ashen Mercy (order id ashen-mercy, code AM)
+class: Hospitaller (class id hospitaller, role Healer)
+age: 29
+weapon: Font of the Pale Flame (Mythic)
+relic: sealed silver chalice, bound in frayed crimson vow ribbons (a game item)
+kit:
+- SKILL I Chalice Draught: Heal one ally, shield her for 15% of max HP and cure poison, burns and bleeding.
+- SKILL II Last Unction: Strike a near foe and Foretell it (+15% Mercy line) for 4s; every Sister heals 30% of the damage. Weakens the foe (-15% attack) for 4s.
+- SKILL III Ashen Rest: Heal every ally 10% and let them Regenerate 5% every 2s for 4s. Martyrdom: for 4s she takes 30% of every blow aimed at her Sisters. Cooldown 6s.
+- LITANY Rest in Ash: LITANY: raise fallen Sisters with 30% HP, heal every ally 25%, and Foretell every foe for 4s. Every Sister gains a Mirror Image (each swallows a whole hit). It hallows the ground: a Field of Ash (each fallen foe heals every Sister 6%) for 4s.
+- PASSIVE Ash Unction: Mercy kills also heal every Sister 5% more and cure them.
+- RELIC Sealed Silver Chalice (game item; not drawn in her art): Ashen Rest: She gains 6 Zeal.
+- BATTLE CRY: "Breathe the smoke. It is all that is left of the doubters. Mend, and march!"
+```
+<!-- END GAME DATA -->
 
 Read the Ashen Mercy section of order-bible.md first. Cloth: ash-white #c9c2b8 lead, wine #652b3b trim, soot-black mail. Head: white wimple and coif with an ash thumbprint on the brow. Hem: scorched edge.
 
@@ -32,14 +55,7 @@ FANATIC: tally marks of the purged cut into her bracer; blend into her expressio
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (bold): on top of her neckline, show a corset cinched tight under the bust, and a torn habit that bares hip and leg. SPLASH POSE (splash only; the bust and battle sprite use their own framing): kneeling in prayer with the weapon planted, looking up through her lashes. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: soot-black gothic plate, purity seals scorched at the edges, a funeral pyre burning behind her (splash only).
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Chalice Draught: Heal one ally, shield her for 15% of max HP and cure poison, burns and bleeding.
-- SKILL II Last Unction: Strike a near foe and Foretell it (+15% Mercy line) for 4s; every Sister heals 30% of the damage. Weakens the foe (-15% attack) for 4s.
-- SKILL III Ashen Rest: Heal every ally 10% and let them Regenerate 5% every 2s for 4s. Martyrdom: for 4s she takes 30% of every blow aimed at her Sisters. Cooldown 6s.
-- LITANY Rest in Ash: LITANY: raise fallen Sisters with 30% HP, heal every ally 25%, and Foretell every foe for 4s. Every Sister gains a Mirror Image (each swallows a whole hit). It hallows the ground: a Field of Ash (each fallen foe heals every Sister 6%) for 4s.
-- PASSIVE Ash Unction: Mercy kills also heal every Sister 5% more and cure them.
-- RELIC Sealed Silver Chalice (game item; not drawn in her art): Ashen Rest: She gains 6 Zeal.
-- BATTLE CRY: "Breathe the smoke. It is all that is left of the doubters. Mend, and march!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: grey ash-flame and falling soot, a wine-red glow as wounds close; a chalice spills light that lifts the fallen; her Litany Rest in Ash hallows the ground in a ring of grey ash-flame and falling soot; her Sealed Silver Chalice blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Pietas Favillaris, Daughter of the Last Ember. Draw only these objects: her Mythic weapon, Font of the Pale Flame, a lance-staff whose head is a pair of open angel wings, and a chalice that overflows with liquid light of ash-grey light with wine embers that never spills, trailing thin smoke, its edges charred from the mercy-pyres. Sizes in her head-heights (she is about 7.3 heads tall): staff 4 heads tall, chalice 0.5 heads. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

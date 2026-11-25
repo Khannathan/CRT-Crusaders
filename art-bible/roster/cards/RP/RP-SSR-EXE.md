@@ -1,4 +1,28 @@
-<!-- Crimson Inquisition (RP) card RP-SSR-EXE. Generated from the sister bible; do not edit here. -->
+<!-- Crimson Inquisition (RP) card RP-SSR-EXE. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: RP-SSR-EXE
+name: Inquisitio Delatrix
+epithet: Daughter of the Endless Purge
+rarity: SSR
+rank: Demigoddess
+order: Crimson Inquisition (order id red-pilgrimage, code RP)
+class: Executioner (class id inquisitor, role Melee DPS)
+age: 21
+weapon: Sentence of the Burning Writ (Mythic)
+relic: list of the condemned, hung with wax-sealed writs (a game item)
+kit:
+- SKILL I Duelist's Thrust: Lunge at a near foe. +50% against the Accused.
+- SKILL II Crimson Sentence: Smite any foe, Accuse it for 6s and dash forward. She heals 20% of the damage dealt.
+- SKILL III Brand Doom: Lunge at a near foe; +15% per Pursuit. +15% critical chance on it.
+- LITANY Rack Miserere: LITANY: a savage blow on any enemy, +50% critical chance; +10% per Pursuit. Weakens the foe (-15% attack) for 4s. It hallows the ground: Briar Ground (every foe bleeds 15% of her attack every 2s) for 4s.
+- PASSIVE Branding Vow: Each Pursuit gives her +6% damage. She may Step twice each time she acts instead of once. Each action stokes 1 Fervor (+6% damage, up to 5).
+- RELIC List Of The Condemned (game item; not drawn in her art): Rack Miserere: Goes through 20% of Armor and Magic Resist. It hits 12% harder.
+- ASCENSION (coming): As a Deity, her Rack Miserere also grants Rapture (no damage for 2s) to every Sister, and her passive grows by half.
+- BATTLE CRY: "The Inquisition has found you. The axe is merciful!"
+```
+<!-- END GAME DATA -->
 
 Read the Crimson Inquisition section of order-bible.md first. Cloth: blood crimson #9a2a33 lead, antique gold #d6a15f trim, blackened steel and chain. Head: wide-brimmed inquisitor's hat with a wax seal. Hem: long, sharp, spattered hems.
 
@@ -30,15 +54,7 @@ FANATIC: a rope of confessions knotted around her waist; blend into her expressi
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (daring): on top of her neckline, show a bare midriff under a short breastplate, and bare thighs between greaves and a high-cut tabard slit. SPLASH POSE (splash only; the bust and battle sprite use their own framing): striding forward out of smoke, cape snapping behind. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: blood-lacquered inquisitor plate studded with confession nails, purity seals stamped with the Inquisition's brand, the names of the condemned scratched into her plate.
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Duelist's Thrust: Lunge at a near foe. +50% against the Accused.
-- SKILL II Crimson Sentence: Smite any foe, Accuse it for 6s and dash forward. She heals 20% of the damage dealt.
-- SKILL III Brand Doom: Lunge at a near foe; +15% per Pursuit. +15% critical chance on it.
-- LITANY Rack Miserere: LITANY: a savage blow on any enemy, +50% critical chance; +10% per Pursuit. Weakens the foe (-15% attack) for 4s. It hallows the ground: Briar Ground (every foe bleeds 15% of her attack every 2s) for 4s.
-- PASSIVE Branding Vow: Each Pursuit gives her +6% damage. She may Step twice each time she acts instead of once. Each action stokes 1 Fervor (+6% damage, up to 5).
-- RELIC List Of The Condemned (game item; not drawn in her art): Rack Miserere: Goes through 20% of Armor and Magic Resist. It hits 12% harder.
-- ASCENSION (coming): As a Deity, her Rack Miserere also grants Rapture (no damage for 2s) to every Sister, and her passive grows by half.
-- BATTLE CRY: "The Inquisition has found you. The axe is merciful!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: crimson wax-seal sigils, red-hot brand-light and burning writs on the wind; the executioner's axe falls in one heavy flash; her Litany Rack Miserere hallows the ground in a ring of crimson wax-seal sigils; her List Of The Condemned blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Inquisitio Delatrix, Daughter of the Endless Purge. Draw only these objects: her Mythic weapon, Sentence of the Burning Writ, a great axe whose blade is a single iron wing, its edge showing the sins of whoever it strikes in red-hot brand-light and gold sparks, heat-blackened from the brazier, a writ nailed to it. Sizes in her head-heights (she is about 7.3 heads tall): axe 3 heads long. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

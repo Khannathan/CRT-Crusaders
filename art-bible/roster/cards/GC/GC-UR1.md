@@ -1,4 +1,28 @@
-<!-- Confessors of Glass (GC) card GC-UR1. Generated from the sister bible; do not edit here. -->
+<!-- Confessors of Glass (GC) card GC-UR1. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: GC-UR1
+name: Vitrix
+epithet: the Black Mirror, Goddess of Confession
+rarity: UR
+rank: Deity
+order: Confessors of Glass (order id glass-confession, code GC)
+class: Oracle (class id oracle, role Buffer)
+age: 27
+weapon: The Wheel Within a Wheel of the Shattered Mirror (Divine Arsenal)
+relic: sunken saint medallion, hung from three red wax-sealed chains (a game item)
+kit:
+- SKILL I Glass Augury: Smite any enemy, Hex it (-25% Magic Resist) for 4s, Confess it and Stagger it. Breaks a charge. Brands the foe: the next blow on it lands 35% harder. Cooldown 6s.
+- SKILL II Mirror the Sin: Take a foe's Empower, Ward, Haste and shield for your strongest Sister. +20% critical chance on it. Cooldown 8s.
+- SKILL III Pane of Black Glass: Every ally +30% critical chance for 4s, and every Sister 10 Zeal. Every Sister Regenerates 5% of max HP every 2s for 4s. Cooldown 8s.
+- LITANY Shattered Confession: LITANY: heavy magic damage on every enemy; their blessings pass to your strongest Sister. Sunders every foe it strikes (-25% armor) for 4s. It hallows the ground: a Lantern Line (every 2s the most hurt Sister goes on Overwatch) for 6s.
+- PASSIVE Nothing Hidden: Every foe starts the fight Confessed for 6s, and she strikes first.
+- SAINT'S SEAL Seen Before: The first time a Blasphemy lands, she saw it coming: every Sister is Warded (-40%) against it.
+- RELIC Sunken Saint Medallion (drawn as her floating omen relic): Mirror the Sin: Hexes the foe (-25% Magic Resist) for 4s. It hits 15% harder.
+- BATTLE CRY: "The mirror shows your sin. The smoke never lies!"
+```
+<!-- END GAME DATA -->
 
 Read the Confessors of Glass section of order-bible.md first. Cloth: ice blue #9cc3d0 (as cold grey-blue cloth) lead, violet #6e5a8c trim, cold silver. Head: a faceless mirror faceplate under a tall coif with a black-glass pane, or a mirror circlet. Every Confessors of Glass Sister is a faceless construct of glass and mirror (see order-bible.md). Hem: crisp, clean hem.
 
@@ -32,15 +56,7 @@ FANATIC: a heretic's sigil branded into her forearm; blend into her expression: 
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (boldest in her Order): on top of her neckline, show a corset cinched tight under the bust, and thigh-high boots with bare skin above, held by garter straps of chain. SPLASH POSE (splash only; the bust and battle sprite use their own framing): kneeling in prayer with the weapon planted, looking up through her lashes. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: cathedral-window armour of leaded stained glass, purity seals of black wax with silver ribbon, a rose window shattering behind her (splash only).
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Glass Augury: Smite any enemy, Hex it (-25% Magic Resist) for 4s, Confess it and Stagger it. Breaks a charge. Brands the foe: the next blow on it lands 35% harder. Cooldown 6s.
-- SKILL II Mirror the Sin: Take a foe's Empower, Ward, Haste and shield for your strongest Sister. +20% critical chance on it. Cooldown 8s.
-- SKILL III Pane of Black Glass: Every ally +30% critical chance for 4s, and every Sister 10 Zeal. Every Sister Regenerates 5% of max HP every 2s for 4s. Cooldown 8s.
-- LITANY Shattered Confession: LITANY: heavy magic damage on every enemy; their blessings pass to your strongest Sister. Sunders every foe it strikes (-25% armor) for 4s. It hallows the ground: a Lantern Line (every 2s the most hurt Sister goes on Overwatch) for 6s.
-- PASSIVE Nothing Hidden: Every foe starts the fight Confessed for 6s, and she strikes first.
-- SAINT'S SEAL Seen Before: The first time a Blasphemy lands, she saw it coming: every Sister is Warded (-40%) against it.
-- RELIC Sunken Saint Medallion (drawn as her floating omen relic): Mirror the Sin: Hexes the foe (-25% Magic Resist) for 4s. It hits 15% harder.
-- BATTLE CRY: "The mirror shows your sin. The smoke never lies!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: ice-blue mirror shards, hard white reflections and her inner light bleeding through cracks; omens burn in the air as smoke-runes; her Litany Shattered Confession hallows the ground in a ring of ice-blue mirror shards; her Sunken Saint Medallion blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, an anime-styled dark-fantasy heroine drawn as a faceless glass construct with a mirror faceplate, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading, glass and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Vitrix, the Black Mirror, Goddess of Confession. Draw only these objects: her Divine Arsenal weapon, The Wheel Within a Wheel of the Shattered Mirror, a great wheel within a wheel, rimmed with open eyes, turning slowly behind her and tracing the future in lines of ice-blue light through cracked glass, with a shattered mirror-shard set in it that shows the sins of its target; and her floating relic, sunken saint medallion, hung from three red wax-sealed chains. Sizes in her head-heights (she is about 7.3 heads tall): relic 1 head across, staff 2 heads. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

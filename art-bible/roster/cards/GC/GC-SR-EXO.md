@@ -1,4 +1,27 @@
-<!-- Confessors of Glass (GC) card GC-SR-EXO. Generated from the sister bible; do not edit here. -->
+<!-- Confessors of Glass (GC) card GC-SR-EXO. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: GC-SR-EXO
+name: Septuagesima Plumbata
+epithet: Who Ended the Shattering
+rarity: SR
+rank: Legend
+order: Confessors of Glass (order id glass-confession, code GC)
+class: Exorcist (class id exorcist, role Ranged DPS)
+age: 28
+weapon: Witchlight of the Ice Siege (Legendary)
+relic: bottle of trapped spirit, with a black-glass inset (a game item)
+kit:
+- SKILL I Lantern Flare: Smite any enemy and strip its shield and blessings. +30% against bosses.
+- SKILL II Witchfire: Set any enemy Burning for 6s. Stacks on poison or burns.
+- SKILL III Mirror Witchfire: Smite any enemy, strip its shield and blessings, Confess it and set it Burning for 4s. Hexes the foe (-15% Magic Resist) for 4s.
+- LITANY Pane Vespers: LITANY: smite every enemy; every Confessed foe also Burns for 6s. +12% critical chance on it.
+- PASSIVE Prism Seal: Her burns are 25% stronger. She walks into every fight behind a Mirror Image.
+- RELIC Bottle Of Trapped Spirit (game item; not drawn in her art): Lantern Flare: Brands the foe: the next blow on it lands 25% harder. It hits 10% harder.
+- BATTLE CRY: "Nothing is hidden. Nothing is spared. The lantern sees you!"
+```
+<!-- END GAME DATA -->
 
 Read the Confessors of Glass section of order-bible.md first. Cloth: ice blue #9cc3d0 (as cold grey-blue cloth) lead, violet #6e5a8c trim, cold silver. Head: a faceless mirror faceplate under a tall coif with a black-glass pane, or a mirror circlet. Every Confessors of Glass Sister is a faceless construct of glass and mirror (see order-bible.md). Hem: crisp, clean hem.
 
@@ -15,14 +38,7 @@ FANATIC: vow chains locked around her wrists; blend into her expression: burning
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (bold): on top of her neckline, show a chain harness across her bare waist, and a bare midriff under a short breastplate. SPLASH POSE (splash only; the bust and battle sprite use their own framing): standing tall with weight on one leg, chin raised in contempt. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: cathedral-window armour of leaded stained glass, purity seals of black wax with silver ribbon, a rose window shattering behind her (splash only).
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Lantern Flare: Smite any enemy and strip its shield and blessings. +30% against bosses.
-- SKILL II Witchfire: Set any enemy Burning for 6s. Stacks on poison or burns.
-- SKILL III Mirror Witchfire: Smite any enemy, strip its shield and blessings, Confess it and set it Burning for 4s. Hexes the foe (-15% Magic Resist) for 4s.
-- LITANY Pane Vespers: LITANY: smite every enemy; every Confessed foe also Burns for 6s. +12% critical chance on it.
-- PASSIVE Prism Seal: Her burns are 25% stronger. She walks into every fight behind a Mirror Image.
-- RELIC Bottle Of Trapped Spirit (game item; not drawn in her art): Lantern Flare: Brands the foe: the next blow on it lands 25% harder. It hits 10% harder.
-- BATTLE CRY: "Nothing is hidden. Nothing is spared. The lantern sees you!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: ice-blue mirror shards, hard white reflections and her inner light bleeding through cracks; the lantern opens and witchfire pours out like a flamer; her Bottle Of Trapped Spirit blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, an anime-styled dark-fantasy heroine drawn as a faceless glass construct with a mirror faceplate, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading, glass and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Septuagesima Plumbata, Who Ended the Shattering. Draw only these objects: her Legendary weapon, Witchlight of the Ice Siege, a covered witchfire brazier of cold silver set with black glass on a staff, its trapped flame glowing ice-blue light through cracked glass, edged with the broken glass of shattered sinners. Sizes in her head-heights (she is about 7.3 heads tall): pole 4 heads tall, lantern 1 head. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

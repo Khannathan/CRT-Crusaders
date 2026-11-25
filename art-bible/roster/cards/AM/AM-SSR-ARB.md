@@ -1,4 +1,28 @@
-<!-- Ashen Mercy (AM) card AM-SSR-ARB. Generated from the sister bible; do not edit here. -->
+<!-- Ashen Mercy (AM) card AM-SSR-ARB. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: AM-SSR-ARB
+name: Lenita Ustulata
+epithet: Blood of the Cinder Mother
+rarity: SSR
+rank: Demigoddess
+order: Ashen Mercy (order id ashen-mercy, code AM)
+class: Arbalist (class id arbalist, role Ranged DPS)
+age: 26
+weapon: Verdict-Bow of the Merciful Ash (Mythic)
+relic: compact crossbow stock relic, smudged with grey ash (a game item)
+kit:
+- SKILL I Consecrated Bolt: A heavy bolt on any foe that ignores 30% of its Armor.
+- SKILL II Ember Arbalest: A bolt on any foe whose Mercy line is 25%. She heals 20% of the damage dealt.
+- SKILL III Pale Volley: Strip a foe's shield and blessings and Weaken it (-28% attack) for 4s. Sunders the foe (-20% armor) for 4s. Cooldown 6s.
+- LITANY Last-Rite Compline: LITANY: heavy damage on every enemy; any common foe left under 30% HP is granted Mercy at once. Accuses every foe it strikes for 4s (+25% damage taken). It hallows the ground: a Field of Ash (each fallen foe heals every Sister 6%) for 4s.
+- PASSIVE Merciful Tithe: +20% damage to foes under 30% HP. +10% damage on foes under half HP.
+- RELIC Compact Crossbow Stock Relic (game item; not drawn in her art): Ember Arbalest: Weakens the foe (-15% attack) for 4s. It hits 12% harder.
+- ASCENSION (coming): As a Deity, her Last-Rite Compline also grants Rapture (no damage for 2s) to every Sister, and her passive grows by half.
+- BATTLE CRY: "The pyre is lit, and it is hungry. This quarrel has your name on it!"
+```
+<!-- END GAME DATA -->
 
 Read the Ashen Mercy section of order-bible.md first. Cloth: ash-white #c9c2b8 lead, wine #652b3b trim, soot-black mail. Head: white wimple and coif with an ash thumbprint on the brow. Hem: scorched edge.
 
@@ -30,15 +54,7 @@ FANATIC: a crown of nails she drove in herself; blend into her expression: burni
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (daring): on top of her neckline, show a bare midriff under a short breastplate, and thigh-high boots with bare skin above, held by garter straps of chain. SPLASH POSE (splash only; the bust and battle sprite use their own framing): striding forward out of smoke, cape snapping behind. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: soot-black gothic plate, purity seals scorched at the edges, a funeral pyre burning behind her (splash only).
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Consecrated Bolt: A heavy bolt on any foe that ignores 30% of its Armor.
-- SKILL II Ember Arbalest: A bolt on any foe whose Mercy line is 25%. She heals 20% of the damage dealt.
-- SKILL III Pale Volley: Strip a foe's shield and blessings and Weaken it (-28% attack) for 4s. Sunders the foe (-20% armor) for 4s. Cooldown 6s.
-- LITANY Last-Rite Compline: LITANY: heavy damage on every enemy; any common foe left under 30% HP is granted Mercy at once. Accuses every foe it strikes for 4s (+25% damage taken). It hallows the ground: a Field of Ash (each fallen foe heals every Sister 6%) for 4s.
-- PASSIVE Merciful Tithe: +20% damage to foes under 30% HP. +10% damage on foes under half HP.
-- RELIC Compact Crossbow Stock Relic (game item; not drawn in her art): Ember Arbalest: Weakens the foe (-15% attack) for 4s. It hits 12% harder.
-- ASCENSION (coming): As a Deity, her Last-Rite Compline also grants Rapture (no damage for 2s) to every Sister, and her passive grows by half.
-- BATTLE CRY: "The pyre is lit, and it is hungry. This quarrel has your name on it!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: grey ash-flame and falling soot, a wine-red glow as wounds close; a single consecrated bolt leaves a long streak of scripture-light; her Litany Last-Rite Compline hallows the ground in a ring of grey ash-flame and falling soot; her Compact Crossbow Stock Relic blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Lenita Ustulata, Blood of the Cinder Mother. Draw only these objects: her Mythic weapon, Verdict-Bow of the Merciful Ash, a crossbow whose limbs are two burning angel wings, firing bolts of white fire trailing ash-grey light with wine embers, trailing thin smoke, its edges charred from the mercy-pyres; and her quiver of bolts. Sizes in her head-heights (she is about 7.3 heads tall): crossbow 2 heads long. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

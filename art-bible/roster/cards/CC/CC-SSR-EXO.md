@@ -1,4 +1,28 @@
-<!-- Choir of the Pyre (CC) card CC-SSR-EXO. Generated from the sister bible; do not edit here. -->
+<!-- Choir of the Pyre (CC) card CC-SSR-EXO. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: CC-SSR-EXO
+name: Choralis Incendia
+epithet: Child of the Unending Hymn
+rarity: SSR
+rank: Demigoddess
+order: Choir of the Pyre (order id candle-choir, code CC)
+class: Exorcist (class id exorcist, role Ranged DPS)
+age: 21
+weapon: Brazier of the Searing Flame (Mythic)
+relic: iron exorcism lantern, set in a square weathered bronze housing (a game item)
+kit:
+- SKILL I Lantern Flare: Smite any enemy and strip its shield and blessings. +30% against bosses.
+- SKILL II Witchfire: Set any enemy Burning for 6s. Stacks on poison or burns.
+- SKILL III Hymn of Unmaking: A Hymn for 6s: every 2s strips every foe's shield and blessings. She gains +12% critical chance for 4s. Cooldown 8s.
+- LITANY Banishment: LITANY: searing light on any enemy, stripping its blessings. +60% against bosses. She heals 20% of the damage dealt. It hallows the ground: Hallowed Ground (every Sister Regenerates 4% every 2s) for 4s.
+- PASSIVE Lantern Hymn: While a Hymn plays, her burns tick twice.
+- RELIC Iron Exorcism Lantern (game item; not drawn in her art): Hymn of Unmaking: She gains 1 Fervor (+6% damage each, up to 5).
+- ASCENSION (coming): As a Deity, her Banishment also grants Rapture (no damage for 2s) to every Sister, and her passive grows by half.
+- BATTLE CRY: "My candle burns down, and I burn brighter. Out of this world!"
+```
+<!-- END GAME DATA -->
 
 Read the Choir of the Pyre section of order-bible.md first. Cloth: candle gold #d6a15f lead, wine #652b3b trim, bronze. Head: crown of dripping candles. Hem: ribbon streamers.
 
@@ -31,15 +55,7 @@ FANATIC: vow chains locked around her wrists; blend into her expression: in fana
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (daring): on top of her neckline, show a chain harness across her bare waist, and a side-cut tabard open from ribs to hip. SPLASH POSE (splash only; the bust and battle sprite use their own framing): striding forward out of smoke, cape snapping behind. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: gilded gothic plate dripping with candle wax, purity seals as hymn sheets, a battle hymn screamed not sung, consecrated fire in her eyes and on her blade.
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Lantern Flare: Smite any enemy and strip its shield and blessings. +30% against bosses.
-- SKILL II Witchfire: Set any enemy Burning for 6s. Stacks on poison or burns.
-- SKILL III Hymn of Unmaking: A Hymn for 6s: every 2s strips every foe's shield and blessings. She gains +12% critical chance for 4s. Cooldown 8s.
-- LITANY Banishment: LITANY: searing light on any enemy, stripping its blessings. +60% against bosses. She heals 20% of the damage dealt. It hallows the ground: Hallowed Ground (every Sister Regenerates 4% every 2s) for 4s.
-- PASSIVE Lantern Hymn: While a Hymn plays, her burns tick twice.
-- RELIC Iron Exorcism Lantern (game item; not drawn in her art): Hymn of Unmaking: She gains 1 Fervor (+6% damage each, up to 5).
-- ASCENSION (coming): As a Deity, her Banishment also grants Rapture (no damage for 2s) to every Sister, and her passive grows by half.
-- BATTLE CRY: "My candle burns down, and I burn brighter. Out of this world!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: candle-gold flame, dripping wax and floating hymn ribbons; the lantern opens and witchfire pours out like a flamer; her Litany Banishment hallows the ground in a ring of candle-gold flame; her Iron Exorcism Lantern blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Choralis Incendia, Child of the Unending Hymn. Draw only these objects: her Mythic weapon, Brazier of the Searing Flame, a lantern holding a captured angel's fire, small iron wings around the cage, burning golden candle-flame, with charred hymn-pages nailed along it. Sizes in her head-heights (she is about 7.3 heads tall): pole 4 heads tall, lantern 1 head. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

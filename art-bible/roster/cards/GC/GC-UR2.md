@@ -1,4 +1,28 @@
-<!-- Confessors of Glass (GC) card GC-UR2. Generated from the sister bible; do not edit here. -->
+<!-- Confessors of Glass (GC) card GC-UR2. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: GC-UR2
+name: Refracta
+epithet: the Shattered Light, Goddess of Sins Remembered
+rarity: UR
+rank: Deity
+order: Confessors of Glass (order id glass-confession, code GC)
+class: Confessor (class id confessor, role Healer)
+age: 27
+weapon: The Breath of Cure of the Shattered Mirror (Divine Arsenal)
+relic: bone saw in a reliquary case, in cold silver (a game item)
+kit:
+- SKILL I Miasma: Smite a near foe and Poison it for 6s. Stacks on poison or burns. Hexes the foe (-25% Magic Resist) for 4s.
+- SKILL II Shard Remedy: Confess a foe for 4s and heal the most hurt Sister 10%. +20% critical chance on it. Cooldown 4s.
+- SKILL III Splinter Tincture: Lash a near foe (Bleeding for 4s) and Confess it; every Sister heals 51% of the damage. She gains 8 Zeal.
+- LITANY Mirror Psalm: LITANY: cure every ally (each cure is thrown back), heal every ally 28%, and rake every enemy (Bleeding 4s). Rapture: every Sister takes no damage for 2s. It hallows the ground: a Lantern Line (every 2s the most hurt Sister goes on Overwatch) for 6s.
+- PASSIVE Smoked-Glass Canon: Whenever she cures a Sister, the poison, burn or bleed she removed is thrown onto the foe with the most HP. She walks into every fight behind 2 Mirror Images.
+- SAINT'S SEAL Seen Before: The first time a Blasphemy lands, she saw it coming: every Sister is Warded (-40%) against it.
+- RELIC Bone Saw In A Reliquary Case (game item; not drawn in her art): Splinter Tincture: Lays Penance on the foe for 4s: each act costs the sinner 30% of its own attack. It hits 15% harder.
+- BATTLE CRY: "Look into me, and see what you are. Rise, Sister. The Order is not done with you!"
+```
+<!-- END GAME DATA -->
 
 Read the Confessors of Glass section of order-bible.md first. Cloth: ice blue #9cc3d0 (as cold grey-blue cloth) lead, violet #6e5a8c trim, cold silver. Head: a faceless mirror faceplate under a tall coif with a black-glass pane, or a mirror circlet. Every Confessors of Glass Sister is a faceless construct of glass and mirror (see order-bible.md). Hem: crisp, clean hem.
 
@@ -31,15 +55,7 @@ FANATIC: prayer strips nailed into her armour; blend into her expression: eyes b
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (boldest in her Order): on top of her neckline, show bare thighs between greaves and a high-cut tabard slit, and a chain harness across her bare waist. SPLASH POSE (splash only; the bust and battle sprite use their own framing): kneeling in prayer with the weapon planted, looking up through her lashes. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: cathedral-window armour of leaded stained glass, purity seals of black wax with silver ribbon, a rose window shattering behind her (splash only).
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Miasma: Smite a near foe and Poison it for 6s. Stacks on poison or burns. Hexes the foe (-25% Magic Resist) for 4s.
-- SKILL II Shard Remedy: Confess a foe for 4s and heal the most hurt Sister 10%. +20% critical chance on it. Cooldown 4s.
-- SKILL III Splinter Tincture: Lash a near foe (Bleeding for 4s) and Confess it; every Sister heals 51% of the damage. She gains 8 Zeal.
-- LITANY Mirror Psalm: LITANY: cure every ally (each cure is thrown back), heal every ally 28%, and rake every enemy (Bleeding 4s). Rapture: every Sister takes no damage for 2s. It hallows the ground: a Lantern Line (every 2s the most hurt Sister goes on Overwatch) for 6s.
-- PASSIVE Smoked-Glass Canon: Whenever she cures a Sister, the poison, burn or bleed she removed is thrown onto the foe with the most HP. She walks into every fight behind 2 Mirror Images.
-- SAINT'S SEAL Seen Before: The first time a Blasphemy lands, she saw it coming: every Sister is Warded (-40%) against it.
-- RELIC Bone Saw In A Reliquary Case (game item; not drawn in her art): Splinter Tincture: Lays Penance on the foe for 4s: each act costs the sinner 30% of its own attack. It hits 15% harder.
-- BATTLE CRY: "Look into me, and see what you are. Rise, Sister. The Order is not done with you!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: ice-blue mirror shards, hard white reflections and her inner light bleeding through cracks; a hand of light closes wounds and burns out poison; her Litany Mirror Psalm hallows the ground in a ring of ice-blue mirror shards; her Bone Saw In A Reliquary Case blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, an anime-styled dark-fantasy heroine drawn as a faceless glass construct with a mirror faceplate, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading, glass and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Refracta, the Shattered Light, Goddess of Sins Remembered. Draw only these objects: her Divine Arsenal weapon, The Breath of Cure of the Shattered Mirror, a living beak mask of gold with six small wings, its breath a plague-eating fire of ice-blue light through cracked glass, and a sceptre-mace topped by a turning wheel of eyes, edged with the broken glass of shattered sinners; and her plague beak mask. Sizes in her head-heights (she is about 7.3 heads tall): mace haft 1.5 heads, mask 1 head. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

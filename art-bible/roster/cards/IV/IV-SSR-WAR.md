@@ -1,4 +1,28 @@
-<!-- Iron Vigil (IV) card IV-SSR-WAR. Generated from the sister bible; do not edit here. -->
+<!-- Iron Vigil (IV) card IV-SSR-WAR. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: IV-SSR-WAR
+name: Sentinella Ferrea
+epithet: Spark of the Vigil Star
+rarity: SSR
+rank: Demigoddess
+order: Iron Vigil (order id iron-vigil, code IV)
+class: War-Sister (class id warsister, role Melee DPS)
+age: 27
+weapon: Wrath of the Wall Eternal (Mythic)
+relic: scourge of knotted cords, hung on a crusader's gate-key ring (a game item)
+kit:
+- SKILL I Flagellant's Charge: Crash into a near foe and charge forward. +60% against the Weakened. Cooldown 6s.
+- SKILL II Parapet Scourge: A light hit that Accuses for 4s, then she goes on Overwatch. Sunders the foe (-20% armor) for 4s. Cooldown 6s.
+- SKILL III Penitent Blow: Smite a front-line foe hard and leave it Bleeding for 4s. +40% while she is under half HP.
+- LITANY Bastion Benediction: LITANY: strike every enemy, and every Sister goes on Overwatch. Brands every foe it strikes: the next blow on it lands 30% harder. It hallows the ground: a Lantern Line (every 2s the most hurt Sister goes on Overwatch) for 4s.
+- PASSIVE Iron Creed: +25% damage against foes under half HP. Every Sister whose Overwatch fires gains 8 Zeal. The fight opens on a Lantern Line (every 2s the most hurt Sister goes on Overwatch) for 4s.
+- RELIC Scourge Of Knotted Cords (game item; not drawn in her art): Parapet Scourge: +15% critical chance on it. It hits 12% harder.
+- ASCENSION (coming): As a Deity, her Bastion Benediction also grants Rapture (no damage for 2s) to every Sister, and her passive grows by half.
+- BATTLE CRY: "The lantern sees you. The wall forgets you. For every lash, a head!"
+```
+<!-- END GAME DATA -->
 
 Read the Iron Vigil section of order-bible.md first. Cloth: bone-white #e4dccb and charcoal-black #3a3640 halved surcoat lead, ember-orange #e0622a trim, steel chainmail. Head: mail coif with a burning-cross brow band (face always shown; no helm carried). Hem: straight square-cut hem.
 
@@ -30,15 +54,7 @@ FANATIC: candle wax poured over her own collarbone as penance; blend into her ex
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (daring): on top of her neckline, show a chain harness across her bare waist, and a corset cinched tight under the bust. SPLASH POSE (splash only; the bust and battle sprite use their own framing): one knee raised on a heretic's skull, leaning into the weapon. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: prayer-etched steel plate over a chainmail hauberk, a burning cross on the surcoat, wax purity seals with long ribbon scrolls on every plate, sworn to the war that never ends.
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Flagellant's Charge: Crash into a near foe and charge forward. +60% against the Weakened. Cooldown 6s.
-- SKILL II Parapet Scourge: A light hit that Accuses for 4s, then she goes on Overwatch. Sunders the foe (-20% armor) for 4s. Cooldown 6s.
-- SKILL III Penitent Blow: Smite a front-line foe hard and leave it Bleeding for 4s. +40% while she is under half HP.
-- LITANY Bastion Benediction: LITANY: strike every enemy, and every Sister goes on Overwatch. Brands every foe it strikes: the next blow on it lands 30% harder. It hallows the ground: a Lantern Line (every 2s the most hurt Sister goes on Overwatch) for 4s.
-- PASSIVE Iron Creed: +25% damage against foes under half HP. Every Sister whose Overwatch fires gains 8 Zeal. The fight opens on a Lantern Line (every 2s the most hurt Sister goes on Overwatch) for 4s.
-- RELIC Scourge Of Knotted Cords (game item; not drawn in her art): Parapet Scourge: +15% critical chance on it. It hits 12% harder.
-- ASCENSION (coming): As a Deity, her Bastion Benediction also grants Rapture (no damage for 2s) to every Sister, and her passive grows by half.
-- BATTLE CRY: "The lantern sees you. The wall forgets you. For every lash, a head!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: ember-orange crusade-fire and iron sparks, burning-cross sigils flashing on impact; the flail spins in a red arc and her scourge-marks glow; her Litany Bastion Benediction hallows the ground in a ring of ember-orange crusade-fire and iron sparks; her Scourge Of Knotted Cords blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Sentinella Ferrea, Spark of the Vigil Star. Draw only these objects: her Mythic weapon, Wrath of the Wall Eternal, a flail of three burning seraph-eyes on chains of white iron, each eye trailing light of ember-orange crusade-fire, scorched and notched from holding the gate while the outside burned. Sizes in her head-heights (she is about 7.3 heads tall): flail haft 1.5 heads, chain 1 head. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

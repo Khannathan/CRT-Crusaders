@@ -1,4 +1,27 @@
-<!-- Crimson Inquisition (RP) card RP-SR-VEI. Generated from the sister bible; do not edit here. -->
+<!-- Crimson Inquisition (RP) card RP-SR-VEI. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: RP-SR-VEI
+name: Ermesinda Ustrix
+epithet: Slayer of the Unconfessed Giant
+rarity: SR
+rank: Legend
+order: Crimson Inquisition (order id red-pilgrimage, code RP)
+class: Veilblade (class id veilblade, role Melee DPS)
+age: 22
+weapon: Whisper of the Witch Crusade (Legendary)
+relic: concealed ritual dagger hilt, encased in dark iron lattice (a game item)
+kit:
+- SKILL I Veil Strike: Strike any foe, with +25% critical chance.
+- SKILL II Hamstring: Cut any foe: Bleeding for 6s and Staggered. Cooldown 6s.
+- SKILL III Inquest Ambush: Leap back and strike any foe with +25% critical chance. Cooldown 4s.
+- LITANY Red Knife: LITANY: a savage blow on any enemy, +50% critical chance; +10% per Pursuit.
+- PASSIVE Mercy Stroke: Deals 15% more damage to foes under half HP.
+- RELIC Concealed Ritual Dagger Hilt (game item; not drawn in her art): Hamstring: Goes through 15% of Armor and Magic Resist. It hits 10% harder.
+- BATTLE CRY: "The writ is sealed, and so is your fate. You never saw me!"
+```
+<!-- END GAME DATA -->
 
 Read the Crimson Inquisition section of order-bible.md first. Cloth: blood crimson #9a2a33 lead, antique gold #d6a15f trim, blackened steel and chain. Head: wide-brimmed inquisitor's hat with a wax seal. Hem: long, sharp, spattered hems.
 
@@ -14,14 +37,7 @@ FANATIC: flagellant scars criss-crossing her arms; blend into her expression: in
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (bold): on top of her neckline, show a torn habit that bares hip and leg, and skin-tight sheer black sleeves and gloves to the shoulder. SPLASH POSE (splash only; the bust and battle sprite use their own framing): standing tall with weight on one leg, chin raised in contempt. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: blood-lacquered inquisitor plate studded with confession nails, purity seals stamped with the Inquisition's brand, the names of the condemned scratched into her plate.
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Veil Strike: Strike any foe, with +25% critical chance.
-- SKILL II Hamstring: Cut any foe: Bleeding for 6s and Staggered. Cooldown 6s.
-- SKILL III Inquest Ambush: Leap back and strike any foe with +25% critical chance. Cooldown 4s.
-- LITANY Red Knife: LITANY: a savage blow on any enemy, +50% critical chance; +10% per Pursuit.
-- PASSIVE Mercy Stroke: Deals 15% more damage to foes under half HP.
-- RELIC Concealed Ritual Dagger Hilt (game item; not drawn in her art): Hamstring: Goes through 15% of Armor and Magic Resist. It hits 10% harder.
-- BATTLE CRY: "The writ is sealed, and so is your fate. You never saw me!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: crimson wax-seal sigils, red-hot brand-light and burning writs on the wind; she vanishes and reappears in a slash of dark silk; her Concealed Ritual Dagger Hilt blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Ermesinda Ustrix, Slayer of the Unconfessed Giant. Draw only these objects: her Legendary weapon, Whisper of the Witch Crusade, two engraved daggers of blood-lacquered steel with red leather grips and Inquisition seals, one hidden in a black prayer book, both edges glowing with red-hot brand-light and gold sparks, heat-blackened from the brazier, a writ nailed to it. Sizes in her head-heights (she is about 7.3 heads tall): daggers 1 head each. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.
