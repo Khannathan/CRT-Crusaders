@@ -4,35 +4,54 @@ This is Aaron’s record of decisions for the ground-up redesign. Update it when
 
 ## Order roster
 
-**2 of 10 Orders are locked.** Finish choosing all ten before refining the two already selected.
+**Six Order slots. Five are settled.** The Sovereign Breach and The Dreadful Salutation compete for slot four. Aaron will choose after comparing their concept art. A lock reserves the core concept. Rites, lore, and visual details can develop during the art phase.
 
-| Slot | Locked choice | Scope of approval |
+| Slot | Order | Scope of approval |
 | --- | --- | --- |
 | 1 | The Scarlet Succession | Aaron selected the Order built around sacred duels for the right to rule. The victor inherits the office and must answer its next challenger. |
 | 2 | The Confessors of Glass (working name) | Aaron selected the Order. Its Sisters are constructs made of mirror, stained glass, and related materials. The Order is to be reimagined and renamed. |
-| 3–10 | Open | Eight Orders remain to be chosen. |
+| 3 | The See of the Black Noon | An eclipse Order whose Sisters receive divine judgment during totality. Its rites and visual execution will be refined at the art stage. |
+| 4A · contender | The Sovereign Breach (rename pending) | Crusader warlords conquer cities by siege and rule the lands they take in their patron’s name. |
+| 4B · contender | The Dreadful Salutation | Terrifying angelic visitations embodied as adult female Sisters. Drop Cherubs from the concept. Develop more original feminine angel forms during the art phase. |
+| 5 | The Wardens of the Inward Gate (rename pending) | Elite custodians build and garrison monumental medieval fortresses around gates to Oblivion. The inner defenses contain its Heralds and forces. The outer defenses repel cultists and would-be collaborators. Heavy arms and armor define the appearance of every Sister across roles and carry no inherent stat effect. |
+| 6 | The Red Office | Demon-hunting templars in tabards and open-faced great helms consecrate their crusades with fire and blood. They give demons no quarter and refuse to hear them speak. Rework the knight-to-saint-to-deity ascent. Divinity should be exceptionally difficult to attain. The means remain open. |
 
-Aaron requested an eclipse-based Order for consideration. Its place, name, patron, and doctrine are open. **The Vesperglass Testament** is a proposed name for the glass Order and awaits Aaron’s decision.
+**The Vesperglass Testament** is a proposed name for the glass Order and awaits Aaron’s decision.
 
 ## Creative direction
 
 | Subject | Decision |
 | --- | --- |
-| Premise | Ten rival Orders fight for control of the realm. A greater threat eventually forces them to set aside their feuds. Its identity belongs to the worldbuilding phase. |
+| Premise | Six rival Orders fight for control of the realm. A greater threat eventually forces them to set aside their feuds. Its identity belongs to the worldbuilding phase. |
 | Faith | Build each Order around a patron who demands something terrible. Give heresy, purges, zeal, and blind faith a central place in how the Sisters act. Even the Orders people depend on are morally compromised. |
-| Tone | Grimdark medieval crusade fantasy in a world already in despair. Draw on *Demon’s Souls*, *Dark Souls*, *Bloodborne*, and *Elden Ring* for atmosphere. Give the Orders enough thematic breadth to sustain ten distinct identities. |
+| Crusade and obedience | Carry holy wars, witch hunts, religious purges, iconoclastic campaigns, forced conversion, and interdictions into upcoming pitches and later redesigns of the selected Orders. Show the darker, grittier consequences of blind faith. Sisters will kill or lay waste on their Order’s command. |
+| Tone | Grimdark medieval crusade fantasy in a world already in despair. Draw on *Demon’s Souls*, *Dark Souls*, *Bloodborne*, and *Elden Ring* for atmosphere. Give the Orders enough thematic breadth to sustain six distinct identities. An Order can pursue its doctrine without a redeeming purpose. Let its rites, material traces, and acts reveal what its Sisters believe. |
 | Crusade influences | Draw on the religious fanaticism of *Warhammer 40,000*. Create original names, factions, and iconography. Keep the world medieval and exclude modern and futuristic technology. |
-| Roster | 200 Sisters across 10 Orders, with 20 Sisters per Order. Every Sister is an adult woman aged 21–35. |
+| Roster | Six Orders. The earlier roster plan specified 200 Sisters across ten Orders. The total and per-Order distribution for the six-Order plan are open. Every Sister is an adult woman aged 21–35. |
 | Character appeal | Reserve fanservice for Sisters. Aim high while keeping it non-explicit. The Order’s faith and identity take visual priority. |
 | Art direction | Retro Gacha, EGA Dungeon Crawler. |
 | Peoples | Humans, Elves, Tieflings, and Constructs form the starting list. Explore three to five additional peoples during the race phase, with both gacha appeal and a place in the grimdark crusade. |
+
+## Roles and classes in every Order
+
+Each of the six Orders fields all five roles and all fifteen classes. Build each Order around a faith, institution, or ambition broad enough to belong to every class. A shared visual language can give a healer and a ranged attacker the same allegiance while preserving their individual weapons, silhouettes, and game functions.
+
+The columns follow Aaron’s order within each role. **Steady** means the class performs the role’s job directly and reliably, with no setup or risk.
+
+| Role | Steady | Greedy | Utility |
+| --- | --- | --- | --- |
+| Tank | **Hierophant** shields and Wards the whole party. | **Sentinel** draws every blow and strikes back at each one. | **Martyr** heals by the wounds she deals and rises once from death. |
+| Healer | **Confessor** delivers big heals and cures, and rots the foe. | **Hospitaller** heals the whole line at once and revives the fallen. | **Abbess** heals her Sisters with every wound she gives, and dresses them in thorns. |
+| Buffer | **Oracle** hastes the party and fills its Zeal. | **Cantor** grants more attack and more crits to every Sister. | **Adjudicator** weakens enemies and drains boss Wrath. |
+| Melee DPS | **War-Sister** hits harder the nearer she is to death. | **Executioner** marks a heretic, then finishes accused and wounded foes. | **Veilblade** slips to the back ranks for few but huge crits. |
+| Ranged DPS | **Censer** uses smoke that chokes, burns, and weakens every foe. | **Arbalist** fires heavy bolts at one foe at a time, through armor and shields. | **Exorcist** strips the foe’s buffs and scours bosses. |
 
 ## Development sequence
 
 | Phase | Deliverable | Status |
 | --- | --- | --- |
-| 1 | Reimagine and select the ten Orders | In progress |
-| 2 | Create images for each Order | Upcoming |
+| 1 | Reimagine and select six Orders | Five settled, slot four under visual review |
+| 2 | Create images for each Order | Concept round underway for all seven designs |
 | 3 | Develop the races | Upcoming |
 | 4 | Create images for each race | Upcoming |
 | 5 | Build the world and create its images | Upcoming |
@@ -43,3 +62,8 @@ Aaron requested an eclipse-based Order for consideration. Its place, name, patro
 | --- | --- |
 | 2026-11-25 | Closed the Orsanne setting exploration. Its single dominant theme was too narrow. Adopted the five-phase sequence above, beginning with Orders. |
 | 2026-11-25 | Locked The Scarlet Succession and the glass Order. Requested a rename for the latter and an eclipse Order candidate. Deferred edits to selected Orders until all ten have been chosen. |
+| 2026-11-25 | Locked The See of the Black Noon as the third core concept. Aaron clarified that a lock selects the idea to refine during the Order art phase. |
+| 2026-11-25 | Locked the siege warlords and the custodians of Oblivion. Both need new names. Requested a fiercer revision of the demon-hunting templar candidate. |
+| 2026-11-25 | Locked The Red Office and The Dreadful Salutation. Rework the Red Office ascent to make divinity exceptionally difficult to attain. Remove Cherubs and develop original angel forms later. The harsher crusade direction applies across the roster. |
+| 2026-11-25 | Confirmed all fifteen classes appear in every Order. Apply this scope to new concepts and art-stage redesigns. Orders may be wholly zealous or cruel without a redeeming motive. |
+| 2026-11-25 | Reduced the roster to six Orders. The siege warlords and angelic Sisters compete for slot four. Commissioned one visual concept for each of the seven designs to inform the choice. |
