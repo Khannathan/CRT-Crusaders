@@ -1,6 +1,6 @@
 # CRT Crusaders: Game Assets Guide for ChatGPT
 
-> **Owned by ChatGPT, the art lead (since 2026-11-25).** Rewrite and reimagine freely. The locked specs in `specs/` win over anything here; see `specs/LOCKS.md`.
+> **Owned by ChatGPT, the art lead (since 2026-11-25).** Rewrite and reimagine freely. `specs/` describes what the game needs today; Claude reviews every PR and flags big changes to Aaron.
 
 Every asset type the game uses: its native size, background, where it shows and how to deliver it. Style and vibe rules from the project instructions (CHATGPT_PROJECT_INSTRUCTIONS.txt) apply to all of them. This guide lives in the game repo at `art-bible/ASSETS_GUIDE.md`; the repo copy on `main` is always the current one.
 
@@ -26,7 +26,7 @@ Every asset type the game uses: its native size, background, where it shows and 
 
 ## 2. Asset table
 
-Moved to `specs/ASSET_SPECS.md` (locked: file names, sizes, backgrounds).
+Moved to `specs/ASSET_SPECS.md` (file names, sizes, backgrounds the game uses today).
 
 ## 3. Order crucifix icons (10 icons)
 
@@ -119,4 +119,4 @@ The Edicts (12 gear powers) use text only for now; no icons needed.
 
 ## 5. Delivering art through GitHub
 
-Moved to `specs/GITHUB_LANE.md` (locked).
+Moved to `specs/GITHUB_LANE.md`.

@@ -30,4 +30,4 @@ Every rank gets the middle study’s character appeal. R Commanders and SR Legen
 
 Record the approved head shape, features or glass pattern, build, garment construction, personal mark and weapon silhouette below the Sister’s GAME DATA block. Attach her approved bust and prop sheet for her sprite, then attach her approved likeness and equipment when composing her splash. Use the reference above for rendering and each Sister’s own references for identity. Edit approved images for corrections.
 
-When using an older card prompt, keep its GAME DATA and locked framing. Replace inherited renderer language and blanket dither instructions with this direction. The [locked specs](specs/LOCKS.md) govern every delivery.
+When using an older card prompt, keep its GAME DATA and framing. Replace inherited renderer language and blanket dither instructions with this direction. The [game specs](specs/README.md) describe what each delivery must fit today.

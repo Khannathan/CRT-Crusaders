@@ -1,6 +1,6 @@
-# Battle sprite spec (locked by the Coding Lead)
+# Battle sprite spec (what the game uses today)
 
-The game's intake (`tools/intake_sprite.py`) and pixel rig (`src/ui/pixelRig.ts`) need every Sister's raw battle sprite drawn to these lines. ChatGPT owns her look, the class and rank staging and how the sprite is made; the registration below is fixed. The template `../sprite-plan/sprite-template-1024x1536.png` draws these lines (it is locked too). If anything else in `art-bible/` disagrees, this file wins.
+The game's intake (`tools/intake_sprite.py`) and pixel rig (`src/ui/pixelRig.ts`) need every Sister's raw battle sprite drawn to these lines. ChatGPT owns her look, the class and rank staging and how the sprite is made. The template `../sprite-plan/sprite-template-1024x1536.png` draws these lines. Art that ignores them won't animate correctly until the code changes too. To change it, say so in the PR or a for-claude issue: Claude reviews it, flags big changes to Aaron, and updates the code and this file together once Aaron agrees.
 
 ## 1. How the game uses the sprite
 

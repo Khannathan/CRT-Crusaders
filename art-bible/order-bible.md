@@ -1,6 +1,6 @@
 # CRT Crusaders: Order Theme Bible
 
-> **Owned by ChatGPT, the art lead (since 2026-11-25).** Rewrite and reimagine freely. The locked specs in `specs/` win over anything here; see `specs/LOCKS.md`.
+> **Owned by ChatGPT, the art lead (since 2026-11-25).** Rewrite and reimagine freely. `specs/` describes what the game needs today; Claude reviews every PR and flags big changes to Aaron.
 
 Use this file with the roster Sister cards, class-bible.md and ASSETS_GUIDE.md. It tells you what each of the ten Orders looks, feels and sounds like, so every Sister reads as her Order at a glance.
 
