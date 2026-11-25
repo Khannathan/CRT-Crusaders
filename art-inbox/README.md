@@ -8,6 +8,7 @@ Nothing in here ships: the game only bundles files under `src/` and `public/`.
 | `full-body/<id>_raw.png` | Raw battle sprite, about 1024 x 1536 on flat #FF00FF. Never write `src/assets/full-body/` yourself. |
 | `props/<id>_props.png` | Weapon prop sheet (reference only). |
 | `review/<id>_<step>_4x.png` | Review copies, sources, notes. |
+| `ui-concepts/<round>_<direction>_<screen>.png` | UI redesign concepts (art-bible/UI_BIBLE.md section 9). Pictures to choose from; never wired into the game. |
 | `ART_LOG.md` | One line per delivered file. |
 
 ## What happens to a raw sprite

@@ -12,6 +12,7 @@ The art rules for CRT Crusaders, kept by Claude and read by ChatGPT. The copy on
 | One Sister | her card `roster-500/cards/<Order code>/<id>.md`, her Order's section of `order-bible.md`, her class's section of `class-bible.md` |
 | Her battle sprite | also `sprite-plan/sprite-plan.md` and `sprite-plan/sprite-template-1024x1536.png` |
 | Gear icons | `ASSETS_GUIDE.md` section 4 |
+| UI redesign concepts (screens, kit sheets, style tiles) | `UI_BIBLE.md` and the screenshots in `ui-screens/` (start with `00-overview-1.png` and `-2.png`) |
 | Delivering anything | `ASSETS_GUIDE.md` section 5 (the GitHub art lane) |
 | What the game is, where art shows | `GAME_OVERVIEW.md` |
 
@@ -46,6 +47,8 @@ Each card file starts with her Order's one-line cloth and head note, then her ca
 | `GAME_OVERVIEW.md` | the game and where each image shows |
 | `ASSETS_GUIDE.md` | every asset type; crucifix, insignia and gear prompts; the GitHub art lane |
 | `ART_QUEUE.md` | what to make next, in order, plus the knockout effect specs |
+| `UI_BIBLE.md` | the brief for UI redesign concepts: every screen, layout and touch rules, look, fonts, component kit, delivery |
+| `ui-screens/` | a screenshot of every game screen at 540 x 960 (`-tall` = 540 x 1280), CRT filter off, plus two overview sheets |
 | `order-bible.md`, `class-bible.md` | the 10 Orders and 15 classes |
 | `sprite-plan/` | battle sprite plan and registration template |
 | `roster-500/` | roster README, names CSV, and `cards/<Order code>/<id>.md` (500 cards) |

@@ -19,6 +19,7 @@ Every asset type the game uses: its native size, background, where it shows and 
   6. export the native PNG plus an exact nearest-neighbour upscale (4x, or 8x for anything 64 px or smaller) and confirm it is exact.
   Report the real numbers. Name the file as the table says.
 - **Checks per deliverable:** bust: opaque 128x128, flat dark, exactly 16 colours including the background, 4x copy 512x512, and look at the face at 64 px too. Splash: opaque 256x384, exactly 16 colours, 4x copy 1024x1536, head, face and hands clear of the top and bottom crop. Battle sprite: no pixel pass; run the sprite-plan section 7 preview. Weapon prop sheet: reference only, any size, plain flat light grey, no pixel pass.
+- **Exception (UI concepts):** UI redesign concepts are pictures for Aaron to choose from, not game assets: no pixel pass, sizes and names from `UI_BIBLE.md` section 9, delivered to `art-inbox/ui-concepts/`.
 - **Exception:** the Sister battle sprite is drawn large in the same PC-98 style with bold readable shapes and gets no pixel pass, because the game shrinks it (see sprite-plan.md).
 
 ## 2. Asset table
@@ -48,6 +49,7 @@ Every asset type the game uses: its native size, background, where it shows and 
 | Knockout effect sheet | art-inbox/review/fx-ko-<name>.png | per ART_QUEUE.md (painted big) | flat #FF00FF | every knockout | white and greys only (the game tints it), no pixel pass; the game hookup is still to be built, so it waits in art-inbox |
 | UI skin (9-slice) | ui/ui-button, ui-panel, ui-frame, ui-card ... | button 96 x 64, panel 190 x 194, frame 176 x 172, card 106 x 154 | transparent | menus | ornament only in the corners; edges and middle repeat cleanly |
 | Bars and dividers | ui/ui-bar-*, ui/ui-divider | bar 64 x 12, divider 243 x 24 | transparent | HP and Zeal bars | flat middle that can stretch |
+| UI redesign concept | art-inbox/ui-concepts/<round>_<direction>_<screen>.png | screen 1080 x 1920 (tall 1080 x 2560), kit sheet 2048 x 2048 | opaque | not in game (Aaron picks a direction) | follow `UI_BIBLE.md`; no pixel pass; chrome at most 16 colours from the 4,096 palette |
 
 Paths are under `src/assets/` unless they start with `art-inbox/`. Ask before making any asset type not in this table.
 
@@ -156,6 +158,7 @@ ChatGPT connects to the game repo (Khannathan/CRT-Crusaders) to read the art bib
 | Weapon prop sheet | `art-inbox/props/<id>_props.png` | reference only |
 | UI, icons, crucifixes, insignias, backgrounds, banners, events, items, gear, effects | `src/assets/ui/<file>.png` | only the exact file names this guide or ART_QUEUE.md lists |
 | Enemy portrait / battle figure | `src/assets/enemies/<id>.png`, `src/assets/enemy-full/<id>.png` | only when the request names them |
+| UI redesign concepts | `art-inbox/ui-concepts/<round>_<direction>_<screen>.png` | PNG only, names and sizes from `UI_BIBLE.md` section 9; branch `art/ui-concepts-<round>`, PR titled `Art: UI concepts <round>`. Never wired into the game |
 | Review copies, knockout sheets, sources | `art-inbox/review/<name>.png` | PNG only; never inside `src/`. Always include the bust's 4x copy as `<id>_bust_4x.png` (the likeness reference for later steps) |
 | The art log | `art-inbox/ART_LOG.md` | one line per delivered file: date, file, size, colour count, which prompt made it, PR link. When a bust is approved, also add `IDENTITY LOCK <id>: <the 40 words>`; later steps read it from here |
 
