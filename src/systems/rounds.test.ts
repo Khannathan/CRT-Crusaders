@@ -4,6 +4,8 @@ import { newSave } from '../state/save';
 import { finishStage, feastOf, FEAST_REPEATS } from './feast';
 import { matinsReady } from './matins';
 import { morningRounds, roundsReady } from './rounds';
+import { huntEntriesLeft, huntOn, huntsOf, scoreUnit, HUNT_ENTRIES } from './hunts';
+import { processionLeft } from './offerings';
 
 function seeded(seed: number) {
   let x = seed >>> 0 || 1;
@@ -42,5 +44,19 @@ describe('Morning Rounds', () => {
     const r = morningRounds(save, NOW, seeded(2));
     expect(r.left.some((l) => l.startsWith('Matins'))).toBe(true);
     expect(matinsReady(save, NOW)).toBe(true);
+  });
+
+  it('sweeps the Purge Hunt and the Procession once they are open and you have a record', () => {
+    const save = newSave();
+    save.owned[CRUSADERS[0].id] = { level: 1, vow: 0 };
+    save.rank = { xp: 1e7, gifted: 30, sched: 2 };
+    huntsOf(save, NOW).records[huntOn(NOW).id] = Math.round(scoreUnit(huntOn(NOW)) * 2);
+    save.procession = { day: '', used: 0, best: 2 };
+    expect(roundsReady(save, NOW)).toBe(true);
+    const r = morningRounds(save, NOW, seeded(3));
+    expect(r.done.some((l) => l.startsWith('Purge Hunt swept'))).toBe(true);
+    expect(r.done.some((l) => l.includes('swept:'))).toBe(true);
+    expect(huntEntriesLeft(save, NOW)).toBe(HUNT_ENTRIES - 1);
+    expect(processionLeft(save, NOW)).toBe(0);
   });
 });

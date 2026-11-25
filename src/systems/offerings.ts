@@ -143,6 +143,8 @@ export interface ProcessionState {
   used: number;
   /** Highest tier won (0 = none), opening the next. */
   best: number;
+  /** Highest tier index ever won, for sweeps (older saves: best - 1). */
+  top?: number;
 }
 
 export function processionOf(save: SaveData, now = Date.now()): ProcessionState {
@@ -191,9 +193,27 @@ export function finishProcession(save: SaveData, tier: number, battle: Battle, r
   const p = processionOf(save, now);
   p.used += 1;
   p.best = Math.max(p.best, Math.min(PROCESSION_TIERS.length - 1, tier + 1));
+  p.top = Math.max(p.top ?? -1, tier);
   const offerings = processionDrops(tier, rng, now);
   giveOfferings(save, offerings);
   return { won: true, offerings };
+}
+
+/** The tier a sweep replays: the highest you have won, or undefined. */
+export function processionSweepTier(save: SaveData, now = Date.now()): number | undefined {
+  const p = processionOf(save, now);
+  const top = p.top ?? p.best - 1;
+  return top >= 0 && processionLeft(save, now) > 0 ? top : undefined;
+}
+
+/** Sweep the highest Procession won: spends an entry and pays that tier's offerings. */
+export function sweepProcession(save: SaveData, rng: Rng = Math.random, now = Date.now()): { tier: number; offerings: string[] } | undefined {
+  const tier = processionSweepTier(save, now);
+  if (tier === undefined) return undefined;
+  processionOf(save, now).used += 1;
+  const offerings = processionDrops(tier, rng, now);
+  giveOfferings(save, offerings);
+  return { tier, offerings };
 }
 
 export const offeringsText = (ids: string[]) => {

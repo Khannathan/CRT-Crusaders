@@ -4,11 +4,11 @@ import { fastCost } from './campaign';
 import { errandsOf, isDone, claimErrand } from './errands';
 import { FEAST_REPEATS, FEAST_STAGES, claimMarks, feastName, feastOf, repeatsLeft, sweepStage } from './feast';
 import type { Rng } from './gacha';
-import { huntEntriesLeft } from './hunts';
+import { huntEntriesLeft, huntSweepable, sweepHunt } from './hunts';
 import { anyBondRewards, claimBondRewards } from './bonds';
 import { addBags, bagText, type Bag } from './items';
 import { lightCandle, matinsReady, vowCandidates, MATINS } from './matins';
-import { processionLeft } from './offerings';
+import { PROCESSION_TIERS, offeringsText, processionLeft, processionSweepTier, sweepProcession } from './offerings';
 import { claimGifts, giftsWaiting, opened } from './rank';
 import { claimMark, claimable, type Period } from './tasks';
 import { TIERS, bestStars, entriesLeft, openTrials, spoilsText, sweep, type TrialKind } from './trials';
@@ -49,7 +49,9 @@ export function roundsReady(save: SaveData, now = Date.now()) {
     anyBondRewards(save) ||
     (save.errands?.active ?? []).some((a) => isDone(a, now)) ||
     sweepableTrial(save, now) !== undefined ||
-    (feastOf(save, now).won.length > 0 && repeatsLeft(save, now) > 0)
+    (feastOf(save, now).won.length > 0 && repeatsLeft(save, now) > 0) ||
+    (opened(save, 'Hunt') && huntSweepable(save, now)) ||
+    (opened(save, 'Procession') && processionSweepTier(save, now) !== undefined)
   );
 }
 
@@ -152,9 +154,30 @@ export function morningRounds(save: SaveData, now = Date.now(), rng: Rng = Math.
   const paid = claimMarks(save, now);
   if (paid.length) r.done.push(`${paid.length} Feast milestone${paid.length > 1 ? 's' : ''} paid`);
 
+  // Purge Hunts: one sweep counts most of your record against today's beast.
+  if (opened(save, 'Hunt')) {
+    const h = sweepHunt(save, now);
+    if (h) {
+      for (const m of h.rewards) {
+        if (m.items) r.items = addBags(r.items, m.items);
+      }
+      r.done.push(`Purge Hunt swept at ${h.score.toLocaleString('en-US')} damage${h.rewards.length ? ` (${h.rewards.length} milestone${h.rewards.length > 1 ? 's' : ''} paid)` : ''}`);
+    }
+  }
+  // The Reliquary Procession: sweep the highest tier won while entries last.
+  if (opened(save, 'Procession')) {
+    const got: string[] = [];
+    let tier = -1;
+    for (let p = sweepProcession(save, rng, now); p; p = sweepProcession(save, rng, now)) {
+      got.push(...p.offerings);
+      tier = p.tier;
+    }
+    if (got.length) r.done.push(`${PROCESSION_TIERS[tier].name} swept: ${offeringsText(got)}`);
+  }
+
   // What still wants a fight.
-  if (opened(save, 'Hunt') && huntEntriesLeft(save, now) > 0) r.left.push(`Purge Hunts: ${huntEntriesLeft(save, now)} hunts left today.`);
-  if (opened(save, 'Procession') && processionLeft(save, now) > 0) r.left.push(`Reliquary Procession: ${processionLeft(save, now)} entries left.`);
+  if (opened(save, 'Hunt') && huntEntriesLeft(save, now) > 0) r.left.push(`Purge Hunts: ${huntEntriesLeft(save, now)} hunts left to beat your record.`);
+  if (opened(save, 'Procession') && processionLeft(save, now) > 0) r.left.push(`Reliquary Procession: ${processionLeft(save, now)} entries left (win a tier to sweep it).`);
 
   r.seals = save.seals - before.seals;
   r.tithes = save.tithes - before.tithes;
