@@ -30,6 +30,12 @@ This is Aaron’s record of decisions for the ground-up redesign. Update it when
 | Art direction | Midnight Vigil is the selected Sister illustration style within Retro Gacha, EGA Dungeon Crawler. It pairs expressive adult anime faces and bold pixel shapes with gothic medieval settings, deep shadows, and light motivated by the scene. Use the revised *Moonlit Duel, Firelit Reliquary* diptych as the visual reference. The duelist pinches the seam of her glove. The templar supports the bronze reliquary from beneath. Carry that attention to gesture, weight, and light into each Order’s own designs. |
 | Peoples | Humans, Elves, Tieflings, and Constructs form the starting list. Explore three to five additional peoples during the race phase, with both gacha appeal and a place in the grimdark crusade. |
 
+## Order territory references
+
+Each Order holds its own territory and may extend its operations into another Order’s lands. Establish each homeland’s identity through its architecture, landscape, rites, and everyday objects. Keep Sisters out of these environment images. The approved territory reference will guide later Sister designs.
+
+Review one Order at a time with Aaron. Both the image and the Order lore can change during review. The first Scarlet Succession territory study is a proposal.
+
 ## Roles and classes in every Order
 
 Each of the seven Orders fields all five roles and all fifteen classes. Build each Order around a faith, institution, or ambition broad enough to belong to every class. A shared visual language can give a healer and a ranged attacker the same allegiance while preserving their individual weapons, silhouettes, and game functions.
