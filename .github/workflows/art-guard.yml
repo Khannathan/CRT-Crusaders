@@ -28,8 +28,8 @@ jobs:
           TITLE: ${{ github.event.pull_request.title }}
         run: |
           mkdir -p /tmp/guard
-          for f in art_guard.py; do
-            git show "$BASE:tools/$f" > "/tmp/guard/$f" 2>/dev/null || cp "tools/$f" "/tmp/guard/$f"
+          for f in art_guard.py art_bible_data.py; do
+            git show "$BASE:tools/$f" > "/tmp/guard/$f" 2>/dev/null || cp "tools/$f" "/tmp/guard/$f" 2>/dev/null || true
           done
           python3 /tmp/guard/art_guard.py "$BASE" "$HEAD" "$BRANCH" "$TITLE"
       - name: Check changed files (re-run on a branch)
@@ -38,7 +38,7 @@ jobs:
           BRANCH: ${{ github.ref_name }}
         run: |
           mkdir -p /tmp/guard
-          for f in art_guard.py; do
-            git show "origin/main:tools/$f" > "/tmp/guard/$f" 2>/dev/null || cp "tools/$f" "/tmp/guard/$f"
+          for f in art_guard.py art_bible_data.py; do
+            git show "origin/main:tools/$f" > "/tmp/guard/$f" 2>/dev/null || cp "tools/$f" "/tmp/guard/$f" 2>/dev/null || true
           done
           python3 /tmp/guard/art_guard.py "$(git merge-base origin/main HEAD)" HEAD "$BRANCH" ""
