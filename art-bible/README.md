@@ -20,7 +20,6 @@ Start with [EGA Dungeon Crawler with retro anime character art](ART_DIRECTION.md
 | Each Sister's game data (name, rank, class, weapon and relic names, kit) | the GAME DATA block at the top of her card |
 | Names the game reads | `roster/names-and-epithets.csv` |
 | Screenshots of the game as built | `ui-screens/` |
-| ChatGPT's system prompt | `CHATGPT_PROJECT_INSTRUCTIONS.txt` |
 
 ## ChatGPT's (rewrite, reorganise, add or remove freely)
 
