@@ -33,3 +33,30 @@ describe('Rank of Faith', () => {
     expect(giftsWaiting(save)).toEqual([]);
   });
 });
+
+describe('modes open over two weeks', () => {
+  it('a new save opens modes one rank at a time, the last near Rank XVII', async () => {
+    const { UNLOCKS, opened, rankFor } = await import('./rank');
+    const ranks = UNLOCKS.map((u) => u.rank);
+    for (const r of new Set(ranks)) expect(ranks.filter((x) => x === r).length).toBeLessThanOrEqual(1);
+    expect(Math.max(...ranks)).toBeGreaterThanOrEqual(15);
+    const save = newSave();
+    expect(opened(save, 'Trials')).toBe(false);
+    save.rank!.xp = Array.from({ length: rankFor('Trials') - 1 }, (_, i) => rankStep(i + 1)).reduce((a, b) => a + b, 0);
+    expect(rankInfo(save).rank).toBe(rankFor('Trials'));
+    expect(opened(save, 'Trials')).toBe(true);
+    expect(opened(save, 'Inquisition')).toBe(false);
+    expect(opened(save, 'Campaign')).toBe(true); // ungated screens are always open
+  });
+
+  it('a save from before the schedule keeps every mode it had opened', async () => {
+    const { opened } = await import('./rank');
+    const save = newSave();
+    // Rank VI under the old schedule: the Tower (old Rank VI) was open.
+    save.rank = { xp: Array.from({ length: 5 }, (_, i) => rankStep(i + 1)).reduce((a, b) => a + b, 0), gifted: 6 };
+    expect(opened(save, 'Tower')).toBe(true);
+    expect(opened(save, 'Raid')).toBe(true);
+    expect(opened(save, 'Inquisition')).toBe(false); // old Rank VIII, not reached
+  });
+
+});

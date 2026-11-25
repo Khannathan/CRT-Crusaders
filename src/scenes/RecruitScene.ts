@@ -6,7 +6,9 @@ import { CRUSADERS } from '../data/crusaders';
 import { ORDERS } from '../data/orders';
 import { sigilKey } from '../ui/icons';
 import { commit, game } from '../state/game';
-import { BOOSTED_SSRS, COST_ONE, PITY_LIMIT, RARITY_ORDER, RATES, bannerPool, boostedSSRs, chooseLimited, chooseStandard, customizeBanner, defaultSSRs, standardSSRs, standardURs, SPARK, UR_HARD, UR_SOFT, canPull, tenLabel, claimSpark, pull, shardsOf, sparkKey, syncBanner, urPityLeft, type PullKind } from '../systems/gacha';
+import { current } from '../state/run';
+import { trialBattle } from '../systems/bannerTrial';
+import { BOOSTED_SSRS, STARTER_PULLS, COST_ONE, PITY_LIMIT, RARITY_ORDER, RATES, bannerPool, boostedSSRs, chooseLimited, chooseStandard, customizeBanner, defaultSSRs, standardSSRs, standardURs, SPARK, UR_HARD, UR_SOFT, canPull, tenLabel, claimSpark, pull, shardsOf, sparkKey, syncBanner, urPityLeft, type PullKind } from '../systems/gacha';
 import { GRADUATE_AFTER, graduationDate, isStandard, limitedUnseen, limitedWindow, markLimitedSeen, timeLeft, upcoming, type LimitedWindow } from '../systems/limited';
 import { makeButton } from '../ui/button';
 import { CURRENCY_BAR_H, addCurrencyBar } from '../ui/currencyBar';
@@ -166,6 +168,8 @@ export class RecruitScene extends Phaser.Scene {
       this.add.image(PAD + 30, bTop + 34, 'ui-arrow').setDisplaySize(22, 22).setFlipX(true);
       this.add.image(GAME_W - PAD - 30, bTop + 34, 'ui-arrow').setDisplaySize(22, 22);
     }
+    // Try the featured Sisters before pulling.
+    makeButton(this, GAME_W - PAD - 62, bTop + 96, 116, 34, 'Trial fight', () => this.trialFight(), { fontSize: 14, icon: 'blade' });
     const sub = limited ? `LIMITED · LEAVES IN ${timeLeft(win.ends).toUpperCase()}` : `STANDARD · BANNER ${page + 1} OF ${pages}`;
     // under the title row, so a long Saint's name never runs into it
     const subText = this.add.text(GAME_W / 2, bTop + 46, sub, { ...text.hud(11, limited ? PAL.amber : PAL.ivory), stroke: '#0b070c', strokeThickness: 4 }).setOrigin(0.5, 0).setDepth(1);
@@ -423,6 +427,21 @@ export class RecruitScene extends Phaser.Scene {
     layer.add(close.all);
   }
 
+  /** The banner trial: the featured Sisters, lent for one fight against the Choir Below. Nothing is paid or spent. */
+  private trialFight() {
+    const save = game.save;
+    current.challenge = {
+      label: 'Banner trial. Borrowed Sisters face the Choir Below!',
+      trial: true,
+      make: (rng) => trialBattle(save, rng),
+      finish: (outcome) => ({
+        scene: 'Recruit',
+        line: outcome === 'victory' ? 'The Choir is silenced! Pull, and make them yours.' : 'The borrowed Sisters fall back. Nothing was lost.',
+      }),
+    };
+    this.scene.start('Battle');
+  }
+
   private showRates() {
     const layer = this.add.container(0, 0).setDepth(20);
     const shade = this.add.rectangle(GAME_W / 2, GAME_H / 2, GAME_W, GAME_H, 0x09060b, 0.85).setInteractive();
@@ -444,7 +463,7 @@ export class RecruitScene extends Phaser.Scene {
         [
           'A UR is the banner\'s target half the time, or always after a miss. Half of SSRs are its boosted pair.',
           'On the standard banner you choose the UR and the two SSRs.',
-          `×10 always has an SR or better. Pull ${PITY_LIMIT} without an SSR or UR gives one. UR chance climbs after pull ${UR_SOFT}; pull ${UR_HARD} is a UR. Pity carries across every banner.`,
+          `×10 always has an SR or better; your free first ×10 an SSR or better, and your first ${STARTER_PULLS} pulls bring a Tank and a damage dealer. Pull ${PITY_LIMIT} without an SSR or UR gives one. UR chance climbs after pull ${UR_SOFT}; pull ${UR_HARD} is a UR. Pity carries across every banner.`,
           `Each pull gives a Relic Shard of the target's Order (Saint's Favor on the Limited banner). ${SPARK} buy that UR.`,
           `Limited Sisters join the standard pool after ${GRADUATE_AFTER} more Limited banners.`,
           'Duplicates add a Vow, then pay Tithes.',

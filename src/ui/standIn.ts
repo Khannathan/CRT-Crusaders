@@ -18,6 +18,9 @@ const maskKey = (classId: string) => `standin-mask-${classId}`;
 
 let textures: Phaser.Textures.TextureManager | undefined;
 
+/** True once this texture is in (after BootScene.create; before it, every queued file counts as in). */
+export const textureReady = (key: string) => !textures || textures.exists(key);
+
 /** In BootScene.preload: load the class masks. */
 export function queueStandInMasks(scene: Phaser.Scene) {
   for (const [path, url] of Object.entries(MASK_URLS)) {

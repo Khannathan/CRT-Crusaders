@@ -3,8 +3,9 @@ import { describe, expect, it } from 'vitest';
 import { newSave } from '../state/save';
 import { CRUSADERS } from '../data/crusaders';
 import { ORDER_LIST } from '../data/orders';
-import { OVERFLOW_TITHES, PITY_LIMIT, SPARK, UR_HARD, UR_SOFT, canPull, claimSpark, pull, rollRarity, shardsOf, urChance } from './gacha';
+import { STARTER_PULLS, OVERFLOW_TITHES, PITY_LIMIT, SPARK, UR_HARD, UR_SOFT, canPull, claimSpark, pull, rollRarity, shardsOf, urChance } from './gacha';
 import { copiesLeft } from './tiers';
+import { CLASSES } from '../data/classes';
 
 /** Deterministic RNG (mulberry32). */
 function seeded(seed: number) {
@@ -259,5 +260,41 @@ describe('standard banner rate-up', () => {
     const ur = CRUSADERS.find((c) => c.order === 'Choir of the Pyre' && c.rarity === 'UR' && !c.limited)!;
     expect(save.banner!.target).toBe(ur.id);
     expect(boostedSSRs(save).every((c) => c.order === 'Choir of the Pyre')).toBe(true);
+  });
+});
+
+describe('a fair start', () => {
+  const roleOf = (id: string) => CLASSES[CRUSADERS.find((c) => c.id === id)!.classId].role;
+  it('the free first 10-pull always holds an SSR or better', () => {
+    for (let seed = 1; seed <= 300; seed++) {
+      const save = newSave();
+      const got = pull(save, 'ten', seeded(seed));
+      expect(got.some((r) => r.crusader.rarity === 'SSR' || r.crusader.rarity === 'UR'), `seed ${seed}`).toBe(true);
+    }
+  });
+
+  it('the first two 10-pulls bring a Tank and a damage dealer', () => {
+    for (let seed = 1; seed <= 300; seed++) {
+      const save = newSave();
+      save.seals = 20;
+      pull(save, 'ten', seeded(seed));
+      pull(save, 'ten', seeded(seed + 1000));
+      expect(save.totalPulls).toBe(STARTER_PULLS);
+      const roles = Object.keys(save.owned).map(roleOf);
+      expect(roles, `seed ${seed}`).toContain('Tank');
+      expect(roles.some((r) => r.endsWith('DPS')), `seed ${seed}`).toBe(true);
+    }
+  });
+
+  it('later pulls are not steered', () => {
+    const save = newSave();
+    save.seals = 1000;
+    save.freeTenUsed = true;
+    save.discountWeek = weekKey(Date.now());
+    save.totalPulls = STARTER_PULLS;
+    const tanks = Array.from({ length: 40 }, (_, i) => pull(save, 'ten', seeded(i + 7))).flat().filter((r) => roleOf(r.crusader.id) === 'Tank').length;
+    // 3 of 15 classes are Tanks: about 80 of 400, never the steered share
+    expect(tanks).toBeGreaterThan(50);
+    expect(tanks).toBeLessThan(115);
   });
 });

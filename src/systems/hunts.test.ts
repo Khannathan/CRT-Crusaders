@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { CRUSADERS } from '../data/crusaders';
 import { newSave } from '../state/save';
 import { autoBattle } from './autoplay';
-import { HUNTS, HUNT_ENTRIES, HUNT_ROUNDS, MILESTONES, finishHunt, huntBattle, huntEntriesLeft, huntOn, huntScore, huntsOf, recommendFor, scoreUnit, weakTo } from './hunts';
+import { HUNTS, HUNT_ENTRIES, HUNT_ROUNDS, HUNT_SWEEP, MILESTONES, finishHunt, huntBattle, huntEntriesLeft, huntOn, huntScore, huntSweepable, huntsOf, recommendFor, scoreUnit, sweepHunt, weakTo } from './hunts';
 import { seeded } from './rng';
 
 const T0 = new Date(2026, 10, 22, 12).getTime();
@@ -78,5 +78,22 @@ describe('Purge Hunts', () => {
     expect(best).toHaveLength(4);
     expect(best.some((r) => !save.owned[r.c.id])).toBe(true);
     expect(best.some((r) => r.c.rarity === 'UR' || r.c.rarity === 'SSR')).toBe(true);
+  });
+});
+
+describe('Purge Hunt sweeps', () => {
+  it('counts most of your record against today\'s beast, pays its milestones once, and spends one entry', () => {
+    const save = saveAt(10);
+    const h = huntOn(T0);
+    expect(huntSweepable(save, T0)).toBe(false);
+    huntsOf(save, T0).records[h.id] = Math.round(scoreUnit(h) * 3);
+    expect(huntSweepable(save, T0)).toBe(true);
+    const got = sweepHunt(save, T0)!;
+    expect(got.score).toBe(Math.round(Math.round(scoreUnit(h) * 3) * HUNT_SWEEP));
+    expect(got.rewards.length).toBe(MILESTONES.filter((m) => m.at <= got.score / scoreUnit(h)).length);
+    expect(huntEntriesLeft(save, T0)).toBe(HUNT_ENTRIES - 1);
+    // a second sweep would gain nothing, so it is not offered
+    expect(huntSweepable(save, T0)).toBe(false);
+    expect(sweepHunt(save, T0)).toBeUndefined();
   });
 });
