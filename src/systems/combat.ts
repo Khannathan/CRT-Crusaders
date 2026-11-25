@@ -228,7 +228,7 @@ export const WRATH_ON_ACT = 20;
  * steals at least BLASPHEMY_ZEAL from every Sister it touches: worth answering.
  */
 export const BLASPHEMY_POWER = 1.15;
-export const BLASPHEMY_ZEAL = 30;
+export const BLASPHEMY_ZEAL = 0;
 /**
  * A Blasphemy once begun is committed: chip drains (Overwatch, Mercy, a basic
  * skill) only slow it. It breaks when its Wrath falls below this mid-charge,
