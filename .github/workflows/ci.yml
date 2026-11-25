@@ -17,3 +17,6 @@ jobs:
       - run: npm ci
       - run: npm test
       - run: npm run build
+      # Opens every screen on a fresh and a mid-game save (tools/smoke/screens.mjs).
+      - run: npx playwright install --with-deps chromium
+      - run: npm run smoke

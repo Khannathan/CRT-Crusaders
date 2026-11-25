@@ -49,3 +49,14 @@ describe('Ascension', () => {
     expect(sisterPower(save, c)).toBeGreaterThan(before);
   });
 });
+
+describe('item families', () => {
+  it('every tier a family lists is a real item (the Satchel draws them all)', async () => {
+    const { FAMILIES, itemIds, itemDef } = await import('./items');
+    for (const f of FAMILIES) {
+      const ids = itemIds(f.id);
+      expect(ids.length, f.id).toBeGreaterThan(0);
+      for (const id of ids) expect(itemDef(id), id).toBeDefined();
+    }
+  });
+});

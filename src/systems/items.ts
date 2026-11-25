@@ -83,7 +83,8 @@ export const NO_REFINE: Family[] = ['armory', 'kennel', 'spark'];
 
 export const itemDef = (id: ItemId) => ITEMS.find((i) => i.id === id)!;
 export const familyDef = (f: Family) => FAMILIES.find((x) => x.id === f)!;
-export const itemIds = (f: Family): ItemId[] => [`${f}1`, `${f}2`, `${f}3`];
+/** The tiers a family really has (Godsparks have only one). */
+export const itemIds = (f: Family): ItemId[] => ITEMS.filter((i) => i.family === f).map((i) => i.id);
 /** Art slot: src/assets/ui/item-<id>.png (96 x 96). */
 export const itemKey = (id: ItemId) => `item-${id}`;
 
