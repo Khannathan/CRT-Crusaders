@@ -3,12 +3,14 @@ import { newSave } from '../state/save';
 import { autoBattle } from './autoplay';
 import { stageBattle } from './campaign';
 import { CRUSADERS } from '../data/crusaders';
+// Kit mechanics are tested on their first owners, some retired from the 200 (their kits stay as donors).
+import { ROSTER } from '../data/roster';
 import { Battle, makeEnemy, skillsFor, type Unit } from './combat';
 import { CHAIN_SEC, CHAIN_ZEAL, EXTRA_SEC, FieldBattle, HYMN_RADIUS, advanceField, screenField, SWING_SEC, reachOf, simulateField, type FieldEvent } from './field';
 import { partyFor } from './niche';
 import { seeded } from './rng';
 
-const STARTER = ['SW-R-WAR', 'DL-R-HIE', 'IV-R-EXE', 'SW-SR-CON'];
+const STARTER = ['TC-R-WAR', 'VT-R-HIE', 'IV-R-EXE', 'TC-SR-CON'];
 const N = 60;
 
 function rates(stage: number, level: number) {
@@ -82,7 +84,7 @@ describe('real-time field combat', () => {
 
 describe('real-time field: Sister kits', () => {
   const sis = (id: string, rank = 1): Unit => {
-    const c = CRUSADERS.find((x) => x.id === id)!;
+    const c = ROSTER.find((x) => x.id === id)!;
     return { uid: id, side: 'party', name: c.name, ref: id, classId: c.classId, order: c.order, rank, maxHp: 1000, hp: 1000, atk: 100, armor: 0, mres: 0, crit: 0, spd: 10, status: {}, passive: c.passive };
   };
   const perform = (f: FieldBattle, u: Unit, name: string, target?: Unit) => {
@@ -132,7 +134,7 @@ describe('real-time field: Sister kits', () => {
 
 describe('real-time field: space', () => {
   const sis = (id: string, rank = 1, classId?: string): Unit => {
-    const c = CRUSADERS.find((x) => x.id === id)!;
+    const c = ROSTER.find((x) => x.id === id)!;
     return { uid: id, side: 'party', name: c.name, ref: id, classId: classId ?? c.classId, order: c.order, rank, maxHp: 1000, hp: 1000, atk: 100, armor: 0, mres: 0, crit: 0, spd: 10, status: {}, passive: c.passive };
   };
   const anySkill = (u: Unit) => skillsFor(u).find((s) => s.target === 'enemy' && !s.rite)!;
@@ -168,9 +170,9 @@ describe('real-time field: space', () => {
   });
 
   it('melee Sisters sharing a foe fan out around it instead of queuing', () => {
-    const x = sis('SW-R-WAR', 1);
+    const x = sis('TC-R-WAR', 1);
     const y = sis('IV-R-EXE', 2);
-    const z = sis('DL-R-HIE', 3);
+    const z = sis('DL-R-SEN', 3);
     const foe = makeEnemy('golem', 'e0', 1);
     foe.maxHp = foe.hp = 1e9;
     const f = new FieldBattle(new Battle([x, y, z], [foe], { rng: () => 0.5 }), { w: 540, h: 600, rng: seeded(4) });
@@ -182,9 +184,9 @@ describe('real-time field: space', () => {
   });
 
   it('a Hymn reaches only the allies near the singer', () => {
-    const singer = sis('SW-R-WAR', 1);
+    const singer = sis('TC-R-WAR', 1);
     const near = sis('IV-R-EXE', 2);
-    const far = sis('DL-R-HIE', 3);
+    const far = sis('DL-R-SEN', 3);
     const f = new FieldBattle(new Battle([singer, near, far], [makeEnemy('husk', 'e0', 1)], { rng: () => 0.5 }), { w: 540, h: 600, rng: seeded(1) });
     const at = (u: Unit, x: number, y: number) => Object.assign(f.bodies.get(u.uid)!, { x, y });
     at(singer, 100, 400);
@@ -345,7 +347,7 @@ describe('real-time field: played with no screen', () => {
 describe('real-time field: answering a charged blow', () => {
   it('names the Sisters whose Litany breaks or braces a Blasphemy, and a tap breaks it', () => {
     const save = newSave();
-    const party = ['GC-R-ADJ', 'IV-SR-SEN', 'SW-R-WAR', 'IV-R-EXE'];
+    const party = ['GC-R-ADJ', 'IV-SR-SEN', 'TC-R-WAR', 'IV-R-EXE'];
     for (const id of party) save.owned[id] = { level: 10, vow: 0 };
     const b = stageBattle(save, party, 10, seeded(4));
     const f = screenField(b, true);
@@ -373,15 +375,15 @@ describe('Auto meets a Blasphemy', () => {
     const { skillsFor, ZEAL_MAX } = await import('./combat');
     const { wouldAnswer, AUTO_HOLD_WRATH } = await import('./field');
     const save = newSave();
-    // AM-R-HIE's Litany can break or brace the Ossuary's Choir; the others' can't.
-    const party = ['AM-R-HIE', 'SW-R-WAR', 'IV-R-EXE', 'DL-R-HIE'];
+    // AM-R-SEN's Litany can break or brace the Ossuary's Choir; the others' can't.
+    const party = ['AM-R-SEN', 'TC-R-WAR', 'IV-R-EXE', 'AM-R-WAR'];
     for (const id of party) save.owned[id] = { level: 10, vow: 0 };
     const run = startRun(save, party, OSSUARY, seeded(1));
     const b = makeBattle(save, run, OSSUARY.boss, seeded(2));
     const f = new FieldBattle(b, { w: 540, h: 450, rng: seeded(3) });
     const boss = b.units.find((u) => u.boss)!;
     const sisters = b.units.filter((u) => u.side === 'party');
-    const answerer = sisters.find((u) => u.ref === 'AM-R-HIE')!;
+    const answerer = sisters.find((u) => u.ref === 'AM-R-SEN')!;
     expect(wouldAnswer(skillsFor(answerer).find((s) => s.rite)!, boss)).toBe(true);
     for (const u of sisters) u.zeal = ZEAL_MAX;
     boss.wrath = AUTO_HOLD_WRATH - 20;

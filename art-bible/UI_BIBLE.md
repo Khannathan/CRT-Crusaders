@@ -255,11 +255,11 @@ Each entry: the screenshot(s), what the screen is for, what it **must** show, it
 
 ### 7.11 Roster (`25-roster-grid`)
 - **Purpose:** every Sister you own.
-- **Must show:** Sisters sub-tab strip (Sisters, Bonds, Satchel, Relics, Codex, Book), count ("26 / 500 sworn"), Quick Vow, Sort, Filter, help, the 3-across card grid. Long press a card for her quick card.
+- **Must show:** Sisters sub-tab strip (Sisters, Bonds, Satchel, Relics, Codex, Book), count ("26 / 200 sworn"), Quick Vow, Sort, Filter, help, the 3-across card grid. Long press a card for her quick card.
 
 ### 7.12 Sister page (`26`-`31`)
 - **Purpose:** everything about one Sister.
-- **Must show:** her splash with her pixel figure in front (view toggle: Both, Splash, Sprite), previous/next arrows and "4 / 500", Power, Back, help; **name** in display type, epithet line, rank and class and role ("Living Saint · Arbalist · Ranged DPS"), Order with icon, level and stars; stat row **HP, ATK, ARM, SPD, BOND**; tab strip **Grow, Vows, Skills, Gear, Weapon, Canon**; then the tab body:
+- **Must show:** her splash with her pixel figure in front (view toggle: Both, Splash, Sprite), previous/next arrows and "4 / 200", Power, Back, help; **name** in display type, epithet line, rank and class and role ("Living Saint · Arbalist · Ranged DPS"), Order with icon, level and stars; stat row **HP, ATK, ARM, SPD, BOND**; tab strip **Grow, Vows, Skills, Gear, Weapon, Canon**; then the tab body:
   - **Grow:** level and cap, EXP bar, materials and costs, Ascend button, Order favour text, lore.
   - **Vows:** star tier, Vow tokens, what the next Vow gives, Take the Vow, Vow gifts list.
   - **Skills:** each skill: name, type and cooldown, level badge, description, upgrade cost.

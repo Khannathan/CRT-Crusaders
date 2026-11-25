@@ -10,7 +10,7 @@ CRT Crusaders is a dark-fantasy gacha RPG for phones, played in portrait. You co
 
 ## The game in one screen
 
-- **500 Sisters, 10 Orders, 50 per Order.** Iron Vigil, Ashen Mercy, Veiled Tribunal, Sepulcher Watch, Choir of the Pyre, Verdant Martyrdom, Drowned Litany, Confessors of Glass, Crimson Inquisition and Hallowed Belfry. Per Order: 1 Limited UR (the Patron Deity), 2 Limited SSRs, 2 URs, 15 SSRs (one per class), 15 SRs and 15 Rs.
+- **200 Sisters, 10 Orders, 20 per Order.** Iron Vigil, Ashen Mercy, Veiled Tribunal, Sepulcher Watch, Choir of the Pyre, Verdant Martyrdom, Drowned Litany, Confessors of Glass, Crimson Inquisition and Hallowed Belfry. Per Order: 1 Limited UR (the Patron Deity), 2 Limited SSRs, 2 URs, and 5 SSRs, 5 SRs and 5 Rs, one per role. A role's three classes are split across SSR, SR and R, so every Order still fields all 15 classes.
 - **Ranks are rarity.** R Commanders and SR Legends are mortal; SSR Demigoddesses are half-divine; UR Deities are gods of their Order.
 - **15 classes in 5 roles:** Tank (Hierophant, Sentinel, Martyr), Healer (Confessor, Hospitaller, Abbess), Buffer (Oracle, Cantor, Adjudicator), Melee (War-Sister, Executioner, Veilblade), Ranged (Censer, Arbalist, Exorcist). Every Sister has her own kit: skills, a passive, a Relic and a **Litany** (her ultimate).
 - **Combat is real time.** Up to four Sisters walk onto a side-on field and fight on their own. You tap a Litany when her Zeal is full, focus a foe, or aim. Bosses answer with **Blasphemies**. There are no turns, rounds or ranks: durations and cooldowns are seconds, positions are the front line (the two foes nearest your Sisters), and Stagger delays a foe's next blow. A fight lasts about 30 to 45 seconds.

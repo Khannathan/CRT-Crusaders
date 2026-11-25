@@ -247,6 +247,15 @@ const SHINES: Record<Role, string> = {
 };
 
 const STAPLES = new Set(Object.values(CLASS_SKILLS).flat());
+
+/** Wrath a Litany must tear from a charging boss to break its Blasphemy (100 down past BLASPHEMY_BREAK_AT). */
+const BREAK_DRAIN = 26;
+/** True for a Litany that breaks a boss's Blasphemy mid-charge (field.ts answerTo). */
+function breaksBlasphemy(s: SkillDef): boolean {
+  const onFoe = s.target === 'enemy' || s.target === 'allEnemies';
+  const drain = (onFoe ? s.wrathDrain ?? 0 : 0) || (s.alsoFoes?.wrathDrain ?? 0);
+  return (onFoe && (!!s.delay || (s.silence ?? 0) > 1)) || drain >= BREAK_DRAIN;
+}
 const isOwn = (s: SkillDef) => !STAPLES.has(s);
 
 interface Donor {
@@ -314,6 +323,14 @@ function build(c: CrusaderDef, sameOrder: Donor[], roleOf: (c: CrusaderDef) => R
 
   const staples = CLASS_SKILLS[c.classId];
   const tier = c.rarity;
+  // An Adjudicator's Litany always tears Wrath from a Blasphemy (her class's promise):
+  // she borrows only Order Litanies that can break one, else keeps Final Judgment.
+  if (c.classId === 'adjudicator') {
+    const answers = litanyPool.filter(breaksBlasphemy);
+    litanyPool.length = 0;
+    if (!answers.length) from.set(staples[3], 'R');
+    litanyPool.push(...(answers.length ? answers : [staples[3]]));
+  }
   let skills: [SkillDef, SkillDef, SkillDef, SkillDef];
   if (tier === 'R' || tier === 'SR') {
     // from her own class's skills when it has any, so a Conscript keeps her class's feel

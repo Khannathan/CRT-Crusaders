@@ -5,7 +5,7 @@ import { FieldBattle, simulateField } from './field';
 import { HOSANNA, HOSANNAS, HOSANNA_MAX, castHosanna, hosannaFor, pickHosanna } from './hosanna';
 import { seeded } from './rng';
 
-const STARTER = ['SW-R-WAR', 'DL-R-HIE', 'IV-R-EXE', 'SW-SR-CON'];
+const STARTER = ['SW-R-VEI', 'DL-R-SEN', 'IV-R-EXE', 'SW-SR-ABB'];
 const saveAt = (level: number) => {
   const save = newSave();
   for (const id of STARTER) save.owned[id] = { level, vow: 0 };
@@ -63,8 +63,8 @@ describe('Hosanna', () => {
     expect(pickHosanna(save, STARTER, 'living-waters')).toBe(true);
     expect(hosannaFor(save, [...STARTER].reverse()).id).toBe('living-waters');
     // Another party falls back to the last pick until it has its own.
-    expect(hosannaFor(save, ['SW-R-WAR']).id).toBe('living-waters');
-    pickHosanna(save, ['SW-R-WAR'], 'saints-mantle');
+    expect(hosannaFor(save, ['SW-R-VEI']).id).toBe('living-waters');
+    pickHosanna(save, ['SW-R-VEI'], 'saints-mantle');
     expect(hosannaFor(save, STARTER).id).toBe('living-waters');
     // Verdict of the Many needs Rank of Faith 9.
     expect(pickHosanna(save, STARTER, 'many-verdict')).toBe(false);

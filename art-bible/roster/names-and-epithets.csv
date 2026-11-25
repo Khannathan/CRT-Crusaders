@@ -1,0 +1,201 @@
+id,name,epithet,rarity,rank,limited,order,class,old_title
+AM-LSSR1,Pietas Favillaris,Daughter of the Last Ember,SSR,Demigoddess,True,Ashen Mercy,Hospitaller,Chalice Hospitaller
+AM-LSSR2,Caritas Rogalis,Half-Born of the Grey Dawn,SSR,Demigoddess,True,Ashen Mercy,Veilblade,Veilblade Sister
+AM-LUR,Misericordia,"Cinerea Ascendant, Patron Goddess of the Ashen Mercy",UR,Patron Deity,True,Ashen Mercy,Executioner,Bell Executioner
+AM-R-CEN,Dolora Ustulata,Knight-Commander of the Smoke Road,R,Commander,False,Ashen Mercy,Censer,Censer Priestess
+AM-R-CON,Penitentia Crematrix,Castellan of the Pyre Field,R,Commander,False,Ashen Mercy,Confessor,Banner Confessor
+AM-R-ORA,Maesta Cineraria,Prefect of the Last Candle,R,Commander,False,Ashen Mercy,Oracle,Ash Oracle
+AM-R-SEN,Pallida Torrefacta,Marshal of the Burned Ward,R,Commander,False,Ashen Mercy,Sentinel,Templar Vindicator
+AM-R-WAR,Carbona Incinerata,Warden of the Burned Ward,R,Commander,False,Ashen Mercy,War-Sister,Penitent War-Sister
+AM-SR-ABB,Ustrina Favillaris,Who Walked Out of the Smoke Road,SR,Legend,False,Ashen Mercy,Abbess,Thorn Abbess
+AM-SR-ADJ,Torrida Rogalis,Who Foretold the Red Fever,SR,Legend,False,Ashen Mercy,Adjudicator,Bone Archivist
+AM-SR-EXO,Absoluta Ambusta,Who Ended the Burning of Caelmoor,SR,Legend,False,Ashen Mercy,Exorcist,Lantern Exorcist
+AM-SR-MAR,Sordida Cinefacta,Who Held the Cinder Siege,SR,Legend,False,Ashen Mercy,Martyr,Dawn Martyr
+AM-SR-VEI,Funesta Carbonaria,Slayer of the Plague Colossus,SR,Legend,False,Ashen Mercy,Veilblade,Veilblade Sister
+AM-SSR-ARB,Lenita Ustulata,Blood of the Cinder Mother,SSR,Demigoddess,False,Ashen Mercy,Arbalist,Saintbound Arbalist
+AM-SSR-CAN,Sedata Crematrix,Blood of the Grey Dawn,SSR,Demigoddess,False,Ashen Mercy,Cantor,Grave Cantor
+AM-SSR-EXE,Fumosa Ustoria,Daughter of the Hearth Unburned,SSR,Demigoddess,False,Ashen Mercy,Executioner,Inquisitor
+AM-SSR-HIE,Ignita Cinefacta,Chosen of the Pale Flame,SSR,Demigoddess,False,Ashen Mercy,Hierophant,Reliquary Hierophant
+AM-SSR-HOS,Contumelia Cineraria,Daughter of the Choking Smoke,SSR,Demigoddess,False,Ashen Mercy,Hospitaller,Chalice Hospitaller
+AM-UR1,Exustrix,"the Pale Flame, Goddess of Mercy and Ash",UR,Deity,False,Ashen Mercy,Oracle,Ash Oracle
+AM-UR2,Fumaria,"the Ember Mother, Goddess of the Burned",UR,Deity,False,Ashen Mercy,Exorcist,Lantern Exorcist
+CC-LSSR1,Psalmodia Pyralis,Daughter of the Unending Hymn,SSR,Demigoddess,True,Choir of the Pyre,Executioner,Bell Executioner
+CC-LSSR2,Hymnia Flammigera,Half-Born of the Eternal Note,SSR,Demigoddess,True,Choir of the Pyre,Exorcist,Witchfire Deacon
+CC-LUR,Hosanna,"Cantica Ascendant, Patron Goddess of the Choir of the Pyre",UR,Patron Deity,True,Choir of the Pyre,Adjudicator,Mirror Adjudicator
+CC-R-CAN,Hannah Hymnifera,Standard-Bearer of the Red Seal,R,Commander,False,Choir of the Pyre,Cantor,Iron Cantatrix
+CC-R-CEN,Judith Ignicantrix,Knight-Commander of the Thousand Candles,R,Commander,False,Choir of the Pyre,Censer,Censer Priestess
+CC-R-HIE,Abigail Rogusia,Captain of the Candle Loft,R,Commander,False,Choir of the Pyre,Hierophant,Reliquary Hierophant
+CC-R-HOS,Michal Incendia,Banneret of the Thousand Candles,R,Commander,False,Choir of the Pyre,Hospitaller,Chalice Hospitaller
+CC-R-VEI,Shiphrah Ululans,Banneret of the Hymn Guard,R,Commander,False,Choir of the Pyre,Veilblade,Veilblade Sister
+CC-SR-ARB,Basemath Fervida,Who Ended the Darkened Nave,SR,Legend,False,Choir of the Pyre,Arbalist,Saintbound Arbalist
+CC-SR-CON,Milcah Psallens,Who Walked Out of the Heretic Chorus,SR,Legend,False,Choir of the Pyre,Confessor,Banner Confessor
+CC-SR-EXE,Tirzah Canticaria,Slayer of the Wax Horror,SR,Legend,False,Choir of the Pyre,Executioner,Inquisitor
+CC-SR-MAR,Naamah Ardens,Who Held the Heretic Chorus,SR,Legend,False,Choir of the Pyre,Martyr,Blood Oath Knight
+CC-SR-ORA,Jemimah Exardens,Who Foretold the Long Hymn,SR,Legend,False,Choir of the Pyre,Oracle,Ash Oracle
+CC-SSR-ABB,Laudes Fervida,Half-Born of the Burning Wax,SSR,Demigoddess,False,Choir of the Pyre,Abbess,Thorn Abbess
+CC-SSR-ADJ,Melodia Hymnifera,Child of the Golden Choir,SSR,Demigoddess,False,Choir of the Pyre,Adjudicator,Mirror Adjudicator
+CC-SSR-EXO,Choralis Incendia,Child of the Unending Hymn,SSR,Demigoddess,False,Choir of the Pyre,Exorcist,Lantern Exorcist
+CC-SSR-SEN,Doxologia Cremaria,Blood of the Choir Above,SSR,Demigoddess,False,Choir of the Pyre,Sentinel,Sepulcher Sentinel
+CC-SSR-WAR,Incantia Flammigera,Spark of the Choir Above,SSR,Demigoddess,False,Choir of the Pyre,War-Sister,Crusader Duelist
+CC-UR1,Ignifera,"the Undying Hymn, Goddess of Song",UR,Deity,False,Choir of the Pyre,War-Sister,Crusader Duelist
+CC-UR2,Cantatrix,"the Hundred Candles, Goddess of Pyre-Light",UR,Deity,False,Choir of the Pyre,Cantor,Grave Cantor
+DL-LSSR1,Unda Profunda,Daughter of the Deep Font,SSR,Demigoddess,True,Drowned Litany,Martyr,Blood Oath Knight
+DL-LSSR2,Salina Gurgitosa,Half-Born of the Rising Water,SSR,Demigoddess,True,Drowned Litany,Cantor,Iron Cantatrix
+DL-LUR,Tehom,"Thalassa Ascendant, Patron Goddess of the Drowned Litany",UR,Patron Deity,True,Drowned Litany,Oracle,Drowned Sibyl
+DL-R-ADJ,Ninnoc Gurgitosa,Marshal of the Flooded Abbey,R,Commander,False,Drowned Litany,Adjudicator,Bone Archivist
+DL-R-ARB,Ia Naufraga,Prefect of the Deep Font,R,Commander,False,Drowned Litany,Arbalist,Saintbound Arbalist
+DL-R-EXE,Breaca Salsa,Castellan of the Tide Company,R,Commander,False,Drowned Litany,Executioner,Inquisitor
+DL-R-HOS,Madryn Demersa,Banneret of the Salt Wall,R,Commander,False,Drowned Litany,Hospitaller,Chalice Hospitaller
+DL-R-SEN,Dwynwen Mersa,Marshal of the Drowned Bells,R,Commander,False,Drowned Litany,Sentinel,Templar Vindicator
+DL-SR-ABB,Tudwen Profunda,Who Walked Out of the Sea-Cave Siege,SR,Legend,False,Drowned Litany,Abbess,Thorn Abbess
+DL-SR-EXO,Ceinwen Inundata,Who Ended the Great Flood,SR,Legend,False,Drowned Litany,Exorcist,Lantern Exorcist
+DL-SR-MAR,Meleri Undosa,Who Held the Black Tide,SR,Legend,False,Drowned Litany,Martyr,Dawn Martyr
+DL-SR-ORA,Tydfil Abyssalis,Who Foretold the Sea-Cave Siege,SR,Legend,False,Drowned Litany,Oracle,Ash Oracle
+DL-SR-WAR,Elwen Immersa,Slayer of the Leviathan,SR,Legend,False,Drowned Litany,War-Sister,Crusader Duelist
+DL-SSR-CAN,Procella Aequorea,Blood of the Rising Water,SSR,Demigoddess,False,Drowned Litany,Cantor,Grave Cantor
+DL-SSR-CEN,Fluxia Salsa,Chosen of the Salt Dawn,SSR,Demigoddess,False,Drowned Litany,Censer,Censer Priestess
+DL-SSR-CON,Aestua Inundata,Spark of the Drowned Bell,SSR,Demigoddess,False,Drowned Litany,Confessor,Banner Confessor
+DL-SSR-HIE,Baptista Undosa,Chosen of the Black Tide,SSR,Demigoddess,False,Drowned Litany,Hierophant,Reliquary Hierophant
+DL-SSR-VEI,Refluxa Profunda,Half-Born of the Drowned Bell,SSR,Demigoddess,False,Drowned Litany,Veilblade,Veilblade Sister
+DL-UR1,Abyssa,"the Rising Tide, Goddess of the Drowned",UR,Deity,False,Drowned Litany,Martyr,Dawn Martyr
+DL-UR2,Diluvia,"the Deep Font, Goddess of the Abyss",UR,Deity,False,Drowned Litany,Censer,Censer Priestess
+GC-LSSR1,Facetta Specularis,Daughter of the Black Mirror,SSR,Demigoddess,True,Confessors of Glass,Exorcist,Lantern Exorcist
+GC-LSSR2,Crystalla Polita,Half-Born of the Ice Star,SSR,Demigoddess,True,Confessors of Glass,Veilblade,Veilblade Sister
+GC-LUR,Speculatrix,"Specula Ascendant, Patron Goddess of the Confessors of Glass",UR,Patron Deity,True,Confessors of Glass,Adjudicator,Bone Archivist
+GC-R-ADJ,Secunda Polita,Marshal of the Mirror Crypt,R,Commander,False,Confessors of Glass,Adjudicator,Bone Archivist
+GC-R-CEN,Quinta Lucida,Knight-Commander of the Shard Guard,R,Commander,False,Confessors of Glass,Censer,Censer Priestess
+GC-R-CON,Sexta Perlucens,Castellan of the Frozen Cloister,R,Commander,False,Confessors of Glass,Confessor,Plague Confessor
+GC-R-SEN,Quindecima Vitrifacta,Marshal of the Black Pane,R,Commander,False,Confessors of Glass,Sentinel,Templar Vindicator
+GC-R-VEI,Sedecima Pellucida,Banneret of the Frozen Cloister,R,Commander,False,Confessors of Glass,Veilblade,Veilblade Sister
+GC-SR-EXO,Septuagesima Plumbata,Who Ended the Shattering,SR,Legend,False,Confessors of Glass,Exorcist,Witchfire Deacon
+GC-SR-HIE,Octogesima Speculata,Who Held the Shattering,SR,Legend,False,Confessors of Glass,Hierophant,Reliquary Hierophant
+GC-SR-HOS,Nonagesima Rimosa,Who Walked Out of the Night of Black Glass,SR,Legend,False,Confessors of Glass,Hospitaller,Chalice Hospitaller
+GC-SR-ORA,Millesima Argentata,Who Foretold the False Reflection,SR,Legend,False,Confessors of Glass,Oracle,Drowned Sibyl
+GC-SR-WAR,Postrema Fissa,Slayer of the Mirror-Beast,SR,Legend,False,Confessors of Glass,War-Sister,Penitent War-Sister
+GC-SSR-ABB,Lumina Crystallina,Half-Born of the Last Confession,SSR,Demigoddess,False,Confessors of Glass,Abbess,Thorn Abbess
+GC-SSR-ARB,Fractura Lucida,Blood of the Last Confession,SSR,Demigoddess,False,Confessors of Glass,Arbalist,Saintbound Arbalist
+GC-SSR-CAN,Clarita Perlucens,Blood of the Ice Star,SSR,Demigoddess,False,Confessors of Glass,Cantor,Grave Cantor
+GC-SSR-EXE,Prisma Speculata,Daughter of the Glass Saint,SSR,Demigoddess,False,Confessors of Glass,Executioner,Inquisitor
+GC-SSR-MAR,Silicia Vitrifacta,Child of the Glass Saint,SSR,Demigoddess,False,Confessors of Glass,Martyr,Dawn Martyr
+GC-UR1,Vitrix,"the Black Mirror, Goddess of Confession",UR,Deity,False,Confessors of Glass,Oracle,Drowned Sibyl
+GC-UR2,Refracta,"the Shattered Light, Goddess of Sins Remembered",UR,Deity,False,Confessors of Glass,Confessor,Plague Confessor
+HB-LSSR1,Campanula Clangora,Daughter of the Great Bell,SSR,Demigoddess,True,Hallowed Belfry,Exorcist,Witchfire Deacon
+HB-LSSR2,Tintinnabula Aeramenta,Half-Born of the Bronze Voice,SSR,Demigoddess,True,Hallowed Belfry,Censer,Censer Priestess
+HB-LUR,Campanaria,"Campana Ascendant, Patron Goddess of the Hallowed Belfry",UR,Patron Deity,True,Hallowed Belfry,Hierophant,Reliquary Hierophant
+HB-R-ARB,Ludmila Resonans,Prefect of the Midnight Roof,R,Commander,False,Hallowed Belfry,Arbalist,Saintbound Arbalist
+HB-R-CAN,Zlata Vocifera,Standard-Bearer of the Great Bell,R,Commander,False,Hallowed Belfry,Cantor,Iron Cantatrix
+HB-R-EXE,Miroslava Aerea,Castellan of the Storm Bell,R,Commander,False,Hallowed Belfry,Executioner,Inquisitor
+HB-R-HOS,Jaroslava Pulsatrix,Banneret of the Rope Guard,R,Commander,False,Hallowed Belfry,Hospitaller,Chalice Hospitaller
+HB-R-MAR,Zbyslava Tonitrua,Warden of the Storm Bell,R,Commander,False,Hallowed Belfry,Martyr,Dawn Martyr
+HB-SR-CEN,Rostislava Aerea,Who Ended the Midnight Toll,SR,Legend,False,Hallowed Belfry,Censer,Censer Priestess
+HB-SR-CON,Sudislava Tinnula,Who Walked Out of the Storm Night,SR,Legend,False,Hallowed Belfry,Confessor,Plague Confessor
+HB-SR-HIE,Gorislava Tonitrua,Who Held the Silent Toll,SR,Legend,False,Hallowed Belfry,Hierophant,Reliquary Hierophant
+HB-SR-ORA,Velislava Sonora,Who Foretold the Foundry Fire,SR,Legend,False,Hallowed Belfry,Oracle,Ash Oracle
+HB-SR-WAR,Zvonimira Vocifera,Slayer of the Silence Wyrm,SR,Legend,False,Hallowed Belfry,War-Sister,Penitent War-Sister
+HB-SSR-ABB,Resonantia Aerea,Half-Born of the Storm Bell,SSR,Demigoddess,False,Hallowed Belfry,Abbess,Thorn Abbess
+HB-SSR-ADJ,Pulsa Tinnula,Child of the Silent Ring,SSR,Demigoddess,False,Hallowed Belfry,Adjudicator,Mirror Adjudicator
+HB-SSR-EXO,Echoa Sonora,Child of the Great Bell,SSR,Demigoddess,False,Hallowed Belfry,Exorcist,Witchfire Deacon
+HB-SSR-SEN,Classica Aeramenta,Blood of the Cracked Saint,SSR,Demigoddess,False,Hallowed Belfry,Sentinel,Templar Vindicator
+HB-SSR-VEI,Plangora Aerea,Half-Born of the Hollow Toll,SSR,Demigoddess,False,Hallowed Belfry,Veilblade,Veilblade Sister
+HB-UR1,Tonitrix,"the Hollow Toll, Goddess of the Bell",UR,Deity,False,Hallowed Belfry,War-Sister,Penitent War-Sister
+HB-UR2,Zvonara,"the Silent Peal, Goddess of Death's Call",UR,Deity,False,Hallowed Belfry,Veilblade,Veilblade Sister
+IV-LSSR1,Excubia Catenata,Daughter of the Unsleeping Flame,SSR,Demigoddess,True,Iron Vigil,Adjudicator,Bone Archivist
+IV-LSSR2,Custodia Ferrea,Half-Born of the Wall Eternal,SSR,Demigoddess,True,Iron Vigil,Exorcist,Witchfire Deacon
+IV-LUR,Insomnia,"Vigilia Ascendant, Patron Goddess of the Iron Vigil",UR,Patron Deity,True,Iron Vigil,Arbalist,Saintbound Arbalist
+IV-R-ABB,Gerhild Catenata,Knight-Commander of the Last Beacon,R,Commander,False,Iron Vigil,Abbess,Thorn Abbess
+IV-R-ARB,Hildegund Pervigil,Prefect of the Last Beacon,R,Commander,False,Iron Vigil,Arbalist,Saintbound Arbalist
+IV-R-CAN,Adalind Murata,Standard-Bearer of the Portcullis Guard,R,Commander,False,Iron Vigil,Cantor,Iron Cantatrix
+IV-R-EXE,Gisela Lanternaria,Castellan of the North Rampart,R,Commander,False,Iron Vigil,Executioner,Inquisitor
+IV-R-MAR,Ermengard Excubitrix,Warden of the North Rampart,R,Commander,False,Iron Vigil,Martyr,Blood Oath Knight
+IV-SR-ADJ,Bertrada Ferrea,Who Foretold the Wall of Nine Days,SR,Legend,False,Iron Vigil,Adjudicator,Bone Archivist
+IV-SR-CEN,Gundrada Rubiginosa,Who Ended the Wall of Nine Days,SR,Legend,False,Iron Vigil,Censer,Censer Priestess
+IV-SR-HOS,Adelheid Vallata,Who Walked Out of the Breach at Dawn,SR,Legend,False,Iron Vigil,Hospitaller,Chalice Hospitaller
+IV-SR-SEN,Irmgard Clavata,Who Held the Long Night,SR,Legend,False,Iron Vigil,Sentinel,Sepulcher Sentinel
+IV-SR-VEI,Hedwig Ferricrepa,Slayer of the Night Behemoth,SR,Legend,False,Iron Vigil,Veilblade,Veilblade Sister
+IV-SSR-CON,Pervigilia Obsessa,Spark of the Watch-Fire,SSR,Demigoddess,False,Iron Vigil,Confessor,Plague Confessor
+IV-SSR-EXO,Vallia Obsessa,Child of the Unsleeping Flame,SSR,Demigoddess,False,Iron Vigil,Exorcist,Lantern Exorcist
+IV-SSR-HIE,Pugna Excubitrix,Chosen of the Amber Eye,SSR,Demigoddess,False,Iron Vigil,Hierophant,Reliquary Hierophant
+IV-SSR-ORA,Fortitudo Ferricrepa,Chosen of the Unsleeping Flame,SSR,Demigoddess,False,Iron Vigil,Oracle,Ash Oracle
+IV-SSR-WAR,Sentinella Ferrea,Spark of the Vigil Star,SSR,Demigoddess,False,Iron Vigil,War-Sister,Penitent War-Sister
+IV-UR1,Propugna,"the Amber Watcher, Goddess of Walls",UR,Deity,False,Iron Vigil,Censer,Censer Priestess
+IV-UR2,Murifera,"the Iron Dawn, Goddess of the Last Stand",UR,Deity,False,Iron Vigil,Sentinel,Templar Vindicator
+RP-LSSR1,Quaestio Sigillata,Daughter of the Red Question,SSR,Demigoddess,True,Crimson Inquisition,Exorcist,Witchfire Deacon
+RP-LSSR2,Confessio Accusatrix,Half-Born of the Inquisitor Star,SSR,Demigoddess,True,Crimson Inquisition,Arbalist,Saintbound Arbalist
+RP-LUR,Quaesitrix,"Inquisitrix Ascendant, Patron Goddess of the Crimson Inquisition",UR,Patron Deity,True,Crimson Inquisition,Martyr,Blood Oath Knight
+RP-R-ABB,Urraca Sigillata,Knight-Commander of the Writ Guard,R,Commander,False,Crimson Inquisition,Abbess,Thorn Abbess
+RP-R-EXO,Berenguela Cauteria,Standard-Bearer of the Iron Maiden Gate,R,Commander,False,Crimson Inquisition,Exorcist,Lantern Exorcist
+RP-R-MAR,Aldonza Stigmatrix,Warden of the Branding Company,R,Commander,False,Crimson Inquisition,Martyr,Dawn Martyr
+RP-R-ORA,Beatriz Sententiaria,Prefect of the Iron Maiden Gate,R,Commander,False,Crimson Inquisition,Oracle,Drowned Sibyl
+RP-R-WAR,Isabel Rogatrix,Warden of the Pyre Court,R,Commander,False,Crimson Inquisition,War-Sister,Crusader Duelist
+RP-SR-ADJ,Violante Accusatrix,Who Foretold the Siege of the Black Abbey,SR,Legend,False,Crimson Inquisition,Adjudicator,Mirror Adjudicator
+RP-SR-CEN,Guiomar Purgatrix,Who Ended the Siege of the Black Abbey,SR,Legend,False,Crimson Inquisition,Censer,Censer Priestess
+RP-SR-HIE,Munia Delatrix,Who Held the Red Purge,SR,Legend,False,Crimson Inquisition,Hierophant,Reliquary Hierophant
+RP-SR-HOS,Gontrodo Quaestrix,Who Walked Out of the Witch Crusade,SR,Legend,False,Crimson Inquisition,Hospitaller,Chalice Hospitaller
+RP-SR-VEI,Ermesinda Ustrix,Slayer of the Unconfessed Giant,SR,Legend,False,Crimson Inquisition,Veilblade,Veilblade Sister
+RP-SSR-ARB,Stigmatia Purgatrix,Blood of the Red Rack,SSR,Demigoddess,False,Crimson Inquisition,Arbalist,Saintbound Arbalist
+RP-SSR-CAN,Ignominia Torquens,Blood of the Inquisitor Star,SSR,Demigoddess,False,Crimson Inquisition,Cantor,Grave Cantor
+RP-SSR-CON,Supplicia Cauteria,Spark of the Burning Writ,SSR,Demigoddess,False,Crimson Inquisition,Confessor,Banner Confessor
+RP-SSR-EXE,Inquisitio Delatrix,Daughter of the Endless Purge,SSR,Demigoddess,False,Crimson Inquisition,Executioner,Inquisitor
+RP-SSR-SEN,Carnifica Rogatrix,Blood of the Dawn Pyre,SSR,Demigoddess,False,Crimson Inquisition,Sentinel,Sepulcher Sentinel
+RP-UR1,Confessora,"the Red Question, Goddess of Inquisitors",UR,Deity,False,Crimson Inquisition,Executioner,Inquisitor
+RP-UR2,Cauterix,"the Golden Brand, Goddess of Confession by Fire",UR,Deity,False,Crimson Inquisition,Hospitaller,Chalice Hospitaller
+SW-LSSR1,Requies Sepulcralis,Daughter of the Last Key,SSR,Demigoddess,True,Sepulcher Watch,Executioner,Bell Executioner
+SW-LSSR2,Funera Sepulta,Half-Born of the Deathless Watch,SSR,Demigoddess,True,Sepulcher Watch,Arbalist,Saintbound Arbalist
+SW-LUR,Vanth,"Sepulchra Ascendant, Patron Goddess of the Sepulcher Watch",UR,Patron Deity,True,Sepulcher Watch,Hospitaller,Chalice Hospitaller
+SW-R-CEN,Hastia Ossuaria,Knight-Commander of the Deep Stair,R,Commander,False,Sepulcher Watch,Censer,Censer Priestess
+SW-R-CON,Fastia Bustuaria,Castellan of the Crypt Keys,R,Commander,False,Sepulcher Watch,Confessor,Banner Confessor
+SW-R-MAR,Sethra Tumulata,Warden of the Catacomb Watch,R,Commander,False,Sepulcher Watch,Martyr,Blood Oath Knight
+SW-R-ORA,Thanchvil Exanimata,Prefect of the Skull Wall,R,Commander,False,Sepulcher Watch,Oracle,Drowned Sibyl
+SW-R-VEI,Velcha Tumularia,Banneret of the Crypt Keys,R,Commander,False,Sepulcher Watch,Veilblade,Veilblade Sister
+SW-SR-ABB,Velthura Sepulcralis,Who Walked Out of the Deep Stair,SR,Legend,False,Sepulcher Watch,Abbess,Thorn Abbess
+SW-SR-CAN,Puia Ossifraga,Who Foretold the Hungry Dead,SR,Legend,False,Sepulcher Watch,Cantor,Grave Cantor
+SW-SR-EXE,Lautnita Funebris,Slayer of the Bone Colossus,SR,Legend,False,Sepulcher Watch,Executioner,Bell Executioner
+SW-SR-EXO,Spuria Mortualis,Who Ended the Crypt Rising,SR,Legend,False,Sepulcher Watch,Exorcist,Witchfire Deacon
+SW-SR-SEN,Satlnei Inhumata,Who Held the Night of Open Graves,SR,Legend,False,Sepulcher Watch,Sentinel,Templar Vindicator
+SW-SSR-ADJ,Ossa Ossifraga,Child of the Sealed Tomb,SSR,Demigoddess,False,Sepulcher Watch,Adjudicator,Mirror Adjudicator
+SW-SSR-ARB,Inferia Ossuaria,Blood of the Quiet Grave,SSR,Demigoddess,False,Sepulcher Watch,Arbalist,Saintbound Arbalist
+SW-SSR-HIE,Tenebra Tumulata,Chosen of the Sealed Tomb,SSR,Demigoddess,False,Sepulcher Watch,Hierophant,Reliquary Hierophant
+SW-SSR-HOS,Nenia Exanimata,Daughter of the Final Door,SSR,Demigoddess,False,Sepulcher Watch,Hospitaller,Chalice Hospitaller
+SW-SSR-WAR,Pollinctrix Sepulta,Spark of the Skull Crown,SSR,Demigoddess,False,Sepulcher Watch,War-Sister,Crusader Duelist
+SW-UR1,Culsu,"the Keeper of Keys, Goddess of Tombs",UR,Deity,False,Sepulcher Watch,Sentinel,Templar Vindicator
+SW-UR2,Nortia,"the Bone-White Light, Goddess of the Restless Dead",UR,Deity,False,Sepulcher Watch,Abbess,Thorn Abbess
+TC-LSSR1,Cruor Vulnerata,Daughter of the Living Briar,SSR,Demigoddess,True,Verdant Martyrdom,Arbalist,Saintbound Arbalist
+TC-LSSR2,Vepris Sentosa,Half-Born of the Bloom Eternal,SSR,Demigoddess,True,Verdant Martyrdom,War-Sister,Penitent War-Sister
+TC-LUR,Sanguirosa,"Spina Ascendant, Patron Goddess of the Verdant Martyrdom",UR,Patron Deity,True,Verdant Martyrdom,Martyr,Dawn Martyr
+TC-R-ABB,Agnes Vulnerata,Knight-Commander of the Bramble Gate,R,Commander,False,Verdant Martyrdom,Abbess,Thorn Abbess
+TC-R-ADJ,Felicitas Vepreta,Marshal of the Briar Chapel,R,Commander,False,Verdant Martyrdom,Adjudicator,Bone Archivist
+TC-R-EXO,Justina Spinosa,Standard-Bearer of the Red Garden,R,Commander,False,Verdant Martyrdom,Exorcist,Lantern Exorcist
+TC-R-HIE,Thecla Lacerata,Captain of the Briar Chapel,R,Commander,False,Verdant Martyrdom,Hierophant,Reliquary Hierophant
+TC-R-WAR,Margarita Sentosa,Warden of the Rose Wall,R,Commander,False,Verdant Martyrdom,War-Sister,Penitent War-Sister
+TC-SR-ARB,Regina Cruciata,Who Ended the Night of Red Petals,SR,Legend,False,Verdant Martyrdom,Arbalist,Saintbound Arbalist
+TC-SR-CAN,Benedicta Sanguinea,Who Foretold the Bramble Siege,SR,Legend,False,Verdant Martyrdom,Cantor,Iron Cantatrix
+TC-SR-CON,Eugenia Cruenta,Who Walked Out of the Thorn Road,SR,Legend,False,Verdant Martyrdom,Confessor,Banner Confessor
+TC-SR-EXE,Faustina Stigmata,Slayer of the Bramble Wyrm,SR,Legend,False,Verdant Martyrdom,Executioner,Inquisitor
+TC-SR-SEN,Seraphia Spinifera,Who Held the Rose Massacre,SR,Legend,False,Verdant Martyrdom,Sentinel,Templar Vindicator
+TC-SSR-CEN,Sentis Stigmata,Chosen of the Scarred Saint,SSR,Demigoddess,False,Verdant Martyrdom,Censer,Censer Priestess
+TC-SSR-HOS,Mortificata Sanguinolenta,Daughter of the Scarred Saint,SSR,Demigoddess,False,Verdant Martyrdom,Hospitaller,Chalice Hospitaller
+TC-SSR-MAR,Agonia Spinifera,Child of the Wild Covenant,SSR,Demigoddess,False,Verdant Martyrdom,Martyr,Dawn Martyr
+TC-SSR-ORA,Hirsuta Flagellata,Chosen of the Living Briar,SSR,Demigoddess,False,Verdant Martyrdom,Oracle,Drowned Sibyl
+TC-SSR-VEI,Sanguina Vulnerata,Half-Born of the Red Rose,SSR,Demigoddess,False,Verdant Martyrdom,Veilblade,Veilblade Sister
+TC-UR1,Cruentia,"the Bleeding Rose, Goddess of Penance",UR,Deity,False,Verdant Martyrdom,Sentinel,Sepulcher Sentinel
+TC-UR2,Passiflora,"the Living Briar, Goddess of Scars",UR,Deity,False,Verdant Martyrdom,Abbess,Thorn Abbess
+VT-LSSR1,Veritas Ponderosa,Daughter of the Final Verdict,SSR,Demigoddess,True,Veiled Tribunal,War-Sister,Crusader Duelist
+VT-LSSR2,Libra Ponderatrix,Half-Born of the Night Writ,SSR,Demigoddess,True,Veiled Tribunal,Exorcist,Witchfire Deacon
+VT-LUR,Velamina,"Iudicia Ascendant, Patron Goddess of the Veiled Tribunal",UR,Patron Deity,True,Veiled Tribunal,Sentinel,Templar Vindicator
+VT-R-ABB,Kassia Ponderosa,Knight-Commander of the Execution Yard,R,Commander,False,Veiled Tribunal,Abbess,Thorn Abbess
+VT-R-ADJ,Eudokia Ponderatrix,Marshal of the Veiled Bench,R,Commander,False,Veiled Tribunal,Adjudicator,Bone Archivist
+VT-R-EXO,Theophano Sententia,Standard-Bearer of the Ninth Tribunal,R,Commander,False,Veiled Tribunal,Exorcist,Witchfire Deacon
+VT-R-HIE,Euphrosyne Arbitra,Captain of the Veiled Bench,R,Commander,False,Veiled Tribunal,Hierophant,Reliquary Hierophant
+VT-R-WAR,Ariadne Silens,Warden of the Black Court,R,Commander,False,Veiled Tribunal,War-Sister,Penitent War-Sister
+VT-SR-ARB,Xene Obvelata,Who Ended the Burning of the Codex,SR,Legend,False,Veiled Tribunal,Arbalist,Saintbound Arbalist
+VT-SR-CAN,Melania Iudicatrix,Who Foretold the False Pope,SR,Legend,False,Veiled Tribunal,Cantor,Grave Cantor
+VT-SR-EXE,Photeine Censoria,Slayer of the Thousand-Tongued,SR,Legend,False,Veiled Tribunal,Executioner,Bell Executioner
+VT-SR-HOS,Chrysanthe Damnatrix,Who Walked Out of the Court of Rats,SR,Legend,False,Veiled Tribunal,Hospitaller,Chalice Hospitaller
+VT-SR-SEN,Kyranna Tacens,Who Held the Heretic Synod,SR,Legend,False,Veiled Tribunal,Sentinel,Sepulcher Sentinel
+VT-SSR-CEN,Arcana Censoria,Chosen of the Last Sentence,SSR,Demigoddess,False,Veiled Tribunal,Censer,Censer Priestess
+VT-SSR-CON,Umbra Sententia,Spark of the Veiled Eye,SSR,Demigoddess,False,Veiled Tribunal,Confessor,Plague Confessor
+VT-SSR-MAR,Probatio Tacens,Child of the Silent Judge,SSR,Demigoddess,False,Veiled Tribunal,Martyr,Blood Oath Knight
+VT-SSR-ORA,Testis Mutata,Chosen of the Final Verdict,SSR,Demigoddess,False,Veiled Tribunal,Oracle,Drowned Sibyl
+VT-SSR-VEI,Obscura Ponderosa,Half-Born of the Veiled Eye,SSR,Demigoddess,False,Veiled Tribunal,Veilblade,Veilblade Sister
+VT-UR1,Taciturna,"the Veiled Eye, Goddess of Judgement",UR,Deity,False,Veiled Tribunal,Hierophant,Reliquary Hierophant
+VT-UR2,Silentium,"the Black Scale, Goddess of the Final Verdict",UR,Deity,False,Veiled Tribunal,Adjudicator,Bone Archivist

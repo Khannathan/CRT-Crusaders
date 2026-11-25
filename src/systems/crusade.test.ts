@@ -47,18 +47,18 @@ describe('the crypt ramp', () => {
 
   it('felling an act boss opens a Sanctuary that heals before the next act', () => {
     const save = newSave();
-    save.owned['SW-R-WAR'] = { level: 1, vow: 0 };
-    const run = startRun(save, ['SW-R-WAR'], OSSUARY, seeded(9), 2); // 15 floors: acts of 10 and 5
+    save.owned['SW-R-VEI'] = { level: 1, vow: 0 };
+    const run = startRun(save, ['SW-R-VEI'], OSSUARY, seeded(9), 2); // 15 floors: acts of 10 and 5
     expect(run.map.length).toBe(17);
     const end = run.map.findIndex((row) => row[0].actEnd);
     expect(end).toBe(10);
     run.floor = end;
     run.at = 0;
     run.resolved = false;
-    run.hp['SW-R-WAR'] = 1;
+    run.hp['SW-R-VEI'] = 1;
     winRoom(run, save);
     expect(run.sanctuary).toBe(1);
-    expect(run.hp['SW-R-WAR']).toBeGreaterThan(1);
+    expect(run.hp['SW-R-VEI']).toBeGreaterThan(1);
   });
 });
 
@@ -81,8 +81,8 @@ describe('crypt maps', () => {
 
   it('you can only step along a path, and events change the run', () => {
     const save = newSave();
-    save.owned['SW-R-WAR'] = { level: 1, vow: 0 };
-    const run = startRun(save, ['SW-R-WAR'], OSSUARY, seeded(4));
+    save.owned['SW-R-VEI'] = { level: 1, vow: 0 };
+    const run = startRun(save, ['SW-R-VEI'], OSSUARY, seeded(4));
     expect(choices(run)).toEqual(run.map[0].map((_, i) => i));
     enterNode(run, 0);
     expect(choices(run)).toEqual([]); // the fight is not done yet
@@ -108,10 +108,10 @@ describe('reasons to keep going', () => {
   it('two crusaders of one order turn on its bonus', () => {
     const save = newSave();
     // Tarchna and Cusinia are both Sepulcher Watch: +10% max HP
-    for (const id of ['SW-R-WAR', 'SW-SR-CON', 'IV-R-EXE']) save.owned[id] = { level: 1, vow: 0 };
-    const solo = startRun(save, ['SW-R-WAR', 'IV-R-EXE']);
-    const pair = startRun(save, ['SW-R-WAR', 'SW-SR-CON']);
-    expect(maxHpOf(save, pair, 'SW-R-WAR')).toBe(Math.round(maxHpOf(save, solo, 'SW-R-WAR') * 1.1));
+    for (const id of ['SW-R-VEI', 'SW-SR-ABB', 'IV-R-EXE']) save.owned[id] = { level: 1, vow: 0 };
+    const solo = startRun(save, ['SW-R-VEI', 'IV-R-EXE']);
+    const pair = startRun(save, ['SW-R-VEI', 'SW-SR-ABB']);
+    expect(maxHpOf(save, pair, 'SW-R-VEI')).toBe(Math.round(maxHpOf(save, solo, 'SW-R-VEI') * 1.1));
     expect(orderBonuses(['Confessors of Glass', 'Confessors of Glass', 'Confessors of Glass']).length).toBe(2);
     expect(orderBonuses(['Confessors of Glass', 'Confessors of Glass', 'Confessors of Glass', 'Confessors of Glass']).length).toBe(3);
     expect(orderBonuses(['Iron Vigil', 'Iron Vigil', 'Hallowed Belfry', 'Hallowed Belfry']).map((b) => b.id)).toEqual(['order:Iron Vigil:2', 'order:Hallowed Belfry:2']);
@@ -130,12 +130,12 @@ describe('reasons to keep going', () => {
 
   it('Heresy unlocks one tier at a time, makes enemies tougher and pays Seals once', () => {
     const save = newSave();
-    save.owned['SW-R-WAR'] = { level: 1, vow: 0 };
+    save.owned['SW-R-VEI'] = { level: 1, vow: 0 };
     expect(heresyAvailable(save, OSSUARY)).toBe(0);
     save.cleared.push(OSSUARY.id);
     expect(heresyAvailable(save, OSSUARY)).toBe(1);
-    const run = startRun(save, ['SW-R-WAR'], OSSUARY, seeded(1), 1);
-    const base = makeBattle(save, startRun(save, ['SW-R-WAR']), 'ossuary-1').units.find((u) => u.side === 'enemy')!;
+    const run = startRun(save, ['SW-R-VEI'], OSSUARY, seeded(1), 1);
+    const base = makeBattle(save, startRun(save, ['SW-R-VEI']), 'ossuary-1').units.find((u) => u.side === 'enemy')!;
     const hard = makeBattle(save, run, 'ossuary-1').units.find((u) => u.side === 'enemy')!;
     expect(hard.maxHp).toBeGreaterThan(base.maxHp * 1.2);
     run.floor = run.map.length - 1;

@@ -63,7 +63,7 @@ describe('the Kennel', () => {
 });
 
 describe('howls in battle', () => {
-  const party = ['SW-R-WAR', 'DL-R-HIE', 'IV-R-EXE', 'SW-SR-CON'];
+  const party = ['SW-R-VEI', 'DL-R-SEN', 'IV-R-EXE', 'SW-SR-ABB'];
   const withHound = (id?: string, level = 1) => {
     const save = newSave();
     for (const p of party) save.owned[p] = { level: 5, vow: 0 };
