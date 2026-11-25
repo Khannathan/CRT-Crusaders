@@ -1,4 +1,28 @@
-<!-- Ashen Mercy (AM) card AM-R-WAR. Generated from the sister bible; do not edit here. -->
+<!-- Ashen Mercy (AM) card AM-R-WAR. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: AM-R-WAR
+name: Carbona Incinerata
+epithet: Warden of the Burned Ward
+rarity: R
+rank: Commander
+order: Ashen Mercy (order id ashen-mercy, code AM)
+class: War-Sister (class id warsister, role Melee DPS)
+age: 23
+weapon: Pyreward Scourge (Epic)
+relic: vow collar, hung from three red wax-sealed chains (a game item)
+kit:
+- SKILL I Penitent Blow: Smite a front-line foe hard and leave it Bleeding for 4s. +40% while she is under half HP.
+- SKILL II Blood for Zeal: Sacrifice 10% HP. +30 of her own Zeal and +25% attack for 4s. Cooldown 6s.
+- SKILL III Finish It: Strike a front-line foe; a kill gives her 15 Zeal.
+- LITANY Martyr's Fury: LITANY: strike every enemy and leave them Bleeding for 4s.
+- PASSIVE Penitent Thirst: Heals for 7% of the damage she deals.
+- RELIC Vow Collar (game item; not drawn in her art): Martyr's Fury: She heals 10% of the damage dealt. It hits 8% harder.
+- COMMAND (coming): Leads a frenzied flail company of the Ashen Mercy.
+- BATTLE CRY: "I burned a city to save it. You are smaller. I will not stop until I fall!"
+```
+<!-- END GAME DATA -->
 
 Read the Ashen Mercy section of order-bible.md first. Cloth: ash-white #c9c2b8 lead, wine #652b3b trim, soot-black mail. Head: white wimple and coif with an ash thumbprint on the brow. Hem: scorched edge.
 
@@ -14,15 +38,7 @@ FANATIC: a heretic's sigil branded into her forearm; blend into her expression: 
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (confident): on top of her neckline, show a corset cinched tight under the bust, and a side-cut tabard open from ribs to hip. SPLASH POSE (splash only; the bust and battle sprite use their own framing): twisting at the waist mid-swing, hair flying. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: soot-black gothic plate, purity seals scorched at the edges, a funeral pyre burning behind her (splash only).
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Penitent Blow: Smite a front-line foe hard and leave it Bleeding for 4s. +40% while she is under half HP.
-- SKILL II Blood for Zeal: Sacrifice 10% HP. +30 of her own Zeal and +25% attack for 4s. Cooldown 6s.
-- SKILL III Finish It: Strike a front-line foe; a kill gives her 15 Zeal.
-- LITANY Martyr's Fury: LITANY: strike every enemy and leave them Bleeding for 4s.
-- PASSIVE Penitent Thirst: Heals for 7% of the damage she deals.
-- RELIC Vow Collar (game item; not drawn in her art): Martyr's Fury: She heals 10% of the damage dealt. It hits 8% harder.
-- COMMAND (coming): Leads a frenzied flail company of the Ashen Mercy.
-- BATTLE CRY: "I burned a city to save it. You are smaller. I will not stop until I fall!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: grey ash-flame and falling soot, a wine-red glow as wounds close; the flail spins in a red arc and her scourge-marks glow; her Vow Collar blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Carbona Incinerata, Warden of the Burned Ward. Draw only these objects: her Epic weapon, Pyreward Scourge, a spiked iron flail of soot-blackened steel with wine-red wraps with a knotted-cord grip and a sheltered candle cup and ash smudges on the head, trailing thin smoke, its edges charred from the mercy-pyres. Sizes in her head-heights (she is about 7.3 heads tall): flail haft 1.5 heads, chain 1 head. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

@@ -1,4 +1,28 @@
-<!-- Confessors of Glass (GC) card GC-R-VEI. Generated from the sister bible; do not edit here. -->
+<!-- Confessors of Glass (GC) card GC-R-VEI. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: GC-R-VEI
+name: Sedecima Pellucida
+epithet: Banneret of the Frozen Cloister
+rarity: R
+rank: Commander
+order: Confessors of Glass (order id glass-confession, code GC)
+class: Veilblade (class id veilblade, role Melee DPS)
+age: 25
+weapon: Glasswake Fang (Epic)
+relic: concealed ritual dagger hilt, with a cracked mirror pane (a game item)
+kit:
+- SKILL I Veil Strike: Strike any foe, with +25% critical chance.
+- SKILL II Shadowstep: Haste herself, +20% attack and +30% critical chance for 4s. Cooldown 6s.
+- SKILL III Glass Cut: Lunge at a near foe with +30% critical chance. Brands the foe: the next blow on it lands 20% harder.
+- LITANY Thousand Cuts: LITANY: savage blow on any enemy, +50% critical chance, double damage under 30% HP.
+- PASSIVE Mirror Oath: Deals 10% more damage to foes under half HP. Reflection: 6% of every blow she takes cuts its striker.
+- RELIC Concealed Ritual Dagger Hilt (game item; not drawn in her art): Glass Cut: Hexes the foe (-10% Magic Resist) for 4s. It hits 8% harder.
+- COMMAND (coming): Leads a cell of veiled assassins of the Confessors of Glass.
+- BATTLE CRY: "I gave my face for sight. You will give more. Behind you!"
+```
+<!-- END GAME DATA -->
 
 Read the Confessors of Glass section of order-bible.md first. Cloth: ice blue #9cc3d0 (as cold grey-blue cloth) lead, violet #6e5a8c trim, cold silver. Head: a faceless mirror faceplate under a tall coif with a black-glass pane, or a mirror circlet. Every Confessors of Glass Sister is a faceless construct of glass and mirror (see order-bible.md). Hem: crisp, clean hem.
 
@@ -15,15 +39,7 @@ FANATIC: vow chains locked around her wrists; blend into her expression: burning
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (confident): on top of her neckline, show a side-cut tabard open from ribs to hip, and a corset cinched tight under the bust. SPLASH POSE (splash only; the bust and battle sprite use their own framing): striding forward out of smoke, cape snapping behind. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: cathedral-window armour of leaded stained glass, purity seals of black wax with silver ribbon, a rose window shattering behind her (splash only).
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Veil Strike: Strike any foe, with +25% critical chance.
-- SKILL II Shadowstep: Haste herself, +20% attack and +30% critical chance for 4s. Cooldown 6s.
-- SKILL III Glass Cut: Lunge at a near foe with +30% critical chance. Brands the foe: the next blow on it lands 20% harder.
-- LITANY Thousand Cuts: LITANY: savage blow on any enemy, +50% critical chance, double damage under 30% HP.
-- PASSIVE Mirror Oath: Deals 10% more damage to foes under half HP. Reflection: 6% of every blow she takes cuts its striker.
-- RELIC Concealed Ritual Dagger Hilt (game item; not drawn in her art): Glass Cut: Hexes the foe (-10% Magic Resist) for 4s. It hits 8% harder.
-- COMMAND (coming): Leads a cell of veiled assassins of the Confessors of Glass.
-- BATTLE CRY: "I gave my face for sight. You will give more. Behind you!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: ice-blue mirror shards, hard white reflections and her inner light bleeding through cracks; she vanishes and reappears in a slash of dark silk; her Concealed Ritual Dagger Hilt blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, an anime-styled dark-fantasy heroine drawn as a faceless glass construct with a mirror faceplate, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading, glass and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Sedecima Pellucida, Banneret of the Frozen Cloister. Draw only these objects: her Epic weapon, Glasswake Fang, two ritual daggers of cold silver set with black glass with mirror panes and stained-glass shards on the pommels, with a shattered mirror-shard set in it that shows the sins of its target. Sizes in her head-heights (she is about 7.3 heads tall): daggers 1 head each. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

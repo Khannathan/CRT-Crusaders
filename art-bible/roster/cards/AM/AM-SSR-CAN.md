@@ -1,4 +1,28 @@
-<!-- Ashen Mercy (AM) card AM-SSR-CAN. Generated from the sister bible; do not edit here. -->
+<!-- Ashen Mercy (AM) card AM-SSR-CAN. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: AM-SSR-CAN
+name: Sedata Crematrix
+epithet: Blood of the Grey Dawn
+rarity: SSR
+rank: Demigoddess
+order: Ashen Mercy (order id ashen-mercy, code AM)
+class: Cantor (class id cantor, role Buffer)
+age: 24
+weapon: Bell of the Choking Smoke (Mythic)
+relic: iron tuning fork, scorched along one edge (a game item)
+kit:
+- SKILL I Keening Note: Smite any enemy: Sundered (-20% armor) and Hexed (-20% Magic Resist) for 4s.
+- SKILL II Pyre Hymn: Smite any enemy, Hex it (-18% Magic Resist) and Foretell it: its Mercy line is 13% higher, for 4s. She heals 20% of the damage dealt.
+- SKILL III Shroud Verse: An ally gains +31% attack for 4s and Haste. Her ally gains +12% critical chance for 4s. Cooldown 6s.
+- LITANY Ash Psalm: LITANY: heavy magic damage on every enemy; any common foe left under 30% HP is granted Mercy at once. Lays Penance on every foe it strikes for 4s: each act costs the sinner 25% of its own attack. It hallows the ground: a Field of Ash (each fallen foe heals every Sister 6%) for 4s.
+- PASSIVE Smoke-Lunged Penance: Raises the party's Mercy line from 15% to 25%. Every Mercy kill gives every Sister 10 Zeal. While she stands, every Sister takes 4% less damage.
+- RELIC Iron Tuning Fork (game item; not drawn in her art): Shroud Verse: Her ally Regenerates 4% of max HP every 2s for 4s.
+- ASCENSION (coming): As a Deity, her Ash Psalm also grants Rapture (no damage for 2s) to every Sister, and her passive grows by half.
+- BATTLE CRY: "Ash to ash. You first. Sing with me!"
+```
+<!-- END GAME DATA -->
 
 Read the Ashen Mercy section of order-bible.md first. Cloth: ash-white #c9c2b8 lead, wine #652b3b trim, soot-black mail. Head: white wimple and coif with an ash thumbprint on the brow. Hem: scorched edge.
 
@@ -30,15 +54,7 @@ FANATIC: knuckles split and bound in charred prayer cloth; blend into her expres
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (daring): on top of her neckline, show thigh-high boots with bare skin above, held by garter straps of chain, and a bare midriff under a short breastplate. SPLASH POSE (splash only; the bust and battle sprite use their own framing): twisting at the waist mid-swing, hair flying. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: soot-black gothic plate, purity seals scorched at the edges, a funeral pyre burning behind her (splash only).
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Keening Note: Smite any enemy: Sundered (-20% armor) and Hexed (-20% Magic Resist) for 4s.
-- SKILL II Pyre Hymn: Smite any enemy, Hex it (-18% Magic Resist) and Foretell it: its Mercy line is 13% higher, for 4s. She heals 20% of the damage dealt.
-- SKILL III Shroud Verse: An ally gains +31% attack for 4s and Haste. Her ally gains +12% critical chance for 4s. Cooldown 6s.
-- LITANY Ash Psalm: LITANY: heavy magic damage on every enemy; any common foe left under 30% HP is granted Mercy at once. Lays Penance on every foe it strikes for 4s: each act costs the sinner 25% of its own attack. It hallows the ground: a Field of Ash (each fallen foe heals every Sister 6%) for 4s.
-- PASSIVE Smoke-Lunged Penance: Raises the party's Mercy line from 15% to 25%. Every Mercy kill gives every Sister 10 Zeal. While she stands, every Sister takes 4% less damage.
-- RELIC Iron Tuning Fork (game item; not drawn in her art): Shroud Verse: Her ally Regenerates 4% of max HP every 2s for 4s.
-- ASCENSION (coming): As a Deity, her Ash Psalm also grants Rapture (no damage for 2s) to every Sister, and her passive grows by half.
-- BATTLE CRY: "Ash to ash. You first. Sing with me!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: grey ash-flame and falling soot, a wine-red glow as wounds close; her voice is visible as rings of flame; her Litany Ash Psalm hallows the ground in a ring of grey ash-flame and falling soot; her Iron Tuning Fork blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Sedata Crematrix, Blood of the Grey Dawn. Draw only these objects: her Mythic weapon, Bell of the Choking Smoke, a floating cracked bell that weeps light of ash-grey light with wine embers from its crack, struck with a tuning-staff topped by small iron wings, trailing thin smoke, its edges charred from the mercy-pyres; and her open hymnal. Sizes in her head-heights (she is about 7.3 heads tall): staff 3 heads tall, bell 1 head. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

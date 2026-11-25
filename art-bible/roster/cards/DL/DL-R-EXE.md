@@ -1,4 +1,28 @@
-<!-- Drowned Litany (DL) card DL-R-EXE. Generated from the sister bible; do not edit here. -->
+<!-- Drowned Litany (DL) card DL-R-EXE. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: DL-R-EXE
+name: Breaca Salsa
+epithet: Castellan of the Tide Company
+rarity: R
+rank: Commander
+order: Drowned Litany (order id drowned-litany, code DL)
+class: Executioner (class id inquisitor, role Melee DPS)
+age: 26
+weapon: Floodward Headsman (Epic)
+relic: interrogation seal, strung with pearls (a game item)
+kit:
+- SKILL I Accuse: Light hit on any foe. Accused takes +25% damage, and is Sundered (-25% armor), for 6s.
+- SKILL II Duelist's Thrust: Lunge at a near foe. +50% against the Accused.
+- SKILL III Flood Beheading: Lunge at a near foe and Stagger it. +50% against the Accused. Weakens the foe (-10% attack) for 4s. Cooldown 6s.
+- LITANY Verdict: LITANY: crushing blow on any enemy, doubled against the Accused. Stuns it for 2s (not bosses).
+- PASSIVE Barnacled Penance: +1 speed: she acts sooner. Reflection: 6% of every blow she takes cuts its striker.
+- RELIC Interrogation Seal (game item; not drawn in her art): Duelist's Thrust: Silences it for 2s: only its plainest skill, and any charge breaks. It hits 8% harder.
+- COMMAND (coming): Leads headsmen who hunt enemy captains of the Drowned Litany.
+- BATTLE CRY: "The tide rises, and you sink. One stroke!"
+```
+<!-- END GAME DATA -->
 
 Read the Drowned Litany section of order-bible.md first. Cloth: sea-teal #3f6e78 lead, parchment #c6baa4 trim, verdigris, salt-worn bronze. Head: visor helm or a wet clinging veil. Hem: wet, clinging, dripping points.
 
@@ -14,15 +38,7 @@ FANATIC: tears of blood dried on her cheeks; blend into her expression: eyes bla
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (confident): on top of her neckline, show a torn habit that bares hip and leg, and a chain harness across her bare waist. SPLASH POSE (splash only; the bust and battle sprite use their own framing): striding forward out of smoke, cape snapping behind. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: sea-worn verdigris plate, purity seals bleached by salt, salt crusting every rivet.
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Accuse: Light hit on any foe. Accused takes +25% damage, and is Sundered (-25% armor), for 6s.
-- SKILL II Duelist's Thrust: Lunge at a near foe. +50% against the Accused.
-- SKILL III Flood Beheading: Lunge at a near foe and Stagger it. +50% against the Accused. Weakens the foe (-10% attack) for 4s. Cooldown 6s.
-- LITANY Verdict: LITANY: crushing blow on any enemy, doubled against the Accused. Stuns it for 2s (not bosses).
-- PASSIVE Barnacled Penance: +1 speed: she acts sooner. Reflection: 6% of every blow she takes cuts its striker.
-- RELIC Interrogation Seal (game item; not drawn in her art): Duelist's Thrust: Silences it for 2s: only its plainest skill, and any charge breaks. It hits 8% harder.
-- COMMAND (coming): Leads headsmen who hunt enemy captains of the Drowned Litany.
-- BATTLE CRY: "The tide rises, and you sink. One stroke!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: teal water rising upward, pearls and salt spray; the executioner's axe falls in one heavy flash; her Interrogation Seal blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Breaca Salsa, Castellan of the Tide Company. Draw only these objects: her Epic weapon, Floodward Headsman, a heavy executioner's axe of verdigris, salt-crusted bronze with pearls with a writ nailed to the haft and waves, pearls and a drowned bell on the blade, crusted with barnacles and dripping black water. Sizes in her head-heights (she is about 7.3 heads tall): axe 3 heads long. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

@@ -1,4 +1,28 @@
-<!-- Hallowed Belfry (HB) card HB-R-MAR. Generated from the sister bible; do not edit here. -->
+<!-- Hallowed Belfry (HB) card HB-R-MAR. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: HB-R-MAR
+name: Zbyslava Tonitrua
+epithet: Warden of the Storm Bell
+rarity: R
+rank: Commander
+order: Hallowed Belfry (order id hollow-bell, code HB)
+class: Martyr (class id martyr, role Tank)
+age: 29
+weapon: Knell Oath (Epic)
+relic: fractured dawn icon, bearing a cracked oval mother-of-pearl inset (a game item)
+kit:
+- SKILL I Searing Smite: Strike a front-line foe and heal for 35% of the damage dealt.
+- SKILL II Intercession: Draw enemy attacks for 4s, Ward herself (-20% damage) and Regenerate 5% every 2s. Cooldown 6s.
+- SKILL III Ring for the Dead: Ring the Bell and draw attacks for 2s. Cooldown 4s.
+- LITANY Dawnbreak: LITANY: burn every enemy with light, heal for 50% of the damage dealt and draw attacks for 4s.
+- PASSIVE Last Breath: Once a fight a killing blow leaves her at 1 HP. Peal: she heals 8%.
+- RELIC Fractured Dawn Icon (game item; not drawn in her art): Ring for the Dead: She gains 4 Zeal.
+- COMMAND (coming): Leads a mob of flagellant zealots who charge without fear of the Hallowed Belfry.
+- BATTLE CRY: "*one toll, one life* Death will have to wait its turn!"
+```
+<!-- END GAME DATA -->
 
 Read the Hallowed Belfry section of order-bible.md first. Cloth: bell bronze #8b6848 lead, parchment #c6baa4 trim, blackened iron. Head: bell-shaped hood or coif hung with small hand-bells. Hem: scalloped, bell-curved hem.
 
@@ -14,15 +38,7 @@ FANATIC: tears of blood dried on her cheeks; blend into her expression: with a f
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (confident): on top of her neckline, show thigh-high boots with bare skin above, held by garter straps of chain, and a corset cinched tight under the bust. SPLASH POSE (splash only; the bust and battle sprite use their own framing): kneeling in prayer with the weapon planted, looking up through her lashes. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: blackened gothic plate with bell-shaped pauldrons, purity seals on bell-rope cords, a cracked cathedral bell hung behind her (splash only).
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Searing Smite: Strike a front-line foe and heal for 35% of the damage dealt.
-- SKILL II Intercession: Draw enemy attacks for 4s, Ward herself (-20% damage) and Regenerate 5% every 2s. Cooldown 6s.
-- SKILL III Ring for the Dead: Ring the Bell and draw attacks for 2s. Cooldown 4s.
-- LITANY Dawnbreak: LITANY: burn every enemy with light, heal for 50% of the damage dealt and draw attacks for 4s.
-- PASSIVE Last Breath: Once a fight a killing blow leaves her at 1 HP. Peal: she heals 8%.
-- RELIC Fractured Dawn Icon (game item; not drawn in her art): Ring for the Dead: She gains 4 Zeal.
-- COMMAND (coming): Leads a mob of flagellant zealots who charge without fear of the Hallowed Belfry.
-- BATTLE CRY: "*one toll, one life* Death will have to wait its turn!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: bronze sound-rings rippling out, rope shadows and a dull midnight shockwave; her own blood turns to consecrated fire across her sisters; her Fractured Dawn Icon blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Zbyslava Tonitrua, Warden of the Storm Bell. Draw only these objects: her Epic weapon, Knell Oath, a heavy broadsword of blackened iron with bell-bronze fittings and rope with a bandaged grip and a round buckler stamped with bells, cracks and bell-rope, ringing with a small black death-knell bell tied to it. Sizes in her head-heights (she is about 7.3 heads tall): broadsword 2.5 heads, buckler 1 head across. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

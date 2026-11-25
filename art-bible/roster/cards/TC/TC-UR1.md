@@ -1,10 +1,33 @@
-<!-- The Verdant Martyrdom (TC) card TC-UR1. Generated from the sister bible; do not edit here. -->
+<!-- The Verdant Martyrdom (TC) card TC-UR1. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: TC-UR1
+name: Cruentia
+epithet: the Bleeding Rose, Goddess of Penance
+rarity: UR
+rank: Deity
+order: Verdant Martyrdom (order id thorn-covenant, code TC)
+class: Sentinel (class id sentinel, role Tank)
+age: 27
+weapon: The Thorned Sepulcher of the Bleeding Rose (Divine Arsenal)
+relic: funerary key, engraved with a tiny ruined sanctuary (a game item)
+kit:
+- SKILL I Briar Guard: Strike a front-line foe, draw attacks and counter, for 4s. She heals 25% of the damage dealt.
+- SKILL II Scourge Stance: Sacrifice 10% HP; Ward herself (-30%) and draw attacks for 4s. She is Thorned (30% of blows back) for 4s. Cooldown 6s.
+- SKILL III Rend the Fraud: Spend 5 Scars to strip a foe's shield and blessings and Stun it (bosses are Staggered instead). She gains 2 Fervor (+6% damage each, up to 5). Cooldown 8s.
+- LITANY Thicket: LITANY: every ally gains Thorns (30% back) for 4s; she draws every attack. Every Sister gains +15% critical chance for 4s. It hallows the ground: Briar Ground (every foe bleeds 15% of her attack every 2s) for 6s.
+- PASSIVE Crown of Living Briar: Each hit she takes gives her 1 Scar. Her counters deal 4% more per Scar and leave the attacker Bleeding for 4s.
+- SAINT'S SEAL Unmasked: The first time she drops under 30% HP, she heals 25% and goes to 10 Scars.
+- RELIC Funerary Key (draw it clearly): Thicket: Every Sister gains 2 Mirror Images (each swallows a whole hit).
+- BATTLE CRY: "The thorns know your name. Every blow you land, I return!"
+```
+<!-- END GAME DATA -->
 
 Read the Verdant Martyrdom section of order-bible.md first. Cloth: moss green #5a7a3a lead, blood red #9a2a33 trim, old bronze. Head: crown of living briar. Hem: thorny tatters.
 
 ### TC-UR1: Cruentia, the Bleeding Rose, Goddess of Penance (Deity)
 **LOCKED REFERENCE: keep her approved bust, sprite and splash exactly. Her red-and-cream dress is the one approved Verdant Martyrdom exception.**
-APPROVED ART RECORD: bust portraits/TC-UR1.png, sprite full-body/TC-UR1.png, splash splash/TC-UR1.webp, all from the game repo (main). Status: PRESERVE all three exactly; no new art is needed. Her red-and-cream dress is the approved exception. If a step needs one of these files and it isn't attached, ask Aaron for it; never redraw her from the text.
 ```text
 Rarity: UR (Deity)
 Order: Verdant Martyrdom
@@ -30,15 +53,7 @@ TONE dark, gritty occult zeal: inquisition, crusade, heresy and pyres. Soot, blo
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (boldest in her Order): on top of her neckline, show a side-cut tabard open from ribs to hip, and a bare midriff under a short breastplate. SPLASH POSE (splash only; the bust and battle sprite use their own framing): striding forward out of smoke, cape snapping behind. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: scourged gothic plate wrapped in barbed briar, purity seals soaked in her own blood, flagellant scars and a rose-wreathed skull.
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Briar Guard: Strike a front-line foe, draw attacks and counter, for 4s. She heals 25% of the damage dealt.
-- SKILL II Scourge Stance: Sacrifice 10% HP; Ward herself (-30%) and draw attacks for 4s. She is Thorned (30% of blows back) for 4s. Cooldown 6s.
-- SKILL III Rend the Fraud: Spend 5 Scars to strip a foe's shield and blessings and Stun it (bosses are Staggered instead). She gains 2 Fervor (+6% damage each, up to 5). Cooldown 8s.
-- LITANY Thicket: LITANY: every ally gains Thorns (30% back) for 4s; she draws every attack. Every Sister gains +15% critical chance for 4s. It hallows the ground: Briar Ground (every foe bleeds 15% of her attack every 2s) for 6s.
-- PASSIVE Crown of Living Briar: Each hit she takes gives her 1 Scar. Her counters deal 4% more per Scar and leave the attacker Bleeding for 4s.
-- SAINT'S SEAL Unmasked: The first time she drops under 30% HP, she heals 25% and goes to 10 Scars.
-- RELIC Funerary Key (draw it clearly): Thicket: Every Sister gains 2 Mirror Images (each swallows a whole hit).
-- BATTLE CRY: "The thorns know your name. Every blow you land, I return!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: blood-red scar-light and lashing briar, rose petals torn loose; she plants her feet and every blow she takes flashes back as a riposte arc; her Litany Thicket hallows the ground in a ring of blood-red scar-light and lashing briar; her Funerary Key blazes when woken.
 IMAGE PROMPT: none. She is a locked reference: attach her approved bust and sprite and copy them exactly. Her weapon is The Thorned Sepulcher of the Bleeding Rose (Divine Arsenal): keep it as drawn in her approved art; on her splash, show its glow from her Weapon line.
 ```

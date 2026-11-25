@@ -1,4 +1,28 @@
-<!-- Choir of the Pyre (CC) card CC-R-HIE. Generated from the sister bible; do not edit here. -->
+<!-- Choir of the Pyre (CC) card CC-R-HIE. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: CC-R-HIE
+name: Abigail Rogusia
+epithet: Captain of the Candle Loft
+rarity: R
+rank: Commander
+order: Choir of the Pyre (order id candle-choir, code CC)
+class: Hierophant (class id hierophant, role Tank)
+age: 29
+weapon: Vesper Bastion (Epic)
+relic: miniature candlelit shrine, with a small candle stub (a game item)
+kit:
+- SKILL I Reliquary Bash: Strike a front-line foe, hurl it back and draw enemy attacks for 4s.
+- SKILL II Sanctuary: Shield an ally for 30% of max HP and Ward her: -15% damage taken for 4s. Cooldown 4s.
+- SKILL III Chanted Rampart: A Hymn for 6s: every ally Regenerates 3% every 2s. She gains 4 Zeal. Cooldown 8s.
+- LITANY Wall of Saints: LITANY: shield every ally for 25% of max HP and Ward them: -20% damage taken for 4s.
+- PASSIVE Candlelit Tithe: While she stands, your Sisters take 3% less damage. Every Sister starts the fight with +2 Zeal.
+- RELIC Miniature Candlelit Shrine (game item; not drawn in her art): Sanctuary: Her ally Regenerates 3% of max HP every 2s for 4s.
+- COMMAND (coming): Leads a shield-wall of relic bearers of the Choir of the Pyre.
+- BATTLE CRY: "Hear the choir, and burn. Not one step past me!"
+```
+<!-- END GAME DATA -->
 
 Read the Choir of the Pyre section of order-bible.md first. Cloth: candle gold #d6a15f lead, wine #652b3b trim, bronze. Head: crown of dripping candles. Hem: ribbon streamers.
 
@@ -14,15 +38,7 @@ FANATIC: a rope of confessions knotted around her waist; blend into her expressi
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (confident): on top of her neckline, show bare thighs between greaves and a high-cut tabard slit, and a torn habit that bares hip and leg. SPLASH POSE (splash only; the bust and battle sprite use their own framing): back arched, hip cocked, cloak swept back over one shoulder. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: gilded gothic plate dripping with candle wax, purity seals as hymn sheets, a battle hymn screamed not sung, consecrated fire in her eyes and on her blade.
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Reliquary Bash: Strike a front-line foe, hurl it back and draw enemy attacks for 4s.
-- SKILL II Sanctuary: Shield an ally for 30% of max HP and Ward her: -15% damage taken for 4s. Cooldown 4s.
-- SKILL III Chanted Rampart: A Hymn for 6s: every ally Regenerates 3% every 2s. She gains 4 Zeal. Cooldown 8s.
-- LITANY Wall of Saints: LITANY: shield every ally for 25% of max HP and Ward them: -20% damage taken for 4s.
-- PASSIVE Candlelit Tithe: While she stands, your Sisters take 3% less damage. Every Sister starts the fight with +2 Zeal.
-- RELIC Miniature Candlelit Shrine (game item; not drawn in her art): Sanctuary: Her ally Regenerates 3% of max HP every 2s for 4s.
-- COMMAND (coming): Leads a shield-wall of relic bearers of the Choir of the Pyre.
-- BATTLE CRY: "Hear the choir, and burn. Not one step past me!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: candle-gold flame, dripping wax and floating hymn ribbons; her reliquary-shield flares and throws up a wall of light; her Miniature Candlelit Shrine blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Abigail Rogusia, Captain of the Candle Loft. Draw only these objects: her Epic weapon, Vesper Bastion, a tower shield of dull bronze dripping with red wax with a small shrine set in its boss, edged with dripping candles and hymn ribbons, and a flanged mace, with charred hymn-pages nailed along it. Sizes in her head-heights (she is about 7.3 heads tall): shield 2.5 heads tall, mace haft 1.5 heads. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

@@ -1,4 +1,27 @@
-<!-- Veiled Tribunal (VT) card VT-SR-HOS. Generated from the sister bible; do not edit here. -->
+<!-- Veiled Tribunal (VT) card VT-SR-HOS. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: VT-SR-HOS
+name: Chrysanthe Damnatrix
+epithet: Who Walked Out of the Court of Rats
+rarity: SR
+rank: Legend
+order: Veiled Tribunal (order id veiled-tribunal, code VT)
+class: Hospitaller (class id hospitaller, role Healer)
+age: 27
+weapon: Grail-Lance of the Burning of the Codex (Legendary)
+relic: sealed silver chalice, hung with a tiny balance scale (a game item)
+kit:
+- SKILL I Chalice Draught: Heal one ally, shield her for 15% of max HP and cure poison, burns and bleeding.
+- SKILL II Tending Hands: Heal every ally 6% of max HP, then Regenerate 6% every 2s for 6s. Cooldown 6s.
+- SKILL III Judged Mending: Smite any foe and add 2 Guilt; every Sister heals 4% for each Guilt it carries. Brands the foe: the next blow on it lands 25% harder.
+- LITANY Weighed Compline: LITANY: raise fallen Sisters with 25% HP, heal every ally 25%, and add 2 Guilt to every foe. Every Sister gains a Mirror Image (each swallows a whole hit).
+- PASSIVE Nailed Zeal: Each time she acts, every Sister heals 2% of max HP. Every Sister starts the fight with +3 Zeal.
+- RELIC Sealed Silver Chalice (game item; not drawn in her art): Chalice Draught: She gains 5 Zeal.
+- BATTLE CRY: "The Tribunal has never acquitted. I will not be the first. No Sister dies on my watch!"
+```
+<!-- END GAME DATA -->
 
 Read the Veiled Tribunal section of order-bible.md first. Cloth: dusk violet #6e5a8c lead, parchment #c6baa4 trim, black steel with crimson silk lining. Head: sheer black veil over the eyes, high angular collar. Hem: sharp angular points.
 
@@ -14,14 +37,7 @@ FANATIC: a heretic's sigil branded into her forearm; blend into her expression: 
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (bold): on top of her neckline, show a side-cut tabard open from ribs to hip, and bare thighs between greaves and a high-cut tabard slit. SPLASH POSE (splash only; the bust and battle sprite use their own framing): standing tall with weight on one leg, chin raised in contempt. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: judicial gothic plate hung with nailed verdicts and chained scripture, purity seals stamped with the scales, heretics kneeling in chains behind her (splash only).
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Chalice Draught: Heal one ally, shield her for 15% of max HP and cure poison, burns and bleeding.
-- SKILL II Tending Hands: Heal every ally 6% of max HP, then Regenerate 6% every 2s for 6s. Cooldown 6s.
-- SKILL III Judged Mending: Smite any foe and add 2 Guilt; every Sister heals 4% for each Guilt it carries. Brands the foe: the next blow on it lands 25% harder.
-- LITANY Weighed Compline: LITANY: raise fallen Sisters with 25% HP, heal every ally 25%, and add 2 Guilt to every foe. Every Sister gains a Mirror Image (each swallows a whole hit).
-- PASSIVE Nailed Zeal: Each time she acts, every Sister heals 2% of max HP. Every Sister starts the fight with +3 Zeal.
-- RELIC Sealed Silver Chalice (game item; not drawn in her art): Chalice Draught: She gains 5 Zeal.
-- BATTLE CRY: "The Tribunal has never acquitted. I will not be the first. No Sister dies on my watch!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: violet scale-marks, nailed parchment verdicts and wax seals bursting; a chalice spills light that lifts the fallen; her Sealed Silver Chalice blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Chrysanthe Damnatrix, Who Walked Out of the Court of Rats. Draw only these objects: her Legendary weapon, Grail-Lance of the Burning of the Codex, a banner lance-staff of angular black steel with crimson silk with a gilt spearhead and a sealed silver chalice whose core glows with violet judgement-light, hung with the wax seals of signed death-verdicts. Sizes in her head-heights (she is about 7.3 heads tall): staff 4 heads tall, chalice 0.5 heads. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

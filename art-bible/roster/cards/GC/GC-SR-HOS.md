@@ -1,4 +1,27 @@
-<!-- Confessors of Glass (GC) card GC-SR-HOS. Generated from the sister bible; do not edit here. -->
+<!-- Confessors of Glass (GC) card GC-SR-HOS. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: GC-SR-HOS
+name: Nonagesima Rimosa
+epithet: Who Walked Out of the Night of Black Glass
+rarity: SR
+rank: Legend
+order: Confessors of Glass (order id glass-confession, code GC)
+class: Hospitaller (class id hospitaller, role Healer)
+age: 22
+weapon: Grail-Lance of the Confession of Ten Thousand (Legendary)
+relic: vial of consecrated water, in cold silver (a game item)
+kit:
+- SKILL I Chalice Draught: Heal one ally, shield her for 15% of max HP and cure poison, burns and bleeding.
+- SKILL II Tending Hands: Heal every ally 6% of max HP, then Regenerate 6% every 2s for 6s. Cooldown 6s.
+- SKILL III Lens Communion: Cure every ally of poison, burns and bleeding, and heal them 6%. Every Sister gains a Mirror Image (each swallows a whole hit). Cooldown 6s.
+- LITANY Splinter Benediction: LITANY: cure every ally (each cure is thrown back), heal every ally 20%, and rake every enemy (Bleeding 4s). Every Sister gains +10% critical chance for 4s.
+- PASSIVE Faceless Canon: Each time she acts, every Sister heals 2% of max HP. Reflection: 8% of every blow she takes cuts its striker.
+- RELIC Vial Of Consecrated Water (game item; not drawn in her art): Chalice Draught: Her ally gains a Mirror Image (each swallows a whole hit).
+- BATTLE CRY: "Nothing is hidden. Nothing is spared. Mend, and march!"
+```
+<!-- END GAME DATA -->
 
 Read the Confessors of Glass section of order-bible.md first. Cloth: ice blue #9cc3d0 (as cold grey-blue cloth) lead, violet #6e5a8c trim, cold silver. Head: a faceless mirror faceplate under a tall coif with a black-glass pane, or a mirror circlet. Every Confessors of Glass Sister is a faceless construct of glass and mirror (see order-bible.md). Hem: crisp, clean hem.
 
@@ -15,14 +38,7 @@ FANATIC: fresh scourge marks across her shoulders; blend into her expression: ey
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (bold): on top of her neckline, show a side-cut tabard open from ribs to hip, and a bare midriff under a short breastplate. SPLASH POSE (splash only; the bust and battle sprite use their own framing): standing tall with weight on one leg, chin raised in contempt. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: cathedral-window armour of leaded stained glass, purity seals of black wax with silver ribbon, a rose window shattering behind her (splash only).
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Chalice Draught: Heal one ally, shield her for 15% of max HP and cure poison, burns and bleeding.
-- SKILL II Tending Hands: Heal every ally 6% of max HP, then Regenerate 6% every 2s for 6s. Cooldown 6s.
-- SKILL III Lens Communion: Cure every ally of poison, burns and bleeding, and heal them 6%. Every Sister gains a Mirror Image (each swallows a whole hit). Cooldown 6s.
-- LITANY Splinter Benediction: LITANY: cure every ally (each cure is thrown back), heal every ally 20%, and rake every enemy (Bleeding 4s). Every Sister gains +10% critical chance for 4s.
-- PASSIVE Faceless Canon: Each time she acts, every Sister heals 2% of max HP. Reflection: 8% of every blow she takes cuts its striker.
-- RELIC Vial Of Consecrated Water (game item; not drawn in her art): Chalice Draught: Her ally gains a Mirror Image (each swallows a whole hit).
-- BATTLE CRY: "Nothing is hidden. Nothing is spared. Mend, and march!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: ice-blue mirror shards, hard white reflections and her inner light bleeding through cracks; a chalice spills light that lifts the fallen; her Vial Of Consecrated Water blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, an anime-styled dark-fantasy heroine drawn as a faceless glass construct with a mirror faceplate, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading, glass and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Nonagesima Rimosa, Who Walked Out of the Night of Black Glass. Draw only these objects: her Legendary weapon, Grail-Lance of the Confession of Ten Thousand, a banner lance-staff of cold silver set with black glass with a gilt spearhead and a sealed silver chalice whose core glows with ice-blue light through cracked glass, with a shattered mirror-shard set in it that shows the sins of its target. Sizes in her head-heights (she is about 7.3 heads tall): staff 4 heads tall, chalice 0.5 heads. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

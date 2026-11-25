@@ -1,4 +1,28 @@
-<!-- Iron Vigil (IV) card IV-LUR. Generated from the sister bible; do not edit here. -->
+<!-- Iron Vigil (IV) card IV-LUR. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: IV-LUR
+name: Insomnia
+epithet: Vigilia Ascendant, Patron Goddess of the Iron Vigil
+rarity: UR (Limited)
+rank: Patron Deity
+order: Iron Vigil (order id iron-vigil, code IV)
+class: Arbalist (class id arbalist, role Ranged DPS)
+age: 29
+weapon: The Seventh Trumpet of the Eternal Watch (Divine Arsenal)
+relic: quiver badge, hung on a crusader's gate-key ring (a game item)
+kit:
+- SKILL I Bolt of Consecrated Light: A heavy bolt on any foe through 30% of its Armor; +50% against the Accused. Sunders the foe (-30% armor) for 4s.
+- SKILL II The Watch-Keys: Lock a foe out: it is Accused for 4s and is Staggered (breaks a charge). Then she goes on Overwatch, and her shot pierces 30% of Armor. Brands the foe: the next blow on it lands 40% harder. Cooldown 6s.
+- SKILL III The Lantern Opens Its Eye: Every Sister goes on Overwatch and gains +20% critical chance for 4s. Every Sister gains 2 Mirror Images (each swallows a whole hit). Cooldown 8s.
+- LITANY No Gate Left Open: LITANY: five bolts of consecrated light at one foe (0.55x each), through shields and 30% of its Armor; then every Sister goes on Overwatch. Accuses the foe for 4s (+25% damage taken). It hallows the ground: a Lantern Line (every 2s the most hurt Sister goes on Overwatch) for 6s.
+- PASSIVE Keeper of the Gates: +20% damage from the Rearguard. Every Sister whose Overwatch fires gains 12 Zeal. PATRON MIRACLE: every Iron Vigil Sister in the party gains +12% attack and takes 8% less damage.
+- SAINT'S SEAL The Eye Never Closes: The first time a Blasphemy lands, her lantern saw it coming: every Sister is Warded (-40%) against it.
+- RELIC Quiver Badge (game item; not drawn in her art): The Watch-Keys: Sunders the foe (-30% armor) for 4s. It hits 20% harder.
+- BATTLE CRY: "The lantern sees you. The wall forgets you. This quarrel has your name on it!"
+```
+<!-- END GAME DATA -->
 
 Read the Iron Vigil section of order-bible.md first. Cloth: bone-white #e4dccb and charcoal-black #3a3640 halved surcoat lead, ember-orange #e0622a trim, steel chainmail. Head: mail coif with a burning-cross brow band (face always shown; no helm carried). Hem: straight square-cut hem.
 
@@ -31,15 +55,7 @@ FANATIC: tears of blood dried on her cheeks; blend into her expression: eyes bla
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (bold): on top of her neckline, show a corset cinched tight under the bust, and a torn surcoat that bares hip and leg. SPLASH POSE (splash only; the bust and battle sprite use their own framing): back arched, hip cocked, cloak swept back over one shoulder. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: prayer-etched steel plate over a chainmail hauberk, a burning cross on the surcoat, wax purity seals with long ribbon scrolls on every plate, sworn to the war that never ends.
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Bolt of Consecrated Light: A heavy bolt on any foe through 30% of its Armor; +50% against the Accused. Sunders the foe (-30% armor) for 4s.
-- SKILL II The Watch-Keys: Lock a foe out: it is Accused for 4s and is Staggered (breaks a charge). Then she goes on Overwatch, and her shot pierces 30% of Armor. Brands the foe: the next blow on it lands 40% harder. Cooldown 6s.
-- SKILL III The Lantern Opens Its Eye: Every Sister goes on Overwatch and gains +20% critical chance for 4s. Every Sister gains 2 Mirror Images (each swallows a whole hit). Cooldown 8s.
-- LITANY No Gate Left Open: LITANY: five bolts of consecrated light at one foe (0.55x each), through shields and 30% of its Armor; then every Sister goes on Overwatch. Accuses the foe for 4s (+25% damage taken). It hallows the ground: a Lantern Line (every 2s the most hurt Sister goes on Overwatch) for 6s.
-- PASSIVE Keeper of the Gates: +20% damage from the Rearguard. Every Sister whose Overwatch fires gains 12 Zeal. PATRON MIRACLE: every Iron Vigil Sister in the party gains +12% attack and takes 8% less damage.
-- SAINT'S SEAL The Eye Never Closes: The first time a Blasphemy lands, her lantern saw it coming: every Sister is Warded (-40%) against it.
-- RELIC Quiver Badge (game item; not drawn in her art): The Watch-Keys: Sunders the foe (-30% armor) for 4s. It hits 20% harder.
-- BATTLE CRY: "The lantern sees you. The wall forgets you. This quarrel has your name on it!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: ember-orange crusade-fire and iron sparks, burning-cross sigils flashing on impact; a single consecrated bolt leaves a long streak of scripture-light; her Litany No Gate Left Open hallows the ground in a ring of ember-orange crusade-fire and iron sparks; her Quiver Badge blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Insomnia, Vigilia Ascendant, Patron Goddess of the Iron Vigil. Draw only these objects: her Divine Arsenal weapon, The Seventh Trumpet of the Eternal Watch, a great arbalest built around a wheel of eyes, firing spears of judgement that split the sky in ember-orange crusade-fire, scorched and notched from holding the gate while the outside burned; and her quiver of bolts. Sizes in her head-heights (she is about 7.3 heads tall): crossbow 2 heads long. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

@@ -1,4 +1,28 @@
-<!-- Iron Vigil (IV) card IV-R-ABB. Generated from the sister bible; do not edit here. -->
+<!-- Iron Vigil (IV) card IV-R-ABB. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: IV-R-ABB
+name: Gerhild Catenata
+epithet: Knight-Commander of the Last Beacon
+rarity: R
+rank: Commander
+order: Iron Vigil (order id iron-vigil, code IV)
+class: Abbess (class id abbess, role Healer)
+age: 26
+weapon: Gateward Crook (Epic)
+relic: iron rose reliquary, with a smoky-glass central inset (a game item)
+kit:
+- SKILL I Thorned Rebuke: Lash a near foe, leaving it Bleeding for 4s. Every Sister heals 45% of the damage dealt.
+- SKILL II Pruning: Heal one ally, cure poison, burns and bleeding, and let her Regenerate 3% every 2s for 4s.
+- SKILL III Rose on the Rampart: Overwatch: when the next foe acts, she heals the most hurt Sister 15% of max HP. Cooldown 6s.
+- LITANY Garden of Thorns: LITANY: rake every enemy, leaving them Bleeding for 4s. Every Sister heals 40% of the damage dealt.
+- PASSIVE Iron Rose: Foes that strike her take 10% of the damage back.
+- RELIC Iron Rose Reliquary (game item; not drawn in her art): Garden of Thorns: Brands every foe it strikes: the next blow on it lands 20% harder. It hits 8% harder.
+- COMMAND (coming): Leads a disciplined cloister of rod-armed novices of the Iron Vigil.
+- BATTLE CRY: "Every rivet is a vow, and I break none. Obey, or join them!"
+```
+<!-- END GAME DATA -->
 
 Read the Iron Vigil section of order-bible.md first. Cloth: bone-white #e4dccb and charcoal-black #3a3640 halved surcoat lead, ember-orange #e0622a trim, steel chainmail. Head: mail coif with a burning-cross brow band (face always shown; no helm carried). Hem: straight square-cut hem.
 
@@ -14,15 +38,7 @@ FANATIC: a crown of nails she drove in herself; blend into her expression: eyes 
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (confident): on top of her neckline, show thigh-high boots with bare skin above, held by garter straps of chain, and bare thighs between greaves and a high-cut tabard slit. SPLASH POSE (splash only; the bust and battle sprite use their own framing): back arched, hip cocked, cloak swept back over one shoulder. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: prayer-etched steel plate over a chainmail hauberk, a burning cross on the surcoat, wax purity seals with long ribbon scrolls on every plate, sworn to the war that never ends.
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Thorned Rebuke: Lash a near foe, leaving it Bleeding for 4s. Every Sister heals 45% of the damage dealt.
-- SKILL II Pruning: Heal one ally, cure poison, burns and bleeding, and let her Regenerate 3% every 2s for 4s.
-- SKILL III Rose on the Rampart: Overwatch: when the next foe acts, she heals the most hurt Sister 15% of max HP. Cooldown 6s.
-- LITANY Garden of Thorns: LITANY: rake every enemy, leaving them Bleeding for 4s. Every Sister heals 40% of the damage dealt.
-- PASSIVE Iron Rose: Foes that strike her take 10% of the damage back.
-- RELIC Iron Rose Reliquary (game item; not drawn in her art): Garden of Thorns: Brands every foe it strikes: the next blow on it lands 20% harder. It hits 8% harder.
-- COMMAND (coming): Leads a disciplined cloister of rod-armed novices of the Iron Vigil.
-- BATTLE CRY: "Every rivet is a vow, and I break none. Obey, or join them!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: ember-orange crusade-fire and iron sparks, burning-cross sigils flashing on impact; the crozier cracks like a whip, thorns mending as they cut; her Iron Rose Reliquary blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Gerhild Catenata, Knight-Commander of the Last Beacon. Draw only these objects: her Epic weapon, Gateward Crook, a crozier of blackened steel inlaid with a burning cross wound with one thorn vine, its hook engraved with a burning cross and a watch-lantern, with a gate-chain wrapped round it and soot in every groove. Sizes in her head-heights (she is about 7.3 heads tall): crozier 4 heads tall. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

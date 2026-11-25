@@ -1,4 +1,27 @@
-<!-- Iron Vigil (IV) card IV-SR-HOS. Generated from the sister bible; do not edit here. -->
+<!-- Iron Vigil (IV) card IV-SR-HOS. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: IV-SR-HOS
+name: Adelheid Vallata
+epithet: Who Walked Out of the Breach at Dawn
+rarity: SR
+rank: Legend
+order: Iron Vigil (order id iron-vigil, code IV)
+class: Hospitaller (class id hospitaller, role Healer)
+age: 29
+weapon: Grail-Lance of the Siege of Hollowmoor (Legendary)
+relic: sealed silver chalice, stamped with a burning cross (a game item)
+kit:
+- SKILL I Chalice Draught: Heal one ally, shield her for 15% of max HP and cure poison, burns and bleeding.
+- SKILL II Tending Hands: Heal every ally 6% of max HP, then Regenerate 6% every 2s for 6s. Cooldown 6s.
+- SKILL III Bastion Draught: Overwatch: when the next foe acts, she heals the most hurt Sister 17% of max HP. Wards her (-12% damage taken) for 4s. Cooldown 6s.
+- LITANY Rivet Litany: LITANY: every ally heals 25% of max HP, and every Sister goes on Overwatch. Every Sister Regenerates 4% of max HP every 2s for 4s.
+- PASSIVE Watchfire Seal: Each time she acts, every Sister heals 2% of max HP. While she stands, every Sister takes 3% less damage.
+- RELIC Sealed Silver Chalice (game item; not drawn in her art): Bastion Draught: Martyrdom: for 4s she takes 25% of every blow aimed at her Sisters.
+- BATTLE CRY: "I have not slept in nine years, and I will not start now. Drink, and stand!"
+```
+<!-- END GAME DATA -->
 
 Read the Iron Vigil section of order-bible.md first. Cloth: bone-white #e4dccb and charcoal-black #3a3640 halved surcoat lead, ember-orange #e0622a trim, steel chainmail. Head: mail coif with a burning-cross brow band (face always shown; no helm carried). Hem: straight square-cut hem.
 
@@ -14,14 +37,7 @@ FANATIC: tears of blood dried on her cheeks; blend into her expression: eyes bla
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (bold): on top of her neckline, show a corset cinched tight under the bust, and a bare midriff under a short breastplate. SPLASH POSE (splash only; the bust and battle sprite use their own framing): twisting at the waist mid-swing, hair flying. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: prayer-etched steel plate over a chainmail hauberk, a burning cross on the surcoat, wax purity seals with long ribbon scrolls on every plate, sworn to the war that never ends.
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Chalice Draught: Heal one ally, shield her for 15% of max HP and cure poison, burns and bleeding.
-- SKILL II Tending Hands: Heal every ally 6% of max HP, then Regenerate 6% every 2s for 6s. Cooldown 6s.
-- SKILL III Bastion Draught: Overwatch: when the next foe acts, she heals the most hurt Sister 17% of max HP. Wards her (-12% damage taken) for 4s. Cooldown 6s.
-- LITANY Rivet Litany: LITANY: every ally heals 25% of max HP, and every Sister goes on Overwatch. Every Sister Regenerates 4% of max HP every 2s for 4s.
-- PASSIVE Watchfire Seal: Each time she acts, every Sister heals 2% of max HP. While she stands, every Sister takes 3% less damage.
-- RELIC Sealed Silver Chalice (game item; not drawn in her art): Bastion Draught: Martyrdom: for 4s she takes 25% of every blow aimed at her Sisters.
-- BATTLE CRY: "I have not slept in nine years, and I will not start now. Drink, and stand!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: ember-orange crusade-fire and iron sparks, burning-cross sigils flashing on impact; a chalice spills light that lifts the fallen; her Sealed Silver Chalice blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Adelheid Vallata, Who Walked Out of the Breach at Dawn. Draw only these objects: her Legendary weapon, Grail-Lance of the Siege of Hollowmoor, a banner lance-staff of blackened steel inlaid with a burning cross with a gilt spearhead and a sealed silver chalice whose core glows with ember-orange crusade-fire, scorched and notched from holding the gate while the outside burned. Sizes in her head-heights (she is about 7.3 heads tall): staff 4 heads tall, chalice 0.5 heads. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

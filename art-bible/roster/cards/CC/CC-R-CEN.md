@@ -1,4 +1,28 @@
-<!-- Choir of the Pyre (CC) card CC-R-CEN. Generated from the sister bible; do not edit here. -->
+<!-- Choir of the Pyre (CC) card CC-R-CEN. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: CC-R-CEN
+name: Judith Ignicantrix
+epithet: Knight-Commander of the Thousand Candles
+rarity: R
+rank: Commander
+order: Choir of the Pyre (order id candle-choir, code CC)
+class: Censer (class id censer, role Ranged DPS)
+age: 24
+weapon: Waxsworn Thurible (Epic)
+relic: bronze censer, inlaid with a small bone-white devotional figure (a game item)
+kit:
+- SKILL I Incense Cloud: Smoke every enemy and leap back: small damage, -25% attack for 4s.
+- SKILL II Burning Thurible: Dash forward, swing at a front-line foe and set it Burning for 4s. Stacks on poison.
+- SKILL III Incense Verse: A Hymn for 4s: every foe -10% attack. Cooldown 8s.
+- LITANY Choking Smoke: LITANY: smite every enemy, -30% attack for 4s.
+- PASSIVE Smouldering Coals: Her burns and poisons are 15% stronger.
+- RELIC Bronze Censer (game item; not drawn in her art): Choking Smoke: Sunders every foe it strikes (-10% armor) for 4s. It hits 8% harder.
+- COMMAND (coming): Leads thurible-swingers who smoke out the enemy ranks of the Choir of the Pyre.
+- BATTLE CRY: "I will sing over your ashes. Smoke and fire!"
+```
+<!-- END GAME DATA -->
 
 Read the Choir of the Pyre section of order-bible.md first. Cloth: candle gold #d6a15f lead, wine #652b3b trim, bronze. Head: crown of dripping candles. Hem: ribbon streamers.
 
@@ -14,15 +38,7 @@ FANATIC: a rope of confessions knotted around her waist; blend into her expressi
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (confident): on top of her neckline, show a chain harness across her bare waist, and a bare midriff under a short breastplate. SPLASH POSE (splash only; the bust and battle sprite use their own framing): striding forward out of smoke, cape snapping behind. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: gilded gothic plate dripping with candle wax, purity seals as hymn sheets, a battle hymn screamed not sung, consecrated fire in her eyes and on her blade.
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Incense Cloud: Smoke every enemy and leap back: small damage, -25% attack for 4s.
-- SKILL II Burning Thurible: Dash forward, swing at a front-line foe and set it Burning for 4s. Stacks on poison.
-- SKILL III Incense Verse: A Hymn for 4s: every foe -10% attack. Cooldown 8s.
-- LITANY Choking Smoke: LITANY: smite every enemy, -30% attack for 4s.
-- PASSIVE Smouldering Coals: Her burns and poisons are 15% stronger.
-- RELIC Bronze Censer (game item; not drawn in her art): Choking Smoke: Sunders every foe it strikes (-10% armor) for 4s. It hits 8% harder.
-- COMMAND (coming): Leads thurible-swingers who smoke out the enemy ranks of the Choir of the Pyre.
-- BATTLE CRY: "I will sing over your ashes. Smoke and fire!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: candle-gold flame, dripping wax and floating hymn ribbons; the thurible swings out a choking cloud of burning incense; her Bronze Censer blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Judith Ignicantrix, Knight-Commander of the Thousand Candles. Draw only these objects: her Epic weapon, Waxsworn Thurible, a heavy censer of dull bronze dripping with red wax on a chain, pierced with dripping candles and hymn ribbons, trailing smoke, with charred hymn-pages nailed along it. Sizes in her head-heights (she is about 7.3 heads tall): censer 1 head, chain 2 heads. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

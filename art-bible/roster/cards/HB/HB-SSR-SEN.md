@@ -1,4 +1,28 @@
-<!-- Hallowed Belfry (HB) card HB-SSR-SEN. Generated from the sister bible; do not edit here. -->
+<!-- Hallowed Belfry (HB) card HB-SSR-SEN. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: HB-SSR-SEN
+name: Classica Aeramenta
+epithet: Blood of the Cracked Saint
+rarity: SSR
+rank: Demigoddess
+order: Hallowed Belfry (order id hollow-bell, code HB)
+class: Sentinel (class id sentinel, role Tank)
+age: 27
+weapon: Gate of the Hollow Toll (Mythic)
+relic: grave-warden's badge, with a bronze clapper (a game item)
+kit:
+- SKILL I Funeral Bash: Crack a front-line foe with the tomb key: Sundered (-25% armor) for 4s and Stunned for 2s (not bosses). Cooldown 8s.
+- SKILL II Peal Guard: Ring the Bell and draw attacks for 2s. She gains 6 Zeal. Cooldown 4s.
+- SKILL III Hour Riposte: Shield an ally for 31% of max HP and ring the Bell. Her ally gains +12% critical chance for 4s. Cooldown 4s.
+- LITANY Clapper Gloria: LITANY: shield every ally for 31% of max HP; the Bell rings twice. Every Sister gains a Mirror Image (each swallows a whole hit). It hallows the ground: Hallowed Ground (every Sister Regenerates 4% every 2s) for 4s.
+- PASSIVE Silent Penance: Peal: she heals 15% of her max HP and every foe is Accused for 2s. While she stands, every Sister takes 4% less damage.
+- RELIC Grave-Warden'S Badge (game item; not drawn in her art): Hour Riposte: She gains 6 Zeal.
+- ASCENSION (coming): As a Deity, her Clapper Gloria also grants Rapture (no damage for 2s) to every Sister, and her passive grows by half.
+- BATTLE CRY: "*one toll, one life* Strike me, and I strike back!"
+```
+<!-- END GAME DATA -->
 
 Read the Hallowed Belfry section of order-bible.md first. Cloth: bell bronze #8b6848 lead, parchment #c6baa4 trim, blackened iron. Head: bell-shaped hood or coif hung with small hand-bells. Hem: scalloped, bell-curved hem.
 
@@ -30,15 +54,7 @@ FANATIC: a rope of confessions knotted around her waist; blend into her expressi
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (daring): on top of her neckline, show a bare midriff under a short breastplate, and a corset cinched tight under the bust. SPLASH POSE (splash only; the bust and battle sprite use their own framing): striding forward out of smoke, cape snapping behind. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: blackened gothic plate with bell-shaped pauldrons, purity seals on bell-rope cords, a cracked cathedral bell hung behind her (splash only).
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Funeral Bash: Crack a front-line foe with the tomb key: Sundered (-25% armor) for 4s and Stunned for 2s (not bosses). Cooldown 8s.
-- SKILL II Peal Guard: Ring the Bell and draw attacks for 2s. She gains 6 Zeal. Cooldown 4s.
-- SKILL III Hour Riposte: Shield an ally for 31% of max HP and ring the Bell. Her ally gains +12% critical chance for 4s. Cooldown 4s.
-- LITANY Clapper Gloria: LITANY: shield every ally for 31% of max HP; the Bell rings twice. Every Sister gains a Mirror Image (each swallows a whole hit). It hallows the ground: Hallowed Ground (every Sister Regenerates 4% every 2s) for 4s.
-- PASSIVE Silent Penance: Peal: she heals 15% of her max HP and every foe is Accused for 2s. While she stands, every Sister takes 4% less damage.
-- RELIC Grave-Warden'S Badge (game item; not drawn in her art): Hour Riposte: She gains 6 Zeal.
-- ASCENSION (coming): As a Deity, her Clapper Gloria also grants Rapture (no damage for 2s) to every Sister, and her passive grows by half.
-- BATTLE CRY: "*one toll, one life* Strike me, and I strike back!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: bronze sound-rings rippling out, rope shadows and a dull midnight shockwave; she plants her feet and every blow she takes flashes back as a riposte arc; her Litany Clapper Gloria hallows the ground in a ring of bronze sound-rings rippling out; her Grave-Warden'S Badge blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Classica Aeramenta, Blood of the Cracked Saint. Draw only these objects: her Mythic weapon, Gate of the Hollow Toll, a tomb-door shield that holds a sleeping angel in relief whose wings are real and flex, light of bronze sound-rings leaking from its seams, and a greatsword that burns along its fuller, with a bell-rope braided from the hair of the punished wrapped round the grip. Sizes in her head-heights (she is about 7.3 heads tall): shield 3 heads tall, sword 2.5 heads. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

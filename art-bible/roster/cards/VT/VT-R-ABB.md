@@ -1,4 +1,28 @@
-<!-- Veiled Tribunal (VT) card VT-R-ABB. Generated from the sister bible; do not edit here. -->
+<!-- Veiled Tribunal (VT) card VT-R-ABB. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: VT-R-ABB
+name: Kassia Ponderosa
+epithet: Knight-Commander of the Execution Yard
+rarity: R
+rank: Commander
+order: Veiled Tribunal (order id veiled-tribunal, code VT)
+class: Abbess (class id abbess, role Healer)
+age: 21
+weapon: Verdict Crook (Epic)
+relic: cloister key, sealed with angular red wax (a game item)
+kit:
+- SKILL I Thorned Rebuke: Lash a near foe, leaving it Bleeding for 4s. Every Sister heals 45% of the damage dealt.
+- SKILL II Briar Mantle: Heal every ally 5% of max HP and dress them in thorns: foes that strike them take 35% back, for 4s. Cooldown 6s.
+- SKILL III Silent Crozier: Smite any foe and add 2 Guilt; every Sister heals 4% for each Guilt it carries. Silences it for 2s: only its plainest skill, and any charge breaks.
+- LITANY Garden of Thorns: LITANY: rake every enemy, leaving them Bleeding for 4s. Every Sister heals 40% of the damage dealt.
+- PASSIVE Gavel Faith: Foes that strike her take 10% of the damage back. Her crits Brand the foe: its next wound lands 15% harder.
+- RELIC Cloister Key (game item; not drawn in her art): Thorned Rebuke: Lays Penance on the foe for 4s: each act costs the sinner 15% of its own attack. It hits 8% harder.
+- COMMAND (coming): Leads a disciplined cloister of rod-armed novices of the Veiled Tribunal.
+- BATTLE CRY: "I need no eyes to see your sin. The rod for you, the balm for them!"
+```
+<!-- END GAME DATA -->
 
 Read the Veiled Tribunal section of order-bible.md first. Cloth: dusk violet #6e5a8c lead, parchment #c6baa4 trim, black steel with crimson silk lining. Head: sheer black veil over the eyes, high angular collar. Hem: sharp angular points.
 
@@ -14,15 +38,7 @@ FANATIC: knuckles split and bound in charred prayer cloth; blend into her expres
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (confident): on top of her neckline, show bare thighs between greaves and a high-cut tabard slit, and a torn habit that bares hip and leg. SPLASH POSE (splash only; the bust and battle sprite use their own framing): kneeling in prayer with the weapon planted, looking up through her lashes. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: judicial gothic plate hung with nailed verdicts and chained scripture, purity seals stamped with the scales, heretics kneeling in chains behind her (splash only).
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Thorned Rebuke: Lash a near foe, leaving it Bleeding for 4s. Every Sister heals 45% of the damage dealt.
-- SKILL II Briar Mantle: Heal every ally 5% of max HP and dress them in thorns: foes that strike them take 35% back, for 4s. Cooldown 6s.
-- SKILL III Silent Crozier: Smite any foe and add 2 Guilt; every Sister heals 4% for each Guilt it carries. Silences it for 2s: only its plainest skill, and any charge breaks.
-- LITANY Garden of Thorns: LITANY: rake every enemy, leaving them Bleeding for 4s. Every Sister heals 40% of the damage dealt.
-- PASSIVE Gavel Faith: Foes that strike her take 10% of the damage back. Her crits Brand the foe: its next wound lands 15% harder.
-- RELIC Cloister Key (game item; not drawn in her art): Thorned Rebuke: Lays Penance on the foe for 4s: each act costs the sinner 15% of its own attack. It hits 8% harder.
-- COMMAND (coming): Leads a disciplined cloister of rod-armed novices of the Veiled Tribunal.
-- BATTLE CRY: "I need no eyes to see your sin. The rod for you, the balm for them!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: violet scale-marks, nailed parchment verdicts and wax seals bursting; the crozier cracks like a whip, thorns mending as they cut; her Cloister Key blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Kassia Ponderosa, Knight-Commander of the Execution Yard. Draw only these objects: her Epic weapon, Verdict Crook, a crozier of angular black steel with crimson silk wound with one thorn vine, its hook engraved with balance scales and angular wax seals, notched once for every soul she condemned. Sizes in her head-heights (she is about 7.3 heads tall): crozier 4 heads tall. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

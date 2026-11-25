@@ -1,4 +1,28 @@
-<!-- Sepulcher Watch (SW) card SW-R-MAR. Generated from the sister bible; do not edit here. -->
+<!-- Sepulcher Watch (SW) card SW-R-MAR. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: SW-R-MAR
+name: Sethra Tumulata
+epithet: Warden of the Catacomb Watch
+rarity: R
+rank: Commander
+order: Sepulcher Watch (order id sepulcher-watch, code SW)
+class: Martyr (class id martyr, role Tank)
+age: 26
+weapon: Tombward Oath (Epic)
+relic: nail from a martyr's pyre, on a funerary key ring (a game item)
+kit:
+- SKILL I Searing Smite: Strike a front-line foe and heal for 35% of the damage dealt.
+- SKILL II Intercession: Draw enemy attacks for 4s, Ward herself (-20% damage) and Regenerate 5% every 2s. Cooldown 6s.
+- SKILL III Ossuary Sacrifice: Spend 2 Remains to shield every ally for 13% of max HP; with fewer, shield only herself for 16%. Martyrdom: for 4s she takes 20% of every blow aimed at her Sisters. Cooldown 6s.
+- LITANY Dawnbreak: LITANY: burn every enemy with light, heal for 50% of the damage dealt and draw attacks for 4s.
+- PASSIVE Marrow Psalm: Once a fight, a killing blow leaves her at 1 HP instead. +6% damage on foes under half HP.
+- RELIC Nail From A Martyr'S Pyre (game item; not drawn in her art): Ossuary Sacrifice: She gains 4 Zeal.
+- COMMAND (coming): Leads a mob of flagellant zealots who charge without fear of the Sepulcher Watch.
+- BATTLE CRY: "Your bones will serve the Watch. My wounds are their shield!"
+```
+<!-- END GAME DATA -->
 
 Read the Sepulcher Watch section of order-bible.md first. Cloth: bone-tan #b8ab8a lead, slate #383845 trim, dark steel with aged ivory trim. Head: bone-tan hood with a finger-bone circlet. Hem: heavy straight hem weighted with keys.
 
@@ -14,15 +38,7 @@ FANATIC: a rope of confessions knotted around her waist; blend into her expressi
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (confident): on top of her neckline, show a corset cinched tight under the bust, and a side-cut tabard open from ribs to hip. SPLASH POSE (splash only; the bust and battle sprite use their own framing): kneeling in prayer with the weapon planted, looking up through her lashes. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: ossuary plate with the bones of the honoured dead fused into it, purity seals on skull-shaped bosses, coffin nails driven through her belt.
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Searing Smite: Strike a front-line foe and heal for 35% of the damage dealt.
-- SKILL II Intercession: Draw enemy attacks for 4s, Ward herself (-20% damage) and Regenerate 5% every 2s. Cooldown 6s.
-- SKILL III Ossuary Sacrifice: Spend 2 Remains to shield every ally for 13% of max HP; with fewer, shield only herself for 16%. Martyrdom: for 4s she takes 20% of every blow aimed at her Sisters. Cooldown 6s.
-- LITANY Dawnbreak: LITANY: burn every enemy with light, heal for 50% of the damage dealt and draw attacks for 4s.
-- PASSIVE Marrow Psalm: Once a fight, a killing blow leaves her at 1 HP instead. +6% damage on foes under half HP.
-- RELIC Nail From A Martyr'S Pyre (game item; not drawn in her art): Ossuary Sacrifice: She gains 4 Zeal.
-- COMMAND (coming): Leads a mob of flagellant zealots who charge without fear of the Sepulcher Watch.
-- BATTLE CRY: "Your bones will serve the Watch. My wounds are their shield!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: bone-white light, orbiting skull tokens and spectral funerary keys; her own blood turns to consecrated fire across her sisters; her Nail From A Martyr'S Pyre blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Sethra Tumulata, Warden of the Catacomb Watch. Draw only these objects: her Epic weapon, Tombward Oath, a heavy broadsword of dark steel inlaid with ivory and bone with a bandaged grip and a round buckler stamped with funerary keys and small skulls, with a mourner's wedding ring nailed into it. Sizes in her head-heights (she is about 7.3 heads tall): broadsword 2.5 heads, buckler 1 head across. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

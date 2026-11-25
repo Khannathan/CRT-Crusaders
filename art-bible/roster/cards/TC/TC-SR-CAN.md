@@ -1,4 +1,27 @@
-<!-- The Verdant Martyrdom (TC) card TC-SR-CAN. Generated from the sister bible; do not edit here. -->
+<!-- The Verdant Martyrdom (TC) card TC-SR-CAN. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: TC-SR-CAN
+name: Benedicta Sanguinea
+epithet: Who Foretold the Bramble Siege
+rarity: SR
+rank: Legend
+order: Verdant Martyrdom (order id thorn-covenant, code TC)
+class: Cantor (class id cantor, role Buffer)
+age: 26
+weapon: Toll of the Bramble Siege (Legendary)
+relic: small cracked singing bell, spiked with thorns (a game item)
+kit:
+- SKILL I Hymn of Iron: Every ally gains +30% attack for 4s. Cooldown 6s.
+- SKILL II Keening Note: Smite any enemy: Sundered (-20% armor) and Hexed (-20% Magic Resist) for 4s.
+- SKILL III Briar Chant: Every ally loses 5% HP and gains +29% attack for 4s (Covenant Sisters Scar from it). Every Sister gains a Mirror Image (each swallows a whole hit). Cooldown 8s.
+- LITANY Bramble Gloria: LITANY: every ally loses 5% HP and gains +33% attack for 4s (Covenant Sisters Scar from it); every Sister gains 10 Zeal. Every Sister gains +10% critical chance for 4s.
+- PASSIVE Scourged Canon: Each foe she kills gives her 9 Zeal. She heals 5% of the damage she deals.
+- RELIC Small Cracked Singing Bell (game item; not drawn in her art): Bramble Gloria: Wards every Sister (-12% damage taken) for 4s.
+- BATTLE CRY: "The hedge has room for one more. The hymn rises!"
+```
+<!-- END GAME DATA -->
 
 Read the Verdant Martyrdom section of order-bible.md first. Cloth: moss green #5a7a3a lead, blood red #9a2a33 trim, old bronze. Head: crown of living briar. Hem: thorny tatters.
 
@@ -14,14 +37,7 @@ FANATIC: fresh scourge marks across her shoulders; blend into her expression: bu
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (bold): on top of her neckline, show a chain harness across her bare waist, and a side-cut tabard open from ribs to hip. SPLASH POSE (splash only; the bust and battle sprite use their own framing): standing tall with weight on one leg, chin raised in contempt. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: scourged gothic plate wrapped in barbed briar, purity seals soaked in her own blood, flagellant scars.
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Hymn of Iron: Every ally gains +30% attack for 4s. Cooldown 6s.
-- SKILL II Keening Note: Smite any enemy: Sundered (-20% armor) and Hexed (-20% Magic Resist) for 4s.
-- SKILL III Briar Chant: Every ally loses 5% HP and gains +29% attack for 4s (Covenant Sisters Scar from it). Every Sister gains a Mirror Image (each swallows a whole hit). Cooldown 8s.
-- LITANY Bramble Gloria: LITANY: every ally loses 5% HP and gains +33% attack for 4s (Covenant Sisters Scar from it); every Sister gains 10 Zeal. Every Sister gains +10% critical chance for 4s.
-- PASSIVE Scourged Canon: Each foe she kills gives her 9 Zeal. She heals 5% of the damage she deals.
-- RELIC Small Cracked Singing Bell (game item; not drawn in her art): Bramble Gloria: Wards every Sister (-12% damage taken) for 4s.
-- BATTLE CRY: "The hedge has room for one more. The hymn rises!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: blood-red scar-light and lashing briar, rose petals torn loose; her voice is visible as rings of flame; her Small Cracked Singing Bell blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Benedicta Sanguinea, Who Foretold the Bramble Siege. Draw only these objects: her Legendary weapon, Toll of the Bramble Siege, a bronze bell-mace of old bronze wound with living briar etched with nine sorrows, ringing visible rings of green-grey light with red thorn sparks, and an illuminated hymnal, with thorns growing out of it, wet with blood; and her open hymnal. Sizes in her head-heights (she is about 7.3 heads tall): staff 3 heads tall, bell 1 head. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

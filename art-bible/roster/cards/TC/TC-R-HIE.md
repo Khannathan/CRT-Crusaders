@@ -1,4 +1,28 @@
-<!-- The Verdant Martyrdom (TC) card TC-R-HIE. Generated from the sister bible; do not edit here. -->
+<!-- The Verdant Martyrdom (TC) card TC-R-HIE. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: TC-R-HIE
+name: Thecla Lacerata
+epithet: Captain of the Briar Chapel
+rarity: R
+rank: Commander
+order: Verdant Martyrdom (order id thorn-covenant, code TC)
+class: Hierophant (class id hierophant, role Tank)
+age: 28
+weapon: Rosewound Bastion (Epic)
+relic: miniature candlelit shrine, stained with an old blood mark (a game item)
+kit:
+- SKILL I Reliquary Bash: Strike a front-line foe, hurl it back and draw enemy attacks for 4s.
+- SKILL II Sanctuary: Shield an ally for 30% of max HP and Ward her: -15% damage taken for 4s. Cooldown 4s.
+- SKILL III Bramble Sanctum: Spend all her Scars: every ally heals 1% of max HP per Scar. Martyrdom: for 4s she takes 20% of every blow aimed at her Sisters. Cooldown 6s.
+- LITANY Wall of Saints: LITANY: shield every ally for 25% of max HP and Ward them: -20% damage taken for 4s.
+- PASSIVE Scarred Heresy-Bane: While she stands, your Sisters take 3% less damage. Reflection: 6% of every blow she takes cuts its striker.
+- RELIC Miniature Candlelit Shrine (game item; not drawn in her art): Wall of Saints: Every Sister gains a Mirror Image (each swallows a whole hit).
+- COMMAND (coming): Leads a shield-wall of relic bearers of the Verdant Martyrdom.
+- BATTLE CRY: "I bled for the garden this morning. Now you will. Break on my shield!"
+```
+<!-- END GAME DATA -->
 
 Read the Verdant Martyrdom section of order-bible.md first. Cloth: moss green #5a7a3a lead, blood red #9a2a33 trim, old bronze. Head: crown of living briar. Hem: thorny tatters.
 
@@ -14,15 +38,7 @@ FANATIC: tally marks of the purged cut into her bracer; blend into her expressio
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (confident): on top of her neckline, show a corset cinched tight under the bust, and skin-tight sheer black sleeves and gloves to the shoulder. SPLASH POSE (splash only; the bust and battle sprite use their own framing): kneeling in prayer with the weapon planted, looking up through her lashes. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: scourged gothic plate wrapped in barbed briar, purity seals soaked in her own blood, flagellant scars.
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Reliquary Bash: Strike a front-line foe, hurl it back and draw enemy attacks for 4s.
-- SKILL II Sanctuary: Shield an ally for 30% of max HP and Ward her: -15% damage taken for 4s. Cooldown 4s.
-- SKILL III Bramble Sanctum: Spend all her Scars: every ally heals 1% of max HP per Scar. Martyrdom: for 4s she takes 20% of every blow aimed at her Sisters. Cooldown 6s.
-- LITANY Wall of Saints: LITANY: shield every ally for 25% of max HP and Ward them: -20% damage taken for 4s.
-- PASSIVE Scarred Heresy-Bane: While she stands, your Sisters take 3% less damage. Reflection: 6% of every blow she takes cuts its striker.
-- RELIC Miniature Candlelit Shrine (game item; not drawn in her art): Wall of Saints: Every Sister gains a Mirror Image (each swallows a whole hit).
-- COMMAND (coming): Leads a shield-wall of relic bearers of the Verdant Martyrdom.
-- BATTLE CRY: "I bled for the garden this morning. Now you will. Break on my shield!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: blood-red scar-light and lashing briar, rose petals torn loose; her reliquary-shield flares and throws up a wall of light; her Miniature Candlelit Shrine blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Thecla Lacerata, Captain of the Briar Chapel. Draw only these objects: her Epic weapon, Rosewound Bastion, a tower shield of old bronze wound with living briar with a small shrine set in its boss, edged with briar, thorns and one red rose, and a flanged mace, with thorns growing out of it, wet with blood. Sizes in her head-heights (she is about 7.3 heads tall): shield 2.5 heads tall, mace haft 1.5 heads. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

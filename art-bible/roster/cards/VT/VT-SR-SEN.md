@@ -1,4 +1,27 @@
-<!-- Veiled Tribunal (VT) card VT-SR-SEN. Generated from the sister bible; do not edit here. -->
+<!-- Veiled Tribunal (VT) card VT-SR-SEN. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: VT-SR-SEN
+name: Kyranna Tacens
+epithet: Who Held the Heretic Synod
+rarity: SR
+rank: Legend
+order: Veiled Tribunal (order id veiled-tribunal, code VT)
+class: Sentinel (class id sentinel, role Tank)
+age: 29
+weapon: Bulwark of the False Pope (Legendary)
+relic: oath-bound sword hilt, wrapped in a parchment writ (a game item)
+kit:
+- SKILL I Gravewarden Strike: Strike a front-line foe and draw enemy attacks for 4s. For 4s she strikes back at anyone who hits her.
+- SKILL II Tomb Stance: Brace: -30% damage taken for 4s and draw enemy attacks. Cooldown 6s.
+- SKILL III Judged Bastion: Spend a foe's Guilt: 0.58x plus 0.3x per Guilt. At 5 Guilt it is also Stunned (not bosses). Brands the foe: the next blow on it lands 25% harder. Cooldown 6s.
+- LITANY Weighed Compline: LITANY: shield every ally for 18% of max HP; every foe's Guilt Weakens it (-5% attack per Guilt) for 4s. Wards every Sister (-12% damage taken) for 4s.
+- PASSIVE Nailed Heresy-Bane: When struck, she strikes back for 35% of her attack. Every Sister starts the fight with +3 Zeal.
+- RELIC Oath-Bound Sword Hilt (game item; not drawn in her art): Gravewarden Strike: Silences it for 2s: only its plainest skill, and any charge breaks. It hits 10% harder.
+- BATTLE CRY: "Guilty, by decree. Every blow you land, I return!"
+```
+<!-- END GAME DATA -->
 
 Read the Veiled Tribunal section of order-bible.md first. Cloth: dusk violet #6e5a8c lead, parchment #c6baa4 trim, black steel with crimson silk lining. Head: sheer black veil over the eyes, high angular collar. Hem: sharp angular points.
 
@@ -14,14 +37,7 @@ FANATIC: fresh scourge marks across her shoulders; blend into her expression: ey
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (bold): on top of her neckline, show a chain harness across her bare waist, and a bare midriff under a short breastplate. SPLASH POSE (splash only; the bust and battle sprite use their own framing): standing tall with weight on one leg, chin raised in contempt. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: judicial gothic plate hung with nailed verdicts and chained scripture, purity seals stamped with the scales, heretics kneeling in chains behind her (splash only).
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Gravewarden Strike: Strike a front-line foe and draw enemy attacks for 4s. For 4s she strikes back at anyone who hits her.
-- SKILL II Tomb Stance: Brace: -30% damage taken for 4s and draw enemy attacks. Cooldown 6s.
-- SKILL III Judged Bastion: Spend a foe's Guilt: 0.58x plus 0.3x per Guilt. At 5 Guilt it is also Stunned (not bosses). Brands the foe: the next blow on it lands 25% harder. Cooldown 6s.
-- LITANY Weighed Compline: LITANY: shield every ally for 18% of max HP; every foe's Guilt Weakens it (-5% attack per Guilt) for 4s. Wards every Sister (-12% damage taken) for 4s.
-- PASSIVE Nailed Heresy-Bane: When struck, she strikes back for 35% of her attack. Every Sister starts the fight with +3 Zeal.
-- RELIC Oath-Bound Sword Hilt (game item; not drawn in her art): Gravewarden Strike: Silences it for 2s: only its plainest skill, and any charge breaks. It hits 10% harder.
-- BATTLE CRY: "Guilty, by decree. Every blow you land, I return!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: violet scale-marks, nailed parchment verdicts and wax seals bursting; she plants her feet and every blow she takes flashes back as a riposte arc; her Oath-Bound Sword Hilt blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Kyranna Tacens, Who Held the Heretic Synod. Draw only these objects: her Legendary weapon, Bulwark of the False Pope, a tall shield of angular black steel with crimson silk carved with a knight effigy whose eyes glow, rune-cut edges, and an oath-bound longsword with a gilt crossguard, hung with the wax seals of signed death-verdicts. Sizes in her head-heights (she is about 7.3 heads tall): shield 3 heads tall, sword 2.5 heads. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

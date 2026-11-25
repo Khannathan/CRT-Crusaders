@@ -1,4 +1,27 @@
-<!-- Confessors of Glass (GC) card GC-LSSR2. Generated from the sister bible; do not edit here. -->
+<!-- Confessors of Glass (GC) card GC-LSSR2. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: GC-LSSR2
+name: Crystalla Polita
+epithet: Half-Born of the Ice Star
+rarity: SSR (Limited)
+rank: Demigoddess
+order: Confessors of Glass (order id glass-confession, code GC)
+class: Veilblade (class id veilblade, role Melee DPS)
+age: 28
+weapon: Silence of the Cold Light (Mythic)
+relic: black prayer book with a hollow spine, with a black-glass inset (a game item)
+kit:
+- SKILL I Veil Strike: Strike any foe, with +25% critical chance.
+- SKILL II Cracked Cut: A light hit on any foe: Accused, Sundered (-25% armor) and Confessed for 6s. Brands the foe: the next blow on it lands 30% harder.
+- SKILL III Shard Stiletto: Lunge at a near foe with +30% critical chance. Lays Penance on the foe for 4s: each act costs the sinner 25% of its own attack.
+- LITANY Splinter Benediction: LITANY: a crushing blow on any enemy, doubled against the Accused; always a crit against the Confessed. Opens Stigmata: it bleeds 0.25x every 2s for 4s, and every drop heals her for half. It hallows the ground: a Lantern Line (every 2s the most hurt Sister goes on Overwatch) for 4s.
+- PASSIVE Prism Faith: Her crits on a foe both Confessed and Accused Shatter for +20% more crit damage, and 30% of the hit splashes onto its neighbours. Her crits Brand the foe: its next wound lands 25% harder.
+- RELIC Black Prayer Book With A Hollow Spine (game item; not drawn in her art): Cracked Cut: +15% critical chance on it. It hits 12% harder.
+- BATTLE CRY: "The mirror shows your sin. A whisper, then nothing!"
+```
+<!-- END GAME DATA -->
 
 Read the Confessors of Glass section of order-bible.md first. Cloth: ice blue #9cc3d0 (as cold grey-blue cloth) lead, violet #6e5a8c trim, cold silver. Head: a faceless mirror faceplate under a tall coif with a black-glass pane, or a mirror circlet. Every Confessors of Glass Sister is a faceless construct of glass and mirror (see order-bible.md). Hem: crisp, clean hem.
 
@@ -32,14 +55,7 @@ FANATIC: a rope of confessions knotted around her waist; blend into her expressi
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (bold): on top of her neckline, show a corset cinched tight under the bust, and a torn habit that bares hip and leg. SPLASH POSE (splash only; the bust and battle sprite use their own framing): twisting at the waist mid-swing, hair flying. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: cathedral-window armour of leaded stained glass, purity seals of black wax with silver ribbon, a rose window shattering behind her (splash only).
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Veil Strike: Strike any foe, with +25% critical chance.
-- SKILL II Cracked Cut: A light hit on any foe: Accused, Sundered (-25% armor) and Confessed for 6s. Brands the foe: the next blow on it lands 30% harder.
-- SKILL III Shard Stiletto: Lunge at a near foe with +30% critical chance. Lays Penance on the foe for 4s: each act costs the sinner 25% of its own attack.
-- LITANY Splinter Benediction: LITANY: a crushing blow on any enemy, doubled against the Accused; always a crit against the Confessed. Opens Stigmata: it bleeds 0.25x every 2s for 4s, and every drop heals her for half. It hallows the ground: a Lantern Line (every 2s the most hurt Sister goes on Overwatch) for 4s.
-- PASSIVE Prism Faith: Her crits on a foe both Confessed and Accused Shatter for +20% more crit damage, and 30% of the hit splashes onto its neighbours. Her crits Brand the foe: its next wound lands 25% harder.
-- RELIC Black Prayer Book With A Hollow Spine (game item; not drawn in her art): Cracked Cut: +15% critical chance on it. It hits 12% harder.
-- BATTLE CRY: "The mirror shows your sin. A whisper, then nothing!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: ice-blue mirror shards, hard white reflections and her inner light bleeding through cracks; she vanishes and reappears in a slash of dark silk; her Litany Splinter Benediction hallows the ground in a ring of ice-blue mirror shards; her Black Prayer Book With A Hollow Spine blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, an anime-styled dark-fantasy heroine drawn as a faceless glass construct with a mirror faceplate, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading, glass and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Crystalla Polita, Half-Born of the Ice Star. Draw only these objects: her Mythic weapon, Silence of the Cold Light, twin daggers shaped like folded angel feathers that leave hanging cuts of ice-blue light through cracked glass in the air, with a shattered mirror-shard set in it that shows the sins of its target. Sizes in her head-heights (she is about 7.3 heads tall): daggers 1 head each. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

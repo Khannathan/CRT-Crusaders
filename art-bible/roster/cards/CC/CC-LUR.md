@@ -1,4 +1,28 @@
-<!-- Choir of the Pyre (CC) card CC-LUR. Generated from the sister bible; do not edit here. -->
+<!-- Choir of the Pyre (CC) card CC-LUR. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: CC-LUR
+name: Hosanna
+epithet: Cantica Ascendant, Patron Goddess of the Choir of the Pyre
+rarity: UR (Limited)
+rank: Patron Deity
+order: Choir of the Pyre (order id candle-choir, code CC)
+class: Adjudicator (class id adjudicator, role Buffer)
+age: 29
+weapon: The Scales of Six Wings of the Unending Hymn (Divine Arsenal)
+relic: small mirrored judgment icon, framed by a hinged silver protective cover (a game item)
+kit:
+- SKILL I Reflected Sentence: Smite any enemy: -25% attack for 4s. Drains 15 Wrath from a boss. She gains 10 Zeal.
+- SKILL II Hymn of Silence: A Hymn for 6s: every foe -15% attack. She gains +20% critical chance for 4s. Cooldown 8s.
+- SKILL III Mirror Ward: Ward an ally (-25% damage) and give her thorns (30% back) for 4s. Her ally Regenerates 6% of max HP every 2s for 4s. Cooldown 6s.
+- LITANY Final Judgment: LITANY: every enemy is Weakened (-30%) for 6s and loses 50 Wrath. +25% critical chance on it. It hallows the ground: Hallowed Ground (every Sister Regenerates 4% every 2s) for 6s.
+- PASSIVE The Mirror Judges: A boss that starts charging while a Hymn plays loses 25 Wrath. Her Weakens last 2s longer. PATRON MIRACLE: every Choir of the Pyre Sister in the party gains +12% attack and takes 8% less damage.
+- SAINT'S SEAL Reflected Blasphemy: Once a fight, a Blasphemy is turned back: the Sisters take half, and the boss takes the other half.
+- RELIC Small Mirrored Judgment Icon (game item; not drawn in her art): Mirror Ward: Her ally gains +20% critical chance for 4s.
+- BATTLE CRY: "Every village that would not sing is ash now. Sentence pronounced!"
+```
+<!-- END GAME DATA -->
 
 Read the Choir of the Pyre section of order-bible.md first. Cloth: candle gold #d6a15f lead, wine #652b3b trim, bronze. Head: crown of dripping candles. Hem: ribbon streamers.
 
@@ -32,15 +56,7 @@ FANATIC: a heretic's sigil branded into her forearm; blend into her expression: 
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (bold): on top of her neckline, show thigh-high boots with bare skin above, held by garter straps of chain, and a chain harness across her bare waist. SPLASH POSE (splash only; the bust and battle sprite use their own framing): kneeling in prayer with the weapon planted, looking up through her lashes. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: gilded gothic plate dripping with candle wax, purity seals as hymn sheets, a battle hymn screamed not sung, consecrated fire in her eyes and on her blade.
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Reflected Sentence: Smite any enemy: -25% attack for 4s. Drains 15 Wrath from a boss. She gains 10 Zeal.
-- SKILL II Hymn of Silence: A Hymn for 6s: every foe -15% attack. She gains +20% critical chance for 4s. Cooldown 8s.
-- SKILL III Mirror Ward: Ward an ally (-25% damage) and give her thorns (30% back) for 4s. Her ally Regenerates 6% of max HP every 2s for 4s. Cooldown 6s.
-- LITANY Final Judgment: LITANY: every enemy is Weakened (-30%) for 6s and loses 50 Wrath. +25% critical chance on it. It hallows the ground: Hallowed Ground (every Sister Regenerates 4% every 2s) for 6s.
-- PASSIVE The Mirror Judges: A boss that starts charging while a Hymn plays loses 25 Wrath. Her Weakens last 2s longer. PATRON MIRACLE: every Choir of the Pyre Sister in the party gains +12% attack and takes 8% less damage.
-- SAINT'S SEAL Reflected Blasphemy: Once a fight, a Blasphemy is turned back: the Sisters take half, and the boss takes the other half.
-- RELIC Small Mirrored Judgment Icon (game item; not drawn in her art): Mirror Ward: Her ally gains +20% critical chance for 4s.
-- BATTLE CRY: "Every village that would not sing is ash now. Sentence pronounced!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: candle-gold flame, dripping wax and floating hymn ribbons; giant scales of light tip and crush the foe; her Litany Final Judgment hallows the ground in a ring of candle-gold flame; her Small Mirrored Judgment Icon blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Hosanna, Cantica Ascendant, Patron Goddess of the Choir of the Pyre. Draw only these objects: her Divine Arsenal weapon, The Scales of Six Wings of the Unending Hymn, colossal scales of white fire held up by six wings, an eye at the fulcrum; sins rise from the condemned as ash and are weighed in golden candle-flame, trailing smoke from the pyres it lit; and her ledger. Sizes in her head-heights (she is about 7.3 heads tall): scales 1.5 heads tall, ledger 1 head. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

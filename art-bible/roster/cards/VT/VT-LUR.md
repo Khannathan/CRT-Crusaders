@@ -1,4 +1,28 @@
-<!-- Veiled Tribunal (VT) card VT-LUR. Generated from the sister bible; do not edit here. -->
+<!-- Veiled Tribunal (VT) card VT-LUR. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: VT-LUR
+name: Velamina
+epithet: Iudicia Ascendant, Patron Goddess of the Veiled Tribunal
+rarity: UR (Limited)
+rank: Patron Deity
+order: Veiled Tribunal (order id veiled-tribunal, code VT)
+class: Sentinel (class id sentinel, role Tank)
+age: 25
+weapon: The Seraph-Sealed Sarcophagus of the Final Verdict (Divine Arsenal)
+relic: oath-bound sword hilt, inlaid with a small bone-white devotional figure (a game item)
+kit:
+- SKILL I Oath Strike: Strike a front-line foe, draw attacks and counter anyone who hits her, for 4s. Brands the foe: the next blow on it lands 40% harder.
+- SKILL II Templar's Stand: Ward herself (-30% damage) and draw attacks for 4s. She gains +20% critical chance for 4s. Cooldown 6s.
+- SKILL III Unsheathe the Oath: Spend a foe's Guilt: 0.8x plus 0.3x per Guilt. At 5 Guilt it is also Stunned (not bosses). Lays Penance on the foe for 4s: each act costs the sinner 35% of its own attack. Cooldown 6s.
+- LITANY Judgment of the Wall: LITANY: Ward every ally (-25% damage) for 4s; she draws every attack and counters at full attack. Every Sister Regenerates 6% of max HP every 2s for 4s. It hallows the ground: Hallowed Ground (every Sister Regenerates 4% every 2s) for 6s.
+- PASSIVE Vindication: While she stands, every Sister takes 8% less damage. Her counters add 1 Guilt; on a foe with 5 Guilt her counter becomes Vindicate and spends it for a heavy blow. PATRON MIRACLE: every Veiled Tribunal Sister in the party gains +12% attack and takes 8% less damage.
+- SAINT'S SEAL Saint of the Wall: Once a fight, when a Sister would take a hit worth over 30% of her max HP, Velamina steps in and takes it at half damage.
+- RELIC Oath-Bound Sword Hilt (game item; not drawn in her art): Unsheathe the Oath: Silences it for 4s: only its plainest skill, and any charge breaks. It hits 20% harder.
+- BATTLE CRY: "The verdict was written before you were born. I am the door that does not open!"
+```
+<!-- END GAME DATA -->
 
 Read the Veiled Tribunal section of order-bible.md first. Cloth: dusk violet #6e5a8c lead, parchment #c6baa4 trim, black steel with crimson silk lining. Head: sheer black veil over the eyes, high angular collar. Hem: sharp angular points.
 
@@ -32,15 +56,7 @@ FANATIC: prayer strips nailed into her armour; blend into her expression: eyes b
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (bold): on top of her neckline, show skin-tight sheer black sleeves and gloves to the shoulder, and a side-cut tabard open from ribs to hip. SPLASH POSE (splash only; the bust and battle sprite use their own framing): back arched, hip cocked, cloak swept back over one shoulder. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: judicial gothic plate hung with nailed verdicts and chained scripture, purity seals stamped with the scales, heretics kneeling in chains behind her (splash only).
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Oath Strike: Strike a front-line foe, draw attacks and counter anyone who hits her, for 4s. Brands the foe: the next blow on it lands 40% harder.
-- SKILL II Templar's Stand: Ward herself (-30% damage) and draw attacks for 4s. She gains +20% critical chance for 4s. Cooldown 6s.
-- SKILL III Unsheathe the Oath: Spend a foe's Guilt: 0.8x plus 0.3x per Guilt. At 5 Guilt it is also Stunned (not bosses). Lays Penance on the foe for 4s: each act costs the sinner 35% of its own attack. Cooldown 6s.
-- LITANY Judgment of the Wall: LITANY: Ward every ally (-25% damage) for 4s; she draws every attack and counters at full attack. Every Sister Regenerates 6% of max HP every 2s for 4s. It hallows the ground: Hallowed Ground (every Sister Regenerates 4% every 2s) for 6s.
-- PASSIVE Vindication: While she stands, every Sister takes 8% less damage. Her counters add 1 Guilt; on a foe with 5 Guilt her counter becomes Vindicate and spends it for a heavy blow. PATRON MIRACLE: every Veiled Tribunal Sister in the party gains +12% attack and takes 8% less damage.
-- SAINT'S SEAL Saint of the Wall: Once a fight, when a Sister would take a hit worth over 30% of her max HP, Velamina steps in and takes it at half damage.
-- RELIC Oath-Bound Sword Hilt (game item; not drawn in her art): Unsheathe the Oath: Silences it for 4s: only its plainest skill, and any charge breaks. It hits 20% harder.
-- BATTLE CRY: "The verdict was written before you were born. I am the door that does not open!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: violet scale-marks, nailed parchment verdicts and wax seals bursting; she plants her feet and every blow she takes flashes back as a riposte arc; her Litany Judgment of the Wall hallows the ground in a ring of violet scale-marks; her Oath-Bound Sword Hilt blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Velamina, Iudicia Ascendant, Patron Goddess of the Veiled Tribunal. Draw only these objects: her Divine Arsenal weapon, The Seraph-Sealed Sarcophagus of the Final Verdict, a sarcophagus-lid shield that is a door into heaven, cracked open on a blaze of violet judgement-light and turning wheels of eyes; her greatsword is a single straight seraph feather of white iron, hung with the wax seals of signed death-verdicts. Sizes in her head-heights (she is about 7.3 heads tall): shield 3 heads tall, sword 2.5 heads. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

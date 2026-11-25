@@ -1,4 +1,27 @@
-<!-- Choir of the Pyre (CC) card CC-SR-ARB. Generated from the sister bible; do not edit here. -->
+<!-- Choir of the Pyre (CC) card CC-SR-ARB. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: CC-SR-ARB
+name: Basemath Fervida
+epithet: Who Ended the Darkened Nave
+rarity: SR
+rank: Legend
+order: Choir of the Pyre (order id candle-choir, code CC)
+class: Arbalist (class id arbalist, role Ranged DPS)
+age: 23
+weapon: Wyrmbane of the Heretic Chorus (Legendary)
+relic: bolt of consecrated iron, bound in a hymn ribbon (a game item)
+kit:
+- SKILL I Consecrated Bolt: A heavy bolt on any foe that ignores 30% of its Armor.
+- SKILL II Marking Shot: Light bolt that Accuses any foe (+25% damage taken) for 4s. Cooldown 4s.
+- SKILL III Hymnal Quarrel: A Hymn for 4s: every foe -11% attack. She gains 1 Fervor (+6% damage each, up to 5). Cooldown 8s.
+- LITANY Tallow Gloria: LITANY: heavy damage on every enemy; every Sister gains 8 Zeal. Goes through 15% of Armor and Magic Resist.
+- PASSIVE Tallow Penance: Her hits on Accused foes always crit. Every Sister starts the fight with +3 Zeal.
+- RELIC Bolt Of Consecrated Iron (game item; not drawn in her art): Tallow Gloria: Sunders every foe it strikes (-15% armor) for 4s. It hits 10% harder.
+- BATTLE CRY: "My candle burns down, and I burn brighter. Mark, and fire!"
+```
+<!-- END GAME DATA -->
 
 Read the Choir of the Pyre section of order-bible.md first. Cloth: candle gold #d6a15f lead, wine #652b3b trim, bronze. Head: crown of dripping candles. Hem: ribbon streamers.
 
@@ -14,14 +37,7 @@ FANATIC: fresh scourge marks across her shoulders; blend into her expression: wi
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (bold): on top of her neckline, show a corset cinched tight under the bust, and skin-tight sheer black sleeves and gloves to the shoulder. SPLASH POSE (splash only; the bust and battle sprite use their own framing): kneeling in prayer with the weapon planted, looking up through her lashes. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: gilded gothic plate dripping with candle wax, purity seals as hymn sheets, a battle hymn screamed not sung, consecrated fire in her eyes and on her blade.
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Consecrated Bolt: A heavy bolt on any foe that ignores 30% of its Armor.
-- SKILL II Marking Shot: Light bolt that Accuses any foe (+25% damage taken) for 4s. Cooldown 4s.
-- SKILL III Hymnal Quarrel: A Hymn for 4s: every foe -11% attack. She gains 1 Fervor (+6% damage each, up to 5). Cooldown 8s.
-- LITANY Tallow Gloria: LITANY: heavy damage on every enemy; every Sister gains 8 Zeal. Goes through 15% of Armor and Magic Resist.
-- PASSIVE Tallow Penance: Her hits on Accused foes always crit. Every Sister starts the fight with +3 Zeal.
-- RELIC Bolt Of Consecrated Iron (game item; not drawn in her art): Tallow Gloria: Sunders every foe it strikes (-15% armor) for 4s. It hits 10% harder.
-- BATTLE CRY: "My candle burns down, and I burn brighter. Mark, and fire!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: candle-gold flame, dripping wax and floating hymn ribbons; a single consecrated bolt leaves a long streak of scripture-light; her Bolt Of Consecrated Iron blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Basemath Fervida, Who Ended the Darkened Nave. Draw only these objects: her Legendary weapon, Wyrmbane of the Heretic Chorus, a heavy arbalest of dull bronze dripping with red wax strung with dragon sinew, bolts tipped with glowing golden candle-flame, trailing smoke from the pyres it lit; and her quiver of bolts. Sizes in her head-heights (she is about 7.3 heads tall): crossbow 2 heads long. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

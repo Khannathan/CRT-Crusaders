@@ -1,4 +1,27 @@
-<!-- The Verdant Martyrdom (TC) card TC-SR-CON. Generated from the sister bible; do not edit here. -->
+<!-- The Verdant Martyrdom (TC) card TC-SR-CON. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: TC-SR-CON
+name: Eugenia Cruenta
+epithet: Who Walked Out of the Thorn Road
+rarity: SR
+rank: Legend
+order: Verdant Martyrdom (order id thorn-covenant, code TC)
+class: Confessor (class id confessor, role Healer)
+age: 29
+weapon: Remedy of the Rotwood Heresy (Legendary)
+relic: phial of pyre oil, with one red rose (a game item)
+kit:
+- SKILL I Remedy: Heal one ally, cure poison, burns and bleeding, and let her Regenerate 3% every 2s for 4s.
+- SKILL II Miasma: Smite a near foe and Poison it for 6s. Stacks on poison or burns.
+- SKILL III Scarred Absolution: Spend all her Scars: every ally heals 2% of max HP per Scar. She gains 5 Zeal. Cooldown 6s.
+- LITANY Vine Litany: LITANY: every ally heals 25% of max HP and gains Thorns (25% back) for 4s. Wards every Sister (-12% damage taken) for 4s.
+- PASSIVE Flayed Canon: Each time she acts, every Sister heals 2% of max HP. Reflection: 8% of every blow she takes cuts its striker.
+- RELIC Phial Of Pyre Oil (game item; not drawn in her art): Scarred Absolution: Every Sister gains a Mirror Image (each swallows a whole hit).
+- BATTLE CRY: "Pain is my psalm. Confess, and be mended!"
+```
+<!-- END GAME DATA -->
 
 Read the Verdant Martyrdom section of order-bible.md first. Cloth: moss green #5a7a3a lead, blood red #9a2a33 trim, old bronze. Head: crown of living briar. Hem: thorny tatters.
 
@@ -14,14 +37,7 @@ FANATIC: tally marks of the purged cut into her bracer; blend into her expressio
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (bold): on top of her neckline, show a torn habit that bares hip and leg, and skin-tight sheer black sleeves and gloves to the shoulder. SPLASH POSE (splash only; the bust and battle sprite use their own framing): standing tall with weight on one leg, chin raised in contempt. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: scourged gothic plate wrapped in barbed briar, purity seals soaked in her own blood, flagellant scars.
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Remedy: Heal one ally, cure poison, burns and bleeding, and let her Regenerate 3% every 2s for 4s.
-- SKILL II Miasma: Smite a near foe and Poison it for 6s. Stacks on poison or burns.
-- SKILL III Scarred Absolution: Spend all her Scars: every ally heals 2% of max HP per Scar. She gains 5 Zeal. Cooldown 6s.
-- LITANY Vine Litany: LITANY: every ally heals 25% of max HP and gains Thorns (25% back) for 4s. Wards every Sister (-12% damage taken) for 4s.
-- PASSIVE Flayed Canon: Each time she acts, every Sister heals 2% of max HP. Reflection: 8% of every blow she takes cuts its striker.
-- RELIC Phial Of Pyre Oil (game item; not drawn in her art): Scarred Absolution: Every Sister gains a Mirror Image (each swallows a whole hit).
-- BATTLE CRY: "Pain is my psalm. Confess, and be mended!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: blood-red scar-light and lashing briar, rose petals torn loose; a hand of light closes wounds and burns out poison; her Phial Of Pyre Oil blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Eugenia Cruenta, Who Walked Out of the Thorn Road. Draw only these objects: her Legendary weapon, Remedy of the Rotwood Heresy, a silver-capped beak mask, labelled glowing vials, and a censer-mace of old bronze wound with living briar that breathes medicinal smoke lit with green-grey light with red thorn sparks, wound with barbed briar that drinks her blood; and her plague beak mask. Sizes in her head-heights (she is about 7.3 heads tall): mace haft 1.5 heads, mask 1 head. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

@@ -1,4 +1,28 @@
-<!-- Hallowed Belfry (HB) card HB-SSR-ADJ. Generated from the sister bible; do not edit here. -->
+<!-- Hallowed Belfry (HB) card HB-SSR-ADJ. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: HB-SSR-ADJ
+name: Pulsa Tinnula
+epithet: Child of the Silent Ring
+rarity: SSR
+rank: Demigoddess
+order: Hallowed Belfry (order id hollow-bell, code HB)
+class: Adjudicator (class id adjudicator, role Buffer)
+age: 22
+weapon: Judgement of the Cracked Saint (Mythic)
+relic: bone stylus, with a small cracked bell (a game item)
+kit:
+- SKILL I Reflected Sentence: Smite any enemy: -25% attack for 4s. Drains 15 Wrath from a boss.
+- SKILL II Hour Judgement: An ally gains +30% attack for 4s and Haste. She gains 6 Zeal. Cooldown 6s.
+- SKILL III Clapper Verdict: The Bell rings twice and every Sister gains 6 Zeal. She is Thorned (25% of blows back) for 4s. Cooldown 8s.
+- LITANY Chime Credo: LITANY: heavy damage on every enemy; every Sister gains 15 Zeal. Sunders every foe it strikes (-20% armor) for 4s. It hallows the ground: Hallowed Ground (every Sister Regenerates 4% every 2s) for 4s.
+- PASSIVE Rope-Scarred Creed: Your Sisters start every fight with +15 Zeal. Peal: every Sister +8 Zeal. Her blows lay Penance: for 4s each act costs the foe 12% of its own attack.
+- RELIC Bone Stylus (game item; not drawn in her art): Reflected Sentence: Accuses the foe for 4s (+25% damage taken). It hits 12% harder.
+- ASCENSION (coming): As a Deity, her Chime Credo also grants Rapture (no damage for 2s) to every Sister, and her passive grows by half.
+- BATTLE CRY: "*three tolls, three graves* Weighed, and wanting!"
+```
+<!-- END GAME DATA -->
 
 Read the Hallowed Belfry section of order-bible.md first. Cloth: bell bronze #8b6848 lead, parchment #c6baa4 trim, blackened iron. Head: bell-shaped hood or coif hung with small hand-bells. Hem: scalloped, bell-curved hem.
 
@@ -30,15 +54,7 @@ FANATIC: tears of blood dried on her cheeks; blend into her expression: with a f
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (daring): on top of her neckline, show a side-cut tabard open from ribs to hip, and a bare midriff under a short breastplate. SPLASH POSE (splash only; the bust and battle sprite use their own framing): one knee raised on a heretic's skull, leaning into the weapon. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: blackened gothic plate with bell-shaped pauldrons, purity seals on bell-rope cords, a cracked cathedral bell hung behind her (splash only).
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Reflected Sentence: Smite any enemy: -25% attack for 4s. Drains 15 Wrath from a boss.
-- SKILL II Hour Judgement: An ally gains +30% attack for 4s and Haste. She gains 6 Zeal. Cooldown 6s.
-- SKILL III Clapper Verdict: The Bell rings twice and every Sister gains 6 Zeal. She is Thorned (25% of blows back) for 4s. Cooldown 8s.
-- LITANY Chime Credo: LITANY: heavy damage on every enemy; every Sister gains 15 Zeal. Sunders every foe it strikes (-20% armor) for 4s. It hallows the ground: Hallowed Ground (every Sister Regenerates 4% every 2s) for 4s.
-- PASSIVE Rope-Scarred Creed: Your Sisters start every fight with +15 Zeal. Peal: every Sister +8 Zeal. Her blows lay Penance: for 4s each act costs the foe 12% of its own attack.
-- RELIC Bone Stylus (game item; not drawn in her art): Reflected Sentence: Accuses the foe for 4s (+25% damage taken). It hits 12% harder.
-- ASCENSION (coming): As a Deity, her Chime Credo also grants Rapture (no damage for 2s) to every Sister, and her passive grows by half.
-- BATTLE CRY: "*three tolls, three graves* Weighed, and wanting!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: bronze sound-rings rippling out, rope shadows and a dull midnight shockwave; giant scales of light tip and crush the foe; her Litany Chime Credo hallows the ground in a ring of bronze sound-rings rippling out; her Bone Stylus blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Pulsa Tinnula, Child of the Silent Ring. Draw only these objects: her Mythic weapon, Judgement of the Cracked Saint, scales whose beam is a pair of angel wings and whose pans hold a burning heart and a feather, weighing in bronze sound-rings, with a bell-rope braided from the hair of the punished wrapped round the grip; and her ledger. Sizes in her head-heights (she is about 7.3 heads tall): scales 1.5 heads tall, ledger 1 head. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

@@ -1,4 +1,28 @@
-<!-- Crimson Inquisition (RP) card RP-UR2. Generated from the sister bible; do not edit here. -->
+<!-- Crimson Inquisition (RP) card RP-UR2. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: RP-UR2
+name: Cauterix
+epithet: the Golden Brand, Goddess of Confession by Fire
+rarity: UR
+rank: Deity
+order: Crimson Inquisition (order id red-pilgrimage, code RP)
+class: Hospitaller (class id hospitaller, role Healer)
+age: 28
+weapon: The Grail of Wheels of the Red Question (Divine Arsenal)
+relic: sealed silver chalice, hung with wax-sealed writs (a game item)
+kit:
+- SKILL I Lance of Mercy: Strike a near foe with the hospital lance: -25% attack for 4s. Goes through 25% of Armor and Magic Resist.
+- SKILL II Iron Mending: Heal an ally 21% of max HP and give her 1 Pursuit. She gains 8 Zeal. Cooldown 4s.
+- SKILL III Chalice Draught: Heal one ally, shield her for 15% of max HP and cure poison, burns and bleeding. Her ally Regenerates 5% of max HP every 2s for 4s.
+- LITANY Crimson Anathema: LITANY: raise fallen Sisters with 42% HP and heal every ally 35%. Rapture: every Sister takes no damage for 2s. It hallows the ground: Briar Ground (every foe bleeds 15% of her attack every 2s) for 6s.
+- PASSIVE Inquest Canon: Heals for 15% of the damage she deals, +5% per Pursuit. Each Pursuit gives her +4% damage. She heals 9% of the damage she deals.
+- SAINT'S SEAL I Walk Before You: Once a fight, a killing blow meant for another Sister lands on her instead, if she can survive it.
+- RELIC Sealed Silver Chalice (game item; not drawn in her art): Chalice Draught: Wards her ally (-20% damage taken) for 4s.
+- BATTLE CRY: "Kneel, heretic, and be questioned. Back to the line!"
+```
+<!-- END GAME DATA -->
 
 Read the Crimson Inquisition section of order-bible.md first. Cloth: blood crimson #9a2a33 lead, antique gold #d6a15f trim, blackened steel and chain. Head: wide-brimmed inquisitor's hat with a wax seal. Hem: long, sharp, spattered hems.
 
@@ -30,15 +54,7 @@ FANATIC: a heretic's sigil branded into her forearm; blend into her expression: 
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (boldest in her Order): on top of her neckline, show a corset cinched tight under the bust, and thigh-high boots with bare skin above, held by garter straps of chain. SPLASH POSE (splash only; the bust and battle sprite use their own framing): kneeling in prayer with the weapon planted, looking up through her lashes. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: blood-lacquered inquisitor plate studded with confession nails, purity seals stamped with the Inquisition's brand, the names of the condemned scratched into her plate.
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Lance of Mercy: Strike a near foe with the hospital lance: -25% attack for 4s. Goes through 25% of Armor and Magic Resist.
-- SKILL II Iron Mending: Heal an ally 21% of max HP and give her 1 Pursuit. She gains 8 Zeal. Cooldown 4s.
-- SKILL III Chalice Draught: Heal one ally, shield her for 15% of max HP and cure poison, burns and bleeding. Her ally Regenerates 5% of max HP every 2s for 4s.
-- LITANY Crimson Anathema: LITANY: raise fallen Sisters with 42% HP and heal every ally 35%. Rapture: every Sister takes no damage for 2s. It hallows the ground: Briar Ground (every foe bleeds 15% of her attack every 2s) for 6s.
-- PASSIVE Inquest Canon: Heals for 15% of the damage she deals, +5% per Pursuit. Each Pursuit gives her +4% damage. She heals 9% of the damage she deals.
-- SAINT'S SEAL I Walk Before You: Once a fight, a killing blow meant for another Sister lands on her instead, if she can survive it.
-- RELIC Sealed Silver Chalice (game item; not drawn in her art): Chalice Draught: Wards her ally (-20% damage taken) for 4s.
-- BATTLE CRY: "Kneel, heretic, and be questioned. Back to the line!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: crimson wax-seal sigils, red-hot brand-light and burning writs on the wind; a chalice spills light that lifts the fallen; her Litany Crimson Anathema hallows the ground in a ring of crimson wax-seal sigils; her Sealed Silver Chalice blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Cauterix, the Golden Brand, Goddess of Confession by Fire. Draw only these objects: her Divine Arsenal weapon, The Grail of Wheels of the Red Question, a chalice ringed by turning wheels of eyes, pouring a river of red-hot brand-light and gold sparks upward into the sky, and a lance-staff that is a single burning seraph feather, with a branding iron's red-hot sigil fused into it. Sizes in her head-heights (she is about 7.3 heads tall): staff 4 heads tall, chalice 0.5 heads. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

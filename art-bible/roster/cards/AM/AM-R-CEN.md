@@ -1,4 +1,28 @@
-<!-- Ashen Mercy (AM) card AM-R-CEN. Generated from the sister bible; do not edit here. -->
+<!-- Ashen Mercy (AM) card AM-R-CEN. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: AM-R-CEN
+name: Dolora Ustulata
+epithet: Knight-Commander of the Smoke Road
+rarity: R
+rank: Commander
+order: Ashen Mercy (order id ashen-mercy, code AM)
+class: Censer (class id censer, role Ranged DPS)
+age: 26
+weapon: Cinderkind Thurible (Epic)
+relic: smoky-glass thurible, in a soot-blackened cage (a game item)
+kit:
+- SKILL I Incense Cloud: Smoke every enemy and leap back: small damage, -25% attack for 4s.
+- SKILL II Burning Thurible: Dash forward, swing at a front-line foe and set it Burning for 4s. Stacks on poison.
+- SKILL III Mercy Fumes: Strip a foe's shield and blessings and Weaken it (-20% attack) for 4s. Opens Stigmata: it bleeds 0.15x every 2s for 4s, and every drop heals her for half. Cooldown 6s.
+- LITANY Choking Smoke: LITANY: smite every enemy, -30% attack for 4s.
+- PASSIVE Smoke-Lunged Heresy-Bane: Her burns and poisons are 15% stronger. +6% damage on foes under half HP.
+- RELIC Smoky-Glass Thurible (game item; not drawn in her art): Choking Smoke: She heals 10% of the damage dealt. It hits 8% harder.
+- COMMAND (coming): Leads thurible-swingers who smoke out the enemy ranks of the Ashen Mercy.
+- BATTLE CRY: "The Mercy wills it. Every one of you burns. Choke on the smoke!"
+```
+<!-- END GAME DATA -->
 
 Read the Ashen Mercy section of order-bible.md first. Cloth: ash-white #c9c2b8 lead, wine #652b3b trim, soot-black mail. Head: white wimple and coif with an ash thumbprint on the brow. Hem: scorched edge.
 
@@ -14,15 +38,7 @@ FANATIC: flagellant scars criss-crossing her arms; blend into her expression: in
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (confident): on top of her neckline, show a chain harness across her bare waist, and a bare midriff under a short breastplate. SPLASH POSE (splash only; the bust and battle sprite use their own framing): standing tall with weight on one leg, chin raised in contempt. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: soot-black gothic plate, purity seals scorched at the edges, a funeral pyre burning behind her (splash only).
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Incense Cloud: Smoke every enemy and leap back: small damage, -25% attack for 4s.
-- SKILL II Burning Thurible: Dash forward, swing at a front-line foe and set it Burning for 4s. Stacks on poison.
-- SKILL III Mercy Fumes: Strip a foe's shield and blessings and Weaken it (-20% attack) for 4s. Opens Stigmata: it bleeds 0.15x every 2s for 4s, and every drop heals her for half. Cooldown 6s.
-- LITANY Choking Smoke: LITANY: smite every enemy, -30% attack for 4s.
-- PASSIVE Smoke-Lunged Heresy-Bane: Her burns and poisons are 15% stronger. +6% damage on foes under half HP.
-- RELIC Smoky-Glass Thurible (game item; not drawn in her art): Choking Smoke: She heals 10% of the damage dealt. It hits 8% harder.
-- COMMAND (coming): Leads thurible-swingers who smoke out the enemy ranks of the Ashen Mercy.
-- BATTLE CRY: "The Mercy wills it. Every one of you burns. Choke on the smoke!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: grey ash-flame and falling soot, a wine-red glow as wounds close; the thurible swings out a choking cloud of burning incense; her Smoky-Glass Thurible blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Dolora Ustulata, Knight-Commander of the Smoke Road. Draw only these objects: her Epic weapon, Cinderkind Thurible, a heavy censer of soot-blackened steel with wine-red wraps on a chain, pierced with a sheltered candle cup and ash smudges, trailing smoke, trailing thin smoke, its edges charred from the mercy-pyres. Sizes in her head-heights (she is about 7.3 heads tall): censer 1 head, chain 2 heads. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

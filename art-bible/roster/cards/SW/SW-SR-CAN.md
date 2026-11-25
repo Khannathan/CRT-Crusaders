@@ -1,4 +1,27 @@
-<!-- Sepulcher Watch (SW) card SW-SR-CAN. Generated from the sister bible; do not edit here. -->
+<!-- Sepulcher Watch (SW) card SW-SR-CAN. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: SW-SR-CAN
+name: Puia Ossifraga
+epithet: Who Foretold the Hungry Dead
+rarity: SR
+rank: Legend
+order: Sepulcher Watch (order id sepulcher-watch, code SW)
+class: Cantor (class id cantor, role Buffer)
+age: 24
+weapon: Toll of the Hungry Dead (Legendary)
+relic: hymn-scroll case, carved with a small skull (a game item)
+kit:
+- SKILL I Hymn of Iron: Every ally gains +30% attack for 4s. Cooldown 6s.
+- SKILL II Keening Note: Smite any enemy: Sundered (-20% armor) and Hexed (-20% Magic Resist) for 4s.
+- SKILL III Barrow Refrain: An ally gains +20% attack for 4s and Haste; the party gains 1 Remains. She gains 5 Zeal. Cooldown 6s.
+- LITANY Skull Benediction: LITANY: every ally +25% attack for 4s, every Sister 10 Zeal, and the party gains 2 Remains. Rapture: every Sister takes no damage for 2s.
+- PASSIVE Crypt Penance: Each foe she kills gives her 9 Zeal. Her blows lay Penance: for 4s each act costs the foe 10% of its own attack.
+- RELIC Hymn-Scroll Case (game item; not drawn in her art): Hymn of Iron: Martyrdom: for 4s she takes 25% of every blow aimed at her Sisters.
+- BATTLE CRY: "The vaults are hungry, and you are still warm. Again, Sisters, louder!"
+```
+<!-- END GAME DATA -->
 
 Read the Sepulcher Watch section of order-bible.md first. Cloth: bone-tan #b8ab8a lead, slate #383845 trim, dark steel with aged ivory trim. Head: bone-tan hood with a finger-bone circlet. Hem: heavy straight hem weighted with keys.
 
@@ -14,14 +37,7 @@ FANATIC: prayer strips nailed into her armour; blend into her expression: in fan
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (bold): on top of her neckline, show a chain harness across her bare waist, and bare thighs between greaves and a high-cut tabard slit. SPLASH POSE (splash only; the bust and battle sprite use their own framing): one knee raised on a heretic's skull, leaning into the weapon. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: ossuary plate with the bones of the honoured dead fused into it, purity seals on skull-shaped bosses, coffin nails driven through her belt.
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Hymn of Iron: Every ally gains +30% attack for 4s. Cooldown 6s.
-- SKILL II Keening Note: Smite any enemy: Sundered (-20% armor) and Hexed (-20% Magic Resist) for 4s.
-- SKILL III Barrow Refrain: An ally gains +20% attack for 4s and Haste; the party gains 1 Remains. She gains 5 Zeal. Cooldown 6s.
-- LITANY Skull Benediction: LITANY: every ally +25% attack for 4s, every Sister 10 Zeal, and the party gains 2 Remains. Rapture: every Sister takes no damage for 2s.
-- PASSIVE Crypt Penance: Each foe she kills gives her 9 Zeal. Her blows lay Penance: for 4s each act costs the foe 10% of its own attack.
-- RELIC Hymn-Scroll Case (game item; not drawn in her art): Hymn of Iron: Martyrdom: for 4s she takes 25% of every blow aimed at her Sisters.
-- BATTLE CRY: "The vaults are hungry, and you are still warm. Again, Sisters, louder!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: bone-white light, orbiting skull tokens and spectral funerary keys; her voice is visible as rings of flame; her Hymn-Scroll Case blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Puia Ossifraga, Who Foretold the Hungry Dead. Draw only these objects: her Legendary weapon, Toll of the Hungry Dead, a bronze bell-mace of dark steel inlaid with ivory and bone etched with nine sorrows, ringing visible rings of bone-white grave-light, and an illuminated hymnal, crusted with grave dirt and burial lime; and her open hymnal. Sizes in her head-heights (she is about 7.3 heads tall): staff 3 heads tall, bell 1 head. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

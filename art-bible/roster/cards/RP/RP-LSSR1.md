@@ -1,4 +1,27 @@
-<!-- Crimson Inquisition (RP) card RP-LSSR1. Generated from the sister bible; do not edit here. -->
+<!-- Crimson Inquisition (RP) card RP-LSSR1. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: RP-LSSR1
+name: Quaestio Sigillata
+epithet: Daughter of the Red Question
+rarity: SSR (Limited)
+rank: Demigoddess
+order: Crimson Inquisition (order id red-pilgrimage, code RP)
+class: Exorcist (class id exorcist, role Ranged DPS)
+age: 25
+weapon: Brazier of the Endless Purge (Mythic)
+relic: covered witchfire brazier, encased in dark iron lattice (a game item)
+kit:
+- SKILL I Witch-Hunter's Flare: Dash forward, hit any enemy and strip its shield and blessings. She gains 1 Fervor (+6% damage each, up to 5).
+- SKILL II Witchfire: Set any enemy Burning for 6s. Stacks on poison or burns.
+- SKILL III Ember Retreat: Set a foe Burning for 6s (stacks) and leap back. She heals 20% of the damage dealt. Cooldown 4s.
+- LITANY Pyre of Ash: LITANY: burn every enemy for 6s (stacks); spends her Pursuit for +10% each. Brands every foe it strikes: the next blow on it lands 30% harder. It hallows the ground: Briar Ground (every foe bleeds 15% of her attack every 2s) for 4s.
+- PASSIVE Lantern of the Inquest: Her burns are 10% stronger for each Pursuit she holds.
+- RELIC Covered Witchfire Brazier (game item; not drawn in her art): Ember Retreat: Goes through 20% of Armor and Magic Resist. It hits 12% harder.
+- BATTLE CRY: "Kneel, heretic, and be questioned. Witchfire for the witch!"
+```
+<!-- END GAME DATA -->
 
 Read the Crimson Inquisition section of order-bible.md first. Cloth: blood crimson #9a2a33 lead, antique gold #d6a15f trim, blackened steel and chain. Head: wide-brimmed inquisitor's hat with a wax seal. Hem: long, sharp, spattered hems.
 
@@ -32,14 +55,7 @@ FANATIC: fresh scourge marks across her shoulders; blend into her expression: wi
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (bold): on top of her neckline, show skin-tight sheer black sleeves and gloves to the shoulder, and a side-cut tabard open from ribs to hip. SPLASH POSE (splash only; the bust and battle sprite use their own framing): kneeling in prayer with the weapon planted, looking up through her lashes. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: blood-lacquered inquisitor plate studded with confession nails, purity seals stamped with the Inquisition's brand, the names of the condemned scratched into her plate.
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Witch-Hunter's Flare: Dash forward, hit any enemy and strip its shield and blessings. She gains 1 Fervor (+6% damage each, up to 5).
-- SKILL II Witchfire: Set any enemy Burning for 6s. Stacks on poison or burns.
-- SKILL III Ember Retreat: Set a foe Burning for 6s (stacks) and leap back. She heals 20% of the damage dealt. Cooldown 4s.
-- LITANY Pyre of Ash: LITANY: burn every enemy for 6s (stacks); spends her Pursuit for +10% each. Brands every foe it strikes: the next blow on it lands 30% harder. It hallows the ground: Briar Ground (every foe bleeds 15% of her attack every 2s) for 4s.
-- PASSIVE Lantern of the Inquest: Her burns are 10% stronger for each Pursuit she holds.
-- RELIC Covered Witchfire Brazier (game item; not drawn in her art): Ember Retreat: Goes through 20% of Armor and Magic Resist. It hits 12% harder.
-- BATTLE CRY: "Kneel, heretic, and be questioned. Witchfire for the witch!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: crimson wax-seal sigils, red-hot brand-light and burning writs on the wind; the lantern opens and witchfire pours out like a flamer; her Litany Pyre of Ash hallows the ground in a ring of crimson wax-seal sigils; her Covered Witchfire Brazier blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Quaestio Sigillata, Daughter of the Red Question. Draw only these objects: her Mythic weapon, Brazier of the Endless Purge, a lantern holding a captured angel's fire, small iron wings around the cage, burning red-hot brand-light and gold sparks, with a branding iron's red-hot sigil fused into it. Sizes in her head-heights (she is about 7.3 heads tall): pole 4 heads tall, lantern 1 head. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

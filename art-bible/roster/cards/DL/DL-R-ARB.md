@@ -1,4 +1,28 @@
-<!-- Drowned Litany (DL) card DL-R-ARB. Generated from the sister bible; do not edit here. -->
+<!-- Drowned Litany (DL) card DL-R-ARB. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: DL-R-ARB
+name: Ia Naufraga
+epithet: Prefect of the Deep Font
+rarity: R
+rank: Commander
+order: Drowned Litany (order id drowned-litany, code DL)
+class: Arbalist (class id arbalist, role Ranged DPS)
+age: 27
+weapon: Deepbell Arbalest (Epic)
+relic: saint's arrowhead, crusted with salt (a game item)
+kit:
+- SKILL I Consecrated Bolt: A heavy bolt on any foe that ignores 30% of its Armor.
+- SKILL II Marking Shot: Light bolt that Accuses any foe (+25% damage taken) for 4s. Cooldown 4s.
+- SKILL III Tide Bolt: Strike any enemy; +8% per Tide. She heals 10% of the damage dealt.
+- LITANY Saint's Ballista: LITANY: a crushing bolt on any enemy, through shields and half its Armor.
+- PASSIVE Sea-Wet Seal: Her hits on Accused foes always crit. Reflection: 6% of every blow she takes cuts its striker.
+- RELIC Saint'S Arrowhead (game item; not drawn in her art): Consecrated Bolt: She heals 10% of the damage dealt. It hits 8% harder.
+- COMMAND (coming): Leads a line of crossbow zealots of the Drowned Litany.
+- BATTLE CRY: "Salt in the wound, salt in the soul. Loose!"
+```
+<!-- END GAME DATA -->
 
 Read the Drowned Litany section of order-bible.md first. Cloth: sea-teal #3f6e78 lead, parchment #c6baa4 trim, verdigris, salt-worn bronze. Head: visor helm or a wet clinging veil. Hem: wet, clinging, dripping points.
 
@@ -14,15 +38,7 @@ FANATIC: fresh scourge marks across her shoulders; blend into her expression: in
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (confident): on top of her neckline, show thigh-high boots with bare skin above, held by garter straps of chain, and a corset cinched tight under the bust. SPLASH POSE (splash only; the bust and battle sprite use their own framing): twisting at the waist mid-swing, hair flying. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: sea-worn verdigris plate, purity seals bleached by salt, salt crusting every rivet.
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Consecrated Bolt: A heavy bolt on any foe that ignores 30% of its Armor.
-- SKILL II Marking Shot: Light bolt that Accuses any foe (+25% damage taken) for 4s. Cooldown 4s.
-- SKILL III Tide Bolt: Strike any enemy; +8% per Tide. She heals 10% of the damage dealt.
-- LITANY Saint's Ballista: LITANY: a crushing bolt on any enemy, through shields and half its Armor.
-- PASSIVE Sea-Wet Seal: Her hits on Accused foes always crit. Reflection: 6% of every blow she takes cuts its striker.
-- RELIC Saint'S Arrowhead (game item; not drawn in her art): Consecrated Bolt: She heals 10% of the damage dealt. It hits 8% harder.
-- COMMAND (coming): Leads a line of crossbow zealots of the Drowned Litany.
-- BATTLE CRY: "Salt in the wound, salt in the soul. Loose!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: teal water rising upward, pearls and salt spray; a single consecrated bolt leaves a long streak of scripture-light; her Saint'S Arrowhead blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Ia Naufraga, Prefect of the Deep Font. Draw only these objects: her Epic weapon, Deepbell Arbalest, a steel-prod crossbow of verdigris, salt-crusted bronze with pearls with a tooled quiver, the stock carved with waves, pearls and a drowned bell, crusted with barnacles and dripping black water; and her quiver of bolts. Sizes in her head-heights (she is about 7.3 heads tall): crossbow 2 heads long. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

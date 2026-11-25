@@ -1,4 +1,27 @@
-<!-- Hallowed Belfry (HB) card HB-SR-CEN. Generated from the sister bible; do not edit here. -->
+<!-- Hallowed Belfry (HB) card HB-SR-CEN. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: HB-SR-CEN
+name: Rostislava Aerea
+epithet: Who Ended the Midnight Toll
+rarity: SR
+rank: Legend
+order: Hallowed Belfry (order id hollow-bell, code HB)
+class: Censer (class id censer, role Ranged DPS)
+age: 27
+weapon: Censer of the Storm Night (Legendary)
+relic: incense box, engraved with twelve tolls (a game item)
+kit:
+- SKILL I Incense Cloud: Smoke every enemy and leap back: small damage, -25% attack for 4s.
+- SKILL II Burning Thurible: Dash forward, swing at a front-line foe and set it Burning for 4s. Stacks on poison.
+- SKILL III Belfry Incense: Set any enemy Burning for 6s (stacks); the Bell rings twice. Silences it for 2s: only its plainest skill, and any charge breaks.
+- LITANY Hour Compline: LITANY: searing light on every enemy, then the Bell Peals at once. Accuses every foe it strikes for 2s (+25% damage taken).
+- PASSIVE Muted Faith: Her burns and poisons are 25% stronger. The fight opens on Hallowed Ground (every Sister Regenerates 4% every 2s) for 4s.
+- RELIC Incense Box (game item; not drawn in her art): Incense Cloud: Lays Penance on every foe it strikes for 4s: each act costs the sinner 20% of its own attack. It hits 10% harder.
+- BATTLE CRY: "*the bell tolls, and someone pays for it* The coals are consecrated!"
+```
+<!-- END GAME DATA -->
 
 Read the Hallowed Belfry section of order-bible.md first. Cloth: bell bronze #8b6848 lead, parchment #c6baa4 trim, blackened iron. Head: bell-shaped hood or coif hung with small hand-bells. Hem: scalloped, bell-curved hem.
 
@@ -14,14 +37,7 @@ FANATIC: prayer strips nailed into her armour; blend into her expression: eyes b
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (bold): on top of her neckline, show a corset cinched tight under the bust, and skin-tight sheer black sleeves and gloves to the shoulder. SPLASH POSE (splash only; the bust and battle sprite use their own framing): kneeling in prayer with the weapon planted, looking up through her lashes. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: blackened gothic plate with bell-shaped pauldrons, purity seals on bell-rope cords, a cracked cathedral bell hung behind her (splash only).
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Incense Cloud: Smoke every enemy and leap back: small damage, -25% attack for 4s.
-- SKILL II Burning Thurible: Dash forward, swing at a front-line foe and set it Burning for 4s. Stacks on poison.
-- SKILL III Belfry Incense: Set any enemy Burning for 6s (stacks); the Bell rings twice. Silences it for 2s: only its plainest skill, and any charge breaks.
-- LITANY Hour Compline: LITANY: searing light on every enemy, then the Bell Peals at once. Accuses every foe it strikes for 2s (+25% damage taken).
-- PASSIVE Muted Faith: Her burns and poisons are 25% stronger. The fight opens on Hallowed Ground (every Sister Regenerates 4% every 2s) for 4s.
-- RELIC Incense Box (game item; not drawn in her art): Incense Cloud: Lays Penance on every foe it strikes for 4s: each act costs the sinner 20% of its own attack. It hits 10% harder.
-- BATTLE CRY: "*the bell tolls, and someone pays for it* The coals are consecrated!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: bronze sound-rings rippling out, rope shadows and a dull midnight shockwave; the thurible swings out a choking cloud of burning incense; her Incense Box blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Rostislava Aerea, Who Ended the Midnight Toll. Draw only these objects: her Legendary weapon, Censer of the Storm Night, an engraved caged-lantern censer of blackened iron with bell-bronze fittings and rope with a glowing core, its smoke lit with bronze sound-rings, with a bell-rope braided from the hair of the punished wrapped round the grip. Sizes in her head-heights (she is about 7.3 heads tall): censer 1 head, chain 2 heads. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

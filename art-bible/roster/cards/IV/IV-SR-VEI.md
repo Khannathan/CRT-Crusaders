@@ -1,4 +1,27 @@
-<!-- Iron Vigil (IV) card IV-SR-VEI. Generated from the sister bible; do not edit here. -->
+<!-- Iron Vigil (IV) card IV-SR-VEI. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: IV-SR-VEI
+name: Hedwig Ferricrepa
+epithet: Slayer of the Night Behemoth
+rarity: SR
+rank: Legend
+order: Iron Vigil (order id iron-vigil, code IV)
+class: Veilblade (class id veilblade, role Melee DPS)
+age: 27
+weapon: Whisper of the Black Gate (Legendary)
+relic: silent bell, with a tiny ember-lit burning-cross seal (a game item)
+kit:
+- SKILL I Veil Strike: Strike any foe, with +25% critical chance.
+- SKILL II Shadowstep: Haste herself, +20% attack and +30% critical chance for 4s. Cooldown 6s.
+- SKILL III Rampart Cut: A light hit that Accuses for 4s, then she goes on Overwatch. Brands the foe: the next blow on it lands 25% harder. Cooldown 6s.
+- LITANY Lantern Gloria: LITANY: strike every enemy, and every Sister goes on Overwatch. +12% critical chance on it.
+- PASSIVE Unblinking Psalm: Deals 15% more damage to foes under half HP. Every Sister starts the fight with +3 Zeal.
+- RELIC Silent Bell (game item; not drawn in her art): Lantern Gloria: Sunders every foe it strikes (-15% armor) for 4s. It hits 10% harder.
+- BATTLE CRY: "Iron in the flesh, iron in the oath. Behind you!"
+```
+<!-- END GAME DATA -->
 
 Read the Iron Vigil section of order-bible.md first. Cloth: bone-white #e4dccb and charcoal-black #3a3640 halved surcoat lead, ember-orange #e0622a trim, steel chainmail. Head: mail coif with a burning-cross brow band (face always shown; no helm carried). Hem: straight square-cut hem.
 
@@ -14,14 +37,7 @@ FANATIC: prayer strips nailed into her armour; blend into her expression: in fan
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (bold): on top of her neckline, show bare thighs between greaves and a high-cut tabard slit, and thigh-high boots with bare skin above, held by garter straps of chain. SPLASH POSE (splash only; the bust and battle sprite use their own framing): kneeling in prayer with the weapon planted, looking up through her lashes. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: prayer-etched steel plate over a chainmail hauberk, a burning cross on the surcoat, wax purity seals with long ribbon scrolls on every plate, sworn to the war that never ends.
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Veil Strike: Strike any foe, with +25% critical chance.
-- SKILL II Shadowstep: Haste herself, +20% attack and +30% critical chance for 4s. Cooldown 6s.
-- SKILL III Rampart Cut: A light hit that Accuses for 4s, then she goes on Overwatch. Brands the foe: the next blow on it lands 25% harder. Cooldown 6s.
-- LITANY Lantern Gloria: LITANY: strike every enemy, and every Sister goes on Overwatch. +12% critical chance on it.
-- PASSIVE Unblinking Psalm: Deals 15% more damage to foes under half HP. Every Sister starts the fight with +3 Zeal.
-- RELIC Silent Bell (game item; not drawn in her art): Lantern Gloria: Sunders every foe it strikes (-15% armor) for 4s. It hits 10% harder.
-- BATTLE CRY: "Iron in the flesh, iron in the oath. Behind you!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: ember-orange crusade-fire and iron sparks, burning-cross sigils flashing on impact; she vanishes and reappears in a slash of dark silk; her Silent Bell blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Hedwig Ferricrepa, Slayer of the Night Behemoth. Draw only these objects: her Legendary weapon, Whisper of the Black Gate, two engraved daggers of blackened steel inlaid with a burning cross, one hidden in a black prayer book, both edges glowing with ember-orange crusade-fire, with a gate-chain wrapped round it and soot in every groove. Sizes in her head-heights (she is about 7.3 heads tall): daggers 1 head each. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

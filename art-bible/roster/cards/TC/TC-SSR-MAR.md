@@ -1,4 +1,28 @@
-<!-- The Verdant Martyrdom (TC) card TC-SSR-MAR. Generated from the sister bible; do not edit here. -->
+<!-- The Verdant Martyrdom (TC) card TC-SSR-MAR. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: TC-SSR-MAR
+name: Agonia Spinifera
+epithet: Child of the Wild Covenant
+rarity: SSR
+rank: Demigoddess
+order: Verdant Martyrdom (order id thorn-covenant, code TC)
+class: Martyr (class id martyr, role Tank)
+age: 27
+weapon: Stigma of the Bloom Eternal (Mythic)
+relic: fractured dawn icon, engraved with a tiny ruined sanctuary (a game item)
+kit:
+- SKILL I Bleeding Smite: Strike a front-line foe, leave it Bleeding for 4s, and heal for 35% of the damage. Sunders the foe (-20% armor) for 4s.
+- SKILL II Offering of Scars: Spend all her Scars: every ally heals 2% of max HP per Scar. Martyrdom: for 4s she takes 30% of every blow aimed at her Sisters. Cooldown 6s.
+- SKILL III Blood Oath: Sacrifice 12% HP. Every ally gains +20% attack for 4s. Cooldown 8s.
+- LITANY Dawn of Thorns: LITANY: burn every enemy with light, heal 50% of the damage, and draw attacks for 4s. Accuses every foe it strikes for 4s (+25% damage taken). It hallows the ground: Briar Ground (every foe bleeds 15% of her attack every 2s) for 4s.
+- PASSIVE Martyr's Gift: When she falls, every Sister gains 40 Zeal and +25% attack for 4s, and each Covenant Sister 1 Scar for every 2 she held.
+- RELIC Fractured Dawn Icon (game item; not drawn in her art): Offering of Scars: She gains 6 Zeal.
+- ASCENSION (coming): As a Deity, her Dawn of Thorns also grants Rapture (no damage for 2s) to every Sister, and her passive grows by half.
+- BATTLE CRY: "Feed the roots. I bleed so they need not!"
+```
+<!-- END GAME DATA -->
 
 Read the Verdant Martyrdom section of order-bible.md first. Cloth: moss green #5a7a3a lead, blood red #9a2a33 trim, old bronze. Head: crown of living briar. Hem: thorny tatters.
 
@@ -31,15 +55,7 @@ FANATIC: prayer strips nailed into her armour; blend into her expression: burnin
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (daring): on top of her neckline, show a chain harness across her bare waist, and a bare midriff under a short breastplate. SPLASH POSE (splash only; the bust and battle sprite use their own framing): striding forward out of smoke, cape snapping behind. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: scourged gothic plate wrapped in barbed briar, purity seals soaked in her own blood, flagellant scars.
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Bleeding Smite: Strike a front-line foe, leave it Bleeding for 4s, and heal for 35% of the damage. Sunders the foe (-20% armor) for 4s.
-- SKILL II Offering of Scars: Spend all her Scars: every ally heals 2% of max HP per Scar. Martyrdom: for 4s she takes 30% of every blow aimed at her Sisters. Cooldown 6s.
-- SKILL III Blood Oath: Sacrifice 12% HP. Every ally gains +20% attack for 4s. Cooldown 8s.
-- LITANY Dawn of Thorns: LITANY: burn every enemy with light, heal 50% of the damage, and draw attacks for 4s. Accuses every foe it strikes for 4s (+25% damage taken). It hallows the ground: Briar Ground (every foe bleeds 15% of her attack every 2s) for 4s.
-- PASSIVE Martyr's Gift: When she falls, every Sister gains 40 Zeal and +25% attack for 4s, and each Covenant Sister 1 Scar for every 2 she held.
-- RELIC Fractured Dawn Icon (game item; not drawn in her art): Offering of Scars: She gains 6 Zeal.
-- ASCENSION (coming): As a Deity, her Dawn of Thorns also grants Rapture (no damage for 2s) to every Sister, and her passive grows by half.
-- BATTLE CRY: "Feed the roots. I bleed so they need not!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: blood-red scar-light and lashing briar, rose petals torn loose; her own blood turns to consecrated fire across her sisters; her Litany Dawn of Thorns hallows the ground in a ring of blood-red scar-light and lashing briar; her Fractured Dawn Icon blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Agonia Spinifera, Child of the Wild Covenant. Draw only these objects: her Mythic weapon, Stigma of the Bloom Eternal, a broadsword that bleeds light from five wounds along its blade in green-grey light with red thorn sparks, and a buckler crowned with a broken halo that still spins, wound with barbed briar that drinks her blood. Sizes in her head-heights (she is about 7.3 heads tall): broadsword 2.5 heads, buckler 1 head across. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

@@ -1,4 +1,28 @@
-<!-- Confessors of Glass (GC) card GC-R-CEN. Generated from the sister bible; do not edit here. -->
+<!-- Confessors of Glass (GC) card GC-R-CEN. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: GC-R-CEN
+name: Quinta Lucida
+epithet: Knight-Commander of the Shard Guard
+rarity: R
+rank: Commander
+order: Confessors of Glass (order id glass-confession, code GC)
+class: Censer (class id censer, role Ranged DPS)
+age: 23
+weapon: Glasswake Thurible (Epic)
+relic: bronze censer, in cold silver (a game item)
+kit:
+- SKILL I Incense Cloud: Smoke every enemy and leap back: small damage, -25% attack for 4s.
+- SKILL II Burning Thurible: Dash forward, swing at a front-line foe and set it Burning for 4s. Stacks on poison.
+- SKILL III Pane Fumes: Smoke one foe: Confessed and Weakened (-18%) for 4s. Hexes the foe (-10% Magic Resist) for 4s. Cooldown 4s.
+- LITANY Choking Smoke: LITANY: smite every enemy, -30% attack for 4s.
+- PASSIVE Leaded Litany: Her burns and poisons are 15% stronger. She walks into every fight behind a Mirror Image.
+- RELIC Bronze Censer (game item; not drawn in her art): Choking Smoke: Hexes every foe it strikes (-10% Magic Resist) for 4s. It hits 8% harder.
+- COMMAND (coming): Leads thurible-swingers who smoke out the enemy ranks of the Confessors of Glass.
+- BATTLE CRY: "Shatter me, and I cut you a thousand ways. Smoke and fire!"
+```
+<!-- END GAME DATA -->
 
 Read the Confessors of Glass section of order-bible.md first. Cloth: ice blue #9cc3d0 (as cold grey-blue cloth) lead, violet #6e5a8c trim, cold silver. Head: a faceless mirror faceplate under a tall coif with a black-glass pane, or a mirror circlet. Every Confessors of Glass Sister is a faceless construct of glass and mirror (see order-bible.md). Hem: crisp, clean hem.
 
@@ -15,15 +39,7 @@ FANATIC: candle wax poured over her own collarbone as penance; blend into her ex
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (confident): on top of her neckline, show a side-cut tabard open from ribs to hip, and bare thighs between greaves and a high-cut tabard slit. SPLASH POSE (splash only; the bust and battle sprite use their own framing): standing tall with weight on one leg, chin raised in contempt. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: cathedral-window armour of leaded stained glass, purity seals of black wax with silver ribbon, a rose window shattering behind her (splash only).
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Incense Cloud: Smoke every enemy and leap back: small damage, -25% attack for 4s.
-- SKILL II Burning Thurible: Dash forward, swing at a front-line foe and set it Burning for 4s. Stacks on poison.
-- SKILL III Pane Fumes: Smoke one foe: Confessed and Weakened (-18%) for 4s. Hexes the foe (-10% Magic Resist) for 4s. Cooldown 4s.
-- LITANY Choking Smoke: LITANY: smite every enemy, -30% attack for 4s.
-- PASSIVE Leaded Litany: Her burns and poisons are 15% stronger. She walks into every fight behind a Mirror Image.
-- RELIC Bronze Censer (game item; not drawn in her art): Choking Smoke: Hexes every foe it strikes (-10% Magic Resist) for 4s. It hits 8% harder.
-- COMMAND (coming): Leads thurible-swingers who smoke out the enemy ranks of the Confessors of Glass.
-- BATTLE CRY: "Shatter me, and I cut you a thousand ways. Smoke and fire!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: ice-blue mirror shards, hard white reflections and her inner light bleeding through cracks; the thurible swings out a choking cloud of burning incense; her Bronze Censer blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, an anime-styled dark-fantasy heroine drawn as a faceless glass construct with a mirror faceplate, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading, glass and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Quinta Lucida, Knight-Commander of the Shard Guard. Draw only these objects: her Epic weapon, Glasswake Thurible, a heavy censer of cold silver set with black glass on a chain, pierced with mirror panes and stained-glass shards, trailing smoke, edged with the broken glass of shattered sinners. Sizes in her head-heights (she is about 7.3 heads tall): censer 1 head, chain 2 heads. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

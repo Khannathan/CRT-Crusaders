@@ -1,4 +1,27 @@
-<!-- Drowned Litany (DL) card DL-SR-EXO. Generated from the sister bible; do not edit here. -->
+<!-- Drowned Litany (DL) card DL-SR-EXO. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: DL-SR-EXO
+name: Ceinwen Inundata
+epithet: Who Ended the Great Flood
+rarity: SR
+rank: Legend
+order: Drowned Litany (order id drowned-litany, code DL)
+class: Exorcist (class id exorcist, role Ranged DPS)
+age: 21
+weapon: Witchlight of the Sea-Cave Siege (Legendary)
+relic: exorcist's stole, dripping seawater (a game item)
+kit:
+- SKILL I Lantern Flare: Smite any enemy and strip its shield and blessings. +30% against bosses.
+- SKILL II Witchfire: Set any enemy Burning for 6s. Stacks on poison or burns.
+- SKILL III Pearl Witchfire: Strike any enemy; +8% per Tide. Hexes the foe (-15% Magic Resist) for 4s.
+- LITANY Salt Credo: LITANY: heavy damage on every enemy, +10% per Tide. Weakens every foe it strikes (-12% attack) for 4s.
+- PASSIVE Sunken Seal: Her burns are 25% stronger. She heals 5% of the damage she deals.
+- RELIC Exorcist'S Stole (game item; not drawn in her art): Witchfire: Silences it for 2s: only its plainest skill, and any charge breaks. It hits 10% harder.
+- BATTLE CRY: "Your village strayed. The flood found it. Witchfire for the witch!"
+```
+<!-- END GAME DATA -->
 
 Read the Drowned Litany section of order-bible.md first. Cloth: sea-teal #3f6e78 lead, parchment #c6baa4 trim, verdigris, salt-worn bronze. Head: visor helm or a wet clinging veil. Hem: wet, clinging, dripping points.
 
@@ -14,14 +37,7 @@ FANATIC: vow chains locked around her wrists; blend into her expression: with a 
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (bold): on top of her neckline, show skin-tight sheer black sleeves and gloves to the shoulder, and a side-cut tabard open from ribs to hip. SPLASH POSE (splash only; the bust and battle sprite use their own framing): twisting at the waist mid-swing, hair flying. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: sea-worn verdigris plate, purity seals bleached by salt, salt crusting every rivet.
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Lantern Flare: Smite any enemy and strip its shield and blessings. +30% against bosses.
-- SKILL II Witchfire: Set any enemy Burning for 6s. Stacks on poison or burns.
-- SKILL III Pearl Witchfire: Strike any enemy; +8% per Tide. Hexes the foe (-15% Magic Resist) for 4s.
-- LITANY Salt Credo: LITANY: heavy damage on every enemy, +10% per Tide. Weakens every foe it strikes (-12% attack) for 4s.
-- PASSIVE Sunken Seal: Her burns are 25% stronger. She heals 5% of the damage she deals.
-- RELIC Exorcist'S Stole (game item; not drawn in her art): Witchfire: Silences it for 2s: only its plainest skill, and any charge breaks. It hits 10% harder.
-- BATTLE CRY: "Your village strayed. The flood found it. Witchfire for the witch!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: teal water rising upward, pearls and salt spray; the lantern opens and witchfire pours out like a flamer; her Exorcist'S Stole blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Ceinwen Inundata, Who Ended the Great Flood. Draw only these objects: her Legendary weapon, Witchlight of the Sea-Cave Siege, a covered witchfire brazier of verdigris, salt-crusted bronze with pearls on a staff, its trapped flame glowing teal sea-light and dripping water, crusted with barnacles and dripping black water. Sizes in her head-heights (she is about 7.3 heads tall): pole 4 heads tall, lantern 1 head. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

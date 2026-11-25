@@ -1,4 +1,28 @@
-<!-- Crimson Inquisition (RP) card RP-R-WAR. Generated from the sister bible; do not edit here. -->
+<!-- Crimson Inquisition (RP) card RP-R-WAR. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: RP-R-WAR
+name: Isabel Rogatrix
+epithet: Warden of the Pyre Court
+rarity: R
+rank: Commander
+order: Crimson Inquisition (order id red-pilgrimage, code RP)
+class: War-Sister (class id warsister, role Melee DPS)
+age: 23
+weapon: Brandsworn Scourge (Epic)
+relic: scourge of knotted cords, stamped with a crimson wax seal (a game item)
+kit:
+- SKILL I Penitent Blow: Smite a front-line foe hard and leave it Bleeding for 4s. +40% while she is under half HP.
+- SKILL II Blood for Zeal: Sacrifice 10% HP. +30 of her own Zeal and +25% attack for 4s. Cooldown 6s.
+- SKILL III Question Scourge: Leap back and strike any foe with +25% critical chance. She heals 10% of the damage dealt. Cooldown 4s.
+- LITANY Martyr's Fury: LITANY: strike every enemy and leave them Bleeding for 4s.
+- PASSIVE Wax-Sealed Faith: Heals for 7% of the damage she deals. She heals 4% of the damage she deals.
+- RELIC Scourge Of Knotted Cords (game item; not drawn in her art): Martyr's Fury: She heals 10% of the damage dealt. It hits 8% harder.
+- COMMAND (coming): Leads a frenzied flail company of the Crimson Inquisition.
+- BATTLE CRY: "The Inquisition has found you. Bleed with me!"
+```
+<!-- END GAME DATA -->
 
 Read the Crimson Inquisition section of order-bible.md first. Cloth: blood crimson #9a2a33 lead, antique gold #d6a15f trim, blackened steel and chain. Head: wide-brimmed inquisitor's hat with a wax seal. Hem: long, sharp, spattered hems.
 
@@ -14,15 +38,7 @@ FANATIC: knuckles split and bound in charred prayer cloth; blend into her expres
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (confident): on top of her neckline, show skin-tight sheer black sleeves and gloves to the shoulder, and a corset cinched tight under the bust. SPLASH POSE (splash only; the bust and battle sprite use their own framing): back arched, hip cocked, cloak swept back over one shoulder. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: blood-lacquered inquisitor plate studded with confession nails, purity seals stamped with the Inquisition's brand, the names of the condemned scratched into her plate.
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Penitent Blow: Smite a front-line foe hard and leave it Bleeding for 4s. +40% while she is under half HP.
-- SKILL II Blood for Zeal: Sacrifice 10% HP. +30 of her own Zeal and +25% attack for 4s. Cooldown 6s.
-- SKILL III Question Scourge: Leap back and strike any foe with +25% critical chance. She heals 10% of the damage dealt. Cooldown 4s.
-- LITANY Martyr's Fury: LITANY: strike every enemy and leave them Bleeding for 4s.
-- PASSIVE Wax-Sealed Faith: Heals for 7% of the damage she deals. She heals 4% of the damage she deals.
-- RELIC Scourge Of Knotted Cords (game item; not drawn in her art): Martyr's Fury: She heals 10% of the damage dealt. It hits 8% harder.
-- COMMAND (coming): Leads a frenzied flail company of the Crimson Inquisition.
-- BATTLE CRY: "The Inquisition has found you. Bleed with me!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: crimson wax-seal sigils, red-hot brand-light and burning writs on the wind; the flail spins in a red arc and her scourge-marks glow; her Scourge Of Knotted Cords blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Isabel Rogatrix, Warden of the Pyre Court. Draw only these objects: her Epic weapon, Brandsworn Scourge, a spiked iron flail of blood-lacquered steel with red leather grips and Inquisition seals with a knotted-cord grip and branding irons and sealed writs on the head, with a branding iron's red-hot sigil fused into it. Sizes in her head-heights (she is about 7.3 heads tall): flail haft 1.5 heads, chain 1 head. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

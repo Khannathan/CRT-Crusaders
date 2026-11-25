@@ -1,4 +1,28 @@
-<!-- Ashen Mercy (AM) card AM-UR2. Generated from the sister bible; do not edit here. -->
+<!-- Ashen Mercy (AM) card AM-UR2. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: AM-UR2
+name: Fumaria
+epithet: the Ember Mother, Goddess of the Burned
+rarity: UR
+rank: Deity
+order: Ashen Mercy (order id ashen-mercy, code AM)
+class: Exorcist (class id exorcist, role Ranged DPS)
+age: 21
+weapon: The Caged Pillar of Fire of the Merciful Pyre (Divine Arsenal)
+relic: iron exorcism lantern, smudged with grey ash (a game item)
+kit:
+- SKILL I Lantern Flare: Smite any enemy and strip its shield and blessings. +30% against bosses. She heals 25% of the damage dealt.
+- SKILL II Pale Lamp: Strip a foe's shield and blessings and Weaken it (-31% attack) for 4s. Hexes the foe (-25% Magic Resist) for 4s. Cooldown 6s.
+- SKILL III Last-Rite Lantern: A bolt on any foe whose Mercy line is 25%. +20% critical chance on it.
+- LITANY Cinder Gloria: LITANY: heavy damage on every enemy; any common foe left under 30% HP is granted Mercy at once. Lays Penance on every foe it strikes for 4s: each act costs the sinner 30% of its own attack. It hallows the ground: a Field of Ash (each fallen foe heals every Sister 6%) for 6s.
+- PASSIVE Shrouded Heresy-Bane: +20% damage to foes under 30% HP. While she stands, every Sister takes 5% less damage.
+- SAINT'S SEAL Last Rites Heard: The first time a Sister would fall, she is healed 30% instead and her attacker is Foretold.
+- RELIC Iron Exorcism Lantern (game item; not drawn in her art): Last-Rite Lantern: She heals 25% of the damage dealt. It hits 15% harder.
+- BATTLE CRY: "Breathe the smoke. It is all that is left of the doubters. The lantern sees you!"
+```
+<!-- END GAME DATA -->
 
 Read the Ashen Mercy section of order-bible.md first. Cloth: ash-white #c9c2b8 lead, wine #652b3b trim, soot-black mail. Head: white wimple and coif with an ash thumbprint on the brow. Hem: scorched edge.
 
@@ -30,15 +54,7 @@ FANATIC: candle wax poured over her own collarbone as penance; blend into her ex
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (boldest in her Order): on top of her neckline, show skin-tight sheer black sleeves and gloves to the shoulder, and a torn habit that bares hip and leg. SPLASH POSE (splash only; the bust and battle sprite use their own framing): back arched, hip cocked, cloak swept back over one shoulder. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: soot-black gothic plate, purity seals scorched at the edges, a funeral pyre burning behind her (splash only).
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Lantern Flare: Smite any enemy and strip its shield and blessings. +30% against bosses. She heals 25% of the damage dealt.
-- SKILL II Pale Lamp: Strip a foe's shield and blessings and Weaken it (-31% attack) for 4s. Hexes the foe (-25% Magic Resist) for 4s. Cooldown 6s.
-- SKILL III Last-Rite Lantern: A bolt on any foe whose Mercy line is 25%. +20% critical chance on it.
-- LITANY Cinder Gloria: LITANY: heavy damage on every enemy; any common foe left under 30% HP is granted Mercy at once. Lays Penance on every foe it strikes for 4s: each act costs the sinner 30% of its own attack. It hallows the ground: a Field of Ash (each fallen foe heals every Sister 6%) for 6s.
-- PASSIVE Shrouded Heresy-Bane: +20% damage to foes under 30% HP. While she stands, every Sister takes 5% less damage.
-- SAINT'S SEAL Last Rites Heard: The first time a Sister would fall, she is healed 30% instead and her attacker is Foretold.
-- RELIC Iron Exorcism Lantern (game item; not drawn in her art): Last-Rite Lantern: She heals 25% of the damage dealt. It hits 15% harder.
-- BATTLE CRY: "Breathe the smoke. It is all that is left of the doubters. The lantern sees you!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: grey ash-flame and falling soot, a wine-red glow as wounds close; the lantern opens and witchfire pours out like a flamer; her Litany Cinder Gloria hallows the ground in a ring of grey ash-flame and falling soot; her Iron Exorcism Lantern blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Fumaria, the Ember Mother, Goddess of the Burned. Draw only these objects: her Divine Arsenal weapon, The Caged Pillar of Fire of the Merciful Pyre, a pillar of consecrated fire caged in turning rings of eyes, held aloft on a staff of white iron, burning ash-grey light with wine embers, trailing thin smoke, its edges charred from the mercy-pyres. Sizes in her head-heights (she is about 7.3 heads tall): pole 4 heads tall, lantern 1 head. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

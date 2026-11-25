@@ -1,4 +1,28 @@
-<!-- Veiled Tribunal (VT) card VT-UR1. Generated from the sister bible; do not edit here. -->
+<!-- Veiled Tribunal (VT) card VT-UR1. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: VT-UR1
+name: Taciturna
+epithet: the Veiled Eye, Goddess of Judgement
+rarity: UR
+rank: Deity
+order: Veiled Tribunal (order id veiled-tribunal, code VT)
+class: Hierophant (class id hierophant, role Tank)
+age: 27
+weapon: The Wall That Watches of the Final Verdict (Divine Arsenal)
+relic: miniature candlelit shrine, inlaid with a small bone-white devotional figure (a game item)
+kit:
+- SKILL I Weighing Blow: Strike a front-line foe, Accuse it and draw enemy attacks, for 4s. Lays Penance on the foe for 4s: each act costs the sinner 30% of its own attack.
+- SKILL II The Scale: Shield an ally for 20% of max HP, plus 5% for each Guilt on the most guilty foe. Her ally gains +15% critical chance for 4s. Cooldown 4s.
+- SKILL III Bear Witness: Ward every ally (-15% damage taken) for 4s. Every Sister gains 2 Mirror Images (each swallows a whole hit). Cooldown 8s.
+- LITANY Sealed Testimony: LITANY: shield every ally for 25% of max HP; every foe's Guilt Weakens it (-5% attack per Guilt) for 4s. Wards every Sister (-20% damage taken) for 4s. It hallows the ground: Hallowed Ground (every Sister Regenerates 4% every 2s) for 6s.
+- PASSIVE Testimony: Each time she is struck, the attacker gains 1 Guilt. While she stands, foes that strike a Warded Sister gain Guilt too.
+- SAINT'S SEAL Forbidden Testimony: The first time she would fall, she stays at 1 HP and every foe gains 3 Guilt.
+- RELIC Miniature Candlelit Shrine (game item; not drawn in her art): The Scale: She gains 8 Zeal.
+- BATTLE CRY: "Guilty, by decree. Behind the reliquary, Sisters!"
+```
+<!-- END GAME DATA -->
 
 Read the Veiled Tribunal section of order-bible.md first. Cloth: dusk violet #6e5a8c lead, parchment #c6baa4 trim, black steel with crimson silk lining. Head: sheer black veil over the eyes, high angular collar. Hem: sharp angular points.
 
@@ -31,15 +55,7 @@ FANATIC: knuckles split and bound in charred prayer cloth; blend into her expres
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (boldest in her Order): on top of her neckline, show thigh-high boots with bare skin above, held by garter straps of chain, and a torn habit that bares hip and leg. SPLASH POSE (splash only; the bust and battle sprite use their own framing): kneeling in prayer with the weapon planted, looking up through her lashes. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: judicial gothic plate hung with nailed verdicts and chained scripture, purity seals stamped with the scales, heretics kneeling in chains behind her (splash only).
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Weighing Blow: Strike a front-line foe, Accuse it and draw enemy attacks, for 4s. Lays Penance on the foe for 4s: each act costs the sinner 30% of its own attack.
-- SKILL II The Scale: Shield an ally for 20% of max HP, plus 5% for each Guilt on the most guilty foe. Her ally gains +15% critical chance for 4s. Cooldown 4s.
-- SKILL III Bear Witness: Ward every ally (-15% damage taken) for 4s. Every Sister gains 2 Mirror Images (each swallows a whole hit). Cooldown 8s.
-- LITANY Sealed Testimony: LITANY: shield every ally for 25% of max HP; every foe's Guilt Weakens it (-5% attack per Guilt) for 4s. Wards every Sister (-20% damage taken) for 4s. It hallows the ground: Hallowed Ground (every Sister Regenerates 4% every 2s) for 6s.
-- PASSIVE Testimony: Each time she is struck, the attacker gains 1 Guilt. While she stands, foes that strike a Warded Sister gain Guilt too.
-- SAINT'S SEAL Forbidden Testimony: The first time she would fall, she stays at 1 HP and every foe gains 3 Guilt.
-- RELIC Miniature Candlelit Shrine (game item; not drawn in her art): The Scale: She gains 8 Zeal.
-- BATTLE CRY: "Guilty, by decree. Behind the reliquary, Sisters!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: violet scale-marks, nailed parchment verdicts and wax seals bursting; her reliquary-shield flares and throws up a wall of light; her Litany Sealed Testimony hallows the ground in a ring of violet scale-marks; her Miniature Candlelit Shrine blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Taciturna, the Veiled Eye, Goddess of Judgement. Draw only these objects: her Divine Arsenal weapon, The Wall That Watches of the Final Verdict, six interlocking shield-plates shaped like seraph wings, each ringed with open eyes, orbiting her and closing into a wall of violet judgement-light; she holds a sceptre-mace crowned with a burning wheel, notched once for every soul she condemned. Sizes in her head-heights (she is about 7.3 heads tall): shield 2.5 heads tall, mace haft 1.5 heads. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

@@ -1,4 +1,27 @@
-<!-- Sepulcher Watch (SW) card SW-SR-SEN. Generated from the sister bible; do not edit here. -->
+<!-- Sepulcher Watch (SW) card SW-SR-SEN. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: SW-SR-SEN
+name: Satlnei Inhumata
+epithet: Who Held the Night of Open Graves
+rarity: SR
+rank: Legend
+order: Sepulcher Watch (order id sepulcher-watch, code SW)
+class: Sentinel (class id sentinel, role Tank)
+age: 22
+weapon: Bulwark of the Night of Open Graves (Legendary)
+relic: grave-warden's badge, carved with a small skull (a game item)
+kit:
+- SKILL I Gravewarden Strike: Strike a front-line foe and draw enemy attacks for 4s. For 4s she strikes back at anyone who hits her.
+- SKILL II Tomb Stance: Brace: -30% damage taken for 4s and draw enemy attacks. Cooldown 6s.
+- SKILL III Funeral Bastion: Strike a front-line foe, draw attacks and counter anyone who hits her, for 4s. Weakens the foe (-12% attack) for 4s.
+- LITANY Sepulchral Compline: LITANY: Ward every ally (-18%) for 4s, draw every attack and counter; summoned foes are Stunned for 2s. Rapture: every Sister takes no damage for 2s.
+- PASSIVE Crypt Seal: When struck, she strikes back for 35% of her attack. Her blows lay Penance: for 4s each act costs the foe 10% of its own attack.
+- RELIC Grave-Warden'S Badge (game item; not drawn in her art): Gravewarden Strike: Martyrdom: for 4s she takes 25% of every blow aimed at her Sisters. It hits 10% harder.
+- BATTLE CRY: "Your bones will serve the Watch. Every blow you land, I return!"
+```
+<!-- END GAME DATA -->
 
 Read the Sepulcher Watch section of order-bible.md first. Cloth: bone-tan #b8ab8a lead, slate #383845 trim, dark steel with aged ivory trim. Head: bone-tan hood with a finger-bone circlet. Hem: heavy straight hem weighted with keys.
 
@@ -14,14 +37,7 @@ FANATIC: vow chains locked around her wrists; blend into her expression: with a 
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (bold): on top of her neckline, show a bare midriff under a short breastplate, and a chain harness across her bare waist. SPLASH POSE (splash only; the bust and battle sprite use their own framing): standing tall with weight on one leg, chin raised in contempt. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: ossuary plate with the bones of the honoured dead fused into it, purity seals on skull-shaped bosses, coffin nails driven through her belt.
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Gravewarden Strike: Strike a front-line foe and draw enemy attacks for 4s. For 4s she strikes back at anyone who hits her.
-- SKILL II Tomb Stance: Brace: -30% damage taken for 4s and draw enemy attacks. Cooldown 6s.
-- SKILL III Funeral Bastion: Strike a front-line foe, draw attacks and counter anyone who hits her, for 4s. Weakens the foe (-12% attack) for 4s.
-- LITANY Sepulchral Compline: LITANY: Ward every ally (-18%) for 4s, draw every attack and counter; summoned foes are Stunned for 2s. Rapture: every Sister takes no damage for 2s.
-- PASSIVE Crypt Seal: When struck, she strikes back for 35% of her attack. Her blows lay Penance: for 4s each act costs the foe 10% of its own attack.
-- RELIC Grave-Warden'S Badge (game item; not drawn in her art): Gravewarden Strike: Martyrdom: for 4s she takes 25% of every blow aimed at her Sisters. It hits 10% harder.
-- BATTLE CRY: "Your bones will serve the Watch. Every blow you land, I return!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: bone-white light, orbiting skull tokens and spectral funerary keys; she plants her feet and every blow she takes flashes back as a riposte arc; her Grave-Warden'S Badge blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Satlnei Inhumata, Who Held the Night of Open Graves. Draw only these objects: her Legendary weapon, Bulwark of the Night of Open Graves, a tall shield of dark steel inlaid with ivory and bone carved with a knight effigy whose eyes glow, rune-cut edges, and an oath-bound longsword with a gilt crossguard, crusted with grave dirt and burial lime. Sizes in her head-heights (she is about 7.3 heads tall): shield 3 heads tall, sword 2.5 heads. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

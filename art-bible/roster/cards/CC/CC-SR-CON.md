@@ -1,4 +1,27 @@
-<!-- Choir of the Pyre (CC) card CC-SR-CON. Generated from the sister bible; do not edit here. -->
+<!-- Choir of the Pyre (CC) card CC-SR-CON. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: CC-SR-CON
+name: Milcah Psallens
+epithet: Who Walked Out of the Heretic Chorus
+rarity: SR
+rank: Legend
+order: Choir of the Pyre (order id candle-choir, code CC)
+class: Confessor (class id confessor, role Healer)
+age: 23
+weapon: Remedy of the Black Mass (Legendary)
+relic: phial of pyre oil, sealed with a row of red wax seals (a game item)
+kit:
+- SKILL I Remedy: Heal one ally, cure poison, burns and bleeding, and let her Regenerate 3% every 2s for 4s.
+- SKILL II Miasma: Smite a near foe and Poison it for 6s. Stacks on poison or burns.
+- SKILL III Gilded Remedy: A Hymn for 6s: every ally Regenerates 3% of max HP every 2s. She gains +10% critical chance for 4s. Cooldown 8s.
+- LITANY Cantus Credo: LITANY: heal and cure every ally for 25% of max HP; every Sister gains 10 Zeal. Rapture: every Sister takes no damage for 2s.
+- PASSIVE Unbroken Seal: Each time she acts, every Sister heals 2% of max HP. Every Sister starts the fight with +3 Zeal.
+- RELIC Phial Of Pyre Oil (game item; not drawn in her art): Miasma: She gains 5 Zeal. It hits 10% harder.
+- BATTLE CRY: "Every verse is a blade. No one falls before the work is done!"
+```
+<!-- END GAME DATA -->
 
 Read the Choir of the Pyre section of order-bible.md first. Cloth: candle gold #d6a15f lead, wine #652b3b trim, bronze. Head: crown of dripping candles. Hem: ribbon streamers.
 
@@ -14,14 +37,7 @@ FANATIC: a rope of confessions knotted around her waist; blend into her expressi
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (bold): on top of her neckline, show a torn habit that bares hip and leg, and skin-tight sheer black sleeves and gloves to the shoulder. SPLASH POSE (splash only; the bust and battle sprite use their own framing): standing tall with weight on one leg, chin raised in contempt. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: gilded gothic plate dripping with candle wax, purity seals as hymn sheets, a battle hymn screamed not sung, consecrated fire in her eyes and on her blade.
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Remedy: Heal one ally, cure poison, burns and bleeding, and let her Regenerate 3% every 2s for 4s.
-- SKILL II Miasma: Smite a near foe and Poison it for 6s. Stacks on poison or burns.
-- SKILL III Gilded Remedy: A Hymn for 6s: every ally Regenerates 3% of max HP every 2s. She gains +10% critical chance for 4s. Cooldown 8s.
-- LITANY Cantus Credo: LITANY: heal and cure every ally for 25% of max HP; every Sister gains 10 Zeal. Rapture: every Sister takes no damage for 2s.
-- PASSIVE Unbroken Seal: Each time she acts, every Sister heals 2% of max HP. Every Sister starts the fight with +3 Zeal.
-- RELIC Phial Of Pyre Oil (game item; not drawn in her art): Miasma: She gains 5 Zeal. It hits 10% harder.
-- BATTLE CRY: "Every verse is a blade. No one falls before the work is done!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: candle-gold flame, dripping wax and floating hymn ribbons; a hand of light closes wounds and burns out poison; her Phial Of Pyre Oil blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Milcah Psallens, Who Walked Out of the Heretic Chorus. Draw only these objects: her Legendary weapon, Remedy of the Black Mass, a silver-capped beak mask, labelled glowing vials, and a censer-mace of dull bronze dripping with red wax that breathes medicinal smoke lit with golden candle-flame, with charred hymn-pages nailed along it; and her plague beak mask. Sizes in her head-heights (she is about 7.3 heads tall): mace haft 1.5 heads, mask 1 head. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

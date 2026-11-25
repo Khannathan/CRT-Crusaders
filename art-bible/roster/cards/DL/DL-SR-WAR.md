@@ -1,4 +1,27 @@
-<!-- Drowned Litany (DL) card DL-SR-WAR. Generated from the sister bible; do not edit here. -->
+<!-- Drowned Litany (DL) card DL-SR-WAR. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: DL-SR-WAR
+name: Elwen Immersa
+epithet: Slayer of the Leviathan
+rarity: SR
+rank: Legend
+order: Drowned Litany (order id drowned-litany, code DL)
+class: War-Sister (class id warsister, role Melee DPS)
+age: 27
+weapon: Flail of the Wreck of the Saint (Legendary)
+relic: silver dueling gauntlet, turned green with verdigris (a game item)
+kit:
+- SKILL I Penitent Blow: Smite a front-line foe hard and leave it Bleeding for 4s. +40% while she is under half HP.
+- SKILL II Blood for Zeal: Sacrifice 10% HP. +30 of her own Zeal and +25% attack for 4s. Cooldown 6s.
+- SKILL III Brine Lash: Lunge at a near foe and Stagger it. +50% against the Accused. Weakens the foe (-12% attack) for 4s. Cooldown 6s.
+- LITANY Undertow Dirge: LITANY: strike every enemy and heal 33% of the damage; the Tide rises by 2. +12% critical chance on it.
+- PASSIVE Fathom Oath: Heals for 10% of the damage she deals. She heals 5% of the damage she deals.
+- RELIC Silver Dueling Gauntlet (game item; not drawn in her art): Blood for Zeal: Wards her (-12% damage taken) for 4s.
+- BATTLE CRY: "Breathe deep, heretic. It is your last. Fury is faith!"
+```
+<!-- END GAME DATA -->
 
 Read the Drowned Litany section of order-bible.md first. Cloth: sea-teal #3f6e78 lead, parchment #c6baa4 trim, verdigris, salt-worn bronze. Head: visor helm or a wet clinging veil. Hem: wet, clinging, dripping points.
 
@@ -14,14 +37,7 @@ FANATIC: scripture branded into her thigh; blend into her expression: eyes blazi
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (bold): on top of her neckline, show a torn habit that bares hip and leg, and thigh-high boots with bare skin above, held by garter straps of chain. SPLASH POSE (splash only; the bust and battle sprite use their own framing): striding forward out of smoke, cape snapping behind. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: sea-worn verdigris plate, purity seals bleached by salt, salt crusting every rivet.
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Penitent Blow: Smite a front-line foe hard and leave it Bleeding for 4s. +40% while she is under half HP.
-- SKILL II Blood for Zeal: Sacrifice 10% HP. +30 of her own Zeal and +25% attack for 4s. Cooldown 6s.
-- SKILL III Brine Lash: Lunge at a near foe and Stagger it. +50% against the Accused. Weakens the foe (-12% attack) for 4s. Cooldown 6s.
-- LITANY Undertow Dirge: LITANY: strike every enemy and heal 33% of the damage; the Tide rises by 2. +12% critical chance on it.
-- PASSIVE Fathom Oath: Heals for 10% of the damage she deals. She heals 5% of the damage she deals.
-- RELIC Silver Dueling Gauntlet (game item; not drawn in her art): Blood for Zeal: Wards her (-12% damage taken) for 4s.
-- BATTLE CRY: "Breathe deep, heretic. It is your last. Fury is faith!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: teal water rising upward, pearls and salt spray; the flail spins in a red arc and her scourge-marks glow; her Silver Dueling Gauntlet blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Elwen Immersa, Slayer of the Leviathan. Draw only these objects: her Legendary weapon, Flail of the Wreck of the Saint, a relic flail of verdigris, salt-crusted bronze with pearls with a caged, burning saint-skull for a head and rune-cut links, dripping wet, with drowned prayer-ribbons tied to it. Sizes in her head-heights (she is about 7.3 heads tall): flail haft 1.5 heads, chain 1 head. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

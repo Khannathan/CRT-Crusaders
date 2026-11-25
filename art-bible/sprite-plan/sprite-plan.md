@@ -1,5 +1,7 @@
 # CRT Crusaders: Sister Battle Sprite Plan
 
+> **Owned by ChatGPT, the art lead (since 2026-11-25).** Rewrite and reimagine freely. The locked specs in `specs/` win over anything here; see `specs/LOCKS.md`.
+
 How to draw a Sister's battle sprite so the game can turn it into pixels and animate it. Updated 2026-11-24 for the game's pixel rig (PR #168): **ChatGPT draws one big battle sprite, and the game does everything else.**
 
 Every Sister card has a finished **SPRITE PROMPT**. Send it verbatim with her identity lock pasted in, and attach the approved bust (likeness), the prop sheet (object construction and scale), her Order insignia and the template (registration).

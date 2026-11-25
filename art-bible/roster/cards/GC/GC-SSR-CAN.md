@@ -1,4 +1,28 @@
-<!-- Confessors of Glass (GC) card GC-SSR-CAN. Generated from the sister bible; do not edit here. -->
+<!-- Confessors of Glass (GC) card GC-SSR-CAN. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: GC-SSR-CAN
+name: Clarita Perlucens
+epithet: Blood of the Ice Star
+rarity: SSR
+rank: Demigoddess
+order: Confessors of Glass (order id glass-confession, code GC)
+class: Cantor (class id cantor, role Buffer)
+age: 25
+weapon: Bell of the Last Confession (Mythic)
+relic: small cracked singing bell, with a cracked mirror pane (a game item)
+kit:
+- SKILL I Keening Note: Smite any enemy: Sundered (-20% armor) and Hexed (-20% Magic Resist) for 4s.
+- SKILL II Obsidian Anthem: Take a foe's Empower, Ward, Haste and shield for your strongest Sister. +15% critical chance on it. Cooldown 8s.
+- SKILL III Pane Descant: Every ally +26% critical chance for 4s, and every Sister 10 Zeal. Wards every Sister (-15% damage taken) for 4s. Cooldown 8s.
+- LITANY Reflected Anathema: LITANY: heavy magic damage on every enemy; their blessings pass to your strongest Sister. Sunders every foe it strikes (-20% armor) for 4s. It hallows the ground: a Lantern Line (every 2s the most hurt Sister goes on Overwatch) for 4s.
+- PASSIVE Shard Rule: Every foe starts the fight Confessed for 6s, and she strikes first. She walks into every fight behind a Mirror Image.
+- RELIC Small Cracked Singing Bell (game item; not drawn in her art): Keening Note: Brands the foe: the next blow on it lands 30% harder. It hits 12% harder.
+- ASCENSION (coming): As a Deity, her Reflected Anathema also grants Rapture (no damage for 2s) to every Sister, and her passive grows by half.
+- BATTLE CRY: "I gave my face for sight. You will give more. Every verse, a killing blow!"
+```
+<!-- END GAME DATA -->
 
 Read the Confessors of Glass section of order-bible.md first. Cloth: ice blue #9cc3d0 (as cold grey-blue cloth) lead, violet #6e5a8c trim, cold silver. Head: a faceless mirror faceplate under a tall coif with a black-glass pane, or a mirror circlet. Every Confessors of Glass Sister is a faceless construct of glass and mirror (see order-bible.md). Hem: crisp, clean hem.
 
@@ -31,15 +55,7 @@ FANATIC: fresh scourge marks across her shoulders; blend into her expression: ey
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (daring): on top of her neckline, show a torn habit that bares hip and leg, and a chain harness across her bare waist. SPLASH POSE (splash only; the bust and battle sprite use their own framing): striding forward out of smoke, cape snapping behind. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: cathedral-window armour of leaded stained glass, purity seals of black wax with silver ribbon, a rose window shattering behind her (splash only).
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Keening Note: Smite any enemy: Sundered (-20% armor) and Hexed (-20% Magic Resist) for 4s.
-- SKILL II Obsidian Anthem: Take a foe's Empower, Ward, Haste and shield for your strongest Sister. +15% critical chance on it. Cooldown 8s.
-- SKILL III Pane Descant: Every ally +26% critical chance for 4s, and every Sister 10 Zeal. Wards every Sister (-15% damage taken) for 4s. Cooldown 8s.
-- LITANY Reflected Anathema: LITANY: heavy magic damage on every enemy; their blessings pass to your strongest Sister. Sunders every foe it strikes (-20% armor) for 4s. It hallows the ground: a Lantern Line (every 2s the most hurt Sister goes on Overwatch) for 4s.
-- PASSIVE Shard Rule: Every foe starts the fight Confessed for 6s, and she strikes first. She walks into every fight behind a Mirror Image.
-- RELIC Small Cracked Singing Bell (game item; not drawn in her art): Keening Note: Brands the foe: the next blow on it lands 30% harder. It hits 12% harder.
-- ASCENSION (coming): As a Deity, her Reflected Anathema also grants Rapture (no damage for 2s) to every Sister, and her passive grows by half.
-- BATTLE CRY: "I gave my face for sight. You will give more. Every verse, a killing blow!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: ice-blue mirror shards, hard white reflections and her inner light bleeding through cracks; her voice is visible as rings of flame; her Litany Reflected Anathema hallows the ground in a ring of ice-blue mirror shards; her Small Cracked Singing Bell blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, an anime-styled dark-fantasy heroine drawn as a faceless glass construct with a mirror faceplate, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading, glass and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Clarita Perlucens, Blood of the Ice Star. Draw only these objects: her Mythic weapon, Bell of the Last Confession, a floating cracked bell that weeps light of ice-blue light through cracked glass from its crack, struck with a tuning-staff topped by small iron wings, with a shattered mirror-shard set in it that shows the sins of its target; and her open hymnal. Sizes in her head-heights (she is about 7.3 heads tall): staff 3 heads tall, bell 1 head. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

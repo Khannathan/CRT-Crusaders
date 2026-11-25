@@ -1,4 +1,28 @@
-<!-- Choir of the Pyre (CC) card CC-SSR-ABB. Generated from the sister bible; do not edit here. -->
+<!-- Choir of the Pyre (CC) card CC-SSR-ABB. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: CC-SSR-ABB
+name: Laudes Fervida
+epithet: Half-Born of the Burning Wax
+rarity: SSR
+rank: Demigoddess
+order: Choir of the Pyre (order id candle-choir, code CC)
+class: Abbess (class id abbess, role Healer)
+age: 24
+weapon: Briarstaff of the Choir Above (Mythic)
+relic: cloister key, engraved with a line of hymn (a game item)
+kit:
+- SKILL I Thorned Rebuke: Lash a near foe, leaving it Bleeding for 4s. Every Sister heals 45% of the damage dealt.
+- SKILL II Psalm Cloister: A Hymn for 6s: every ally Regenerates 4% of max HP every 2s. She gains 1 Fervor (+6% damage each, up to 5). Cooldown 8s.
+- SKILL III Matin Crozier: Heal an ally and cure her; heals 40% more while a Hymn plays. She gains 6 Zeal.
+- LITANY Wick Vespers: LITANY: heal and cure every ally for 30% of max HP; every Sister gains 10 Zeal. Rapture: every Sister takes no damage for 2s. It hallows the ground: Hallowed Ground (every Sister Regenerates 4% every 2s) for 4s.
+- PASSIVE Candlelit Seal: A boss that starts charging while a Hymn plays loses 25 Wrath. Her Weakens last 2s longer. Her burns, poisons and bleeds run 15% hotter.
+- RELIC Cloister Key (game item; not drawn in her art): Psalm Cloister: She gains 6 Zeal.
+- ASCENSION (coming): As a Deity, her Wick Vespers also grants Rapture (no damage for 2s) to every Sister, and her passive grows by half.
+- BATTLE CRY: "Wax and fire and fury. Pain is the lesson!"
+```
+<!-- END GAME DATA -->
 
 Read the Choir of the Pyre section of order-bible.md first. Cloth: candle gold #d6a15f lead, wine #652b3b trim, bronze. Head: crown of dripping candles. Hem: ribbon streamers.
 
@@ -30,15 +54,7 @@ FANATIC: a crown of nails she drove in herself; blend into her expression: burni
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (daring): on top of her neckline, show a side-cut tabard open from ribs to hip, and a corset cinched tight under the bust. SPLASH POSE (splash only; the bust and battle sprite use their own framing): one knee raised on a heretic's skull, leaning into the weapon. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: gilded gothic plate dripping with candle wax, purity seals as hymn sheets, a battle hymn screamed not sung, consecrated fire in her eyes and on her blade.
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Thorned Rebuke: Lash a near foe, leaving it Bleeding for 4s. Every Sister heals 45% of the damage dealt.
-- SKILL II Psalm Cloister: A Hymn for 6s: every ally Regenerates 4% of max HP every 2s. She gains 1 Fervor (+6% damage each, up to 5). Cooldown 8s.
-- SKILL III Matin Crozier: Heal an ally and cure her; heals 40% more while a Hymn plays. She gains 6 Zeal.
-- LITANY Wick Vespers: LITANY: heal and cure every ally for 30% of max HP; every Sister gains 10 Zeal. Rapture: every Sister takes no damage for 2s. It hallows the ground: Hallowed Ground (every Sister Regenerates 4% every 2s) for 4s.
-- PASSIVE Candlelit Seal: A boss that starts charging while a Hymn plays loses 25 Wrath. Her Weakens last 2s longer. Her burns, poisons and bleeds run 15% hotter.
-- RELIC Cloister Key (game item; not drawn in her art): Psalm Cloister: She gains 6 Zeal.
-- ASCENSION (coming): As a Deity, her Wick Vespers also grants Rapture (no damage for 2s) to every Sister, and her passive grows by half.
-- BATTLE CRY: "Wax and fire and fury. Pain is the lesson!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: candle-gold flame, dripping wax and floating hymn ribbons; the crozier cracks like a whip, thorns mending as they cut; her Litany Wick Vespers hallows the ground in a ring of candle-gold flame; her Cloister Key blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Laudes Fervida, Half-Born of the Burning Wax. Draw only these objects: her Mythic weapon, Briarstaff of the Choir Above, a crozier whose hook is a curled angel wing of iron feathers, holding an open eye that blooms with golden candle-flame, trailing smoke from the pyres it lit. Sizes in her head-heights (she is about 7.3 heads tall): crozier 4 heads tall. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

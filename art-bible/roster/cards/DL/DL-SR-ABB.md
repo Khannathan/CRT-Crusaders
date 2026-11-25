@@ -1,4 +1,27 @@
-<!-- Drowned Litany (DL) card DL-SR-ABB. Generated from the sister bible; do not edit here. -->
+<!-- Drowned Litany (DL) card DL-SR-ABB. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: DL-SR-ABB
+name: Tudwen Profunda
+epithet: Who Walked Out of the Sea-Cave Siege
+rarity: SR
+rank: Legend
+order: Drowned Litany (order id drowned-litany, code DL)
+class: Abbess (class id abbess, role Healer)
+age: 22
+weapon: Crozier of the Salt Night (Legendary)
+relic: abbess's ring on a chain, dripping seawater (a game item)
+kit:
+- SKILL I Thorned Rebuke: Lash a near foe, leaving it Bleeding for 4s. Every Sister heals 45% of the damage dealt.
+- SKILL II Briar Mantle: Heal every ally 5% of max HP and dress them in thorns: foes that strike them take 35% back, for 4s. Cooldown 6s.
+- SKILL III Font Cloister: Every ally Regenerates 2% plus 1% per Tide every 2s for 6s. Every Sister gains a Mirror Image (each swallows a whole hit). Cooldown 6s.
+- LITANY Pearl Miserere: LITANY: heal every ally 30% and cure poison, burns and bleeding. Every Sister gains +10% critical chance for 4s.
+- PASSIVE Sunken Creed: Foes that strike her take 15% of the damage back. The fight opens on a Drowning Flood (foes take 10% more and act 25% slower) for 4s.
+- RELIC Abbess'S Ring On A Chain (game item; not drawn in her art): Thorned Rebuke: Silences it for 2s: only its plainest skill, and any charge breaks. It hits 10% harder.
+- BATTLE CRY: "The deep wants you baptised. Pain is the lesson!"
+```
+<!-- END GAME DATA -->
 
 Read the Drowned Litany section of order-bible.md first. Cloth: sea-teal #3f6e78 lead, parchment #c6baa4 trim, verdigris, salt-worn bronze. Head: visor helm or a wet clinging veil. Hem: wet, clinging, dripping points.
 
@@ -14,14 +37,7 @@ FANATIC: a crown of nails she drove in herself; blend into her expression: eyes 
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (bold): on top of her neckline, show thigh-high boots with bare skin above, held by garter straps of chain, and a bare midriff under a short breastplate. SPLASH POSE (splash only; the bust and battle sprite use their own framing): kneeling in prayer with the weapon planted, looking up through her lashes. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: sea-worn verdigris plate, purity seals bleached by salt, salt crusting every rivet.
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Thorned Rebuke: Lash a near foe, leaving it Bleeding for 4s. Every Sister heals 45% of the damage dealt.
-- SKILL II Briar Mantle: Heal every ally 5% of max HP and dress them in thorns: foes that strike them take 35% back, for 4s. Cooldown 6s.
-- SKILL III Font Cloister: Every ally Regenerates 2% plus 1% per Tide every 2s for 6s. Every Sister gains a Mirror Image (each swallows a whole hit). Cooldown 6s.
-- LITANY Pearl Miserere: LITANY: heal every ally 30% and cure poison, burns and bleeding. Every Sister gains +10% critical chance for 4s.
-- PASSIVE Sunken Creed: Foes that strike her take 15% of the damage back. The fight opens on a Drowning Flood (foes take 10% more and act 25% slower) for 4s.
-- RELIC Abbess'S Ring On A Chain (game item; not drawn in her art): Thorned Rebuke: Silences it for 2s: only its plainest skill, and any charge breaks. It hits 10% harder.
-- BATTLE CRY: "The deep wants you baptised. Pain is the lesson!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: teal water rising upward, pearls and salt spray; the crozier cracks like a whip, thorns mending as they cut; her Abbess'S Ring On A Chain blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Tudwen Profunda, Who Walked Out of the Sea-Cave Siege. Draw only these objects: her Legendary weapon, Crozier of the Salt Night, an iron crozier of verdigris, salt-crusted bronze with pearls with a spiral hook set with a glowing relic, thorns in bloom, and runes along the shaft, dripping wet, with drowned prayer-ribbons tied to it. Sizes in her head-heights (she is about 7.3 heads tall): crozier 4 heads tall. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

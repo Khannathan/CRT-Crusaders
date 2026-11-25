@@ -1,4 +1,28 @@
-<!-- Hallowed Belfry (HB) card HB-R-CAN. Generated from the sister bible; do not edit here. -->
+<!-- Hallowed Belfry (HB) card HB-R-CAN. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: HB-R-CAN
+name: Zlata Vocifera
+epithet: Standard-Bearer of the Great Bell
+rarity: R
+rank: Commander
+order: Hallowed Belfry (order id hollow-bell, code HB)
+class: Cantor (class id cantor, role Buffer)
+age: 24
+weapon: Clapper War-Bell (Epic)
+relic: iron tuning fork, with a bronze clapper (a game item)
+kit:
+- SKILL I Hymn of Iron: Every ally gains +30% attack for 4s. Cooldown 6s.
+- SKILL II Keening Note: Smite any enemy: Sundered (-20% armor) and Hexed (-20% Magic Resist) for 4s.
+- SKILL III Hour Descant: The Bell rings twice and every Sister gains 6 Zeal. She is Thorned (15% of blows back) for 4s. Cooldown 8s.
+- LITANY Requiem Chorus: LITANY: every ally gains +30% attack and +25% critical chance for 4s, and Haste.
+- PASSIVE Knelling Heresy-Bane: Each foe she kills gives her 6 Zeal. Every Sister starts the fight with +2 Zeal.
+- RELIC Iron Tuning Fork (game item; not drawn in her art): Hour Descant: She gains a Mirror Image (each swallows a whole hit).
+- COMMAND (coming): Leads a hymn-chanting war-choir that lifts every soldier's spirit of the Hallowed Belfry.
+- BATTLE CRY: "*the rope of braided hair creaks* Again, Sisters, louder!"
+```
+<!-- END GAME DATA -->
 
 Read the Hallowed Belfry section of order-bible.md first. Cloth: bell bronze #8b6848 lead, parchment #c6baa4 trim, blackened iron. Head: bell-shaped hood or coif hung with small hand-bells. Hem: scalloped, bell-curved hem.
 
@@ -14,15 +38,7 @@ FANATIC: a rope of confessions knotted around her waist; blend into her expressi
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (confident): on top of her neckline, show a torn habit that bares hip and leg, and a chain harness across her bare waist. SPLASH POSE (splash only; the bust and battle sprite use their own framing): one knee raised on a heretic's skull, leaning into the weapon. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: blackened gothic plate with bell-shaped pauldrons, purity seals on bell-rope cords, a cracked cathedral bell hung behind her (splash only).
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Hymn of Iron: Every ally gains +30% attack for 4s. Cooldown 6s.
-- SKILL II Keening Note: Smite any enemy: Sundered (-20% armor) and Hexed (-20% Magic Resist) for 4s.
-- SKILL III Hour Descant: The Bell rings twice and every Sister gains 6 Zeal. She is Thorned (15% of blows back) for 4s. Cooldown 8s.
-- LITANY Requiem Chorus: LITANY: every ally gains +30% attack and +25% critical chance for 4s, and Haste.
-- PASSIVE Knelling Heresy-Bane: Each foe she kills gives her 6 Zeal. Every Sister starts the fight with +2 Zeal.
-- RELIC Iron Tuning Fork (game item; not drawn in her art): Hour Descant: She gains a Mirror Image (each swallows a whole hit).
-- COMMAND (coming): Leads a hymn-chanting war-choir that lifts every soldier's spirit of the Hallowed Belfry.
-- BATTLE CRY: "*the rope of braided hair creaks* Again, Sisters, louder!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: bronze sound-rings rippling out, rope shadows and a dull midnight shockwave; her voice is visible as rings of flame; her Iron Tuning Fork blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Zlata Vocifera, Standard-Bearer of the Great Bell. Draw only these objects: her Epic weapon, Clapper War-Bell, a war-bell of blackened iron with bell-bronze fittings and rope on a hammer haft, engraved with bells, cracks and bell-rope, and a clasped hymnal, ringing with a small black death-knell bell tied to it; and her open hymnal. Sizes in her head-heights (she is about 7.3 heads tall): staff 3 heads tall, bell 1 head. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

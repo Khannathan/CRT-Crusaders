@@ -1,4 +1,28 @@
-<!-- Crimson Inquisition (RP) card RP-R-MAR. Generated from the sister bible; do not edit here. -->
+<!-- Crimson Inquisition (RP) card RP-R-MAR. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: RP-R-MAR
+name: Aldonza Stigmatrix
+epithet: Warden of the Branding Company
+rarity: R
+rank: Commander
+order: Crimson Inquisition (order id red-pilgrimage, code RP)
+class: Martyr (class id martyr, role Tank)
+age: 25
+weapon: Bloodwrit Oath (Epic)
+relic: sealed crimson oath vial, stamped with a crimson wax seal (a game item)
+kit:
+- SKILL I Searing Smite: Strike a front-line foe and heal for 35% of the damage dealt.
+- SKILL II Intercession: Draw enemy attacks for 4s, Ward herself (-20% damage) and Regenerate 5% every 2s. Cooldown 6s.
+- SKILL III Pyre Vow: Dash to the very front, Ward herself (-16%) and draw attacks for 4s. She gains 1 Fervor (+6% damage each, up to 5). Cooldown 6s.
+- LITANY Dawnbreak: LITANY: burn every enemy with light, heal for 50% of the damage dealt and draw attacks for 4s.
+- PASSIVE Unrelenting Zeal: Once a fight, a killing blow leaves her at 1 HP instead. +6% damage on foes under half HP.
+- RELIC Sealed Crimson Oath Vial (game item; not drawn in her art): Pyre Vow: Martyrdom: for 4s she takes 20% of every blow aimed at her Sisters.
+- COMMAND (coming): Leads a mob of flagellant zealots who charge without fear of the Crimson Inquisition.
+- BATTLE CRY: "Kneel, heretic, and be questioned. I bleed so they need not!"
+```
+<!-- END GAME DATA -->
 
 Read the Crimson Inquisition section of order-bible.md first. Cloth: blood crimson #9a2a33 lead, antique gold #d6a15f trim, blackened steel and chain. Head: wide-brimmed inquisitor's hat with a wax seal. Hem: long, sharp, spattered hems.
 
@@ -14,15 +38,7 @@ FANATIC: fresh scourge marks across her shoulders; blend into her expression: wi
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (confident): on top of her neckline, show a corset cinched tight under the bust, and a chain harness across her bare waist. SPLASH POSE (splash only; the bust and battle sprite use their own framing): kneeling in prayer with the weapon planted, looking up through her lashes. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: blood-lacquered inquisitor plate studded with confession nails, purity seals stamped with the Inquisition's brand, the names of the condemned scratched into her plate.
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Searing Smite: Strike a front-line foe and heal for 35% of the damage dealt.
-- SKILL II Intercession: Draw enemy attacks for 4s, Ward herself (-20% damage) and Regenerate 5% every 2s. Cooldown 6s.
-- SKILL III Pyre Vow: Dash to the very front, Ward herself (-16%) and draw attacks for 4s. She gains 1 Fervor (+6% damage each, up to 5). Cooldown 6s.
-- LITANY Dawnbreak: LITANY: burn every enemy with light, heal for 50% of the damage dealt and draw attacks for 4s.
-- PASSIVE Unrelenting Zeal: Once a fight, a killing blow leaves her at 1 HP instead. +6% damage on foes under half HP.
-- RELIC Sealed Crimson Oath Vial (game item; not drawn in her art): Pyre Vow: Martyrdom: for 4s she takes 20% of every blow aimed at her Sisters.
-- COMMAND (coming): Leads a mob of flagellant zealots who charge without fear of the Crimson Inquisition.
-- BATTLE CRY: "Kneel, heretic, and be questioned. I bleed so they need not!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: crimson wax-seal sigils, red-hot brand-light and burning writs on the wind; her own blood turns to consecrated fire across her sisters; her Sealed Crimson Oath Vial blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Aldonza Stigmatrix, Warden of the Branding Company. Draw only these objects: her Epic weapon, Bloodwrit Oath, a heavy broadsword of blood-lacquered steel with red leather grips and Inquisition seals with a bandaged grip and a round buckler stamped with branding irons and sealed writs, with a branding iron's red-hot sigil fused into it. Sizes in her head-heights (she is about 7.3 heads tall): broadsword 2.5 heads, buckler 1 head across. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

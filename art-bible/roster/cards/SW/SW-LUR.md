@@ -1,4 +1,28 @@
-<!-- Sepulcher Watch (SW) card SW-LUR. Generated from the sister bible; do not edit here. -->
+<!-- Sepulcher Watch (SW) card SW-LUR. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: SW-LUR
+name: Vanth
+epithet: Sepulchra Ascendant, Patron Goddess of the Sepulcher Watch
+rarity: UR (Limited)
+rank: Patron Deity
+order: Sepulcher Watch (order id sepulcher-watch, code SW)
+class: Hospitaller (class id hospitaller, role Healer)
+age: 26
+weapon: The Grail of Wheels of the Deathless Tomb (Divine Arsenal)
+relic: sealed silver chalice, engraved with a tiny ruined sanctuary (a game item)
+kit:
+- SKILL I Chalice Draught: Heal one ally, shield her for 15% of max HP and cure poison, burns and bleeding. She gains 10 Zeal.
+- SKILL II Ossuary Tending: Every ally Regenerates 6% every 2s for 6s; spend 2 Remains to also Ward them (-15%) for 4s. Every Sister gains 2 Mirror Images (each swallows a whole hit). Cooldown 6s.
+- SKILL III Unmask the Fraud: Smite any foe and strip its shield and blessings. Sunders the foe (-30% armor) for 4s. Cooldown 6s.
+- LITANY Chalice of Bones: LITANY: raise every fallen Sister with 40% HP, heal every ally 30%, and the party gains 2 Remains. Every Sister Regenerates 6% of max HP every 2s for 4s. It hallows the ground: a Field of Ash (each fallen foe heals every Sister 6%) for 6s.
+- PASSIVE Overflowing Chalice: Each Remains the party gains heals every Sister 6%. Each time she acts, she spends 3 Remains to raise a fallen Sister with 40% HP. PATRON MIRACLE: every Sepulcher Watch Sister in the party gains +12% attack and takes 8% less damage.
+- SAINT'S SEAL Not Yet: The first Sister to fall each fight is raised at once with 25% HP.
+- RELIC Sealed Silver Chalice (game item; not drawn in her art): Unmask the Fraud: Weakens the foe (-25% attack) for 4s. It hits 20% harder.
+- BATTLE CRY: "Your bones will serve the Watch. The grave gives them back to me!"
+```
+<!-- END GAME DATA -->
 
 Read the Sepulcher Watch section of order-bible.md first. Cloth: bone-tan #b8ab8a lead, slate #383845 trim, dark steel with aged ivory trim. Head: bone-tan hood with a finger-bone circlet. Hem: heavy straight hem weighted with keys.
 
@@ -32,15 +56,7 @@ FANATIC: a crown of nails she drove in herself; blend into her expression: eyes 
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (bold): on top of her neckline, show a side-cut tabard open from ribs to hip, and a bare midriff under a short breastplate. SPLASH POSE (splash only; the bust and battle sprite use their own framing): standing tall with weight on one leg, chin raised in contempt. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: ossuary plate with the bones of the honoured dead fused into it, purity seals on skull-shaped bosses, coffin nails driven through her belt.
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Chalice Draught: Heal one ally, shield her for 15% of max HP and cure poison, burns and bleeding. She gains 10 Zeal.
-- SKILL II Ossuary Tending: Every ally Regenerates 6% every 2s for 6s; spend 2 Remains to also Ward them (-15%) for 4s. Every Sister gains 2 Mirror Images (each swallows a whole hit). Cooldown 6s.
-- SKILL III Unmask the Fraud: Smite any foe and strip its shield and blessings. Sunders the foe (-30% armor) for 4s. Cooldown 6s.
-- LITANY Chalice of Bones: LITANY: raise every fallen Sister with 40% HP, heal every ally 30%, and the party gains 2 Remains. Every Sister Regenerates 6% of max HP every 2s for 4s. It hallows the ground: a Field of Ash (each fallen foe heals every Sister 6%) for 6s.
-- PASSIVE Overflowing Chalice: Each Remains the party gains heals every Sister 6%. Each time she acts, she spends 3 Remains to raise a fallen Sister with 40% HP. PATRON MIRACLE: every Sepulcher Watch Sister in the party gains +12% attack and takes 8% less damage.
-- SAINT'S SEAL Not Yet: The first Sister to fall each fight is raised at once with 25% HP.
-- RELIC Sealed Silver Chalice (game item; not drawn in her art): Unmask the Fraud: Weakens the foe (-25% attack) for 4s. It hits 20% harder.
-- BATTLE CRY: "Your bones will serve the Watch. The grave gives them back to me!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: bone-white light, orbiting skull tokens and spectral funerary keys; a chalice spills light that lifts the fallen; her Litany Chalice of Bones hallows the ground in a ring of bone-white light; her Sealed Silver Chalice blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Vanth, Sepulchra Ascendant, Patron Goddess of the Sepulcher Watch. Draw only these objects: her Divine Arsenal weapon, The Grail of Wheels of the Deathless Tomb, a chalice ringed by turning wheels of eyes, pouring a river of bone-white grave-light upward into the sky, and a lance-staff that is a single burning seraph feather, with a mourner's wedding ring nailed into it. Sizes in her head-heights (she is about 7.3 heads tall): staff 4 heads tall, chalice 0.5 heads. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

@@ -1,4 +1,28 @@
-<!-- Sepulcher Watch (SW) card SW-SSR-HOS. Generated from the sister bible; do not edit here. -->
+<!-- Sepulcher Watch (SW) card SW-SSR-HOS. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: SW-SSR-HOS
+name: Nenia Exanimata
+epithet: Daughter of the Final Door
+rarity: SSR
+rank: Demigoddess
+order: Sepulcher Watch (order id sepulcher-watch, code SW)
+class: Hospitaller (class id hospitaller, role Healer)
+age: 25
+weapon: Font of the Sealed Tomb (Mythic)
+relic: vial of consecrated water, carved with a small skull (a game item)
+kit:
+- SKILL I Lance of Mercy: Strike a near foe with the hospital lance: -25% attack for 4s.
+- SKILL II Grave Chalice: Smite any foe and strip its shield and blessings. She gains 6 Zeal. Cooldown 6s.
+- SKILL III Chalice Draught: Heal one ally, shield her for 15% of max HP and cure poison, burns and bleeding.
+- LITANY Bone Psalm: LITANY: raise every fallen Sister with 35% HP, heal every ally 26%, and the party gains 2 Remains. Wards every Sister (-15% damage taken) for 4s. It hallows the ground: a Field of Ash (each fallen foe heals every Sister 6%) for 4s.
+- PASSIVE Charnel Penance: Each Remains the party gains heals every Sister 6%. Each time she acts, she spends 3 Remains to raise a fallen Sister with 40% HP. +10% damage on foes under half HP.
+- RELIC Vial Of Consecrated Water (game item; not drawn in her art): Chalice Draught: She gains 6 Zeal.
+- ASCENSION (coming): As a Deity, her Bone Psalm also grants Rapture (no damage for 2s) to every Sister, and her passive grows by half.
+- BATTLE CRY: "Your bones will serve the Watch. Drink, and stand!"
+```
+<!-- END GAME DATA -->
 
 Read the Sepulcher Watch section of order-bible.md first. Cloth: bone-tan #b8ab8a lead, slate #383845 trim, dark steel with aged ivory trim. Head: bone-tan hood with a finger-bone circlet. Hem: heavy straight hem weighted with keys.
 
@@ -30,15 +54,7 @@ FANATIC: vow chains locked around her wrists; blend into her expression: with a 
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (daring): on top of her neckline, show a corset cinched tight under the bust, and a bare midriff under a short breastplate. SPLASH POSE (splash only; the bust and battle sprite use their own framing): kneeling in prayer with the weapon planted, looking up through her lashes. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: ossuary plate with the bones of the honoured dead fused into it, purity seals on skull-shaped bosses, coffin nails driven through her belt.
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Lance of Mercy: Strike a near foe with the hospital lance: -25% attack for 4s.
-- SKILL II Grave Chalice: Smite any foe and strip its shield and blessings. She gains 6 Zeal. Cooldown 6s.
-- SKILL III Chalice Draught: Heal one ally, shield her for 15% of max HP and cure poison, burns and bleeding.
-- LITANY Bone Psalm: LITANY: raise every fallen Sister with 35% HP, heal every ally 26%, and the party gains 2 Remains. Wards every Sister (-15% damage taken) for 4s. It hallows the ground: a Field of Ash (each fallen foe heals every Sister 6%) for 4s.
-- PASSIVE Charnel Penance: Each Remains the party gains heals every Sister 6%. Each time she acts, she spends 3 Remains to raise a fallen Sister with 40% HP. +10% damage on foes under half HP.
-- RELIC Vial Of Consecrated Water (game item; not drawn in her art): Chalice Draught: She gains 6 Zeal.
-- ASCENSION (coming): As a Deity, her Bone Psalm also grants Rapture (no damage for 2s) to every Sister, and her passive grows by half.
-- BATTLE CRY: "Your bones will serve the Watch. Drink, and stand!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: bone-white light, orbiting skull tokens and spectral funerary keys; a chalice spills light that lifts the fallen; her Litany Bone Psalm hallows the ground in a ring of bone-white light; her Vial Of Consecrated Water blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Nenia Exanimata, Daughter of the Final Door. Draw only these objects: her Mythic weapon, Font of the Sealed Tomb, a lance-staff whose head is a pair of open angel wings, and a chalice that overflows with liquid light of bone-white grave-light that never spills, crusted with grave dirt and burial lime. Sizes in her head-heights (she is about 7.3 heads tall): staff 4 heads tall, chalice 0.5 heads. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

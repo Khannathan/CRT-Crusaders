@@ -22,8 +22,9 @@ onto the same branch:
 
 ## Art lane rules (ChatGPT)
 
-The full rules are ASSETS_GUIDE section 5. In short: branch `art/<asset-id>`,
-only image files in the art folders, one PR per batch titled `Art: <what>`,
-never merge, delete, rename or edit code. The **Art lane guard** check fails any
-art PR that steps outside those folders. Need a code change? Open an issue with
-the "Code request for Claude" template (label `for-claude`).
+The full rules are `art-bible/specs/GITHUB_LANE.md`. In short: branch `art/<what>`,
+art files in the art folders plus the design docs in `art-bible/` (not its locked
+files or the cards' GAME DATA blocks), one PR per batch titled `Art: <what>`,
+never merge or edit code. The **Art lane guard** check fails any art PR that steps
+outside the lane. Need a code change? Open an issue with the "Code request for
+Claude" template (label `for-claude`).

@@ -1,4 +1,28 @@
-<!-- Iron Vigil (IV) card IV-R-EXE. Generated from the sister bible; do not edit here. -->
+<!-- Iron Vigil (IV) card IV-R-EXE. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: IV-R-EXE
+name: Gisela Lanternaria
+epithet: Castellan of the North Rampart
+rarity: R
+rank: Commander
+order: Iron Vigil (order id iron-vigil, code IV)
+class: Executioner (class id inquisitor, role Melee DPS)
+age: 24
+weapon: Gateward Headsman (Epic)
+relic: interrogation seal, encased in dark iron lattice (a game item)
+kit:
+- SKILL I Accuse: Light hit on any foe. Accused takes +25% damage, and is Sundered (-25% armor), for 6s.
+- SKILL II Duelist's Thrust: Lunge at a near foe. +50% against the Accused.
+- SKILL III Seal the Watch: A light hit that Accuses for 4s, then she goes on Overwatch. Cooldown 6s.
+- LITANY Verdict: LITANY: crushing blow on any enemy, doubled against the Accused. Stuns it for 2s (not bosses).
+- PASSIVE Watchful Eyes: +1 speed: she acts sooner.
+- RELIC Interrogation Seal (game item; not drawn in her art): Duelist's Thrust: Brands the foe: the next blow on it lands 20% harder. It hits 8% harder.
+- COMMAND (coming): Leads headsmen who hunt enemy captains of the Iron Vigil.
+- BATTLE CRY: "The lantern sees you. The wall forgets you. Kneel for the blade!"
+```
+<!-- END GAME DATA -->
 
 Read the Iron Vigil section of order-bible.md first. Cloth: bone-white #e4dccb and charcoal-black #3a3640 halved surcoat lead, ember-orange #e0622a trim, steel chainmail. Head: mail coif with a burning-cross brow band (face always shown; no helm carried). Hem: straight square-cut hem.
 
@@ -14,15 +38,7 @@ FANATIC: flagellant scars criss-crossing her arms; blend into her expression: wi
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (confident): on top of her neckline, show a corset cinched tight under the bust, and a torn surcoat that bares hip and leg. SPLASH POSE (splash only; the bust and battle sprite use their own framing): kneeling in prayer with the weapon planted, looking up through her lashes. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: prayer-etched steel plate over a chainmail hauberk, a burning cross on the surcoat, wax purity seals with long ribbon scrolls on every plate, sworn to the war that never ends.
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Accuse: Light hit on any foe. Accused takes +25% damage, and is Sundered (-25% armor), for 6s.
-- SKILL II Duelist's Thrust: Lunge at a near foe. +50% against the Accused.
-- SKILL III Seal the Watch: A light hit that Accuses for 4s, then she goes on Overwatch. Cooldown 6s.
-- LITANY Verdict: LITANY: crushing blow on any enemy, doubled against the Accused. Stuns it for 2s (not bosses).
-- PASSIVE Watchful Eyes: +1 speed: she acts sooner.
-- RELIC Interrogation Seal (game item; not drawn in her art): Duelist's Thrust: Brands the foe: the next blow on it lands 20% harder. It hits 8% harder.
-- COMMAND (coming): Leads headsmen who hunt enemy captains of the Iron Vigil.
-- BATTLE CRY: "The lantern sees you. The wall forgets you. Kneel for the blade!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: ember-orange crusade-fire and iron sparks, burning-cross sigils flashing on impact; the executioner's axe falls in one heavy flash; her Interrogation Seal blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Gisela Lanternaria, Castellan of the North Rampart. Draw only these objects: her Epic weapon, Gateward Headsman, a heavy executioner's axe of blackened steel inlaid with a burning cross with a writ nailed to the haft and a burning cross and a watch-lantern on the blade, with a gate-chain wrapped round it and soot in every groove. Sizes in her head-heights (she is about 7.3 heads tall): axe 3 heads long. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

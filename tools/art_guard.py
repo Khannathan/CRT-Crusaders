@@ -1,17 +1,26 @@
 #!/usr/bin/env python3
 """
-Art lane guard for ChatGPT's art pull requests (ASSETS_GUIDE section 5).
+Art lane guard for ChatGPT's pull requests (art-bible/specs/GITHUB_LANE.md).
 
 A pull request is an ART PR when its branch starts with `art/` or its title
-starts with `Art:`. An art PR may only add or replace image files in the art
-folders below. It may never delete or rename a file, and may never touch code,
-data, configs, tests, workflows or docs. Any other pull request passes untouched.
+starts with `Art:`. An art PR may:
+  - add or replace image files in the art folders below (never delete or rename them);
+  - add, edit, rename or delete the design docs in art-bible/ (ChatGPT is the art
+    lead and owns them), EXCEPT the Coding Lead's locked files (LOCKED below);
+  - edit a Sister card's design text, but never its GAME DATA block, and never
+    add, delete or rename a card (the 200 slots are game data).
+It may never touch code, data, configs, tests, workflows or other docs.
+Any other pull request passes untouched.
 
 Usage (CI): python3 tools/art_guard.py <base sha> <head sha> <branch> <title>
 """
 import re
 import subprocess
 import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from art_bible_data import block  # noqa: E402
 
 MAX_BYTES = 12 * 1024 * 1024
 
@@ -29,6 +38,18 @@ ALLOWED = [
     (r'art-inbox/ui-concepts/[^/]+\.png', True),       # UI redesign concepts (UI_BIBLE.md)
     (r'art-inbox/ART_LOG\.md', True),
 ]
+# art-bible/: ChatGPT's design docs. Text and images only.
+BIBLE = re.compile(r'art-bible/.+\.(md|txt|png|csv)')
+# Inside art-bible/, only the Coding Lead (Claude) changes these.
+LOCKED = [
+    r'art-bible/specs/.*',                                  # the locks, asset/sprite/UI specs, the lane
+    r'art-bible/CHATGPT_PROJECT_INSTRUCTIONS\.txt',        # ChatGPT's system prompt (Aaron + Claude)
+    r'art-bible/roster/names-and-epithets\.csv',           # names the game reads
+    r'art-bible/sprite-plan/sprite-template-1024x1536\.png',  # registration lines the rig expects
+    r'art-bible/ui-screens/.*',                             # screenshots of the game as built
+]
+CARD = re.compile(r'art-bible/roster/cards/[A-Z]{2}/[A-Z]{2}-[A-Z0-9-]+\.md')
+
 # The intake bot writes src/assets/full-body/<id>.png from art-inbox/full-body/<id>_raw.png.
 INTAKE_OUT = re.compile(r'src/assets/full-body/([^/]+)\.png')
 
@@ -52,6 +73,10 @@ def check(base, head):
             for p in changed if p.startswith('art-inbox/full-body/')}
     for row in rows:
         status, path = row[0][0], row[-1]
+        paths = [row[1], path] if status in 'RC' else [path]
+        if any(p.startswith('art-bible/') for p in paths):
+            problems += check_bible(base, head, status, paths)
+            continue
         if status == 'D':
             problems.append(f'{path}: deleted. Art PRs may not delete files.')
             continue
@@ -64,7 +89,7 @@ def check(base, head):
         else:
             rule = next(((p, new) for p, new in ALLOWED if re.fullmatch(p, path)), None)
         if rule is None:
-            problems.append(f'{path}: outside the art lane (ASSETS_GUIDE section 5 lists the allowed paths).')
+            problems.append(f'{path}: outside the art lane (art-bible/specs/GITHUB_LANE.md lists the allowed paths).')
             continue
         if status == 'A' and not rule[1]:
             problems.append(f'{path}: new .webp file. Only replace an existing .webp; new art is .png.')
@@ -81,6 +106,33 @@ def check(base, head):
     return rows, problems
 
 
+def check_bible(base, head, status, paths):
+    """A change inside art-bible/: ChatGPT's docs, minus the locked files and card data."""
+    out = []
+    for p in paths:
+        if any(re.fullmatch(l, p) for l in LOCKED):
+            return [f'{p}: locked by the Coding Lead (art-bible/specs/LOCKS.md). Ask in a for-claude issue instead.']
+        if not BIBLE.fullmatch(p):
+            return [f'{p}: art-bible/ takes only .md, .txt, .png and .csv files.']
+    path = paths[-1]
+    if any(CARD.fullmatch(p) for p in paths):
+        if status != 'M':
+            return [f'{path}: cards may be edited but never added, deleted or renamed (the 200 slots are game data).']
+        old = block(git('show', f'{base}:{path}'))
+        new = block(git('show', f'{head}:{path}'))
+        if old is not None and old != new:
+            out.append(f'{path}: the GAME DATA block changed. Keep it word for word; ask for game changes in a for-claude issue.')
+        return out
+    if status == 'D':
+        return out
+    data = git('show', f'{head}:{path}', binary=True)
+    if len(data) > MAX_BYTES:
+        out.append(f'{path}: {len(data) // 1024} KB, over the {MAX_BYTES // 1048576} MB limit.')
+    if path.endswith('.png') and not data.startswith(PNG):
+        out.append(f'{path}: not a real PNG file.')
+    return out
+
+
 def main(argv):
     if len(argv) != 4:
         print(__doc__)
@@ -94,7 +146,7 @@ def main(argv):
     for r in rows:
         print('  ' + ' '.join(r))
     if problems:
-        print('\nART LANE CHECK FAILED. Fix these by replacing only your own art files on this branch:')
+        print('\nART LANE CHECK FAILED. Fix these on this branch (put back what you may not change):')
         for p in problems:
             print('  - ' + p)
             print(f'::error::{p}')

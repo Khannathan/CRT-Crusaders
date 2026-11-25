@@ -1,4 +1,28 @@
-<!-- Sepulcher Watch (SW) card SW-SSR-WAR. Generated from the sister bible; do not edit here. -->
+<!-- Sepulcher Watch (SW) card SW-SSR-WAR. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: SW-SSR-WAR
+name: Pollinctrix Sepulta
+epithet: Spark of the Skull Crown
+rarity: SSR
+rank: Demigoddess
+order: Sepulcher Watch (order id sepulcher-watch, code SW)
+class: War-Sister (class id warsister, role Melee DPS)
+age: 26
+weapon: Wrath of the Skull Crown (Mythic)
+relic: silver dueling gauntlet, bound in frayed crimson vow ribbons (a game item)
+kit:
+- SKILL I Duelist's Lunge: Lunge forward and strike a near foe. Weakens the foe (-15% attack) for 4s.
+- SKILL II Grave Feint: Counter anyone who hits her for 4s, at 0.6x. Martyrdom: for 4s she takes 30% of every blow aimed at her Sisters. Cooldown 6s.
+- SKILL III Reap: Spend 2 Remains to strike the front line at once. Accuses every foe it strikes for 4s (+25% damage taken). Cooldown 4s.
+- LITANY Harvest of Heretics: LITANY: strike every enemy; each kill adds 1 Remains. It hallows the ground: a Field of Ash (each fallen foe heals every Sister 6%) for 4s.
+- PASSIVE Harvest: Each Remains the party gains gives her 8 Zeal and +5% attack for the fight (up to +25%).
+- RELIC Silver Dueling Gauntlet (game item; not drawn in her art): Reap: She gains 6 Zeal. It hits 12% harder.
+- ASCENSION (coming): As a Deity, her Harvest of Heretics also grants Rapture (no damage for 2s) to every Sister, and her passive grows by half.
+- BATTLE CRY: "Death is no discharge from this war. Fury is faith!"
+```
+<!-- END GAME DATA -->
 
 Read the Sepulcher Watch section of order-bible.md first. Cloth: bone-tan #b8ab8a lead, slate #383845 trim, dark steel with aged ivory trim. Head: bone-tan hood with a finger-bone circlet. Hem: heavy straight hem weighted with keys.
 
@@ -31,15 +55,7 @@ FANATIC: a heretic's sigil branded into her forearm; blend into her expression: 
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (daring): on top of her neckline, show a side-cut tabard open from ribs to hip, and thigh-high boots with bare skin above, held by garter straps of chain. SPLASH POSE (splash only; the bust and battle sprite use their own framing): standing tall with weight on one leg, chin raised in contempt. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: ossuary plate with the bones of the honoured dead fused into it, purity seals on skull-shaped bosses, coffin nails driven through her belt.
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Duelist's Lunge: Lunge forward and strike a near foe. Weakens the foe (-15% attack) for 4s.
-- SKILL II Grave Feint: Counter anyone who hits her for 4s, at 0.6x. Martyrdom: for 4s she takes 30% of every blow aimed at her Sisters. Cooldown 6s.
-- SKILL III Reap: Spend 2 Remains to strike the front line at once. Accuses every foe it strikes for 4s (+25% damage taken). Cooldown 4s.
-- LITANY Harvest of Heretics: LITANY: strike every enemy; each kill adds 1 Remains. It hallows the ground: a Field of Ash (each fallen foe heals every Sister 6%) for 4s.
-- PASSIVE Harvest: Each Remains the party gains gives her 8 Zeal and +5% attack for the fight (up to +25%).
-- RELIC Silver Dueling Gauntlet (game item; not drawn in her art): Reap: She gains 6 Zeal. It hits 12% harder.
-- ASCENSION (coming): As a Deity, her Harvest of Heretics also grants Rapture (no damage for 2s) to every Sister, and her passive grows by half.
-- BATTLE CRY: "Death is no discharge from this war. Fury is faith!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: bone-white light, orbiting skull tokens and spectral funerary keys; the flail spins in a red arc and her scourge-marks glow; her Litany Harvest of Heretics hallows the ground in a ring of bone-white light; her Silver Dueling Gauntlet blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Pollinctrix Sepulta, Spark of the Skull Crown. Draw only these objects: her Mythic weapon, Wrath of the Skull Crown, a flail of three burning seraph-eyes on chains of white iron, each eye trailing light of bone-white grave-light, crusted with grave dirt and burial lime. Sizes in her head-heights (she is about 7.3 heads tall): flail haft 1.5 heads, chain 1 head. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

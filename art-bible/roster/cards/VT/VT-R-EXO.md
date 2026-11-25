@@ -1,4 +1,28 @@
-<!-- Veiled Tribunal (VT) card VT-R-EXO. Generated from the sister bible; do not edit here. -->
+<!-- Veiled Tribunal (VT) card VT-R-EXO. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: VT-R-EXO
+name: Theophano Sententia
+epithet: Standard-Bearer of the Ninth Tribunal
+rarity: R
+rank: Commander
+order: Veiled Tribunal (order id veiled-tribunal, code VT)
+class: Exorcist (class id exorcist, role Ranged DPS)
+age: 21
+weapon: Blindlaw Lantern (Epic)
+relic: covered witchfire brazier, inlaid with a small bone-white devotional figure (a game item)
+kit:
+- SKILL I Witchfire: Set any enemy Burning for 6s. Stacks on poison or burns.
+- SKILL II Lantern Flare: Smite any enemy and strip its shield and blessings. +30% against bosses.
+- SKILL III Heretic's Pyre: Set a foe Burning for 6s (stacks); each burn tick on it adds 1 Guilt. Cooldown 6s.
+- LITANY Banishment: LITANY: searing light on any enemy, stripping its blessings. +60% against bosses.
+- PASSIVE Witchfire Wick: Her burns are 15% stronger.
+- RELIC Covered Witchfire Brazier (game item; not drawn in her art): Banishment: Lays Penance on the foe for 4s: each act costs the sinner 15% of its own attack. It hits 8% harder.
+- COMMAND (coming): Leads lantern-bearers with pyre-fire of the Veiled Tribunal.
+- BATTLE CRY: "There is no appeal in my court. Burn, abomination!"
+```
+<!-- END GAME DATA -->
 
 Read the Veiled Tribunal section of order-bible.md first. Cloth: dusk violet #6e5a8c lead, parchment #c6baa4 trim, black steel with crimson silk lining. Head: sheer black veil over the eyes, high angular collar. Hem: sharp angular points.
 
@@ -14,15 +38,7 @@ FANATIC: prayer strips nailed into her armour; blend into her expression: eyes b
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (confident): on top of her neckline, show a corset cinched tight under the bust, and a bare midriff under a short breastplate. SPLASH POSE (splash only; the bust and battle sprite use their own framing): kneeling in prayer with the weapon planted, looking up through her lashes. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: judicial gothic plate hung with nailed verdicts and chained scripture, purity seals stamped with the scales, heretics kneeling in chains behind her (splash only).
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Witchfire: Set any enemy Burning for 6s. Stacks on poison or burns.
-- SKILL II Lantern Flare: Smite any enemy and strip its shield and blessings. +30% against bosses.
-- SKILL III Heretic's Pyre: Set a foe Burning for 6s (stacks); each burn tick on it adds 1 Guilt. Cooldown 6s.
-- LITANY Banishment: LITANY: searing light on any enemy, stripping its blessings. +60% against bosses.
-- PASSIVE Witchfire Wick: Her burns are 15% stronger.
-- RELIC Covered Witchfire Brazier (game item; not drawn in her art): Banishment: Lays Penance on the foe for 4s: each act costs the sinner 15% of its own attack. It hits 8% harder.
-- COMMAND (coming): Leads lantern-bearers with pyre-fire of the Veiled Tribunal.
-- BATTLE CRY: "There is no appeal in my court. Burn, abomination!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: violet scale-marks, nailed parchment verdicts and wax seals bursting; the lantern opens and witchfire pours out like a flamer; her Covered Witchfire Brazier blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Theophano Sententia, Standard-Bearer of the Ninth Tribunal. Draw only these objects: her Epic weapon, Blindlaw Lantern, an iron exorcism lantern of angular black steel with crimson silk on a pole hung with stole strips and balance scales and angular wax seals, hung with the wax seals of signed death-verdicts. Sizes in her head-heights (she is about 7.3 heads tall): pole 4 heads tall, lantern 1 head. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

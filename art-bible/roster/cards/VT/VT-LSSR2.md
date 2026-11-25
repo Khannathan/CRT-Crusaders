@@ -1,4 +1,27 @@
-<!-- Veiled Tribunal (VT) card VT-LSSR2. Generated from the sister bible; do not edit here. -->
+<!-- Veiled Tribunal (VT) card VT-LSSR2. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: VT-LSSR2
+name: Libra Ponderatrix
+epithet: Half-Born of the Night Writ
+rarity: SSR (Limited)
+rank: Demigoddess
+order: Veiled Tribunal (order id veiled-tribunal, code VT)
+class: Exorcist (class id exorcist, role Ranged DPS)
+age: 22
+weapon: Brazier of the Blind Law (Mythic)
+relic: covered witchfire brazier, wrapped in a parchment writ (a game item)
+kit:
+- SKILL I Lantern Flare: Smite any enemy and strip its shield and blessings. +30% against bosses.
+- SKILL II Verdict Brand: Set a foe Burning for 6s (stacks); each burn tick on it adds 1 Guilt. Silences it for 2s: only its plainest skill, and any charge breaks. Cooldown 6s.
+- SKILL III Silent Banishing: Accuse a foe for 4s and add 1 Guilt. Lays Penance on the foe for 4s: each act costs the sinner 25% of its own attack. Cooldown 4s.
+- LITANY Weighed Compline: LITANY: a crushing bolt through 30% of its Armor; spends its Guilt for +25% damage each. Hexes the foe (-20% Magic Resist) for 4s. It hallows the ground: Hallowed Ground (every Sister Regenerates 4% every 2s) for 4s.
+- PASSIVE Weighed Seal: +5% damage per Guilt on her target, on top of Guilt's own. A foe she kills passes its Guilt to the next. Every Sister starts the fight with +4 Zeal.
+- RELIC Covered Witchfire Brazier (game item; not drawn in her art): Verdict Brand: Brands the foe: the next blow on it lands 30% harder. It hits 12% harder.
+- BATTLE CRY: "Guilty, by decree. Out of this world!"
+```
+<!-- END GAME DATA -->
 
 Read the Veiled Tribunal section of order-bible.md first. Cloth: dusk violet #6e5a8c lead, parchment #c6baa4 trim, black steel with crimson silk lining. Head: sheer black veil over the eyes, high angular collar. Hem: sharp angular points.
 
@@ -31,14 +54,7 @@ FANATIC: flagellant scars criss-crossing her arms; blend into her expression: bu
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (bold): on top of her neckline, show a side-cut tabard open from ribs to hip, and a corset cinched tight under the bust. SPLASH POSE (splash only; the bust and battle sprite use their own framing): one knee raised on a heretic's skull, leaning into the weapon. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: judicial gothic plate hung with nailed verdicts and chained scripture, purity seals stamped with the scales, heretics kneeling in chains behind her (splash only).
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Lantern Flare: Smite any enemy and strip its shield and blessings. +30% against bosses.
-- SKILL II Verdict Brand: Set a foe Burning for 6s (stacks); each burn tick on it adds 1 Guilt. Silences it for 2s: only its plainest skill, and any charge breaks. Cooldown 6s.
-- SKILL III Silent Banishing: Accuse a foe for 4s and add 1 Guilt. Lays Penance on the foe for 4s: each act costs the sinner 25% of its own attack. Cooldown 4s.
-- LITANY Weighed Compline: LITANY: a crushing bolt through 30% of its Armor; spends its Guilt for +25% damage each. Hexes the foe (-20% Magic Resist) for 4s. It hallows the ground: Hallowed Ground (every Sister Regenerates 4% every 2s) for 4s.
-- PASSIVE Weighed Seal: +5% damage per Guilt on her target, on top of Guilt's own. A foe she kills passes its Guilt to the next. Every Sister starts the fight with +4 Zeal.
-- RELIC Covered Witchfire Brazier (game item; not drawn in her art): Verdict Brand: Brands the foe: the next blow on it lands 30% harder. It hits 12% harder.
-- BATTLE CRY: "Guilty, by decree. Out of this world!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: violet scale-marks, nailed parchment verdicts and wax seals bursting; the lantern opens and witchfire pours out like a flamer; her Litany Weighed Compline hallows the ground in a ring of violet scale-marks; her Covered Witchfire Brazier blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Libra Ponderatrix, Half-Born of the Night Writ. Draw only these objects: her Mythic weapon, Brazier of the Blind Law, a lantern holding a captured angel's fire, small iron wings around the cage, burning violet judgement-light, hung with the wax seals of signed death-verdicts. Sizes in her head-heights (she is about 7.3 heads tall): pole 4 heads tall, lantern 1 head. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

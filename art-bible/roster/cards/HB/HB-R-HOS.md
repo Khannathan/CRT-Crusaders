@@ -1,4 +1,28 @@
-<!-- Hallowed Belfry (HB) card HB-R-HOS. Generated from the sister bible; do not edit here. -->
+<!-- Hallowed Belfry (HB) card HB-R-HOS. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: HB-R-HOS
+name: Jaroslava Pulsatrix
+epithet: Banneret of the Rope Guard
+rarity: R
+rank: Commander
+order: Hallowed Belfry (order id hollow-bell, code HB)
+class: Hospitaller (class id hospitaller, role Healer)
+age: 27
+weapon: Belfry Chalice (Epic)
+relic: pewter last-rites cup, with a bronze clapper (a game item)
+kit:
+- SKILL I Chalice Draught: Heal one ally, shield her for 15% of max HP and cure poison, burns and bleeding.
+- SKILL II Tending Hands: Heal every ally 6% of max HP, then Regenerate 6% every 2s for 6s. Cooldown 6s.
+- SKILL III Bronze Balm: Heal an ally and cure her. She gains 4 Zeal.
+- LITANY Grail of Return: LITANY: raise every fallen Sister with 35% HP, heal every ally 30% of max HP and Regenerate 4% every 2s for 4s.
+- PASSIVE Hollow Heresy-Bane: Each time she acts, every Sister heals 1.5% of max HP. Her blows lay Penance: for 4s each act costs the foe 8% of its own attack.
+- RELIC Pewter Last-Rites Cup (game item; not drawn in her art): Grail of Return: Wards every Sister (-10% damage taken) for 4s.
+- COMMAND (coming): Leads litter-bearers who drag the wounded back to the line of the Hallowed Belfry.
+- BATTLE CRY: "*the hour rings, and it is yours* Drink, and stand!"
+```
+<!-- END GAME DATA -->
 
 Read the Hallowed Belfry section of order-bible.md first. Cloth: bell bronze #8b6848 lead, parchment #c6baa4 trim, blackened iron. Head: bell-shaped hood or coif hung with small hand-bells. Hem: scalloped, bell-curved hem.
 
@@ -14,15 +38,7 @@ FANATIC: candle wax poured over her own collarbone as penance; blend into her ex
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (confident): on top of her neckline, show a chain harness across her bare waist, and a corset cinched tight under the bust. SPLASH POSE (splash only; the bust and battle sprite use their own framing): striding forward out of smoke, cape snapping behind. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: blackened gothic plate with bell-shaped pauldrons, purity seals on bell-rope cords, a cracked cathedral bell hung behind her (splash only).
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Chalice Draught: Heal one ally, shield her for 15% of max HP and cure poison, burns and bleeding.
-- SKILL II Tending Hands: Heal every ally 6% of max HP, then Regenerate 6% every 2s for 6s. Cooldown 6s.
-- SKILL III Bronze Balm: Heal an ally and cure her. She gains 4 Zeal.
-- LITANY Grail of Return: LITANY: raise every fallen Sister with 35% HP, heal every ally 30% of max HP and Regenerate 4% every 2s for 4s.
-- PASSIVE Hollow Heresy-Bane: Each time she acts, every Sister heals 1.5% of max HP. Her blows lay Penance: for 4s each act costs the foe 8% of its own attack.
-- RELIC Pewter Last-Rites Cup (game item; not drawn in her art): Grail of Return: Wards every Sister (-10% damage taken) for 4s.
-- COMMAND (coming): Leads litter-bearers who drag the wounded back to the line of the Hallowed Belfry.
-- BATTLE CRY: "*the hour rings, and it is yours* Drink, and stand!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: bronze sound-rings rippling out, rope shadows and a dull midnight shockwave; a chalice spills light that lifts the fallen; her Pewter Last-Rites Cup blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Jaroslava Pulsatrix, Banneret of the Rope Guard. Draw only these objects: her Epic weapon, Belfry Chalice, a tall lance-staff of blackened iron with bell-bronze fittings and rope with a ribbon and bells, cracks and bell-rope, and a pewter chalice, ringing with a small black death-knell bell tied to it. Sizes in her head-heights (she is about 7.3 heads tall): staff 4 heads tall, chalice 0.5 heads. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

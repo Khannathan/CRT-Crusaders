@@ -1,4 +1,28 @@
-<!-- Choir of the Pyre (CC) card CC-R-VEI. Generated from the sister bible; do not edit here. -->
+<!-- Choir of the Pyre (CC) card CC-R-VEI. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: CC-R-VEI
+name: Shiphrah Ululans
+epithet: Banneret of the Hymn Guard
+rarity: R
+rank: Commander
+order: Choir of the Pyre (order id candle-choir, code CC)
+class: Veilblade (class id veilblade, role Melee DPS)
+age: 29
+weapon: Waxsworn Fang (Epic)
+relic: black prayer book with a hollow spine, bound in a hymn ribbon (a game item)
+kit:
+- SKILL I Veil Strike: Strike any foe, with +25% critical chance.
+- SKILL II Shadowstep: Haste herself, +20% attack and +30% critical chance for 4s. Cooldown 6s.
+- SKILL III Hymnal Cut: Drag any foe to the front and strike it; double damage under 30% HP. She gains 1 Fervor (+6% damage each, up to 5). Cooldown 6s.
+- LITANY Thousand Cuts: LITANY: savage blow on any enemy, +50% critical chance, double damage under 30% HP.
+- PASSIVE Choral Seal: Deals 10% more damage to foes under half HP. Every Sister starts the fight with +2 Zeal.
+- RELIC Black Prayer Book With A Hollow Spine (game item; not drawn in her art): Hymnal Cut: She gains 4 Zeal. It hits 8% harder.
+- COMMAND (coming): Leads a cell of veiled assassins of the Choir of the Pyre.
+- BATTLE CRY: "My candle burns down, and I burn brighter. You never saw me!"
+```
+<!-- END GAME DATA -->
 
 Read the Choir of the Pyre section of order-bible.md first. Cloth: candle gold #d6a15f lead, wine #652b3b trim, bronze. Head: crown of dripping candles. Hem: ribbon streamers.
 
@@ -14,15 +38,7 @@ FANATIC: a crown of nails she drove in herself; blend into her expression: burni
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (confident): on top of her neckline, show a chain harness across her bare waist, and a bare midriff under a short breastplate. SPLASH POSE (splash only; the bust and battle sprite use their own framing): one knee raised on a heretic's skull, leaning into the weapon. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: gilded gothic plate dripping with candle wax, purity seals as hymn sheets, a battle hymn screamed not sung, consecrated fire in her eyes and on her blade.
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Veil Strike: Strike any foe, with +25% critical chance.
-- SKILL II Shadowstep: Haste herself, +20% attack and +30% critical chance for 4s. Cooldown 6s.
-- SKILL III Hymnal Cut: Drag any foe to the front and strike it; double damage under 30% HP. She gains 1 Fervor (+6% damage each, up to 5). Cooldown 6s.
-- LITANY Thousand Cuts: LITANY: savage blow on any enemy, +50% critical chance, double damage under 30% HP.
-- PASSIVE Choral Seal: Deals 10% more damage to foes under half HP. Every Sister starts the fight with +2 Zeal.
-- RELIC Black Prayer Book With A Hollow Spine (game item; not drawn in her art): Hymnal Cut: She gains 4 Zeal. It hits 8% harder.
-- COMMAND (coming): Leads a cell of veiled assassins of the Choir of the Pyre.
-- BATTLE CRY: "My candle burns down, and I burn brighter. You never saw me!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: candle-gold flame, dripping wax and floating hymn ribbons; she vanishes and reappears in a slash of dark silk; her Black Prayer Book With A Hollow Spine blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Shiphrah Ululans, Banneret of the Hymn Guard. Draw only these objects: her Epic weapon, Waxsworn Fang, two ritual daggers of dull bronze dripping with red wax with dripping candles and hymn ribbons on the pommels, trailing smoke from the pyres it lit. Sizes in her head-heights (she is about 7.3 heads tall): daggers 1 head each. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

@@ -1,4 +1,28 @@
-<!-- The Verdant Martyrdom (TC) card TC-UR2. Generated from the sister bible; do not edit here. -->
+<!-- The Verdant Martyrdom (TC) card TC-UR2. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: TC-UR2
+name: Passiflora
+epithet: the Living Briar, Goddess of Scars
+rarity: UR
+rank: Deity
+order: Verdant Martyrdom (order id thorn-covenant, code TC)
+class: Abbess (class id abbess, role Healer)
+age: 27
+weapon: The Shepherd's Burning Crook of the Bleeding Rose (Divine Arsenal)
+relic: cloister key, tied with a scourge cord (a game item)
+kit:
+- SKILL I Thorned Rebuke: Lash a near foe, leaving it Bleeding for 4s. Every Sister heals 45% of the damage dealt. She gains 2 Fervor (+6% damage each, up to 5).
+- SKILL II Scarred Rule: Sacrifice 5% HP; heal an ally and cure her. She gains 8 Zeal.
+- SKILL III Thorn Rod: Spend all her Scars: every ally heals 2% of max HP per Scar. Every Sister Regenerates 5% of max HP every 2s for 4s. Cooldown 6s.
+- LITANY Bleeding Dirge: LITANY: every ally heals 34% of max HP and gains Thorns (28% back) for 4s. Rapture: every Sister takes no damage for 2s. It hallows the ground: Briar Ground (every foe bleeds 15% of her attack every 2s) for 6s.
+- PASSIVE Bleeding Tithe: Each Scar any Covenant Sister gains gives the party 2 Zeal. Each action stokes 1 Fervor (+6% damage, up to 5).
+- SAINT'S SEAL Unmasked: The first time she drops under 30% HP, she heals 25% and goes to 10 Scars.
+- RELIC Cloister Key (game item; not drawn in her art): Thorned Rebuke: Sunders the foe (-25% armor) for 4s. It hits 15% harder.
+- BATTLE CRY: "The briar grows from my wounds, and it hungers. The rod for you, the balm for them!"
+```
+<!-- END GAME DATA -->
 
 Read the Verdant Martyrdom section of order-bible.md first. Cloth: moss green #5a7a3a lead, blood red #9a2a33 trim, old bronze. Head: crown of living briar. Hem: thorny tatters.
 
@@ -30,15 +54,7 @@ FANATIC: a crown of nails she drove in herself; blend into her expression: in fa
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (boldest in her Order): on top of her neckline, show a chain harness across her bare waist, and skin-tight sheer black sleeves and gloves to the shoulder. SPLASH POSE (splash only; the bust and battle sprite use their own framing): standing tall with weight on one leg, chin raised in contempt. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: scourged gothic plate wrapped in barbed briar, purity seals soaked in her own blood, flagellant scars.
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Thorned Rebuke: Lash a near foe, leaving it Bleeding for 4s. Every Sister heals 45% of the damage dealt. She gains 2 Fervor (+6% damage each, up to 5).
-- SKILL II Scarred Rule: Sacrifice 5% HP; heal an ally and cure her. She gains 8 Zeal.
-- SKILL III Thorn Rod: Spend all her Scars: every ally heals 2% of max HP per Scar. Every Sister Regenerates 5% of max HP every 2s for 4s. Cooldown 6s.
-- LITANY Bleeding Dirge: LITANY: every ally heals 34% of max HP and gains Thorns (28% back) for 4s. Rapture: every Sister takes no damage for 2s. It hallows the ground: Briar Ground (every foe bleeds 15% of her attack every 2s) for 6s.
-- PASSIVE Bleeding Tithe: Each Scar any Covenant Sister gains gives the party 2 Zeal. Each action stokes 1 Fervor (+6% damage, up to 5).
-- SAINT'S SEAL Unmasked: The first time she drops under 30% HP, she heals 25% and goes to 10 Scars.
-- RELIC Cloister Key (game item; not drawn in her art): Thorned Rebuke: Sunders the foe (-25% armor) for 4s. It hits 15% harder.
-- BATTLE CRY: "The briar grows from my wounds, and it hungers. The rod for you, the balm for them!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: blood-red scar-light and lashing briar, rose petals torn loose; the crozier cracks like a whip, thorns mending as they cut; her Litany Bleeding Dirge hallows the ground in a ring of blood-red scar-light and lashing briar; her Cloister Key blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Passiflora, the Living Briar, Goddess of Scars. Draw only these objects: her Divine Arsenal weapon, The Shepherd's Burning Crook of the Bleeding Rose, a crozier of living thorn crowned with a burning wheel of eyes; roses of green-grey light with red thorn sparks bloom and fall from it wherever she points, wound with barbed briar that drinks her blood. Sizes in her head-heights (she is about 7.3 heads tall): crozier 4 heads tall. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

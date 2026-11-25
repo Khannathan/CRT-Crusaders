@@ -1,10 +1,33 @@
-<!-- Veiled Tribunal (VT) card VT-SSR-VEI. Generated from the sister bible; do not edit here. -->
+<!-- Veiled Tribunal (VT) card VT-SSR-VEI. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: VT-SSR-VEI
+name: Obscura Ponderosa
+epithet: Half-Born of the Veiled Eye
+rarity: SSR
+rank: Demigoddess
+order: Veiled Tribunal (order id veiled-tribunal, code VT)
+class: Veilblade (class id veilblade, role Melee DPS)
+age: 27
+weapon: Silence of the Veiled Eye (Mythic)
+relic: concealed ritual dagger hilt, set in a square weathered bronze housing (a game item)
+kit:
+- SKILL I Hidden Blade: Strike any foe and add 2 Guilt. Accuses the foe for 4s (+25% damage taken).
+- SKILL II Faceless: Haste herself and +30% critical chance for 4s. She gains 1 Fervor (+6% damage each, up to 5). Cooldown 6s.
+- SKILL III Hamstring: Cut any foe: Bleeding for 6s and Staggered. Cooldown 6s.
+- LITANY Execution: LITANY: a savage blow on any enemy, +50% critical chance; spends all its Guilt for +25% damage each. Lays Penance on the foe for 4s: each act costs the sinner 25% of its own attack. It hallows the ground: Hallowed Ground (every Sister Regenerates 4% every 2s) for 4s.
+- PASSIVE Without Appeal: Her crits spend the target's Guilt for +20% damage per stack. When she kills a foe, its Guilt passes to the next.
+- RELIC Concealed Ritual Dagger Hilt (draw it clearly): Execution: Brands the foe: the next blow on it lands 30% harder. It hits 12% harder.
+- ASCENSION (coming): As a Deity, her Execution also grants Rapture (no damage for 2s) to every Sister, and her passive grows by half.
+- BATTLE CRY: "Silence. The sentence is read. You never saw me!"
+```
+<!-- END GAME DATA -->
 
 Read the Veiled Tribunal section of order-bible.md first. Cloth: dusk violet #6e5a8c lead, parchment #c6baa4 trim, black steel with crimson silk lining. Head: sheer black veil over the eyes, high angular collar. Hem: sharp angular points.
 
 ### VT-SSR-VEI: Obscura Ponderosa, Half-Born of the Veiled Eye (Demigoddess)
 **LOCKED REFERENCE: keep her approved bust and upright round 9 sprite; apply edit #36 (second dagger low in her other hand; skirt open so both legs show from the knee down). Her splash must match the sprite: ash-blonde braided bun.**
-APPROVED ART RECORD: bust portraits/VT-SSR-VEI.png (PRESERVE), sprite full-body/VT-SSR-VEI.png (EDIT only if the current file doesn't already show it: the second dagger low in her other hand and the skirt opened so both legs show from the knee down), splash splash/VT-SSR-VEI.webp (EDIT to match the sprite's ash-blonde braided bun). All from the game repo (main). Edit the attached approved files; never redraw her from the text. If a file isn't attached, ask Aaron for it.
 ```text
 Rarity: SSR (Demigoddess)
 Order: Veiled Tribunal
@@ -29,15 +52,7 @@ TONE dark, gritty occult zeal: inquisition, crusade, heresy and pyres. Soot, blo
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (daring): on top of her neckline, show a bare midriff under a short breastplate, and a side-cut tabard open from ribs to hip. SPLASH POSE (splash only; the bust and battle sprite use their own framing): one knee raised on a heretic's skull, leaning into the weapon. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: judicial gothic plate hung with nailed verdicts and chained scripture, purity seals stamped with the scales, heretics kneeling in chains.
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Hidden Blade: Strike any foe and add 2 Guilt. Accuses the foe for 4s (+25% damage taken).
-- SKILL II Faceless: Haste herself and +30% critical chance for 4s. She gains 1 Fervor (+6% damage each, up to 5). Cooldown 6s.
-- SKILL III Hamstring: Cut any foe: Bleeding for 6s and Staggered. Cooldown 6s.
-- LITANY Execution: LITANY: a savage blow on any enemy, +50% critical chance; spends all its Guilt for +25% damage each. Lays Penance on the foe for 4s: each act costs the sinner 25% of its own attack. It hallows the ground: Hallowed Ground (every Sister Regenerates 4% every 2s) for 4s.
-- PASSIVE Without Appeal: Her crits spend the target's Guilt for +20% damage per stack. When she kills a foe, its Guilt passes to the next.
-- RELIC Concealed Ritual Dagger Hilt (draw it clearly): Execution: Brands the foe: the next blow on it lands 30% harder. It hits 12% harder.
-- ASCENSION (coming): As a Deity, her Execution also grants Rapture (no damage for 2s) to every Sister, and her passive grows by half.
-- BATTLE CRY: "Silence. The sentence is read. You never saw me!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: violet scale-marks, nailed parchment verdicts and wax seals bursting; she vanishes and reappears in a slash of dark silk; her Litany Execution hallows the ground in a ring of violet scale-marks; her Concealed Ritual Dagger Hilt blazes when woken.
 IMAGE PROMPT: none. She is a locked reference: attach her approved bust and sprite and copy them exactly. Her weapon is Silence of the Veiled Eye (Mythic): keep it as drawn in her approved art; on her splash, show its glow from her Weapon line.
 ```

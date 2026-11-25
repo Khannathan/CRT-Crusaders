@@ -1,4 +1,28 @@
-<!-- Sepulcher Watch (SW) card SW-SSR-ADJ. Generated from the sister bible; do not edit here. -->
+<!-- Sepulcher Watch (SW) card SW-SSR-ADJ. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: SW-SSR-ADJ
+name: Ossa Ossifraga
+epithet: Child of the Sealed Tomb
+rarity: SSR
+rank: Demigoddess
+order: Sepulcher Watch (order id sepulcher-watch, code SW)
+class: Adjudicator (class id adjudicator, role Buffer)
+age: 21
+weapon: Judgement of the Final Door (Mythic)
+relic: seal stamp of verdicts, on a funerary key ring (a game item)
+kit:
+- SKILL I Reflected Sentence: Smite any enemy: -25% attack for 4s. Drains 15 Wrath from a boss.
+- SKILL II Skull Scales: An ally gains +25% attack for 4s and Haste; the party gains 1 Remains. She gains 6 Zeal. Cooldown 6s.
+- SKILL III Bone Writ: Every enemy is Weakened (-20% attack) for 4s. Hexes every foe it strikes (-20% Magic Resist) for 4s. Cooldown 8s.
+- LITANY Tomb Dirge: LITANY: every ally +30% attack for 4s, every Sister 10 Zeal, and the party gains 2 Remains. Every Sister Regenerates 4% of max HP every 2s for 4s. It hallows the ground: a Field of Ash (each fallen foe heals every Sister 6%) for 4s.
+- PASSIVE Skull-Kept Heresy-Bane: Each Remains the party gains gives her 6 Zeal. Every Sister starts the fight with +4 Zeal.
+- RELIC Seal Stamp Of Verdicts (game item; not drawn in her art): Reflected Sentence: Sunders the foe (-20% armor) for 4s. It hits 12% harder.
+- ASCENSION (coming): As a Deity, her Tomb Dirge also grants Rapture (no damage for 2s) to every Sister, and her passive grows by half.
+- BATTLE CRY: "The tomb is open, and it knows your name. The ledger is closed!"
+```
+<!-- END GAME DATA -->
 
 Read the Sepulcher Watch section of order-bible.md first. Cloth: bone-tan #b8ab8a lead, slate #383845 trim, dark steel with aged ivory trim. Head: bone-tan hood with a finger-bone circlet. Hem: heavy straight hem weighted with keys.
 
@@ -30,15 +54,7 @@ FANATIC: a rope of confessions knotted around her waist; blend into her expressi
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (daring): on top of her neckline, show thigh-high boots with bare skin above, held by garter straps of chain, and a corset cinched tight under the bust. SPLASH POSE (splash only; the bust and battle sprite use their own framing): twisting at the waist mid-swing, hair flying. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: ossuary plate with the bones of the honoured dead fused into it, purity seals on skull-shaped bosses, coffin nails driven through her belt.
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Reflected Sentence: Smite any enemy: -25% attack for 4s. Drains 15 Wrath from a boss.
-- SKILL II Skull Scales: An ally gains +25% attack for 4s and Haste; the party gains 1 Remains. She gains 6 Zeal. Cooldown 6s.
-- SKILL III Bone Writ: Every enemy is Weakened (-20% attack) for 4s. Hexes every foe it strikes (-20% Magic Resist) for 4s. Cooldown 8s.
-- LITANY Tomb Dirge: LITANY: every ally +30% attack for 4s, every Sister 10 Zeal, and the party gains 2 Remains. Every Sister Regenerates 4% of max HP every 2s for 4s. It hallows the ground: a Field of Ash (each fallen foe heals every Sister 6%) for 4s.
-- PASSIVE Skull-Kept Heresy-Bane: Each Remains the party gains gives her 6 Zeal. Every Sister starts the fight with +4 Zeal.
-- RELIC Seal Stamp Of Verdicts (game item; not drawn in her art): Reflected Sentence: Sunders the foe (-20% armor) for 4s. It hits 12% harder.
-- ASCENSION (coming): As a Deity, her Tomb Dirge also grants Rapture (no damage for 2s) to every Sister, and her passive grows by half.
-- BATTLE CRY: "The tomb is open, and it knows your name. The ledger is closed!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: bone-white light, orbiting skull tokens and spectral funerary keys; giant scales of light tip and crush the foe; her Litany Tomb Dirge hallows the ground in a ring of bone-white light; her Seal Stamp Of Verdicts blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Ossa Ossifraga, Child of the Sealed Tomb. Draw only these objects: her Mythic weapon, Judgement of the Final Door, scales whose beam is a pair of angel wings and whose pans hold a burning heart and a feather, weighing in bone-white grave-light, crusted with grave dirt and burial lime; and her ledger. Sizes in her head-heights (she is about 7.3 heads tall): scales 1.5 heads tall, ledger 1 head. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

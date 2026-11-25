@@ -1,4 +1,28 @@
-<!-- Confessors of Glass (GC) card GC-LUR. Generated from the sister bible; do not edit here. -->
+<!-- Confessors of Glass (GC) card GC-LUR. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: GC-LUR
+name: Speculatrix
+epithet: Specula Ascendant, Patron Goddess of the Confessors of Glass
+rarity: UR (Limited)
+rank: Patron Deity
+order: Confessors of Glass (order id glass-confession, code GC)
+class: Adjudicator (class id adjudicator, role Buffer)
+age: 25
+weapon: The Scales of Six Wings of the Shattered Mirror (Divine Arsenal)
+relic: seal stamp of verdicts, with a cracked mirror pane (a game item)
+kit:
+- SKILL I Reflected Sentence: Smite any enemy: -25% attack for 4s. Drains 15 Wrath from a boss. Brands the foe: the next blow on it lands 40% harder.
+- SKILL II Obsidian Writ: Confess a foe for 4s; for the rest of the fight its kind takes +5% damage from your party. Lays Penance on the foe for 4s: each act costs the sinner 35% of its own attack. Cooldown 6s.
+- SKILL III Pane Scales: Every ally +30% critical chance for 4s, and every Sister 10 Zeal. Wards every Sister (-25% damage taken) for 4s. Cooldown 8s.
+- LITANY Reflected Anathema: LITANY: heavy magic damage on every enemy; their blessings pass to your strongest Sister. Weakens every foe it strikes (-25% attack) for 4s. It hallows the ground: a Lantern Line (every 2s the most hurt Sister goes on Overwatch) for 6s.
+- PASSIVE Mirror Rule: Every foe starts the fight Confessed for 6s, and she strikes first. She walks into every fight behind 2 Mirror Images. PATRON MIRACLE: every Confessors of Glass Sister in the party gains +12% attack and takes 8% less damage.
+- SAINT'S SEAL Seen Before: The first time a Blasphemy lands, she saw it coming: every Sister is Warded (-40%) against it.
+- RELIC Seal Stamp Of Verdicts (game item; not drawn in her art): Pane Scales: Every Sister gains 2 Mirror Images (each swallows a whole hit).
+- BATTLE CRY: "Look into me, and see what you are. Judgement is mine!"
+```
+<!-- END GAME DATA -->
 
 Read the Confessors of Glass section of order-bible.md first. Cloth: ice blue #9cc3d0 (as cold grey-blue cloth) lead, violet #6e5a8c trim, cold silver. Head: a faceless mirror faceplate under a tall coif with a black-glass pane, or a mirror circlet. Every Confessors of Glass Sister is a faceless construct of glass and mirror (see order-bible.md). Hem: crisp, clean hem.
 
@@ -32,15 +56,7 @@ FANATIC: fresh scourge marks across her shoulders; blend into her expression: ey
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (bold): on top of her neckline, show bare thighs between greaves and a high-cut tabard slit, and skin-tight sheer black sleeves and gloves to the shoulder. SPLASH POSE (splash only; the bust and battle sprite use their own framing): twisting at the waist mid-swing, hair flying. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: cathedral-window armour of leaded stained glass, purity seals of black wax with silver ribbon, a rose window shattering behind her (splash only).
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Reflected Sentence: Smite any enemy: -25% attack for 4s. Drains 15 Wrath from a boss. Brands the foe: the next blow on it lands 40% harder.
-- SKILL II Obsidian Writ: Confess a foe for 4s; for the rest of the fight its kind takes +5% damage from your party. Lays Penance on the foe for 4s: each act costs the sinner 35% of its own attack. Cooldown 6s.
-- SKILL III Pane Scales: Every ally +30% critical chance for 4s, and every Sister 10 Zeal. Wards every Sister (-25% damage taken) for 4s. Cooldown 8s.
-- LITANY Reflected Anathema: LITANY: heavy magic damage on every enemy; their blessings pass to your strongest Sister. Weakens every foe it strikes (-25% attack) for 4s. It hallows the ground: a Lantern Line (every 2s the most hurt Sister goes on Overwatch) for 6s.
-- PASSIVE Mirror Rule: Every foe starts the fight Confessed for 6s, and she strikes first. She walks into every fight behind 2 Mirror Images. PATRON MIRACLE: every Confessors of Glass Sister in the party gains +12% attack and takes 8% less damage.
-- SAINT'S SEAL Seen Before: The first time a Blasphemy lands, she saw it coming: every Sister is Warded (-40%) against it.
-- RELIC Seal Stamp Of Verdicts (game item; not drawn in her art): Pane Scales: Every Sister gains 2 Mirror Images (each swallows a whole hit).
-- BATTLE CRY: "Look into me, and see what you are. Judgement is mine!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: ice-blue mirror shards, hard white reflections and her inner light bleeding through cracks; giant scales of light tip and crush the foe; her Litany Reflected Anathema hallows the ground in a ring of ice-blue mirror shards; her Seal Stamp Of Verdicts blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, an anime-styled dark-fantasy heroine drawn as a faceless glass construct with a mirror faceplate, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading, glass and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Speculatrix, Specula Ascendant, Patron Goddess of the Confessors of Glass. Draw only these objects: her Divine Arsenal weapon, The Scales of Six Wings of the Shattered Mirror, colossal scales of white fire held up by six wings, an eye at the fulcrum; sins rise from the condemned as ash and are weighed in ice-blue light through cracked glass, edged with the broken glass of shattered sinners; and her ledger. Sizes in her head-heights (she is about 7.3 heads tall): scales 1.5 heads tall, ledger 1 head. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

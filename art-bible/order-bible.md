@@ -1,10 +1,12 @@
 # CRT Crusaders: Order Theme Bible
 
+> **Owned by ChatGPT, the art lead (since 2026-11-25).** Rewrite and reimagine freely. The locked specs in `specs/` win over anything here; see `specs/LOCKS.md`.
+
 Use this file with the roster Sister cards, class-bible.md and ASSETS_GUIDE.md. It tells you what each of the ten Orders looks, feels and sounds like, so every Sister reads as her Order at a glance.
 
 ## How to use this with ChatGPT
 
-1. This file is one of the ChatGPT project files. The two locked Sisters (VT-SSR-VEI Obscura Ponderosa, TC-UR1 Cruentia) follow the APPROVED ART RECORD on their cards.
+1. No Sister is locked: all existing art is being replaced.
 2. Before drawing a Sister, read her Order's section here. Her roster card wins on anything personal (face, hair, marks, weapon). This file wins on anything the Order owns (cloth colours, metal, head motif, motif shape, hem, splash place).
 3. Who decides what: **Order** = cloth colours, metal finish, head motif, motif shape, hem, splash setting. **Class** = silhouette and weapon. **Sister** = face, hair, skin, marks, weapon. **Rarity** = trim and effects only.
 4. **Colour rule:** the Order's lead colour covers about 60% of her cloth, the shared neutrals (steel, bronze, parchment, near-black shadow) about 30%, the trim colour about 10%. On cloth the lead colour is the lit value of a 3-step ramp whose darker steps sink to the shared shadow #211b26, so colours read grimy, never pastel or neon.

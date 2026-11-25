@@ -1,4 +1,28 @@
-<!-- Drowned Litany (DL) card DL-SSR-CON. Generated from the sister bible; do not edit here. -->
+<!-- Drowned Litany (DL) card DL-SSR-CON. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: DL-SSR-CON
+name: Aestua Inundata
+epithet: Spark of the Drowned Bell
+rarity: SSR
+rank: Demigoddess
+order: Drowned Litany (order id drowned-litany, code DL)
+class: Confessor (class id confessor, role Healer)
+age: 21
+weapon: Penance of the Abyss Hymn (Mythic)
+relic: phial of pyre oil, dripping seawater (a game item)
+kit:
+- SKILL I Miasma: Smite a near foe and Poison it for 6s. Stacks on poison or burns.
+- SKILL II Fathom Penance: Every ally Regenerates 2% plus 1% per Tide every 2s for 6s. Wards every Sister (-15% damage taken) for 4s. Cooldown 6s.
+- SKILL III Contagion: Spread one enemy's poison or burn to every other enemy. Cooldown 8s.
+- LITANY Sunken Anathema: LITANY: heal every ally 37% and cure poison, burns and bleeding. Every Sister Regenerates 4% of max HP every 2s for 4s. It hallows the ground: a Drowning Flood (foes take 10% more and act 25% slower) for 4s.
+- PASSIVE Drowned Rule: Each time she acts, every Sister heals 1.5% of max HP per Tide. +10% damage on foes under half HP.
+- RELIC Phial Of Pyre Oil (game item; not drawn in her art): Contagion: She heals 20% of the damage dealt. It hits 12% harder.
+- ASCENSION (coming): As a Deity, her Sunken Anathema also grants Rapture (no damage for 2s) to every Sister, and her passive grows by half.
+- BATTLE CRY: "I drowned, and I came back angrier. Your wounds are forgiven. Your doubts are not!"
+```
+<!-- END GAME DATA -->
 
 Read the Drowned Litany section of order-bible.md first. Cloth: sea-teal #3f6e78 lead, parchment #c6baa4 trim, verdigris, salt-worn bronze. Head: visor helm or a wet clinging veil. Hem: wet, clinging, dripping points.
 
@@ -30,15 +54,7 @@ FANATIC: tears of blood dried on her cheeks; blend into her expression: eyes bla
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (daring): on top of her neckline, show a side-cut tabard open from ribs to hip, and skin-tight sheer black sleeves and gloves to the shoulder. SPLASH POSE (splash only; the bust and battle sprite use their own framing): one knee raised on a heretic's skull, leaning into the weapon. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: sea-worn verdigris plate, purity seals bleached by salt, salt crusting every rivet.
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Miasma: Smite a near foe and Poison it for 6s. Stacks on poison or burns.
-- SKILL II Fathom Penance: Every ally Regenerates 2% plus 1% per Tide every 2s for 6s. Wards every Sister (-15% damage taken) for 4s. Cooldown 6s.
-- SKILL III Contagion: Spread one enemy's poison or burn to every other enemy. Cooldown 8s.
-- LITANY Sunken Anathema: LITANY: heal every ally 37% and cure poison, burns and bleeding. Every Sister Regenerates 4% of max HP every 2s for 4s. It hallows the ground: a Drowning Flood (foes take 10% more and act 25% slower) for 4s.
-- PASSIVE Drowned Rule: Each time she acts, every Sister heals 1.5% of max HP per Tide. +10% damage on foes under half HP.
-- RELIC Phial Of Pyre Oil (game item; not drawn in her art): Contagion: She heals 20% of the damage dealt. It hits 12% harder.
-- ASCENSION (coming): As a Deity, her Sunken Anathema also grants Rapture (no damage for 2s) to every Sister, and her passive grows by half.
-- BATTLE CRY: "I drowned, and I came back angrier. Your wounds are forgiven. Your doubts are not!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: teal water rising upward, pearls and salt spray; a hand of light closes wounds and burns out poison; her Litany Sunken Anathema hallows the ground in a ring of teal water rising upward; her Phial Of Pyre Oil blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Aestua Inundata, Spark of the Drowned Bell. Draw only these objects: her Mythic weapon, Penance of the Abyss Hymn, a mace whose head is a caged, many-eyed seraph skull breathing cure-smoke of teal sea-light and dripping water, and a beak mask with eyes painted along its length, dripping wet, with drowned prayer-ribbons tied to it; and her plague beak mask. Sizes in her head-heights (she is about 7.3 heads tall): mace haft 1.5 heads, mask 1 head. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

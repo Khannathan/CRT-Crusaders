@@ -1,4 +1,27 @@
-<!-- Choir of the Pyre (CC) card CC-SR-MAR. Generated from the sister bible; do not edit here. -->
+<!-- Choir of the Pyre (CC) card CC-SR-MAR. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: CC-SR-MAR
+name: Naamah Ardens
+epithet: Who Held the Heretic Chorus
+rarity: SR
+rank: Legend
+order: Choir of the Pyre (order id candle-choir, code CC)
+class: Martyr (class id martyr, role Tank)
+age: 27
+weapon: Vowblade of the Silent Night (Legendary)
+relic: blood-stained vow scroll, sealed with a row of red wax seals (a game item)
+kit:
+- SKILL I Searing Smite: Strike a front-line foe and heal for 35% of the damage dealt.
+- SKILL II Intercession: Draw enemy attacks for 4s, Ward herself (-20% damage) and Regenerate 5% every 2s. Cooldown 6s.
+- SKILL III Matin Passion: A Hymn for 6s: every ally Regenerates 3% every 2s. She gains 1 Fervor (+6% damage each, up to 5). Cooldown 8s.
+- LITANY Hymnal Canticle: LITANY: Ward every ally (-20%) for 4s, draw every attack, and start Hold the Note. Rapture: every Sister takes no damage for 2s.
+- PASSIVE Molten Zeal: Once a fight, a killing blow leaves her at 1 HP instead. The fight opens on Hallowed Ground (every Sister Regenerates 4% every 2s) for 4s.
+- RELIC Blood-Stained Vow Scroll (game item; not drawn in her art): Intercession: She gains 1 Fervor (+6% damage each, up to 5).
+- BATTLE CRY: "My choir-mother faltered. I lit her pyre myself. Take me first, and burn for it!"
+```
+<!-- END GAME DATA -->
 
 Read the Choir of the Pyre section of order-bible.md first. Cloth: candle gold #d6a15f lead, wine #652b3b trim, bronze. Head: crown of dripping candles. Hem: ribbon streamers.
 
@@ -14,14 +37,7 @@ FANATIC: a crown of nails she drove in herself; blend into her expression: burni
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (bold): on top of her neckline, show bare thighs between greaves and a high-cut tabard slit, and a bare midriff under a short breastplate. SPLASH POSE (splash only; the bust and battle sprite use their own framing): back arched, hip cocked, cloak swept back over one shoulder. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: gilded gothic plate dripping with candle wax, purity seals as hymn sheets, a battle hymn screamed not sung, consecrated fire in her eyes and on her blade.
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Searing Smite: Strike a front-line foe and heal for 35% of the damage dealt.
-- SKILL II Intercession: Draw enemy attacks for 4s, Ward herself (-20% damage) and Regenerate 5% every 2s. Cooldown 6s.
-- SKILL III Matin Passion: A Hymn for 6s: every ally Regenerates 3% every 2s. She gains 1 Fervor (+6% damage each, up to 5). Cooldown 8s.
-- LITANY Hymnal Canticle: LITANY: Ward every ally (-20%) for 4s, draw every attack, and start Hold the Note. Rapture: every Sister takes no damage for 2s.
-- PASSIVE Molten Zeal: Once a fight, a killing blow leaves her at 1 HP instead. The fight opens on Hallowed Ground (every Sister Regenerates 4% every 2s) for 4s.
-- RELIC Blood-Stained Vow Scroll (game item; not drawn in her art): Intercession: She gains 1 Fervor (+6% damage each, up to 5).
-- BATTLE CRY: "My choir-mother faltered. I lit her pyre myself. Take me first, and burn for it!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: candle-gold flame, dripping wax and floating hymn ribbons; her own blood turns to consecrated fire across her sisters; her Blood-Stained Vow Scroll blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Naamah Ardens, Who Held the Heretic Chorus. Draw only these objects: her Legendary weapon, Vowblade of the Silent Night, an engraved broadsword of dull bronze dripping with red wax with a glowing wound-rune on the blade, vow chains on the grip, and a buckler with an Order boss, trailing smoke from the pyres it lit. Sizes in her head-heights (she is about 7.3 heads tall): broadsword 2.5 heads, buckler 1 head across. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

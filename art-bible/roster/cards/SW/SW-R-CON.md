@@ -1,4 +1,28 @@
-<!-- Sepulcher Watch (SW) card SW-R-CON. Generated from the sister bible; do not edit here. -->
+<!-- Sepulcher Watch (SW) card SW-R-CON. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: SW-R-CON
+name: Fastia Bustuaria
+epithet: Castellan of the Crypt Keys
+rarity: R
+rank: Commander
+order: Sepulcher Watch (order id sepulcher-watch, code SW)
+class: Confessor (class id confessor, role Healer)
+age: 23
+weapon: Ossuary Cure (Epic)
+relic: folded battle pennant, bound in frayed crimson vow ribbons (a game item)
+kit:
+- SKILL I Remedy: Heal one ally, cure poison, burns and bleeding, and let her Regenerate 3% every 2s for 4s.
+- SKILL II Miasma: Smite a near foe and Poison it for 6s. Stacks on poison or burns.
+- SKILL III Raise the Pennant: Heal every ally 8% of max HP. Cooldown 4s.
+- LITANY Last Rites: LITANY: heal every ally 30% of max HP, cure poison, burns and bleeding, and Regenerate 5% every 2s for 6s.
+- PASSIVE Funeral Banner: While the party holds any Remains, every Sister has +5% attack.
+- RELIC Folded Battle Pennant (game item; not drawn in her art): Raise the Pennant: She gains 4 Zeal.
+- COMMAND (coming): Leads a field hospital of novice zealots of the Sepulcher Watch.
+- BATTLE CRY: "Your bones will serve the Watch. No one falls before the work is done!"
+```
+<!-- END GAME DATA -->
 
 Read the Sepulcher Watch section of order-bible.md first. Cloth: bone-tan #b8ab8a lead, slate #383845 trim, dark steel with aged ivory trim. Head: bone-tan hood with a finger-bone circlet. Hem: heavy straight hem weighted with keys.
 
@@ -14,15 +38,7 @@ FANATIC: a heretic's sigil branded into her forearm; blend into her expression: 
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (confident): on top of her neckline, show a bare midriff under a short breastplate, and a side-cut tabard open from ribs to hip. SPLASH POSE (splash only; the bust and battle sprite use their own framing): striding forward out of smoke, cape snapping behind. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: ossuary plate with the bones of the honoured dead fused into it, purity seals on skull-shaped bosses, coffin nails driven through her belt.
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Remedy: Heal one ally, cure poison, burns and bleeding, and let her Regenerate 3% every 2s for 4s.
-- SKILL II Miasma: Smite a near foe and Poison it for 6s. Stacks on poison or burns.
-- SKILL III Raise the Pennant: Heal every ally 8% of max HP. Cooldown 4s.
-- LITANY Last Rites: LITANY: heal every ally 30% of max HP, cure poison, burns and bleeding, and Regenerate 5% every 2s for 6s.
-- PASSIVE Funeral Banner: While the party holds any Remains, every Sister has +5% attack.
-- RELIC Folded Battle Pennant (game item; not drawn in her art): Raise the Pennant: She gains 4 Zeal.
-- COMMAND (coming): Leads a field hospital of novice zealots of the Sepulcher Watch.
-- BATTLE CRY: "Your bones will serve the Watch. No one falls before the work is done!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: bone-white light, orbiting skull tokens and spectral funerary keys; a hand of light closes wounds and burns out poison; her Folded Battle Pennant blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Fastia Bustuaria, Castellan of the Crypt Keys. Draw only these objects: her Epic weapon, Ossuary Cure, a plague-doctor beak mask of tooled leather and a flanged mace of dark steel inlaid with ivory and bone with funerary keys and small skulls, plus a satchel of corked vials, crusted with grave dirt and burial lime; and her plague beak mask. Sizes in her head-heights (she is about 7.3 heads tall): mace haft 1.5 heads, mask 1 head. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

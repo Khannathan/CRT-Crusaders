@@ -1,4 +1,28 @@
-<!-- Iron Vigil (IV) card IV-R-ARB. Generated from the sister bible; do not edit here. -->
+<!-- Iron Vigil (IV) card IV-R-ARB. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: IV-R-ARB
+name: Hildegund Pervigil
+epithet: Prefect of the Last Beacon
+rarity: R
+rank: Commander
+order: Iron Vigil (order id iron-vigil, code IV)
+class: Arbalist (class id arbalist, role Ranged DPS)
+age: 25
+weapon: Sleepless Arbalest (Epic)
+relic: compact crossbow stock beside shoulder, inlaid with a small bone-white devotional figure (a game item)
+kit:
+- SKILL I Consecrated Bolt: A heavy bolt on any foe that ignores 30% of its Armor.
+- SKILL II Marking Shot: Light bolt that Accuses any foe (+25% damage taken) for 4s. Cooldown 4s.
+- SKILL III Crenel Shot: Overwatch: shoot the next foe to attack in her sights, through 30% of its Armor. Cooldown 6s.
+- LITANY Saint's Ballista: LITANY: a crushing bolt on any enemy, through shields and half its Armor.
+- PASSIVE Wall Gunner: +15% damage from the Rearguard.
+- RELIC Compact Crossbow Stock Beside Shoulder (game item; not drawn in her art): Saint's Ballista: Sunders the foe (-10% armor) for 4s. It hits 8% harder.
+- COMMAND (coming): Leads a line of crossbow zealots of the Iron Vigil.
+- BATTLE CRY: "Every rivet is a vow, and I break none. One bolt, one heretic!"
+```
+<!-- END GAME DATA -->
 
 Read the Iron Vigil section of order-bible.md first. Cloth: bone-white #e4dccb and charcoal-black #3a3640 halved surcoat lead, ember-orange #e0622a trim, steel chainmail. Head: mail coif with a burning-cross brow band (face always shown; no helm carried). Hem: straight square-cut hem.
 
@@ -14,15 +38,7 @@ FANATIC: tears of blood dried on her cheeks; blend into her expression: eyes bla
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (confident): on top of her neckline, show a side-cut tabard open from ribs to hip, and thigh-high boots with bare skin above, held by garter straps of chain. SPLASH POSE (splash only; the bust and battle sprite use their own framing): standing tall with weight on one leg, chin raised in contempt. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: prayer-etched steel plate over a chainmail hauberk, a burning cross on the surcoat, wax purity seals with long ribbon scrolls on every plate, sworn to the war that never ends.
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Consecrated Bolt: A heavy bolt on any foe that ignores 30% of its Armor.
-- SKILL II Marking Shot: Light bolt that Accuses any foe (+25% damage taken) for 4s. Cooldown 4s.
-- SKILL III Crenel Shot: Overwatch: shoot the next foe to attack in her sights, through 30% of its Armor. Cooldown 6s.
-- LITANY Saint's Ballista: LITANY: a crushing bolt on any enemy, through shields and half its Armor.
-- PASSIVE Wall Gunner: +15% damage from the Rearguard.
-- RELIC Compact Crossbow Stock Beside Shoulder (game item; not drawn in her art): Saint's Ballista: Sunders the foe (-10% armor) for 4s. It hits 8% harder.
-- COMMAND (coming): Leads a line of crossbow zealots of the Iron Vigil.
-- BATTLE CRY: "Every rivet is a vow, and I break none. One bolt, one heretic!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: ember-orange crusade-fire and iron sparks, burning-cross sigils flashing on impact; a single consecrated bolt leaves a long streak of scripture-light; her Compact Crossbow Stock Beside Shoulder blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Hildegund Pervigil, Prefect of the Last Beacon. Draw only these objects: her Epic weapon, Sleepless Arbalest, a steel-prod crossbow of blackened steel inlaid with a burning cross with a tooled quiver, the stock carved with a burning cross and a watch-lantern, with a gate-chain wrapped round it and soot in every groove; and her quiver of bolts. Sizes in her head-heights (she is about 7.3 heads tall): crossbow 2 heads long. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

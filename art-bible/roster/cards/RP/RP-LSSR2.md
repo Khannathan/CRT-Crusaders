@@ -1,4 +1,27 @@
-<!-- Crimson Inquisition (RP) card RP-LSSR2. Generated from the sister bible; do not edit here. -->
+<!-- Crimson Inquisition (RP) card RP-LSSR2. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: RP-LSSR2
+name: Confessio Accusatrix
+epithet: Half-Born of the Inquisitor Star
+rarity: SSR (Limited)
+rank: Demigoddess
+order: Crimson Inquisition (order id red-pilgrimage, code RP)
+class: Arbalist (class id arbalist, role Ranged DPS)
+age: 23
+weapon: Verdict-Bow of the Bleeding Confession (Mythic)
+relic: quiver badge, on a branding-chain (a game item)
+kit:
+- SKILL I Consecrated Bolt: A heavy bolt on any foe that ignores 30% of its Armor.
+- SKILL II Pyre Shot: Dash forward, hit any enemy and strip its shield and blessings. +15% critical chance on it.
+- SKILL III Iron Bolt: Set a foe Burning for 6s (stacks) and leap back. She heals 20% of the damage dealt. Cooldown 4s.
+- LITANY Ember Vespers: LITANY: burn every enemy for 6s (stacks); spends her Pursuit for +10% each. Sunders every foe it strikes (-20% armor) for 4s. It hallows the ground: Briar Ground (every foe bleeds 15% of her attack every 2s) for 4s.
+- PASSIVE Writ-Bearing Zeal: Her burns are 10% stronger for each Pursuit she holds. Her crits Brand the foe: its next wound lands 25% harder.
+- RELIC Quiver Badge (game item; not drawn in her art): Pyre Shot: She heals 20% of the damage dealt. It hits 12% harder.
+- BATTLE CRY: "Confess, and burn clean. Mark, and fire!"
+```
+<!-- END GAME DATA -->
 
 Read the Crimson Inquisition section of order-bible.md first. Cloth: blood crimson #9a2a33 lead, antique gold #d6a15f trim, blackened steel and chain. Head: wide-brimmed inquisitor's hat with a wax seal. Hem: long, sharp, spattered hems.
 
@@ -31,14 +54,7 @@ FANATIC: a crown of nails she drove in herself; blend into her expression: burni
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (bold): on top of her neckline, show thigh-high boots with bare skin above, held by garter straps of chain, and a side-cut tabard open from ribs to hip. SPLASH POSE (splash only; the bust and battle sprite use their own framing): kneeling in prayer with the weapon planted, looking up through her lashes. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: blood-lacquered inquisitor plate studded with confession nails, purity seals stamped with the Inquisition's brand, the names of the condemned scratched into her plate.
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Consecrated Bolt: A heavy bolt on any foe that ignores 30% of its Armor.
-- SKILL II Pyre Shot: Dash forward, hit any enemy and strip its shield and blessings. +15% critical chance on it.
-- SKILL III Iron Bolt: Set a foe Burning for 6s (stacks) and leap back. She heals 20% of the damage dealt. Cooldown 4s.
-- LITANY Ember Vespers: LITANY: burn every enemy for 6s (stacks); spends her Pursuit for +10% each. Sunders every foe it strikes (-20% armor) for 4s. It hallows the ground: Briar Ground (every foe bleeds 15% of her attack every 2s) for 4s.
-- PASSIVE Writ-Bearing Zeal: Her burns are 10% stronger for each Pursuit she holds. Her crits Brand the foe: its next wound lands 25% harder.
-- RELIC Quiver Badge (game item; not drawn in her art): Pyre Shot: She heals 20% of the damage dealt. It hits 12% harder.
-- BATTLE CRY: "Confess, and burn clean. Mark, and fire!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: crimson wax-seal sigils, red-hot brand-light and burning writs on the wind; a single consecrated bolt leaves a long streak of scripture-light; her Litany Ember Vespers hallows the ground in a ring of crimson wax-seal sigils; her Quiver Badge blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Confessio Accusatrix, Half-Born of the Inquisitor Star. Draw only these objects: her Mythic weapon, Verdict-Bow of the Bleeding Confession, a crossbow whose limbs are two burning angel wings, firing bolts of white fire trailing red-hot brand-light and gold sparks, heat-blackened from the brazier, a writ nailed to it; and her quiver of bolts. Sizes in her head-heights (she is about 7.3 heads tall): crossbow 2 heads long. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

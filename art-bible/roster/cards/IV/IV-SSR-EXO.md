@@ -1,4 +1,28 @@
-<!-- Iron Vigil (IV) card IV-SSR-EXO. Generated from the sister bible; do not edit here. -->
+<!-- Iron Vigil (IV) card IV-SSR-EXO. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: IV-SSR-EXO
+name: Vallia Obsessa
+epithet: Child of the Unsleeping Flame
+rarity: SSR
+rank: Demigoddess
+order: Iron Vigil (order id iron-vigil, code IV)
+class: Exorcist (class id exorcist, role Ranged DPS)
+age: 27
+weapon: Brazier of the First Lantern (Mythic)
+relic: iron exorcism lantern, with a tiny ember-lit burning-cross seal (a game item)
+kit:
+- SKILL I Lantern Flare: Smite any enemy and strip its shield and blessings. +30% against bosses.
+- SKILL II Rampart Brand: A heavy bolt on any foe through 30% of its Armor; +50% against the Accused. +15% critical chance on it.
+- SKILL III Sentry Banishing: Swing at a front-line foe and set it Burning for 4s (stacks). If it was already Burning, it is also Sundered (-18% armor) for 4s. Brands the foe: the next blow on it lands 30% harder.
+- LITANY Vigil Compline: LITANY: every enemy Burns for 6s (stacks), and every Sister goes on Overwatch. Goes through 20% of Armor and Magic Resist. It hallows the ground: a Lantern Line (every 2s the most hurt Sister goes on Overwatch) for 4s.
+- PASSIVE Riveted Heresy-Bane: +20% damage from the Rearguard. Every Sister whose Overwatch fires gains 12 Zeal. The fight opens on a Lantern Line (every 2s the most hurt Sister goes on Overwatch) for 4s.
+- RELIC Iron Exorcism Lantern (game item; not drawn in her art): Rampart Brand: Sunders the foe (-20% armor) for 4s. It hits 12% harder.
+- ASCENSION (coming): As a Deity, her Vigil Compline also grants Rapture (no damage for 2s) to every Sister, and her passive grows by half.
+- BATTLE CRY: "The lantern sees you. The wall forgets you. Burn, and be absolved!"
+```
+<!-- END GAME DATA -->
 
 Read the Iron Vigil section of order-bible.md first. Cloth: bone-white #e4dccb and charcoal-black #3a3640 halved surcoat lead, ember-orange #e0622a trim, steel chainmail. Head: mail coif with a burning-cross brow band (face always shown; no helm carried). Hem: straight square-cut hem.
 
@@ -30,15 +54,7 @@ FANATIC: prayer strips nailed into her armour; blend into her expression: in fan
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (daring): on top of her neckline, show a corset cinched tight under the bust, and a side-cut tabard open from ribs to hip. SPLASH POSE (splash only; the bust and battle sprite use their own framing): kneeling in prayer with the weapon planted, looking up through her lashes. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: prayer-etched steel plate over a chainmail hauberk, a burning cross on the surcoat, wax purity seals with long ribbon scrolls on every plate, sworn to the war that never ends.
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Lantern Flare: Smite any enemy and strip its shield and blessings. +30% against bosses.
-- SKILL II Rampart Brand: A heavy bolt on any foe through 30% of its Armor; +50% against the Accused. +15% critical chance on it.
-- SKILL III Sentry Banishing: Swing at a front-line foe and set it Burning for 4s (stacks). If it was already Burning, it is also Sundered (-18% armor) for 4s. Brands the foe: the next blow on it lands 30% harder.
-- LITANY Vigil Compline: LITANY: every enemy Burns for 6s (stacks), and every Sister goes on Overwatch. Goes through 20% of Armor and Magic Resist. It hallows the ground: a Lantern Line (every 2s the most hurt Sister goes on Overwatch) for 4s.
-- PASSIVE Riveted Heresy-Bane: +20% damage from the Rearguard. Every Sister whose Overwatch fires gains 12 Zeal. The fight opens on a Lantern Line (every 2s the most hurt Sister goes on Overwatch) for 4s.
-- RELIC Iron Exorcism Lantern (game item; not drawn in her art): Rampart Brand: Sunders the foe (-20% armor) for 4s. It hits 12% harder.
-- ASCENSION (coming): As a Deity, her Vigil Compline also grants Rapture (no damage for 2s) to every Sister, and her passive grows by half.
-- BATTLE CRY: "The lantern sees you. The wall forgets you. Burn, and be absolved!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: ember-orange crusade-fire and iron sparks, burning-cross sigils flashing on impact; the lantern opens and witchfire pours out like a flamer; her Litany Vigil Compline hallows the ground in a ring of ember-orange crusade-fire and iron sparks; her Iron Exorcism Lantern blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Vallia Obsessa, Child of the Unsleeping Flame. Draw only these objects: her Mythic weapon, Brazier of the First Lantern, a lantern holding a captured angel's fire, small iron wings around the cage, burning ember-orange crusade-fire, with a gate-chain wrapped round it and soot in every groove. Sizes in her head-heights (she is about 7.3 heads tall): pole 4 heads tall, lantern 1 head. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

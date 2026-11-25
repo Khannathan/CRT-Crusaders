@@ -1,4 +1,28 @@
-<!-- Iron Vigil (IV) card IV-UR1. Generated from the sister bible; do not edit here. -->
+<!-- Iron Vigil (IV) card IV-UR1. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: IV-UR1
+name: Propugna
+epithet: the Amber Watcher, Goddess of Walls
+rarity: UR
+rank: Deity
+order: Iron Vigil (order id iron-vigil, code IV)
+class: Censer (class id censer, role Ranged DPS)
+age: 26
+weapon: The Seraph Thurible of the Eternal Watch (Divine Arsenal)
+relic: bronze censer, with a smoky-glass central inset (a game item)
+kit:
+- SKILL I Beacon Smoke: Smoke every enemy (-20% attack for 4s) and go on Overwatch: the next foe to attack in her sights is struck and set Burning. Sunders every foe it strikes (-25% armor) for 4s.
+- SKILL II Iron Thurible: Swing at a front-line foe and set it Burning for 4s (stacks). If it was already Burning, it is also Sundered (-20% armor) for 4s. Brands the foe: the next blow on it lands 35% harder.
+- SKILL III Tower Lamp: Spread one foe's burn to every foe, then ignite it all on that foe. Silences it for 4s: only its plainest skill, and any charge breaks. Cooldown 8s.
+- LITANY The Wall Is Lit: LITANY: every enemy Burns for 6s (stacks), and every Sister goes on Overwatch. Accuses every foe it strikes for 4s (+25% damage taken). It hallows the ground: a Lantern Line (every 2s the most hurt Sister goes on Overwatch) for 6s.
+- PASSIVE Watchfire: Every 2s, she sets the fastest foe Burning for 4s. Her burns and poisons are 15% stronger.
+- SAINT'S SEAL Never Sleep: The first time a boss starts charging, every burn on it ignites at once and it loses 20 Wrath.
+- RELIC Bronze Censer (game item; not drawn in her art): Tower Lamp: +20% critical chance on it. It hits 15% harder.
+- BATTLE CRY: "I walled up my own Sister for less. Breathe deep, heretic!"
+```
+<!-- END GAME DATA -->
 
 Read the Iron Vigil section of order-bible.md first. Cloth: bone-white #e4dccb and charcoal-black #3a3640 halved surcoat lead, ember-orange #e0622a trim, steel chainmail. Head: mail coif with a burning-cross brow band (face always shown; no helm carried). Hem: straight square-cut hem.
 
@@ -31,15 +55,7 @@ FANATIC: fresh scourge marks across her shoulders; blend into her expression: in
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (boldest in her Order): on top of her neckline, show bare thighs between greaves and a high-cut tabard slit, and a bare midriff under a short breastplate. SPLASH POSE (splash only; the bust and battle sprite use their own framing): back arched, hip cocked, cloak swept back over one shoulder. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: prayer-etched steel plate over a chainmail hauberk, a burning cross on the surcoat, wax purity seals with long ribbon scrolls on every plate, sworn to the war that never ends.
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Beacon Smoke: Smoke every enemy (-20% attack for 4s) and go on Overwatch: the next foe to attack in her sights is struck and set Burning. Sunders every foe it strikes (-25% armor) for 4s.
-- SKILL II Iron Thurible: Swing at a front-line foe and set it Burning for 4s (stacks). If it was already Burning, it is also Sundered (-20% armor) for 4s. Brands the foe: the next blow on it lands 35% harder.
-- SKILL III Tower Lamp: Spread one foe's burn to every foe, then ignite it all on that foe. Silences it for 4s: only its plainest skill, and any charge breaks. Cooldown 8s.
-- LITANY The Wall Is Lit: LITANY: every enemy Burns for 6s (stacks), and every Sister goes on Overwatch. Accuses every foe it strikes for 4s (+25% damage taken). It hallows the ground: a Lantern Line (every 2s the most hurt Sister goes on Overwatch) for 6s.
-- PASSIVE Watchfire: Every 2s, she sets the fastest foe Burning for 4s. Her burns and poisons are 15% stronger.
-- SAINT'S SEAL Never Sleep: The first time a boss starts charging, every burn on it ignites at once and it loses 20 Wrath.
-- RELIC Bronze Censer (game item; not drawn in her art): Tower Lamp: +20% critical chance on it. It hits 15% harder.
-- BATTLE CRY: "I walled up my own Sister for less. Breathe deep, heretic!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: ember-orange crusade-fire and iron sparks, burning-cross sigils flashing on impact; the thurible swings out a choking cloud of burning incense; her Litany The Wall Is Lit hallows the ground in a ring of ember-orange crusade-fire and iron sparks; her Bronze Censer blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Propugna, the Amber Watcher, Goddess of Walls. Draw only these objects: her Divine Arsenal weapon, The Seraph Thurible of the Eternal Watch, a burning wheel-censer of interlocked rings and eyes, pouring smoke-seraphim of ember-orange crusade-fire that fly at her enemies, with a gate-chain wrapped round it and soot in every groove. Sizes in her head-heights (she is about 7.3 heads tall): censer 1 head, chain 2 heads. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

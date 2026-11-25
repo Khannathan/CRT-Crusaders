@@ -1,5 +1,7 @@
 # CRT Crusaders: UI Bible for the redesign concepts
 
+> **Owned by ChatGPT, the art lead (since 2026-11-25).** Rewrite and reimagine freely. The locked specs in `specs/` win over anything here; see `specs/LOCKS.md`.
+
 This is the brief for **concept art of a full UI redesign**. It tells you what every screen in the game is for, what it must show, how big things must be on a phone, and how the redesign should look. You make **concepts only**: pictures of how screens could look. Nothing you make here goes into the game directly. Aaron picks a direction, then Claude rebuilds the screens in code and asks for the final UI skins as normal assets (ASSETS_GUIDE section 2).
 
 Read this with: `GAME_OVERVIEW.md` (what the game is), `ASSETS_GUIDE.md` section 1 (PC-98 style) and section 5 (delivery), `order-bible.md` note 16 (Order colour swatches). The repo copy on `main` is always the current one.

@@ -1,4 +1,28 @@
-<!-- Iron Vigil (IV) card IV-SSR-CON. Generated from the sister bible; do not edit here. -->
+<!-- Iron Vigil (IV) card IV-SSR-CON. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: IV-SSR-CON
+name: Pervigilia Obsessa
+epithet: Spark of the Watch-Fire
+rarity: SSR
+rank: Demigoddess
+order: Iron Vigil (order id iron-vigil, code IV)
+class: Confessor (class id confessor, role Healer)
+age: 29
+weapon: Penance of the Unsleeping Flame (Mythic)
+relic: bone saw in a reliquary case, with a tiny ember-lit burning-cross seal (a game item)
+kit:
+- SKILL I Miasma: Smite a near foe and Poison it for 6s. Stacks on poison or burns.
+- SKILL II Bastion Cure: Overwatch: when the next foe acts, she heals the most hurt Sister 21% of max HP. Wards her (-15% damage taken) for 4s. Cooldown 6s.
+- SKILL III Contagion: Spread one enemy's poison or burn to every other enemy. Cooldown 8s.
+- LITANY Gate Dirge: LITANY: every ally heals 30% of max HP, and every Sister goes on Overwatch. Rapture: every Sister takes no damage for 2s. It hallows the ground: a Lantern Line (every 2s the most hurt Sister goes on Overwatch) for 4s.
+- PASSIVE Sentry's Covenant: Each Overwatch reaction also Weakens its foe (-15% attack, 4s). While she stands, every Sister takes 5% less damage. The fight opens on a Lantern Line (every 2s the most hurt Sister goes on Overwatch) for 4s.
+- RELIC Bone Saw In A Reliquary Case (game item; not drawn in her art): Miasma: Brands the foe: the next blow on it lands 30% harder. It hits 12% harder.
+- ASCENSION (coming): As a Deity, her Gate Dirge also grants Rapture (no damage for 2s) to every Sister, and her passive grows by half.
+- BATTLE CRY: "No gate opens. Not for you, not for mercy. Your wounds are forgiven. Your doubts are not!"
+```
+<!-- END GAME DATA -->
 
 Read the Iron Vigil section of order-bible.md first. Cloth: bone-white #e4dccb and charcoal-black #3a3640 halved surcoat lead, ember-orange #e0622a trim, steel chainmail. Head: mail coif with a burning-cross brow band (face always shown; no helm carried). Hem: straight square-cut hem.
 
@@ -30,15 +54,7 @@ FANATIC: scripture branded into her thigh; blend into her expression: eyes blazi
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (daring): on top of her neckline, show bare thighs between greaves and a high-cut tabard slit, and a bare midriff under a short breastplate. SPLASH POSE (splash only; the bust and battle sprite use their own framing): kneeling in prayer with the weapon planted, looking up through her lashes. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: prayer-etched steel plate over a chainmail hauberk, a burning cross on the surcoat, wax purity seals with long ribbon scrolls on every plate, sworn to the war that never ends.
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Miasma: Smite a near foe and Poison it for 6s. Stacks on poison or burns.
-- SKILL II Bastion Cure: Overwatch: when the next foe acts, she heals the most hurt Sister 21% of max HP. Wards her (-15% damage taken) for 4s. Cooldown 6s.
-- SKILL III Contagion: Spread one enemy's poison or burn to every other enemy. Cooldown 8s.
-- LITANY Gate Dirge: LITANY: every ally heals 30% of max HP, and every Sister goes on Overwatch. Rapture: every Sister takes no damage for 2s. It hallows the ground: a Lantern Line (every 2s the most hurt Sister goes on Overwatch) for 4s.
-- PASSIVE Sentry's Covenant: Each Overwatch reaction also Weakens its foe (-15% attack, 4s). While she stands, every Sister takes 5% less damage. The fight opens on a Lantern Line (every 2s the most hurt Sister goes on Overwatch) for 4s.
-- RELIC Bone Saw In A Reliquary Case (game item; not drawn in her art): Miasma: Brands the foe: the next blow on it lands 30% harder. It hits 12% harder.
-- ASCENSION (coming): As a Deity, her Gate Dirge also grants Rapture (no damage for 2s) to every Sister, and her passive grows by half.
-- BATTLE CRY: "No gate opens. Not for you, not for mercy. Your wounds are forgiven. Your doubts are not!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: ember-orange crusade-fire and iron sparks, burning-cross sigils flashing on impact; a hand of light closes wounds and burns out poison; her Litany Gate Dirge hallows the ground in a ring of ember-orange crusade-fire and iron sparks; her Bone Saw In A Reliquary Case blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Pervigilia Obsessa, Spark of the Watch-Fire. Draw only these objects: her Mythic weapon, Penance of the Unsleeping Flame, a mace whose head is a caged, many-eyed seraph skull breathing cure-smoke of ember-orange crusade-fire, and a beak mask with eyes painted along its length, with a gate-chain wrapped round it and soot in every groove; and her plague beak mask. Sizes in her head-heights (she is about 7.3 heads tall): mace haft 1.5 heads, mask 1 head. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

@@ -1,4 +1,28 @@
-<!-- Confessors of Glass (GC) card GC-R-ADJ. Generated from the sister bible; do not edit here. -->
+<!-- Confessors of Glass (GC) card GC-R-ADJ. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: GC-R-ADJ
+name: Secunda Polita
+epithet: Marshal of the Mirror Crypt
+rarity: R
+rank: Commander
+order: Confessors of Glass (order id glass-confession, code GC)
+class: Adjudicator (class id adjudicator, role Buffer)
+age: 21
+weapon: Shardvow Ledger (Epic)
+relic: ivory-bound miniature codex, bearing a cracked oval mother-of-pearl inset (a game item)
+kit:
+- SKILL I Reflected Sentence: Smite any enemy: -25% attack for 4s. Drains 15 Wrath from a boss.
+- SKILL II Mirror Ward: Ward an ally (-25% damage) and give her thorns (30% back) for 4s. Cooldown 6s.
+- SKILL III Catalogue: Confess a foe for 4s; for the rest of the fight its kind takes +5% damage from your party. Cooldown 6s.
+- LITANY Final Judgment: LITANY: every enemy is Weakened (-30% attack) for 4s and loses 40 Wrath.
+- PASSIVE Watchful Eye: +1 speed: she acts sooner.
+- RELIC Ivory-Bound Miniature Codex (game item; not drawn in her art): Mirror Ward: Her ally gains a Mirror Image (each swallows a whole hit).
+- COMMAND (coming): Leads a court of inquisitors who mark heretic officers of the Confessors of Glass.
+- BATTLE CRY: "Nothing is hidden. Nothing is spared. Weighed, and wanting!"
+```
+<!-- END GAME DATA -->
 
 Read the Confessors of Glass section of order-bible.md first. Cloth: ice blue #9cc3d0 (as cold grey-blue cloth) lead, violet #6e5a8c trim, cold silver. Head: a faceless mirror faceplate under a tall coif with a black-glass pane, or a mirror circlet. Every Confessors of Glass Sister is a faceless construct of glass and mirror (see order-bible.md). Hem: crisp, clean hem.
 
@@ -15,15 +39,7 @@ FANATIC: knuckles split and bound in charred prayer cloth; blend into her expres
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (confident): on top of her neckline, show a bare midriff under a short breastplate, and a chain harness across her bare waist. SPLASH POSE (splash only; the bust and battle sprite use their own framing): striding forward out of smoke, cape snapping behind. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: cathedral-window armour of leaded stained glass, purity seals of black wax with silver ribbon, a rose window shattering behind her (splash only).
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Reflected Sentence: Smite any enemy: -25% attack for 4s. Drains 15 Wrath from a boss.
-- SKILL II Mirror Ward: Ward an ally (-25% damage) and give her thorns (30% back) for 4s. Cooldown 6s.
-- SKILL III Catalogue: Confess a foe for 4s; for the rest of the fight its kind takes +5% damage from your party. Cooldown 6s.
-- LITANY Final Judgment: LITANY: every enemy is Weakened (-30% attack) for 4s and loses 40 Wrath.
-- PASSIVE Watchful Eye: +1 speed: she acts sooner.
-- RELIC Ivory-Bound Miniature Codex (game item; not drawn in her art): Mirror Ward: Her ally gains a Mirror Image (each swallows a whole hit).
-- COMMAND (coming): Leads a court of inquisitors who mark heretic officers of the Confessors of Glass.
-- BATTLE CRY: "Nothing is hidden. Nothing is spared. Weighed, and wanting!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: ice-blue mirror shards, hard white reflections and her inner light bleeding through cracks; giant scales of light tip and crush the foe; her Ivory-Bound Miniature Codex blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, an anime-styled dark-fantasy heroine drawn as a faceless glass construct with a mirror faceplate, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading, glass and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Secunda Polita, Marshal of the Mirror Crypt. Draw only these objects: her Epic weapon, Shardvow Ledger, hanging scales of cold silver set with black glass with mirror panes and stained-glass shards, and an iron-bound ledger with a seal stamp, edged with the broken glass of shattered sinners. Sizes in her head-heights (she is about 7.3 heads tall): scales 1.5 heads tall, ledger 1 head. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

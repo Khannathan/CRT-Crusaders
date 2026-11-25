@@ -1,5 +1,7 @@
 # CRT Crusaders: 200-Sister Roster
 
+> **Owned by ChatGPT, the art lead (since 2026-11-25).** Rewrite and reimagine freely. The locked specs in `specs/` win over anything here; see `specs/LOCKS.md`.
+
 Aaron's roster (2026-11-25): per Order, 1 Limited UR, 2 Limited SSR tied to her, 2 UR, and one SSR, SR and R of each of the 5 roles. A role's three classes are split across SSR, SR and R, so every Order still has all 15 classes. 20 per Order, 200 in all. (It was 500 until 2026-11-25; the 300 retired cards are kept out of this folder.)
 
 Use with order-bible.md, class-bible.md, sprite-plan.md and ASSETS_GUIDE.md. The cards are in one file per Order (see below). 
@@ -14,7 +16,6 @@ Use with order-bible.md, class-bible.md, sprite-plan.md and ASSETS_GUIDE.md. The
 
 **IDs:** `<Order>-<rarity>-<class>`, for example `IV-SSR-EXO` is the Iron Vigil SSR Exorcist. Top slots are `<Order>-LUR`, `-LSSR1`, `-LSSR2`, `-UR1`, `-UR2`. Order codes: IV Iron Vigil, AM Ashen Mercy, VT Veiled Tribunal, SW Sepulcher Watch, CC Choir of the Pyre, TC Verdant Martyrdom, DL Drowned Litany, GC Confessors of Glass, RP Crimson Inquisition, HB Hallowed Belfry. Class codes: HIE Hierophant, SEN Sentinel, MAR Martyr, CON Confessor, HOS Hospitaller, ABB Abbess, ORA Oracle, CAN Cantor, ADJ Adjudicator, WAR War-Sister, EXE Executioner, VEI Veilblade, CEN Censer, ARB Arbalist, EXO Exorcist.
 
-**Locked references:** Cruentia (TC-UR1), Obscura Ponderosa (VT-SSR-VEI).
 
 
 ## Iron Vigil (IV) — cards in [cards/IV/](cards/IV/)
@@ -253,7 +254,7 @@ How each class's gear grows with rarity. Trim, halo and effect budgets follow th
 - Hairstyles: 0 repeats within any Order (shape + detail + colour; no hair shape used more than 4 times in an Order).
 - First names: 200 unique of 200. Full names unique: True.
 - Personal details: no repeats inside an Order.
-- Ages: every Sister is a young adult, 21 to 29 (21-29); no age lines, grey streaks or weathered faces. Silver and platinum hair are styled youthful. The three locked references keep their approved look.
+- Ages: every Sister is a young adult, 21 to 35 (Aaron, 2026-11-25); no age lines, grey streaks or weathered faces. Silver and platinum hair are styled youthful. The three locked references keep their approved look.
 - Fanservice: every Sister shows cleavage or underboob (Neckline line, set per role so it fits her armour) and is video-game hot; non-explicit gacha fanservice, no nudity.
 - Tone: every card has a zeal mark (scripture tattoos, purity seals, heretic chains, brands and so on) and every splash leans into dark, gritty occult inquisition and crusade.
 - Rank: R Commander, SR Legend, SSR Demigoddess, UR Deity, Limited UR Patron Deity. Each Sister's armour, head, cape, divine tell, neckline finish, zeal marks, effects, pose and splash scale come from her tier (see the rank ladder).

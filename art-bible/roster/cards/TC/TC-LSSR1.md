@@ -1,4 +1,27 @@
-<!-- The Verdant Martyrdom (TC) card TC-LSSR1. Generated from the sister bible; do not edit here. -->
+<!-- The Verdant Martyrdom (TC) card TC-LSSR1. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: TC-LSSR1
+name: Cruor Vulnerata
+epithet: Daughter of the Living Briar
+rarity: SSR (Limited)
+rank: Demigoddess
+order: Verdant Martyrdom (order id thorn-covenant, code TC)
+class: Arbalist (class id arbalist, role Ranged DPS)
+age: 29
+weapon: Verdict-Bow of the Living Briar (Mythic)
+relic: compact crossbow stock beside shoulder, bearing a cracked oval mother-of-pearl inset (a game item)
+kit:
+- SKILL I Bloodied Bolt: Sacrifice 5% HP; a heavy bolt on any foe through 25% of its Armor. She heals 20% of the damage dealt.
+- SKILL II Marking Shot: Light bolt that Accuses any foe (+25% damage taken) for 4s. Cooldown 4s.
+- SKILL III Briar Bolt: A bolt that leaves any foe Bleeding for 6s. She gains 1 Fervor (+6% damage each, up to 5). Cooldown 6s.
+- LITANY Penitent Ballista: LITANY: a crushing bolt through shields; spends her Scars for +8% each. Hexes the foe (-20% Magic Resist) for 4s. It hallows the ground: Briar Ground (every foe bleeds 15% of her attack every 2s) for 4s.
+- PASSIVE Bone-Deep Aim: Each Scar she holds lets her hits ignore 5% more Armor.
+- RELIC Compact Crossbow Stock Beside Shoulder (game item; not drawn in her art): Bloodied Bolt: Sunders the foe (-20% armor) for 4s. It hits 12% harder.
+- BATTLE CRY: "The briar grows from my wounds, and it hungers. Mark, and fire!"
+```
+<!-- END GAME DATA -->
 
 Read the Verdant Martyrdom section of order-bible.md first. Cloth: moss green #5a7a3a lead, blood red #9a2a33 trim, old bronze. Head: crown of living briar. Hem: thorny tatters.
 
@@ -32,14 +55,7 @@ FANATIC: candle wax poured over her own collarbone as penance; blend into her ex
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (bold): on top of her neckline, show bare thighs between greaves and a high-cut tabard slit, and a torn habit that bares hip and leg. SPLASH POSE (splash only; the bust and battle sprite use their own framing): back arched, hip cocked, cloak swept back over one shoulder. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: scourged gothic plate wrapped in barbed briar, purity seals soaked in her own blood, flagellant scars.
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Bloodied Bolt: Sacrifice 5% HP; a heavy bolt on any foe through 25% of its Armor. She heals 20% of the damage dealt.
-- SKILL II Marking Shot: Light bolt that Accuses any foe (+25% damage taken) for 4s. Cooldown 4s.
-- SKILL III Briar Bolt: A bolt that leaves any foe Bleeding for 6s. She gains 1 Fervor (+6% damage each, up to 5). Cooldown 6s.
-- LITANY Penitent Ballista: LITANY: a crushing bolt through shields; spends her Scars for +8% each. Hexes the foe (-20% Magic Resist) for 4s. It hallows the ground: Briar Ground (every foe bleeds 15% of her attack every 2s) for 4s.
-- PASSIVE Bone-Deep Aim: Each Scar she holds lets her hits ignore 5% more Armor.
-- RELIC Compact Crossbow Stock Beside Shoulder (game item; not drawn in her art): Bloodied Bolt: Sunders the foe (-20% armor) for 4s. It hits 12% harder.
-- BATTLE CRY: "The briar grows from my wounds, and it hungers. Mark, and fire!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: blood-red scar-light and lashing briar, rose petals torn loose; a single consecrated bolt leaves a long streak of scripture-light; her Litany Penitent Ballista hallows the ground in a ring of blood-red scar-light and lashing briar; her Compact Crossbow Stock Beside Shoulder blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Cruor Vulnerata, Daughter of the Living Briar. Draw only these objects: her Mythic weapon, Verdict-Bow of the Living Briar, a crossbow whose limbs are two burning angel wings, firing bolts of white fire trailing green-grey light with red thorn sparks, with thorns growing out of it, wet with blood; and her quiver of bolts. Sizes in her head-heights (she is about 7.3 heads tall): crossbow 2 heads long. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

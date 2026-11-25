@@ -1,4 +1,27 @@
-<!-- Choir of the Pyre (CC) card CC-LSSR1. Generated from the sister bible; do not edit here. -->
+<!-- Choir of the Pyre (CC) card CC-LSSR1. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: CC-LSSR1
+name: Psalmodia Pyralis
+epithet: Daughter of the Unending Hymn
+rarity: SSR (Limited)
+rank: Demigoddess
+order: Choir of the Pyre (order id candle-choir, code CC)
+class: Executioner (class id inquisitor, role Melee DPS)
+age: 29
+weapon: Sentence of the Golden Choir (Mythic)
+relic: broken execution bell, framed by a hinged silver protective cover (a game item)
+kit:
+- SKILL I Accuse: Light hit on any foe. Accused takes +25% damage, and is Sundered (-25% armor), for 6s.
+- SKILL II Choir of Accusers: A Hymn for 6s: every foe is Accused. She gains 6 Zeal. Cooldown 8s.
+- SKILL III Sentence in Song: Drag any foe to the front and strike it; double damage under 30% HP. Lays Penance on the foe for 4s: each act costs the sinner 25% of its own attack. Cooldown 6s.
+- LITANY Verdict in Chorus: LITANY: a crushing blow on any enemy, doubled against the Accused; every Sister gains 10 Zeal. Hexes the foe (-20% Magic Resist) for 4s. It hallows the ground: Hallowed Ground (every Sister Regenerates 4% every 2s) for 4s.
+- PASSIVE Psalm of the Accuser: +25% damage while a Hymn plays.
+- RELIC Broken Execution Bell (game item; not drawn in her art): Sentence in Song: She gains 1 Fervor (+6% damage each, up to 5). It hits 12% harder.
+- BATTLE CRY: "Every village that would not sing is ash now. The axe is merciful!"
+```
+<!-- END GAME DATA -->
 
 Read the Choir of the Pyre section of order-bible.md first. Cloth: candle gold #d6a15f lead, wine #652b3b trim, bronze. Head: crown of dripping candles. Hem: ribbon streamers.
 
@@ -32,14 +55,7 @@ FANATIC: prayer strips nailed into her armour; blend into her expression: with a
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (bold): on top of her neckline, show a corset cinched tight under the bust, and a bare midriff under a short breastplate. SPLASH POSE (splash only; the bust and battle sprite use their own framing): twisting at the waist mid-swing, hair flying. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: gilded gothic plate dripping with candle wax, purity seals as hymn sheets, a battle hymn screamed not sung, consecrated fire in her eyes and on her blade.
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Accuse: Light hit on any foe. Accused takes +25% damage, and is Sundered (-25% armor), for 6s.
-- SKILL II Choir of Accusers: A Hymn for 6s: every foe is Accused. She gains 6 Zeal. Cooldown 8s.
-- SKILL III Sentence in Song: Drag any foe to the front and strike it; double damage under 30% HP. Lays Penance on the foe for 4s: each act costs the sinner 25% of its own attack. Cooldown 6s.
-- LITANY Verdict in Chorus: LITANY: a crushing blow on any enemy, doubled against the Accused; every Sister gains 10 Zeal. Hexes the foe (-20% Magic Resist) for 4s. It hallows the ground: Hallowed Ground (every Sister Regenerates 4% every 2s) for 4s.
-- PASSIVE Psalm of the Accuser: +25% damage while a Hymn plays.
-- RELIC Broken Execution Bell (game item; not drawn in her art): Sentence in Song: She gains 1 Fervor (+6% damage each, up to 5). It hits 12% harder.
-- BATTLE CRY: "Every village that would not sing is ash now. The axe is merciful!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: candle-gold flame, dripping wax and floating hymn ribbons; the executioner's axe falls in one heavy flash; her Litany Verdict in Chorus hallows the ground in a ring of candle-gold flame; her Broken Execution Bell blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Psalmodia Pyralis, Daughter of the Unending Hymn. Draw only these objects: her Mythic weapon, Sentence of the Golden Choir, a great axe whose blade is a single iron wing, its edge showing the sins of whoever it strikes in golden candle-flame, with charred hymn-pages nailed along it. Sizes in her head-heights (she is about 7.3 heads tall): axe 3 heads long. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

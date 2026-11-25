@@ -1,4 +1,27 @@
-<!-- Ashen Mercy (AM) card AM-SR-VEI. Generated from the sister bible; do not edit here. -->
+<!-- Ashen Mercy (AM) card AM-SR-VEI. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: AM-SR-VEI
+name: Funesta Carbonaria
+epithet: Slayer of the Plague Colossus
+rarity: SR
+rank: Legend
+order: Ashen Mercy (order id ashen-mercy, code AM)
+class: Veilblade (class id veilblade, role Melee DPS)
+age: 23
+weapon: Whisper of the Pyre Field (Legendary)
+relic: silent bell, wrapped in a wine-red cord (a game item)
+kit:
+- SKILL I Veil Strike: Strike any foe, with +25% critical chance.
+- SKILL II Shadowstep: Haste herself, +20% attack and +30% critical chance for 4s. Cooldown 6s.
+- SKILL III Pyre Needle: +20% attack and +20% critical chance for 4s. She gains 5 Zeal. Cooldown 6s.
+- LITANY Soot Dirge: LITANY: strike every enemy, double against foes under half HP. Weakens every foe it strikes (-12% attack) for 4s.
+- PASSIVE Pyre Vow: Deals 15% more damage to foes under half HP. The fight opens on a Field of Ash (each fallen foe heals every Sister 6%) for 4s.
+- RELIC Silent Bell (game item; not drawn in her art): Shadowstep: Wards her (-12% damage taken) for 4s.
+- BATTLE CRY: "Hold still. This is the kind part. One cut is enough!"
+```
+<!-- END GAME DATA -->
 
 Read the Ashen Mercy section of order-bible.md first. Cloth: ash-white #c9c2b8 lead, wine #652b3b trim, soot-black mail. Head: white wimple and coif with an ash thumbprint on the brow. Hem: scorched edge.
 
@@ -14,14 +37,7 @@ FANATIC: a rope of confessions knotted around her waist; blend into her expressi
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (bold): on top of her neckline, show a chain harness across her bare waist, and a corset cinched tight under the bust. SPLASH POSE (splash only; the bust and battle sprite use their own framing): one knee raised on a heretic's skull, leaning into the weapon. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: soot-black gothic plate, purity seals scorched at the edges, a funeral pyre burning behind her (splash only).
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Veil Strike: Strike any foe, with +25% critical chance.
-- SKILL II Shadowstep: Haste herself, +20% attack and +30% critical chance for 4s. Cooldown 6s.
-- SKILL III Pyre Needle: +20% attack and +20% critical chance for 4s. She gains 5 Zeal. Cooldown 6s.
-- LITANY Soot Dirge: LITANY: strike every enemy, double against foes under half HP. Weakens every foe it strikes (-12% attack) for 4s.
-- PASSIVE Pyre Vow: Deals 15% more damage to foes under half HP. The fight opens on a Field of Ash (each fallen foe heals every Sister 6%) for 4s.
-- RELIC Silent Bell (game item; not drawn in her art): Shadowstep: Wards her (-12% damage taken) for 4s.
-- BATTLE CRY: "Hold still. This is the kind part. One cut is enough!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: grey ash-flame and falling soot, a wine-red glow as wounds close; she vanishes and reappears in a slash of dark silk; her Silent Bell blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Funesta Carbonaria, Slayer of the Plague Colossus. Draw only these objects: her Legendary weapon, Whisper of the Pyre Field, two engraved daggers of soot-blackened steel with wine-red wraps, one hidden in a black prayer book, both edges glowing with ash-grey light with wine embers, trailing thin smoke, its edges charred from the mercy-pyres. Sizes in her head-heights (she is about 7.3 heads tall): daggers 1 head each. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

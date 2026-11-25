@@ -1,4 +1,27 @@
-<!-- Veiled Tribunal (VT) card VT-SR-EXE. Generated from the sister bible; do not edit here. -->
+<!-- Veiled Tribunal (VT) card VT-SR-EXE. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: VT-SR-EXE
+name: Photeine Censoria
+epithet: Slayer of the Thousand-Tongued
+rarity: SR
+rank: Legend
+order: Veiled Tribunal (order id veiled-tribunal, code VT)
+class: Executioner (class id inquisitor, role Melee DPS)
+age: 23
+weapon: Verdict-Axe of the Court of Rats (Legendary)
+relic: broken execution bell, wrapped in a parchment writ (a game item)
+kit:
+- SKILL I Accuse: Light hit on any foe. Accused takes +25% damage, and is Sundered (-25% armor), for 6s.
+- SKILL II Duelist's Thrust: Lunge at a near foe. +50% against the Accused.
+- SKILL III Silent Sentence: Strike a front-line foe, Accuse it for 4s and add 1 Guilt. Lays Penance on the foe for 4s: each act costs the sinner 20% of its own attack.
+- LITANY Tribunal Credo: LITANY: a savage blow on any enemy, +50% critical chance; spends all its Guilt for +25% damage each. Hexes the foe (-15% Magic Resist) for 4s.
+- PASSIVE Sentenced Zeal: +2 speed: she acts sooner. Every Sister starts the fight with +3 Zeal.
+- RELIC Broken Execution Bell (game item; not drawn in her art): Tribunal Credo: Lays Penance on the foe for 4s: each act costs the sinner 20% of its own attack. It hits 10% harder.
+- BATTLE CRY: "I need no eyes to see your sin. Kneel for the blade!"
+```
+<!-- END GAME DATA -->
 
 Read the Veiled Tribunal section of order-bible.md first. Cloth: dusk violet #6e5a8c lead, parchment #c6baa4 trim, black steel with crimson silk lining. Head: sheer black veil over the eyes, high angular collar. Hem: sharp angular points.
 
@@ -14,14 +37,7 @@ FANATIC: tears of blood dried on her cheeks; blend into her expression: with a f
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (bold): on top of her neckline, show a torn habit that bares hip and leg, and a chain harness across her bare waist. SPLASH POSE (splash only; the bust and battle sprite use their own framing): one knee raised on a heretic's skull, leaning into the weapon. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: judicial gothic plate hung with nailed verdicts and chained scripture, purity seals stamped with the scales, heretics kneeling in chains behind her (splash only).
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Accuse: Light hit on any foe. Accused takes +25% damage, and is Sundered (-25% armor), for 6s.
-- SKILL II Duelist's Thrust: Lunge at a near foe. +50% against the Accused.
-- SKILL III Silent Sentence: Strike a front-line foe, Accuse it for 4s and add 1 Guilt. Lays Penance on the foe for 4s: each act costs the sinner 20% of its own attack.
-- LITANY Tribunal Credo: LITANY: a savage blow on any enemy, +50% critical chance; spends all its Guilt for +25% damage each. Hexes the foe (-15% Magic Resist) for 4s.
-- PASSIVE Sentenced Zeal: +2 speed: she acts sooner. Every Sister starts the fight with +3 Zeal.
-- RELIC Broken Execution Bell (game item; not drawn in her art): Tribunal Credo: Lays Penance on the foe for 4s: each act costs the sinner 20% of its own attack. It hits 10% harder.
-- BATTLE CRY: "I need no eyes to see your sin. Kneel for the blade!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: violet scale-marks, nailed parchment verdicts and wax seals bursting; the executioner's axe falls in one heavy flash; her Broken Execution Bell blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Photeine Censoria, Slayer of the Thousand-Tongued. Draw only these objects: her Legendary weapon, Verdict-Axe of the Court of Rats, an engraved great axe of angular black steel with crimson silk hung with a broken bell, its edge glowing with violet judgement-light, hung with the wax seals of signed death-verdicts. Sizes in her head-heights (she is about 7.3 heads tall): axe 3 heads long. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

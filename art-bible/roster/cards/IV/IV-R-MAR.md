@@ -1,4 +1,28 @@
-<!-- Iron Vigil (IV) card IV-R-MAR. Generated from the sister bible; do not edit here. -->
+<!-- Iron Vigil (IV) card IV-R-MAR. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: IV-R-MAR
+name: Ermengard Excubitrix
+epithet: Warden of the North Rampart
+rarity: R
+rank: Commander
+order: Iron Vigil (order id iron-vigil, code IV)
+class: Martyr (class id martyr, role Tank)
+age: 22
+weapon: Nightwatch Oath (Epic)
+relic: fractured dawn icon, with an open-eye sigil (a game item)
+kit:
+- SKILL I Searing Smite: Strike a front-line foe and heal for 35% of the damage dealt.
+- SKILL II Intercession: Draw enemy attacks for 4s, Ward herself (-20% damage) and Regenerate 5% every 2s. Cooldown 6s.
+- SKILL III Night Offering: Draw attacks for 4s and go on Overwatch; her reaction heals her for 44% of its damage. Martyrdom: for 4s she takes 20% of every blow aimed at her Sisters. Cooldown 6s.
+- LITANY Dawnbreak: LITANY: burn every enemy with light, heal for 50% of the damage dealt and draw attacks for 4s.
+- PASSIVE Gatekeeper's Penance: Once a fight, a killing blow leaves her at 1 HP instead. Her crits Brand the foe: its next wound lands 15% harder.
+- RELIC Fractured Dawn Icon (game item; not drawn in her art): Intercession: Martyrdom: for 4s she takes 20% of every blow aimed at her Sisters.
+- COMMAND (coming): Leads a mob of flagellant zealots who charge without fear of the Iron Vigil.
+- BATTLE CRY: "The lantern sees you. The wall forgets you. Not yet!"
+```
+<!-- END GAME DATA -->
 
 Read the Iron Vigil section of order-bible.md first. Cloth: bone-white #e4dccb and charcoal-black #3a3640 halved surcoat lead, ember-orange #e0622a trim, steel chainmail. Head: mail coif with a burning-cross brow band (face always shown; no helm carried). Hem: straight square-cut hem.
 
@@ -14,15 +38,7 @@ FANATIC: vow chains locked around her wrists; blend into her expression: with a 
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (confident): on top of her neckline, show a chain harness across her bare waist, and bare thighs between greaves and a high-cut tabard slit. SPLASH POSE (splash only; the bust and battle sprite use their own framing): standing tall with weight on one leg, chin raised in contempt. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: prayer-etched steel plate over a chainmail hauberk, a burning cross on the surcoat, wax purity seals with long ribbon scrolls on every plate, sworn to the war that never ends.
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Searing Smite: Strike a front-line foe and heal for 35% of the damage dealt.
-- SKILL II Intercession: Draw enemy attacks for 4s, Ward herself (-20% damage) and Regenerate 5% every 2s. Cooldown 6s.
-- SKILL III Night Offering: Draw attacks for 4s and go on Overwatch; her reaction heals her for 44% of its damage. Martyrdom: for 4s she takes 20% of every blow aimed at her Sisters. Cooldown 6s.
-- LITANY Dawnbreak: LITANY: burn every enemy with light, heal for 50% of the damage dealt and draw attacks for 4s.
-- PASSIVE Gatekeeper's Penance: Once a fight, a killing blow leaves her at 1 HP instead. Her crits Brand the foe: its next wound lands 15% harder.
-- RELIC Fractured Dawn Icon (game item; not drawn in her art): Intercession: Martyrdom: for 4s she takes 20% of every blow aimed at her Sisters.
-- COMMAND (coming): Leads a mob of flagellant zealots who charge without fear of the Iron Vigil.
-- BATTLE CRY: "The lantern sees you. The wall forgets you. Not yet!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: ember-orange crusade-fire and iron sparks, burning-cross sigils flashing on impact; her own blood turns to consecrated fire across her sisters; her Fractured Dawn Icon blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Ermengard Excubitrix, Warden of the North Rampart. Draw only these objects: her Epic weapon, Nightwatch Oath, a heavy broadsword of blackened steel inlaid with a burning cross with a bandaged grip and a round buckler stamped with a burning cross and a watch-lantern, with a gate-chain wrapped round it and soot in every groove. Sizes in her head-heights (she is about 7.3 heads tall): broadsword 2.5 heads, buckler 1 head across. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

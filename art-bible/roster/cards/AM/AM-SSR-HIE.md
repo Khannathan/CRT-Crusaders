@@ -1,4 +1,28 @@
-<!-- Ashen Mercy (AM) card AM-SSR-HIE. Generated from the sister bible; do not edit here. -->
+<!-- Ashen Mercy (AM) card AM-SSR-HIE. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: AM-SSR-HIE
+name: Ignita Cinefacta
+epithet: Chosen of the Pale Flame
+rarity: SSR
+rank: Demigoddess
+order: Ashen Mercy (order id ashen-mercy, code AM)
+class: Hierophant (class id hierophant, role Tank)
+age: 28
+weapon: Aegis of the Sheltered Candle (Mythic)
+relic: miniature candlelit shrine, worn smooth around a single amber light (a game item)
+kit:
+- SKILL I Pyre Bash: Strike a front-line foe, knock it back and draw enemy attacks for 4s. She heals 20% of the damage dealt.
+- SKILL II Mantle of Ash: Shield an ally for 30% of max HP. Her ally gains a Mirror Image (each swallows a whole hit). Cooldown 4s.
+- SKILL III Merciful Stand: Draw attacks for 4s; every foe under half HP is Weakened (-25% attack) for 4s. She gains +12% critical chance for 4s. Cooldown 6s.
+- LITANY Ashen Wall: LITANY: shield every ally for 25% of max HP and Ward them (-15% damage taken) for 4s. It hallows the ground: a Field of Ash (each fallen foe heals every Sister 6%) for 4s.
+- PASSIVE Shield of Ash: When a shield she gave breaks, the attacker is Weakened (-15% attack) for 2s. Her shields are 50% larger on a Sister under 30% HP.
+- RELIC Miniature Candlelit Shrine (game item; not drawn in her art): Merciful Stand: Wards her (-15% damage taken) for 4s.
+- ASCENSION (coming): As a Deity, her Ashen Wall also grants Rapture (no damage for 2s) to every Sister, and her passive grows by half.
+- BATTLE CRY: "Ash to ash. You first. Hold the line, or die on it!"
+```
+<!-- END GAME DATA -->
 
 Read the Ashen Mercy section of order-bible.md first. Cloth: ash-white #c9c2b8 lead, wine #652b3b trim, soot-black mail. Head: white wimple and coif with an ash thumbprint on the brow. Hem: scorched edge.
 
@@ -31,15 +55,7 @@ FANATIC: fresh scourge marks across her shoulders; blend into her expression: wi
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (daring): on top of her neckline, show a side-cut tabard open from ribs to hip, and thigh-high boots with bare skin above, held by garter straps of chain. SPLASH POSE (splash only; the bust and battle sprite use their own framing): striding forward out of smoke, cape snapping behind. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: soot-black gothic plate, purity seals scorched at the edges, a funeral pyre burning behind her (splash only).
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Pyre Bash: Strike a front-line foe, knock it back and draw enemy attacks for 4s. She heals 20% of the damage dealt.
-- SKILL II Mantle of Ash: Shield an ally for 30% of max HP. Her ally gains a Mirror Image (each swallows a whole hit). Cooldown 4s.
-- SKILL III Merciful Stand: Draw attacks for 4s; every foe under half HP is Weakened (-25% attack) for 4s. She gains +12% critical chance for 4s. Cooldown 6s.
-- LITANY Ashen Wall: LITANY: shield every ally for 25% of max HP and Ward them (-15% damage taken) for 4s. It hallows the ground: a Field of Ash (each fallen foe heals every Sister 6%) for 4s.
-- PASSIVE Shield of Ash: When a shield she gave breaks, the attacker is Weakened (-15% attack) for 2s. Her shields are 50% larger on a Sister under 30% HP.
-- RELIC Miniature Candlelit Shrine (game item; not drawn in her art): Merciful Stand: Wards her (-15% damage taken) for 4s.
-- ASCENSION (coming): As a Deity, her Ashen Wall also grants Rapture (no damage for 2s) to every Sister, and her passive grows by half.
-- BATTLE CRY: "Ash to ash. You first. Hold the line, or die on it!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: grey ash-flame and falling soot, a wine-red glow as wounds close; her reliquary-shield flares and throws up a wall of light; her Litany Ashen Wall hallows the ground in a ring of grey ash-flame and falling soot; her Miniature Candlelit Shrine blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Ignita Cinefacta, Chosen of the Pale Flame. Draw only these objects: her Mythic weapon, Aegis of the Sheltered Candle, a tower shield whose shrine is a huge lidded eye that opens and burns with ash-grey light with wine embers, two iron wings folded across its face, and a flanged mace wreathed in consecrated fire, trailing thin smoke, its edges charred from the mercy-pyres. Sizes in her head-heights (she is about 7.3 heads tall): shield 2.5 heads tall, mace haft 1.5 heads. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

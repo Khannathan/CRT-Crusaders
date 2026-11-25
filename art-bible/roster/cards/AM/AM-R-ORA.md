@@ -1,4 +1,28 @@
-<!-- Ashen Mercy (AM) card AM-R-ORA. Generated from the sister bible; do not edit here. -->
+<!-- Ashen Mercy (AM) card AM-R-ORA. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: AM-R-ORA
+name: Maesta Cineraria
+epithet: Prefect of the Last Candle
+rarity: R
+rank: Commander
+order: Ashen Mercy (order id ashen-mercy, code AM)
+class: Oracle (class id oracle, role Buffer)
+age: 28
+weapon: Pyreward Omen (Epic)
+relic: cracked scrying stone, with a sheltered candle cup (a game item)
+kit:
+- SKILL I Ash Bolt: Smite any foe hard. The recoil throws her back.
+- SKILL II Foresight: Smite any enemy, Stagger it and Hex it (-25% Magic Resist) for 4s. Breaks a charge. Cooldown 6s.
+- SKILL III Absolving Sign: Smite any enemy, Hex it (-13% Magic Resist) and Foretell it: its Mercy line is 10% higher, for 4s. Opens Stigmata: it bleeds 0.15x every 2s for 4s, and every drop heals her for half.
+- LITANY Omen of Ash: LITANY: heavy damage on every enemy.
+- PASSIVE Ember Oath: Your Sisters start every fight with +5 Zeal. She heals 4% of the damage she deals.
+- RELIC Cracked Scrying Stone (drawn as her floating omen relic): Ash Bolt: Weakens the foe (-10% attack) for 4s. It hits 8% harder.
+- COMMAND (coming): Leads a war-choir of seers who call the enemy's moves of the Ashen Mercy.
+- BATTLE CRY: "Breathe the smoke. It is all that is left of the doubters. I saw your death in the ashes!"
+```
+<!-- END GAME DATA -->
 
 Read the Ashen Mercy section of order-bible.md first. Cloth: ash-white #c9c2b8 lead, wine #652b3b trim, soot-black mail. Head: white wimple and coif with an ash thumbprint on the brow. Hem: scorched edge.
 
@@ -14,15 +38,7 @@ FANATIC: fresh scourge marks across her shoulders; blend into her expression: wi
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (confident): on top of her neckline, show thigh-high boots with bare skin above, held by garter straps of chain, and a bare midriff under a short breastplate. SPLASH POSE (splash only; the bust and battle sprite use their own framing): kneeling in prayer with the weapon planted, looking up through her lashes. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: soot-black gothic plate, purity seals scorched at the edges, a funeral pyre burning behind her (splash only).
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Ash Bolt: Smite any foe hard. The recoil throws her back.
-- SKILL II Foresight: Smite any enemy, Stagger it and Hex it (-25% Magic Resist) for 4s. Breaks a charge. Cooldown 6s.
-- SKILL III Absolving Sign: Smite any enemy, Hex it (-13% Magic Resist) and Foretell it: its Mercy line is 10% higher, for 4s. Opens Stigmata: it bleeds 0.15x every 2s for 4s, and every drop heals her for half.
-- LITANY Omen of Ash: LITANY: heavy damage on every enemy.
-- PASSIVE Ember Oath: Your Sisters start every fight with +5 Zeal. She heals 4% of the damage she deals.
-- RELIC Cracked Scrying Stone (drawn as her floating omen relic): Ash Bolt: Weakens the foe (-10% attack) for 4s. It hits 8% harder.
-- COMMAND (coming): Leads a war-choir of seers who call the enemy's moves of the Ashen Mercy.
-- BATTLE CRY: "Breathe the smoke. It is all that is left of the doubters. I saw your death in the ashes!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: grey ash-flame and falling soot, a wine-red glow as wounds close; omens burn in the air as smoke-runes; her Cracked Scrying Stone blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Maesta Cineraria, Prefect of the Last Candle. Draw only these objects: her Epic weapon, Pyreward Omen, an ash bowl of soot-blackened steel with wine-red wraps on a short staff, carved with a sheltered candle cup and ash smudges, holding glowing omen stones, trailing thin smoke, its edges charred from the mercy-pyres; and her floating relic, a cracked scrying stone, with a sheltered candle cup. Sizes in her head-heights (she is about 7.3 heads tall): relic 1 head across, staff 2 heads. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

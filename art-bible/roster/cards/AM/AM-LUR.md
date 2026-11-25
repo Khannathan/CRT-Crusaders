@@ -1,4 +1,28 @@
-<!-- Ashen Mercy (AM) card AM-LUR. Generated from the sister bible; do not edit here. -->
+<!-- Ashen Mercy (AM) card AM-LUR. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: AM-LUR
+name: Misericordia
+epithet: Cinerea Ascendant, Patron Goddess of the Ashen Mercy
+rarity: UR (Limited)
+rank: Patron Deity
+order: Ashen Mercy (order id ashen-mercy, code AM)
+class: Executioner (class id inquisitor, role Melee DPS)
+age: 27
+weapon: The Headsman's Door of the Merciful Pyre (Divine Arsenal)
+relic: interrogation seal, scorched along one edge (a game item)
+kit:
+- SKILL I Duelist's Thrust: Lunge at a near foe. +50% against the Accused. She heals 30% of the damage dealt.
+- SKILL II Pale Reckoning: Strike a front-line foe and counter anyone who hits her for 2s. Weakens the foe (-25% attack) for 4s.
+- SKILL III Last-Rite Beheading: A strike on a near foe that cannot kill: it leaves the foe at its Mercy line at least. Hexes the foe (-30% Magic Resist) for 4s.
+- LITANY Cinder Gloria: LITANY: strike every enemy, double against foes under half HP. Brands every foe it strikes: the next blow on it lands 40% harder. It hallows the ground: a Field of Ash (each fallen foe heals every Sister 6%) for 6s.
+- PASSIVE Cinder Faith: Her hits on foes under half HP always crit. Once every 2s, a Mercy kill gives her another action. While she stands, every Sister takes 6% less damage. PATRON MIRACLE: every Ashen Mercy Sister in the party gains +12% attack and takes 8% less damage.
+- SAINT'S SEAL Last Rites Heard: The first time a Sister would fall, she is healed 30% instead and her attacker is Foretold.
+- RELIC Interrogation Seal (game item; not drawn in her art): Last-Rite Beheading: She heals 30% of the damage dealt. It hits 20% harder.
+- BATTLE CRY: "Breathe the smoke. It is all that is left of the doubters. One stroke!"
+```
+<!-- END GAME DATA -->
 
 Read the Ashen Mercy section of order-bible.md first. Cloth: ash-white #c9c2b8 lead, wine #652b3b trim, soot-black mail. Head: white wimple and coif with an ash thumbprint on the brow. Hem: scorched edge.
 
@@ -31,15 +55,7 @@ FANATIC: knuckles split and bound in charred prayer cloth; blend into her expres
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (bold): on top of her neckline, show skin-tight sheer black sleeves and gloves to the shoulder, and a corset cinched tight under the bust. SPLASH POSE (splash only; the bust and battle sprite use their own framing): twisting at the waist mid-swing, hair flying. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: soot-black gothic plate, purity seals scorched at the edges, a funeral pyre burning behind her (splash only).
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Duelist's Thrust: Lunge at a near foe. +50% against the Accused. She heals 30% of the damage dealt.
-- SKILL II Pale Reckoning: Strike a front-line foe and counter anyone who hits her for 2s. Weakens the foe (-25% attack) for 4s.
-- SKILL III Last-Rite Beheading: A strike on a near foe that cannot kill: it leaves the foe at its Mercy line at least. Hexes the foe (-30% Magic Resist) for 4s.
-- LITANY Cinder Gloria: LITANY: strike every enemy, double against foes under half HP. Brands every foe it strikes: the next blow on it lands 40% harder. It hallows the ground: a Field of Ash (each fallen foe heals every Sister 6%) for 6s.
-- PASSIVE Cinder Faith: Her hits on foes under half HP always crit. Once every 2s, a Mercy kill gives her another action. While she stands, every Sister takes 6% less damage. PATRON MIRACLE: every Ashen Mercy Sister in the party gains +12% attack and takes 8% less damage.
-- SAINT'S SEAL Last Rites Heard: The first time a Sister would fall, she is healed 30% instead and her attacker is Foretold.
-- RELIC Interrogation Seal (game item; not drawn in her art): Last-Rite Beheading: She heals 30% of the damage dealt. It hits 20% harder.
-- BATTLE CRY: "Breathe the smoke. It is all that is left of the doubters. One stroke!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: grey ash-flame and falling soot, a wine-red glow as wounds close; the executioner's axe falls in one heavy flash; her Litany Cinder Gloria hallows the ground in a ring of grey ash-flame and falling soot; her Interrogation Seal blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Misericordia, Cinerea Ascendant, Patron Goddess of the Ashen Mercy. Draw only these objects: her Divine Arsenal weapon, The Headsman's Door of the Merciful Pyre, a headsman's blade as long as a cathedral door, its edge a line of judging eyes, every swing tolling in ash-grey light with wine embers, trailing thin smoke, its edges charred from the mercy-pyres. Sizes in her head-heights (she is about 7.3 heads tall): axe 3 heads long. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.

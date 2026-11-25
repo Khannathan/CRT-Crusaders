@@ -1,4 +1,28 @@
-<!-- The Verdant Martyrdom (TC) card TC-SSR-ORA. Generated from the sister bible; do not edit here. -->
+<!-- The Verdant Martyrdom (TC) card TC-SSR-ORA. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+
+<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+```text
+id: TC-SSR-ORA
+name: Hirsuta Flagellata
+epithet: Chosen of the Living Briar
+rarity: SSR
+rank: Demigoddess
+order: Verdant Martyrdom (order id thorn-covenant, code TC)
+class: Oracle (class id oracle, role Buffer)
+age: 24
+weapon: Prophecy of the First Thorn (Mythic)
+relic: cracked scrying stone, with one red rose (a game item)
+kit:
+- SKILL I Ash Bolt: Smite any foe hard. The recoil throws her back.
+- SKILL II Briar Reading: Sacrifice 10% HP; every Sister gains 12 Zeal. She is Thorned (25% of blows back) for 4s. Cooldown 8s.
+- SKILL III Barbed Portent: Every ally loses 5% HP and gains +35% attack for 4s (Covenant Sisters Scar from it). Every Sister Regenerates 4% of max HP every 2s for 4s. Cooldown 8s.
+- LITANY Flayed Compline: LITANY: every ally loses 5% HP and gains +40% attack for 4s (Covenant Sisters Scar from it); every Sister gains 10 Zeal. Every Sister gains +12% critical chance for 4s. It hallows the ground: Briar Ground (every foe bleeds 15% of her attack every 2s) for 4s.
+- PASSIVE Penitent Psalm: Each Scar any Covenant Sister gains gives the party 2 Zeal. Each action stokes 1 Fervor (+6% damage, up to 5).
+- RELIC Cracked Scrying Stone (drawn as her floating omen relic): Briar Reading: She gains 1 Fervor (+6% damage each, up to 5).
+- ASCENSION (coming): As a Deity, her Flayed Compline also grants Rapture (no damage for 2s) to every Sister, and her passive grows by half.
+- BATTLE CRY: "I bled for the garden this morning. Now you will. The omens want you dead!"
+```
+<!-- END GAME DATA -->
 
 Read the Verdant Martyrdom section of order-bible.md first. Cloth: moss green #5a7a3a lead, blood red #9a2a33 trim, old bronze. Head: crown of living briar. Hem: thorny tatters.
 
@@ -30,15 +54,7 @@ FANATIC: tally marks of the purged cut into her bracer; blend into her expressio
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (daring): on top of her neckline, show a side-cut tabard open from ribs to hip, and bare thighs between greaves and a high-cut tabard slit. SPLASH POSE (splash only; the bust and battle sprite use their own framing): standing tall with weight on one leg, chin raised in contempt. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
 ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: scourged gothic plate wrapped in barbed briar, purity seals soaked in her own blood, flagellant scars.
-KIT (her battle identity; let it show in her weapon, pose and effects):
-- SKILL I Ash Bolt: Smite any foe hard. The recoil throws her back.
-- SKILL II Briar Reading: Sacrifice 10% HP; every Sister gains 12 Zeal. She is Thorned (25% of blows back) for 4s. Cooldown 8s.
-- SKILL III Barbed Portent: Every ally loses 5% HP and gains +35% attack for 4s (Covenant Sisters Scar from it). Every Sister Regenerates 4% of max HP every 2s for 4s. Cooldown 8s.
-- LITANY Flayed Compline: LITANY: every ally loses 5% HP and gains +40% attack for 4s (Covenant Sisters Scar from it); every Sister gains 10 Zeal. Every Sister gains +12% critical chance for 4s. It hallows the ground: Briar Ground (every foe bleeds 15% of her attack every 2s) for 4s.
-- PASSIVE Penitent Psalm: Each Scar any Covenant Sister gains gives the party 2 Zeal. Each action stokes 1 Fervor (+6% damage, up to 5).
-- RELIC Cracked Scrying Stone (drawn as her floating omen relic): Briar Reading: She gains 1 Fervor (+6% damage each, up to 5).
-- ASCENSION (coming): As a Deity, her Flayed Compline also grants Rapture (no damage for 2s) to every Sister, and her passive grows by half.
-- BATTLE CRY: "I bled for the garden this morning. Now you will. The omens want you dead!"
+KIT: see the GAME DATA block at the top of this card.
 - HOW HER SKILLS LOOK: blood-red scar-light and lashing briar, rose petals torn loose; omens burn in the air as smoke-runes; her Litany Flayed Compline hallows the ground in a ring of blood-red scar-light and lashing briar; her Cracked Scrying Stone blazes when woken.
 ART PROMPTS (send each one verbatim for its step; every line above is reference only and never goes to the image tool):
 PROP PROMPT (step 1; attach nothing; reference only, no pixel pass): PC-98 style pixel art, like a late-1980s or early-1990s Japanese PC-98 computer game: crisp hand-placed square pixels, clean dark linework, exactly 16 colours picked from a 4,096-colour palette, heavy patterned dither for shading and glows; no smooth gradients, no painterly, HD or 3D rendering, no scanlines or CRT effects. Weapon prop sheet for Hirsuta Flagellata, Chosen of the Living Briar. Draw only these objects: her Mythic weapon, Prophecy of the First Thorn, a floating reliquary shaped like a closed eye with six small iron wings, opening to show a burning prophecy in green-grey light with red thorn sparks, wound with barbed briar that drinks her blood; and her floating relic, a cracked scrying stone, with one red rose. Sizes in her head-heights (she is about 7.3 heads tall): relic 1 head across, staff 2 heads. Side view, full length, every object whole and separate with clear space between, laid flat on plain flat light grey; every tip, handle, chain and attached decoration fully visible. Objects only: no hands, no figure, no relic, no crucifix, no extra trinkets. No text, watermark, frame, second figure, modern objects, anti-aliasing or blur.
