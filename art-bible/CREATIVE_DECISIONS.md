@@ -26,12 +26,26 @@ This is Aaron’s record of decisions for the ground-up redesign. Update it when
 | Premise | Ten rival Orders fight for control of the realm. A greater threat eventually forces them to set aside their feuds. Its identity belongs to the worldbuilding phase. |
 | Faith | Build each Order around a patron who demands something terrible. Give heresy, purges, zeal, and blind faith a central place in how the Sisters act. Even the Orders people depend on are morally compromised. |
 | Crusade and obedience | Carry holy wars, witch hunts, religious purges, iconoclastic campaigns, forced conversion, and interdictions into upcoming pitches and later redesigns of the selected Orders. Show the darker, grittier consequences of blind faith. Sisters will kill or lay waste on their Order’s command. |
-| Tone | Grimdark medieval crusade fantasy in a world already in despair. Draw on *Demon’s Souls*, *Dark Souls*, *Bloodborne*, and *Elden Ring* for atmosphere. Give the Orders enough thematic breadth to sustain ten distinct identities. |
+| Tone | Grimdark medieval crusade fantasy in a world already in despair. Draw on *Demon’s Souls*, *Dark Souls*, *Bloodborne*, and *Elden Ring* for atmosphere. Give the Orders enough thematic breadth to sustain ten distinct identities. An Order can pursue its doctrine without a redeeming purpose. Let its rites, material traces, and acts reveal what its Sisters believe. |
 | Crusade influences | Draw on the religious fanaticism of *Warhammer 40,000*. Create original names, factions, and iconography. Keep the world medieval and exclude modern and futuristic technology. |
 | Roster | 200 Sisters across 10 Orders, with 20 Sisters per Order. Every Sister is an adult woman aged 21–35. |
 | Character appeal | Reserve fanservice for Sisters. Aim high while keeping it non-explicit. The Order’s faith and identity take visual priority. |
 | Art direction | Retro Gacha, EGA Dungeon Crawler. |
 | Peoples | Humans, Elves, Tieflings, and Constructs form the starting list. Explore three to five additional peoples during the race phase, with both gacha appeal and a place in the grimdark crusade. |
+
+## Roles and classes in every Order
+
+All ten Orders field all five roles and all fifteen classes within their twenty Sisters. Build each Order around a faith, institution, or ambition broad enough to belong to every class. A shared visual language can give a healer and a ranged attacker the same allegiance while preserving their individual weapons, silhouettes, and game functions.
+
+The columns follow Aaron’s order within each role. **Steady** means the class performs the role’s job directly and reliably, with no setup or risk.
+
+| Role | Steady | Greedy | Utility |
+| --- | --- | --- | --- |
+| Tank | **Hierophant** shields and Wards the whole party. | **Sentinel** draws every blow and strikes back at each one. | **Martyr** heals by the wounds she deals and rises once from death. |
+| Healer | **Confessor** delivers big heals and cures, and rots the foe. | **Hospitaller** heals the whole line at once and revives the fallen. | **Abbess** heals her Sisters with every wound she gives, and dresses them in thorns. |
+| Buffer | **Oracle** hastes the party and fills its Zeal. | **Cantor** grants more attack and more crits to every Sister. | **Adjudicator** weakens enemies and drains boss Wrath. |
+| Melee DPS | **War-Sister** hits harder the nearer she is to death. | **Executioner** marks a heretic, then finishes accused and wounded foes. | **Veilblade** slips to the back ranks for few but huge crits. |
+| Ranged DPS | **Censer** uses smoke that chokes, burns, and weakens every foe. | **Arbalist** fires heavy bolts at one foe at a time, through armor and shields. | **Exorcist** strips the foe’s buffs and scours bosses. |
 
 ## Development sequence
 
@@ -52,3 +66,4 @@ This is Aaron’s record of decisions for the ground-up redesign. Update it when
 | 2026-11-25 | Locked The See of the Black Noon as the third core concept. Aaron clarified that a lock selects the idea to refine during the Order art phase. |
 | 2026-11-25 | Locked the siege warlords and the custodians of Oblivion. Both need new names. Requested a fiercer revision of the demon-hunting templar candidate. |
 | 2026-11-25 | Locked The Red Office and The Dreadful Salutation. Rework the Red Office ascent to make divinity exceptionally difficult to attain. Remove Cherubs and develop original angel forms later. The harsher crusade direction applies across the roster. |
+| 2026-11-25 | Confirmed all fifteen classes appear in every Order. Apply this scope to new concepts and art-stage redesigns. Orders may be wholly zealous or cruel without a redeeming motive. |
