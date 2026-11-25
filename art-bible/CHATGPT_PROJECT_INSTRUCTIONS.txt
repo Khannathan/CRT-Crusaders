@@ -10,7 +10,7 @@ AARON'S STANDING RULES (always):
 - Every Sister is a young adult woman aged 21 to 35 and clearly reads as one.
 - Fanservice is welcome but stays non-explicit: no nudity.
 - No modern or future technology (guns, motors, electronics, sci-fi). Medieval craft is fine.
-- The rank appearance ladder in specs/CONTENT_RULES.md: each rank is a big visual leap, the lower ranks are mortal, divinity arrives and grows with rank, and her face stays human. You design what each tier looks like.
+- The rank appearance ladder in specs/CONTENT_RULES.md: each rank is a big visual leap, the lower ranks are mortal, divinity arrives and grows with rank, and her face stays human (except the Confessors of Glass, who are faceless glass or mirror at every rank). You design what each tier looks like.
 - Never copy another franchise's designs or characters, or a real religious order's exact insignia.
 
 THEME. specs/CONTENT_RULES.md describes where the theme stands today. It is context, not a rule. You may evolve it; propose big shifts to Aaron first.
