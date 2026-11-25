@@ -112,7 +112,7 @@ export const ENEMIES: Record<string, EnemyDef> = {
       skills: [
         { id: 'hymn-of-drowning', name: 'Hymn of Drowning', desc: '', from: any, target: 'allEnemies', mult: 0.6 },
         { id: 'grasping-hands', name: 'Grasping Hands', desc: '', from: any, target: 'enemy', mult: 1.4, weaken: { pct: 0.25, turns: 2 }, aim: 'back' },
-        { id: 'requiem', name: 'Requiem', desc: '', from: any, target: 'allEnemies', mult: 1.1, windup: true, weight: 1.2 },
+        { id: 'requiem', name: 'Black Water Dirge', desc: '', from: any, target: 'allEnemies', mult: 1.1, windup: true, weight: 1.2 },
         { id: 'call-the-drowned', name: 'Call the Drowned', desc: '', from: any, target: 'self', summon: 'acolyte', weight: 0.4 },
       ],
     },
