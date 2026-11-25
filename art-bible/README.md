@@ -17,7 +17,24 @@ The art rules for CRT Crusaders, kept by Claude and read by ChatGPT. The copy on
 
 **Finding a Sister:** `roster-500/names-and-epithets.csv` maps every name to her id. Ids are `<Order>-<rarity>-<class>` (for example `IV-SSR-CEN`, the Iron Vigil SSR Censer) or a top slot `<Order>-LUR`, `-LSSR1`, `-LSSR2`, `-UR1`, `-UR2`. Order codes: IV Iron Vigil, AM Ashen Mercy, VT Veiled Tribunal, SW Sepulcher Watch, CC Choir of the Pyre, TC Verdant Martyrdom, DL Drowned Litany, GC Confessors of Glass, RP Crimson Inquisition, HB Hallowed Belfry. `roster-500/README.md` explains the roster and has Aaron's progress tracker.
 
-**Attaching images:** the image tool can't take a file straight from GitHub. The sprite template is also uploaded to the ChatGPT project; ask Aaron to attach approved art (insignia, bust, sprite, prop sheet) in the chat.
+**Attaching images:** use approved art straight from the repo where you can (paths below). If you can't load a repo image into the image tool, say so and ask Aaron to attach it; the sprite template is also uploaded to the ChatGPT project.
+
+## A Sister's status: where her approved art lives
+
+Approved means merged to `main`. So a short request like "make Absoluta's battle sprite from her approved bust and prop sheet" works without uploads. For Sister `<id>`:
+
+| Step | Approved file on main | Done when |
+| --- | --- | --- |
+| Order set | `src/assets/ui/insignia-<order id>.png`, `sigil-<order id>.png` | both new-style files are on main |
+| 1 Prop sheet | `art-inbox/props/<id>_props.png` | file is on main |
+| 2 Bust | `src/assets/portraits/<id>.png` (128 x 128) and `art-inbox/review/<id>_bust_4x.png` (use the 4x copy as the likeness reference) | file is on main |
+| Identity lock | her `IDENTITY LOCK <id>:` line in `art-inbox/ART_LOG.md` | line is on main; paste it unchanged into her sprite and splash prompts |
+| 3 Battle sprite | `art-inbox/full-body/<id>_raw.png` (the drawing; use it as the costume reference) and `src/assets/full-body/<id>.png` (the game sprite) | files are on main |
+| 4 Splash | `src/assets/splash/<id>.png` or `.webp` | file is on main |
+
+Work in progress sits in an open pull request on branch `art/<id>`: check there before starting a step, so nothing is made twice. Locked Sisters (TC-UR1, DL-SSR-EXE, VT-SSR-VEI) follow the APPROVED ART RECORD on their card instead.
+
+Each card file starts
 
 Each card file starts with her Order's one-line cloth and head note, then her card. Everything above her `ART PROMPTS` line is reference; the four prompts below it (PROP, BUST, SPRITE, SPLASH) are sent verbatim.
 

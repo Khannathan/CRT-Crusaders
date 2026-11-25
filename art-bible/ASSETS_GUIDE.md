@@ -156,8 +156,8 @@ ChatGPT connects to the game repo (Khannathan/CRT-Crusaders) to read the art bib
 | Weapon prop sheet | `art-inbox/props/<id>_props.png` | reference only |
 | UI, icons, crucifixes, insignias, backgrounds, banners, events, items, gear, effects | `src/assets/ui/<file>.png` | only the exact file names this guide or ART_QUEUE.md lists |
 | Enemy portrait / battle figure | `src/assets/enemies/<id>.png`, `src/assets/enemy-full/<id>.png` | only when the request names them |
-| Review copies, knockout sheets, sources | `art-inbox/review/<name>.png` | PNG only; never inside `src/` |
-| The art log | `art-inbox/ART_LOG.md` | one line per delivered file: date, file, size, colour count, which prompt made it, PR link |
+| Review copies, knockout sheets, sources | `art-inbox/review/<name>.png` | PNG only; never inside `src/`. Always include the bust's 4x copy as `<id>_bust_4x.png` (the likeness reference for later steps) |
+| The art log | `art-inbox/ART_LOG.md` | one line per delivered file: date, file, size, colour count, which prompt made it, PR link. When a bust is approved, also add `IDENTITY LOCK <id>: <the 40 words>`; later steps read it from here |
 
 **Never** (the guard fails the PR):
 - add, edit or delete anything else: code, data, configs, tests, workflows, package files, `art-bible/` (read only: Claude keeps it), other docs;
