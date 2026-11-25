@@ -5,7 +5,7 @@ import { seeded } from './rng';
 import { BRAND_MARKS, applyEdict, finishAct, inquisitionBattle, inquisitionOf, rotation, spentElsewhere, totalBrands } from './inquisition';
 import { skirmish } from './crusade';
 
-const party = ['SW-R-WAR', 'DL-R-HIE', 'IV-R-EXE', 'SW-SR-CON'];
+const party = ['SW-R-VEI', 'DL-R-SEN', 'IV-R-EXE', 'SW-SR-ABB'];
 const day = (d: number) => new Date(2026, 10, d, 12).getTime();
 
 function strongSave() {

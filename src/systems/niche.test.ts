@@ -28,7 +28,7 @@ describe('niche sim', () => {
   });
 
   it('scores every Sister in every hunt', () => {
-    expect(rows.length).toBe(500);
+    expect(rows.length).toBe(200);
     for (const r of rows) expect(Object.keys(r.rel)).toEqual(HUNTS.map((h) => h.id));
     const top = rows.find((r) => r.rarity === 'SSR')!;
     expect(rankIn(rows, top.id, HUNTS[0].id)).toBeGreaterThanOrEqual(1);
@@ -63,7 +63,9 @@ describe('niche sim', () => {
   });
 
   it('no Sister is dead weight', () => {
-    for (const r of rows) expect(r.avg, r.name).toBeGreaterThanOrEqual(35);
+    // 35 on the 500-Sister roster's yardstick. The 200 kept the stronger Commanders,
+    // so the same kits read about 10 lower (Michal Incendia: 43 then, 33 now).
+    for (const r of rows) expect(r.avg, r.name).toBeGreaterThanOrEqual(28);
   });
 
 });

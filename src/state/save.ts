@@ -51,7 +51,7 @@ export interface SaveData {
   /** Hosanna picks: per party (sorted Sister ids joined by +) and the last one picked. */
   hosanna?: { byParty?: Record<string, string>; last?: string };
   version: 1;
-  /** Which roster the ids are from: 2 = the 500-Sister roster (state/rosterMigration.ts). Unset = the old 90. */
+  /** Which roster the ids are from: 3 = the 200-Sister roster, 2 = the 500 (state/rosterMigration.ts). Unset = the old 90. */
   roster?: number;
   seals: number;
   tithes: number;

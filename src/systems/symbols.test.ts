@@ -29,7 +29,7 @@ describe('Signature weapons', () => {
 
   it('Epic and Legendary stop at +15, Mythic at +20, Divine Arsenal at +25', () => {
     expect(symbolMax(byId('IV-R-EXE'))).toBe(15);
-    expect(symbolMax(byId('IV-SR-HIE'))).toBe(15);
+    expect(symbolMax(byId('IV-SR-SEN'))).toBe(15);
     expect(symbolMax(byId('IV-LSSR1'))).toBe(20);
     expect(symbolMax(byId('IV-UR1'))).toBe(SYMBOL_TOP);
     expect(symbolPerks(byId('IV-R-EXE')).map((p) => p.at)).toEqual([5, 10, 15]);
@@ -119,7 +119,7 @@ describe('Holy Symbols', () => {
   });
 
   it('a full party of +15 Symbols is strong, not a different game', () => {
-    const party = ['SW-R-WAR', 'DL-R-HIE', 'IV-R-EXE', 'SW-SR-CON'];
+    const party = ['SW-R-VEI', 'DL-R-SEN', 'IV-R-EXE', 'SW-SR-ABB'];
     const rate = (lv?: number) => {
       let wins = 0;
       for (let i = 0; i < 200; i++) {

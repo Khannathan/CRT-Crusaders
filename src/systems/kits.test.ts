@@ -1,5 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { CRUSADERS } from '../data/crusaders';
+// Kit mechanics are tested on their first owners, some retired from the 200 (their kits stay as donors).
+import { ROSTER } from '../data/roster';
 import { KITS } from '../data/kits';
 import { CLASS_SKILLS, type SkillDef } from '../data/skills';
 import { Battle, makeEnemy, skillsFor, type BattleEvent, type Unit } from './combat';
@@ -7,7 +9,7 @@ import * as KW from './keywords';
 
 /** A Sister from the roster, as a battle unit with plain stats. */
 const sis = (id: string, rank = 1, extra: Partial<Unit> = {}): Unit => {
-  const c = CRUSADERS.find((x) => x.id === id)!;
+  const c = ROSTER.find((x) => x.id === id)!;
   return { uid: id, side: 'party', name: c.name, ref: id, classId: c.classId, order: c.order, rank, maxHp: 1000, hp: 1000, atk: 100, armor: 0, mres: 0, crit: 0, spd: 10, status: {}, passive: c.passive, ...extra };
 };
 const skill = (u: Unit, name: string) => skillsFor(u).find((s) => s.name === name)!;
@@ -173,7 +175,7 @@ describe('Sister kits: signatures', () => {
   it('The Red Road: Confessora may Step twice a turn', () => {
     const y = sis('RP-UR1', 2);
     const a = sis('IV-R-EXE', 1);
-    const c = sis('SW-R-WAR', 3);
+    const c = sis('TC-R-WAR', 3);
     const b = new Battle([a, y, c], [tank('e0', 1)], { rng: never });
     b.step(y, a);
     expect(b.canStep(y)).toBe(true);

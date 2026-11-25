@@ -6,7 +6,7 @@ import { HUNTS, HUNT_ENTRIES, HUNT_ROUNDS, MILESTONES, finishHunt, huntBattle, h
 import { seeded } from './rng';
 
 const T0 = new Date(2026, 10, 22, 12).getTime();
-const party = ['SW-R-WAR', 'DL-R-HIE', 'IV-R-EXE', 'SW-SR-CON'];
+const party = ['SW-R-VEI', 'DL-R-SEN', 'IV-R-EXE', 'SW-SR-ABB'];
 const saveAt = (level: number) => {
   const save = newSave();
   for (const p of party) save.owned[p] = { level, vow: 0 };
@@ -71,9 +71,9 @@ describe('Purge Hunts', () => {
 
   it('the Best overall list draws on every Sister, owned or not, with rare Sisters among them', () => {
     const save = newSave();
-    save.owned['SW-R-WAR'] = { level: 1, vow: 0 };
+    save.owned['SW-R-VEI'] = { level: 1, vow: 0 };
     const hunt = HUNTS[0];
-    expect(recommendFor(save, hunt).map((r) => r.c.id)).toEqual(['SW-R-WAR']);
+    expect(recommendFor(save, hunt).map((r) => r.c.id)).toEqual(['SW-R-VEI']);
     const best = recommendFor(save, hunt, 4, 'all');
     expect(best).toHaveLength(4);
     expect(best.some((r) => !save.owned[r.c.id])).toBe(true);

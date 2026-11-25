@@ -20,10 +20,10 @@ import { seeded } from './rng';
 
 /** The plain party a Sister joins: one per role slot. */
 export const FILLER: Record<'tank' | 'healer' | 'dps' | 'flex', string> = {
-  tank: 'DL-R-HIE', // Crewenna Submersa, R Hierophant
+  tank: 'CC-R-HIE', // Abigail Rogusia, R Hierophant
   healer: 'SW-R-CON', // Fastia Bustuaria, R Confessor
-  dps: 'SW-R-WAR', // Tarchna Feralis, R War-Sister
-  flex: 'TC-R-VEI', // Christina Flagellata, R Veilblade
+  dps: 'AM-R-WAR', // Carbona Incinerata, R War-Sister
+  flex: 'GC-R-VEI', // Sedecima Pellucida, R Veilblade
 };
 
 /** Which filler she replaces. */
@@ -67,11 +67,11 @@ export function huntRun(id: string, hunt: HuntDef, opts: { level?: number; tier?
 
 /**
  * The yardstick is her role's REF_RANK-th best SSR in that hunt, not the very
- * best: with 30-odd Commanders to a role in the 500-Sister roster, one outlier
- * would otherwise set the scale for everyone (the old roster had about six, so
- * its best sat near where the 5th best sits now).
+ * best, so one outlier does not set the scale for everyone. The 200-Sister
+ * roster has 10 Commanders to a role; the 3rd best sits near where the 5th of
+ * the 500-Sister roster's 30 did.
  */
-export const REF_RANK = 5;
+export const REF_RANK = 3;
 
 /** Relative scores count up to this much toward best and avg. */
 export const REL_CAP = 150;

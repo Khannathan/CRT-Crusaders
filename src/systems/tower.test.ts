@@ -7,7 +7,7 @@ import type { Battle } from './combat';
 import { ORDER_LIST } from '../data/orders';
 import { ORDER_PARTY, ORDER_TOWER_FLOORS, finishOrderFloor, orderBest, orderFloorDef, orderTowerBattle, TOWER_FLOORS, TOWER_GROWTH, allowedOn, finishFloor, floorDef, floorRecommended, towerBattle, towerOf, towerScale } from './tower';
 
-const party = ['SW-R-WAR', 'DL-R-HIE', 'IV-R-EXE', 'SW-SR-CON'];
+const party = ['SW-R-VEI', 'DL-R-SEN', 'IV-R-EXE', 'SW-SR-ABB'];
 
 describe('Bell Tower', () => {
   it('bosses every 10th floor, humble floors between, no Order floors, rising strength', () => {
