@@ -4,7 +4,7 @@
 
 This is the brief for **concept art of a full UI redesign**. It tells you what every screen in the game is for, what it must show, how big things must be on a phone, and how the redesign should look. You make **concepts only**: pictures of how screens could look. Nothing you make here goes into the game directly. Aaron picks a direction, then Claude rebuilds the screens in code and asks for the final UI skins as normal assets (ASSETS_GUIDE section 2).
 
-Read this with: `GAME_OVERVIEW.md` (what the game is), `ASSETS_GUIDE.md` section 1 (PC-98 style) and section 5 (delivery), `order-bible.md` note 16 (Order colour swatches). The repo copy on `main` is always the current one.
+Read this with: `GAME_OVERVIEW.md` (what the game is), `ASSETS_GUIDE.md` section 1 (approved rendering) and section 5 (delivery), `order-bible.md` note 16 (Order colour swatches). The repo copy on `main` is always the current one.
 
 **Screenshots of the game as it is today** live in `art-bible/ui-screens/`. Every file is a real capture at the game's own size, 540 x 960 (files ending `-tall` are 540 x 1280, the tallest phone shape), with the CRT filter off. Start with `00-overview-1.png` and `00-overview-2.png`: every screen on two sheets. Open the single screen file when you work on it. The screenshots show stand-in art (grey silhouettes) for Sisters whose art isn't made yet; that is expected.
 
@@ -20,7 +20,7 @@ Goals, in order:
 2. **One family.** The same frame, button, tab, bar and badge everywhere. A player learns the kit once.
 3. **The Sisters are the jewels.** UI chrome frames her art; it never competes with it. Rank (R, SR, SSR, UR) and Order must read instantly on every card.
 4. **Grimdark zealotry, not church kitsch.** Iron, wax, bone, scorched parchment, blood-red seals, chain and nails. Holy things look dangerous.
-5. **PC-98 to the bone.** It should look like the menu of a 1990 Japanese PC-98 dark-fantasy RPG that somehow runs on a phone.
+5. **EGA dungeon-crawler chrome.** Use spare 2 px edges and broad colour fields around faces, text and actions.
 
 What stays fixed (the code depends on it): the 540-wide portrait canvas, the five tabs and what lives under each, the order of the battle HUD (field above, party cards below), and the information each screen shows (section 7). Layout inside a screen, the look of every piece and how information is grouped are all open.
 
@@ -52,7 +52,7 @@ What stays fixed (the code depends on it): the 540-wide portrait canvas, the fiv
 
 ## 3. Visual direction
 
-**PC-98 first.** Crisp square pixels, hard edges, heavy patterned (Bayer) dither for every gradient, glow and shadow, high contrast, dark backgrounds. Colours picked from the 4,096-colour palette (each RGB channel a multiple of 17: 00, 11, 22 ... FF). Never painterly, never soft gradients, blur, bloom, glass reflections, drop shadows or modern flat UI.
+**Rendering.** Use crisp square pixels and quiet dark fields around live controls and Sister art. Reserve ordered dither for large background materials. Use the chrome palette below and keep ornament in the corners of 9-slice pieces.
 
 **Medieval, firelit, fanatical.** Materials: blackened iron and riveted plate, aged bronze, candle wax (drips, pooled seals), bone and ossuary details, scorched and nailed parchment, chain, thorns, stained glass in deep blood and gold, wax seals in rarity colours. Light: fire from below and behind, warm orange-gold on dark plum-black, cold moon-blue only as a rare accent. Holy symbols are terrifying: eyes on wings, nails, brands, burning crowns.
 
@@ -114,7 +114,7 @@ Three fonts ship with the game. Text is always set by the game, never baked into
 | **Crimson Pro** (regular and italic) | Body text, buttons, descriptions, quotes | bookish old-style serif | 17 px |
 | **Vigil Pixel** | Numbers, small labels, timers, stats, chips ("LV 35", "POWER 40,187") | blocky pixel capitals, ASCII only | 14 px |
 
-A redesign may propose a different display or pixel font if it fits PC-98 better (for example a chunky 8x16 PC-98 style bitmap face for labels). Name it in the PR as a suggestion; Claude checks the licence before anything changes.
+A redesign may propose a different display or pixel font if it fits the EGA dungeon-crawler direction (for example a chunky 8x16 bitmap face for labels). Name it in the PR as a suggestion; Claude checks the licence before anything changes.
 
 **Lettering in concepts:** write the real words from the screenshots, short and correct, in lettering that looks like the role above. If the image tool garbles text, keep the block where it belongs at the right size; Claude reads the layout, not the spelling. Game text follows the voice in `docs/VOICE.md`: short imperatives, exact numbers, one "!" at most per line.
 
@@ -321,7 +321,7 @@ Sworn Errands, Bell Tower, Nightmare Raid, Inquisition, Chapter, Feast event, Ri
 - Put ornaments in corners so frames stretch; keep edges plain.
 - Show rarity and Order on every Sister card.
 - Use the real words and numbers from the screenshots.
-- Keep it PC-98: hard pixels, patterned dither, limited colours, dark grounds, firelight.
+- Follow ART_DIRECTION.md: hard pixels, selective dither, limited colours, dark grounds, firelight.
 - Show every component in all its states on a kit sheet.
 
 **Don't**

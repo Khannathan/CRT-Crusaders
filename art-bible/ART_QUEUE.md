@@ -35,7 +35,7 @@ Only 4 of 200 Sisters have art (IV-LUR Insomnia, IV-LSSR1 Excubia, TC-UR1 Cruent
 
 The game tints these per Sister (her Order colour), ember for foes and gold for bosses, so they carry **no colour of their own**.
 
-- **Style:** PC-98 pixel art, the same look as the Sisters: crisp hard-edged pixels, bold even dither, no anti-aliasing, blur, gradients, bloom or glow haze; light drawn as hard pixel clusters. No scanlines.
+- **Style:** EGA dungeon-crawler pixel art with crisp hard-edged pixels and selective dither, no anti-aliasing, blur, gradients, bloom or glow haze; light drawn as hard pixel clusters. No scanlines.
 - **Colours:** white and light greys only, 4 values: #FFFFFF, #DDDDDD, #AAAAAA, #777777, plus near-black #111111 outlines where noted.
 - **Background:** flat #FF00FF. Nothing else in the image: no text, frame lines or labels.
 - **Delivery:** paint big at the export size below. No pixel pass: do not shrink, cut colours or dither in Python. Deliver to `art-inbox/review/<name>.png`. With the first one, open a `for-claude` issue: "hook up knockout sheets from art-inbox/review/fx-ko-*.png".
