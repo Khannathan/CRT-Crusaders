@@ -30,7 +30,7 @@ ANGEL (UR): six wings of steel feathers trailing black-and-white banner cloth (t
 FANATIC: tears of blood dried on her cheeks; blend into her expression: eyes blazing with zeal.
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (bold): on top of her neckline, show a corset cinched tight under the bust, and a torn surcoat that bares hip and leg. SPLASH POSE (splash only; the bust and battle sprite use their own framing): back arched, hip cocked, cloak swept back over one shoulder. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
-ZEALOT: grimdark fanatic zeal, no technology at all, only steel, fire, wax and faith: prayer-etched steel plate over a chainmail hauberk, a burning cross on the surcoat, wax purity seals with long ribbon scrolls on every plate, sworn to the war that never ends.
+ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: prayer-etched steel plate over a chainmail hauberk, a burning cross on the surcoat, wax purity seals with long ribbon scrolls on every plate, sworn to the war that never ends.
 KIT (her battle identity; let it show in her weapon, pose and effects):
 - SKILL I Bolt of Consecrated Light: A heavy bolt on any foe through 30% of its Armor; +50% against the Accused. Sunders the foe (-30% armor) for 4s.
 - SKILL II The Watch-Keys: Lock a foe out: it is Accused for 4s and is Staggered (breaks a charge). Then she goes on Overwatch, and her shot pierces 30% of Armor. Brands the foe: the next blow on it lands 40% harder. Cooldown 6s.

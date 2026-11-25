@@ -31,7 +31,7 @@ ANGEL (UR): six wings of black feathers edged in crimson, sealed with wax (two f
 FANATIC: prayer strips nailed into her armour; blend into her expression: eyes blazing with zeal.
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (bold): on top of her neckline, show skin-tight sheer black sleeves and gloves to the shoulder, and a side-cut tabard open from ribs to hip. SPLASH POSE (splash only; the bust and battle sprite use their own framing): back arched, hip cocked, cloak swept back over one shoulder. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
-ZEALOT: grimdark fanatic zeal, no technology at all, only steel, fire, wax and faith: judicial gothic plate hung with nailed verdicts and chained scripture, purity seals stamped with the scales, heretics kneeling in chains behind her (splash only).
+ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: judicial gothic plate hung with nailed verdicts and chained scripture, purity seals stamped with the scales, heretics kneeling in chains behind her (splash only).
 KIT (her battle identity; let it show in her weapon, pose and effects):
 - SKILL I Oath Strike: Strike a front-line foe, draw attacks and counter anyone who hits her, for 4s. Brands the foe: the next blow on it lands 40% harder.
 - SKILL II Templar's Stand: Ward herself (-30% damage) and draw attacks for 4s. She gains +20% critical chance for 4s. Cooldown 6s.

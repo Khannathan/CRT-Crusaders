@@ -30,7 +30,7 @@ ANGEL (UR): six wings of ash-grey feathers shedding embers (two framing her head
 FANATIC: vow chains locked around her wrists; blend into her expression: in fanatic rapture.
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (boldest in her Order): on top of her neckline, show thigh-high boots with bare skin above, held by garter straps of chain, and a side-cut tabard open from ribs to hip. SPLASH POSE (splash only; the bust and battle sprite use their own framing): back arched, hip cocked, cloak swept back over one shoulder. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
-ZEALOT: grimdark fanatic zeal, no technology at all, only steel, fire, wax and faith: soot-black gothic plate, purity seals scorched at the edges, a funeral pyre burning behind her (splash only).
+ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: soot-black gothic plate, purity seals scorched at the edges, a funeral pyre burning behind her (splash only).
 KIT (her battle identity; let it show in her weapon, pose and effects):
 - SKILL I Ashen Reading: Smite any enemy, Hex it (-20% Magic Resist) and Foretell it: its Mercy line is 15% higher, for 4s. She heals 25% of the damage dealt.
 - SKILL II Grant Peace: An ally gains +35% attack for 4s and Haste. Wards her ally (-20% damage taken) for 4s. Cooldown 6s.

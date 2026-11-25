@@ -29,7 +29,7 @@ SPLASH a briar-choked chapel, thorns through the pews, blood-red roses on the al
 TONE dark, gritty occult zeal: inquisition, crusade, heresy and pyres. Soot, blood, wax, chains and smoke in the scene; candle and fire light against black.
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (boldest in her Order): on top of her neckline, show a side-cut tabard open from ribs to hip, and a bare midriff under a short breastplate. SPLASH POSE (splash only; the bust and battle sprite use their own framing): striding forward out of smoke, cape snapping behind. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
-ZEALOT: grimdark fanatic zeal, no technology at all, only steel, fire, wax and faith: scourged gothic plate wrapped in barbed briar, purity seals soaked in her own blood, flagellant scars and a rose-wreathed skull.
+ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: scourged gothic plate wrapped in barbed briar, purity seals soaked in her own blood, flagellant scars and a rose-wreathed skull.
 KIT (her battle identity; let it show in her weapon, pose and effects):
 - SKILL I Briar Guard: Strike a front-line foe, draw attacks and counter, for 4s. She heals 25% of the damage dealt.
 - SKILL II Scourge Stance: Sacrifice 10% HP; Ward herself (-30%) and draw attacks for 4s. She is Thorned (30% of blows back) for 4s. Cooldown 6s.

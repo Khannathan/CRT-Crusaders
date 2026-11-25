@@ -65,5 +65,5 @@ A Sister is first seen on the **pull reveal**. The screen flashes her rank colou
 
 - No game interface, frames, text, logos, rarity stars or name plates in the art. The game draws all of these itself.
 - No other franchise's characters, symbols or designs.
-- No modern technology.
+- No modern or future technology: no guns, motors, electronics or sci-fi gear. Medieval craft is fine (forged steel, crossbows, siege engines, bells, censers, stained glass).
 - Don't change a Sister's identity between images.

@@ -30,7 +30,7 @@ ANGEL (SSR): two wings of wax feathers dripping and burning at the tips folded b
 FANATIC: tears of blood dried on her cheeks; blend into her expression: burning with consecrated fury.
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (daring): on top of her neckline, show a chain harness across her bare waist, and a side-cut tabard open from ribs to hip. SPLASH POSE (splash only; the bust and battle sprite use their own framing): standing tall with weight on one leg, chin raised in contempt. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
-ZEALOT: grimdark fanatic zeal, no technology at all, only steel, fire, wax and faith: gilded gothic plate dripping with candle wax, purity seals as hymn sheets, a battle hymn screamed not sung, consecrated fire in her eyes and on her blade.
+ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: gilded gothic plate dripping with candle wax, purity seals as hymn sheets, a battle hymn screamed not sung, consecrated fire in her eyes and on her blade.
 KIT (her battle identity; let it show in her weapon, pose and effects):
 - SKILL I Tolling Strike: Strike a front-line foe, draw attacks and counter, for 4s. She gains 1 Fervor (+6% damage each, up to 5).
 - SKILL II Hold the Note: A Hymn for 6s: every ally Warded (-10% damage). She gains +12% critical chance for 4s. Cooldown 8s.

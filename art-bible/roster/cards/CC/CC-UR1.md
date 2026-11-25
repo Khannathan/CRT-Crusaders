@@ -30,7 +30,7 @@ ANGEL (UR): six wings of wax feathers dripping and burning at the tips (two fram
 FANATIC: flagellant scars criss-crossing her arms; blend into her expression: in fanatic rapture.
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (boldest in her Order): on top of her neckline, show skin-tight sheer black sleeves and gloves to the shoulder, and a torn habit that bares hip and leg. SPLASH POSE (splash only; the bust and battle sprite use their own framing): back arched, hip cocked, cloak swept back over one shoulder. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
-ZEALOT: grimdark fanatic zeal, no technology at all, only steel, fire, wax and faith: gilded gothic plate dripping with candle wax, purity seals as hymn sheets, a battle hymn screamed not sung, consecrated fire in her eyes and on her blade.
+ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: gilded gothic plate dripping with candle wax, purity seals as hymn sheets, a battle hymn screamed not sung, consecrated fire in her eyes and on her blade.
 KIT (her battle identity; let it show in her weapon, pose and effects):
 - SKILL I Cadence Thrust: Lunge at a near foe; +50% while a Hymn plays. She gains 2 Fervor (+6% damage each, up to 5).
 - SKILL II Hymn of the Blade: A Hymn for 6s: every ally +15% critical chance. She gains +15% critical chance for 4s. Cooldown 8s.

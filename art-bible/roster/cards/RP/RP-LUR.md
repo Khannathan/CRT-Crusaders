@@ -31,7 +31,7 @@ ANGEL (UR): six wings of crimson feathers trailing smoke from the pyres (two fra
 FANATIC: candle wax poured over her own collarbone as penance; blend into her expression: eyes blazing with zeal.
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (bold): on top of her neckline, show a corset cinched tight under the bust, and a chain harness across her bare waist. SPLASH POSE (splash only; the bust and battle sprite use their own framing): back arched, hip cocked, cloak swept back over one shoulder. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
-ZEALOT: grimdark fanatic zeal, no technology at all, only steel, fire, wax and faith: blood-lacquered inquisitor plate studded with confession nails, purity seals stamped with the Inquisition's brand, the names of the condemned scratched into her plate.
+ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: blood-lacquered inquisitor plate studded with confession nails, purity seals stamped with the Inquisition's brand, the names of the condemned scratched into her plate.
 KIT (her battle identity; let it show in her weapon, pose and effects):
 - SKILL I Oath Strike: Strike a front-line foe, draw attacks for 4s, and heal for 35% of the damage. Martyrdom: for 4s she takes 40% of every blow aimed at her Sisters.
 - SKILL II Break the Vial: Sacrifice 15% HP; every ally gains +25% attack for 4s and 1 Pursuit. Every Sister gains 2 Mirror Images (each swallows a whole hit). Cooldown 8s.

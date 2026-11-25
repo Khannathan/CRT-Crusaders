@@ -30,7 +30,7 @@ ANGEL (UR): six wings of black feathers edged in crimson, sealed with wax (two f
 FANATIC: knuckles split and bound in charred prayer cloth; blend into her expression: in fanatic rapture.
 ZEALOT INITIATIVE (2026-11-24, wins over anything softer above)
 FANSERVICE turned up (boldest in her Order): on top of her neckline, show thigh-high boots with bare skin above, held by garter straps of chain, and a torn habit that bares hip and leg. SPLASH POSE (splash only; the bust and battle sprite use their own framing): kneeling in prayer with the weapon planted, looking up through her lashes. Non-explicit gacha fanservice, an adult aged 21-29, no nudity.
-ZEALOT: grimdark fanatic zeal, no technology at all, only steel, fire, wax and faith: judicial gothic plate hung with nailed verdicts and chained scripture, purity seals stamped with the scales, heretics kneeling in chains behind her (splash only).
+ZEALOT: grimdark fanatic zeal, no modern or future technology, only medieval steel, fire, wax and faith: judicial gothic plate hung with nailed verdicts and chained scripture, purity seals stamped with the scales, heretics kneeling in chains behind her (splash only).
 KIT (her battle identity; let it show in her weapon, pose and effects):
 - SKILL I Weighing Blow: Strike a front-line foe, Accuse it and draw enemy attacks, for 4s. Lays Penance on the foe for 4s: each act costs the sinner 30% of its own attack.
 - SKILL II The Scale: Shield an ally for 20% of max HP, plus 5% for each Guilt on the most guilty foe. Her ally gains +15% critical chance for 4s. Cooldown 4s.
