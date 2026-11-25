@@ -2,7 +2,7 @@
 
 > **Owned by ChatGPT, the art lead (since 2026-11-25).** Rewrite and reimagine freely. `specs/` describes what the game needs today; Claude reviews every PR and flags big changes to Aaron.
 
-Every asset type the game uses: its native size, background, where it shows and how to deliver it. Style and vibe rules from the project instructions (CHATGPT_PROJECT_INSTRUCTIONS.txt) apply to all of them. This guide lives in the game repo at `art-bible/ASSETS_GUIDE.md`; the repo copy on `main` is always the current one.
+Every asset type the game uses: its native size, background, where it shows and how to deliver it. Style and vibe rules from ART_DIRECTION.md and specs/CONTENT_RULES.md apply to all of them. This guide lives in the game repo at `art-bible/ASSETS_GUIDE.md`; the repo copy on `main` is always the current one.
 
 ## 1. Rules for every asset
 
