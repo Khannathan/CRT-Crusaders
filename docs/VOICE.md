@@ -15,7 +15,7 @@ onboarding text is written last, in this same voice.
    hard. If a line needs a second sentence to be fervent, cut the line.
 2. **Numbers are scripture.** Mechanics stay exact, plain and in the same
    order: target, effect, number, duration. The voice never blurs a number,
-   a rank, a turn count or a condition. When in doubt, the number wins.
+   a position, a duration or a condition. When in doubt, the number wins.
 3. **Speak to the faithful.** Second person ("you", "your Sisters") for the
    player, imperative for actions. The Sisters are "she/her"; foes are "the
    heretic", "the damned", "the dead", "the foe".
@@ -33,7 +33,7 @@ onboarding text is written last, in this same voice.
 | Button | 1 to 3 words | Strong verb | `Smite`, `March!`, `Claim`, `Take the Vow` |
 | Screen subtitle | 0 or 1 short line | Medium | Only when it states a rule the screen does not show |
 | Card blurb (mode boards) | One line, about 45 characters | Medium | `Purge the crypts, act by act.` |
-| Skill / passive text | As short as the mechanics allow | Verb only | `Smite rank 1-2. Bleed 2 turns. +40% below half HP.` |
+| Skill / passive text | As short as the mechanics allow | Verb only | `Smite a front-line foe. Bleed 4s. +40% below half HP.` |
 | Tooltip / glossary | 1 to 3 short sentences | Light | Plain rule first, one fervent clause allowed |
 | Toast / reward | One line | Strong | `Victory! +60 Candles.` |
 | Failure toast | One line | Grave, no "!" | `Driven back. Nothing was spent.` |
@@ -49,7 +49,12 @@ onboarding text is written last, in this same voice.
 - Keyword names stay capitalised exactly as the glossary has them
   (Bleed, Burn, Poison, Stun, Accused, Overwatch, Zeal, Wrath, Guilt...),
   because tapping them opens the glossary.
-- Ranks as `rank 1-2`, turns as `for 2 turns`, numbers as `+40%`, `30% of max HP`.
+- Combat is real time: never write turns, rounds or ranks on screen. Positions as
+  `a front-line foe` (the two nearest), `a near foe` (three nearest), `any foe`,
+  or the Sisters' `Vanguard` / `Rearguard`; durations as `for 4s`; cooldowns show
+  as a `Cooldown 6s` tag; a delayed foe is `Staggered`. Numbers as `+40%`,
+  `30% of max HP`. Kit data may still count turns: `src/data/realtimeText.ts`
+  converts them, and `realtime.test.ts` fails if one slips through.
 - Litanies begin `LITANY:`.
 - Do not end with `Cooldown N.`; the cooldown shows as a tag.
 
@@ -85,7 +90,7 @@ Never: modern slang, emoji, "OK", "awesome", "loot", "grind", "nerf", "buff"
 Before | After
 --- | ---
 Leave with everything found | Leave with your spoils
-Heavy strike on rank 1-2 that leaves it Bleeding for 2 turns. +40% while she is under half HP. | Smite rank 1-2 and leave it Bleeding for 2 turns. +40% while she is below half HP.
+Heavy strike on a front-line foe that leaves it Bleeding for 4s. +40% while she is under half HP. | Smite a front-line foe and leave it Bleeding for 4s. +40% while she is below half HP.
 No pieces for this slot yet. Crusade, and the dead will provide. | Nothing for this slot. Crusade, and the dead will arm you!
 Last Feast's Candles melted into 120 Alms. | The Feast's Candles melt into 120 Alms. Praise be!
 The trial repels you. No entry was spent. | The trial repels you. Nothing was spent.
