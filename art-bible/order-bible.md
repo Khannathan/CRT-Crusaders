@@ -291,6 +291,15 @@ In a pull illustration, use the opening between two gate bars to show the cost o
 
 ## Sepulcher Watch
 
+### The Lending Vault
+
+[Approved Vanth study at splash size](references/sepulcher-watch-lending-vault.png)
+
+A midwife whose hands have begun to tremble asks Vanth for one more night with her teacher. Vanth lends her the dead woman’s steady hand. Halfway through the delivery she feels her teacher correct her grip. By dawn, mother and child are well. When she returns the hand, the keeper has measured a niche for hers.
+
+The god of the ossuary claims the skills the dead spent their lives learning. The Watch keeps each gift in a fitted recess. A living petitioner may borrow it by pledging a gift of her own when she dies. Show the exchange in a small, familiar gesture. The family recognizes the teacher by how she places a thumb.
+
+
 **Creed:** "The dead are ours. So are you."
 
 **What her god demands:** The dead belong to the god alone. Mourners who will not let go are buried with their dead, and heretics are entombed alive to keep the vaults full.
@@ -307,6 +316,9 @@ In a pull illustration, use the opening between two gate bars to show the cost o
 - **Palette:** aged bone-tan lead, charcoal-slate trim, dark steel, ivory accents.
 - **Head:** bone-tan hood with a finger-bone circlet. SR ornament: one funerary key set into the circlet.
 - **Habit:** heavy bone-tan wool over dark steel plate, ivory trim; the scapular carries a key or skull. Hems straight and heavy, weighted with keys.
+- **Order silhouette:** heavy bone-tan wool surrounds one dark felt-lined recess shaped for the gift a Sister tends. A Hospitaller can cradle an articulated ivory hand at her collar. A Sentinel can house a smaller votive inside the shield rim. A recognizably empty recess tells the player a gift is out on loan. Keep it clear of a fighter’s working joints.
+- **Patron miracle:** Vanth alone can return every gift a fallen Sister possessed at once. During Chalice of Bones, the ivory hands in her wings echo the individual gestures of the Sisters she raises. Her grail and lance-staff retain their own silhouettes. On her battle sprite fold the wings close.
+- **Rivalry:** Ashen Mercy preserved the midwife’s face. The Watch came for her hands. A likeness from the hospice kiln and an empty recess help stage the two claims in one room.
 - **Materials:** dark steel, heavy wool, ivory and bone inlay, iron keys, coffin wood.
 - **Symbols:** the funerary key, the skull, the coffin lid, a lamp of the dead.
 - **Signature details to vary Sisters (worn on her, never carried or hung):** moss on the greaves, grave dirt on the knees, bone-inlaid plate edges, a skull boss on the belt buckle, lime-pale gauntlets.
