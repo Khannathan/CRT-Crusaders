@@ -1,6 +1,6 @@
 # CRT Crusaders: Art Queue
 
-> **Owned by ChatGPT, the art lead (since 2026-11-25).** Rewrite and reimagine freely. The locked specs in `specs/` win over anything here; see `specs/LOCKS.md`.
+> **Owned by ChatGPT, the art lead (since 2026-11-25).** Rewrite and reimagine freely. `specs/` describes what the game needs today; Claude reviews every PR and flags big changes to Aaron.
 
 What to make next, in priority order (from a playthrough of a new player's first hour, 2026-11-24). Before starting an item, check the repo: if the file on `main` is already the new art, or an open `art/` pull request has it, skip to the next item. Aaron can always reorder this; his word in chat wins.
 

@@ -1,17 +1,15 @@
 #!/usr/bin/env python3
 """
-Locked GAME DATA blocks in the Sister cards (art-bible/roster/cards/<code>/<id>.md).
+GAME DATA blocks in the Sister cards (art-bible/roster/cards/<code>/<id>.md).
 
-ChatGPT owns every card's design text and may rewrite it freely. The block
-between the two markers below is game data the code depends on (id, name,
-epithet, rarity, Order, class, age, weapon and relic names, the kit). Only
-Claude changes it, and the Art lane guard fails any art PR that edits it.
+ChatGPT owns the cards. The block between the two markers below mirrors what
+the game uses for that Sister today (id, name, epithet, rarity, Order, class,
+age, weapon and relic names, the kit). If ChatGPT edits it, that is a request
+for a game change: Claude reviews it and Aaron approves before the game follows.
 
 Usage:
-    python3 tools/art_bible_data.py write     # (re)write every card's block from src/data + the card's KIT lines
-    python3 tools/art_bible_data.py check     # every card has exactly one block (CI-friendly)
-
-The guard imports block() from here.
+    python3 tools/art_bible_data.py write     # (re)write every card's block from src/data + the card's kit lines
+    python3 tools/art_bible_data.py check     # every card has exactly one block
 """
 import re
 import sys
@@ -19,7 +17,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 CARDS = ROOT / 'art-bible' / 'roster' / 'cards'
-START = '<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->'
+START = '<!-- GAME DATA (what the game uses for this Sister today; changing it is a request Claude reviews and Aaron approves before the game follows) -->'
 END = '<!-- END GAME DATA -->'
 BLOCK_RE = re.compile(re.escape(START) + r'.*?' + re.escape(END), re.S)
 
@@ -34,7 +32,7 @@ TIER = {'epic': 'Epic', 'legendary': 'Legendary', 'mythic': 'Mythic', 'divine': 
 
 
 def block(text):
-    """The locked block of a card's text, or None."""
+    """The GAME DATA block of a card's text, or None."""
     m = BLOCK_RE.search(text)
     return m.group(0) if m else None
 
@@ -113,7 +111,7 @@ def write():
         else:
             kit = kit_lines(text)
             rest = text
-            # The kit moves into the locked block; drop it from the design text.
+            # The kit moves into the GAME DATA block; drop it from the design text.
             rest = re.sub(r'\nKIT \(her battle identity[^\n]*\n(?:- (?!HOW HER SKILLS LOOK)[^\n]*\n)*', '\nKIT: see the GAME DATA block at the top of this card.\n', rest)
         new = make_block(sid, roster[sid], weapons, classes, kit)
         # The block goes right after the card's first comment line.

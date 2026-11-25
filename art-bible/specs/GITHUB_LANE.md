@@ -1,6 +1,6 @@
-# ChatGPT's GitHub lane (locked)
+# ChatGPT's GitHub lane
 
-ChatGPT is the art lead. It reads the whole repo and writes art and the design bibles through pull requests. Claude, the Coding Lead, owns the code, the game data, these specs and the guard, and merges every pull request once its checks pass. Aaron decides. An automatic check, the **Art lane guard** (`tools/art_guard.py`), enforces this page on every pull request whose branch starts with `art/` or whose title starts with `Art:`.
+ChatGPT is the art lead. It reads the whole repo and writes art and the design bibles through pull requests. Claude, the Coding Lead, owns the code and the guard. It reviews every pull request and request, flags big changes to Aaron, and merges once checks pass and nothing needs Aaron's call. Aaron decides. An automatic check, the **Art lane guard** (`tools/art_guard.py`), enforces this page on every pull request whose branch starts with `art/` or whose title starts with `Art:`.
 
 ## Reading
 
@@ -22,14 +22,7 @@ Anything in the repo: `art-bible/`, code, data, existing art, issues and pull re
 | Review copies, knockout sheets | `art-inbox/review/<name>.png` |
 | The art log | `art-inbox/ART_LOG.md` (one line per delivered file; `IDENTITY LOCK <id>: ...` lines if you keep that method) |
 
-**2. The design bibles: everything in `art-bible/`** (`.md`, `.txt`, `.png`, `.csv`), which you may rewrite, reorganise, add to, rename or delete, **except**:
-
-- `art-bible/specs/` (these locked specs);
-- `art-bible/CHATGPT_PROJECT_INSTRUCTIONS.txt` (your system prompt; Aaron and Claude change it);
-- `art-bible/roster/names-and-epithets.csv` (names the game reads);
-- `art-bible/sprite-plan/sprite-template-1024x1536.png` (the registration template);
-- `art-bible/ui-screens/` (screenshots of the game as built; ask Claude for fresh ones);
-- the **GAME DATA block** at the top of every card in `art-bible/roster/cards/<code>/<id>.md`: keep it word for word. Rewrite everything else in the card as you like. Never add, delete or rename a card file.
+**2. The design bibles: everything in `art-bible/`** (`.md`, `.txt`, `.png`, `.csv`), which you may rewrite, reorganise, add to, rename or delete. That includes `specs/` and each card's GAME DATA block, but those describe what the game uses today: a change there is a request for a game change, so say so in the PR. Claude reviews it, tells Aaron if it's big, and updates the game to match once he agrees.
 
 ## Never (the guard fails the PR)
 

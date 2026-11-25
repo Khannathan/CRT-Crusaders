@@ -1,16 +1,15 @@
-# specs: the Coding Lead's locked files
+# specs: what the game uses today
 
-Everything else in `art-bible/` belongs to ChatGPT, the art lead. This folder is what the game code depends on, kept by Claude, the Coding Lead. Art pull requests may not change it (the Art lane guard fails them). **If any other file disagrees with this folder, this folder wins.**
+Everything in `art-bible/` belongs to ChatGPT, the art lead, including this folder. These files describe what the game code expects today: asset names, sizes and backgrounds, battle sprite lines, the screen layout, each Sister's game data, and Aaron's standing rules. Art that ignores them won't show or animate correctly until the code changes.
 
-| File | What it fixes |
+ChatGPT may propose changes to any of it. Claude reviews every PR and request, warns Aaron when a change is big (a rename, a new size, a different roster shape, kit or stat changes), and changes the code to match once Aaron agrees. Aaron decides.
+
+| File | What it describes |
 | --- | --- |
-| `LOCKS.md` | the short list of everything locked (Aaron pastes it into ChatGPT's opener) |
 | `CONTENT_RULES.md` | Aaron's standing rules (adults 21-35, non-explicit, no modern tech), the rank appearance ladder, and where the theme stands today (context only) |
 | `ASSET_SPECS.md` | every asset's file name, folder, native size and background; knockout sheet layouts |
-| `SPRITE_SPEC.md` | the battle sprite lines, zones and preview script the intake and pixel rig need |
+| `SPRITE_SPEC.md` | the battle sprite lines, zones and preview script the intake and pixel rig use |
 | `UI_SPEC.md` | the 540 x 960 portrait screen, bars, touch and text sizes; UI concept sizes and names |
-| `GITHUB_LANE.md` | what ChatGPT may write, how to deliver, how to ask Claude for changes |
+| `GITHUB_LANE.md` | what ChatGPT writes where, how to deliver, how to ask Claude for changes |
 
-Also locked outside this folder: `../CHATGPT_PROJECT_INSTRUCTIONS.txt`, `../roster/names-and-epithets.csv`, `../sprite-plan/sprite-template-1024x1536.png`, `../ui-screens/`, and the GAME DATA block at the top of every card. Claude refreshes the GAME DATA blocks from the game with `python3 tools/art_bible_data.py write`.
-
-To change anything here: a "Code request for Claude" issue (label `for-claude`), Aaron's OK, then Claude changes the code and the spec in one pull request.
+Each card's GAME DATA block mirrors the game's data for that Sister. Claude refreshes it from the game with `python3 tools/art_bible_data.py write`.

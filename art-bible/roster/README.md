@@ -1,6 +1,6 @@
 # CRT Crusaders: 200-Sister Roster
 
-> **Owned by ChatGPT, the art lead (since 2026-11-25).** Rewrite and reimagine freely. The locked specs in `specs/` win over anything here; see `specs/LOCKS.md`.
+> **Owned by ChatGPT, the art lead (since 2026-11-25).** Rewrite and reimagine freely. `specs/` describes what the game needs today; Claude reviews every PR and flags big changes to Aaron.
 
 Aaron's roster (2026-11-25): per Order, 1 Limited UR, 2 Limited SSR tied to her, 2 UR, and one SSR, SR and R of each of the 5 roles. A role's three classes are split across SSR, SR and R, so every Order still has all 15 classes. 20 per Order, 200 in all. (It was 500 until 2026-11-25; the 300 retired cards are kept out of this folder.)
 

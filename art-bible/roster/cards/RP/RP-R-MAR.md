@@ -1,6 +1,6 @@
-<!-- Crimson Inquisition (RP) card RP-R-MAR. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+<!-- Crimson Inquisition (RP) card RP-R-MAR. ChatGPT owns this card. -->
 
-<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+<!-- GAME DATA (what the game uses for this Sister today; changing it is a request Claude reviews and Aaron approves before the game follows) -->
 ```text
 id: RP-R-MAR
 name: Aldonza Stigmatrix

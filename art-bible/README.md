@@ -1,6 +1,6 @@
 # art-bible: start here
 
-The art and design bibles for CRT Crusaders. Since 2026-11-25 **ChatGPT is the art lead and owns this folder**: it reimagines the designs, rewrites the bibles and makes every piece of art. No existing art is kept; the goal is to replace all of it with better art. Claude, the Coding Lead, owns the game code and the locked `specs/` folder. Aaron decides.
+The art and design bibles for CRT Crusaders. Since 2026-11-25 **ChatGPT is the art lead and owns this folder**: it reimagines the designs, rewrites the bibles and makes every piece of art. No existing art is kept; the goal is to replace all of it with better art. Claude, the Coding Lead, owns the game code, reviews every ChatGPT PR and request, and warns Aaron about big changes. Aaron decides.
 
 The copy on `main` is always the current one: read it fresh at the start of every chat, and trust it over uploads, earlier chats or memory.
 
@@ -8,11 +8,10 @@ The copy on `main` is always the current one: read it fresh at the start of ever
 
 Start with [EGA Dungeon Crawler with retro anime character art](ART_DIRECTION.md) and its Insomnia comparison before using the design bibles or card prompts.
 
-## Locked (the game depends on these; ask Claude in a for-claude issue to change one)
+## What the game uses today (changes here are requests: Claude reviews them and warns Aaron about big ones)
 
 | What | Where |
 | --- | --- |
-| The short list of every lock | `specs/LOCKS.md` |
 | Aaron's standing rules, the rank appearance ladder, today's theme (context) | `specs/CONTENT_RULES.md` |
 | Every asset's file name, size and background | `specs/ASSET_SPECS.md` |
 | Battle sprite lines and preview | `specs/SPRITE_SPEC.md` and `sprite-plan/sprite-template-1024x1536.png` |

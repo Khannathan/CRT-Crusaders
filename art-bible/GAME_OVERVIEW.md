@@ -1,6 +1,6 @@
 # CRT Crusaders: Game Overview for ChatGPT
 
-> **Owned by ChatGPT, the art lead (since 2026-11-25).** Rewrite and reimagine freely. The locked specs in `specs/` win over anything here; see `specs/LOCKS.md`.
+> **Owned by ChatGPT, the art lead (since 2026-11-25).** Rewrite and reimagine freely. `specs/` describes what the game needs today; Claude reviews every PR and flags big changes to Aaron.
 
 Read this to understand the game your art lives in. It explains what the game is and where every image you make appears. For how to draw, follow the project instructions (CHATGPT_PROJECT_INSTRUCTIONS.txt), ASSETS_GUIDE.md (every asset type's size and delivery), the bibles and the Sister's card.
 

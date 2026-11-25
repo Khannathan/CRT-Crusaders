@@ -1,6 +1,6 @@
-<!-- Confessors of Glass (GC) card GC-SR-EXO. ChatGPT owns the design text; only the GAME DATA block is locked. -->
+<!-- Confessors of Glass (GC) card GC-SR-EXO. ChatGPT owns this card. -->
 
-<!-- GAME DATA (locked by the Coding Lead: keep this block word for word; the Art lane guard checks it) -->
+<!-- GAME DATA (what the game uses for this Sister today; changing it is a request Claude reviews and Aaron approves before the game follows) -->
 ```text
 id: GC-SR-EXO
 name: Septuagesima Plumbata

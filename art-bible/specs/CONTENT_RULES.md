@@ -1,4 +1,4 @@
-# Content rules (Aaron's standing rules, locked)
+# Content rules (Aaron's standing rules)
 
 Aaron decided these. ChatGPT reimagines everything else about the look. To change one, ask Aaron.
 
@@ -24,7 +24,7 @@ Divine features grow with rank (the "Wrathful Host" idea: the closer to her god,
 
 ## 3. Where the game is today (context only, not a rule)
 
-So you know where the theme stands before you reimagine it. None of this binds you except what sections 1-2 and LOCKS.md say.
+So you know where the theme stands before you reimagine it. None of this binds you except what sections 1-2 say.
 
 - **Premise:** a dark-fantasy gacha RPG for portrait phones. Sisters are fanatic zealots sworn to 10 rival Orders, fighting a war without end through crypts of undead clergy, drowned congregations and blasphemous saints. The Orders are not good: each god demands something terrible and its Sisters obey. Orders feud, purge heretics and burn villages "to save them". More Inquisition than Church: victories feel like executions.
 - **Tone:** grimdark, gothic, fanatical and doomed, with gacha glamour on top. Soot, wax, bone, blood and firelight; fire is the main light. Gods are terrifying first, beautiful second. Never goofy.

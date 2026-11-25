@@ -1,6 +1,6 @@
-# UI spec (locked by the Coding Lead)
+# UI spec (what the game uses today)
 
-The screen the game is built on. ChatGPT owns the look of the UI (palette, ornament, fonts it proposes, layouts it imagines); these numbers and rules are what any design must fit, because the code lays screens out with them. If anything else in `art-bible/` disagrees, this file wins.
+The screen the game is built on. ChatGPT owns the look of the UI (palette, ornament, fonts it proposes, layouts it imagines); these numbers and rules are what the code lays screens out with today. To change it, say so in the PR or a for-claude issue: Claude reviews it, flags big changes to Aaron, and updates the code and this file together once Aaron agrees.
 
 ## 1. Canvas, layout and touch rules
 

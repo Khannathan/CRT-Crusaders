@@ -1,6 +1,6 @@
-# Asset specs (locked by the Coding Lead)
+# Asset specs (what the game uses today)
 
-What the game code needs from every asset. ChatGPT owns how assets look and how they are made; these outputs are fixed. If anything else in `art-bible/` disagrees with this file, this file wins. To change a spec, open a for-claude issue; Aaron approves and Claude changes the code and this file together.
+What the game code expects from every asset today. ChatGPT owns how assets look and how they are made. A file that doesn't match these names, sizes and backgrounds won't show correctly in the game until the code changes too. To change it, say so in the PR or a for-claude issue: Claude reviews it, flags big changes to Aaron, and updates the code and this file together once Aaron agrees.
 
 ## 1. Asset table
 
@@ -37,7 +37,7 @@ Paths are under `src/assets/` unless they start with `art-inbox/`. A new asset t
 
 - **Native size is the delivered size.** Every game file is delivered at exactly the native pixel size in the table (the game draws it 1:1 or at whole multiples). When replacing an existing file, match its exact pixel size and background; some icons are a few pixels under the table size, keep theirs.
 - **Backgrounds** are exactly what the table says: opaque flat dark, opaque full scene, transparent (real alpha), or flat #FF00FF for anything the intake bot keys out.
-- **File names and folders** are exactly the table's. Ids in file names are game ids (section 4 of LOCKS.md), never display names: for example `insignia-red-pilgrimage.png` for the Crimson Inquisition.
+- **File names and folders** are exactly the table's. Ids in file names are game ids (as in `src/data/`), never display names: for example `insignia-red-pilgrimage.png` for the Crimson Inquisition.
 - **Format:** real PNG files. `.webp` only to replace an existing `.webp` splash, keeping its name. Each file under 12 MB.
 - **Colours:** busts, splashes and other native-size assets arrive already finished; the game shows them as delivered. The battle sprite is cut to **16 colours** by the intake bot (`tools/intake_sprite.py --colors 16`) whatever colours it arrives with.
 - **No text, frames or UI in the art** unless the asset is a lettered UI piece the request names. The game draws names, rarity, frames and numbers itself, mirrors battle sprites to face left (so nothing on a sprite may depend on its side), and adds the optional CRT filter on top (so no scanlines or screen effects in the art).
