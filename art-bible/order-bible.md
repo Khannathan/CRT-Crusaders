@@ -1,11 +1,11 @@
 # CRT Crusaders: Order Theme Bible
 
-Use this file with the roster-500 Sister cards, class-bible.md and ASSETS_GUIDE.md. It tells you what each of the ten Orders looks, feels and sounds like, so every Sister reads as her Order at a glance.
+Use this file with the roster Sister cards, class-bible.md and ASSETS_GUIDE.md. It tells you what each of the ten Orders looks, feels and sounds like, so every Sister reads as her Order at a glance.
 
 ## How to use this with ChatGPT
 
-1. This file is one of the ChatGPT project files. The three locked Sisters (VT-SSR-VEI Obscura Ponderosa, DL-SSR-EXE Gurges Submersa, TC-UR1 Cruentia) follow the APPROVED ART RECORD on their cards.
-2. Before drawing a Sister, read her Order's section here. Her roster-500 card wins on anything personal (face, hair, marks, weapon). This file wins on anything the Order owns (cloth colours, metal, head motif, motif shape, hem, splash place).
+1. This file is one of the ChatGPT project files. The two locked Sisters (VT-SSR-VEI Obscura Ponderosa, TC-UR1 Cruentia) follow the APPROVED ART RECORD on their cards.
+2. Before drawing a Sister, read her Order's section here. Her roster card wins on anything personal (face, hair, marks, weapon). This file wins on anything the Order owns (cloth colours, metal, head motif, motif shape, hem, splash place).
 3. Who decides what: **Order** = cloth colours, metal finish, head motif, motif shape, hem, splash setting. **Class** = silhouette and weapon. **Sister** = face, hair, skin, marks, weapon. **Rarity** = trim and effects only.
 4. **Colour rule:** the Order's lead colour covers about 60% of her cloth, the shared neutrals (steel, bronze, parchment, near-black shadow) about 30%, the trim colour about 10%. On cloth the lead colour is the lit value of a 3-step ramp whose darker steps sink to the shared shadow #211b26, so colours read grimy, never pastel or neon.
 5. **The 64 px test:** shrink the sprite to 64 px tall. Someone who knows the ten Orders must name hers from colour and head shape alone.
@@ -382,7 +382,7 @@ Head motif by rarity (every Order): see the head-by-rank table below. Limited UR
 **Mood:** cold, wet, uncanny calm, salt and pearls, a bell under the water.
 
 - **Palette:** sea-teal lead, pale parchment trim, verdigris bronze. Everything looks wet: darker values, small hard wet highlights.
-- **Head:** a visor helm (Gurges) or a wet clinging veil. SR ornament: a string of pearls across the brow.
+- **Head:** a visor helm or a wet clinging veil. SR ornament: a string of pearls across the brow.
 - **Habit:** blue-grey silk and teal wool clinging wet, seaweed-dark lace, salt-worn plates; the scapular carries a pearl or wave. Hems hang in wet, clinging, dripping points.
 - **Materials:** wet silk, salt-crusted steel, verdigris bronze, pearls, seaweed lace, barnacled metal.
 - **Symbols:** the drowned bell, the wave, pearls, a sunken saint's medallion.

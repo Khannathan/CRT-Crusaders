@@ -1,7 +1,7 @@
 """Sets each Sister's title in src/data/roster.ts to her epithet from the sister bible.
 
 Usage (from the repo root):
-    python3 -I tools/roster/apply_epithets.py /mnt/project-files/sister-bible/roster-500/names-and-epithets.csv
+    python3 -I tools/roster/apply_epithets.py /mnt/project-files/sister-bible/roster/names-and-epithets.csv
 
 The CSV has id, name, epithet, ..., old_title. A Sister whose old title fights with
 the other damage type from her class (TITLE_DMG) gets that type written as `dmg`,
