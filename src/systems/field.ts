@@ -158,6 +158,19 @@ export function answerTo(s: SkillDef, foe: Unit): Answer | undefined {
   return undefined;
 }
 
+/** On Auto, a boss's Wrath from which a Sister holds a Litany that could answer its Blasphemy. */
+export const AUTO_HOLD_WRATH = 60;
+/** On Auto, nobody holds a Litany while any Sister is below this share of her HP. */
+export const AUTO_HOLD_SAFE = 0.35;
+
+/** Whether this Litany would break or brace `boss`'s Blasphemy, once charged at full Wrath. */
+export function wouldAnswer(s: SkillDef, boss: Unit): boolean {
+  const blas = ENEMIES[boss.ref]?.blasphemy;
+  if (!blas) return false;
+  const charged = { ...boss, wrath: ZEAL_MAX, status: { ...boss.status, charging: true }, intent: { skillId: blas.id } } as Unit;
+  return !!answerTo(s, charged);
+}
+
 export type FieldEvent =
   | { kind: 'act'; uid: string; skill: SkillDef; targetUid?: string; events: BattleEvent[]; ranged: boolean; litany: boolean; charge: boolean; hosanna?: boolean }
   /** Start-of-action ticks (poison, regen, stun) and round effects. */
@@ -403,7 +416,13 @@ export class FieldBattle {
         out.push({ kind: 'tick', events });
       }
     }
-    const c = autoChoose(this.battle, u, { noRite: this.opts.manualLitany });
+    // Auto meets a Blasphemy as a player would: a Litany that can break or
+    // brace it fires into the charge, and is held while the boss's Wrath nears full.
+    if (!this.opts.manualLitany) {
+      const answer = this.autoAnswer(u);
+      if (answer) return answer;
+    }
+    const c = autoChoose(this.battle, u, { noRite: this.opts.manualLitany || this.holdsLitany(u) });
     if (!c.skill || (c.skill.rite && this.opts.manualLitany)) return undefined;
     const target = c.skill.target === 'enemy' ? this.preferredFoe(u, c.skill) ?? c.target : c.target;
     return { skill: c.skill, targetUid: target?.uid, age: 0 };
@@ -885,6 +904,34 @@ export class FieldBattle {
     if (r.events.some((e) => e.type === 'move')) this.reform();
     this.applyDelays();
     return { kind: 'act', uid: r.caster.uid, skill: { ...r.skill, rite: true }, targetUid: r.targetUid, events: r.events, ranged: true, litany: true, charge: false, hosanna: true };
+  }
+
+  /** On Auto: a full Litany that answers a Blasphemy being charged now, aimed at that boss. */
+  private autoAnswer(u: Unit): Body['plan'] {
+    if (!this.litanyReady(u)) return undefined;
+    const ans = this.answerOf(u);
+    if (!ans || !ans.foe.boss) return undefined;
+    const rite = skillsFor(u).find((s) => s.rite)!;
+    return { skill: rite, targetUid: rite.target === 'enemy' ? ans.foe.uid : undefined, age: 0 };
+  }
+
+  /**
+   * On Auto, a Sister holds her full Litany when it could answer a boss's
+   * Blasphemy and that boss's Wrath is at AUTO_HOLD_WRATH or more. Only one
+   * Sister holds (the first in the line); nobody holds while a Sister is near death.
+   */
+  holdsLitany(u: Unit): boolean {
+    if (this.opts.manualLitany || !this.litanyReady(u)) return false;
+    const party = this.battle.alive('party');
+    if (party.some((p) => p.hp / p.maxHp < AUTO_HOLD_SAFE)) return false;
+    const bosses = this.battle.alive('enemy').filter((f) => f.boss && !f.status.charging && ENEMIES[f.ref]?.blasphemy && (f.wrath ?? 0) >= AUTO_HOLD_WRATH);
+    if (!bosses.length) return false;
+    const answers = (p: Unit) => {
+      const rite = skillsFor(p).find((s) => s.rite);
+      return !!rite && bosses.some((f) => wouldAnswer(rite, f));
+    };
+    const holder = party.find((p) => this.litanyReady(p) && answers(p));
+    return holder === u;
   }
 
   /** True when a Sister's Litany can be cast now (manual mode). */

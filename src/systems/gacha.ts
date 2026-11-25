@@ -1,6 +1,7 @@
 import { CRUSADERS } from '../data/crusaders';
 import { ALMS_FOR_TOKEN, earn } from './currency';
-import type { CrusaderDef, Rarity } from '../data/types';
+import type { CrusaderDef, Rarity, Role } from '../data/types';
+import { CLASSES } from '../data/classes';
 import type { SaveData } from '../state/save';
 import { track, weekKey } from './tasks';
 import { STIGMATA_FOR_COPY, addStigmata, copiesLeft } from './tiers';
@@ -174,12 +175,20 @@ export function settleFavor(save: SaveData, now = Date.now()) {
   }
 }
 
+/** A starter pull that must fill a missing role picks from that role (never steers a UR). */
+function starterFill(pool: CrusaderDef[], rarity: Rarity, roles?: Role[]) {
+  const fill = roles && rarity !== 'UR' ? pool.filter((c) => roles.includes(CLASSES[c.classId].role)) : [];
+  return fill.length ? fill : undefined;
+}
+
 /**
  * Picks the Sister for a rolled rarity. A banner UR is the target half the
  * time and always after a miss; an SSR is a boosted one half the time.
  */
-function pickCrusader(save: SaveData, rng: Rng, rarity: Rarity): CrusaderDef {
+function pickCrusader(save: SaveData, rng: Rng, rarity: Rarity, roles?: Role[]): CrusaderDef {
   const pool = standardOf(rarity);
+  const fill = starterFill(pool, rarity, roles);
+  if (fill) return pickFrom(rng, fill);
   const target = targetOf(save);
   if (rarity === 'UR' && target) {
     if (save.urGuaranteed || rng() < TARGET_SHARE) {
@@ -239,7 +248,7 @@ export const urPityLeft = (save: SaveData) => UR_HARD - (save.urPity ?? 0);
 export const shardsOf = (save: SaveData, order: string) => save.shards?.[order] ?? 0;
 
 /** One pull: applies pity, adds the Sister (or a Vow token) to the save. Does not spend Seals. */
-function pullOnce(save: SaveData, rng: Rng, floor: Rarity, novice = false): PullResult {
+function pullOnce(save: SaveData, rng: Rng, floor: Rarity, novice = false, roles?: Role[]): PullResult {
   save.pity += 1;
   save.totalPulls += 1;
   save.urPity = (save.urPity ?? 0) + 1;
@@ -253,7 +262,7 @@ function pullOnce(save: SaveData, rng: Rng, floor: Rarity, novice = false): Pull
   if (rank(rarity) >= rank('SSR')) save.pity = 0;
   if (rarity === 'UR') save.urPity = 0;
 
-  const result = grantSister(save, novice ? pickFrom(rng, standardOf(rarity)) : pickCrusader(save, rng, rarity));
+  const result = grantSister(save, novice ? pickFrom(rng, starterFill(standardOf(rarity), rarity, roles) ?? standardOf(rarity)) : pickCrusader(save, rng, rarity, roles));
   logPull(save, result, novice ? 'Novice' : undefined);
   return result;
 }
@@ -289,6 +298,20 @@ function grantSister(save: SaveData, crusader: CrusaderDef): PullResult {
   return { crusader, isNew: false, vow: owned.vow, tithes: OVERFLOW_TITHES, alms, stigmata, tokens };
 }
 
+/**
+ * A fair start: through a player's first STARTER_PULLS pulls, the last two
+ * slots of a 10-pull fill a role her roster still lacks: a Tank first, then
+ * someone who deals damage. Rarity is rolled as usual; only who answers it is steered.
+ */
+export const STARTER_PULLS = 20;
+const STARTER_ROLES: Role[][] = [['Tank'], ['Melee DPS', 'Ranged DPS']];
+
+function starterRoles(save: SaveData, slot: number): Role[] | undefined {
+  if (slot < 8 || save.totalPulls >= STARTER_PULLS) return undefined;
+  const have = new Set(Object.keys(save.owned).map((id) => CLASSES[CRUSADERS.find((c) => c.id === id)?.classId ?? '']?.role));
+  return STARTER_ROLES.find((roles) => !roles.some((r) => have.has(r)));
+}
+
 export type PullKind = 'one' | 'ten';
 
 /** The first 10-pull of each week (Monday to Sunday) costs this instead of COST_TEN. */
@@ -301,7 +324,7 @@ export const discountReady = (save: SaveData, now = Date.now()) => save.discount
 export const tenCost = (save: SaveData, now = Date.now()) => (!save.freeTenUsed ? 0 : discountReady(save, now) ? DISCOUNT_TEN : COST_TEN);
 
 /** The 10-pull button's second line. */
-export const tenLabel = (save: SaveData, now = Date.now()) => (!save.freeTenUsed ? 'Free first time' : discountReady(save, now) ? `${DISCOUNT_TEN} Seals · weekly` : `${COST_TEN} Seals`);
+export const tenLabel = (save: SaveData, now = Date.now()) => (!save.freeTenUsed ? 'Free · SSR or better' : discountReady(save, now) ? `${DISCOUNT_TEN} Seals · weekly` : `${COST_TEN} Seals`);
 
 export function canPull(save: SaveData, kind: PullKind, now = Date.now()): boolean {
   return save.seals >= (kind === 'one' ? COST_ONE : tenCost(save, now));
@@ -320,6 +343,7 @@ export function pull(save: SaveData, kind: PullKind, rng: Rng = Math.random): Pu
     return [pullOnce(save, rng, 'R')];
   }
   const cost = tenCost(save);
+  const free = !save.freeTenUsed;
   save.seals -= cost;
   if (!save.freeTenUsed) save.freeTenUsed = true;
   else if (cost === DISCOUNT_TEN) save.discountWeek = weekKey(Date.now());
@@ -327,8 +351,10 @@ export function pull(save: SaveData, kind: PullKind, rng: Rng = Math.random): Pu
   track(save, 'pull', 10);
   const results: PullResult[] = [];
   for (let i = 0; i < 10; i++) {
+    // The free first 10-pull holds an SSR or better; every 10-pull an SR or better.
+    const needSSR = free && i === 9 && results.every((r) => rank(r.crusader.rarity) < rank('SSR'));
     const needSR = i === 9 && results.every((r) => r.crusader.rarity === 'R');
-    results.push(pullOnce(save, rng, needSR ? 'SR' : 'R'));
+    results.push(pullOnce(save, rng, needSSR ? 'SSR' : needSR ? 'SR' : 'R', false, starterRoles(save, i)));
   }
   return results;
 }
@@ -355,7 +381,7 @@ export function noviceTen(save: SaveData, rng: Rng = Math.random): PullResult[] 
   const results: PullResult[] = [];
   for (let i = 0; i < 10; i++) {
     const needSSR = i === 9 && results.every((r) => rank(r.crusader.rarity) < rank('SSR'));
-    results.push(pullOnce(save, rng, needSSR ? 'SSR' : 'R', true));
+    results.push(pullOnce(save, rng, needSSR ? 'SSR' : 'R', true, starterRoles(save, i)));
   }
   return results;
 }

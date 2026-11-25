@@ -8,6 +8,7 @@ import { absorbBattle, currentNode, finishRun, makeBattle, winRoom } from './cru
 import { newSeed, seeded } from './rng';
 import { expBattle } from './exp';
 import { battleHosanna } from './hosanna';
+import { track } from './tasks';
 
 /** Where a finished fight leads, and its closing line. */
 export interface Settled {
@@ -35,6 +36,7 @@ export function settleBattle(battle: Battle, outcome: 'victory' | 'defeat'): Set
   if (challenge) {
     current.challenge = undefined;
     bondBattle(game.save, battle);
+    if (won) countWin(battle);
     const next = challenge.finish(outcome, battle);
     commit();
     return { ...next, won, exp, line: next.line ?? (won ? `The trial is passed by decree.${expLine}` : 'Your Sisters fall back, bloodied but alive.') };
@@ -51,6 +53,16 @@ export function settleBattle(battle: Battle, outcome: 'victory' | 'defeat'): Set
   current.run = undefined;
   commit();
   return { scene: 'Results', data: { result }, won, line };
+}
+
+/**
+ * A won fight outside the crypts (the Road, the Tower, Hunts and every other
+ * mode) counts as horrors slain, for Penance, the Novitiate, Deeds and Rank of
+ * Faith, just as a crypt room does (crypt rooms count in winRoom).
+ */
+function countWin(battle: Battle) {
+  track(game.save, 'fightWon');
+  if (battle.units.some((u) => u.side === 'enemy' && u.boss)) track(game.save, 'bossWon');
 }
 
 /**

@@ -56,7 +56,10 @@ describe('real-time field combat', () => {
       const r = rates(stage, level);
       console.log(`[field] stage ${stage} lv ${level}: turn-based ${(r.turn * 100).toFixed(0)}%, real-time ${(r.real * 100).toFixed(0)}%, ${r.secs.toFixed(0)}s, ${r.litanies.toFixed(1)} Litanies`);
       expect(r.secs).toBeLessThan(200);
-      expect(Math.abs(r.real - r.turn)).toBeLessThan(0.3);
+      // The field may run ahead of the old turn-based sim: only the field's Auto
+      // holds Litanies for a Blasphemy and answers it. It must never fall far behind.
+      expect(r.turn - r.real).toBeLessThan(0.3);
+      expect(r.real - r.turn).toBeLessThan(0.4);
     }
   }, 60_000);
 
@@ -361,5 +364,33 @@ describe('real-time field: answering a charged blow', () => {
     f.castLitany(secunda.uid);
     expect(boss.status.charging).toBe(false);
     expect(f.answerOf(irmgard)).toBeUndefined();
+  });
+});
+
+describe('Auto meets a Blasphemy', () => {
+  it('holds a Litany that can answer while the boss nears full Wrath, and only then', async () => {
+    const { OSSUARY, makeBattle, startRun } = await import('./crusade');
+    const { skillsFor, ZEAL_MAX } = await import('./combat');
+    const { wouldAnswer, AUTO_HOLD_WRATH } = await import('./field');
+    const save = newSave();
+    // AM-R-HIE's Litany can break or brace the Ossuary's Choir; the others' can't.
+    const party = ['AM-R-HIE', 'SW-R-WAR', 'IV-R-EXE', 'DL-R-HIE'];
+    for (const id of party) save.owned[id] = { level: 10, vow: 0 };
+    const run = startRun(save, party, OSSUARY, seeded(1));
+    const b = makeBattle(save, run, OSSUARY.boss, seeded(2));
+    const f = new FieldBattle(b, { w: 540, h: 450, rng: seeded(3) });
+    const boss = b.units.find((u) => u.boss)!;
+    const sisters = b.units.filter((u) => u.side === 'party');
+    const answerer = sisters.find((u) => u.ref === 'AM-R-HIE')!;
+    expect(wouldAnswer(skillsFor(answerer).find((s) => s.rite)!, boss)).toBe(true);
+    for (const u of sisters) u.zeal = ZEAL_MAX;
+    boss.wrath = AUTO_HOLD_WRATH - 20;
+    expect(f.holdsLitany(answerer)).toBe(false);
+    boss.wrath = AUTO_HOLD_WRATH + 10;
+    expect(f.holdsLitany(answerer)).toBe(true);
+    for (const u of sisters) if (u !== answerer) expect(f.holdsLitany(u)).toBe(false);
+    // Nobody holds while a Sister is near death.
+    sisters[1].hp = Math.floor(sisters[1].maxHp * 0.2);
+    expect(f.holdsLitany(answerer)).toBe(false);
   });
 });
