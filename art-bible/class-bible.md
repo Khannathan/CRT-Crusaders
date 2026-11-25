@@ -1,12 +1,12 @@
 # CRT Crusaders: Role and Class Theme Bible
 
-Use this file with the roster-500 Sister cards, order-bible.md and ASSETS_GUIDE.md. It tells you how each of the 15 classes stands, fights, moves and shows its effects, and how each Order flavours the classes it has.
+Use this file with the roster Sister cards, order-bible.md and ASSETS_GUIDE.md. It tells you how each of the 15 classes stands, fights, moves and shows its effects, and how each Order flavours the classes it has.
 
 ## Who decides what
 
 | Owner | Decides | File |
 | --- | --- | --- |
-| Sister | face, hair, skin, marks and her weapon | her roster-500 card (wins on anything personal) |
+| Sister | face, hair, skin, marks and her weapon | her roster card (wins on anything personal) |
 | Class | silhouette, weapon family, armour weight, build, still pose, animation beats, effect shapes | this file |
 | Order | cloth colours, metal finish, head motif, motif shape, hem, effect colours, splash place | order-bible.md |
 | Rarity | trim, halo, effect count (16 colours at every rank, PC-98 style) | order-bible.md rank table |

@@ -6,7 +6,7 @@ Every item follows the project instructions, ASSETS_GUIDE.md (size, background, 
 
 ## Why this order
 
-Only 5 of 500 Sisters have art (IV-LUR Insomnia, IV-LSSR1 Excubia, TC-UR1 Cruentia, DL-SSR-EXE Gurges, VT-SSR-VEI Obscura). For a new player every other Sister is a grey class silhouette: in the pull reveal, the party picker, every fight. Enemies, the first boss, backgrounds and most UI are covered. What hurts most is the Sisters plus a few gold "holy" pieces that show many times an hour and are off-vibe for the zealot retheme.
+Only 4 of 200 Sisters have art (IV-LUR Insomnia, IV-LSSR1 Excubia, TC-UR1 Cruentia, VT-SSR-VEI Obscura). For a new player every other Sister is a grey class silhouette: in the pull reveal, the party picker, every fight. Enemies, the first boss, backgrounds and most UI are covered. What hurts most is the Sisters plus a few gold "holy" pieces that show many times an hour and are off-vibe for the zealot retheme.
 
 ## The queue
 
@@ -17,11 +17,11 @@ Only 5 of 500 Sisters have art (IV-LUR Insomnia, IV-LSSR1 Excubia, TC-UR1 Cruent
 | 3 | **Title key art** | `src/assets/ui/title-keyart.png` | 256 x 384, full scene. The first image of every session (the title falls back to bg-hall until it lands). Keep the top fifth and the middle band dark for the logo and the commandment line. No figures' faces in those bands, no text |
 | 4 | **bg-altar remake** | `src/assets/ui/bg-altar.png` (replace) | 256 x 384. Today a radiant gold altar; make it a grim pyre-altar of the Orders: black stone, wax, chains, firelight, a god's terrible regard. The first screen after the title, and the banner fallback |
 | 5 | **bg-hall remake** | `src/assets/ui/bg-hall.png` (replace) | 256 x 384. Today a warm gold great hall; make it the Sanctum's war-hall: banners of the 10 Orders, braziers, trophies of purged heresy. Keep the middle band clear for the Sister who stands there |
-| 6 | **Propugna (IV-UR1), full set** | card `art-bible/roster-500/cards/IV/IV-UR1.md` | prop sheet, bust, battle sprite, splash. She leads the march and speaks the game's second story line |
+| 6 | **Propugna (IV-UR1), full set** | card `art-bible/roster/cards/IV/IV-UR1.md` | prop sheet, bust, battle sprite, splash. She leads the march and speaks the game's second story line |
 | 7 | **Knockout effects** | `art-inbox/review/fx-ko-burst.png`, `fx-ko-impact.png`, then `fx-ko-smoke.png`, `fx-ko-lines.png` | section below. Every enemy death in every fight. The game draws a code version today, so this is polish; the hookup is a code job (open a `for-claude` issue with the first PR) |
 | 8 | **Gear grade icons: the 5 Worn and 5 Consecrated** | `src/assets/ui/gear-<slot>-worn.png`, `gear-<slot>-consecrated.png` | ASSETS_GUIDE 4. The first crypt's results hand over gear right away. Sworn and Anathema rows follow |
 | 9 | **Crucifix + insignia: Crimson Inquisition and Drowned Litany** | `sigil-` and `insignia-red-pilgrimage.png`, `-drowned-litany.png` | ASSETS_GUIDE 3 and 3b. The next Orders with story Sisters. The other 7 Orders can follow in one sitting so all card badges match |
-| 10 | **Fortitudo (IV-SSR-ORA), full set** | card `art-bible/roster-500/cards/IV/IV-SSR-ORA.md` | the story's omen-reader. After her: Confessora (RP-UR1) and Abyssa (DL-UR1), once item 9 is done |
+| 10 | **Fortitudo (IV-SSR-ORA), full set** | card `art-bible/roster/cards/IV/IV-SSR-ORA.md` | the story's omen-reader. After her: Confessora (RP-UR1) and Abyssa (DL-UR1), once item 9 is done |
 
 ## Needs Aaron's OK first (not in the ASSETS_GUIDE table)
 

@@ -58,7 +58,7 @@ describe('Power', () => {
 
   it('recommended power: the starter party meets the Ossuary by level 5, and harder fights ask more', () => {
     const save = newSave();
-    const starter = ['SW-R-WAR', 'DL-R-HIE', 'IV-R-EXE', 'SW-SR-CON'];
+    const starter = ['TC-R-WAR', 'VT-R-HIE', 'IV-R-EXE', 'TC-SR-CON']; // same Power as the 500-Sister starter, at both levels
     for (const id of starter) save.owned[id] = { level: 5, vow: 0 };
     const ossuary = cryptRecommended(save, OSSUARY);
     expect(powerVerdict(partyPower(save, starter), ossuary)).toBe('ready');

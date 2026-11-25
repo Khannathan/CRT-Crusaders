@@ -1,5 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { CRUSADERS } from '../data/crusaders';
+// Kit mechanics are tested on their first owners, some retired from the 200 (their kits stay as donors).
+import { ROSTER } from '../data/roster';
 import { KITS } from '../data/kits';
 import { CLASS_SKILLS } from '../data/skills';
 import { ENEMIES } from '../data/enemies';
@@ -22,7 +24,7 @@ import { seeded } from './rng';
 describe('real-time words', () => {
   it('no kit, foe, relic, Hosanna, hunt or glossary line says turn, round or rank', () => {
     const lines: [string, string][] = [];
-    for (const c of CRUSADERS) {
+    for (const c of ROSTER) {
       const k = KITS[c.id];
       lines.push([`${c.name} passive`, c.passive?.desc ?? '']);
       for (const s of k?.skills ?? []) lines.push([`${c.name}: ${s.name}`, s.desc]);
@@ -42,7 +44,7 @@ describe('real-time words', () => {
   });
 
   it('the three Sisters from the proposal read as agreed', () => {
-    const skill = (name: string, s: string) => KITS[CRUSADERS.find((c) => c.name === name)!.id].skills.find((x) => x.name === s)!.desc;
+    const skill = (name: string, s: string) => KITS[ROSTER.find((c) => c.name === name)!.id].skills.find((x) => x.name === s)!.desc;
     expect(skill('Abnegata Ustoria', 'Reliquary Bash')).toBe('Strike a front-line foe, hurl it back and draw enemy attacks for 4s.');
     expect(skill('Absoluta Ambusta', 'Witchfire')).toMatch(/^Set any enemy Burning for 6s\./);
     expect(skill('Insomnia', 'The Watch-Keys')).toMatch(/^Lock a foe out: it is Accused for 4s and is Staggered \(breaks a charge\)\..*Cooldown 6s\.$/);
@@ -110,7 +112,7 @@ describe('real-time clock', () => {
 });
 
 describe('real-time field positions', () => {
-  const STARTER = ['SW-R-WAR', 'DL-R-HIE', 'IV-R-EXE', 'SW-SR-CON'];
+  const STARTER = ['TC-R-WAR', 'DL-R-SEN', 'IV-R-EXE', 'TC-SR-CON'];
   const setup = () => {
     const save = newSave();
     for (const id of STARTER) save.owned[id] = { level: 10, vow: 0 };

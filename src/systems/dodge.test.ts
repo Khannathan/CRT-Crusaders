@@ -6,7 +6,7 @@ import { Battle, makeEnemy } from './combat';
 import { FieldBattle } from './field';
 import { seeded } from './rng';
 
-const STARTER = ['SW-R-WAR', 'DL-R-HIE', 'IV-R-EXE', 'SW-SR-CON'];
+const STARTER = ['SW-R-VEI', 'DL-R-SEN', 'IV-R-EXE', 'SW-SR-ABB'];
 
 function setup(dodge: boolean) {
   const save = newSave();

@@ -37,7 +37,8 @@ import { seeded } from './rng';
  * - the Belfry wants a levelled party,
  * - the first Rite of the boss fight arrives around rounds 4-6.
  */
-const STARTER = ['SW-R-WAR', 'DL-R-HIE', 'IV-R-EXE', 'SW-SR-CON'];
+/** All R but one SR Healer. In the 200 (2026-11-25) it lands where the old one did: Ossuary L1 57% (was 43%), Belfry L6 88% (88%). */
+const STARTER = ['TC-R-WAR', 'DL-R-SEN', 'IV-R-EXE', 'TC-SR-CON'];
 export const N = 120;
 
 /** A plain path policy: rest when hurt, take elites only when healthy, events by their first option. */

@@ -1,7 +1,7 @@
 """Re-syncs each Sister's relic text in src/data/roster.ts from her sister-bible card.
 
 Usage (from the repo root):
-    python3 -I tools/roster/apply_relics.py /mnt/project-files/sister-bible/roster-500
+    python3 -I tools/roster/apply_relics.py /mnt/project-files/sister-bible/roster
 
 Reads "7 Relic (...): <text>" (locked references) or "Relic: <text>. Expression:"
 from each card, drops a leading article, and rewrites only relics that changed.

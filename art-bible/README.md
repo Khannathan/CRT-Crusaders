@@ -9,14 +9,14 @@ The art rules for CRT Crusaders, kept by Claude and read by ChatGPT. The copy on
 | Any asset | the project instructions, then its row in `ASSETS_GUIDE.md` (name, size, background, pixel pass, delivery) |
 | "What should I make next?" | `ART_QUEUE.md` |
 | Order crucifix or insignia | `ASSETS_GUIDE.md` sections 3 and 3b, that Order's section of `order-bible.md` |
-| One Sister | her card `roster-500/cards/<Order code>/<id>.md`, her Order's section of `order-bible.md`, her class's section of `class-bible.md` |
+| One Sister | her card `roster/cards/<Order code>/<id>.md`, her Order's section of `order-bible.md`, her class's section of `class-bible.md` |
 | Her battle sprite | also `sprite-plan/sprite-plan.md` and `sprite-plan/sprite-template-1024x1536.png` |
 | Gear icons | `ASSETS_GUIDE.md` section 4 |
 | UI redesign concepts (screens, kit sheets, style tiles) | `UI_BIBLE.md` and the screenshots in `ui-screens/` (start with `00-overview-1.png` and `-2.png`) |
 | Delivering anything | `ASSETS_GUIDE.md` section 5 (the GitHub art lane) |
 | What the game is, where art shows | `GAME_OVERVIEW.md` |
 
-**Finding a Sister:** `roster-500/names-and-epithets.csv` maps every name to her id. Ids are `<Order>-<rarity>-<class>` (for example `IV-SSR-CEN`, the Iron Vigil SSR Censer) or a top slot `<Order>-LUR`, `-LSSR1`, `-LSSR2`, `-UR1`, `-UR2`. Order codes: IV Iron Vigil, AM Ashen Mercy, VT Veiled Tribunal, SW Sepulcher Watch, CC Choir of the Pyre, TC Verdant Martyrdom, DL Drowned Litany, GC Confessors of Glass, RP Crimson Inquisition, HB Hallowed Belfry. `roster-500/README.md` explains the roster and has Aaron's progress tracker.
+**Finding a Sister:** `roster/names-and-epithets.csv` maps every name to her id. Ids are `<Order>-<rarity>-<class>` (for example `IV-SSR-CEN`, the Iron Vigil SSR Censer) or a top slot `<Order>-LUR`, `-LSSR1`, `-LSSR2`, `-UR1`, `-UR2`. Order codes: IV Iron Vigil, AM Ashen Mercy, VT Veiled Tribunal, SW Sepulcher Watch, CC Choir of the Pyre, TC Verdant Martyrdom, DL Drowned Litany, GC Confessors of Glass, RP Crimson Inquisition, HB Hallowed Belfry. `roster/README.md` explains the roster and has Aaron's progress tracker.
 
 **Attaching images:** use approved art straight from the repo where you can (paths below). If you can't load a repo image into the image tool, say so and ask Aaron to attach it; the sprite template is also uploaded to the ChatGPT project.
 
@@ -51,7 +51,7 @@ Each card file starts with her Order's one-line cloth and head note, then her ca
 | `ui-screens/` | a screenshot of every game screen at 540 x 960 (`-tall` = 540 x 1280), CRT filter off, plus two overview sheets |
 | `order-bible.md`, `class-bible.md` | the 10 Orders and 15 classes |
 | `sprite-plan/` | battle sprite plan and registration template |
-| `roster-500/` | roster README, names CSV, and `cards/<Order code>/<id>.md` (500 cards) |
+| `roster/` | roster README, names CSV, and `cards/<Order code>/<id>.md` (200 cards) |
 
 ## Elsewhere in the repo (read live)
 

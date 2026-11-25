@@ -1,7 +1,7 @@
 """Builds src/data/roster.ts from the 500 Sister cards in the project's sister bible.
 
 Usage (from the repo root):
-    python3 -I tools/roster/build_roster.py /mnt/project-files/sister-bible/roster-500 > src/data/roster.ts
+    python3 -I tools/roster/build_roster.py /mnt/project-files/sister-bible/roster > src/data/roster.ts
 
 Each card gives her slot id (IV-LUR, IV-SSR-ARB, ...), name, Order, class,
 title, rarity, age, relic and, for some, a hook. The 89 Sisters who return
@@ -20,7 +20,7 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-cards_dir = Path(sys.argv[1] if len(sys.argv) > 1 else '/mnt/project-files/sister-bible/roster-500')
+cards_dir = Path(sys.argv[1] if len(sys.argv) > 1 else '/mnt/project-files/sister-bible/roster')
 
 CLASS_ID = {
     'Hierophant': 'hierophant', 'Sentinel': 'sentinel', 'Martyr': 'martyr',

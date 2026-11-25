@@ -110,19 +110,19 @@ describe('Order banners', () => {
     expect(hits / urs).toBeLessThan(0.73);
   });
 
-  it('every Order has two Saintesses to target, and a Commander, Officer and Conscript of each class', () => {
+  it('every Order has two Saintesses to target, and a Commander, Officer and Conscript of each role', () => {
     for (const o of ORDER_LIST) {
       const sisters = CRUSADERS.filter((c) => c.order === o.name && !c.limited);
       const n = (r: string) => sisters.filter((c) => c.rarity === r).length;
       expect(n('UR')).toBe(2);
-      expect(n('SSR')).toBe(15);
-      expect(n('SR')).toBe(15);
-      expect(n('R')).toBe(15);
+      expect(n('SSR')).toBe(5);
+      expect(n('SR')).toBe(5);
+      expect(n('R')).toBe(5);
       const limited = CRUSADERS.filter((c) => c.order === o.name && c.limited);
       expect(limited.map((c) => c.rarity).sort()).toEqual(['SSR', 'SSR', 'UR']);
     }
-    expect(CRUSADERS).toHaveLength(500);
-    expect(CRUSADERS.filter((c) => !c.limited)).toHaveLength(470);
+    expect(CRUSADERS).toHaveLength(200);
+    expect(CRUSADERS.filter((c) => !c.limited)).toHaveLength(170);
     expect(new Set(CRUSADERS.map((c) => c.id)).size).toBe(CRUSADERS.length);
   });
 

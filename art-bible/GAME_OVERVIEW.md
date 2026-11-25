@@ -12,7 +12,7 @@ CRT Crusaders is a dark-fantasy gacha RPG for phones, played in **portrait**. Yo
 
 ## 2. The Sisters
 
-- **500 Sisters** in **10 Orders**: Iron Vigil, Ashen Mercy, Veiled Tribunal, Sepulcher Watch, Choir of the Pyre, Verdant Martyrdom, Drowned Litany, Confessors of Glass, Crimson Inquisition and Hallowed Belfry. Each Order has its own colours, headwear, materials, wing material and creed (see order-bible.md).
+- **200 Sisters** in **10 Orders**: Iron Vigil, Ashen Mercy, Veiled Tribunal, Sepulcher Watch, Choir of the Pyre, Verdant Martyrdom, Drowned Litany, Confessors of Glass, Crimson Inquisition and Hallowed Belfry. Each Order has its own colours, headwear, materials, wing material and creed (see order-bible.md).
 - **15 classes in 5 roles:**
   - **Tank:** Hierophant, Sentinel, Martyr
   - **Healer:** Confessor, Hospitaller, Abbess
