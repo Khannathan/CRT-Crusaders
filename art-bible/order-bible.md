@@ -262,6 +262,18 @@ In a pull illustration, use the opening between two gate bars to show the cost o
 
 ## Veiled Tribunal
 
+### The Widow Court
+
+[Approved Ariadne Silens mourning habit, shown at splash size](references/veiled-tribunal-widow-court.png)
+
+The morning after Ariadne condemns a man, she brings his widow bread. At dusk she brings firewood. The widow asks how long she intends to keep coming. “For as long as he would have come home.” Ariadne means it. Given the same case tomorrow, she would pass the same sentence.
+
+A judge earns the right to pronounce sentence by swearing to provide for the household left behind. The court has never acquitted a soul. Each sentence makes a Sister kin to another family. The family’s feelings about the vow belong in the scene. A child might take the bread while her mother leaves the judge standing in the rain.
+
+The Order wears a long dusk-violet mourning veil fastened with paired ivory rings at the temple and a broad pale mourning band on the upper arm. Leave the lower face expressive. Each family can give the judge a small keepsake to fasten to the band. Pick one with a history and a legible outline. Ariadne wears a plain ring above her Sealsworn Scourge. A field Sister can fold the train into the mantle to clear her equipment. In a bust, the temple clasp and fall of the veil carry the identity at roster size.
+
+Mortal Sisters keep their promises in person. At divine rank the vow can span households at a distance. Velamina alone can open her sarcophagus shield onto the hearths of every household in her care. During Judgment of the Wall, supper is cooking beyond the shield while attacks strike its outer face. Follow the locked rank ladder for halos, wings and Patron scale.
+
 **Creed:** "Guilty by decree. Weighed after."
 
 **What her god demands:** A verdict every day. The accused are guilty by decree, the Tribunal has never acquitted anyone, and a Sister who hesitates to sentence is the next one weighed.
@@ -273,10 +285,10 @@ In a pull illustration, use the opening between two gate bars to show the cost o
 **Insignia (on both pauldrons of every Sister):** the Verdict Seal: an angular black wax-seal badge edged in dusk violet, a parchment-white veiled balance scale on it.
 
 **Who they are:** Faceless judges who travel with a scale, a blade and no appeal.
-**Mood:** silence, judgement, candlelit courtrooms, the face you cannot read.
+**Mood:** silence at sentencing, then the close domestic detail of a bereaved household receiving its judge.
 
 - **Palette:** dusk violet lead, pale parchment trim, black steel, crimson silk only as a lining or seal.
-- **Head:** sheer black veil over the eyes (face visible below), high angular collar. SR ornament: an angular wax judicial seal on the veil band.
+- **Head:** a sheer black eye veil beneath dusk-violet mourning cloth, pinned with paired ivory rings at the temple. Keep the lower face visible. An SR may set a judicial seal below the clasp.
 - **Habit:** sharp-cut violet vestments over black leather and steel; the scapular carries the balance scale. Hems cut into hard angular points.
 - **Materials:** black leather, black steel, violet wool, crimson silk lining, parchment writs, red wax seals.
 - **Symbols:** balance scales, angular wax seal, a sealed writ, a hidden blade.
