@@ -4,7 +4,7 @@
 
 How to draw a Sister's battle sprite so the game can turn it into pixels and animate it. Updated 2026-11-24 for the game's pixel rig (PR #168): **ChatGPT draws one big battle sprite, and the game does everything else.**
 
-Every Sister card has a finished **SPRITE PROMPT**. Send it verbatim with her identity lock pasted in, and attach the approved bust (likeness), the prop sheet (object construction and scale), her Order insignia and the template (registration).
+Every Sister card has a finished **SPRITE PROMPT**. Apply the current rendering direction to it, insert her approved identity record, and attach the approved bust (likeness), the prop sheet (object construction and scale), her Order insignia and the template (registration).
 
 Template (attach with every sprite request): `sprite-template-1024x1536.png`. It shows the lines her body must hit and the three zones the rig moves. It is a guide only: never draw its lines, colours or words.
 
@@ -13,7 +13,7 @@ Template (attach with every sprite request): `sprite-template-1024x1536.png`. It
 1. **Intake** (`tools/intake_sprite.py`):
    - removes the #FF00FF background and crops to her outline;
    - shrinks her so the whole outline fits a 116 x 172 box, soles on row 184;
-   - centres the outline on column 64 and cuts her colours down (16 for the PC-98 look).
+   - centres the outline on column 64 and cuts her colours down (16 colours).
 
    So **everything counts**: a weapon tip, wing or halo sticking out past the box makes the game shrink her whole body to fit it. If she reaches further left than right, her body slides off the centre line.
 2. **Pixel rig** (`src/ui/pixelRig.ts`) bends that one 128 x 192 still into idle, run, strike, cast, Litany and hurt. It expects her body on fixed rows and in fixed zones:
@@ -92,9 +92,9 @@ Draw the glass **opaque**: solid colour with inner light, never see-through to t
 
 ## 4. How to draw it
 
-Draw her in the PC-98 style, just large: the look of a late-1980s or early-1990s Japanese PC-98 computer game, with an anime-styled face and clean dark linework.
+Draw her in the [approved EGA dungeon-crawler style](../ART_DIRECTION.md). Use the middle study’s adult retro anime proportions and reduce her features to a few crisp clusters. Keep the jaw, brow angle or faceless glass head recognizable after intake.
 
-- **Bold, readable shapes**, a dark outline round the figure and every major part, her 16 colours, strong light-dark contrast, and dither in bold even patterns (they shrink cleanly). Never painterly, HD, 3D or soft-shaded, and no scanlines or CRT effects.
+- **Bold, readable shapes**, a dark outline round the figure and every major part, her 16 colours, strong light-dark contrast, and selective dither limited to broad surfaces. Never painterly, HD, 3D or soft-shaded, and no scanlines or CRT effects.
 - **Size for the shrink:** at 1/8 size, anything thinner than about 16 px vanishes. Draw outlines, straps, chains and scars at 16-24 px. Make her face big and simple: eyes as bold dark marks, a clear brow and jaw. Her head is about 24 game pixels tall.
 - Her Order colours cover about 60% of the cloth. Effects use only her accent and glow colours.
 - **No fine noise:** no speckled texture, film grain, pixel-fine dither, tiny filigree, thin scratches or soft glow haze.

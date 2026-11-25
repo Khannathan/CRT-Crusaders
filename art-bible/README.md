@@ -4,6 +4,10 @@ The art and design bibles for CRT Crusaders. Since 2026-11-25 **ChatGPT is the a
 
 The copy on `main` is always the current one: read it fresh at the start of every chat, and trust it over uploads, earlier chats or memory.
 
+## Approved visual direction
+
+Start with [EGA Dungeon Crawler with retro anime character art](ART_DIRECTION.md) and its Insomnia comparison before using the design bibles or card prompts.
+
 ## Locked (the game depends on these; ask Claude in a for-claude issue to change one)
 
 | What | Where |

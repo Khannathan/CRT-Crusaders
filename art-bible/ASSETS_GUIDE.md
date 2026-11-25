@@ -6,7 +6,7 @@ Every asset type the game uses: its native size, background, where it shows and 
 
 ## 1. Rules for every asset
 
-- **Style (the most important rule):** PC-98: every asset looks like it came from a late-1980s or early-1990s Japanese PC-98 computer game. Crisp hand-placed square pixels, anime-styled dark-fantasy characters with clean dark linework, heavy patterned dither for shading, skies and glows, high contrast. **At most 16 colours** per image, picked from a 4,096-colour palette (Sisters use exactly 16). Never painterly, HD, photoreal, 3D or modern cel-shaded anime; no anti-aliasing, blur, gradients, airbrush or bloom; no scanlines or CRT effects (the game adds them).
+- **Rendering.** Use the [approved EGA dungeon-crawler direction](ART_DIRECTION.md). Give faces clean retro anime planes, equipment a crisp silhouette, and backgrounds broad shadow shapes. Save a palette slot for the focal accent. Use the per-asset colour budgets below.
 - **Vibe:** grimdark fanatic crusade with no modern or future technology: no guns, motors, electronics or sci-fi gear. Medieval craft is fine (forged steel, crossbows, siege engines, bells, censers, stained glass). Steel, fire, wax, bone, blood, smoke. Fire is the main light. Divine things look terrible first, beautiful second.
 - **Order colours:** anything tied to an Order uses that Order's lead and trim colours and its approved insignia (section 3b, order-bible.md).
 - **Order first:** each Order's crucifix icon and insignia are made and approved before any of its Sisters.
@@ -15,14 +15,14 @@ Every asset type the game uses: its native size, background, where it shows and 
 - **Delivery (PIXEL PASS), the same every time:** generate big (1024 px on the long side), then in Python:
   1. shrink to the native size (box filter for paintings, nearest-neighbour for clean pixel art);
   2. snap every colour to the 4,096 palette (each RGB channel rounded to a multiple of 17), using the Order swatches in order-bible.md note 16 for lead and trim;
-  3. cut to the colour limit with a fixed 4x4 Bayer ordered dither at native pixel scale (never error diffusion);
+  3. reduce to the colour budget with the focal accent reserved. Apply ordered dither locally where a material needs a transition. Inspect eyes, fingers and emblem edges at native size;
   4. keep the background flat (one colour) or transparent as the table says;
   5. count the colours actually present, including the background, and check every channel is divisible by 17;
   6. export the native PNG plus an exact nearest-neighbour upscale (4x, or 8x for anything 64 px or smaller) and confirm it is exact.
   Report the real numbers. Name the file as the table says.
 - **Checks per deliverable:** bust: opaque 128x128, flat dark, exactly 16 colours including the background, 4x copy 512x512, and look at the face at 64 px too. Splash: opaque 256x384, exactly 16 colours, 4x copy 1024x1536, head, face and hands clear of the top and bottom crop. Battle sprite: no pixel pass; run the sprite-plan section 7 preview. Weapon prop sheet: reference only, any size, plain flat light grey, no pixel pass.
 - **Exception (UI concepts):** UI redesign concepts are pictures for Aaron to choose from, not game assets: no pixel pass, sizes and names from `UI_BIBLE.md` section 9, delivered to `art-inbox/ui-concepts/`.
-- **Exception:** the Sister battle sprite is drawn large in the same PC-98 style with bold readable shapes and gets no pixel pass, because the game shrinks it (see sprite-plan.md).
+- **Exception:** the Sister battle sprite is drawn large in the same EGA dungeon-crawler style with bold readable shapes and gets no pixel pass, because the game shrinks it (see sprite-plan.md).
 
 ## 2. Asset table
 
@@ -34,7 +34,7 @@ Each Order's crucifix is its holy symbol, shaped by what its god demands (order-
 
 **Specs for all ten:** 64 x 64 native, transparent background, the crucifix alone, centred, filling about 56 px with a 3-4 px margin, dark 1-2 px outline, at most 12 colours from the Order's palette plus black, a small dithered ember or glow at most, readable at 24 px. Generate at 1024 x 1024, then do the pixel pass and export ui/sigil-<order id>.png plus an 8x upscale. The ten should look like one set: same outline weight, same scale, same light from above.
 
-**Prompt pattern:** PC-98 style pixel art icon: crisp square pixels, at most 12 colours from a 4,096-colour palette, patterned dithering, dark outline, transparent background. A single sworn emblem, centred, filling the frame: <shape>. Colours: <colours>. Grim, consecrated and terrible, lit from above by firelight. No text, watermark, frame, background, modern objects, anti-aliasing or blur.
+**Prompt pattern:** EGA dungeon-crawler style pixel art icon: crisp square pixels, at most 12 colours from a 4,096-colour palette, selective patterned dithering, dark outline, transparent background. A single sworn emblem, centred, filling the frame: <shape>. Colours: <colours>. Grim, consecrated and terrible, lit from above by firelight. No text, watermark, frame, background, modern objects, anti-aliasing or blur.
 
 | Order | File | Crucifix | Shape (paste into the prompt) | Colours |
 | --- | --- | --- | --- | --- |
@@ -59,7 +59,7 @@ Each Order has one **insignia**: a flat heraldic badge that every Sister of that
 
 **Specs for all ten:** 64 x 64 native, transparent background, the badge alone, flat and face-on, centred with a 3-4 px margin, dark 1-2 px outline, at most 8 colours from the Order's palette, no glow, readable at 16 px (it is about 5 game pixels wide on a battle sprite). Generate at 1024 x 1024, then do the pixel pass and export ui/insignia-<order id>.png plus an 8x upscale. All ten share one outline weight and scale.
 
-**Prompt pattern:** PC-98 style pixel art badge: crisp square pixels, at most 8 colours from a 4,096-colour palette, flat heraldic shapes with little dither, dark outline, transparent background. A single flat armour insignia, face-on, centred, filling the frame: <badge>. Simple and bold enough to read when tiny. No text, watermark, frame, background, modern objects, anti-aliasing or blur.
+**Prompt pattern:** EGA dungeon-crawler style pixel art badge: crisp square pixels, at most 8 colours from a 4,096-colour palette, flat heraldic shapes with little dither, dark outline, transparent background. A single flat armour insignia, face-on, centred, filling the frame: <badge>. Simple and bold enough to read when tiny. No text, watermark, frame, background, modern objects, anti-aliasing or blur.
 
 | Order | File | Insignia | Badge (paste into the prompt) |
 | --- | --- | --- | --- |
@@ -82,7 +82,7 @@ Gear now has grades instead of rarities. Each of the 5 slots needs one icon per 
 
 **Specs for all of them:** 56 x 56 native, transparent background, one object, centred, 2 px margin, dark outline, at most 16 colours from the 4,096 palette, readable at 40 px. Generate at 1024 x 1024, then do the pixel pass and export ui/<file>.png plus an 8x upscale. Within a slot, the four grades should read as the same object getting grander: same angle, same outline weight, light from above.
 
-**Prompt pattern:** PC-98 style pixel art item icon: crisp square pixels, at most 16 colours from a 4,096-colour palette, patterned dithering, dark outline, transparent background. A single piece of crusader war-gear, centred, filling the frame: <object>. Grade look: <grade look>. Grim, fanatic and battle-worn, lit from above by firelight. No text, watermark, frame, background, hands or figure, modern objects, anti-aliasing or blur.
+**Prompt pattern:** EGA dungeon-crawler style pixel art item icon: crisp square pixels, at most 16 colours from a 4,096-colour palette, selective patterned dithering, dark outline, transparent background. A single piece of crusader war-gear, centred, filling the frame: <object>. Grade look: <grade look>. Grim, fanatic and battle-worn, lit from above by firelight. No text, watermark, frame, background, hands or figure, modern objects, anti-aliasing or blur.
 
 **Slots (the <object>):**
 - blade: a one-handed crusader weapon (sword, mace or flail head), shown diagonally, hilt bottom-left.

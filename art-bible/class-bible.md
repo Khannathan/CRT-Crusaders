@@ -11,7 +11,7 @@ Use this file with the roster Sister cards, order-bible.md and ASSETS_GUIDE.md. 
 | Sister | face, hair, skin, marks and her weapon | her roster card (wins on anything personal) |
 | Class | silhouette, weapon family, armour weight, build, still pose, animation beats, effect shapes | this file |
 | Order | cloth colours, metal finish, head motif, motif shape, hem, effect colours, splash place | order-bible.md |
-| Rarity | trim, halo, effect count (16 colours at every rank, PC-98 style) | order-bible.md rank table |
+| Rarity | mortal or divine silhouette, wings, halo and scale of the miracle | order-bible.md rank table |
 
 So: the **class** says *what shape* a weapon, shield or effect is; the **Order** says *what it is made of and what colour it glows*. If her card names a specific weapon, use it, held the way her class holds weapons.
 
@@ -88,7 +88,7 @@ On the battle sprite, divine effects stay compact (halo, glowing eyes, wing-ligh
 | Arbalist | arbalest | crossbow 2 heads long | crossbow at her right hip pointed forward and down, quiver at her other hip |
 | Exorcist | lantern | pole 4 heads tall, lantern 1 head | lantern pole upright in her right hand, light at head height |
 
-10. **PC-98 style (Aaron, 2026-11-24): the look that wins over everything.** All game art should look like it came from a late-1980s or early-1990s Japanese PC-98 computer game, never painterly, HD, 3D or modern cel-shaded: crisp hand-placed pixels, anime-styled dark-fantasy heroines with sharp expressive eyes and clean dark linework, and heavy patterned dithering for shading, skin, skies and glows. Every Sister uses exactly 16 colours at every rank, picked from the 4,096-colour PC-98 palette around her Order colours and skin; rank shows through ornament, dithered glows, wings and scale, not extra colours. No scanlines or CRT effects in the art: the game adds them.
+10. **Approved rendering.** Follow the [middle Insomnia study](ART_DIRECTION.md) for character drawing and the right study for divine pull staging. Preserve Order colours, strong shape separation and each Sister’s individual likeness.
 
 11. **Fanatic zealots of rival Orders (Aaron, 2026-11-24).** The Orders are not good. Each Order's god demands something terrible (see "What her god demands" under each Order), and her Sisters obey without question. Orders feud with each other, purge heretics and burn villages "to save them"; loyalty to the Order comes before mercy, kin and even the faith itself. In the art this means less radiant, more burning: wild-eyed devotion, self-inflicted vow scars, ash smeared on face and skin (soot on the glass for Confessors of Glass), fire as the main light source, and smoke, pyres and burned figures behind her in a splash. Deities are terrifying first and beautiful second, though her face stays human and beautiful. Prefer sworn, consecrated, by decree, purge and absolve by fire to holy, righteous and blessed.
 
@@ -139,7 +139,7 @@ On the battle sprite, divine effects stay compact (halo, glowing eyes, wing-ligh
 
 15. **Odd eyes stay rare (Aaron, 2026-11-24).** Heterochromia or one pale eye is a signature for a handful of Sisters only: Absoluta Ambusta (AM-SR-EXO, one pale ice-blue eye), Ignifera (CC-UR1), Catena Murata (IV-SSR-ADJ) and Faustina Stigmata (TC-SR-EXE). Never give it to anyone else.
 
-16. **PC-98 colour swatches (Aaron, 2026-11-24).** Every image picks its 16 colours from the 4,096-colour PC-98 palette: each RGB channel is a multiple of 17 (00, 11, 22 ... EE, FF). These are each Order's approved swatches, snapped from the Order colours above; use them exactly for lead and trim. A Sister's 16 colours are budgeted roughly as: 5 for her Order (lead, trim and metal, light and dark), 4 for skin (or glass and inner light for a Confessor of Glass), 3 for her personal accents (hair, eyes, marks) and 4 for the scene or background, including black.
+16. **Order colour swatches.** Every image picks its 16 colours from the 4,096-colour art palette: each RGB channel is a multiple of 17 (00, 11, 22 ... EE, FF). These are each Order's approved swatches, snapped from the Order colours above; use them exactly for lead and trim. A Sister's 16 colours are budgeted roughly as: 5 for her Order (lead, trim and metal, light and dark), 4 for skin (or glass and inner light for a Confessor of Glass), 3 for her personal accents (hair, eyes, marks) and 4 for the scene or background, including black.
 
 | Order | Swatches (snapped to the 4,096 palette) |
 | --- | --- |
