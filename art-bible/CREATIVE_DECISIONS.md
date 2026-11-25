@@ -27,7 +27,7 @@ This is Aaron’s record of decisions for the ground-up redesign. Update it when
 | Crusade influences | Draw on the religious fanaticism of *Warhammer 40,000*. Create original names, factions, and iconography. Keep the world medieval and exclude modern and futuristic technology. |
 | Roster | Seven Orders. The revised roster size and per-Order counts are open. Every Sister is an adult woman aged 21–35. |
 | Character appeal | Reserve fanservice for Sisters. Aim high while keeping it non-explicit. The Order’s faith and identity take visual priority. |
-| Art direction | Retro Gacha, EGA Dungeon Crawler. Explore alternatives to the current anime rendering before selecting the character illustration style. |
+| Art direction | Midnight Vigil is the selected Sister illustration style within Retro Gacha, EGA Dungeon Crawler. It pairs expressive adult anime faces and bold pixel shapes with gothic medieval settings, deep shadows, and light motivated by the scene. Use the revised *Moonlit Duel, Firelit Reliquary* diptych as the visual reference. The duelist pinches the seam of her glove. The templar supports the bronze reliquary from beneath. Carry that attention to gesture, weight, and light into each Order’s own designs. |
 | Peoples | Humans, Elves, Tieflings, and Constructs form the starting list. Explore three to five additional peoples during the race phase, with both gacha appeal and a place in the grimdark crusade. |
 
 ## Roles and classes in every Order
@@ -49,7 +49,7 @@ The columns follow Aaron’s order within each role. **Steady** means the class 
 | Phase | Deliverable | Status |
 | --- | --- | --- |
 | 1 | Reimagine and select seven Orders | All seven concepts chosen |
-| 2 | Create images for each Order | Initial concepts complete. Character illustration styles under review. |
+| 2 | Create images for each Order | Initial concepts complete. Midnight Vigil selected. The refined Scarlet Succession and Red Office diptych is the visual reference. |
 | 3 | Develop the races | Upcoming |
 | 4 | Create images for each race | Upcoming |
 | 5 | Build the world and create its images | Upcoming |
@@ -66,3 +66,4 @@ The columns follow Aaron’s order within each role. **Steady** means the class 
 | 2026-11-25 | Confirmed all fifteen classes appear in every Order. Apply this scope to new concepts and art-stage redesigns. Orders may be wholly zealous or cruel without a redeeming motive. |
 | 2026-11-25 | Reduced the roster to six Orders. The siege warlords and angelic Sisters compete for slot four. Commissioned one visual concept for each of the seven designs to inform the choice. |
 | 2026-11-25 | Chose all seven Orders and approved The Vesperglass Testament as the glass Order’s name. Began a character illustration style comparison. |
+| 2026-11-25 | Selected Midnight Vigil from four Votive Anime directions and requested a less AI-generated finish. |
