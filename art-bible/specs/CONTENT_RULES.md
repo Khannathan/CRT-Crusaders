@@ -20,7 +20,7 @@ Rank is rarity, and every step up must be a **big visual leap**. The concept bel
 | UR | Deity | a goddess of her Order | divine in full: impossible materials, full halo or crown, many wings; she floats in her splash |
 | Limited UR | Patron Deity | the highest god of her Order | everything a Deity has, bigger, plus a mark no other Sister of her Order has |
 
-Divine features grow with rank (the "Wrathful Host" idea: the closer to her god, the more she looks like a terrible angel), while her face stays human. Full godhood is staged in the splash; on the battle sprite, wings and halos stay folded and small (specs/SPRITE_SPEC.md).
+Divine features grow with rank (the "Wrathful Host" idea: the closer to her god, the more she looks like a terrible angel), while her face stays human. **Exception:** the Confessors of Glass are faceless at every rank: their heads are glass, stained glass or mirror, and their mortal tiers may show chips, cracks and repairs. Everything else here still applies to them (adult age, rank steps, sprite registration, an opaque sprite silhouette). Full godhood is staged in the splash; on the battle sprite, wings and halos stay folded and small (specs/SPRITE_SPEC.md).
 
 ## 3. Where the game is today (context only, not a rule)
 
