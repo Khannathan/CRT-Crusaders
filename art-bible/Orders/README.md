@@ -8,7 +8,7 @@ This directory holds the approved material for the seven Orders of CRT Crusaders
 - [The Marching Throne](sovereign-breach/)
 - [The Wardens of the Inward Gate](wardens-of-the-inward-gate/)
 - [The Red Office](red-office/)
-- [The Dreadful Salutation](dreadful-salutation/)
+- [The Host of Fearful Grace](dreadful-salutation/)
 
 Each Order holds a homeland and may operate in other territories. Establish its homeland in unpopulated environment art before drawing on it for Sister designs. Territory studies enter the reference collection when Aaron approves them.
 

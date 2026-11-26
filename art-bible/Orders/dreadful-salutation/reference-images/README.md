@@ -1,4 +1,4 @@
-# The Dreadful Salutation reference images
+# The Host of Fearful Grace reference images
 
 Both studies are approved homeland references.
 
