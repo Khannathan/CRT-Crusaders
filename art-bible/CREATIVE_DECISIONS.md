@@ -4,17 +4,17 @@ This is Aaron’s record of decisions for the ground-up redesign. Update it when
 
 ## Order roster
 
-**All seven Order concepts are locked.** The Sovereign Breach and The Dreadful Salutation both join the roster. Rites, lore, and visual details can develop during the art phase.
+**All seven Order concepts are locked.** The Marching Throne and The Host of Fearful Grace both join the roster. Rites, lore, and visual details can develop during the art phase.
 
 | Slot | Order | Scope of approval |
 | --- | --- | --- |
 | 1 | The Scarlet Succession | Aaron selected the Order built around sacred duels for the right to rule. The victor inherits the office and must answer its next challenger. |
 | 2 | The Vesperglass Testament | Aaron selected the Order. All its Sisters are [Vitrali](Races/vitrali/), exclusive to this Order. The Testament guards the barriers and keeps the peace between planes from its mirror travel hub. Aaron approved the rename from The Confessors of Glass. |
-| 3 | The See of the Black Noon | An eclipse Order whose Sisters receive divine judgment during totality. Its rites and visual execution will be refined at the art stage. |
-| 4 | The Sovereign Breach (rename pending) | Crusader warlords conquer cities by siege and rule the lands they take in their patron’s name. |
-| 5 | The Wardens of the Inward Gate (rename pending) | Elite custodians build and garrison monumental medieval fortresses around gates to Oblivion. The inner defenses contain its Heralds and forces. The outer defenses repel cultists and would-be collaborators. Heavy arms and armor define the appearance of every Sister across roles and carry no inherent stat effect. |
+| 3 | Synod of the Veiled Sun | An eclipse Order whose Sisters receive divine judgment during totality. Its rites and visual execution will be refined at the art stage. |
+| 4 | The Marching Throne | Crusader warlords conquer cities by siege and rule the lands they take in their patron’s name. |
+| 5 | Wardens of the Silent Evergaol | Elite custodians build and garrison monumental medieval fortresses around gates to Oblivion. The inner defenses contain its Heralds and forces. The outer defenses repel cultists and would-be collaborators. Heavy arms and armor define the appearance of every Sister across roles and carry no inherent stat effect. |
 | 6 | The Red Office | Demon-hunting templars in tabards and open-faced great helms consecrate their crusades with fire and blood. They give demons no quarter and refuse to hear them speak. Rework the knight-to-saint-to-deity ascent. Divinity should be exceptionally difficult to attain. The means remain open. |
-| 7 | The Dreadful Salutation | Terrifying angelic visitations embodied as adult female Sisters. Drop Cherubs from the concept. Develop more original feminine angel forms during the art phase. |
+| 7 | The Host of Fearful Grace | Terrifying angelic visitations embodied as adult female Sisters. Drop Cherubs from the concept. Develop more original feminine angel forms during the art phase. |
 
 ## Creative direction
 
@@ -34,9 +34,9 @@ This is Aaron’s record of decisions for the ground-up redesign. Update it when
 
 Each Order holds its own territory and may extend its operations into another Order’s lands. Establish each homeland’s identity through its architecture, landscape, rites, and everyday objects. Keep territory studies entirely unpopulated, including distant streets, reflections and the far sides of crossings. The approved territory reference will guide later Sister designs.
 
-Review one Order at a time with Aaron. Both the image and the Order lore can change during review. Record approved studies in each Order’s reference collection. [The Undertide Stair](Orders/vesperglass-testament/reference-images/) is the approved homeland reference for The Vesperglass Testament. [The Country Under the Shadow](Orders/see-of-the-black-noon/reference-images/) is the approved homeland reference for The See of the Black Noon. [The Procession at Rest](Orders/sovereign-breach/reference-images/) is the approved homeland reference for The Sovereign Breach (working name). [The Drowned Crown](Orders/wardens-of-the-inward-gate/reference-images/) is the approved Warden territory study. It depicts one gate prison. Warden-only garrisons hold gates in megastructures of varied design, some far larger than the Crown. [The Cathedral of the Lifted Roof](Orders/red-office/reference-images/) is the approved Red Office homeland reference. After the purge, the Sisters keep braziers burning in the open nave and renew its ash wards after rain.
+Review one Order at a time with Aaron. Both the image and the Order lore can change during review. Record approved studies in each Order’s reference collection. [The Undertide Stair](Orders/vesperglass-testament/reference-images/) is the approved homeland reference for The Vesperglass Testament. [The Country Under the Shadow](Orders/see-of-the-black-noon/reference-images/) is the approved homeland reference for Synod of the Veiled Sun. [The Procession at Rest](Orders/sovereign-breach/reference-images/) is the approved homeland reference for The Marching Throne. [The Drowned Crown](Orders/wardens-of-the-inward-gate/reference-images/) is the approved territory study for Wardens of the Silent Evergaol. It depicts one gate prison. Warden-only garrisons hold gates in megastructures of varied design, some far larger than the Crown. [The Cathedral of the Lifted Roof](Orders/red-office/reference-images/) is the approved Red Office homeland reference. After the purge, the Sisters keep braziers burning in the open nave and renew its ash wards after rain.
 
-All seven Orders now have approved territory studies. The Dreadful Salutation has two approved homeland references of equal standing, [The Close of the Empty Halo](Orders/dreadful-salutation/reference-images/#the-close-of-the-empty-halo) and [The Choir of the Unanswered Note](Orders/dreadful-salutation/reference-images/#the-choir-of-the-unanswered-note). Both set the fractured gold against intact, feather-carved Gothic architecture.
+All seven Orders now have approved territory studies. The Host of Fearful Grace has two approved homeland references of equal standing, [The Close of the Empty Halo](Orders/dreadful-salutation/reference-images/#the-close-of-the-empty-halo) and [The Choir of the Unanswered Note](Orders/dreadful-salutation/reference-images/#the-choir-of-the-unanswered-note). Both set the fractured gold against intact, feather-carved Gothic architecture.
 
 ## Roles and classes in every Order
 
@@ -75,3 +75,6 @@ The columns follow Aaron’s order within each role. **Steady** means the class 
 | 2026-11-25 | Reduced the roster to six Orders. The siege warlords and angelic Sisters compete for slot four. Commissioned one visual concept for each of the seven designs to inform the choice. |
 | 2026-11-25 | Chose all seven Orders and approved The Vesperglass Testament as the glass Order’s name. Began a character illustration style comparison. |
 | 2026-11-25 | Selected Midnight Vigil from four Votive Anime directions and requested a less AI-generated finish. |
+| 2026-11-25 | Aaron renamed The See of the Black Noon to Synod of the Veiled Sun and The Sovereign Breach to The Marching Throne. |
+| 2026-11-26 | Aaron renamed The Dreadful Salutation to The Host of Fearful Grace. |
+| 2026-11-26 | Aaron renamed The Wardens of the Inward Gate to Wardens of the Silent Evergaol. |

@@ -1,4 +1,4 @@
-# The Wardens of the Inward Gate reference images
+# Wardens of the Silent Evergaol reference images
 
 ## The Drowned Crown
 

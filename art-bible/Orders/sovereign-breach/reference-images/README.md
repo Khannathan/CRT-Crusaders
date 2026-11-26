@@ -1,4 +1,4 @@
-# The Sovereign Breach reference images
+# The Marching Throne reference images
 
 ## The Procession at Rest
 

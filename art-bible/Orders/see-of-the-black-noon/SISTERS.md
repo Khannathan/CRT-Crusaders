@@ -1,3 +1,3 @@
-# Sisters of the See of the Black Noon
+# Sisters of the Synod of the Veiled Sun
 
 Individual roster assignments are pending for the redesign. Add each approved Sister here with her role, class, and a link to her folder under `art-bible/Sisters/`.

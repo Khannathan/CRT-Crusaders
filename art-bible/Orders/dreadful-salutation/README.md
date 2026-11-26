@@ -1,4 +1,4 @@
-# The Dreadful Salutation
+# The Host of Fearful Grace
 
 ## Lore
 

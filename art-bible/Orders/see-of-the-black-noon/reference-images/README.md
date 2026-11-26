@@ -1,4 +1,4 @@
-# The See of the Black Noon reference images
+# Synod of the Veiled Sun reference images
 
 ## The Country Under the Shadow
 
