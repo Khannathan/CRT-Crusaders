@@ -1,3 +1,7 @@
 # The Wardens of the Inward Gate reference images
 
-Approved Order references are collected here. When a piece is approved, add the image and a caption identifying the territory, rite, object, or design decision it establishes.
+## The Drowned Crown
+
+![Concentric walls in a glacial lake surround a black, white-edged rift held between iron-bound stone ribs.](drowned-crown.png)
+
+Approved Midnight Vigil territory study. The flooded rings and crown of ribs belong to this particular gate prison. Other Warden strongholds can take different forms and reach far greater sizes.
