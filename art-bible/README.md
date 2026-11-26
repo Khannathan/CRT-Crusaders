@@ -4,6 +4,8 @@ The art and design bibles for CRT Crusaders. Since 2026-11-25 **ChatGPT is the a
 
 The copy on `main` is always the current one: read it fresh at the start of every chat, and trust it over uploads, earlier chats or memory.
 
+The seven-Order redesign is tracked in [Creative decisions](CREATIVE_DECISIONS.md), the [Orders](Orders/) and the [Races](Races/) register.
+
 ## Approved visual direction
 
 Start with [EGA Dungeon Crawler with retro anime character art](ART_DIRECTION.md) and its Insomnia comparison before using the design bibles or card prompts.

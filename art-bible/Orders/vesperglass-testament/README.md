@@ -2,7 +2,9 @@
 
 ## Lore
 
-The Sisters of the Testament are faceless constructs made of mirror, stained glass, and related materials. Their glass bodies carry the testimony of events they have witnessed.
+Every Sister of the Testament is [Vitrali](../../Races/vitrali/), a race of faceless planeswalking Constructs exclusive to this Order among Sisters. Their glass bodies carry the testimony of events they have witnessed.
+
+The Testament keeps the barriers between planes. Its homeland exists on another plane and serves as a hub for planeswalking. The Vitrali cross by mirror and can prepare a crossing for travelers from other peoples. Through these connections the Order serves as a peacekeeper between planes.
 
 The approved name replaces *The Confessors of Glass*.
 
