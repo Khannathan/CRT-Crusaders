@@ -32,9 +32,9 @@ This is Aaron’s record of decisions for the ground-up redesign. Update it when
 
 ## Order territory references
 
-Each Order holds its own territory and may extend its operations into another Order’s lands. Establish each homeland’s identity through its architecture, landscape, rites, and everyday objects. Keep Sisters out of these environment images. The approved territory reference will guide later Sister designs.
+Each Order holds its own territory and may extend its operations into another Order’s lands. Establish each homeland’s identity through its architecture, landscape, rites, and everyday objects. Keep territory studies entirely unpopulated, including distant streets, reflections and the far sides of crossings. The approved territory reference will guide later Sister designs.
 
-Review one Order at a time with Aaron. Both the image and the Order lore can change during review. The first Scarlet Succession territory study is a proposal.
+Review one Order at a time with Aaron. Both the image and the Order lore can change during review. Record approved studies in each Order’s reference collection. [The Undertide Stair](Orders/vesperglass-testament/reference-images/) is the approved homeland reference for The Vesperglass Testament.
 
 ## Roles and classes in every Order
 

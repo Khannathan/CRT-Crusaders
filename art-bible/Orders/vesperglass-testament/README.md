@@ -8,6 +8,10 @@ The Testament keeps the barriers between planes. Its homeland exists on another 
 
 The approved name replaces *The Confessors of Glass*.
 
+## Approved homeland reference
+
+[The Undertide Stair](reference-images/undertide-stair.png) is the approved territory study of the House of the Third Key. The empty stair climbs past hinged mirror crossings to a locked gate. Above it, the two broken halves of a copper moon light the underside of a liquid sky. Three keys lie beside a vigil candle on the parapet.
+
 ## Collections
 
 - [Reference images](reference-images/)
