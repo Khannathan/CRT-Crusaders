@@ -1,8 +1,26 @@
-# EGA Dungeon Crawler with retro anime character art
+# Midnight Vigil
 
-Aaron chose the **middle Insomnia** as the drawing reference for all 200 Sisters. The **right Insomnia** is the staging reference for divine pulls. The approval covers rendering and staging. Each Order and Sister gets her own design review.
+Midnight Vigil is the required rendering direction for new and revised CRT Crusaders illustrations in the seven-Order redesign. The master is the revised *Moonlit Duel, Firelit Reliquary* diptych.
 
-![Insomnia closing the gate in three treatments. The centre sets the character style. The right sets the ceiling for a Patron reveal.](references/insomnia-ega-anime.png)
+![Moonlight catches the duelist’s glove on the left. Firelight picks out the templar’s face, hand and bronze reliquary on the right.](references/midnight-vigil.png)
+
+## Making a picture
+
+Attach the [master image](references/midnight-vigil.png) as a visual input on every generation and revision. For an approved scene or character, also attach its approved image and identify the two roles in the brief. The approved subject supplies the design and composition. The diptych supplies the drawing, shadow shapes, edges and finish. Earlier outputs can supply continuity, but each pass goes back to the master for rendering.
+
+Draw the scene in broad inked silhouettes and hard-edged planes of local colour. Let nearby forms share a deep shadow. Use sparse, deliberate pixel accents where a contour turns or material catches light. Keep texture subordinate to the silhouette. In the moonlit panel, a few violet edges describe the arch while the glove seam catches the eye. In the firelit panel, bronze catches the light where the templar cups the reliquary. Choose an equally specific focal detail and a light source the viewer can locate. Keep the colours and time of day appropriate to the subject.
+
+In an environment, the decisive gesture can belong to an object. At the Undertide Stair, the three keys have to read at hand height. Let distant masonry fall into shadow before either the keys or their candle disappears. For a style-only revision preserve the camera, crop, relative scale, architecture, props, atmosphere and story. Order territory studies are entirely unpopulated.
+
+## Review before approval
+
+Compare each candidate with the master at thumbnail size and at normal viewing size. At thumbnail size the focal action or object and the main shadow groups should read immediately. At normal size check for inked contours, clearly separated cel tones and highlights motivated by the scene. For a revision, compare against the approved subject image as well. Check distinctive objects, counts, placements and framing. Revise or flag any discrepancy before treating the picture as a replacement.
+
+Include the master link, the subject reference when applicable, and one concrete comparison in the art review. Aaron approves a replacement before it becomes the reference for later work. The same review applies to every image in a batch.
+
+## Earlier production guidance
+
+The following notes document the [earlier Insomnia study](references/insomnia-ega-anime.png) and its character production context. The current seven-Order [creative decisions](CREATIVE_DECISIONS.md), [Order records](Orders/) and Midnight Vigil master above take precedence for the redesign.
 
 ## Drawing a Sister
 

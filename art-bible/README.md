@@ -8,7 +8,7 @@ The seven-Order redesign is tracked in [Creative decisions](CREATIVE_DECISIONS.m
 
 ## Approved visual direction
 
-Start with [EGA Dungeon Crawler with retro anime character art](ART_DIRECTION.md) and its Insomnia comparison before using the design bibles or card prompts.
+Start with [Midnight Vigil](ART_DIRECTION.md). Attach the [approved rendering master](references/midnight-vigil.png) for every new or revised illustration and follow the visual review in the art direction.
 
 ## What the game uses today (changes here are requests: Claude reviews them and warns Aaron about big ones)
 
