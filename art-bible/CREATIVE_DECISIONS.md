@@ -2,6 +2,14 @@
 
 This is Aaron’s record of decisions for the ground-up redesign. Update it when Aaron locks a choice or revises an earlier one. A suggested name, illustration, or detailed pitch stays open until he selects it.
 
+## The Weight of the Sacred
+
+**The approved setting theme for CRT Crusaders.** Seven rival Orders struggle for control of the realm. What an Order holds holy determines who may rule, who may enter, and who must stand watch. In the Scarlet Succession, a sacred duel decides who governs. The Synod receives its authority to judge during an eclipse. At the Undertide Stair, a traveler depends on a Vitrali keeper to prepare a mirror crossing.
+
+The homelands bear the cost of that faith long after a crusade ends. In [The Procession at Rest](Orders/sovereign-breach/reference-images/), a plum tree blossoms through the axle of a siege tower. Families live against its wheels and worship inside the engine that conquered their city. At [The Cathedral of the Lifted Roof](Orders/red-office/reference-images/), each shower washes away the ash wards. A Sister must kneel on the wet paving and lay them again.
+
+There is tenderness in these obligations, too. In [The Choir of the Unanswered Note](Orders/dreadful-salutation/reference-images/), one bell marks a Sister’s death and another welcomes her home. Between them hangs an empty hook. The third note belongs to the angel.
+
 ## Order roster
 
 **All seven Order concepts are locked.** The Marching Throne and The Host of Fearful Grace both join the roster. Rites, lore, and visual details can develop during the art phase.
