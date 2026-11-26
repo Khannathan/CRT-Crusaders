@@ -1,3 +1,7 @@
 # The Sovereign Breach reference images
 
-Approved Order references are collected here. When a piece is approved, add the image and a caption identifying the territory, rite, object, or design decision it establishes.
+## The Procession at Rest
+
+[![Four timber siege towers serve as chapels along an empty uphill street. A plum tree blossoms through the nearest axle.](procession-at-rest.png)](procession-at-rest.png)
+
+Approved homeland reference. From the foot of the street, the ironbound wheels and braced timbers still give the towers their siege silhouettes. Candlelight fills their chapel windows. Wax runs down the first hub beside the flowering plum.
