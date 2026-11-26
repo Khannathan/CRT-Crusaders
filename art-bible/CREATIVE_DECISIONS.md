@@ -9,7 +9,7 @@ This is Aaron’s record of decisions for the ground-up redesign. Update it when
 | Slot | Order | Scope of approval |
 | --- | --- | --- |
 | 1 | The Scarlet Succession | Aaron selected the Order built around sacred duels for the right to rule. The victor inherits the office and must answer its next challenger. |
-| 2 | The Vesperglass Testament | Aaron selected the Order. Its Sisters are constructs made of mirror, stained glass, and related materials. Aaron approved the rename from The Confessors of Glass. |
+| 2 | The Vesperglass Testament | Aaron selected the Order. All its Sisters are [Vitrali](Races/vitrali/), exclusive to this Order. The Testament guards the barriers and keeps the peace between planes from its mirror travel hub. Aaron approved the rename from The Confessors of Glass. |
 | 3 | The See of the Black Noon | An eclipse Order whose Sisters receive divine judgment during totality. Its rites and visual execution will be refined at the art stage. |
 | 4 | The Sovereign Breach (rename pending) | Crusader warlords conquer cities by siege and rule the lands they take in their patron’s name. |
 | 5 | The Wardens of the Inward Gate (rename pending) | Elite custodians build and garrison monumental medieval fortresses around gates to Oblivion. The inner defenses contain its Heralds and forces. The outer defenses repel cultists and would-be collaborators. Heavy arms and armor define the appearance of every Sister across roles and carry no inherent stat effect. |
@@ -25,10 +25,10 @@ This is Aaron’s record of decisions for the ground-up redesign. Update it when
 | Crusade and obedience | Carry holy wars, witch hunts, religious purges, iconoclastic campaigns, forced conversion, and interdictions into upcoming pitches and later redesigns of the selected Orders. Show the darker, grittier consequences of blind faith. Sisters will kill or lay waste on their Order’s command. |
 | Tone | Grimdark medieval crusade fantasy in a world already in despair. Draw on *Demon’s Souls*, *Dark Souls*, *Bloodborne*, and *Elden Ring* for atmosphere. Give the Orders enough thematic breadth to sustain seven distinct identities. An Order can pursue its doctrine without a redeeming purpose. Let its rites, material traces, and acts reveal what its Sisters believe. |
 | Crusade influences | Draw on the religious fanaticism of *Warhammer 40,000*. Create original names, factions, and iconography. Keep the world medieval and exclude modern and futuristic technology. |
-| Roster | Seven Orders. The revised roster size and per-Order counts are open. Every Sister is an adult woman aged 21–35. |
+| Roster | Seven Orders. The revised roster size and per-Order counts are open. Every Sister is an adult woman aged 21–35, taller than 6′0″ and at most 7′2″. Establish her own proportions, face shape, personal markings or inlays, and hairstyle before armor. |
 | Character appeal | Reserve fanservice for Sisters. Aim high while keeping it non-explicit. The Order’s faith and identity take visual priority. |
 | Art direction | Midnight Vigil is the selected Sister illustration style within Retro Gacha, EGA Dungeon Crawler. It pairs expressive adult anime faces and bold pixel shapes with gothic medieval settings, deep shadows, and light motivated by the scene. Use the revised *Moonlit Duel, Firelit Reliquary* diptych as the visual reference. The duelist pinches the seam of her glove. The templar supports the bronze reliquary from beneath. Carry that attention to gesture, weight, and light into each Order’s own designs. |
-| Peoples | Humans, Elves, Tieflings, and Constructs form the starting list. Explore three to five additional peoples during the race phase, with both gacha appeal and a place in the grimdark crusade. |
+| Peoples | Humans, Elves, Tieflings, and Constructs form the starting list. The [race register](Races/) records the Vitrali as an approved Construct people. Explore three to five additional peoples during the race phase, with both gacha appeal and a place in the grimdark crusade. |
 
 ## Order territory references
 
@@ -56,8 +56,8 @@ The columns follow Aaron’s order within each role. **Steady** means the class 
 | --- | --- | --- |
 | 1 | Reimagine and select seven Orders | All seven concepts chosen |
 | 2 | Create images for each Order | Initial concepts complete. Midnight Vigil selected. The refined Scarlet Succession and Red Office diptych is the visual reference. |
-| 3 | Develop the races | Upcoming |
-| 4 | Create images for each race | Upcoming |
+| 3 | Develop the races | Vitrali formula approved. Other race development remains open. |
+| 4 | Create images for each race | Vitrali Healer and Ranged studies selected as race references. |
 | 5 | Build the world and create its images | Upcoming |
 
 ## Decision history
