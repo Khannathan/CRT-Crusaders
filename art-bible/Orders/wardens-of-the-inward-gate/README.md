@@ -6,10 +6,6 @@ The Wardens are elite custodians of gates to Oblivion. They build vast medieval 
 
 Every Warden bears heavy arms and armor, including healers and support classes. This visual choice carries no inherent stat effect.
 
-## The Unending Watch
-
-The Wardens live out [The Weight of the Sacred](../../CREATIVE_DECISIONS.md#the-weight-of-the-sacred) through the duty of keeping a gate shut. At the Drowned Crown, a Sister on the outer wall can look across every ring of the fortress and still see the white edge of Oblivion. Half her duty lies in that direction. The other half lies down the causeway, where someone may come hoping to open the gate. Even the Sister who tends the wounded keeps heavy arms. Each knows exactly what she holds shut when she takes her post again tomorrow.
-
 ## Territory
 
 Only Wardens garrison these gate prisons. Their builders fit each stronghold to the opening it must contain and the ground on which it stands. The Order builds in many forms, and some prisons far exceed the Drowned Crown in scale.
