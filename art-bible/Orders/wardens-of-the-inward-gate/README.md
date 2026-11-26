@@ -6,6 +6,12 @@ The Wardens are elite custodians of gates to Oblivion. They build vast medieval 
 
 Every Warden bears heavy arms and armor, including healers and support classes. This visual choice carries no inherent stat effect. The Order’s name awaits revision.
 
+## Territory
+
+Only Wardens garrison these gate prisons. Their builders fit each stronghold to the opening it must contain and the ground on which it stands. The Order builds in many forms, and some prisons far exceed the Drowned Crown in scale.
+
+At [the Drowned Crown](reference-images/), concentric walls rise from a glacial lake. A crooked causeway passes through successive gatehouses to the inner ring. There, iron bands bind a crown of inward-leaning stone ribs around a white-edged tear into Oblivion. The gate remains visible from the outer watch.
+
 ## Collections
 
 - [Reference images](reference-images/)
