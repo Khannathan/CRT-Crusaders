@@ -6,8 +6,6 @@ The copy on `main` is always the current one: read it fresh at the start of ever
 
 The seven-Order redesign is tracked in [Creative decisions](CREATIVE_DECISIONS.md), the [Orders](Orders/) and the [Races](Races/) register.
 
-The approved setting theme is [The Weight of the Sacred](CREATIVE_DECISIONS.md#the-weight-of-the-sacred).
-
 ## Approved visual direction
 
 Start with [Midnight Vigil](ART_DIRECTION.md). Attach the [approved rendering master](references/midnight-vigil.png) for every new or revised illustration and follow the visual review in the art direction.
