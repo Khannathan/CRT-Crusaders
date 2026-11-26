@@ -6,7 +6,7 @@ This directory holds the approved material for the seven Orders of CRT Crusaders
 - [The Vesperglass Testament](vesperglass-testament/)
 - [Synod of the Veiled Sun](see-of-the-black-noon/)
 - [The Marching Throne](sovereign-breach/)
-- [The Wardens of the Inward Gate](wardens-of-the-inward-gate/)
+- [Wardens of the Silent Evergaol](wardens-of-the-inward-gate/)
 - [The Red Office](red-office/)
 - [The Host of Fearful Grace](dreadful-salutation/)
 
