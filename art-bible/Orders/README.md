@@ -4,8 +4,8 @@ This directory holds the approved material for the seven Orders of CRT Crusaders
 
 - [The Scarlet Succession](scarlet-succession/)
 - [The Vesperglass Testament](vesperglass-testament/)
-- [The See of the Black Noon](see-of-the-black-noon/)
-- [The Sovereign Breach](sovereign-breach/)
+- [Synod of the Veiled Sun](see-of-the-black-noon/)
+- [The Marching Throne](sovereign-breach/)
 - [The Wardens of the Inward Gate](wardens-of-the-inward-gate/)
 - [The Red Office](red-office/)
 - [The Dreadful Salutation](dreadful-salutation/)
