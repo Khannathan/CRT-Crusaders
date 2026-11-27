@@ -8,12 +8,12 @@ Anything in the repo: `art-bible/`, code, data, existing art, issues and pull re
 
 ## Writing
 
-**1. Art files** (real PNGs under 12 MB; `.webp` only to replace an existing `.webp`; add or replace, never delete or rename):
+**1. Art files** (real PNGs under 12 MB; add or replace, never delete or rename):
 
 | What | Path |
 | --- | --- |
 | Sister bust | `src/assets/portraits/<id>.png` |
-| Sister splash | `src/assets/splash/<id>.png` (or replace an existing `<id>.webp`) |
+| Sister splash | Not through GitHub for now: the 1024 x 1536 master goes to Aaron, because masters stay out of this repository until their storage is decided. Claude builds `src/assets/splash/<id>.webp` from it with `tools/build_splash.py` |
 | Raw battle sprite | `art-inbox/full-body/<id>_raw.png`. Never write `src/assets/full-body/` yourself: the **Sprite intake** bot makes `src/assets/full-body/<id>.png` and `art-inbox/review/<id>_sprite_preview.png` on your branch |
 | Weapon prop sheets and other references | `art-inbox/props/<id>_props.png` |
 | UI pieces, icons, insignias, crucifixes, backgrounds, banners, events, items, gear, effects | `src/assets/ui/<file>.png`, only names in ASSET_SPECS.md or ART_QUEUE.md |

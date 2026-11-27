@@ -38,7 +38,7 @@ Confessors of Glass have faceless heads and bodies of glass, stained glass or mi
 | --- | --- |
 | Bust | Bring the expression or glass head into immediate focus at 128 × 128. Check the hair or head silhouette and one personal detail again at 64 px. |
 | Battle | Preserve the approved proportions and major shapes through the 128 × 192 intake. Fold divine ornament close to the body. Follow the template and run the preview in the [sprite spec](specs/SPRITE_SPEC.md). |
-| Splash | Stage one decision at 256 × 384. Keep head, face and hands in the safe middle band. Frame her action with the architecture and light of her Order. |
+| Splash | Paint the 1024 × 1536 master in full colour; the game shows a 512 × 768 copy. Keep head, face and hands in the safe middle band. Frame her action with the architecture and light of her Order. |
 
 ## Divine pull staging
 

@@ -1,0 +1,13 @@
+{
+  "default": {
+    "quality": 90
+  },
+  "legacy": [
+    "DL-SSR-EXE",
+    "IV-LSSR1",
+    "IV-LUR",
+    "TC-UR1",
+    "VT-SSR-VEI"
+  ],
+  "overrides": {}
+}

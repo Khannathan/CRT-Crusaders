@@ -15,6 +15,12 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install pillow==13.0.0
+      # Splashes: 512 x 768 WebP built from a master, within the size cap (docs/SPLASH_ART.md).
+      - run: python3 tools/build_splash.py --check
       - run: npm test
       - run: npm run build
       # Opens every screen on a fresh and a mid-game save (tools/smoke/screens.mjs).

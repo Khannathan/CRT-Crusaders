@@ -20,7 +20,7 @@ Every asset type the game uses: its native size, background, where it shows and 
   5. count the colours actually present, including the background, and check every channel is divisible by 17;
   6. export the native PNG plus an exact nearest-neighbour upscale (4x, or 8x for anything 64 px or smaller) and confirm it is exact.
   Report the real numbers. Name the file as the table says.
-- **Checks per deliverable:** bust: opaque 128x128, flat dark, exactly 16 colours including the background, 4x copy 512x512, and look at the face at 64 px too. Splash: opaque 256x384, exactly 16 colours, 4x copy 1024x1536, head, face and hands clear of the top and bottom crop. Battle sprite: no pixel pass; run the sprite-plan section 7 preview. Weapon prop sheet: reference only, any size, plain flat light grey, no pixel pass.
+- **Checks per deliverable:** bust: opaque 128x128, flat dark, exactly 16 colours including the background, 4x copy 512x512, and look at the face at 64 px too. Splash: opaque 1024x1536 master PNG, full colour, no pixel pass, head, face and hands clear of the top and bottom crop; the game's 512x768 WebP is built from it (docs/SPLASH_ART.md). Battle sprite: no pixel pass; run the sprite-plan section 7 preview. Weapon prop sheet: reference only, any size, plain flat light grey, no pixel pass.
 - **Exception (UI concepts):** UI redesign concepts are pictures for Aaron to choose from, not game assets: no pixel pass, sizes and names from `UI_BIBLE.md` section 9, delivered to `art-inbox/ui-concepts/`.
 - **Exception:** the Sister battle sprite is drawn large in the same EGA dungeon-crawler style with bold readable shapes and gets no pixel pass, because the game shrinks it (see sprite-plan.md).
 

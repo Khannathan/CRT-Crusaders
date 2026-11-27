@@ -66,7 +66,7 @@ import { current } from '../state/run';
 import { RITE_LEVELS, SANCT_LITANY, SANCT_MAX, SANCT_STEPS, finishRite, hasRite, motesOf, riteBattle, riteBest, riteBlock, riteEntriesLeft, riteReward, riteTarget, sanctBlock, sanctify, sanctOf, sweepRite } from '../systems/relicRites';
 import { CURRENCY_BAR_H, addCurrencyBar } from '../ui/currencyBar';
 import { addGroupStrip } from '../ui/nav';
-import { addSplash, hasSplash, loadSplash, portraitKey, queueSplash } from '../ui/placeholderPortrait';
+import { addSplash, hasSplash, loadSplash, portraitKey, queueSplash, splashFilter } from '../ui/placeholderPortrait';
 import { SisterSprite, fullKey } from '../ui/sisterSprite';
 import { nine } from '../ui/skin';
 import { CARD_COLS, CARD_GAP, CARD_H, cardSlot, drawRosterCard } from '../ui/rosterCard';
@@ -456,6 +456,7 @@ export class RosterScene extends Phaser.Scene {
     const bg = this.add.rectangle(GAME_W / 2, GAME_H / 2, GAME_W, GAME_H, 0x000000, 0.94).setInteractive();
     const src = this.textures.get(key).getSourceImage();
     const scale = Math.min(GAME_W / src.width, (GAME_H - 60) / src.height);
+    splashFilter(this, key, scale);
     const img = this.add.image(GAME_W / 2, GAME_H / 2 - 10, key).setScale(scale * 0.96).setAlpha(0);
     const hint = this.add.text(GAME_W / 2, GAME_H - 22, 'Tap to close', text.hud(13, PAL.steel)).setOrigin(0.5);
     layer.add([bg, img, hint]);

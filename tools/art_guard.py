@@ -21,8 +21,7 @@ MAX_BYTES = 12 * 1024 * 1024
 # (pattern, may it be a brand new file?)
 ALLOWED = [
     (r'src/assets/portraits/[^/]+\.png', True),
-    (r'src/assets/splash/[^/]+\.png', True),
-    (r'src/assets/splash/[^/]+\.webp', False),     # replace an existing .webp only
+    # splashes: masters go to Aaron; tools/build_splash.py makes the shipping .webp
     (r'src/assets/ui/[^/]+\.png', True),
     (r'src/assets/enemies/[^/]+\.png', True),
     (r'src/assets/enemy-full/[^/]+\.png', True),
