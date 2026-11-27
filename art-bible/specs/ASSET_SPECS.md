@@ -8,7 +8,7 @@ What the game code expects from every asset today. ChatGPT owns how assets look 
 | --- | --- | --- | --- | --- | --- |
 | Sister bust | portraits/<id>.png | 128 x 128 | flat dark | roster grid, pickers, chat | tight head-and-shoulders (card's BUST PROMPT); weapon may crop or be left out |
 | Sister battle sprite | art-inbox/full-body/<id>_raw.png | drawn at ~1024 x 1536 | flat #FF00FF | battlefield, Sister page | drawn large with bold readable shapes, not shrunk or colour-cut (the bot does that); the Sprite intake bot turns it into full-body/<id>.png (128 x 192) |
-| Sister splash | splash/<id>.png | 256 x 384 | full scene | pull reveal, Sister page, Sanctum | face and relic in the middle band |
+| Sister splash | master 1024 x 1536 PNG, sent to Aaron (not this repo); the game ships splash/<id>.webp at 512 x 768, built by Claude | 1024 x 1536 master | full scene | pull reveal, Sister page, Altar banner, Litany cut-in, Sanctum | full colour, no pixel pass, no palette cut; head, face and hands well inside the frame (see docs/SPLASH_ART.md) |
 | Weapon prop sheet | art-inbox/props/<id>_props.png | any | plain | not in game (reference only) | side view, full length |
 | Enemy portrait | enemies/<enemy id>.png | 84 x 84 | flat dark | enemy cards, intents | head and shoulders, readable at 42 px |
 | Enemy battle figure | enemy-full/<enemy id>.png | 128 x 192 | transparent | battlefield | full body facing the viewer's left (toward the Sisters), soles on row 184, rows 185-191 empty, inside x 6-122 and rows 10-184 |
@@ -38,11 +38,11 @@ Paths are under `src/assets/` unless they start with `art-inbox/`. A new asset t
 - **Native size is the delivered size.** Every game file is delivered at exactly the native pixel size in the table (the game draws it 1:1 or at whole multiples). When replacing an existing file, match its exact pixel size and background; some icons are a few pixels under the table size, keep theirs.
 - **Backgrounds** are exactly what the table says: opaque flat dark, opaque full scene, transparent (real alpha), or flat #FF00FF for anything the intake bot keys out.
 - **File names and folders** are exactly the table's. Ids in file names are game ids (as in `src/data/`), never display names: for example `insignia-red-pilgrimage.png` for the Crimson Inquisition.
-- **Format:** real PNG files. `.webp` only to replace an existing `.webp` splash, keeping its name. Each file under 12 MB.
-- **Colours:** busts, splashes and other native-size assets arrive already finished; the game shows them as delivered. The battle sprite is cut to **16 colours** by the intake bot (`tools/intake_sprite.py --colors 16`) whatever colours it arrives with.
+- **Format:** real PNG files, each under 12 MB. Splashes are the exception: the master is a 1024 x 1536 PNG that stays outside this repository, and `tools/build_splash.py` makes the shipping `.webp` (512 x 768, quality 90) from it.
+- **Colours:** splashes are full colour with no pixel pass or palette cut. Busts and other native-size assets arrive already finished; the game shows them as delivered. The battle sprite is cut to **16 colours** by the intake bot (`tools/intake_sprite.py --colors 16`) whatever colours it arrives with.
 - **No text, frames or UI in the art** unless the asset is a lettered UI piece the request names. The game draws names, rarity, frames and numbers itself, mirrors battle sprites to face left (so nothing on a sprite may depend on its side), and adds the optional CRT filter on top (so no scanlines or screen effects in the art).
 - **Menu icons** are pure white shapes on transparent: the game tints them.
-- **Splash crop:** the game crops splashes for short and tall phones, so a Sister's head, face and hands stay well inside the frame, clear of the top and bottom edges.
+- **Splash crop:** the game crops splashes for short and tall phones and screens (head to knees on her page and banners, head to toe on the pull reveal), so a Sister's head, face and hands stay well inside the frame. Each splash gets a framing row in the game (where her face, head and feet are), and tapping her on her page shows the whole uncropped painting.
 - **Enemy battle figures** face the viewer's left (toward the Sisters) with soles on row 184, rows 185-191 empty, inside x 6-122 and rows 10-184.
 - **Knockout effect sheets:** the game tints them (the Sister's Order colour, ember for foes, gold for bosses), so they carry no colour of their own: white and light greys only (#FFFFFF, #DDDDDD, #AAAAAA, #777777, plus #111111 outlines) on flat #FF00FF.
 - **Review copies:** each bust also ships a 4x nearest-neighbour copy as `art-inbox/review/<id>_bust_4x.png` (Aaron and Claude review from it). Bust 4x = 512 x 512.

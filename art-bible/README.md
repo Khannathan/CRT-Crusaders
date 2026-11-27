@@ -37,7 +37,7 @@ Start with [Midnight Vigil](ART_DIRECTION.md). Attach the [approved rendering ma
 
 **Finding a Sister:** `roster/names-and-epithets.csv` maps every name to her id. Ids are `<Order>-<rarity>-<class>` (for example `IV-SSR-CEN`) or a top slot `<Order>-LUR`, `-LSSR1`, `-LSSR2`, `-UR1`, `-UR2`. Order codes: IV Iron Vigil, AM Ashen Mercy, VT Veiled Tribunal, SW Sepulcher Watch, CC Choir of the Pyre, TC Verdant Martyrdom, DL Drowned Litany, GC Confessors of Glass, RP Crimson Inquisition, HB Hallowed Belfry.
 
-**Approved art** is what's merged on `main`: busts `src/assets/portraits/<id>.png`, sprites `src/assets/full-body/<id>.png` (raw drawing `art-inbox/full-body/<id>_raw.png`), splashes `src/assets/splash/<id>.png`, Order pieces `src/assets/ui/`. Work in progress sits in open pull requests on `art/` branches: check there first so nothing is made twice.
+**Approved art** is what's merged on `main`: busts `src/assets/portraits/<id>.png`, sprites `src/assets/full-body/<id>.png` (raw drawing `art-inbox/full-body/<id>_raw.png`), splashes `src/assets/splash/<id>.webp` (built from masters kept outside the repo), Order pieces `src/assets/ui/`. Work in progress sits in open pull requests on `art/` branches: check there first so nothing is made twice.
 
 ## Elsewhere in the repo (read live)
 

@@ -83,10 +83,11 @@ export function loadFullBody(scene: Phaser.Scene, id: string): Promise<string> {
 }
 
 /**
- * Splash art: src/assets/splash/<id>.webp (or .png/.jpg), a 2:3 painted scene of
- * her, 640 x 960. About 170 KB each, so they load on demand (queueSplash in a
- * scene's preload, or loadSplash). To swap in a Sister's new look, replace her
- * file with one of the same name; nothing else changes.
+ * Splash art: src/assets/splash/<id>.webp, a 2:3 painted scene of her at
+ * 512 x 768, full colour, about 170 KB (docs/SPLASH_ART.md). Made from her
+ * 1024 x 1536 master by tools/build_splash.py; never hand-edited. A few older
+ * splashes are .png or 640 x 960. They load on demand (queueSplash in a scene's
+ * preload, or loadSplash) and old ones are freed (trimSplashes).
  */
 const SPLASH_URLS = import.meta.glob<string>('../assets/splash/*.{webp,png,jpg}', { eager: true, query: '?url', import: 'default' });
 const splashUrl = (id: string) => SPLASH_URLS[`../assets/splash/${id}.png`] ?? SPLASH_URLS[`../assets/splash/${id}.webp`] ?? SPLASH_URLS[`../assets/splash/${id}.jpg`];
@@ -94,19 +95,73 @@ export const splashKey = (id: string) => `splash-${id}`;
 export const hasSplash = (id: string) => !!splashUrl(id);
 
 /**
- * Smooth filtering for painted splash art (.webp/.jpg), which is drawn smaller than
- * its pixels. Pixel-art splashes (.png, stored at 2x their 256 x 384 grid) stay crisp.
+ * How a splash is filtered depends on how big it is drawn (docs/SPLASH_ART.md):
+ * at its own size or bigger, hard pixels keep the painted pixel clusters crisp;
+ * shrunk, hard pixels would drop whole rows and break her eyes, so it is smoothed.
+ * One texture is drawn at one size at a time, so each draw sets its texture's filter.
  */
-const smooth = (scene: Phaser.Scene, key: string, url: string) => {
-  if (scene.textures.exists(key) && !url.endsWith('.png')) scene.textures.get(key).setFilter(Phaser.Textures.FilterMode.LINEAR);
+export const SPLASH_HARD_FROM = 0.98;
+export function splashFilter(scene: Phaser.Scene, key: string, scale: number) {
+  if (!scene.textures.exists(key)) return;
+  const { NEAREST, LINEAR } = Phaser.Textures.FilterMode;
+  scene.textures.get(key).setFilter(scale >= SPLASH_HARD_FROM ? NEAREST : LINEAR);
+  touchSplash(key);
+}
+
+/**
+ * Splashes are 1.5 MB each once decoded, so only the most recently used ones stay
+ * loaded: enough for a 10-pull reveal or a Sister page and its neighbours. Older
+ * ones are freed unless something on screen still shows them, and load again
+ * (from the browser's cache) when needed.
+ */
+export const SPLASH_CACHE = 12;
+const lastUsed = new Map<string, number>();
+let useTick = 0;
+function touchSplash(key: string) {
+  lastUsed.set(key, ++useTick);
+}
+
+/** True when any live scene still draws this texture (containers and layers included). */
+function onScreen(game: Phaser.Game, key: string) {
+  const shows = (list: Phaser.GameObjects.GameObject[]): boolean =>
+    list.some((o) => {
+      const t = (o as Phaser.GameObjects.Image).texture;
+      if (t && t.key === key) return true;
+      const kids = (o as Phaser.GameObjects.Container).list;
+      return Array.isArray(kids) && shows(kids as Phaser.GameObjects.GameObject[]);
+    });
+  return game.scene.scenes.some((sc) => shows(sc.sys.displayList?.list ?? []));
+}
+
+/** Frees the least recently used splashes beyond SPLASH_CACHE that nothing shows. */
+export function trimSplashes(game: Phaser.Game, keep = SPLASH_CACHE) {
+  const loaded = [...lastUsed.entries()].filter(([k]) => game.textures.exists(k));
+  for (const [k] of [...lastUsed.entries()]) if (!game.textures.exists(k)) lastUsed.delete(k);
+  let over = loaded.length - keep;
+  for (const [k] of loaded.sort((a, b) => a[1] - b[1])) {
+    if (over <= 0) break;
+    if (onScreen(game, k)) continue;
+    game.textures.remove(k);
+    lastUsed.delete(k);
+    over--;
+  }
+}
+
+/** How many splash textures are loaded right now (for tests and the art review). */
+export const loadedSplashes = (game: Phaser.Game) => [...lastUsed.keys()].filter((k) => game.textures.exists(k));
+
+const loaded = (scene: Phaser.Scene, key: string) => {
+  touchSplash(key);
+  trimSplashes(scene.game);
 };
 
 /** In a scene's preload(): queue her splash so it is ready in create(). */
 export function queueSplash(scene: Phaser.Scene, id: string) {
   const key = splashKey(id);
   const url = splashUrl(id);
-  if (!url || scene.textures.exists(key)) return;
-  scene.load.once(`filecomplete-image-${key}`, () => smooth(scene, key, url));
+  if (!url) return;
+  if (scene.textures.exists(key)) return touchSplash(key);
+  scene.load.once(`filecomplete-image-${key}`, () => loaded(scene, key));
   scene.load.image(key, url);
 }
 
@@ -115,12 +170,15 @@ export function loadSplash(scene: Phaser.Scene, id: string): Promise<string | un
   const key = splashKey(id);
   const url = splashUrl(id);
   if (!url) return Promise.resolve(undefined);
-  if (scene.textures.exists(key)) return Promise.resolve(key);
+  if (scene.textures.exists(key)) {
+    touchSplash(key);
+    return Promise.resolve(key);
+  }
   return new Promise((resolve) => {
     const done = () => {
       scene.load.off(`filecomplete-image-${key}`, done);
       scene.load.off(Phaser.Loader.Events.COMPLETE, done);
-      smooth(scene, key, url);
+      if (scene.textures.exists(key)) loaded(scene, key);
       resolve(scene.textures.exists(key) ? key : undefined);
     };
     scene.load.once(`filecomplete-image-${key}`, done);
@@ -142,14 +200,14 @@ export function addSplash(scene: Phaser.Scene, id: string, x: number, y: number,
   const src = scene.textures.get(key).getSourceImage();
   const SW = src.width;
   const SH = src.height;
-  const [cx, head, feet] = SPLASH_FRAMES[id] ?? DEFAULT_FRAME;
+  const [cx, head, feet, zoom = 1] = SPLASH_FRAMES[id] ?? DEFAULT_FRAME;
   const aspect = w / h;
   const fig = (feet - head) * SH;
   const maxH = Math.min(SH, SW / aspect);
   let ch: number;
   let cy: number;
   if (mode === 'hero') {
-    ch = Phaser.Math.Clamp(fig * 0.8 + SH * 0.1, SH * 0.36, maxH);
+    ch = Phaser.Math.Clamp((fig * 0.8 + SH * 0.1) / zoom, SH * 0.25, maxH);
     // room above her head for hats, halos and raised weapons
     cy = head * SH - SH * 0.1;
   } else {
@@ -160,6 +218,7 @@ export function addSplash(scene: Phaser.Scene, id: string, x: number, y: number,
   const left = Phaser.Math.Clamp(cx * SW - cw / 2, 0, SW - cw);
   const top = Phaser.Math.Clamp(cy, 0, SH - ch);
   const scale = w / cw;
+  splashFilter(scene, key, scale);
   const img = scene.add.image(x, y, key).setScale(scale).setCrop(left, top, cw, ch);
   // Put the crop's centre on (x, y).
   img.setPosition(x - (left + cw / 2 - SW / 2) * scale, y - (top + ch / 2 - SH / 2) * scale);

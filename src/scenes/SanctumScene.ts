@@ -28,7 +28,8 @@ import { feastName, feastReady } from '../systems/feast';
 import { limitedWindow, timeLeft } from '../systems/limited';
 import { chooseLimited } from '../systems/gacha';
 import { roundsReady } from '../systems/rounds';
-import { hasFullBody, hasSplash, queueSplash, splashKey } from '../ui/placeholderPortrait';
+import { hasFullBody, hasSplash, queueSplash, splashFilter, splashKey } from '../ui/placeholderPortrait';
+import { DEFAULT_FRAME, SPLASH_FRAMES } from '../data/splashFrames';
 import { toast } from '../ui/modeScreen';
 import { drawMarchToggle, marchLine, marchUi, showMarchSummary } from '../ui/marchUi';
 import { marchOf } from '../systems/march';
@@ -85,7 +86,13 @@ export class SanctumScene extends Phaser.Scene {
     if (c && this.textures.exists(splashKey(c.id))) {
       // the whole painting, scaled to cover the lobby from the top down, so her face sits clear of the Vigil
       const img = this.add.image(GAME_W / 2, areaTop, splashKey(c.id)).setOrigin(0.5, 0);
-      img.setScale(Math.max(GAME_W / img.width, areaH / img.height));
+      const scale = Math.max(GAME_W / img.width, areaH / img.height);
+      img.setScale(scale);
+      splashFilter(this, splashKey(c.id), scale);
+      // keep her face in view when the painting is wider than the lobby
+      const [cx] = SPLASH_FRAMES[c.id] ?? DEFAULT_FRAME;
+      const spare = (img.width * scale - GAME_W) / 2;
+      img.x = GAME_W / 2 + Phaser.Math.Clamp((0.5 - cx) * img.width * scale, -spare, spare);
     }
     else {
       addBackdrop(this, owned.length ? 'bg-hall' : 'bg-altar', GAME_W / 2, areaTop + areaH / 2, GAME_W, areaH, { alpha: 0.85, fade: 0.3, fadeColor: 0x0e0a10 });
